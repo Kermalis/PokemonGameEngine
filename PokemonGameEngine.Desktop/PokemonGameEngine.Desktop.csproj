@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Kermalis.PokemonGameEngine.Desktop</RootNamespace>
+    <Authors>Kermalis</Authors>
+    <Copyright>Kermalis</Copyright>
+    <RepositoryUrl>https://github.com/Kermalis/PokemonGameEngine</RepositoryUrl>
+    <NoWarn />
+    <StartupObject>Kermalis.PokemonGameEngine.Desktop.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PokemonGameEngine\PokemonGameEngine.csproj" />
+  </ItemGroup>
+  
+</Project>
