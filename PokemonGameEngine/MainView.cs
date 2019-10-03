@@ -5,6 +5,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Visuals.Media.Imaging;
+using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Overworld;
 using Kermalis.PokemonGameEngine.Util;
 using System;
@@ -15,7 +16,7 @@ namespace Kermalis.PokemonGameEngine
     {
         public const int RenderWidth = 480;
         public const int RenderHeight = 256;
-        private readonly bool _showFPS = false;
+        private readonly bool _showFPS = true;
 
         private bool _isDisposed;
         private readonly WriteableBitmap _screen;
@@ -26,12 +27,15 @@ namespace Kermalis.PokemonGameEngine
         private double _fps;
         private bool _readyForRender = true;
 
+        private readonly Font _font;
+        private readonly uint[] _fontColors = new uint[] { 0x00000000, 0xFFFFFFFF, 0xFF848484 };
         private readonly Tileset _tileset;
         private readonly Blockset _blockset;
         private readonly uint[][][] _tempPlayerSpriteSheet;
 
         public MainView()
         {
+            _font = new Font("TestFont.kermfont");
             _tileset = new Tileset("TestTiles.png");
             _blockset = new Blockset();
             _tempPlayerSpriteSheet = RenderUtil.LoadSpriteSheet("TestNPC.png", 32, 32);
@@ -41,7 +45,6 @@ namespace Kermalis.PokemonGameEngine
             _clock = new Clock().Subscribe(RenderTick);
         }
 
-        private readonly FormattedText _ft = new FormattedText { Typeface = new Typeface(FontFamily.Default, fontSize: 24, weight: FontWeight.ExtraBold) };
         private unsafe void RenderTick(TimeSpan time)
         {
             if (!_isDisposed && _readyForRender)
@@ -80,6 +83,11 @@ namespace Kermalis.PokemonGameEngine
                     _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[13], cameraX + 48, cameraY + 48);
 
                     RenderUtil.Draw(bmpAddress, RenderWidth, RenderHeight, cameraX + 16 - 8, cameraY + 64 - 16, _tempPlayerSpriteSheet[0], false, false); // Temporarily rendered above all
+
+                    if (_showFPS)
+                    {
+                        RenderUtil.Draw(bmpAddress, RenderWidth, RenderHeight, 0, 0, ((int)_fps).ToString(), _font, _fontColors);
+                    }
                 }
                 InvalidateVisual();
                 _readyForRender = true;
@@ -97,11 +105,6 @@ namespace Kermalis.PokemonGameEngine
                 Rect destRect = viewPort.CenterRect(new Rect(scaledSize)).Intersect(viewPort);
                 Rect sourceRect = new Rect(_screenSize).CenterRect(new Rect(destRect.Size / scale));
                 context.DrawImage(_screen, 1, sourceRect, destRect, BitmapInterpolationMode.Default);
-                if (_showFPS)
-                {
-                    _ft.Text = ((int)_fps).ToString();
-                    context.DrawText(Brushes.Green, new Point(0, 0), _ft);
-                }
             }
         }
 

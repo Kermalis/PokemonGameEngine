@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Kermalis.PokemonGameEngine.GUI;
 
 namespace Kermalis.PokemonGameEngine.Util
 {
@@ -88,28 +89,64 @@ namespace Kermalis.PokemonGameEngine.Util
             }
         }
 
+        public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, string str, Font font, uint[] colors)
+        {
+            int index = 0;
+            int nextXOffset = 0;
+            int nextYOffset = 0;
+            while (index < str.Length)
+            {
+                int xOffset = x + nextXOffset;
+                int yOffset = y + nextYOffset;
+                Font.Glyph glyph = font.GetGlyph(str, ref index, ref nextXOffset, ref nextYOffset);
+                if (glyph != null)
+                {
+                    int curBit = 0;
+                    int curByte = 0;
+                    for (int py = yOffset; py < yOffset + font.FontHeight; py++)
+                    {
+                        for (int px = xOffset; px < xOffset + glyph.CharWidth; px++)
+                        {
+                            if (py >= 0 && py < bmpHeight && px >= 0 && px < bmpWidth)
+                            {
+                                Draw(bmpAddress + px + (py * bmpWidth), colors[(glyph.Bitmap[curByte] >> (8 - font.BitsPerPixel - curBit)) % (1 << font.BitsPerPixel)]);
+                            }
+                            curBit = (curBit + font.BitsPerPixel) % 8;
+                            if (curBit == 0)
+                            {
+                                curByte++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public static unsafe void Draw(uint* pixelAddress, uint color)
         {
-            uint aA = color >> 24;
-            if (aA == 0xFF)
+            if (color != 0x00000000)
             {
-                *pixelAddress = color;
-            }
-            else
-            {
-                uint rA = (color >> 16) & 0xFF;
-                uint gA = (color >> 8) & 0xFF;
-                uint bA = color & 0xFF;
-                uint current = *pixelAddress;
-                uint aB = current >> 24;
-                uint rB = (current >> 16) & 0xFF;
-                uint gB = (current >> 8) & 0xFF;
-                uint bB = current & 0xFF;
-                uint a = aA + (aB * (0xFF - aA) / 0xFF);
-                uint r = (rA * aA / 0xFF) + (rB * aB * (0xFF - aA) / (0xFF * 0xFF));
-                uint g = (gA * aA / 0xFF) + (gB * aB * (0xFF - aA) / (0xFF * 0xFF));
-                uint b = (bA * aA / 0xFF) + (bB * aB * (0xFF - aA) / (0xFF * 0xFF));
-                *pixelAddress = (a << 24) | (r << 16) | (g << 8) | b;
+                uint aA = color >> 24;
+                if (aA == 0xFF)
+                {
+                    *pixelAddress = color;
+                }
+                else
+                {
+                    uint rA = (color >> 16) & 0xFF;
+                    uint gA = (color >> 8) & 0xFF;
+                    uint bA = color & 0xFF;
+                    uint current = *pixelAddress;
+                    uint aB = current >> 24;
+                    uint rB = (current >> 16) & 0xFF;
+                    uint gB = (current >> 8) & 0xFF;
+                    uint bB = current & 0xFF;
+                    uint a = aA + (aB * (0xFF - aA) / 0xFF);
+                    uint r = (rA * aA / 0xFF) + (rB * aB * (0xFF - aA) / (0xFF * 0xFF));
+                    uint g = (gA * aA / 0xFF) + (gB * aB * (0xFF - aA) / (0xFF * 0xFF));
+                    uint b = (bA * aA / 0xFF) + (bB * aB * (0xFF - aA) / (0xFF * 0xFF));
+                    *pixelAddress = (a << 24) | (r << 16) | (g << 8) | b;
+                }
             }
         }
     }
