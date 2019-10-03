@@ -1,8 +1,8 @@
-using Avalonia;
+﻿using Avalonia;
 using Kermalis.PokemonGameEngine.Util;
 using System;
 
-namespace Kermalis.PokemonGameEngine.Desktop
+namespace Kermalis.PokemonGameEngine
 {
     internal static class Program
     {

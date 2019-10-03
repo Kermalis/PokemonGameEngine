@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <OutputType>Library</OutputType>
+    <TargetFrameworks>net461;netcoreapp2.2</TargetFrameworks>
+    <OutputType>Exe</OutputType>
     <RootNamespace>Kermalis.PokemonGameEngine</RootNamespace>
     <Authors>Kermalis</Authors>
     <Copyright>Kermalis</Copyright>
@@ -11,6 +11,7 @@
     <NoWarn />
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <StartupObject>Kermalis.PokemonGameEngine.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

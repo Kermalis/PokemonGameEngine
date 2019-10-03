@@ -6,12 +6,12 @@ using System.Reflection;
 
 namespace Kermalis.PokemonGameEngine.Util
 {
-    public static class Utils
+    internal static class Utils
     {
         private const string AssemblyPrefix = "Kermalis.PokemonGameEngine.Assets.";
         private static readonly Assembly _assembly = Assembly.GetExecutingAssembly();
         private static IPlatformRenderInterface _renderInterface = null;
-        internal static IPlatformRenderInterface RenderInterface
+        public static IPlatformRenderInterface RenderInterface
         {
             get
             {
@@ -23,7 +23,7 @@ namespace Kermalis.PokemonGameEngine.Util
                 return _renderInterface;
             }
         }
-        internal static Stream GetResourceStream(string resource)
+        public static Stream GetResourceStream(string resource)
         {
             return _assembly.GetManifestResourceStream(AssemblyPrefix + resource);
         }

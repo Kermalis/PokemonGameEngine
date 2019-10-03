@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonGameEngine", "PokemonGameEngine\PokemonGameEngine.csproj", "{AAB0FD52-8074-43AB-B900-AACC3ED61AB7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonGameEngine.Desktop", "PokemonGameEngine.Desktop\PokemonGameEngine.Desktop.csproj", "{CD0528C1-3FAA-4583-B976-C2DD8372A3CF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonGameEngine.NetCore", "PokemonGameEngine.NetCore\PokemonGameEngine.NetCore.csproj", "{66725E10-371B-4C50-BF8F-40E7B56F7126}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonGameEngine", "PokemonGameEngine\PokemonGameEngine.csproj", "{AAB0FD52-8074-43AB-B900-AACC3ED61AB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +15,6 @@ Global
 		{AAB0FD52-8074-43AB-B900-AACC3ED61AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAB0FD52-8074-43AB-B900-AACC3ED61AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAB0FD52-8074-43AB-B900-AACC3ED61AB7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD0528C1-3FAA-4583-B976-C2DD8372A3CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD0528C1-3FAA-4583-B976-C2DD8372A3CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD0528C1-3FAA-4583-B976-C2DD8372A3CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD0528C1-3FAA-4583-B976-C2DD8372A3CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66725E10-371B-4C50-BF8F-40E7B56F7126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66725E10-371B-4C50-BF8F-40E7B56F7126}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66725E10-371B-4C50-BF8F-40E7B56F7126}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66725E10-371B-4C50-BF8F-40E7B56F7126}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
