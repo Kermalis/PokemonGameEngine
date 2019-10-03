@@ -15,14 +15,14 @@ namespace Kermalis.PokemonGameEngine.Overworld
         {
             for (byte z = 0; z < byte.MaxValue; z++)
             {
-                void Draw(Block.Tile[] layers, int px, int py)
+                void Draw(Block.Tile[] layers, int tx, int ty)
                 {
                     for (int t = 0; t < layers.Length; t++)
                     {
                         Block.Tile tile = layers[t];
                         if (tile.ZLayer == z)
                         {
-                            RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, px, py, _tiles[tile.TileNum], tile.XFlip, tile.YFlip);
+                            RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, _tiles[tile.TileNum], tile.XFlip, tile.YFlip);
                         }
                     }
                 }

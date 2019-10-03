@@ -23,24 +23,25 @@ namespace Kermalis.PokemonGameEngine.Util
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
                     PixelSize ps = wb.PixelSize;
-                    int width = ps.Width / spriteWidth;
-                    int height = ps.Height / spriteHeight;
-                    sprites = new uint[width * height][][];
+                    int numSpritesX = ps.Width / spriteWidth;
+                    int numSpritesY = ps.Height / spriteHeight;
+                    sprites = new uint[numSpritesX * numSpritesY][][];
                     int sprite = 0;
-                    for (int y = 0; y < height; y++)
+                    for (int sy = 0; sy < numSpritesY; sy++)
                     {
-                        for (int x = 0; x < width; x++)
+                        for (int sx = 0; sx < numSpritesX; sx++)
                         {
-                            sprites[sprite] = new uint[spriteWidth][];
-                            for (int px = 0; px < spriteWidth; px++)
+                            uint[][] arrY = new uint[spriteWidth][];
+                            for (int py = 0; py < spriteWidth; py++)
                             {
-                                sprites[sprite][px] = new uint[spriteHeight];
-                                for (int py = 0; py < spriteHeight; py++)
+                                uint[] arrX = new uint[spriteHeight];
+                                for (int px = 0; px < spriteHeight; px++)
                                 {
-                                    sprites[sprite][px][py] = *(bmpAddress + ((x * spriteWidth) + px) + (((y * spriteHeight) + py) * ps.Width));
+                                    arrX[px] = *(bmpAddress + ((sx * spriteWidth) + px) + (((sy * spriteHeight) + py) * ps.Width));
                                 }
+                                arrY[py] = arrX;
                             }
-                            sprite++;
+                            sprites[sprite++] = arrY;
                         }
                     }
                 }
@@ -50,13 +51,13 @@ namespace Kermalis.PokemonGameEngine.Util
 
         public static unsafe void Fill(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
         {
-            for (int px = x; px < x + width; px++)
+            for (int py = y; py < y + height; py++)
             {
-                if (px >= 0 && px < bmpWidth)
+                if (py >= 0 && py < bmpHeight)
                 {
-                    for (int py = x; py < y + height; py++)
+                    for (int px = x; px < x + width; px++)
                     {
-                        if (py >= 0 && py < bmpHeight)
+                        if (px >= 0 && px < bmpWidth)
                         {
                             Draw(bmpAddress + px + (py * bmpWidth), color);
                         }
@@ -67,18 +68,20 @@ namespace Kermalis.PokemonGameEngine.Util
 
         public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint[][] colors, bool xFlip, bool yFlip)
         {
-            for (int px = 0; px < colors.Length; px++)
+            int height = colors.Length;
+            for (int cy = 0; cy < height; cy++)
             {
-                uint[] arr = colors[px];
-                for (int py = 0; py < arr.Length; py++)
+                int py = yFlip ? (y + (height - 1 - cy)) : (y + cy);
+                if (py >= 0 && py < bmpHeight)
                 {
-                    int tx = xFlip ? (x + (colors.Length - 1 - px)) : (x + px);
-                    if (tx >= 0 && tx < bmpWidth)
+                    uint[] arr = colors[cy];
+                    int width = arr.Length;
+                    for (int cx = 0; cx < width; cx++)
                     {
-                        int ty = yFlip ? (y + (arr.Length - 1 - py)) : (y + py);
-                        if (ty >= 0 && ty < bmpHeight)
+                        int px = xFlip ? (x + (width - 1 - cx)) : (x + cx);
+                        if (px >= 0 && px < bmpWidth)
                         {
-                            Draw(bmpAddress + tx + (ty * bmpWidth), arr[py]);
+                            Draw(bmpAddress + px + (py * bmpWidth), arr[cx]);
                         }
                     }
                 }
