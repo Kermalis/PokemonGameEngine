@@ -1,0 +1,32 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
+        x:Class="Kermalis.MapEditor.UI.MainWindow"
+        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Pokémon Game Engine Map Editor">
+  <DockPanel>
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="_File">
+        <MenuItem Header="_New map" Click="New_Click"/>
+      </MenuItem>
+    </Menu>
+    <Menu DockPanel.Dock="Top">
+      <Button Content="Block Editor" Command="{Binding OpenBlockEditorCommand}" />
+    </Menu>
+    <Grid DockPanel.Dock="Top">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+      <ScrollViewer Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <local:BlocksetImage Name="BlocksImage" />
+      </ScrollViewer>
+      <TabControl Grid.Column="1">
+        <TabItem Header="Map">
+          <ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <local:MapImage Name="MapImage" />
+          </ScrollViewer>
+        </TabItem>
+      </TabControl>
+    </Grid>
+  </DockPanel>
+</Window>

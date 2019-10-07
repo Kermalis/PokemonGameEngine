@@ -11,18 +11,18 @@ namespace Kermalis.PokemonGameEngine.Overworld
             _tiles = RenderUtil.LoadSpriteSheet(resource, 8, 8);
         }
 
-        public unsafe void DrawBlock(uint* bmpAddress, int bmpWidth, int bmpHeight, Block block, int x, int y)
+        public unsafe void DrawBlock(uint* bmpAddress, int bmpWidth, int bmpHeight, Blockset.Block block, int x, int y)
         {
             for (byte z = 0; z < byte.MaxValue; z++)
             {
-                void Draw(Block.Tile[] layers, int tx, int ty)
+                void Draw(Blockset.Block.Tile[] layers, int tx, int ty)
                 {
                     for (int t = 0; t < layers.Length; t++)
                     {
-                        Block.Tile tile = layers[t];
+                        Blockset.Block.Tile tile = layers[t];
                         if (tile.ZLayer == z)
                         {
-                            RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, _tiles[tile.TileNum], tile.XFlip, tile.YFlip);
+                            RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, _tiles[tile.TilesetTileNum], tile.XFlip, tile.YFlip);
                         }
                     }
                 }

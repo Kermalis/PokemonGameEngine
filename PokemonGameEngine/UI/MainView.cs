@@ -10,7 +10,7 @@ using Kermalis.PokemonGameEngine.Overworld;
 using Kermalis.PokemonGameEngine.Util;
 using System;
 
-namespace Kermalis.PokemonGameEngine
+namespace Kermalis.PokemonGameEngine.UI
 {
     public sealed class MainView : Control, IDisposable
     {
@@ -104,7 +104,7 @@ namespace Kermalis.PokemonGameEngine
                 var viewPort = new Rect(bSize);
                 Rect destRect = viewPort.CenterRect(new Rect(scaledSize)).Intersect(viewPort);
                 Rect sourceRect = new Rect(_screenSize).CenterRect(new Rect(destRect.Size / scale));
-                context.DrawImage(_screen, 1, sourceRect, destRect, BitmapInterpolationMode.Default);
+                context.DrawImage(_screen, 1, sourceRect, destRect);
             }
         }
 

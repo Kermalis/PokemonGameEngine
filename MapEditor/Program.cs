@@ -1,23 +1,25 @@
 ﻿using Avalonia;
-using Kermalis.PokemonGameEngine.UI;
-using Kermalis.PokemonGameEngine.Util;
+using Avalonia.ReactiveUI;
+using Kermalis.MapEditor.UI;
 using System;
 
-namespace Kermalis.PokemonGameEngine
+namespace Kermalis.MapEditor
 {
     internal static class Program
     {
+        public static string AssetPath = @"../../../../PokemonGameEngine/Assets";
+
         [STAThread]
         private static void Main()
         {
-            Utils.SetWorkingDirectory(string.Empty);
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(null);
         }
         /// <summary>This method is needed for IDE previewer infrastructure.</summary>
         public static AppBuilder BuildAvaloniaApp()
         {
             return AppBuilder.Configure<App>()
-                           .UsePlatformDetect();
+                           .UsePlatformDetect()
+                           .UseReactiveUI();
         }
     }
 }

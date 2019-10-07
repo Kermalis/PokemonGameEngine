@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Kermalis.PokemonGameEngine
+namespace Kermalis.PokemonGameEngine.UI
 {
     public sealed class MainWindow : Window
     {

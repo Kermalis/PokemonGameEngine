@@ -1,8 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using System;
 
-namespace Kermalis.PokemonGameEngine
+namespace Kermalis.MapEditor.UI
 {
     public sealed class App : Application
     {
@@ -13,10 +14,11 @@ namespace Kermalis.PokemonGameEngine
 
         public override void OnFrameworkInitializationCompleted()
         {
+            Selection.CreateBrushes();
             switch (ApplicationLifetime)
             {
                 case IClassicDesktopStyleApplicationLifetime desktop: desktop.MainWindow = new MainWindow(); break;
-                case ISingleViewApplicationLifetime singleView: singleView.MainView = new MainView(); break;
+                default: throw new PlatformNotSupportedException();
             }
             base.OnFrameworkInitializationCompleted();
         }

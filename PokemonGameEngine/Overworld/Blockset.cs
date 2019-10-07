@@ -2,6 +2,40 @@
 {
     internal sealed class Blockset
     {
+        public sealed class Block
+        {
+            public sealed class Tile
+            {
+                public byte ZLayer { get; }
+                public bool XFlip { get; }
+                public bool YFlip { get; }
+                public byte TilesetNum { get; }
+                public int TilesetTileNum { get; }
+
+                public Tile(int tilesetTileNum, byte zLayer, bool xFlip, bool yFlip)
+                {
+                    ZLayer = zLayer;
+                    XFlip = xFlip;
+                    YFlip = yFlip;
+                    TilesetTileNum = tilesetTileNum;
+                }
+            }
+
+            public Tile[] TopLeft { get; }
+            public Tile[] TopRight { get; }
+            public Tile[] BottomLeft { get; }
+            public Tile[] BottomRight { get; }
+            public ushort Behavior { get; }
+
+            public Block(Tile[] topLeft, Tile[] topRight, Tile[] bottomLeft, Tile[] bottomRight)
+            {
+                TopLeft = topLeft;
+                TopRight = topRight;
+                BottomLeft = bottomLeft;
+                BottomRight = bottomRight;
+            }
+        }
+
         private readonly Block[] _blocks;
 
         public Block this[int block] => _blocks[block];
