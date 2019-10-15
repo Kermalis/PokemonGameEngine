@@ -30,14 +30,14 @@ namespace Kermalis.MapEditor.UI
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            _blocksetImage = this.FindControl<BlocksetImage>("BlocksImage");
+            _blocksetImage = this.FindControl<BlocksetImage>("BlocksetImage");
             _blocksetImage.Blockset = b;
-            _blocksetImage.SelectionCompleted += BlocksImage_SelectionCompleted;
+            _blocksetImage.SelectionCompleted += BlocksetImage_SelectionCompleted;
             _mapImage = this.FindControl<MapImage>("MapImage");
             _mapImage.Map = _map;
         }
 
-        private void BlocksImage_SelectionCompleted(object sender, Blockset.Block[][] e)
+        private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
         {
             _mapImage.Selection = e;
         }

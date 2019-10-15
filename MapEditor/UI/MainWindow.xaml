@@ -12,13 +12,17 @@
     <Menu DockPanel.Dock="Top">
       <Button Content="Block Editor" Command="{Binding OpenBlockEditorCommand}" />
     </Menu>
-    <Grid DockPanel.Dock="Top">
+    <Grid DockPanel.Dock="Top" Margin="15">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto" />
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
       <ScrollViewer Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <local:BlocksetImage Name="BlocksImage" />
+        <local:BlocksetImage Name="BlocksetImage">
+          <x:Arguments>
+            <x:Boolean>True</x:Boolean>
+          </x:Arguments>
+        </local:BlocksetImage>
       </ScrollViewer>
       <TabControl Grid.Column="1">
         <TabItem Header="Map">

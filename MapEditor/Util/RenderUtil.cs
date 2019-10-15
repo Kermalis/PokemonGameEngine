@@ -59,7 +59,7 @@ namespace Kermalis.MapEditor.Util
                     {
                         if (px >= 0 && px < bmpWidth)
                         {
-                            Draw(bmpAddress + px + (py * bmpWidth), color);
+                            DrawUnchecked(bmpAddress + px + (py * bmpWidth), color);
                         }
                     }
                 }
@@ -74,21 +74,21 @@ namespace Kermalis.MapEditor.Util
                 int py = yFlip ? (y + (height - 1 - cy)) : (y + cy);
                 if (py >= 0 && py < bmpHeight)
                 {
-                    uint[] arr = colors[cy];
-                    int width = arr.Length;
+                    uint[] arrY = colors[cy];
+                    int width = arrY.Length;
                     for (int cx = 0; cx < width; cx++)
                     {
                         int px = xFlip ? (x + (width - 1 - cx)) : (x + cx);
                         if (px >= 0 && px < bmpWidth)
                         {
-                            Draw(bmpAddress + px + (py * bmpWidth), arr[cx]);
+                            DrawUnchecked(bmpAddress + px + (py * bmpWidth), arrY[cx]);
                         }
                     }
                 }
             }
         }
 
-        public static unsafe void Draw(uint* pixelAddress, uint color)
+        public static unsafe void DrawUnchecked(uint* pixelAddress, uint color)
         {
             if (color != 0x00000000)
             {

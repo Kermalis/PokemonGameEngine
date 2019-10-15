@@ -7,12 +7,11 @@ using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class BlocksetImage : Control, INotifyPropertyChanged
+    public sealed class TilesetImage : Control, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
         {
@@ -21,24 +20,22 @@ namespace Kermalis.MapEditor.UI
         public new event PropertyChangedEventHandler PropertyChanged;
 
         private const Stretch _bitmapStretch = Stretch.None;
-        private const int numBlocksX = 8;
-
-        private readonly bool _allowSelectingMultiple;
+        private const int numTilesX = 8;
 
         private readonly Selection _selection;
-        public event EventHandler<Blockset.Block[][]> SelectionCompleted;
+        public event EventHandler<Tileset.Tile> SelectionCompleted;
 
-        private Blockset _blockset;
-        public Blockset Blockset
+        private Tileset _tileset;
+        public Tileset Tileset
         {
-            get => _blockset;
+            get => _tileset;
             set
             {
-                if (_blockset != value)
+                if (_tileset != value)
                 {
-                    _blockset = value;
-                    OnBlocksetChanged();
-                    OnPropertyChanged(nameof(Blockset));
+                    _tileset = value;
+                    OnTilesetChanged();
+                    OnPropertyChanged(nameof(Tileset));
                 }
             }
         }
@@ -48,20 +45,18 @@ namespace Kermalis.MapEditor.UI
         private WriteableBitmap _bitmap;
         private Size _bitmapSize;
 
-        public BlocksetImage(bool allowSelectingMultiple)
+        public TilesetImage()
         {
-            _allowSelectingMultiple = allowSelectingMultiple;
             _selection = new Selection();
             _selection.Changed += OnSelectionChanged;
 
             PointerPressed += OnPointerPressed;
-            PointerMoved += OnPointerMoved;
             PointerReleased += OnPointerReleased;
         }
 
         public override void Render(DrawingContext context)
         {
-            if (_blockset != null)
+            if (_tileset != null)
             {
                 var viewPort = new Rect(Bounds.Size);
                 Vector scale = _bitmapStretch.CalculateScaling(Bounds.Size, _bitmapSize);
@@ -70,14 +65,14 @@ namespace Kermalis.MapEditor.UI
                 Rect sourceRect = new Rect(_bitmapSize).CenterRect(new Rect(destRect.Size / scale));
 
                 context.DrawImage(_bitmap, 1, sourceRect, destRect);
-                var r = new Rect(_selection.X * 16, _selection.Y * 16, _selection.Width * 16, _selection.Height * 16);
+                var r = new Rect(_selection.X * 8, _selection.Y * 8, _selection.Width * 8, _selection.Height * 8);
                 context.FillRectangle(_isSelecting ? Selection.SelectingBrush : Selection.SelectionBrush, r);
                 context.DrawRectangle(_isSelecting ? Selection.SelectingPen : Selection.SelectionPen, r);
             }
         }
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (_blockset != null)
+            if (_tileset != null)
             {
                 if (double.IsInfinity(availableSize.Width) || double.IsInfinity(availableSize.Height))
                 {
@@ -92,7 +87,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (_blockset != null)
+            if (_tileset != null)
             {
                 return _bitmapStretch.CalculateSize(finalSize, _bitmapSize);
             }
@@ -101,7 +96,7 @@ namespace Kermalis.MapEditor.UI
 
         private void OnPointerPressed(object sender, PointerPressedEventArgs e)
         {
-            if (_blockset != null)
+            if (_tileset != null)
             {
                 PointerPoint pp = e.GetPointerPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
@@ -110,23 +105,7 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_RectContains(pos))
                     {
                         _isSelecting = true;
-                        _selection.Start((int)pos.X / 16, (int)pos.Y / 16, 1, 1);
-                        e.Handled = true;
-                    }
-                }
-            }
-        }
-        private void OnPointerMoved(object sender, PointerEventArgs e)
-        {
-            if (_blockset != null && _isSelecting && _allowSelectingMultiple)
-            {
-                PointerPoint pp = e.GetPointerPoint(this);
-                if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
-                {
-                    Point pos = pp.Position;
-                    if (Bounds.TemporaryFix_RectContains(pos))
-                    {
-                        _selection.Move((int)pos.X / 16, (int)pos.Y / 16);
+                        _selection.Start((int)pos.X / 8, (int)pos.Y / 8, 1, 1);
                         e.Handled = true;
                     }
                 }
@@ -134,7 +113,7 @@ namespace Kermalis.MapEditor.UI
         }
         private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
         {
-            if (_blockset != null && _isSelecting)
+            if (_tileset != null && _isSelecting)
             {
                 PointerPoint pp = e.GetPointerPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
@@ -154,18 +133,8 @@ namespace Kermalis.MapEditor.UI
         {
             if (SelectionCompleted != null)
             {
-                var blocks = new Blockset.Block[_selection.Height][];
-                for (int y = 0; y < _selection.Height; y++)
-                {
-                    var arrY = new Blockset.Block[_selection.Width];
-                    for (int x = 0; x < _selection.Width; x++)
-                    {
-                        int index = x + _selection.X + ((y + _selection.Y) * numBlocksX);
-                        arrY[x] = (index >= _blockset.Blocks.Count) ? null : _blockset.Blocks[index];
-                    }
-                    blocks[y] = arrY;
-                }
-                SelectionCompleted.Invoke(this, blocks);
+                int index = _selection.X + (_selection.Y * numTilesX);
+                SelectionCompleted.Invoke(this, index >= _tileset.Tiles.Length ? null : _tileset.Tiles[index]);
             }
         }
         private void ResetSelectionAndInvalidateVisual()
@@ -174,14 +143,14 @@ namespace Kermalis.MapEditor.UI
             _selection.Start(0, 0, 1, 1);
             InvalidateVisual();
         }
-        private unsafe void OnBlocksetChanged()
+        private unsafe void OnTilesetChanged()
         {
-            if (_blockset != null)
+            if (_tileset != null)
             {
-                List<Blockset.Block> blocks = _blockset.Blocks;
-                int numBlocksY = (blocks.Count / numBlocksX) + (blocks.Count % numBlocksX != 0 ? 1 : 0);
-                int bmpWidth = numBlocksX * 16;
-                int bmpHeight = numBlocksY * 16;
+                Tileset.Tile[] tiles = _tileset.Tiles;
+                int numTilesY = (tiles.Length / numTilesX) + (tiles.Length % numTilesX != 0 ? 1 : 0);
+                int bmpWidth = numTilesX * 8;
+                int bmpHeight = numTilesY * 8;
                 if (_bitmap == null || _bitmap.PixelSize.Height != bmpHeight)
                 {
                     _bitmap = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Bgra8888);
@@ -190,29 +159,33 @@ namespace Kermalis.MapEditor.UI
                 using (ILockedFramebuffer l = _bitmap.Lock())
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
-                    RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
                     int x = 0;
                     int y = 0;
-                    for (int i = 0; i < blocks.Count; i++, x++)
+                    for (int i = 0; i < tiles.Length; i++, x++)
                     {
-                        if (x >= numBlocksX)
+                        if (x >= numTilesX)
                         {
                             x = 0;
                             y++;
                         }
-                        blocks[i].Draw(bmpAddress, bmpWidth, bmpHeight, x * 16, y * 16);
+                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x * 8, y * 8, 4, 4, 0xFFBFBFBF);
+                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, (x * 8) + 4, y * 8, 4, 4, 0xFFFFFFFF);
+                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x * 8, (y * 8) + 4, 4, 4, 0xFFFFFFFF);
+                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, (x * 8) + 4, (y * 8) + 4, 4, 4, 0xFFBFBFBF);
+                        RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x * 8, y * 8, tiles[i].Colors, false, false);
                     }
                     // Draw an X for the unavailable ones
-                    for (; x < numBlocksX; x++)
+                    for (; x < numTilesX; x++)
                     {
-                        for (int py = 0; py < 16; py++)
+                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x * 8, y * 8, 8, 8, 0xFF000000);
+                        for (int py = 0; py < 8; py++)
                         {
-                            for (int px = 0; px < 16; px++)
+                            for (int px = 0; px < 8; px++)
                             {
                                 if (px == py)
                                 {
-                                    RenderUtil.DrawUnchecked(bmpAddress + (x * 16) + px + (((y * 16) + py) * bmpWidth), 0xFFFF0000);
-                                    RenderUtil.DrawUnchecked(bmpAddress + (x * 16) + (15 - px) + (((y * 16) + py) * bmpWidth), 0xFFFF0000);
+                                    RenderUtil.DrawUnchecked(bmpAddress + (x * 8) + px + (((y * 8) + py) * bmpWidth), 0xFFFF0000);
+                                    RenderUtil.DrawUnchecked(bmpAddress + (x * 8) + (7 - px) + (((y * 8) + py) * bmpWidth), 0xFFFF0000);
                                 }
                             }
                         }

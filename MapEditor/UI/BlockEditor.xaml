@@ -1,23 +1,22 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
         x:Class="Kermalis.MapEditor.UI.BlockEditor"
         SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Block Editor">
   <Grid Margin="15">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto" />
-      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-    </Grid.RowDefinitions>
-
-    <TextBlock Grid.Column="1">Question:</TextBlock>
-    <TextBox Grid.Column="1" Grid.Row="1" MinWidth="250">Answer</TextBox>
-
-    <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,15,0,0">
-      <Button IsDefault="True" MinWidth="60" Margin="0,0,10,0">_Ok</Button>
-    </WrapPanel>
+    <ScrollViewer Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+      <local:BlocksetImage Name="BlocksetImage">
+        <x:Arguments>
+          <x:Boolean>False</x:Boolean>
+        </x:Arguments>
+      </local:BlocksetImage>
+    </ScrollViewer>
+    <ScrollViewer Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+      <local:TilesetImage Name="TilesetImage" />
+    </ScrollViewer>
   </Grid>
 </Window>

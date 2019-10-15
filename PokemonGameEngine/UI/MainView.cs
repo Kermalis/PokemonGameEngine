@@ -36,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.UI
         public MainView()
         {
             _font = new Font("TestFont.kermfont");
-            _tileset = new Tileset("TestTiles.png");
+            _tileset = new Tileset("Tileset.TestTiles.png");
             _blockset = new Blockset();
             _tempPlayerSpriteSheet = RenderUtil.LoadSpriteSheet("TestNPC.png", 32, 32);
             _screen = new WriteableBitmap(new PixelSize(RenderWidth, RenderHeight), new Vector(96, 96), PixelFormat.Bgra8888);
