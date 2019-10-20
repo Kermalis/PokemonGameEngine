@@ -18,8 +18,6 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private const Stretch _bitmapStretch = Stretch.None;
-
         private Map _map;
         public Map Map
         {
@@ -70,11 +68,9 @@ namespace Kermalis.MapEditor.UI
                 IBitmap source = _map.Bitmap;
                 var viewPort = new Rect(Bounds.Size);
                 PixelSize sourcePixelSize = source.PixelSize;
-                var sourceSize = new Size(sourcePixelSize.Width, sourcePixelSize.Height);
-                Vector scale = _bitmapStretch.CalculateScaling(Bounds.Size, sourceSize);
-                Size scaledSize = sourceSize * scale;
-                Rect destRect = viewPort.CenterRect(new Rect(scaledSize)).Intersect(viewPort);
-                Rect sourceRect = new Rect(sourceSize).CenterRect(new Rect(destRect.Size / scale));
+                var r = new Rect(new Size(sourcePixelSize.Width, sourcePixelSize.Height));
+                Rect destRect = viewPort.CenterRect(r).Intersect(viewPort);
+                Rect sourceRect = r.CenterRect(new Rect(destRect.Size));
 
                 context.DrawImage(source, 1, sourceRect, destRect);
             }
@@ -83,17 +79,8 @@ namespace Kermalis.MapEditor.UI
         {
             if (_map != null)
             {
-                IBitmap source = _map.Bitmap;
-                PixelSize sourcePixelSize = source.PixelSize;
-                var sourceSize = new Size(sourcePixelSize.Width, sourcePixelSize.Height);
-                if (double.IsInfinity(availableSize.Width) || double.IsInfinity(availableSize.Height))
-                {
-                    return sourceSize;
-                }
-                else
-                {
-                    return _bitmapStretch.CalculateSize(availableSize, sourceSize);
-                }
+                PixelSize sourcePixelSize = _map.Bitmap.PixelSize;
+                return new Size(sourcePixelSize.Width, sourcePixelSize.Height);
             }
             return new Size();
         }
@@ -101,10 +88,8 @@ namespace Kermalis.MapEditor.UI
         {
             if (_map != null)
             {
-                IBitmap source = _map.Bitmap;
-                PixelSize sourcePixelSize = source.PixelSize;
-                var sourceSize = new Size(sourcePixelSize.Width, sourcePixelSize.Height);
-                return _bitmapStretch.CalculateSize(finalSize, sourceSize);
+                PixelSize sourcePixelSize = _map.Bitmap.PixelSize;
+                return new Size(sourcePixelSize.Width, sourcePixelSize.Height);
             }
             return new Size();
         }

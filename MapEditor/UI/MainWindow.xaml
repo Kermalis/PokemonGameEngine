@@ -21,6 +21,7 @@
         <local:BlocksetImage Name="BlocksetImage">
           <x:Arguments>
             <x:Boolean>True</x:Boolean>
+            <x:Double>1</x:Double>
           </x:Arguments>
         </local:BlocksetImage>
       </ScrollViewer>

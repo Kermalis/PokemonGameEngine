@@ -28,7 +28,7 @@ namespace Kermalis.MapEditor.UI
 
             _tempTileset = Tileset.LoadOrGet("TestTiles");
             _blockset = Blockset.LoadOrGet("TestBlocks", _tempTileset.Tiles[0]);
-            _map = new Map(10, 7, _blockset.Blocks[0]);
+            _map = new Map(32, 32, _blockset.Blocks[0]);
 
             DataContext = this;
             AvaloniaXamlLoader.Load(this);

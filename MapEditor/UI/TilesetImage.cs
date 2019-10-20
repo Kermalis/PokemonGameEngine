@@ -19,7 +19,6 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private const Stretch _bitmapStretch = Stretch.None;
         private const int numTilesX = 8;
 
         private readonly Selection _selection;
@@ -44,9 +43,11 @@ namespace Kermalis.MapEditor.UI
 
         private WriteableBitmap _bitmap;
         private Size _bitmapSize;
+        private readonly double _scale;
 
-        public TilesetImage()
+        public TilesetImage(double scale)
         {
+            _scale = scale;
             _selection = new Selection();
             _selection.Changed += OnSelectionChanged;
 
@@ -59,13 +60,11 @@ namespace Kermalis.MapEditor.UI
             if (_tileset != null)
             {
                 var viewPort = new Rect(Bounds.Size);
-                Vector scale = _bitmapStretch.CalculateScaling(Bounds.Size, _bitmapSize);
-                Size scaledSize = _bitmapSize * scale;
-                Rect destRect = viewPort.CenterRect(new Rect(scaledSize)).Intersect(viewPort);
-                Rect sourceRect = new Rect(_bitmapSize).CenterRect(new Rect(destRect.Size / scale));
+                Rect destRect = viewPort.CenterRect(new Rect(_bitmapSize * _scale)).Intersect(viewPort);
+                Rect sourceRect = new Rect(_bitmapSize).CenterRect(new Rect(destRect.Size / _scale));
 
                 context.DrawImage(_bitmap, 1, sourceRect, destRect);
-                var r = new Rect(_selection.X * 8, _selection.Y * 8, _selection.Width * 8, _selection.Height * 8);
+                var r = new Rect(_selection.X * 8 * _scale, _selection.Y * 8 * _scale, _selection.Width * 8 * _scale, _selection.Height * 8 * _scale);
                 context.FillRectangle(_isSelecting ? Selection.SelectingBrush : Selection.SelectionBrush, r);
                 context.DrawRectangle(_isSelecting ? Selection.SelectingPen : Selection.SelectionPen, r);
             }
@@ -74,14 +73,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_tileset != null)
             {
-                if (double.IsInfinity(availableSize.Width) || double.IsInfinity(availableSize.Height))
-                {
-                    return _bitmapSize;
-                }
-                else
-                {
-                    return _bitmapStretch.CalculateSize(availableSize, _bitmapSize);
-                }
+                return _bitmapSize * _scale;
             }
             return new Size();
         }
@@ -89,7 +81,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_tileset != null)
             {
-                return _bitmapStretch.CalculateSize(finalSize, _bitmapSize);
+                return _bitmapSize * _scale;
             }
             return new Size();
         }
@@ -105,7 +97,7 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_RectContains(pos))
                     {
                         _isSelecting = true;
-                        _selection.Start((int)pos.X / 8, (int)pos.Y / 8, 1, 1);
+                        _selection.Start((int)(pos.X / _scale) / 8, (int)(pos.Y / _scale) / 8, 1, 1);
                         e.Handled = true;
                     }
                 }

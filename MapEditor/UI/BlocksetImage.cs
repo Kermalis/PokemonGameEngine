@@ -20,7 +20,6 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private const Stretch _bitmapStretch = Stretch.None;
         private const int numBlocksX = 8;
 
         private readonly bool _allowSelectingMultiple;
@@ -47,10 +46,12 @@ namespace Kermalis.MapEditor.UI
 
         private WriteableBitmap _bitmap;
         private Size _bitmapSize;
+        private readonly double _scale;
 
-        public BlocksetImage(bool allowSelectingMultiple)
+        public BlocksetImage(bool allowSelectingMultiple, double scale)
         {
             _allowSelectingMultiple = allowSelectingMultiple;
+            _scale = scale;
             _selection = new Selection();
             _selection.Changed += OnSelectionChanged;
 
@@ -64,13 +65,11 @@ namespace Kermalis.MapEditor.UI
             if (_blockset != null)
             {
                 var viewPort = new Rect(Bounds.Size);
-                Vector scale = _bitmapStretch.CalculateScaling(Bounds.Size, _bitmapSize);
-                Size scaledSize = _bitmapSize * scale;
-                Rect destRect = viewPort.CenterRect(new Rect(scaledSize)).Intersect(viewPort);
-                Rect sourceRect = new Rect(_bitmapSize).CenterRect(new Rect(destRect.Size / scale));
+                Rect destRect = viewPort.CenterRect(new Rect(_bitmapSize * _scale)).Intersect(viewPort);
+                Rect sourceRect = new Rect(_bitmapSize).CenterRect(new Rect(destRect.Size / _scale));
 
                 context.DrawImage(_bitmap, 1, sourceRect, destRect);
-                var r = new Rect(_selection.X * 16, _selection.Y * 16, _selection.Width * 16, _selection.Height * 16);
+                var r = new Rect(_selection.X * 16 * _scale, _selection.Y * 16 * _scale, _selection.Width * 16 * _scale, _selection.Height * 16 * _scale);
                 context.FillRectangle(_isSelecting ? Selection.SelectingBrush : Selection.SelectionBrush, r);
                 context.DrawRectangle(_isSelecting ? Selection.SelectingPen : Selection.SelectionPen, r);
             }
@@ -79,14 +78,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_blockset != null)
             {
-                if (double.IsInfinity(availableSize.Width) || double.IsInfinity(availableSize.Height))
-                {
-                    return _bitmapSize;
-                }
-                else
-                {
-                    return _bitmapStretch.CalculateSize(availableSize, _bitmapSize);
-                }
+                return _bitmapSize * _scale;
             }
             return new Size();
         }
@@ -94,7 +86,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_blockset != null)
             {
-                return _bitmapStretch.CalculateSize(finalSize, _bitmapSize);
+                return _bitmapSize * _scale;
             }
             return new Size();
         }
@@ -110,7 +102,7 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_RectContains(pos))
                     {
                         _isSelecting = true;
-                        _selection.Start((int)pos.X / 16, (int)pos.Y / 16, 1, 1);
+                        _selection.Start((int)(pos.X / _scale) / 16, (int)(pos.Y / _scale) / 16, 1, 1);
                         e.Handled = true;
                     }
                 }
@@ -126,7 +118,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_RectContains(pos))
                     {
-                        _selection.Move((int)pos.X / 16, (int)pos.Y / 16);
+                        _selection.Move((int)(pos.X / _scale) / 16, (int)(pos.Y / _scale) / 16);
                         e.Handled = true;
                     }
                 }
