@@ -49,6 +49,19 @@ namespace Kermalis.MapEditor.Util
             }
         }
 
+        public static unsafe void TransparencyGrid(uint* bmpAddress, int bmpWidth, int bmpHeight, int blockW, int blockH)
+        {
+            int numW = (bmpWidth / blockW) + (bmpWidth % blockW == 0 ? 0 : 1);
+            int numH = (bmpHeight / blockH) + (bmpHeight % blockH == 0 ? 0 : 1);
+            for (int by = 0; by < numH; by++)
+            {
+                for (int bx = 0; bx < numW; bx++)
+                {
+                    Fill(bmpAddress, bmpWidth, bmpHeight, bx * blockW, by * blockH, blockW, blockH, (bx + by) % 2 == 0 ? 0xFFBFBFBF : 0xFFFFFFFF);
+                }
+            }
+        }
+
         public static unsafe void Fill(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
         {
             for (int py = y; py < y + height; py++)
@@ -83,6 +96,21 @@ namespace Kermalis.MapEditor.Util
                         {
                             DrawUnchecked(bmpAddress + px + (py * bmpWidth), arrY[cx]);
                         }
+                    }
+                }
+            }
+        }
+
+        public static unsafe void DrawCrossUnchecked(uint* bmpAddress, int bmpWidth, int x, int y, int width, int height, uint color)
+        {
+            for (int py = 0; py < height; py++)
+            {
+                for (int px = 0; px < width; px++)
+                {
+                    if (px == py)
+                    {
+                        DrawUnchecked(bmpAddress + x + px + ((y + py) * bmpWidth), color);
+                        DrawUnchecked(bmpAddress + x + (width - 1 - px) + ((y + py) * bmpWidth), color);
                     }
                 }
             }

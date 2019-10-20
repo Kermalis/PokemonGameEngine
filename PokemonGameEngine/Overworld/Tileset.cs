@@ -13,7 +13,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
         public unsafe void DrawBlock(uint* bmpAddress, int bmpWidth, int bmpHeight, Blockset.Block block, int x, int y)
         {
-            for (byte z = 0; z < byte.MaxValue; z++)
+            for (int z = 0; z < byte.MaxValue + 1; z++)
             {
                 void Draw(Blockset.Block.Tile[] layers, int tx, int ty)
                 {

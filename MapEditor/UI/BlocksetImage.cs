@@ -202,20 +202,9 @@ namespace Kermalis.MapEditor.UI
                         }
                         blocks[i].Draw(bmpAddress, bmpWidth, bmpHeight, x * 16, y * 16);
                     }
-                    // Draw an X for the unavailable ones
                     for (; x < numBlocksX; x++)
                     {
-                        for (int py = 0; py < 16; py++)
-                        {
-                            for (int px = 0; px < 16; px++)
-                            {
-                                if (px == py)
-                                {
-                                    RenderUtil.DrawUnchecked(bmpAddress + (x * 16) + px + (((y * 16) + py) * bmpWidth), 0xFFFF0000);
-                                    RenderUtil.DrawUnchecked(bmpAddress + (x * 16) + (15 - px) + (((y * 16) + py) * bmpWidth), 0xFFFF0000);
-                                }
-                            }
-                        }
+                        RenderUtil.DrawCrossUnchecked(bmpAddress, bmpWidth, x * 16, y * 16, 16, 16, 0xFFFF0000);
                     }
                 }
                 ResetSelectionAndInvalidateVisual();

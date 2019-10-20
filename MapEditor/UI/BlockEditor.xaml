@@ -3,19 +3,33 @@
         xmlns:local="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
         x:Class="Kermalis.MapEditor.UI.BlockEditor"
         SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Block Editor">
-  <Grid Margin="15">
+  <Grid Margin="10">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
-    <ScrollViewer Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <ComboBox Margin="5" Grid.Row="0" Grid.Column="1" Items="{Binding Layers}" SelectedItem="{Binding SelectedLayer}" SelectedIndex="0">
+      <ComboBox.ItemTemplate>
+        <DataTemplate>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding Text}" />
+            <Image Source="{Binding Bitmap}" Margin="5,0,5,0" />
+          </StackPanel>
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+    </ComboBox>
+    <ScrollViewer Margin="5" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
       <local:BlocksetImage Name="BlocksetImage">
         <x:Arguments>
           <x:Boolean>False</x:Boolean>
         </x:Arguments>
       </local:BlocksetImage>
     </ScrollViewer>
-    <ScrollViewer Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer Margin="5" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
       <local:TilesetImage Name="TilesetImage" />
     </ScrollViewer>
   </Grid>

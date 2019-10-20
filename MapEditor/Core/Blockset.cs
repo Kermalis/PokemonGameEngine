@@ -26,7 +26,7 @@ namespace Kermalis.MapEditor.Core
             public Block(Blockset parent)
             {
                 Parent = parent;
-                TopLeft = new List<Tile>() { new Tile() };
+                TopLeft = new List<Tile>() { new Tile(), new Tile() { ZLayer = 1 } };
                 TopRight = new List<Tile>() { new Tile() };
                 BottomLeft = new List<Tile>() { new Tile() };
                 BottomRight = new List<Tile>() { new Tile() };
@@ -34,24 +34,28 @@ namespace Kermalis.MapEditor.Core
 
             public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
             {
-                for (byte z = 0; z < byte.MaxValue; z++)
+                for (int z = 0; z < byte.MaxValue + 1; z++)
                 {
-                    void Draw(List<Tile> layers, int tx, int ty)
+                    DrawZ(bmpAddress, bmpWidth, bmpHeight, x, y, z);
+                }
+            }
+            public unsafe void DrawZ(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int z)
+            {
+                void Draw(List<Tile> layers, int tx, int ty)
+                {
+                    for (int t = 0; t < layers.Count; t++)
                     {
-                        for (int t = 0; t < layers.Count; t++)
+                        Tile tile = layers[t];
+                        if (tile.ZLayer == z)
                         {
-                            Tile tile = layers[t];
-                            if (tile.ZLayer == z)
-                            {
-                                RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
-                            }
+                            RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
                         }
                     }
-                    Draw(TopLeft, x, y);
-                    Draw(TopRight, x + 8, y);
-                    Draw(BottomLeft, x, y + 8);
-                    Draw(BottomRight, x + 8, y + 8);
                 }
+                Draw(TopLeft, x, y);
+                Draw(TopRight, x + 8, y);
+                Draw(BottomLeft, x, y + 8);
+                Draw(BottomRight, x + 8, y + 8);
             }
         }
 

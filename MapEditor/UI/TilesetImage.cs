@@ -159,6 +159,7 @@ namespace Kermalis.MapEditor.UI
                 using (ILockedFramebuffer l = _bitmap.Lock())
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
+                    RenderUtil.TransparencyGrid(bmpAddress, bmpWidth, bmpHeight, 4, 4);
                     int x = 0;
                     int y = 0;
                     for (int i = 0; i < tiles.Length; i++, x++)
@@ -168,27 +169,11 @@ namespace Kermalis.MapEditor.UI
                             x = 0;
                             y++;
                         }
-                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x * 8, y * 8, 4, 4, 0xFFBFBFBF);
-                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, (x * 8) + 4, y * 8, 4, 4, 0xFFFFFFFF);
-                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x * 8, (y * 8) + 4, 4, 4, 0xFFFFFFFF);
-                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, (x * 8) + 4, (y * 8) + 4, 4, 4, 0xFFBFBFBF);
                         RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x * 8, y * 8, tiles[i].Colors, false, false);
                     }
-                    // Draw an X for the unavailable ones
                     for (; x < numTilesX; x++)
                     {
-                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x * 8, y * 8, 8, 8, 0xFF000000);
-                        for (int py = 0; py < 8; py++)
-                        {
-                            for (int px = 0; px < 8; px++)
-                            {
-                                if (px == py)
-                                {
-                                    RenderUtil.DrawUnchecked(bmpAddress + (x * 8) + px + (((y * 8) + py) * bmpWidth), 0xFFFF0000);
-                                    RenderUtil.DrawUnchecked(bmpAddress + (x * 8) + (7 - px) + (((y * 8) + py) * bmpWidth), 0xFFFF0000);
-                                }
-                            }
-                        }
+                        RenderUtil.DrawCrossUnchecked(bmpAddress, bmpWidth, x * 8, y * 8, 8, 8, 0xFFFF0000);
                     }
                 }
                 ResetSelectionAndInvalidateVisual();
