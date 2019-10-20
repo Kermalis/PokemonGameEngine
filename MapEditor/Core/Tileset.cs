@@ -44,11 +44,12 @@ namespace Kermalis.MapEditor.Core
             else
             {
                 b = new Tileset(name);
+                _loadedTilesets.Add(name, b);
             }
             b._numUses++;
             return b;
         }
-        public void UnloadIfUnused()
+        public void DeductReference()
         {
             _numUses--;
             if (_numUses <= 0)
