@@ -13,8 +13,10 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly BlocksetImage _blocksetImage;
+        private readonly Tileset _tileset;
+        private readonly Blockset _blockset;
         private readonly TilesetImage _tilesetImage;
+        private readonly BlocksetImage _blocksetImage;
 
         public ZLayerModel[] Layers { get; }
         private ZLayerModel _selectedLayer;
@@ -33,21 +35,30 @@ namespace Kermalis.MapEditor.UI
 
         public BlockEditor()
         {
+            _tileset = Tileset.LoadOrGet("TestTiles");
+            _blockset = Blockset.LoadOrGet("TestBlocks", _tileset.Tiles[0]);
+
             Layers = new ZLayerModel[byte.MaxValue + 1];
-            for (int i = 0; i < Layers.Length; i++)
+            byte z = 0;
+            while (true)
             {
-                Layers[i] = new ZLayerModel(i);
+                Layers[z] = new ZLayerModel(z);
+                if (z == byte.MaxValue)
+                {
+                    break;
+                }
+                z++;
             }
 
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
+            _tilesetImage = this.FindControl<TilesetImage>("TilesetImage");
+            _tilesetImage.Tileset = _tileset;
+
             _blocksetImage = this.FindControl<BlocksetImage>("BlocksetImage");
             _blocksetImage.SelectionCompleted += BlocksetImage_SelectionCompleted;
-            _blocksetImage.Blockset = Blockset.LoadOrGet("Test");
-
-            _tilesetImage = this.FindControl<TilesetImage>("TilesetImage");
-            _tilesetImage.Tileset = Tileset.LoadOrGet("TestTiles");
+            _blocksetImage.Blockset = _blockset;
         }
 
         private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
@@ -57,9 +68,16 @@ namespace Kermalis.MapEditor.UI
             {
                 for (int i = 0; i < Layers.Length; i++)
                 {
-                    Layers[i].UpdateBlock(b);
+                    Layers[i].SetBlock(b);
                 }
             }
+        }
+
+        protected override void HandleClosed()
+        {
+            _tileset.DeductReference();
+            _blockset.DeductReference();
+            base.HandleClosed();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Kermalis.MapEditor.Util;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Kermalis.MapEditor.Core
 {
@@ -9,53 +10,71 @@ namespace Kermalis.MapEditor.Core
         {
             public sealed class Tile
             {
-                private static System.Random r = new System.Random();
-                public byte ZLayer;
                 public bool XFlip;
                 public bool YFlip;
-                public Tileset.Tile TilesetTile = Tileset.LoadOrGet("TestTiles").Tiles[r.Next(36)]; // Default value cuz testing
+                public Tileset.Tile TilesetTile;
             }
 
             public readonly Blockset Parent;
-            public List<Tile> TopLeft;
-            public List<Tile> TopRight;
-            public List<Tile> BottomLeft;
-            public List<Tile> BottomRight;
+            public ReadOnlyDictionary<byte, List<Tile>> TopLeft;
+            public ReadOnlyDictionary<byte, List<Tile>> TopRight;
+            public ReadOnlyDictionary<byte, List<Tile>> BottomLeft;
+            public ReadOnlyDictionary<byte, List<Tile>> BottomRight;
             public ushort Behavior;
 
-            public Block(Blockset parent)
+            public Block(Blockset parent, Tileset.Tile defaultTile)
             {
                 Parent = parent;
-                TopLeft = new List<Tile>() { new Tile(), new Tile() { ZLayer = 1 } };
-                TopRight = new List<Tile>() { new Tile() };
-                BottomLeft = new List<Tile>() { new Tile() };
-                BottomRight = new List<Tile>() { new Tile() };
+                TopLeft = Create(defaultTile);
+                TopRight = Create(defaultTile);
+                BottomLeft = Create(defaultTile);
+                BottomRight = Create(defaultTile);
+            }
+            private ReadOnlyDictionary<byte, List<Tile>> Create(Tileset.Tile defaultTile)
+            {
+                var d = new Dictionary<byte, List<Tile>>(byte.MaxValue + 1);
+                byte z = 0;
+                var l = new List<Tile>() { new Tile() { TilesetTile = defaultTile } };
+                while (true)
+                {
+                    d.Add(z, l);
+                    if (z == byte.MaxValue)
+                    {
+                        break;
+                    }
+                    z++;
+                    l = new List<Tile>();
+                }
+                return new ReadOnlyDictionary<byte, List<Tile>>(d);
             }
 
             public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
             {
-                for (int z = 0; z < byte.MaxValue + 1; z++)
+                byte z = 0;
+                while (true)
                 {
                     DrawZ(bmpAddress, bmpWidth, bmpHeight, x, y, z);
+                    if (z == byte.MaxValue)
+                    {
+                        break;
+                    }
+                    z++;
                 }
             }
-            public unsafe void DrawZ(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int z)
+            public unsafe void DrawZ(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, byte z)
             {
                 void Draw(List<Tile> layers, int tx, int ty)
                 {
                     for (int t = 0; t < layers.Count; t++)
                     {
                         Tile tile = layers[t];
-                        if (tile.ZLayer == z)
-                        {
-                            RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
-                        }
+                        RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
                     }
                 }
-                Draw(TopLeft, x, y);
-                Draw(TopRight, x + 8, y);
-                Draw(BottomLeft, x, y + 8);
-                Draw(BottomRight, x + 8, y + 8);
+                Draw(TopLeft[z], x, y);
+                Draw(TopRight[z], x + 8, y);
+                Draw(BottomLeft[z], x, y + 8);
+                Draw(BottomRight[z], x + 8, y + 8);
             }
         }
 
@@ -64,18 +83,14 @@ namespace Kermalis.MapEditor.Core
         public List<Block> Blocks;
 
         // TODO: Load from file
-        private Blockset(string name)
+        private Blockset(string name, Tileset.Tile defaultTile)
         {
             _name = name;
-            Blocks = new List<Block>();
-            for (int i = 0; i < 20; i++)
-            {
-                Blocks.Add(new Block(this));
-            }
+            Blocks = new List<Block>() { new Block(this, defaultTile) };
         }
 
         private static readonly Dictionary<string, Blockset> _loadedBlocksets = new Dictionary<string, Blockset>();
-        public static Blockset LoadOrGet(string name)
+        public static Blockset LoadOrGet(string name, Tileset.Tile tempDefaultTile)
         {
             Blockset b;
             if (_loadedBlocksets.ContainsKey(name))
@@ -84,7 +99,7 @@ namespace Kermalis.MapEditor.Core
             }
             else
             {
-                b = new Blockset(name);
+                b = new Blockset(name, tempDefaultTile);
                 _loadedBlocksets.Add(name, b);
             }
             b._numUses++;

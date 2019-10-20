@@ -15,6 +15,8 @@ namespace Kermalis.MapEditor.UI
 
         private readonly Map _map;
 
+        private readonly Tileset _tempTileset;
+        private readonly Blockset _blockset;
         private readonly BlocksetImage _blocksetImage;
         private readonly MapImage _mapImage;
 
@@ -24,15 +26,17 @@ namespace Kermalis.MapEditor.UI
             OpenBlockEditorCommand = ReactiveCommand.Create(OpenBlockEditor, _openBlockEditorCanExecute);
             _openBlockEditorCanExecute.OnNext(true);
 
-            var b = Blockset.LoadOrGet("Test");
-            _map = new Map(10, 7, b.Blocks[0]);
+            _tempTileset = Tileset.LoadOrGet("TestTiles");
+            _blockset = Blockset.LoadOrGet("TestBlocks", _tempTileset.Tiles[0]);
+            _map = new Map(10, 7, _blockset.Blocks[0]);
 
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
             _blocksetImage = this.FindControl<BlocksetImage>("BlocksetImage");
-            _blocksetImage.Blockset = b;
+            _blocksetImage.Blockset = _blockset;
             _blocksetImage.SelectionCompleted += BlocksetImage_SelectionCompleted;
+
             _mapImage = this.FindControl<MapImage>("MapImage");
             _mapImage.Map = _map;
         }
@@ -44,10 +48,10 @@ namespace Kermalis.MapEditor.UI
 
         private void OpenBlockEditor()
         {
+            _openBlockEditorCanExecute.OnNext(false);
             var be = new BlockEditor();
             be.Show();
             be.Closed += BlockEditor_Closed;
-            _openBlockEditorCanExecute.OnNext(false);
         }
         private void BlockEditor_Closed(object sender, EventArgs e)
         {
