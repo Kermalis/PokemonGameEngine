@@ -50,9 +50,6 @@ namespace Kermalis.MapEditor.UI
             _scale = scale;
             _selection = new Selection();
             _selection.Changed += OnSelectionChanged;
-
-            PointerPressed += OnPointerPressed;
-            PointerReleased += OnPointerReleased;
         }
 
         public override void Render(DrawingContext context)
@@ -86,7 +83,7 @@ namespace Kermalis.MapEditor.UI
             return new Size();
         }
 
-        private void OnPointerPressed(object sender, PointerPressedEventArgs e)
+        protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
             if (_tileset != null)
             {
@@ -103,7 +100,7 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
-        private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
+        protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
             if (_tileset != null && _isSelecting)
             {

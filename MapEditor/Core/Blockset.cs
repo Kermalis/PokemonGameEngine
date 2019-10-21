@@ -1,6 +1,7 @@
 ﻿using Kermalis.MapEditor.Util;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Kermalis.MapEditor.Core
 {
@@ -8,11 +9,65 @@ namespace Kermalis.MapEditor.Core
     {
         public sealed class Block
         {
-            public sealed class Tile
+            public sealed class Tile : INotifyPropertyChanged
             {
-                public bool XFlip;
-                public bool YFlip;
-                public Tileset.Tile TilesetTile;
+                private void OnPropertyChanged(string property)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+                }
+                public event PropertyChangedEventHandler PropertyChanged;
+
+                private bool _xFlip;
+                public bool XFlip
+                {
+                    get => _xFlip;
+                    set
+                    {
+                        if (_xFlip != value)
+                        {
+                            _xFlip = value;
+                            OnPropertyChanged(nameof(XFlip));
+                        }
+                    }
+                }
+                private bool _yFlip;
+                public bool YFlip
+                {
+                    get => _yFlip;
+                    set
+                    {
+                        if (_yFlip != value)
+                        {
+                            _yFlip = value;
+                            OnPropertyChanged(nameof(YFlip));
+                        }
+                    }
+                }
+                private Tileset.Tile _tilesetTile;
+                public Tileset.Tile TilesetTile
+                {
+                    get => _tilesetTile;
+                    set
+                    {
+                        if (_tilesetTile != value)
+                        {
+                            _tilesetTile = value;
+                            OnPropertyChanged(nameof(TilesetTile));
+                        }
+                    }
+                }
+
+                public void CopyTo(Tile other)
+                {
+                    other.XFlip = _xFlip;
+                    other.YFlip = _yFlip;
+                    other.TilesetTile = _tilesetTile;
+                }
+
+                public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
+                {
+                    RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x, y, _tilesetTile.Colors, _xFlip, _yFlip);
+                }
             }
 
             public readonly Blockset Parent;
@@ -67,8 +122,7 @@ namespace Kermalis.MapEditor.Core
                 {
                     for (int t = 0; t < layers.Count; t++)
                     {
-                        Tile tile = layers[t];
-                        RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
+                        layers[t].Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty);
                     }
                 }
                 Draw(TopLeft[z], x, y);

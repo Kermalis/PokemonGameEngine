@@ -37,13 +37,6 @@ namespace Kermalis.MapEditor.UI
         internal Blockset.Block[][] Selection;
         private bool _isDrawing;
 
-        public MapImage()
-        {
-            PointerPressed += OnPointerPressed;
-            PointerMoved += OnPointerMoved;
-            PointerReleased += OnPointerReleased;
-        }
-
         private void UpdateMap(Map old)
         {
             if (old != null)
@@ -94,7 +87,7 @@ namespace Kermalis.MapEditor.UI
             return new Size();
         }
 
-        private void OnPointerPressed(object sender, PointerPressedEventArgs e)
+        protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
             if (_map != null)
             {
@@ -112,7 +105,7 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
-        private void OnPointerMoved(object sender, PointerEventArgs e)
+        protected override void OnPointerMoved(PointerEventArgs e)
         {
             if (_map != null && _isDrawing)
             {
@@ -129,7 +122,7 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
-        private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
+        protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
             if (_map != null && _isDrawing)
             {

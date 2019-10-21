@@ -23,49 +23,21 @@ namespace Kermalis.MapEditor.UI
         private readonly TilesetImage _tilesetImage;
         private readonly BlocksetImage _blocksetImage;
 
-        private Tileset.Tile _curTile;
-        private bool _xFlip;
-        public bool XFlip
-        {
-            get => _xFlip;
-            set
-            {
-                if (_xFlip != value)
-                {
-                    _xFlip = value;
-                    OnPropertyChanged(nameof(XFlip));
-                    UpdateCurTileBitmap();
-                }
-            }
-        }
-        private bool _yFlip;
-        public bool YFlip
-        {
-            get => _yFlip;
-            set
-            {
-                if (_yFlip != value)
-                {
-                    _yFlip = value;
-                    OnPropertyChanged(nameof(YFlip));
-                    UpdateCurTileBitmap();
-                }
-            }
-        }
-        private readonly WriteableBitmap _curTileBitmap;
-        private readonly Image _curTileImage;
+        private readonly WriteableBitmap _selectionBitmap;
+        private readonly Image _selectionImage;
 
         public ZLayerModel[] Layers { get; }
-        private ZLayerModel _selectedLayer;
-        public ZLayerModel SelectedLayer
+        private int _selectedLayerIndex;
+        public int SelectedLayerIndex
         {
-            get => _selectedLayer;
+            get => _selectedLayerIndex;
             set
             {
-                if (_selectedLayer != value)
+                if (value != -1 && _selectedLayerIndex != value)
                 {
-                    _selectedLayer = value;
-                    OnPropertyChanged(nameof(SelectedLayer));
+                    _selectedLayerIndex = value;
+                    OnPropertyChanged(nameof(SelectedLayerIndex));
+                    _tileLayerImage.SetZLayer((byte)_selectedLayerIndex);
                 }
             }
         }
@@ -75,7 +47,7 @@ namespace Kermalis.MapEditor.UI
             _tileset = Tileset.LoadOrGet("TestTiles");
             _blockset = Blockset.LoadOrGet("TestBlocks", _tileset.Tiles[0]);
 
-            _curTileBitmap = new WriteableBitmap(new PixelSize(8, 8), new Vector(96, 96), PixelFormat.Bgra8888);
+            _selectionBitmap = new WriteableBitmap(new PixelSize(8, 8), new Vector(96, 96), PixelFormat.Bgra8888);
 
             Layers = new ZLayerModel[byte.MaxValue + 1];
             byte z = 0;
@@ -92,11 +64,11 @@ namespace Kermalis.MapEditor.UI
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            _curTileImage = this.FindControl<Image>("CurTileImage");
-            _curTileImage.Source = _curTileBitmap;
+            _selectionImage = this.FindControl<Image>("SelectionImage");
+            _selectionImage.Source = _selectionBitmap;
 
             _tileLayerImage = this.FindControl<TileLayerImage>("TileLayerImage");
-            _tileLayerImage.SelectionCompleted += TileLayerImage_SelectionCompleted;
+            _tileLayerImage.Selection.PropertyChanged += Selection_PropertyChanged;
 
             _tilesetImage = this.FindControl<TilesetImage>("TilesetImage");
             _tilesetImage.SelectionCompleted += TilesetImage_SelectionCompleted;
@@ -106,25 +78,22 @@ namespace Kermalis.MapEditor.UI
             _blocksetImage.SelectionCompleted += BlocksetImage_SelectionCompleted;
             _blocksetImage.Blockset = _blockset;
         }
-        
-        private void TileLayerImage_SelectionCompleted(object sender, Blockset.Block.Tile e)
+
+        private unsafe void Selection_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e != null && (e.TilesetTile != _curTile || e.XFlip != _xFlip || e.YFlip != _yFlip))
+            using (ILockedFramebuffer l = _selectionBitmap.Lock())
             {
-                _ignoreBitmapUpdate = true;
-                _curTile = e.TilesetTile;
-                XFlip = e.XFlip;
-                YFlip = e.YFlip;
-                _ignoreBitmapUpdate = false;
-                UpdateCurTileBitmap();
+                uint* bmpAddress = (uint*)l.Address.ToPointer();
+                RenderUtil.TransparencyGrid(bmpAddress, 8, 8, 4, 4);
+                _tileLayerImage.Selection.Draw(bmpAddress, 8, 8, 0, 0);
             }
+            _selectionImage.InvalidateVisual();
         }
         private void TilesetImage_SelectionCompleted(object sender, Tileset.Tile e)
         {
-            if (e != null && e != _curTile)
+            if (e != null)
             {
-                _curTile = e;
-                UpdateCurTileBitmap();
+                _tileLayerImage.Selection.TilesetTile = e;
             }
         }
         private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
@@ -132,25 +101,11 @@ namespace Kermalis.MapEditor.UI
             Blockset.Block b = e[0][0];
             if (b != null)
             {
+                _tileLayerImage.SetBlock(b);
                 for (int i = 0; i < Layers.Length; i++)
                 {
                     Layers[i].SetBlock(b);
                 }
-            }
-        }
-
-        private bool _ignoreBitmapUpdate = false;
-        private unsafe void UpdateCurTileBitmap()
-        {
-            if (!_ignoreBitmapUpdate)
-            {
-                using (ILockedFramebuffer l = _curTileBitmap.Lock())
-                {
-                    uint* bmpAddress = (uint*)l.Address.ToPointer();
-                    RenderUtil.TransparencyGrid(bmpAddress, 8, 8, 4, 4);
-                    RenderUtil.Draw(bmpAddress, 8, 8, 0, 0, _curTile.Colors, _xFlip, _yFlip);
-                }
-                _curTileImage.InvalidateVisual();
             }
         }
 

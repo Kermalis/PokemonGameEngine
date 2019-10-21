@@ -14,7 +14,7 @@
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
     <StackPanel Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5" Orientation="Horizontal">
-      <Border BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <Border Width="34" Height="34" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
         <local:TileLayerImage Name="TileLayerImage">
           <x:Arguments>
             <x:Double>2</x:Double>
@@ -22,12 +22,12 @@
         </local:TileLayerImage>
       </Border>
       <Border Width="18" Height="18" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
-        <Image Name="CurTileImage" Width="16" Height="16" RenderOptions.BitmapInterpolationMode="Default" />
+        <Image Name="SelectionImage" Width="16" Height="16" RenderOptions.BitmapInterpolationMode="Default" />
       </Border>
-      <CheckBox Content="X-Flip" IsChecked="{Binding XFlip}" />
-      <CheckBox Content="Y-Flip" IsChecked="{Binding YFlip}" />
+      <CheckBox Content="X-Flip" IsChecked="{Binding ElementName=TileLayerImage, Path=Selection.XFlip}" />
+      <CheckBox Content="Y-Flip" IsChecked="{Binding ElementName=TileLayerImage, Path=Selection.YFlip}" />
     </StackPanel>
-    <ComboBox Margin="5" Grid.Row="1" Grid.Column="1" Items="{Binding Layers}" SelectedItem="{Binding SelectedLayer}" SelectedIndex="0">
+    <ComboBox Margin="5" Grid.Row="1" Grid.Column="1" Items="{Binding Layers}" SelectedIndex="{Binding SelectedLayerIndex}">
       <ComboBox.ItemTemplate>
         <DataTemplate>
           <StackPanel Orientation="Horizontal">

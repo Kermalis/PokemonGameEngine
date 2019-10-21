@@ -7,14 +7,19 @@ using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Kermalis.MapEditor.UI
 {
     public sealed class TileLayerImage : Control
     {
-        public event EventHandler<Blockset.Block.Tile> SelectionCompleted;
+        public Blockset.Block.Tile Selection { get; } = new Blockset.Block.Tile();
+        private bool _isDrawing;
 
-        private readonly Blockset.Block.Tile[][] _tiles;
+        private readonly int _tileLayerNum;
+        private byte _zLayerNum;
+        private Blockset.Block _block;
         private readonly WriteableBitmap _bitmap;
         private readonly Size _bitmapSize;
         private readonly double _scale;
@@ -22,15 +27,8 @@ namespace Kermalis.MapEditor.UI
         public TileLayerImage(double scale)
         {
             _scale = scale;
-            _tiles = new Blockset.Block.Tile[2][];
-            for (int i = 0; i < 2; i++)
-            {
-                _tiles[i] = new Blockset.Block.Tile[2];
-            }
             _bitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
             _bitmapSize = new Size(16, 16);
-
-            PointerPressed += OnPointerPressed;
         }
 
         public override void Render(DrawingContext context)
@@ -50,18 +48,165 @@ namespace Kermalis.MapEditor.UI
             return _bitmapSize * _scale;
         }
 
-        private void OnPointerPressed(object sender, PointerPressedEventArgs e)
+        private Blockset.Block.Tile GetTile(bool left, bool top)
+        {
+            Blockset.Block.Tile Get(ReadOnlyDictionary<byte, List<Blockset.Block.Tile>> dict)
+            {
+                List<Blockset.Block.Tile> layers = dict[_zLayerNum];
+                return layers.Count <= _tileLayerNum ? null : layers[_tileLayerNum];
+            }
+            if (top)
+            {
+                if (left)
+                {
+                    return Get(_block.TopLeft);
+                }
+                else
+                {
+                    return Get(_block.TopRight);
+                }
+            }
+            else
+            {
+                if (left)
+                {
+                    return Get(_block.BottomLeft);
+                }
+                else
+                {
+                    return Get(_block.BottomRight);
+                }
+            }
+        }
+        private void SetTile(bool left, bool top)
+        {
+            void Set(ReadOnlyDictionary<byte, List<Blockset.Block.Tile>> dict)
+            {
+                List<Blockset.Block.Tile> layers = dict[_zLayerNum];
+                if (layers.Count < _tileLayerNum - 1)
+                {
+                    throw new InvalidOperationException();
+                }
+                else if (layers.Count == _tileLayerNum - 1)
+                {
+                    var t = new Blockset.Block.Tile();
+                    Selection.CopyTo(t);
+                    layers.Add(t);
+                }
+                else
+                {
+                    Selection.CopyTo(layers[_tileLayerNum]);
+                }
+                UpdateBitmap();
+            }
+            if (top)
+            {
+                if (left)
+                {
+                    Set(_block.TopLeft);
+                }
+                else
+                {
+                    Set(_block.TopRight);
+                }
+            }
+            else
+            {
+                if (left)
+                {
+                    Set(_block.BottomLeft);
+                }
+                else
+                {
+                    Set(_block.BottomRight);
+                }
+            }
+        }
+        protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
             PointerPoint pp = e.GetPointerPoint(this);
-            if (pp.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
+            switch (pp.Properties.PointerUpdateKind)
             {
-                Point pos = pp.Position;
-                if (Bounds.TemporaryFix_RectContains(pos))
+                case PointerUpdateKind.LeftButtonPressed:
                 {
-                    SelectionCompleted?.Invoke(this, _tiles[(int)(pos.Y / _scale) / 8][(int)(pos.X / _scale) / 8]);
+                    Point pos = pp.Position;
+                    if (Bounds.TemporaryFix_RectContains(pos))
+                    {
+                        _isDrawing = true;
+                        SetTile((int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
+                        e.Handled = true;
+                    }
+                    break;
+                }
+                case PointerUpdateKind.RightButtonPressed:
+                {
+                    Point pos = pp.Position;
+                    if (Bounds.TemporaryFix_RectContains(pos))
+                    {
+                        GetTile((int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0)?.CopyTo(Selection);
+                        e.Handled = true;
+                    }
+                    break;
+                }
+            }
+        }
+        protected override void OnPointerMoved(PointerEventArgs e)
+        {
+            if (_isDrawing)
+            {
+                PointerPoint pp = e.GetPointerPoint(this);
+                if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
+                {
+                    Point pos = pp.Position;
+                    if (Bounds.TemporaryFix_RectContains(pos))
+                    {
+                        SetTile((int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
+                        e.Handled = true;
+                    }
+                }
+            }
+        }
+        protected override void OnPointerReleased(PointerReleasedEventArgs e)
+        {
+            if (_isDrawing)
+            {
+                PointerPoint pp = e.GetPointerPoint(this);
+                if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+                {
+                    _isDrawing = false;
                     e.Handled = true;
                 }
             }
+        }
+
+        internal void SetBlock(Blockset.Block block)
+        {
+            if (block != null && block != _block)
+            {
+                _block = block;
+                UpdateBitmap();
+            }
+        }
+        internal void SetZLayer(byte z)
+        {
+            if (_zLayerNum != z)
+            {
+                _zLayerNum = z;
+                UpdateBitmap();
+            }
+        }
+        internal unsafe void UpdateBitmap()
+        {
+            using (ILockedFramebuffer l = _bitmap.Lock())
+            {
+                uint* bmpAddress = (uint*)l.Address.ToPointer();
+                RenderUtil.TransparencyGrid(bmpAddress, 16, 16, 4, 4);
+                GetTile(true, true)?.Draw(bmpAddress, 16, 16, 0, 0);
+                GetTile(false, true)?.Draw(bmpAddress, 16, 16, 8, 0);
+                GetTile(true, false)?.Draw(bmpAddress, 16, 16, 0, 8);
+                GetTile(false, false)?.Draw(bmpAddress, 16, 16, 8, 8);
+            }
+            InvalidateVisual();
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Kermalis.MapEditor.UI
             Bitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
         }
 
-        public void SetBlock(Blockset.Block block)
+        internal void SetBlock(Blockset.Block block)
         {
             if (block != null && block != _block)
             {
@@ -35,7 +35,7 @@ namespace Kermalis.MapEditor.UI
                 UpdateBitmap();
             }
         }
-        public unsafe void UpdateBitmap()
+        private unsafe void UpdateBitmap()
         {
             using (ILockedFramebuffer l = Bitmap.Lock())
             {
