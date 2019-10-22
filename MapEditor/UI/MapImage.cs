@@ -19,7 +19,7 @@ namespace Kermalis.MapEditor.UI
         public new event PropertyChangedEventHandler PropertyChanged;
 
         private Map _map;
-        public Map Map
+        internal Map Map
         {
             get => _map;
             set

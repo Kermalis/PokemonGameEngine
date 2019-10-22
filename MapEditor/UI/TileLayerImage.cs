@@ -83,20 +83,27 @@ namespace Kermalis.MapEditor.UI
             void Set(ReadOnlyDictionary<byte, List<Blockset.Block.Tile>> dict)
             {
                 List<Blockset.Block.Tile> layers = dict[_zLayerNum];
-                if (layers.Count < _tileLayerNum - 1)
+                if (layers.Count < _tileLayerNum)
                 {
                     throw new InvalidOperationException();
                 }
-                else if (layers.Count == _tileLayerNum - 1)
+                else if (layers.Count == _tileLayerNum)
                 {
                     var t = new Blockset.Block.Tile();
                     Selection.CopyTo(t);
                     layers.Add(t);
+                    _block.Parent.FireChanged(false);
                 }
                 else
                 {
-                    Selection.CopyTo(layers[_tileLayerNum]);
+                    Blockset.Block.Tile t = layers[_tileLayerNum];
+                    if (!Selection.Equals(t))
+                    {
+                        Selection.CopyTo(t);
+                        _block.Parent.FireChanged(false);
+                    }
                 }
+                _block.Parent.FireChanged(false);
                 UpdateBitmap();
             }
             if (top)

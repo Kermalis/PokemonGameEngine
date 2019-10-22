@@ -35,8 +35,13 @@ namespace Kermalis.MapEditor.UI
             {
                 if (_blockset != value)
                 {
+                    if (_blockset != null)
+                    {
+                        _blockset.OnChanged -= OnBlocksetChanged;
+                    }
                     _blockset = value;
-                    OnBlocksetChanged();
+                    _blockset.OnChanged += OnBlocksetChanged;
+                    UpdateBlockset(true);
                     OnPropertyChanged(nameof(Blockset));
                 }
             }
@@ -138,6 +143,10 @@ namespace Kermalis.MapEditor.UI
         {
             InvalidateVisual();
         }
+        private void OnBlocksetChanged(object sender, bool collectionChanged)
+        {
+            UpdateBlockset(collectionChanged);
+        }
         private void FireSelectionCompleted()
         {
             if (SelectionCompleted != null)
@@ -156,13 +165,7 @@ namespace Kermalis.MapEditor.UI
                 SelectionCompleted.Invoke(this, blocks);
             }
         }
-        private void ResetSelectionAndInvalidateVisual()
-        {
-            _isSelecting = false;
-            _selection.Start(0, 0, 1, 1);
-            InvalidateVisual();
-        }
-        private unsafe void OnBlocksetChanged()
+        private unsafe void UpdateBlockset(bool collectionChanged)
         {
             if (_blockset != null)
             {
@@ -195,8 +198,13 @@ namespace Kermalis.MapEditor.UI
                         RenderUtil.DrawCrossUnchecked(bmpAddress, bmpWidth, x * 16, y * 16, 16, 16, 0xFFFF0000);
                     }
                 }
-                ResetSelectionAndInvalidateVisual();
-                FireSelectionCompleted();
+                if (collectionChanged)
+                {
+                    _isSelecting = false;
+                    _selection.Start(0, 0, 1, 1);
+                    FireSelectionCompleted();
+                }
+                InvalidateVisual();
             }
         }
     }

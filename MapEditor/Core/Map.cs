@@ -6,7 +6,7 @@ using System;
 
 namespace Kermalis.MapEditor.Core
 {
-    public sealed class Map
+    internal sealed class Map
     {
         public sealed class Block
         {

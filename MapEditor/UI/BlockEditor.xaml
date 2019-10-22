@@ -27,7 +27,8 @@
       <CheckBox Content="X-Flip" IsChecked="{Binding ElementName=TileLayerImage, Path=Selection.XFlip}" />
       <CheckBox Content="Y-Flip" IsChecked="{Binding ElementName=TileLayerImage, Path=Selection.YFlip}" />
     </StackPanel>
-    <ComboBox Margin="5" Grid.Row="1" Grid.Column="1" Items="{Binding Layers}" SelectedIndex="{Binding SelectedLayerIndex}">
+    <Button Margin="5" Grid.Row="1" Grid.Column="0" Content="Add Block" Command="{Binding AddBlockCommand}" />
+    <ComboBox Margin="5" Grid.Row="1" Grid.Column="1" Items="{Binding ZLayers}" SelectedIndex="{Binding SelectedZLayerIndex}" Name="ZLayerComboBox">
       <ComboBox.ItemTemplate>
         <DataTemplate>
           <StackPanel Orientation="Horizontal">

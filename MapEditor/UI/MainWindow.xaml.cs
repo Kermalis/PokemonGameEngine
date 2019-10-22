@@ -28,6 +28,7 @@ namespace Kermalis.MapEditor.UI
 
             _tempTileset = Tileset.LoadOrGet("TestTiles");
             _blockset = Blockset.LoadOrGet("TestBlocks", _tempTileset.Tiles[0]);
+            _blockset.OnChanged += Blockset_OnChanged;
             _map = new Map(32, 32, _blockset.Blocks[0]);
 
             DataContext = this;
@@ -41,6 +42,13 @@ namespace Kermalis.MapEditor.UI
             _blocksetImage.Blockset = _blockset;
         }
 
+        private void Blockset_OnChanged(object sender, bool collectionChanged)
+        {
+            if (!collectionChanged)
+            {
+                _map.Draw();
+            }
+        }
         private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
         {
             _mapImage.Selection = e;

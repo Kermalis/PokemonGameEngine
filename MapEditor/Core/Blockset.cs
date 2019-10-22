@@ -1,4 +1,5 @@
 ﻿using Kermalis.MapEditor.Util;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -9,7 +10,7 @@ namespace Kermalis.MapEditor.Core
     {
         public sealed class Block
         {
-            public sealed class Tile : INotifyPropertyChanged
+            public sealed class Tile : IEquatable<Tile>, INotifyPropertyChanged
             {
                 private void OnPropertyChanged(string property)
                 {
@@ -67,6 +68,11 @@ namespace Kermalis.MapEditor.Core
                 public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
                 {
                     RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x, y, _tilesetTile.Colors, _xFlip, _yFlip);
+                }
+
+                public bool Equals(Tile other)
+                {
+                    return other != null && _xFlip == other._xFlip && _yFlip == other._yFlip && _tilesetTile == other._tilesetTile;
                 }
             }
 
@@ -132,6 +138,8 @@ namespace Kermalis.MapEditor.Core
             }
         }
 
+        public event EventHandler<bool> OnChanged;
+
         private readonly string _name;
         private int _numUses;
         public List<Block> Blocks;
@@ -144,7 +152,7 @@ namespace Kermalis.MapEditor.Core
         }
 
         private static readonly Dictionary<string, Blockset> _loadedBlocksets = new Dictionary<string, Blockset>();
-        public static Blockset LoadOrGet(string name, Tileset.Tile tempDefaultTile)
+        internal static Blockset LoadOrGet(string name, Tileset.Tile tempDefaultTile)
         {
             Blockset b;
             if (_loadedBlocksets.ContainsKey(name))
@@ -159,13 +167,18 @@ namespace Kermalis.MapEditor.Core
             b._numUses++;
             return b;
         }
-        public void DeductReference()
+        internal void DeductReference()
         {
             _numUses--;
             if (_numUses <= 0)
             {
                 _loadedBlocksets.Remove(_name);
             }
+        }
+
+        internal void FireChanged(bool collectionChanged)
+        {
+            OnChanged?.Invoke(this, collectionChanged);
         }
     }
 }
