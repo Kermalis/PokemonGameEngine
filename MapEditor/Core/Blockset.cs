@@ -95,10 +95,10 @@ namespace Kermalis.MapEditor.Core
 
             internal Blockset Parent;
             internal readonly int Id;
-            internal Dictionary<byte, List<Tile>> TopLeft;
-            internal Dictionary<byte, List<Tile>> TopRight;
-            internal Dictionary<byte, List<Tile>> BottomLeft;
-            internal Dictionary<byte, List<Tile>> BottomRight;
+            internal readonly Dictionary<byte, List<Tile>> TopLeft;
+            internal readonly Dictionary<byte, List<Tile>> TopRight;
+            internal readonly Dictionary<byte, List<Tile>> BottomLeft;
+            internal readonly Dictionary<byte, List<Tile>> BottomRight;
             internal ushort Behavior;
 
             internal Block(Blockset parent, int id, EndianBinaryReader r)

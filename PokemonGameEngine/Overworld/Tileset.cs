@@ -1,36 +1,58 @@
 ﻿using Kermalis.PokemonGameEngine.Util;
+using System;
+using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Overworld
 {
     internal sealed class Tileset
     {
-        private readonly uint[][][] _tiles;
-
-        public Tileset(string resource)
+        public sealed class Tile
         {
-            _tiles = RenderUtil.LoadSpriteSheet(resource, 8, 8);
+            public readonly Tileset Parent;
+            public readonly uint[][] Colors;
+
+            public Tile(Tileset parent, uint[][] colors)
+            {
+                Parent = parent;
+                Colors = colors;
+            }
         }
 
-        public unsafe void DrawBlock(uint* bmpAddress, int bmpWidth, int bmpHeight, Blockset.Block block, int x, int y)
+        public readonly Tile[] Tiles;
+
+        private Tileset(string name)
         {
-            for (int z = 0; z < byte.MaxValue + 1; z++)
+            uint[][][] t = RenderUtil.LoadSpriteSheet("Tileset." + name + ".png", 8, 8);
+            Tiles = new Tile[t.Length];
+            for (int i = 0; i < t.Length; i++)
             {
-                void Draw(Blockset.Block.Tile[] layers, int tx, int ty)
-                {
-                    for (int t = 0; t < layers.Length; t++)
-                    {
-                        Blockset.Block.Tile tile = layers[t];
-                        if (tile.ZLayer == z)
-                        {
-                            RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, _tiles[tile.TilesetTileNum], tile.XFlip, tile.YFlip);
-                        }
-                    }
-                }
-                Draw(block.TopLeft, x, y);
-                Draw(block.TopRight, x + 8, y);
-                Draw(block.BottomLeft, x, y + 8);
-                Draw(block.BottomRight, x + 8, y + 8);
+                Tiles[i] = new Tile(this, t[i]);
             }
+        }
+
+        private static readonly IdList _ids = new IdList("Tileset.TilesetIds.txt");
+        private static readonly List<WeakReference<Tileset>> _loadedTilesets = new List<WeakReference<Tileset>>();
+        public static Tileset LoadOrGet(int id)
+        {
+            string name = _ids[id];
+            if (name == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id));
+            }
+            Tileset t;
+            if (id >= _loadedTilesets.Count)
+            {
+                t = new Tileset(name);
+                _loadedTilesets.Add(new WeakReference<Tileset>(t));
+                return t;
+            }
+            if (_loadedTilesets[id].TryGetTarget(out t))
+            {
+                return t;
+            }
+            t = new Tileset(name);
+            _loadedTilesets[id].SetTarget(t);
+            return t;
         }
     }
 }

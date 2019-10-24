@@ -1,4 +1,10 @@
-﻿namespace Kermalis.PokemonGameEngine.Overworld
+﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonGameEngine.Util;
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+namespace Kermalis.PokemonGameEngine.Overworld
 {
     internal sealed class Blockset
     {
@@ -6,129 +12,107 @@
         {
             public sealed class Tile
             {
-                public byte ZLayer { get; }
-                public bool XFlip { get; }
-                public bool YFlip { get; }
-                public byte TilesetNum { get; }
-                public int TilesetTileNum { get; }
+                public readonly bool XFlip;
+                public readonly bool YFlip;
+                public readonly Tileset.Tile TilesetTile;
 
-                public Tile(int tilesetTileNum, byte zLayer, bool xFlip, bool yFlip)
+                public Tile(EndianBinaryReader r)
                 {
-                    ZLayer = zLayer;
-                    XFlip = xFlip;
-                    YFlip = yFlip;
-                    TilesetTileNum = tilesetTileNum;
+                    XFlip = r.ReadBoolean();
+                    YFlip = r.ReadBoolean();
+                    TilesetTile = Tileset.LoadOrGet(r.ReadInt32()).Tiles[r.ReadInt32()];
                 }
             }
 
-            public Tile[] TopLeft { get; }
-            public Tile[] TopRight { get; }
-            public Tile[] BottomLeft { get; }
-            public Tile[] BottomRight { get; }
-            public ushort Behavior { get; }
+            public readonly Blockset Parent;
+            public readonly Dictionary<byte, Tile[]> TopLeft;
+            public readonly Dictionary<byte, Tile[]> TopRight;
+            public readonly Dictionary<byte, Tile[]> BottomLeft;
+            public readonly Dictionary<byte, Tile[]> BottomRight;
+            public readonly ushort Behavior;
 
-            public Block(Tile[] topLeft, Tile[] topRight, Tile[] bottomLeft, Tile[] bottomRight)
+            public Block(Blockset parent, EndianBinaryReader r)
             {
-                TopLeft = topLeft;
-                TopRight = topRight;
-                BottomLeft = bottomLeft;
-                BottomRight = bottomRight;
+                Behavior = r.ReadUInt16();
+                Dictionary<byte, Tile[]> Read()
+                {
+                    var d = new Dictionary<byte, Tile[]>(byte.MaxValue + 1);
+                    byte z = 0;
+                    while (true)
+                    {
+                        byte count = r.ReadByte();
+                        Tile[] arr;
+                        if (count == 0)
+                        {
+                            arr = Array.Empty<Tile>();
+                        }
+                        else
+                        {
+                            arr = new Tile[count];
+                            for (int i = 0; i < count; i++)
+                            {
+                                arr[i] = new Tile(r);
+                            }
+                        }
+                        d.Add(z, arr);
+                        if (z == byte.MaxValue)
+                        {
+                            break;
+                        }
+                        z++;
+                    }
+                    return d;
+                }
+                TopLeft = Read();
+                TopRight = Read();
+                BottomLeft = Read();
+                BottomRight = Read();
+                Parent = parent;
             }
         }
 
-        private readonly Block[] _blocks;
+        public readonly Block[] Blocks;
 
-        public Block this[int block] => _blocks[block];
-
-        public Blockset()
+        private Blockset(string name)
         {
-            _blocks = new Block[]
+            using (var r = new EndianBinaryReader(Utils.GetResourceStream("Blockset." + name + ".pgeblockset")))
             {
-                new Block(
-                    new[] { new Block.Tile(0, 0, false, false) },
-                    new[] { new Block.Tile(1, 0, false, false) },
-                    new[] { new Block.Tile(6, 0, false, false) },
-                    new[] { new Block.Tile(7, 0, false, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(1, 0, false, false) },
-                    new[] { new Block.Tile(1, 0, false, false) },
-                    new[] { new Block.Tile(7, 0, false, false) },
-                    new[] { new Block.Tile(7, 0, false, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(1, 0, false, false) },
-                    new[] { new Block.Tile(2, 0, false, false) },
-                    new[] { new Block.Tile(7, 0, false, false) },
-                    new[] { new Block.Tile(8, 0, false, false) }
-                ),
-                new Block(
-                    new[] { new Block.Tile(12, 0, false, false) },
-                    new[] { new Block.Tile(13, 0, false, false) },
-                    new[] { new Block.Tile(12, 0, false, false) },
-                    new[] { new Block.Tile(13, 0, false, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(13, 0, false, false) },
-                    new[] { new Block.Tile(13, 0, false, false) },
-                    new[] { new Block.Tile(13, 0, false, false) },
-                    new[] { new Block.Tile(13, 0, false, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(13, 0, false, false) },
-                    new[] { new Block.Tile(14, 0, false, false) },
-                    new[] { new Block.Tile(13, 0, false, false) },
-                    new[] { new Block.Tile(14, 0, false, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(18, 0, false, false) },
-                    new[] { new Block.Tile(19, 0, false, false) },
-                    new[] { new Block.Tile(24, 0, false, false) },
-                    new[] { new Block.Tile(25, 0, false, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(19, 0, false, false) },
-                    new[] { new Block.Tile(19, 0, false, false) },
-                    new[] { new Block.Tile(3, 0, false, false) },
-                    new[] { new Block.Tile(4, 0, false, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(19, 0, false, false) },
-                    new[] { new Block.Tile(19, 0, false, false) },
-                    new[] { new Block.Tile(5, 0, false, false) },
-                    new[] { new Block.Tile(5, 0, true, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(19, 0, false, false) },
-                    new[] { new Block.Tile(20, 0, false, false) },
-                    new[] { new Block.Tile(25, 0, false, false) },
-                    new[] { new Block.Tile(26, 0, false, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(24, 0, false, false) },
-                    new[] { new Block.Tile(25, 0, false, false) },
-                    new[] { new Block.Tile(30, 0, false, false) },
-                    new[] { new Block.Tile(31, 0, false, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(9, 0, false, false) },
-                    new[] { new Block.Tile(10, 0, false, false) },
-                    new[] { new Block.Tile(15, 0, false, false) },
-                    new[] { new Block.Tile(16, 0, false, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(11, 0, false, false) },
-                    new[] { new Block.Tile(11, 0, true, false) },
-                    new[] { new Block.Tile(33, 0, false, false) },
-                    new[] { new Block.Tile(33, 0, false, false) }
-                    ),
-                new Block(
-                    new[] { new Block.Tile(25, 0, false, false) },
-                    new[] { new Block.Tile(26, 0, false, false) },
-                    new[] { new Block.Tile(31, 0, false, false) },
-                    new[] { new Block.Tile(32, 0, false, false) }
-                    )
-            };
+                ushort count = r.ReadUInt16();
+                if (count == 0)
+                {
+                    throw new InvalidDataException();
+                }
+                Blocks = new Block[count];
+                for (int i = 0; i < count; i++)
+                {
+                    Blocks[i] = new Block(this, r);
+                }
+            }
+        }
+
+        private static readonly IdList _ids = new IdList("Blockset.BlocksetIds.txt");
+        private static readonly List<WeakReference<Blockset>> _loadedBlocksets = new List<WeakReference<Blockset>>();
+        public static Blockset LoadOrGet(int id)
+        {
+            string name = _ids[id];
+            if (name == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id));
+            }
+            Blockset b;
+            if (id >= _loadedBlocksets.Count)
+            {
+                b = new Blockset(name);
+                _loadedBlocksets.Add(new WeakReference<Blockset>(b));
+                return b;
+            }
+            if (_loadedBlocksets[id].TryGetTarget(out b))
+            {
+                return b;
+            }
+            b = new Blockset(name);
+            _loadedBlocksets[id].SetTarget(b);
+            return b;
         }
     }
 }

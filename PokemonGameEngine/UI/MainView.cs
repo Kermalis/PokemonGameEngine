@@ -28,15 +28,13 @@ namespace Kermalis.PokemonGameEngine.UI
 
         private readonly Font _font;
         private readonly uint[] _fontColors = new uint[] { 0x00000000, 0xFFFFFFFF, 0xFF848484 };
-        private readonly Tileset _tileset;
-        private readonly Blockset _blockset;
+        private readonly Map _map;
         private readonly uint[][][] _tempPlayerSpriteSheet;
 
         public MainView()
         {
             _font = new Font("TestFont.kermfont");
-            _tileset = new Tileset("Tileset.TestTiles.png");
-            _blockset = new Blockset();
+            _map = new Map("TestMapC");
             _tempPlayerSpriteSheet = RenderUtil.LoadSpriteSheet("TestNPC.png", 32, 32);
             _screen = new WriteableBitmap(new PixelSize(RenderWidth, RenderHeight), new Vector(96, 96), PixelFormat.Bgra8888);
             _screenSize = new Size(RenderWidth, RenderHeight);
@@ -57,31 +55,15 @@ namespace Kermalis.PokemonGameEngine.UI
                 using (ILockedFramebuffer l = _screen.Lock())
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
-                    RenderUtil.Fill(bmpAddress, RenderWidth, RenderHeight, 0, 0, RenderWidth, RenderHeight, 0xFF70C0A0);
+                    RenderUtil.Fill(bmpAddress, RenderWidth, RenderHeight, 0, 0, RenderWidth, RenderHeight, 0xFF000000);
 
-                    const int cameraX = 100;
-                    const int cameraY = 10;
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[0], cameraX + 0, cameraY + 0);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[1], cameraX + 16, cameraY + 0);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[1], cameraX + 32, cameraY + 0);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[2], cameraX + 48, cameraY + 0);
+                    const int cameraX = 0;
+                    const int cameraY = 0;
+                    _map.Draw(bmpAddress, RenderWidth, RenderHeight, cameraX, cameraY);
 
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[3], cameraX + 0, cameraY + 16);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[4], cameraX + 16, cameraY + 16);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[4], cameraX + 32, cameraY + 16);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[5], cameraX + 48, cameraY + 16);
-
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[6], cameraX + 0, cameraY + 32);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[7], cameraX + 16, cameraY + 32);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[8], cameraX + 32, cameraY + 32);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[9], cameraX + 48, cameraY + 32);
-
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[10], cameraX + 0, cameraY + 48);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[11], cameraX + 16, cameraY + 48);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[12], cameraX + 32, cameraY + 48);
-                    _tileset.DrawBlock(bmpAddress, RenderWidth, RenderHeight, _blockset[13], cameraX + 48, cameraY + 48);
-
-                    RenderUtil.Draw(bmpAddress, RenderWidth, RenderHeight, cameraX + 16 - 8, cameraY + 64 - 16, _tempPlayerSpriteSheet[0], false, false); // Temporarily rendered above all
+                    const int playerX = 4;
+                    const int playerY = 8;
+                    RenderUtil.Draw(bmpAddress, RenderWidth, RenderHeight, (playerX * 16) - 8, (playerY * 16) - 16, _tempPlayerSpriteSheet[0], false, false); // Temporarily rendered above all
 
                     if (_showFPS)
                     {

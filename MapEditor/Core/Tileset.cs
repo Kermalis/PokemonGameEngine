@@ -28,13 +28,13 @@ namespace Kermalis.MapEditor.Core
 
         private Tileset(string name, int id)
         {
-            Id = id;
             uint[][][] t = RenderUtil.LoadSpriteSheet(Path.Combine(Program.AssetPath, "Tileset", name + ".png"), 8, 8);
             Tiles = new Tile[t.Length];
             for (int i = 0; i < t.Length; i++)
             {
                 Tiles[i] = new Tile(this, i, t[i]);
             }
+            Id = id;
         }
 
         private static readonly List<WeakReference<Tileset>> _loadedTilesets = new List<WeakReference<Tileset>>();
