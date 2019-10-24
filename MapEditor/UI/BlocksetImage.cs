@@ -25,10 +25,10 @@ namespace Kermalis.MapEditor.UI
         private readonly bool _allowSelectingMultiple;
 
         private readonly Selection _selection;
-        public event EventHandler<Blockset.Block[][]> SelectionCompleted;
+        internal event EventHandler<Blockset.Block[][]> SelectionCompleted;
 
         private Blockset _blockset;
-        public Blockset Blockset
+        internal Blockset Blockset
         {
             get => _blockset;
             set

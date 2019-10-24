@@ -52,7 +52,7 @@ namespace Kermalis.MapEditor.UI
             AddBlockCommand = ReactiveCommand.Create(AddBlock);
 
             _tileset = Tileset.LoadOrGet("TestTiles");
-            _blockset = Blockset.LoadOrGet("TestBlocks", _tileset.Tiles[0]);
+            _blockset = Blockset.LoadOrGet("TestBlockset");
             _blockset.OnChanged += Blockset_OnChanged;
 
             _selectionBitmap = new WriteableBitmap(new PixelSize(8, 8), new Vector(96, 96), PixelFormat.Bgra8888);
@@ -91,8 +91,7 @@ namespace Kermalis.MapEditor.UI
 
         private void AddBlock()
         {
-            _blockset.Blocks.Add(new Blockset.Block(_blockset, _tileset.Tiles[0]));
-            _blockset.FireChanged(true);
+            _blockset.Add(_tileset.Tiles[0]);
         }
         private void UpdateZLayerComboBox()
         {
@@ -146,8 +145,7 @@ namespace Kermalis.MapEditor.UI
 
         protected override void HandleClosed()
         {
-            _tileset.DeductReference();
-            _blockset.DeductReference();
+            _blockset.Save();
             base.HandleClosed();
         }
     }

@@ -1,61 +1,77 @@
 ﻿using Kermalis.MapEditor.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace Kermalis.MapEditor.Core
 {
-    public sealed class Tileset
+    internal sealed class Tileset
     {
         public sealed class Tile
         {
             public readonly Tileset Parent;
+            public readonly int Id;
             public readonly uint[][] Colors;
 
-            public Tile(Tileset parent, uint[][] colors)
+            public Tile(Tileset parent, int id, uint[][] colors)
             {
                 Parent = parent;
+                Id = id;
                 Colors = colors;
             }
         }
 
-        private readonly string _name;
-        private int _numUses;
+        private static readonly IdList _ids = new IdList(Path.Combine(Program.AssetPath, "Tileset", "TilesetIds.txt"));
+
+        public readonly int Id;
         public readonly Tile[] Tiles;
 
-        private Tileset(string name)
+        private Tileset(string name, int id)
         {
-            _name = name;
+            Id = id;
             uint[][][] t = RenderUtil.LoadSpriteSheet(Path.Combine(Program.AssetPath, "Tileset", name + ".png"), 8, 8);
             Tiles = new Tile[t.Length];
             for (int i = 0; i < t.Length; i++)
             {
-                Tiles[i] = new Tile(this, t[i]);
+                Tiles[i] = new Tile(this, i, t[i]);
             }
         }
 
-        private static readonly Dictionary<string, Tileset> _loadedTilesets = new Dictionary<string, Tileset>();
+        private static readonly List<WeakReference<Tileset>> _loadedTilesets = new List<WeakReference<Tileset>>();
         public static Tileset LoadOrGet(string name)
         {
-            Tileset b;
-            if (_loadedTilesets.ContainsKey(name))
+            int id = _ids[name];
+            if (id == -1)
             {
-                b = _loadedTilesets[name];
+                throw new ArgumentOutOfRangeException(nameof(name));
             }
-            else
-            {
-                b = new Tileset(name);
-                _loadedTilesets.Add(name, b);
-            }
-            b._numUses++;
-            return b;
+            return LoadOrGet(name, id);
         }
-        public void DeductReference()
+        public static Tileset LoadOrGet(int id)
         {
-            _numUses--;
-            if (_numUses <= 0)
+            string name = _ids[id];
+            if (name == null)
             {
-                _loadedTilesets.Remove(_name);
+                throw new ArgumentOutOfRangeException(nameof(id));
             }
+            return LoadOrGet(name, id);
+        }
+        private static Tileset LoadOrGet(string name, int id)
+        {
+            Tileset t;
+            if (id >= _loadedTilesets.Count)
+            {
+                t = new Tileset(name, id);
+                _loadedTilesets.Add(new WeakReference<Tileset>(t));
+                return t;
+            }
+            if (_loadedTilesets[id].TryGetTarget(out t))
+            {
+                return t;
+            }
+            t = new Tileset(name, id);
+            _loadedTilesets[id].SetTarget(t);
+            return t;
         }
     }
 }

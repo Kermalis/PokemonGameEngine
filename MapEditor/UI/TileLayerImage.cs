@@ -8,7 +8,6 @@ using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Kermalis.MapEditor.UI
 {
@@ -50,7 +49,7 @@ namespace Kermalis.MapEditor.UI
 
         private Blockset.Block.Tile GetTile(bool left, bool top)
         {
-            Blockset.Block.Tile Get(ReadOnlyDictionary<byte, List<Blockset.Block.Tile>> dict)
+            Blockset.Block.Tile Get(Dictionary<byte, List<Blockset.Block.Tile>> dict)
             {
                 List<Blockset.Block.Tile> layers = dict[_zLayerNum];
                 return layers.Count <= _tileLayerNum ? null : layers[_tileLayerNum];
@@ -80,7 +79,7 @@ namespace Kermalis.MapEditor.UI
         }
         private void SetTile(bool left, bool top)
         {
-            void Set(ReadOnlyDictionary<byte, List<Blockset.Block.Tile>> dict)
+            void Set(Dictionary<byte, List<Blockset.Block.Tile>> dict)
             {
                 List<Blockset.Block.Tile> layers = dict[_zLayerNum];
                 if (layers.Count < _tileLayerNum)

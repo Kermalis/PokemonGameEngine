@@ -7,6 +7,7 @@
     <Menu DockPanel.Dock="Top">
       <MenuItem Header="_File">
         <MenuItem Header="_New map" Click="New_Click"/>
+        <MenuItem Header="_Save map" Click="Save_Click"/>
       </MenuItem>
     </Menu>
     <Menu DockPanel.Dock="Top">

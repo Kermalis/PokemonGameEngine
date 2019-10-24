@@ -13,7 +13,7 @@ namespace Kermalis.MapEditor.UI
         public string Text { get; }
         public WriteableBitmap Bitmap { get; }
 
-        public ZLayerModel(byte zLayerNum)
+        internal ZLayerModel(byte zLayerNum)
         {
             _zLayerNum = zLayerNum;
             Text = $"Z-Layer {_zLayerNum:D3}";

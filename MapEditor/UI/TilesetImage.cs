@@ -22,10 +22,10 @@ namespace Kermalis.MapEditor.UI
         private const int numTilesX = 8;
 
         private readonly Selection _selection;
-        public event EventHandler<Tileset.Tile> SelectionCompleted;
+        internal event EventHandler<Tileset.Tile> SelectionCompleted;
 
         private Tileset _tileset;
-        public Tileset Tileset
+        internal Tileset Tileset
         {
             get => _tileset;
             set

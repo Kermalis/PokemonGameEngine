@@ -1,5 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Platform;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Kermalis.MapEditor.Util
 {
@@ -12,5 +14,7 @@ namespace Kermalis.MapEditor.Util
         {
             return pos.X >= rect.X && pos.Y >= rect.Y && pos.X < rect.X + rect.Width && pos.Y < rect.Y + rect.Height;
         }
+
+        public static readonly Regex InvalidFileNameRegex = new Regex("[" + Regex.Escape(new string(Path.GetInvalidFileNameChars())) + "]");
     }
 }

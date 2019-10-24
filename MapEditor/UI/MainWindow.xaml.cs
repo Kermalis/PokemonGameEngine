@@ -27,7 +27,8 @@ namespace Kermalis.MapEditor.UI
             _openBlockEditorCanExecute.OnNext(true);
 
             _tempTileset = Tileset.LoadOrGet("TestTiles");
-            _blockset = Blockset.LoadOrGet("TestBlocks", _tempTileset.Tiles[0]);
+            const string defaultBlocksetName = "TestBlockset"; // TODO: We will have a ComboBox with the available blocksets, and if there are none, it will prompt for a name
+            _blockset = Blockset.IsValidName(defaultBlocksetName) ? new Blockset(defaultBlocksetName, _tempTileset.Tiles[0]) : Blockset.LoadOrGet(defaultBlocksetName);
             _blockset.OnChanged += Blockset_OnChanged;
             _map = new Map(32, 32, _blockset.Blocks[0]);
 
@@ -46,7 +47,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (!collectionChanged)
             {
-                _map.Draw();
+                _map.DrawAll();
             }
         }
         private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
@@ -69,6 +70,10 @@ namespace Kermalis.MapEditor.UI
         private void New_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("New");
+        }
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            _map.Save("TestMapC");
         }
     }
 }

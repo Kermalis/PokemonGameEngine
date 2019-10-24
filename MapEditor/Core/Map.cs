@@ -1,8 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Kermalis.EndianBinaryIO;
 using Kermalis.MapEditor.Util;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Kermalis.MapEditor.Core
 {
@@ -10,8 +13,32 @@ namespace Kermalis.MapEditor.Core
     {
         public sealed class Block
         {
+            public readonly int X;
+            public readonly int Y;
+
             public byte Behavior;
             public Blockset.Block BlocksetBlock;
+
+            public Block(int x, int y, EndianBinaryReader r)
+            {
+                X = x;
+                Y = y;
+                Behavior = r.ReadByte();
+                BlocksetBlock = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
+            }
+            public Block(int x, int y, Blockset.Block defaultBlock)
+            {
+                X = x;
+                Y = y;
+                BlocksetBlock = defaultBlock;
+            }
+
+            public void Write(EndianBinaryWriter w)
+            {
+                w.Write(Behavior);
+                w.Write(BlocksetBlock.Parent.Id);
+                w.Write(BlocksetBlock.Id);
+            }
         }
 
         public WriteableBitmap Bitmap;
@@ -22,27 +49,46 @@ namespace Kermalis.MapEditor.Core
 
         public Block[][] Blocks;
 
+        public Map(string name)
+        {
+            using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(Program.AssetPath, "Map", name + ".pgemap"))))
+            {
+                Width = r.ReadInt32();
+                Height = r.ReadInt32();
+                Blocks = new Block[Height][];
+                for (int y = 0; y < Height; y++)
+                {
+                    var arrY = new Block[Width];
+                    for (int x = 0; x < Width; x++)
+                    {
+                        arrY[x] = new Block(x, y, r);
+                    }
+                    Blocks[y] = arrY;
+                }
+                UpdateBitmapSize();
+            }
+        }
         public Map(int width, int height, Blockset.Block defaultBlock)
         {
             Width = width;
             Height = height;
-
             Blocks = new Block[Height][];
             for (int y = 0; y < Height; y++)
             {
                 var arrY = new Block[Width];
                 for (int x = 0; x < Width; x++)
                 {
-                    arrY[x] = new Block() { BlocksetBlock = defaultBlock };
+                    arrY[x] = new Block(x, y, defaultBlock);
                 }
                 Blocks[y] = arrY;
             }
-
-            Draw();
+            UpdateBitmapSize();
         }
 
+        private static readonly List<Block> _pasteList = new List<Block>(); // Saves allocations
         public void Paste(Blockset.Block[][] blocks, int destX, int destY)
         {
+            _pasteList.Clear();
             for (int y = 0; y < blocks.Length; y++)
             {
                 int dy = y + destY;
@@ -58,16 +104,18 @@ namespace Kermalis.MapEditor.Core
                             Blockset.Block b = inArrY[x];
                             if (b != null)
                             {
-                                outArrY[dx].BlocksetBlock = b;
+                                Block outB = outArrY[dx];
+                                outB.BlocksetBlock = b;
+                                _pasteList.Add(outB);
                             }
                         }
                     }
                 }
             }
-            Draw();
+            Draw(_pasteList);
         }
 
-        public unsafe void Draw()
+        private void UpdateBitmapSize()
         {
             bool createNew;
             if (Bitmap == null)
@@ -82,7 +130,29 @@ namespace Kermalis.MapEditor.Core
             if (createNew)
             {
                 Bitmap = new WriteableBitmap(new PixelSize(Width * 16, Height * 16), new Vector(96, 96), PixelFormat.Bgra8888);
+                DrawAll();
             }
+        }
+        public unsafe void Draw(IReadOnlyList<Block> blocks)
+        {
+            using (ILockedFramebuffer l = Bitmap.Lock())
+            {
+                uint* bmpAddress = (uint*)l.Address.ToPointer();
+                int bmpWidth = Width * 16;
+                int bmpHeight = Height * 16;
+                for (int i = 0; i < blocks.Count; i++)
+                {
+                    Block b = blocks[i];
+                    int x = b.X * 16;
+                    int y = b.Y * 16;
+                    RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x, y, 16, 16, 0xFF000000);
+                    b.BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x, y);
+                }
+            }
+            OnDrew?.Invoke(this, EventArgs.Empty);
+        }
+        public unsafe void DrawAll()
+        {
             using (ILockedFramebuffer l = Bitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
@@ -99,6 +169,22 @@ namespace Kermalis.MapEditor.Core
                 }
             }
             OnDrew?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void Save(string name)
+        {
+            using (var w = new EndianBinaryWriter(File.Create(Path.Combine(Program.AssetPath, "Map", name + ".pgemap"))))
+            {
+                w.Write(Width);
+                w.Write(Height);
+                for (int y = 0; y < Height; y++)
+                {
+                    for (int x = 0; x < Width; x++)
+                    {
+                        Blocks[y][x].Write(w);
+                    }
+                }
+            }
         }
     }
 }

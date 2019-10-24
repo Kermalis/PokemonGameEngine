@@ -24,6 +24,9 @@
     <PackageReference Include="Avalonia" Version="0.8.999-cibuild0004126-beta" />
     <PackageReference Include="Avalonia.Desktop" Version="0.8.999-cibuild0004126-beta" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.8.999-cibuild0004126-beta" />
+    <Reference Include="EndianBinaryIO">
+      <HintPath>..\Shared Dependencies\EndianBinaryIO.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
 </Project>
