@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class TileLayerImage : Control
+    public sealed class TileLayerImage : Control, IDisposable
     {
         public Blockset.Block.Tile Selection { get; } = new Blockset.Block.Tile();
         private bool _isDrawing;
@@ -213,6 +213,11 @@ namespace Kermalis.MapEditor.UI
                 GetTile(false, false)?.Draw(bmpAddress, 16, 16, 8, 8);
             }
             InvalidateVisual();
+        }
+
+        public void Dispose()
+        {
+            _bitmap.Dispose();
         }
     }
 }

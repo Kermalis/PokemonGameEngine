@@ -3,10 +3,11 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
+using System;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class ZLayerModel
+    public sealed class ZLayerModel : IDisposable
     {
         private readonly byte _zLayerNum;
         private Blockset.Block _block;
@@ -36,6 +37,11 @@ namespace Kermalis.MapEditor.UI
                 RenderUtil.TransparencyGrid(bmpAddress, 16, 16, 4, 4);
                 _block.DrawZ(bmpAddress, 16, 16, 0, 0, _zLayerNum);
             }
+        }
+
+        public void Dispose()
+        {
+            Bitmap.Dispose();
         }
     }
 }

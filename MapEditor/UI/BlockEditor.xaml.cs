@@ -7,11 +7,12 @@ using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using ReactiveUI;
+using System;
 using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class BlockEditor : Window, INotifyPropertyChanged
+    public sealed class BlockEditor : Window, IDisposable, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
         {
@@ -146,7 +147,20 @@ namespace Kermalis.MapEditor.UI
         protected override void HandleClosed()
         {
             _blockset.Save();
+            Dispose();
             base.HandleClosed();
+        }
+
+        public void Dispose()
+        {
+            for (int i = 0; i < ZLayers.Length; i++)
+            {
+                ZLayers[i].Dispose();
+            }
+            _selectionBitmap.Dispose();
+            _tileLayerImage.Dispose();
+            _tilesetImage.Dispose();
+            _blocksetImage.Dispose();
         }
     }
 }

@@ -12,7 +12,7 @@ using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class BlocksetImage : Control, INotifyPropertyChanged
+    public sealed class BlocksetImage : Control, IDisposable, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
         {
@@ -175,6 +175,7 @@ namespace Kermalis.MapEditor.UI
                 int bmpHeight = numBlocksY * 16;
                 if (_bitmap == null || _bitmap.PixelSize.Height != bmpHeight)
                 {
+                    _bitmap?.Dispose();
                     _bitmap = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Bgra8888);
                     _bitmapSize = new Size(bmpWidth, bmpHeight);
                 }
@@ -206,6 +207,11 @@ namespace Kermalis.MapEditor.UI
                 }
                 InvalidateVisual();
             }
+        }
+
+        public void Dispose()
+        {
+            _bitmap.Dispose();
         }
     }
 }

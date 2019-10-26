@@ -9,7 +9,7 @@ using System.IO;
 
 namespace Kermalis.MapEditor.Core
 {
-    internal sealed class Map
+    internal sealed class Map : IDisposable
     {
         public sealed class Block
         {
@@ -129,6 +129,7 @@ namespace Kermalis.MapEditor.Core
             }
             if (createNew)
             {
+                Bitmap?.Dispose();
                 Bitmap = new WriteableBitmap(new PixelSize(Width * 16, Height * 16), new Vector(96, 96), PixelFormat.Bgra8888);
                 DrawAll();
             }
@@ -185,6 +186,11 @@ namespace Kermalis.MapEditor.Core
                     }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            Bitmap.Dispose();
         }
     }
 }

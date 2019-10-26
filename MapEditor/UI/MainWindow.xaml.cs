@@ -4,14 +4,15 @@ using Avalonia.Markup.Xaml;
 using Kermalis.MapEditor.Core;
 using ReactiveUI;
 using System;
-using System.Reactive.Subjects;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class MainWindow : Window
+    public sealed class MainWindow : Window, IDisposable
     {
         public ReactiveCommand OpenBlockEditorCommand { get; }
-        private readonly Subject<bool> _openBlockEditorCanExecute;
+#pragma warning disable IDE0069 // Disposable fields should be disposed
+        private BlockEditor _blockEditor;
+#pragma warning restore IDE0069 // Disposable fields should be disposed
 
         private readonly Map _map;
 
@@ -22,9 +23,7 @@ namespace Kermalis.MapEditor.UI
 
         public MainWindow()
         {
-            _openBlockEditorCanExecute = new Subject<bool>();
-            OpenBlockEditorCommand = ReactiveCommand.Create(OpenBlockEditor, _openBlockEditorCanExecute);
-            _openBlockEditorCanExecute.OnNext(true);
+            OpenBlockEditorCommand = ReactiveCommand.Create(OpenBlockEditor);
 
             _tempTileset = Tileset.LoadOrGet("TestTiles");
             const string defaultBlocksetName = "TestBlockset"; // TODO: We will have a ComboBox with the available blocksets, and if there are none, it will prompt for a name
@@ -57,14 +56,24 @@ namespace Kermalis.MapEditor.UI
 
         private void OpenBlockEditor()
         {
-            _openBlockEditorCanExecute.OnNext(false);
-            var be = new BlockEditor();
-            be.Show();
-            be.Closed += BlockEditor_Closed;
+            if (_blockEditor != null)
+            {
+                if (_blockEditor.WindowState == WindowState.Minimized)
+                {
+                    _blockEditor.WindowState = WindowState.Normal;
+                }
+                _blockEditor.Activate();
+            }
+            else
+            {
+                _blockEditor = new BlockEditor();
+                _blockEditor.Show();
+                _blockEditor.Closed += BlockEditor_Closed;
+            }
         }
         private void BlockEditor_Closed(object sender, EventArgs e)
         {
-            _openBlockEditorCanExecute.OnNext(true);
+            _blockEditor = null;
         }
 
         private void New_Click(object sender, RoutedEventArgs e)
@@ -74,6 +83,19 @@ namespace Kermalis.MapEditor.UI
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             _map.Save("TestMapC");
+        }
+
+        protected override void HandleClosed()
+        {
+            Dispose();
+            base.HandleClosed();
+        }
+
+        public void Dispose()
+        {
+            _blockEditor?.Close();
+            _map.Dispose();
+            _blocksetImage.Dispose();
         }
     }
 }
