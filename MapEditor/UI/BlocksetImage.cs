@@ -3,16 +3,14 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class BlocksetImage : Control, IDisposable, INotifyPropertyChanged
+    public sealed class BlocksetImage : Control, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
         {
@@ -20,10 +18,10 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private const int numBlocksX = 8;
-
         private readonly bool _allowSelectingMultiple;
+        private readonly double _scale;
 
+        private bool _isSelecting;
         private readonly Selection _selection;
         internal event EventHandler<Blockset.Block[][]> SelectionCompleted;
 
@@ -37,21 +35,21 @@ namespace Kermalis.MapEditor.UI
                 {
                     if (_blockset != null)
                     {
-                        _blockset.OnChanged -= OnBlocksetChanged;
+                        _blockset.OnAdded -= Blockset_OnAddedRemoved;
+                        _blockset.OnRemoved -= Blockset_OnAddedRemoved;
+                        _blockset.OnDrew -= Blockset_OnDrew;
                     }
                     _blockset = value;
-                    _blockset.OnChanged += OnBlocksetChanged;
-                    UpdateBlockset(true);
+                    _blockset.OnAdded += Blockset_OnAddedRemoved;
+                    _blockset.OnRemoved += Blockset_OnAddedRemoved;
+                    _blockset.OnDrew += Blockset_OnDrew;
+                    ResetSelection();
+                    InvalidateMeasure();
+                    InvalidateVisual();
                     OnPropertyChanged(nameof(Blockset));
                 }
             }
         }
-
-        private bool _isSelecting;
-
-        private WriteableBitmap _bitmap;
-        private Size _bitmapSize;
-        private readonly double _scale;
 
         public BlocksetImage(bool allowSelectingMultiple, double scale)
         {
@@ -65,11 +63,13 @@ namespace Kermalis.MapEditor.UI
         {
             if (_blockset != null)
             {
+                IBitmap source = _blockset.Bitmap;
                 var viewPort = new Rect(Bounds.Size);
-                Rect destRect = viewPort.CenterRect(new Rect(_bitmapSize * _scale)).Intersect(viewPort);
-                Rect sourceRect = new Rect(_bitmapSize).CenterRect(new Rect(destRect.Size / _scale));
+                Size sourceSize = source.Size;
+                Rect destRect = viewPort.CenterRect(new Rect(sourceSize * _scale)).Intersect(viewPort);
+                Rect sourceRect = new Rect(sourceSize).CenterRect(new Rect(destRect.Size / _scale));
 
-                context.DrawImage(_bitmap, 1, sourceRect, destRect);
+                context.DrawImage(source, 1, sourceRect, destRect);
                 var r = new Rect(_selection.X * 16 * _scale, _selection.Y * 16 * _scale, _selection.Width * 16 * _scale, _selection.Height * 16 * _scale);
                 context.FillRectangle(_isSelecting ? Selection.SelectingBrush : Selection.SelectionBrush, r);
                 context.DrawRectangle(_isSelecting ? Selection.SelectingPen : Selection.SelectionPen, r);
@@ -79,7 +79,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_blockset != null)
             {
-                return _bitmapSize * _scale;
+                return _blockset.Bitmap.Size * _scale;
             }
             return new Size();
         }
@@ -87,7 +87,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_blockset != null)
             {
-                return _bitmapSize * _scale;
+                return _blockset.Bitmap.Size * _scale;
             }
             return new Size();
         }
@@ -143,9 +143,20 @@ namespace Kermalis.MapEditor.UI
         {
             InvalidateVisual();
         }
-        private void OnBlocksetChanged(object sender, bool collectionChanged)
+        private void Blockset_OnAddedRemoved(Blockset blockset, Blockset.Block block)
         {
-            UpdateBlockset(collectionChanged);
+            ResetSelection();
+        }
+        private void Blockset_OnDrew(object sender, EventArgs e)
+        {
+            InvalidateMeasure();
+            InvalidateVisual();
+        }
+        private void ResetSelection()
+        {
+            _isSelecting = false;
+            _selection.Start(0, 0, 1, 1);
+            FireSelectionCompleted();
         }
         private void FireSelectionCompleted()
         {
@@ -157,61 +168,13 @@ namespace Kermalis.MapEditor.UI
                     var arrY = new Blockset.Block[_selection.Width];
                     for (int x = 0; x < _selection.Width; x++)
                     {
-                        int index = x + _selection.X + ((y + _selection.Y) * numBlocksX);
+                        int index = x + _selection.X + ((y + _selection.Y) * Blockset.BitmapNumBlocksX);
                         arrY[x] = (index >= _blockset.Blocks.Count) ? null : _blockset.Blocks[index];
                     }
                     blocks[y] = arrY;
                 }
                 SelectionCompleted.Invoke(this, blocks);
             }
-        }
-        private unsafe void UpdateBlockset(bool collectionChanged)
-        {
-            if (_blockset != null)
-            {
-                List<Blockset.Block> blocks = _blockset.Blocks;
-                int numBlocksY = (blocks.Count / numBlocksX) + (blocks.Count % numBlocksX != 0 ? 1 : 0);
-                int bmpWidth = numBlocksX * 16;
-                int bmpHeight = numBlocksY * 16;
-                if (_bitmap == null || _bitmap.PixelSize.Height != bmpHeight)
-                {
-                    _bitmap?.Dispose();
-                    _bitmap = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Bgra8888);
-                    _bitmapSize = new Size(bmpWidth, bmpHeight);
-                }
-                using (ILockedFramebuffer l = _bitmap.Lock())
-                {
-                    uint* bmpAddress = (uint*)l.Address.ToPointer();
-                    RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
-                    int x = 0;
-                    int y = 0;
-                    for (int i = 0; i < blocks.Count; i++, x++)
-                    {
-                        if (x >= numBlocksX)
-                        {
-                            x = 0;
-                            y++;
-                        }
-                        blocks[i].Draw(bmpAddress, bmpWidth, bmpHeight, x * 16, y * 16);
-                    }
-                    for (; x < numBlocksX; x++)
-                    {
-                        RenderUtil.DrawCrossUnchecked(bmpAddress, bmpWidth, x * 16, y * 16, 16, 16, 0xFFFF0000);
-                    }
-                }
-                if (collectionChanged)
-                {
-                    _isSelecting = false;
-                    _selection.Start(0, 0, 1, 1);
-                    FireSelectionCompleted();
-                }
-                InvalidateVisual();
-            }
-        }
-
-        public void Dispose()
-        {
-            _bitmap.Dispose();
         }
     }
 }

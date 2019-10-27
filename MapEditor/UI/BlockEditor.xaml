@@ -11,7 +11,7 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
+      <RowDefinition />
     </Grid.RowDefinitions>
     <StackPanel Margin="5" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5" Orientation="Horizontal">
       <Border Width="34" Height="34" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
@@ -27,7 +27,11 @@
       <CheckBox Content="X-Flip" IsChecked="{Binding ElementName=TileLayerImage, Path=Selection.XFlip}" />
       <CheckBox Content="Y-Flip" IsChecked="{Binding ElementName=TileLayerImage, Path=Selection.YFlip}" />
     </StackPanel>
-    <Button Margin="5" Grid.Row="1" Grid.Column="0" Content="Add Block" Command="{Binding AddBlockCommand}" />
+    <StackPanel Grid.Row="1" Grid.Column="0" Margin="5" Spacing="5" Orientation="Horizontal">
+      <Button Content="Add Block" Command="{Binding AddBlockCommand}" />
+      <Button Content="Clear Block" Command="{Binding ClearBlockCommand}" />
+      <Button Content="Remove Block" Command="{Binding RemoveBlockCommand}" />
+    </StackPanel>
     <ComboBox Margin="5" Grid.Row="1" Grid.Column="1" Items="{Binding ZLayers}" SelectedIndex="{Binding SelectedZLayerIndex}" Name="ZLayerComboBox">
       <ComboBox.ItemTemplate>
         <DataTemplate>

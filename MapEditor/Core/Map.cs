@@ -84,11 +84,13 @@ namespace Kermalis.MapEditor.Core
             }
             UpdateBitmapSize();
         }
+        ~Map()
+        {
+            Dispose(false);
+        }
 
-        private static readonly List<Block> _pasteList = new List<Block>(); // Saves allocations
         public void Paste(Blockset.Block[][] blocks, int destX, int destY)
         {
-            _pasteList.Clear();
             for (int y = 0; y < blocks.Length; y++)
             {
                 int dy = y + destY;
@@ -105,14 +107,17 @@ namespace Kermalis.MapEditor.Core
                             if (b != null)
                             {
                                 Block outB = outArrY[dx];
-                                outB.BlocksetBlock = b;
-                                _pasteList.Add(outB);
+                                if (outB.BlocksetBlock != b)
+                                {
+                                    outB.BlocksetBlock = b;
+                                    DrawList.Add(outB);
+                                }
                             }
                         }
                     }
                 }
             }
-            Draw(_pasteList);
+            Draw();
         }
 
         private void UpdateBitmapSize()
@@ -134,23 +139,28 @@ namespace Kermalis.MapEditor.Core
                 DrawAll();
             }
         }
-        public unsafe void Draw(IReadOnlyList<Block> blocks)
+        public static readonly List<Block> DrawList = new List<Block>(); // Save allocations
+        public unsafe void Draw()
         {
-            using (ILockedFramebuffer l = Bitmap.Lock())
+            if (DrawList.Count > 0)
             {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
-                int bmpWidth = Width * 16;
-                int bmpHeight = Height * 16;
-                for (int i = 0; i < blocks.Count; i++)
+                using (ILockedFramebuffer l = Bitmap.Lock())
                 {
-                    Block b = blocks[i];
-                    int x = b.X * 16;
-                    int y = b.Y * 16;
-                    RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x, y, 16, 16, 0xFF000000);
-                    b.BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x, y);
+                    uint* bmpAddress = (uint*)l.Address.ToPointer();
+                    int bmpWidth = Width * 16;
+                    int bmpHeight = Height * 16;
+                    for (int i = 0; i < DrawList.Count; i++)
+                    {
+                        Block b = DrawList[i];
+                        int x = b.X * 16;
+                        int y = b.Y * 16;
+                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x, y, 16, 16, 0xFF000000);
+                        b.BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x, y);
+                    }
                 }
+                DrawList.Clear();
+                OnDrew?.Invoke(this, EventArgs.Empty);
             }
-            OnDrew?.Invoke(this, EventArgs.Empty);
         }
         public unsafe void DrawAll()
         {
@@ -190,6 +200,14 @@ namespace Kermalis.MapEditor.Core
 
         public void Dispose()
         {
+            Dispose(true);
+        }
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                GC.SuppressFinalize(this);
+            }
             Bitmap.Dispose();
         }
     }

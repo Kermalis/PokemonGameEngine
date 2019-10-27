@@ -47,10 +47,12 @@ namespace Kermalis.MapEditor.UI
             {
                 _map.OnDrew += Map_OnDrew;
             }
+            InvalidateMeasure();
             InvalidateVisual();
         }
         private void Map_OnDrew(object sender, EventArgs e)
         {
+            InvalidateMeasure();
             InvalidateVisual();
         }
 
@@ -60,8 +62,7 @@ namespace Kermalis.MapEditor.UI
             {
                 IBitmap source = _map.Bitmap;
                 var viewPort = new Rect(Bounds.Size);
-                PixelSize sourcePixelSize = source.PixelSize;
-                var r = new Rect(new Size(sourcePixelSize.Width, sourcePixelSize.Height));
+                var r = new Rect(source.Size);
                 Rect destRect = viewPort.CenterRect(r).Intersect(viewPort);
                 Rect sourceRect = r.CenterRect(new Rect(destRect.Size));
 

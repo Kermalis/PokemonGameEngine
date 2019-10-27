@@ -1,4 +1,7 @@
-﻿using Kermalis.EndianBinaryIO;
+﻿using Avalonia;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using Kermalis.EndianBinaryIO;
 using Kermalis.MapEditor.Util;
 using System;
 using System.Collections.Generic;
@@ -7,7 +10,7 @@ using System.IO;
 
 namespace Kermalis.MapEditor.Core
 {
-    public sealed class Blockset
+    public sealed class Blockset : IDisposable
     {
         public sealed class Block
         {
@@ -94,7 +97,7 @@ namespace Kermalis.MapEditor.Core
             }
 
             internal Blockset Parent;
-            internal readonly int Id;
+            internal int Id;
             internal readonly Dictionary<byte, List<Tile>> TopLeft;
             internal readonly Dictionary<byte, List<Tile>> TopRight;
             internal readonly Dictionary<byte, List<Tile>> BottomLeft;
@@ -216,7 +219,16 @@ namespace Kermalis.MapEditor.Core
             }
         }
 
-        internal event EventHandler<bool> OnChanged;
+        internal delegate void AddedChangedRemoved(Blockset blockset, Block block);
+        internal delegate void Replaced(Blockset blockset, Block oldBlock, Block newBlock);
+        internal event AddedChangedRemoved OnAdded;
+        internal event AddedChangedRemoved OnChanged;
+        internal event AddedChangedRemoved OnRemoved;
+        internal event Replaced OnReplaced;
+
+        public const int BitmapNumBlocksX = 8;
+        internal WriteableBitmap Bitmap;
+        internal event EventHandler<EventArgs> OnDrew;
 
         private static readonly IdList _ids = new IdList(Path.Combine(Program.AssetPath, "Blockset", "BlocksetIds.txt"));
 
@@ -237,6 +249,8 @@ namespace Kermalis.MapEditor.Core
             }
             _name = name;
             Id = id;
+            UpdateBitmapSize();
+            DrawAll();
         }
         internal Blockset(string name, Tileset.Tile defaultTile)
         {
@@ -246,6 +260,12 @@ namespace Kermalis.MapEditor.Core
             _name = name;
             Save();
             _ids.Save();
+            UpdateBitmapSize();
+            DrawAll();
+        }
+        ~Blockset()
+        {
+            Dispose(false);
         }
 
         internal static bool IsValidName(string name)
@@ -292,22 +312,139 @@ namespace Kermalis.MapEditor.Core
 
         internal void Add(Tileset.Tile defaultTile)
         {
-            Blocks.Add(new Block(this, Blocks.Count, defaultTile));
-            FireChanged(true);
+            var block = new Block(this, Blocks.Count, defaultTile);
+            Blocks.Add(block);
+            OnAdded?.Invoke(this, block);
+            if (UpdateBitmapSize())
+            {
+                DrawAll();
+            }
+            else
+            {
+                DrawOne(block);
+            }
         }
         internal static void Remove(Block block)
         {
-            Blockset b = block.Parent;
-            if (b != null)
+            Blockset blockset = block.Parent;
+            blockset.Blocks.Remove(block);
+            block.Parent = null;
+            for (int i = block.Id; i < blockset.Blocks.Count; i++)
             {
-                b.Blocks.Remove(block);
-                block.Parent = null;
-                b.FireChanged(true);
+                blockset.Blocks[i].Id--;
+            }
+            blockset.OnRemoved?.Invoke(blockset, block);
+            if (blockset.UpdateBitmapSize())
+            {
+                blockset.DrawAll();
+            }
+            else
+            {
+                blockset.DrawFrom(block.Id);
             }
         }
-        internal void FireChanged(bool collectionChanged)
+        internal static void Replace(Block oldBlock, Tileset.Tile defaultTile)
         {
-            OnChanged?.Invoke(this, collectionChanged);
+            Blockset blockset = oldBlock.Parent;
+            blockset.Blocks.Remove(oldBlock);
+            oldBlock.Parent = null;
+            var newBlock = new Block(blockset, oldBlock.Id, defaultTile);
+            blockset.Blocks.Insert(newBlock.Id, newBlock);
+            blockset.OnReplaced?.Invoke(blockset, oldBlock, newBlock);
+            blockset.DrawOne(newBlock);
+        }
+        internal void FireChanged(Block block)
+        {
+            DrawOne(block);
+            OnChanged?.Invoke(this, block);
+        }
+
+        private int GetBitmapHeight()
+        {
+            int numBlocksY = (Blocks.Count / BitmapNumBlocksX) + (Blocks.Count % BitmapNumBlocksX != 0 ? 1 : 0);
+            return numBlocksY * 16;
+        }
+        private bool UpdateBitmapSize()
+        {
+            int bmpHeight = GetBitmapHeight();
+            if (Bitmap == null || Bitmap.PixelSize.Height != bmpHeight)
+            {
+                Bitmap?.Dispose();
+                Bitmap = new WriteableBitmap(new PixelSize(BitmapNumBlocksX * 16, bmpHeight), new Vector(96, 96), PixelFormat.Bgra8888);
+                return true;
+            }
+            return false;
+        }
+        private unsafe void DrawOne(Block block)
+        {
+            const int bmpWidth = BitmapNumBlocksX * 16;
+            int bmpHeight = GetBitmapHeight();
+            using (ILockedFramebuffer l = Bitmap.Lock())
+            {
+                uint* bmpAddress = (uint*)l.Address.ToPointer();
+                int x = block.Id % BitmapNumBlocksX * 16;
+                int y = block.Id / BitmapNumBlocksX * 16;
+                RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x, y, 16, 16, 0xFF000000);
+                block.Draw(bmpAddress, bmpWidth, bmpHeight, x, y);
+            }
+            OnDrew?.Invoke(this, EventArgs.Empty);
+        }
+        private unsafe void DrawFrom(int index)
+        {
+            const int bmpWidth = BitmapNumBlocksX * 16;
+            int bmpHeight = GetBitmapHeight();
+            using (ILockedFramebuffer l = Bitmap.Lock())
+            {
+                uint* bmpAddress = (uint*)l.Address.ToPointer();
+                int x = index % BitmapNumBlocksX;
+                int y = index / BitmapNumBlocksX;
+                for (; index < Blocks.Count; index++, x++)
+                {
+                    if (x >= BitmapNumBlocksX)
+                    {
+                        x = 0;
+                        y++;
+                    }
+                    int bx = x * 16;
+                    int by = y * 16;
+                    RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, bx, by, 16, 16, 0xFF000000);
+                    Blocks[index].Draw(bmpAddress, bmpWidth, bmpHeight, bx, by);
+                }
+                for (; x < BitmapNumBlocksX; x++)
+                {
+                    int bx = x * 16;
+                    int by = y * 16;
+                    RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, bx, by, 16, 16, 0xFF000000);
+                    RenderUtil.DrawCrossUnchecked(bmpAddress, bmpWidth, bx, by, 16, 16, 0xFFFF0000);
+                }
+            }
+            OnDrew?.Invoke(this, EventArgs.Empty);
+        }
+        private unsafe void DrawAll()
+        {
+            const int bmpWidth = BitmapNumBlocksX * 16;
+            int bmpHeight = GetBitmapHeight();
+            using (ILockedFramebuffer l = Bitmap.Lock())
+            {
+                uint* bmpAddress = (uint*)l.Address.ToPointer();
+                RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
+                int x = 0;
+                int y = 0;
+                for (int i = 0; i < Blocks.Count; i++, x++)
+                {
+                    if (x >= BitmapNumBlocksX)
+                    {
+                        x = 0;
+                        y++;
+                    }
+                    Blocks[i].Draw(bmpAddress, bmpWidth, bmpHeight, x * 16, y * 16);
+                }
+                for (; x < BitmapNumBlocksX; x++)
+                {
+                    RenderUtil.DrawCrossUnchecked(bmpAddress, bmpWidth, x * 16, y * 16, 16, 16, 0xFFFF0000);
+                }
+            }
+            OnDrew?.Invoke(this, EventArgs.Empty);
         }
 
         internal void Save()
@@ -321,6 +458,19 @@ namespace Kermalis.MapEditor.Core
                     Blocks[i].Write(w);
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                GC.SuppressFinalize(this);
+            }
+            Bitmap.Dispose();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Kermalis.MapEditor.UI
 
         internal void SetBlock(Blockset.Block block)
         {
-            if (block != null && block != _block)
+            if (block != null)
             {
                 _block = block;
                 UpdateBitmap();

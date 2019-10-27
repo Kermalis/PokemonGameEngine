@@ -91,7 +91,7 @@ namespace Kermalis.MapEditor.UI
                     var t = new Blockset.Block.Tile();
                     Selection.CopyTo(t);
                     layers.Add(t);
-                    _block.Parent.FireChanged(false);
+                    _block.Parent.FireChanged(_block);
                 }
                 else
                 {
@@ -99,10 +99,9 @@ namespace Kermalis.MapEditor.UI
                     if (!Selection.Equals(t))
                     {
                         Selection.CopyTo(t);
-                        _block.Parent.FireChanged(false);
+                        _block.Parent.FireChanged(_block);
                     }
                 }
-                _block.Parent.FireChanged(false);
                 UpdateBitmap();
             }
             if (top)
@@ -187,7 +186,7 @@ namespace Kermalis.MapEditor.UI
 
         internal void SetBlock(Blockset.Block block)
         {
-            if (block != null && block != _block)
+            if (block != null)
             {
                 _block = block;
                 UpdateBitmap();

@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using System;
@@ -11,7 +10,7 @@ using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class TilesetImage : Control, IDisposable, INotifyPropertyChanged
+    public sealed class TilesetImage : Control, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
         {
@@ -19,8 +18,9 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private const int numTilesX = 8;
+        private readonly double _scale;
 
+        private bool _isSelecting;
         private readonly Selection _selection;
         internal event EventHandler<Tileset.Tile> SelectionCompleted;
 
@@ -33,17 +33,15 @@ namespace Kermalis.MapEditor.UI
                 if (_tileset != value)
                 {
                     _tileset = value;
-                    OnTilesetChanged();
+                    _isSelecting = false;
+                    _selection.Start(0, 0, 1, 1);
+                    FireSelectionCompleted();
+                    InvalidateMeasure();
+                    InvalidateVisual();
                     OnPropertyChanged(nameof(Tileset));
                 }
             }
         }
-
-        private bool _isSelecting;
-
-        private WriteableBitmap _bitmap;
-        private Size _bitmapSize;
-        private readonly double _scale;
 
         public TilesetImage(double scale)
         {
@@ -56,11 +54,13 @@ namespace Kermalis.MapEditor.UI
         {
             if (_tileset != null)
             {
+                IBitmap source = _tileset.Bitmap;
                 var viewPort = new Rect(Bounds.Size);
-                Rect destRect = viewPort.CenterRect(new Rect(_bitmapSize * _scale)).Intersect(viewPort);
-                Rect sourceRect = new Rect(_bitmapSize).CenterRect(new Rect(destRect.Size / _scale));
+                Size sourceSize = source.Size;
+                Rect destRect = viewPort.CenterRect(new Rect(sourceSize * _scale)).Intersect(viewPort);
+                Rect sourceRect = new Rect(sourceSize).CenterRect(new Rect(destRect.Size / _scale));
 
-                context.DrawImage(_bitmap, 1, sourceRect, destRect);
+                context.DrawImage(source, 1, sourceRect, destRect);
                 var r = new Rect(_selection.X * 8 * _scale, _selection.Y * 8 * _scale, _selection.Width * 8 * _scale, _selection.Height * 8 * _scale);
                 context.FillRectangle(_isSelecting ? Selection.SelectingBrush : Selection.SelectionBrush, r);
                 context.DrawRectangle(_isSelecting ? Selection.SelectingPen : Selection.SelectionPen, r);
@@ -70,7 +70,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_tileset != null)
             {
-                return _bitmapSize * _scale;
+                return _tileset.Bitmap.Size * _scale;
             }
             return new Size();
         }
@@ -78,7 +78,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_tileset != null)
             {
-                return _bitmapSize * _scale;
+                return _tileset.Bitmap.Size * _scale;
             }
             return new Size();
         }
@@ -122,58 +122,9 @@ namespace Kermalis.MapEditor.UI
         {
             if (SelectionCompleted != null)
             {
-                int index = _selection.X + (_selection.Y * numTilesX);
+                int index = _selection.X + (_selection.Y * Tileset.BitmapNumTilesX);
                 SelectionCompleted.Invoke(this, index >= _tileset.Tiles.Length ? null : _tileset.Tiles[index]);
             }
-        }
-        private void ResetSelectionAndInvalidateVisual()
-        {
-            _isSelecting = false;
-            _selection.Start(0, 0, 1, 1);
-            InvalidateVisual();
-        }
-        private unsafe void OnTilesetChanged()
-        {
-            if (_tileset != null)
-            {
-                Tileset.Tile[] tiles = _tileset.Tiles;
-                int numTilesY = (tiles.Length / numTilesX) + (tiles.Length % numTilesX != 0 ? 1 : 0);
-                int bmpWidth = numTilesX * 8;
-                int bmpHeight = numTilesY * 8;
-                if (_bitmap == null || _bitmap.PixelSize.Height != bmpHeight)
-                {
-                    _bitmap?.Dispose();
-                    _bitmap = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Bgra8888);
-                    _bitmapSize = new Size(bmpWidth, bmpHeight);
-                }
-                using (ILockedFramebuffer l = _bitmap.Lock())
-                {
-                    uint* bmpAddress = (uint*)l.Address.ToPointer();
-                    RenderUtil.TransparencyGrid(bmpAddress, bmpWidth, bmpHeight, 4, 4);
-                    int x = 0;
-                    int y = 0;
-                    for (int i = 0; i < tiles.Length; i++, x++)
-                    {
-                        if (x >= numTilesX)
-                        {
-                            x = 0;
-                            y++;
-                        }
-                        RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x * 8, y * 8, tiles[i].Colors, false, false);
-                    }
-                    for (; x < numTilesX; x++)
-                    {
-                        RenderUtil.DrawCrossUnchecked(bmpAddress, bmpWidth, x * 8, y * 8, 8, 8, 0xFFFF0000);
-                    }
-                }
-                ResetSelectionAndInvalidateVisual();
-                FireSelectionCompleted();
-            }
-        }
-
-        public void Dispose()
-        {
-            _bitmap.Dispose();
         }
     }
 }

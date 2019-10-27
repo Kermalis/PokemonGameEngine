@@ -20,14 +20,18 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
+#pragma warning disable IDE0069 // Disposable fields should be disposed
         private readonly Tileset _tileset;
         private readonly Blockset _blockset;
+#pragma warning restore IDE0069 // Disposable fields should be disposed
         private readonly TileLayerImage _tileLayerImage;
         private readonly TilesetImage _tilesetImage;
         private readonly BlocksetImage _blocksetImage;
         private readonly ComboBox _zLayerComboBox;
 
         public ReactiveCommand AddBlockCommand { get; }
+        public ReactiveCommand ClearBlockCommand { get; }
+        public ReactiveCommand RemoveBlockCommand { get; }
 
         private readonly WriteableBitmap _selectionBitmap;
         private readonly Image _selectionImage;
@@ -47,14 +51,18 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
+        private Blockset.Block _selectedBlock;
 
         public BlockEditor()
         {
             AddBlockCommand = ReactiveCommand.Create(AddBlock);
+            ClearBlockCommand = ReactiveCommand.Create(ClearBlock);
+            RemoveBlockCommand = ReactiveCommand.Create(RemoveBlock);
 
             _tileset = Tileset.LoadOrGet("TestTiles");
             _blockset = Blockset.LoadOrGet("TestBlockset");
             _blockset.OnChanged += Blockset_OnChanged;
+            _blockset.OnReplaced += Blockset_OnReplaced;
 
             _selectionBitmap = new WriteableBitmap(new PixelSize(8, 8), new Vector(96, 96), PixelFormat.Bgra8888);
 
@@ -94,6 +102,21 @@ namespace Kermalis.MapEditor.UI
         {
             _blockset.Add(_tileset.Tiles[0]);
         }
+        private void ClearBlock()
+        {
+            Blockset.Replace(_selectedBlock, _tileset.Tiles[0]);
+        }
+        private void RemoveBlock()
+        {
+            if (_selectedBlock.Parent.Blocks.Count == 1)
+            {
+                Blockset.Replace(_selectedBlock, _tileset.Tiles[0]);
+            }
+            else
+            {
+                Blockset.Remove(_selectedBlock);
+            }
+        }
         private void UpdateZLayerComboBox()
         {
             // This forces a redraw
@@ -102,15 +125,22 @@ namespace Kermalis.MapEditor.UI
             _zLayerComboBox.Background = old;
         }
 
-        private void Blockset_OnChanged(object sender, bool collectionChanged)
+        private void Blockset_OnChanged(Blockset blockset, Blockset.Block block)
         {
-            if (!collectionChanged)
+            if (block == _selectedBlock)
             {
                 for (int i = 0; i < ZLayers.Length; i++)
                 {
                     ZLayers[i].UpdateBitmap();
                 }
                 UpdateZLayerComboBox();
+            }
+        }
+        private void Blockset_OnReplaced(Blockset blockset, Blockset.Block oldBlock, Blockset.Block newBlock)
+        {
+            if (oldBlock == _selectedBlock)
+            {
+                SetBlock(newBlock);
             }
         }
         private unsafe void Selection_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -132,16 +162,22 @@ namespace Kermalis.MapEditor.UI
         }
         private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
         {
-            Blockset.Block b = e[0][0];
-            if (b != null)
+            Blockset.Block block = e[0][0];
+            if (block != null && block != _selectedBlock)
             {
-                _tileLayerImage.SetBlock(b);
-                for (int i = 0; i < ZLayers.Length; i++)
-                {
-                    ZLayers[i].SetBlock(b);
-                }
-                UpdateZLayerComboBox();
+                SetBlock(block);
             }
+        }
+
+        private void SetBlock(Blockset.Block block)
+        {
+            _selectedBlock = block;
+            _tileLayerImage.SetBlock(block);
+            for (int i = 0; i < ZLayers.Length; i++)
+            {
+                ZLayers[i].SetBlock(block);
+            }
+            UpdateZLayerComboBox();
         }
 
         protected override void HandleClosed()
@@ -159,8 +195,9 @@ namespace Kermalis.MapEditor.UI
             }
             _selectionBitmap.Dispose();
             _tileLayerImage.Dispose();
-            _tilesetImage.Dispose();
-            _blocksetImage.Dispose();
+            AddBlockCommand.Dispose();
+            ClearBlockCommand.Dispose();
+            RemoveBlockCommand.Dispose();
         }
     }
 }

@@ -10,14 +10,14 @@ namespace Kermalis.MapEditor.UI
     public sealed class MainWindow : Window, IDisposable
     {
         public ReactiveCommand OpenBlockEditorCommand { get; }
+
 #pragma warning disable IDE0069 // Disposable fields should be disposed
         private BlockEditor _blockEditor;
+        private readonly Tileset _tempTileset;
+        private readonly Blockset _blockset;
 #pragma warning restore IDE0069 // Disposable fields should be disposed
 
         private readonly Map _map;
-
-        private readonly Tileset _tempTileset;
-        private readonly Blockset _blockset;
         private readonly BlocksetImage _blocksetImage;
         private readonly MapImage _mapImage;
 
@@ -29,6 +29,8 @@ namespace Kermalis.MapEditor.UI
             const string defaultBlocksetName = "TestBlockset"; // TODO: We will have a ComboBox with the available blocksets, and if there are none, it will prompt for a name
             _blockset = Blockset.IsValidName(defaultBlocksetName) ? new Blockset(defaultBlocksetName, _tempTileset.Tiles[0]) : Blockset.LoadOrGet(defaultBlocksetName);
             _blockset.OnChanged += Blockset_OnChanged;
+            _blockset.OnRemoved += Blockset_OnRemoved;
+            _blockset.OnReplaced += Blockset_OnReplaced;
             _map = new Map(32, 32, _blockset.Blocks[0]);
 
             DataContext = this;
@@ -42,12 +44,55 @@ namespace Kermalis.MapEditor.UI
             _blocksetImage.Blockset = _blockset;
         }
 
-        private void Blockset_OnChanged(object sender, bool collectionChanged)
+        private void Blockset_OnChanged(Blockset blockset, Blockset.Block block)
         {
-            if (!collectionChanged)
+            for (int y = 0; y < _map.Height; y++)
             {
-                _map.DrawAll();
+                Map.Block[] arrY = _map.Blocks[y];
+                for (int x = 0; x < _map.Width; x++)
+                {
+                    Map.Block b = arrY[x];
+                    if (b.BlocksetBlock == block)
+                    {
+                        Map.DrawList.Add(b);
+                    }
+                }
             }
+            _map.Draw();
+        }
+        private void Blockset_OnRemoved(Blockset blockset, Blockset.Block block)
+        {
+            for (int y = 0; y < _map.Height; y++)
+            {
+                Map.Block[] arrY = _map.Blocks[y];
+                for (int x = 0; x < _map.Width; x++)
+                {
+                    Map.Block b = arrY[x];
+                    if (b.BlocksetBlock == block)
+                    {
+                        b.BlocksetBlock = blockset.Blocks[0];
+                        Map.DrawList.Add(b);
+                    }
+                }
+            }
+            _map.Draw();
+        }
+        private void Blockset_OnReplaced(Blockset blockset, Blockset.Block oldBlock, Blockset.Block newBlock)
+        {
+            for (int y = 0; y < _map.Height; y++)
+            {
+                Map.Block[] arrY = _map.Blocks[y];
+                for (int x = 0; x < _map.Width; x++)
+                {
+                    Map.Block b = arrY[x];
+                    if (b.BlocksetBlock == oldBlock)
+                    {
+                        b.BlocksetBlock = newBlock;
+                        Map.DrawList.Add(b);
+                    }
+                }
+            }
+            _map.Draw();
         }
         private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
         {
@@ -93,9 +138,9 @@ namespace Kermalis.MapEditor.UI
 
         public void Dispose()
         {
+            OpenBlockEditorCommand.Dispose();
             _blockEditor?.Close();
             _map.Dispose();
-            _blocksetImage.Dispose();
         }
     }
 }
