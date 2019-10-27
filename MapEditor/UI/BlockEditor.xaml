@@ -27,6 +27,16 @@
       <CheckBox Content="X-Flip" IsChecked="{Binding ElementName=TileLayerImage, Path=Selection.XFlip}" />
       <CheckBox Content="Y-Flip" IsChecked="{Binding ElementName=TileLayerImage, Path=Selection.YFlip}" />
     </StackPanel>
+    <ComboBox Margin="5" Grid.Row="0" Grid.Column="1" Items="{Binding SubLayers}" SelectedIndex="{Binding SelectedSubLayerIndex}" Name="SubLayerComboBox">
+      <ComboBox.ItemTemplate>
+        <DataTemplate>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding Text}" />
+            <Image Source="{Binding Bitmap}" Margin="5,0,5,0" />
+          </StackPanel>
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+    </ComboBox>
     <StackPanel Grid.Row="1" Grid.Column="0" Margin="5" Spacing="5" Orientation="Horizontal">
       <Button Content="Add Block" Command="{Binding AddBlockCommand}" />
       <Button Content="Clear Block" Command="{Binding ClearBlockCommand}" />

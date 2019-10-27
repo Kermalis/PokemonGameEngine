@@ -8,6 +8,8 @@ using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
@@ -27,6 +29,7 @@ namespace Kermalis.MapEditor.UI
         private readonly TileLayerImage _tileLayerImage;
         private readonly TilesetImage _tilesetImage;
         private readonly BlocksetImage _blocksetImage;
+        private readonly ComboBox _subLayerComboBox;
         private readonly ComboBox _zLayerComboBox;
 
         public ReactiveCommand AddBlockCommand { get; }
@@ -36,8 +39,23 @@ namespace Kermalis.MapEditor.UI
         private readonly WriteableBitmap _selectionBitmap;
         private readonly Image _selectionImage;
 
+        public ObservableCollection<SubLayerModel> SubLayers { get; }
+        private int _selectedSubLayerIndex = -1;
+        public int SelectedSubLayerIndex
+        {
+            get => _selectedSubLayerIndex;
+            set
+            {
+                if (value != -1 && _selectedSubLayerIndex != value)
+                {
+                    _selectedSubLayerIndex = value;
+                    OnPropertyChanged(nameof(SelectedSubLayerIndex));
+                    SetSubLayer((byte)_selectedSubLayerIndex);
+                }
+            }
+        }
         public ZLayerModel[] ZLayers { get; }
-        private int _selectedZLayerIndex;
+        private int _selectedZLayerIndex = -1;
         public int SelectedZLayerIndex
         {
             get => _selectedZLayerIndex;
@@ -47,7 +65,7 @@ namespace Kermalis.MapEditor.UI
                 {
                     _selectedZLayerIndex = value;
                     OnPropertyChanged(nameof(SelectedZLayerIndex));
-                    _tileLayerImage.SetZLayer((byte)_selectedZLayerIndex);
+                    SetZLayer((byte)_selectedZLayerIndex);
                 }
             }
         }
@@ -62,9 +80,10 @@ namespace Kermalis.MapEditor.UI
             _tileset = Tileset.LoadOrGet("TestTiles");
             _blockset = Blockset.LoadOrGet("TestBlockset");
             _blockset.OnChanged += Blockset_OnChanged;
-            _blockset.OnReplaced += Blockset_OnReplaced;
 
             _selectionBitmap = new WriteableBitmap(new PixelSize(8, 8), new Vector(96, 96), PixelFormat.Bgra8888);
+
+            SubLayers = new ObservableCollection<SubLayerModel>(new List<SubLayerModel>(byte.MaxValue + 1));
 
             ZLayers = new ZLayerModel[byte.MaxValue + 1];
             byte z = 0;
@@ -81,6 +100,7 @@ namespace Kermalis.MapEditor.UI
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
+            _subLayerComboBox = this.FindControl<ComboBox>("SubLayerComboBox");
             _zLayerComboBox = this.FindControl<ComboBox>("ZLayerComboBox");
 
             _selectionImage = this.FindControl<Image>("SelectionImage");
@@ -100,47 +120,40 @@ namespace Kermalis.MapEditor.UI
 
         private void AddBlock()
         {
-            _blockset.Add(_tileset.Tiles[0]);
+            _blockset.Add();
         }
         private void ClearBlock()
         {
-            Blockset.Replace(_selectedBlock, _tileset.Tiles[0]);
+            Blockset.Clear(_selectedBlock);
         }
         private void RemoveBlock()
         {
             if (_selectedBlock.Parent.Blocks.Count == 1)
             {
-                Blockset.Replace(_selectedBlock, _tileset.Tiles[0]);
+                Blockset.Clear(_selectedBlock);
             }
             else
             {
                 Blockset.Remove(_selectedBlock);
             }
         }
-        private void UpdateZLayerComboBox()
-        {
-            // This forces a redraw
-            IBrush old = _zLayerComboBox.Background;
-            _zLayerComboBox.Background = old.Equals(Brushes.AliceBlue) ? Brushes.AntiqueWhite : Brushes.AliceBlue;
-            _zLayerComboBox.Background = old;
-        }
 
         private void Blockset_OnChanged(Blockset blockset, Blockset.Block block)
         {
             if (block == _selectedBlock)
             {
+                _tileLayerImage.UpdateBitmap();
+                CountSubLayers();
+                for (int i = 0; i < SubLayers.Count; i++)
+                {
+                    SubLayers[i].UpdateBitmap();
+                }
+                UpdateComboBox(_subLayerComboBox);
                 for (int i = 0; i < ZLayers.Length; i++)
                 {
                     ZLayers[i].UpdateBitmap();
                 }
-                UpdateZLayerComboBox();
-            }
-        }
-        private void Blockset_OnReplaced(Blockset blockset, Blockset.Block oldBlock, Blockset.Block newBlock)
-        {
-            if (oldBlock == _selectedBlock)
-            {
-                SetBlock(newBlock);
+                UpdateComboBox(_zLayerComboBox);
             }
         }
         private unsafe void Selection_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -165,19 +178,95 @@ namespace Kermalis.MapEditor.UI
             Blockset.Block block = e[0][0];
             if (block != null && block != _selectedBlock)
             {
-                SetBlock(block);
+                _selectedBlock = block;
+                _tileLayerImage.SetBlock(_selectedBlock);
+                CountSubLayers();
+                for (int i = 0; i < SubLayers.Count; i++)
+                {
+                    SubLayers[i].SetBlock(_selectedBlock);
+                }
+                UpdateComboBox(_subLayerComboBox);
+                for (int i = 0; i < ZLayers.Length; i++)
+                {
+                    ZLayers[i].SetBlock(_selectedBlock);
+                }
+                UpdateComboBox(_zLayerComboBox);
             }
         }
 
-        private void SetBlock(Blockset.Block block)
+        private void SetSubLayer(byte s)
         {
-            _selectedBlock = block;
-            _tileLayerImage.SetBlock(block);
-            for (int i = 0; i < ZLayers.Length; i++)
+            _tileLayerImage.SetSubLayer(s);
+        }
+        private void SetZLayer(byte z)
+        {
+            _tileLayerImage.SetZLayer(z);
+            CountSubLayers();
+            for (int i = 0; i < SubLayers.Count; i++)
             {
-                ZLayers[i].SetBlock(block);
+                SubLayers[i].SetZLayer(z);
             }
-            UpdateZLayerComboBox();
+            UpdateComboBox(_subLayerComboBox);
+        }
+
+        private void CountSubLayers()
+        {
+            int num = 0;
+            void Count(List<Blockset.Block.Tile> subLayers)
+            {
+                int count = subLayers.Count;
+                if (count > num)
+                {
+                    num = count;
+                }
+            }
+            if (_selectedZLayerIndex == -1)
+            {
+                SelectedZLayerIndex = 0;
+            }
+            byte z = (byte)_selectedZLayerIndex;
+            Count(_selectedBlock.TopLeft[z]);
+            Count(_selectedBlock.TopRight[z]);
+            Count(_selectedBlock.BottomLeft[z]);
+            Count(_selectedBlock.BottomRight[z]);
+            if (num < byte.MaxValue + 1)
+            {
+                num++;
+            }
+            int curCount = SubLayers.Count;
+            if (num != curCount)
+            {
+                if (num > curCount)
+                {
+                    int numToAdd = num - curCount;
+                    for (int i = 0; i < numToAdd; i++)
+                    {
+                        var s = new SubLayerModel(_selectedBlock, z, (byte)(curCount + i));
+                        SubLayers.Add(s);
+                    }
+                    if (_selectedSubLayerIndex == -1)
+                    {
+                        SelectedSubLayerIndex = 0;
+                    }
+                }
+                else
+                {
+                    int numToRemove = curCount - num;
+                    for (int i = 0; i < numToRemove; i++)
+                    {
+                        int index = curCount - 1 - i;
+                        SubLayers[index].Dispose();
+                        SubLayers.RemoveAt(index);
+                    }
+                }
+            }
+        }
+        private void UpdateComboBox(ComboBox c)
+        {
+            // This forces a redraw
+            IBrush old = c.Background;
+            c.Background = old.Equals(Brushes.AliceBlue) ? Brushes.AntiqueWhite : Brushes.AliceBlue;
+            c.Background = old;
         }
 
         protected override void HandleClosed()
@@ -189,6 +278,10 @@ namespace Kermalis.MapEditor.UI
 
         public void Dispose()
         {
+            for (int i = 0; i < SubLayers.Count; i++)
+            {
+                SubLayers[i].Dispose();
+            }
             for (int i = 0; i < ZLayers.Length; i++)
             {
                 ZLayers[i].Dispose();

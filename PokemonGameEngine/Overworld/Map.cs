@@ -73,11 +73,11 @@ namespace Kermalis.PokemonGameEngine.Overworld
                         byte z = 0;
                         while (true)
                         {
-                            void Draw(Blockset.Block.Tile[] layers, int tx, int ty)
+                            void Draw(Blockset.Block.Tile[] subLayers, int tx, int ty)
                             {
-                                for (int t = 0; t < layers.Length; t++)
+                                for (int t = 0; t < subLayers.Length; t++)
                                 {
-                                    Blockset.Block.Tile tile = layers[t];
+                                    Blockset.Block.Tile tile = subLayers[t];
                                     RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
                                 }
                             }

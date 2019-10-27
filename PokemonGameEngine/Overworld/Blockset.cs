@@ -36,32 +36,32 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 Behavior = r.ReadUInt16();
                 Dictionary<byte, Tile[]> Read()
                 {
-                    var d = new Dictionary<byte, Tile[]>(byte.MaxValue + 1);
+                    var zLayers = new Dictionary<byte, Tile[]>(byte.MaxValue + 1);
                     byte z = 0;
                     while (true)
                     {
                         byte count = r.ReadByte();
-                        Tile[] arr;
+                        Tile[] subLayers;
                         if (count == 0)
                         {
-                            arr = Array.Empty<Tile>();
+                            subLayers = Array.Empty<Tile>();
                         }
                         else
                         {
-                            arr = new Tile[count];
+                            subLayers = new Tile[count];
                             for (int i = 0; i < count; i++)
                             {
-                                arr[i] = new Tile(r);
+                                subLayers[i] = new Tile(r);
                             }
                         }
-                        d.Add(z, arr);
+                        zLayers.Add(z, subLayers);
                         if (z == byte.MaxValue)
                         {
                             break;
                         }
                         z++;
                     }
-                    return d;
+                    return zLayers;
                 }
                 TopLeft = Read();
                 TopRight = Read();

@@ -13,7 +13,6 @@ namespace Kermalis.MapEditor.UI
 
 #pragma warning disable IDE0069 // Disposable fields should be disposed
         private BlockEditor _blockEditor;
-        private readonly Tileset _tempTileset;
         private readonly Blockset _blockset;
 #pragma warning restore IDE0069 // Disposable fields should be disposed
 
@@ -25,12 +24,10 @@ namespace Kermalis.MapEditor.UI
         {
             OpenBlockEditorCommand = ReactiveCommand.Create(OpenBlockEditor);
 
-            _tempTileset = Tileset.LoadOrGet("TestTiles");
             const string defaultBlocksetName = "TestBlockset"; // TODO: We will have a ComboBox with the available blocksets, and if there are none, it will prompt for a name
-            _blockset = Blockset.IsValidName(defaultBlocksetName) ? new Blockset(defaultBlocksetName, _tempTileset.Tiles[0]) : Blockset.LoadOrGet(defaultBlocksetName);
+            _blockset = Blockset.IsValidName(defaultBlocksetName) ? new Blockset(defaultBlocksetName) : Blockset.LoadOrGet(defaultBlocksetName);
             _blockset.OnChanged += Blockset_OnChanged;
             _blockset.OnRemoved += Blockset_OnRemoved;
-            _blockset.OnReplaced += Blockset_OnReplaced;
             _map = new Map(32, 32, _blockset.Blocks[0]);
 
             DataContext = this;
@@ -71,23 +68,6 @@ namespace Kermalis.MapEditor.UI
                     if (b.BlocksetBlock == block)
                     {
                         b.BlocksetBlock = blockset.Blocks[0];
-                        Map.DrawList.Add(b);
-                    }
-                }
-            }
-            _map.Draw();
-        }
-        private void Blockset_OnReplaced(Blockset blockset, Blockset.Block oldBlock, Blockset.Block newBlock)
-        {
-            for (int y = 0; y < _map.Height; y++)
-            {
-                Map.Block[] arrY = _map.Blocks[y];
-                for (int x = 0; x < _map.Width; x++)
-                {
-                    Map.Block b = arrY[x];
-                    if (b.BlocksetBlock == oldBlock)
-                    {
-                        b.BlocksetBlock = newBlock;
                         Map.DrawList.Add(b);
                     }
                 }

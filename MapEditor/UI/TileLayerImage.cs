@@ -16,7 +16,7 @@ namespace Kermalis.MapEditor.UI
         public Blockset.Block.Tile Selection { get; } = new Blockset.Block.Tile();
         private bool _isDrawing;
 
-        private readonly int _tileLayerNum;
+        private byte _subLayerNum;
         private byte _zLayerNum;
         private Blockset.Block _block;
         private readonly WriteableBitmap _bitmap;
@@ -47,62 +47,45 @@ namespace Kermalis.MapEditor.UI
             return _bitmapSize * _scale;
         }
 
-        private Blockset.Block.Tile GetTile(bool left, bool top)
-        {
-            Blockset.Block.Tile Get(Dictionary<byte, List<Blockset.Block.Tile>> dict)
-            {
-                List<Blockset.Block.Tile> layers = dict[_zLayerNum];
-                return layers.Count <= _tileLayerNum ? null : layers[_tileLayerNum];
-            }
-            if (top)
-            {
-                if (left)
-                {
-                    return Get(_block.TopLeft);
-                }
-                else
-                {
-                    return Get(_block.TopRight);
-                }
-            }
-            else
-            {
-                if (left)
-                {
-                    return Get(_block.BottomLeft);
-                }
-                else
-                {
-                    return Get(_block.BottomRight);
-                }
-            }
-        }
-        private void SetTile(bool left, bool top)
+        private void SetTile(bool remove, bool left, bool top)
         {
             void Set(Dictionary<byte, List<Blockset.Block.Tile>> dict)
             {
-                List<Blockset.Block.Tile> layers = dict[_zLayerNum];
-                if (layers.Count < _tileLayerNum)
+                List<Blockset.Block.Tile> subLayers = dict[_zLayerNum];
+                if (subLayers.Count < _subLayerNum)
                 {
                     throw new InvalidOperationException();
                 }
-                else if (layers.Count == _tileLayerNum)
+                else if (subLayers.Count == _subLayerNum)
                 {
-                    var t = new Blockset.Block.Tile();
-                    Selection.CopyTo(t);
-                    layers.Add(t);
-                    _block.Parent.FireChanged(_block);
+                    if (!remove)
+                    {
+                        var t = new Blockset.Block.Tile();
+                        Selection.CopyTo(t);
+                        subLayers.Add(t);
+                        _block.Parent.FireChanged(_block);
+                        UpdateBitmap();
+                    }
                 }
                 else
                 {
-                    Blockset.Block.Tile t = layers[_tileLayerNum];
-                    if (!Selection.Equals(t))
+                    if (remove)
                     {
-                        Selection.CopyTo(t);
+                        subLayers.RemoveAt(_subLayerNum);
                         _block.Parent.FireChanged(_block);
+                        UpdateBitmap();
+                    }
+                    else
+                    {
+                        Blockset.Block.Tile t = subLayers[_subLayerNum];
+                        if (!Selection.Equals(t))
+                        {
+                            Selection.CopyTo(t);
+                            _block.Parent.FireChanged(_block);
+                            UpdateBitmap();
+                        }
                     }
                 }
-                UpdateBitmap();
             }
             if (top)
             {
@@ -138,7 +121,17 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_RectContains(pos))
                     {
                         _isDrawing = true;
-                        SetTile((int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
+                        SetTile(false, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
+                        e.Handled = true;
+                    }
+                    break;
+                }
+                case PointerUpdateKind.MiddleButtonPressed:
+                {
+                    Point pos = pp.Position;
+                    if (Bounds.TemporaryFix_RectContains(pos))
+                    {
+                        SetTile(true, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
                         e.Handled = true;
                     }
                     break;
@@ -148,7 +141,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_RectContains(pos))
                     {
-                        GetTile((int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0)?.CopyTo(Selection);
+                        SubLayerModel.GetTile(_block, _zLayerNum, _subLayerNum, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0)?.CopyTo(Selection);
                         e.Handled = true;
                     }
                     break;
@@ -165,7 +158,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_RectContains(pos))
                     {
-                        SetTile((int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
+                        SetTile(false, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
                         e.Handled = true;
                     }
                 }
@@ -192,6 +185,14 @@ namespace Kermalis.MapEditor.UI
                 UpdateBitmap();
             }
         }
+        internal void SetSubLayer(byte s)
+        {
+            if (_subLayerNum != s)
+            {
+                _subLayerNum = s;
+                UpdateBitmap();
+            }
+        }
         internal void SetZLayer(byte z)
         {
             if (_zLayerNum != z)
@@ -202,15 +203,7 @@ namespace Kermalis.MapEditor.UI
         }
         internal unsafe void UpdateBitmap()
         {
-            using (ILockedFramebuffer l = _bitmap.Lock())
-            {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtil.TransparencyGrid(bmpAddress, 16, 16, 4, 4);
-                GetTile(true, true)?.Draw(bmpAddress, 16, 16, 0, 0);
-                GetTile(false, true)?.Draw(bmpAddress, 16, 16, 8, 0);
-                GetTile(true, false)?.Draw(bmpAddress, 16, 16, 0, 8);
-                GetTile(false, false)?.Draw(bmpAddress, 16, 16, 8, 8);
-            }
+            SubLayerModel.UpdateBitmap(_bitmap, _block, _zLayerNum, _subLayerNum);
             InvalidateVisual();
         }
 
