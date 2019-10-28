@@ -28,13 +28,20 @@ namespace Kermalis.PokemonGameEngine.UI
 
         private readonly Font _font;
         private readonly uint[] _fontColors = new uint[] { 0x00000000, 0xFFFFFFFF, 0xFF848484 };
-        private readonly Map _map;
 
         public MainView()
         {
             _font = new Font("TestFont.kermfont");
-            _map = new Map("TestMapC");
-            _map.Characters.Add(new CharacterObj(Obj.PlayerId, "TestNPC.png", 32, 32) { X = 15, Y = 8, Z = 0 });
+            var map = new Map("TestMapC");
+            const int x = 15;
+            const int y = 9;
+            Obj.Camera.Map = map;
+            Obj.Camera.X = x;
+            Obj.Camera.Y = y;
+            CharacterObj.Player.Map = map;
+            CharacterObj.Player.X = x;
+            CharacterObj.Player.Y = y;
+            map.Characters.Add(CharacterObj.Player);
             _screen = new WriteableBitmap(new PixelSize(RenderWidth, RenderHeight), new Vector(96, 96), PixelFormat.Bgra8888);
             _screenSize = new Size(RenderWidth, RenderHeight);
             _stretch = Stretch.Uniform;
@@ -55,11 +62,7 @@ namespace Kermalis.PokemonGameEngine.UI
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
                     RenderUtil.Fill(bmpAddress, RenderWidth, RenderHeight, 0, 0, RenderWidth, RenderHeight, 0xFF000000);
-
-                    const int cameraX = 0;
-                    const int cameraY = 0;
-                    _map.Draw(bmpAddress, RenderWidth, RenderHeight, cameraX, cameraY);
-
+                    Map.Draw(bmpAddress, RenderWidth, RenderHeight);
                     if (_showFPS)
                     {
                         RenderUtil.Draw(bmpAddress, RenderWidth, RenderHeight, 0, 0, ((int)_fps).ToString(), _font, _fontColors);

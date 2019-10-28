@@ -4,6 +4,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
 {
     internal sealed class CharacterObj : Obj
     {
+        public static readonly CharacterObj Player = new CharacterObj(PlayerId, "TestNPC.png", 32, 32);
+
         public readonly int SpriteWidth;
         public readonly int SpriteHeight;
         private readonly uint[][][] _tempSpriteSheet;

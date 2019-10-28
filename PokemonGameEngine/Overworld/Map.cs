@@ -53,12 +53,16 @@ namespace Kermalis.PokemonGameEngine.Overworld
             }
         }
 
-        public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
+        public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            int xp16 = x % 16;
-            int yp16 = y % 16;
-            int startBlockX = (x / 16) - (xp16 >= 0 ? 0 : 1);
-            int startBlockY = (y / 16) - (yp16 >= 0 ? 0 : 1);
+            Obj camera = Obj.Camera;
+            int cameraX = (camera.X * 16) - (bmpWidth / 2) + 8;
+            int cameraY = (camera.Y * 16) - (bmpHeight / 2) + 8;
+            Map cameraMap = camera.Map;
+            int xp16 = cameraX % 16;
+            int yp16 = cameraY % 16;
+            int startBlockX = (cameraX / 16) - (xp16 >= 0 ? 0 : 1);
+            int startBlockY = (cameraY / 16) - (yp16 >= 0 ? 0 : 1);
             int numBlocksX = (bmpWidth / 16) + (bmpWidth % 16 == 0 ? 0 : 1);
             int numBlocksY = (bmpHeight / 16) + (bmpHeight % 16 == 0 ? 0 : 1);
             int endBlockX = startBlockX + numBlocksX + (xp16 == 0 ? 0 : 1);
@@ -74,7 +78,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 {
                     for (int blockX = startBlockX; blockX < endBlockX; blockX++)
                     {
-                        if (blockY >= 0 && blockY < _height && blockX >= 0 && blockX < _width)
+                        if (blockY >= 0 && blockY < cameraMap._height && blockX >= 0 && blockX < cameraMap._width)
                         {
                             void Draw(Blockset.Block.Tile[] subLayers, int tx, int ty)
                             {
@@ -84,7 +88,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                                     RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
                                 }
                             }
-                            Blockset.Block b = _blocks[blockY][blockX].BlocksetBlock;
+                            Blockset.Block b = cameraMap._blocks[blockY][blockX].BlocksetBlock;
                             Draw(b.TopLeft[z], curX, curY);
                             Draw(b.TopRight[z], curX + 8, curY);
                             Draw(b.BottomLeft[z], curX, curY + 8);
@@ -95,9 +99,9 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     curX = startX;
                     curY += 16;
                 }
-                for (int i = 0; i < Characters.Count; i++)
+                for (int i = 0; i < cameraMap.Characters.Count; i++)
                 {
-                    CharacterObj c = Characters[i];
+                    CharacterObj c = cameraMap.Characters[i];
                     if (c.Z == z)
                     {
                         int objX = ((c.X - startBlockX) * 16) + startX;
