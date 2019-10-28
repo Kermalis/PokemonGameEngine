@@ -32,11 +32,11 @@ namespace Kermalis.PokemonGameEngine.Util
                     {
                         for (int sx = 0; sx < numSpritesX; sx++)
                         {
-                            uint[][] arrY = new uint[spriteWidth][];
-                            for (int py = 0; py < spriteWidth; py++)
+                            uint[][] arrY = new uint[spriteHeight][];
+                            for (int py = 0; py < spriteHeight; py++)
                             {
-                                uint[] arrX = new uint[spriteHeight];
-                                for (int px = 0; px < spriteHeight; px++)
+                                uint[] arrX = new uint[spriteWidth];
+                                for (int px = 0; px < spriteWidth; px++)
                                 {
                                     arrX[px] = *(bmpAddress + ((sx * spriteWidth) + px) + (((sy * spriteHeight) + py) * ps.Width));
                                 }
