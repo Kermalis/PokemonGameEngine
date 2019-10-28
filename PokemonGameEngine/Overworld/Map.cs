@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Util;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Overworld
@@ -22,6 +23,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
         private readonly int _height;
 
         private readonly Block[][] _blocks;
+
+        public readonly List<CharacterObj> Characters = new List<CharacterObj>();
 
         public Map(string name)
         {
@@ -61,17 +64,17 @@ namespace Kermalis.PokemonGameEngine.Overworld
             int endBlockX = startBlockX + numBlocksX + (xp16 == 0 ? 0 : 1);
             int endBlockY = startBlockY + numBlocksY + (yp16 == 0 ? 0 : 1);
             int startX = xp16 >= 0 ? -xp16 : -xp16 - 16;
-            int curX = startX;
-            int curY = yp16 >= 0 ? -yp16 : -yp16 - 16;
-            for (int blockY = startBlockY; blockY < endBlockY; blockY++)
+            int startY = yp16 >= 0 ? -yp16 : -yp16 - 16;
+            byte z = 0;
+            while (true)
             {
-                for (int blockX = startBlockX; blockX < endBlockX; blockX++)
+                int curX = startX;
+                int curY = startY;
+                for (int blockY = startBlockY; blockY < endBlockY; blockY++)
                 {
-                    if (blockY >= 0 && blockY < _height && blockX >= 0 && blockX < _width)
+                    for (int blockX = startBlockX; blockX < endBlockX; blockX++)
                     {
-                        Blockset.Block b = _blocks[blockY][blockX].BlocksetBlock;
-                        byte z = 0;
-                        while (true)
+                        if (blockY >= 0 && blockY < _height && blockX >= 0 && blockX < _width)
                         {
                             void Draw(Blockset.Block.Tile[] subLayers, int tx, int ty)
                             {
@@ -81,21 +84,39 @@ namespace Kermalis.PokemonGameEngine.Overworld
                                     RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
                                 }
                             }
+                            Blockset.Block b = _blocks[blockY][blockX].BlocksetBlock;
                             Draw(b.TopLeft[z], curX, curY);
                             Draw(b.TopRight[z], curX + 8, curY);
                             Draw(b.BottomLeft[z], curX, curY + 8);
                             Draw(b.BottomRight[z], curX + 8, curY + 8);
-                            if (z == byte.MaxValue)
-                            {
-                                break;
-                            }
-                            z++;
+                        }
+                        curX += 16;
+                    }
+                    curX = startX;
+                    curY += 16;
+                }
+                for (int i = 0; i < Characters.Count; i++)
+                {
+                    CharacterObj c = Characters[i];
+                    if (c.Z == z)
+                    {
+                        int objX = ((c.X - startBlockX) * 16) + startX;
+                        int objY = ((c.Y - startBlockY) * 16) + startY;
+                        int objW = c.SpriteWidth;
+                        int objH = c.SpriteHeight;
+                        objX -= (objW - 16) / 2;
+                        objY -= objH - 16;
+                        if (objX < bmpWidth && objX + objW > 0 && objY < bmpHeight && objY + objH > 0)
+                        {
+                            c.Draw(bmpAddress, bmpWidth, bmpHeight, objX, objY);
                         }
                     }
-                    curX += 16;
                 }
-                curX = startX;
-                curY += 16;
+                if (z == byte.MaxValue)
+                {
+                    break;
+                }
+                z++;
             }
         }
     }

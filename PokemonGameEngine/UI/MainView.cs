@@ -29,13 +29,12 @@ namespace Kermalis.PokemonGameEngine.UI
         private readonly Font _font;
         private readonly uint[] _fontColors = new uint[] { 0x00000000, 0xFFFFFFFF, 0xFF848484 };
         private readonly Map _map;
-        private readonly uint[][][] _tempPlayerSpriteSheet;
 
         public MainView()
         {
             _font = new Font("TestFont.kermfont");
             _map = new Map("TestMapC");
-            _tempPlayerSpriteSheet = RenderUtil.LoadSpriteSheet("TestNPC.png", 32, 32);
+            _map.Characters.Add(new CharacterObj(Obj.PlayerId, "TestNPC.png", 32, 32) { X = 15, Y = 8, Z = 0 });
             _screen = new WriteableBitmap(new PixelSize(RenderWidth, RenderHeight), new Vector(96, 96), PixelFormat.Bgra8888);
             _screenSize = new Size(RenderWidth, RenderHeight);
             _stretch = Stretch.Uniform;
@@ -60,10 +59,6 @@ namespace Kermalis.PokemonGameEngine.UI
                     const int cameraX = 0;
                     const int cameraY = 0;
                     _map.Draw(bmpAddress, RenderWidth, RenderHeight, cameraX, cameraY);
-
-                    const int playerX = 4;
-                    const int playerY = 8;
-                    RenderUtil.Draw(bmpAddress, RenderWidth, RenderHeight, (playerX * 16) - 8, (playerY * 16) - 16, _tempPlayerSpriteSheet[0], false, false); // Temporarily rendered above all
 
                     if (_showFPS)
                     {
