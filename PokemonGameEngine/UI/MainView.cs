@@ -22,8 +22,7 @@ namespace Kermalis.PokemonGameEngine.UI
         private readonly Size _screenSize;
         private readonly Stretch _stretch;
         private readonly IDisposable _clock;
-        private TimeSpan _lastTime;
-        private double _fps;
+        private TimeSpan _lastRenderTime;
         private bool _readyForRender = true;
 
         private readonly Font _font;
@@ -53,11 +52,6 @@ namespace Kermalis.PokemonGameEngine.UI
             if (!_isDisposed && _readyForRender)
             {
                 _readyForRender = false;
-                if (_showFPS)
-                {
-                    _fps = 60000 / time.Subtract(_lastTime).TotalMilliseconds;
-                }
-                _lastTime = time;
                 using (ILockedFramebuffer l = _screen.Lock())
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
@@ -65,9 +59,10 @@ namespace Kermalis.PokemonGameEngine.UI
                     Map.Draw(bmpAddress, RenderWidth, RenderHeight);
                     if (_showFPS)
                     {
-                        RenderUtil.Draw(bmpAddress, RenderWidth, RenderHeight, 0, 0, ((int)_fps).ToString(), _font, _fontColors);
+                        RenderUtil.Draw(bmpAddress, RenderWidth, RenderHeight, 0, 0, ((int)Math.Round(1000 / time.Subtract(_lastRenderTime).TotalMilliseconds)).ToString(), _font, _fontColors);
                     }
                 }
+                _lastRenderTime = time;
                 InvalidateVisual();
                 _readyForRender = true;
             }
@@ -103,13 +98,14 @@ namespace Kermalis.PokemonGameEngine.UI
             return _stretch.CalculateSize(finalSize, _screenSize);
         }
 
+        // TODO: This isn't called
         public void Dispose()
         {
             if (!_isDisposed)
             {
                 _isDisposed = true;
-                _screen.Dispose();
                 _clock.Dispose();
+                _screen.Dispose();
             }
         }
     }
