@@ -19,11 +19,14 @@ namespace Kermalis.MapEditor.Core
             public byte Behavior;
             public Blockset.Block BlocksetBlock;
 
-            public Block(int x, int y, EndianBinaryReader r)
+            public Block(bool isBorderBlock, int x, int y, EndianBinaryReader r)
             {
                 X = x;
                 Y = y;
-                Behavior = r.ReadByte();
+                if (!isBorderBlock)
+                {
+                    Behavior = r.ReadByte();
+                }
                 BlocksetBlock = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
             }
             public Block(int x, int y, Blockset.Block defaultBlock)
@@ -33,75 +36,96 @@ namespace Kermalis.MapEditor.Core
                 BlocksetBlock = defaultBlock;
             }
 
-            public void Write(EndianBinaryWriter w)
+            public void Write(bool isBorderBlock, EndianBinaryWriter w)
             {
-                w.Write(Behavior);
+                if (!isBorderBlock)
+                {
+                    w.Write(Behavior);
+                }
                 w.Write(BlocksetBlock.Parent.Id);
                 w.Write(BlocksetBlock.Id);
             }
         }
 
-        public WriteableBitmap Bitmap;
-        public event EventHandler<EventArgs> OnDrew;
+        public WriteableBitmap BlocksBitmap;
+        public WriteableBitmap BorderBlocksBitmap;
+        public delegate void MapDrewBitmapEventHandler(Map map, bool drewBorderBlocks);
+        public event MapDrewBitmapEventHandler OnDrew;
 
         public int Width;
         public int Height;
+        public byte BorderWidth;
+        public byte BorderHeight;
 
         public Block[][] Blocks;
+        public Block[][] BorderBlocks;
 
         public Map(string name)
         {
             using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(Program.AssetPath, "Map", name + ".pgemap"))))
             {
-                Width = r.ReadInt32();
-                Height = r.ReadInt32();
-                Blocks = new Block[Height][];
-                for (int y = 0; y < Height; y++)
+                Block[][] Create(bool borderBlocks, int w, int h)
                 {
-                    var arrY = new Block[Width];
-                    for (int x = 0; x < Width; x++)
+                    var arr = new Block[h][];
+                    for (int y = 0; y < h; y++)
                     {
-                        arrY[x] = new Block(x, y, r);
+                        var arrY = new Block[w];
+                        for (int x = 0; x < w; x++)
+                        {
+                            arrY[x] = new Block(borderBlocks, x, y, r);
+                        }
+                        arr[y] = arrY;
                     }
-                    Blocks[y] = arrY;
+                    return arr;
                 }
-                UpdateBitmapSize();
+                Blocks = Create(false, Width = r.ReadInt32(), Height = r.ReadInt32());
+                BorderBlocks = Create(true, BorderWidth = r.ReadByte(), BorderHeight = r.ReadByte());
+                UpdateBitmapSize(false);
+                UpdateBitmapSize(true);
             }
         }
-        public Map(int width, int height, Blockset.Block defaultBlock)
+        public Map(int width, int height, byte borderWidth, byte borderHeight, Blockset.Block defaultBlock)
         {
-            Width = width;
-            Height = height;
-            Blocks = new Block[Height][];
-            for (int y = 0; y < Height; y++)
+            Block[][] Create(int w, int h)
             {
-                var arrY = new Block[Width];
-                for (int x = 0; x < Width; x++)
+                var arr = new Block[h][];
+                for (int y = 0; y < h; y++)
                 {
-                    arrY[x] = new Block(x, y, defaultBlock);
+                    var arrY = new Block[w];
+                    for (int x = 0; x < w; x++)
+                    {
+                        arrY[x] = new Block(x, y, defaultBlock);
+                    }
+                    arr[y] = arrY;
                 }
-                Blocks[y] = arrY;
+                return arr;
             }
-            UpdateBitmapSize();
+            Blocks = Create(Width = width, Height = height);
+            BorderBlocks = Create(BorderWidth = borderWidth, BorderHeight = borderHeight);
+            UpdateBitmapSize(false);
+            UpdateBitmapSize(true);
         }
         ~Map()
         {
             Dispose(false);
         }
 
-        public void Paste(Blockset.Block[][] blocks, int destX, int destY)
+        public void Paste(bool borderBlocks, Blockset.Block[][] blocks, int destX, int destY)
         {
+            Block[][] outArr = borderBlocks ? BorderBlocks : Blocks;
+            int width = borderBlocks ? BorderWidth : Width;
+            int height = borderBlocks ? BorderHeight : Height;
             for (int y = 0; y < blocks.Length; y++)
             {
                 int dy = y + destY;
-                if (dy >= 0 && dy < Height)
+                if (dy >= 0 && dy < height)
                 {
                     Blockset.Block[] inArrY = blocks[y];
-                    Block[] outArrY = Blocks[dy];
+                    Block[] outArrY = outArr[dy];
                     for (int x = 0; x < inArrY.Length; x++)
                     {
                         int dx = x + destX;
-                        if (dx >= 0 && dx < Width)
+                        if (dx >= 0 && dx < width)
                         {
                             Blockset.Block b = inArrY[x];
                             if (b != null)
@@ -117,38 +141,50 @@ namespace Kermalis.MapEditor.Core
                     }
                 }
             }
-            Draw();
+            Draw(borderBlocks);
         }
 
-        private void UpdateBitmapSize()
+        private void UpdateBitmapSize(bool borderBlocks)
         {
+            WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
+            int bmpWidth = (borderBlocks ? BorderWidth : Width) * 16;
+            int bmpHeight = (borderBlocks ? BorderHeight : Height) * 16;
             bool createNew;
-            if (Bitmap == null)
+            if (bmp == null)
             {
                 createNew = true;
             }
             else
             {
-                PixelSize ps = Bitmap.PixelSize;
-                createNew = ps.Width != Width * 16 || ps.Height != Height * 16;
+                PixelSize ps = bmp.PixelSize;
+                createNew = ps.Width != bmpWidth || ps.Height != bmpHeight;
             }
             if (createNew)
             {
-                Bitmap?.Dispose();
-                Bitmap = new WriteableBitmap(new PixelSize(Width * 16, Height * 16), new Vector(96, 96), PixelFormat.Bgra8888);
-                DrawAll();
+                bmp?.Dispose();
+                bmp = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Bgra8888);
+                if (borderBlocks)
+                {
+                    BorderBlocksBitmap = bmp;
+                }
+                else
+                {
+                    BlocksBitmap = bmp;
+                }
+                DrawAll(borderBlocks);
             }
         }
         public static readonly List<Block> DrawList = new List<Block>(); // Save allocations
-        public unsafe void Draw()
+        public unsafe void Draw(bool borderBlocks)
         {
             if (DrawList.Count > 0)
             {
-                using (ILockedFramebuffer l = Bitmap.Lock())
+                WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
+                using (ILockedFramebuffer l = bmp.Lock())
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
-                    int bmpWidth = Width * 16;
-                    int bmpHeight = Height * 16;
+                    int bmpWidth = (borderBlocks ? BorderWidth : Width) * 16;
+                    int bmpHeight = (borderBlocks ? BorderHeight : Height) * 16;
                     for (int i = 0; i < DrawList.Count; i++)
                     {
                         Block b = DrawList[i];
@@ -159,27 +195,31 @@ namespace Kermalis.MapEditor.Core
                     }
                 }
                 DrawList.Clear();
-                OnDrew?.Invoke(this, EventArgs.Empty);
+                OnDrew?.Invoke(this, borderBlocks);
             }
         }
-        public unsafe void DrawAll()
+        public unsafe void DrawAll(bool borderBlocks)
         {
-            using (ILockedFramebuffer l = Bitmap.Lock())
+            WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
+            using (ILockedFramebuffer l = bmp.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
-                int bmpWidth = Width * 16;
-                int bmpHeight = Height * 16;
+                int width = borderBlocks ? BorderWidth : Width;
+                int height = borderBlocks ? BorderHeight : Height;
+                int bmpWidth = width * 16;
+                int bmpHeight = height * 16;
                 RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
-                for (int y = 0; y < Height; y++)
+                Block[][] arr = borderBlocks ? BorderBlocks : Blocks;
+                for (int y = 0; y < height; y++)
                 {
-                    Block[] arrY = Blocks[y];
-                    for (int x = 0; x < Width; x++)
+                    Block[] arrY = arr[y];
+                    for (int x = 0; x < width; x++)
                     {
                         arrY[x].BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x * 16, y * 16);
                     }
                 }
             }
-            OnDrew?.Invoke(this, EventArgs.Empty);
+            OnDrew?.Invoke(this, borderBlocks);
         }
 
         public void Save(string name)
@@ -192,7 +232,16 @@ namespace Kermalis.MapEditor.Core
                 {
                     for (int x = 0; x < Width; x++)
                     {
-                        Blocks[y][x].Write(w);
+                        Blocks[y][x].Write(false, w);
+                    }
+                }
+                w.Write(BorderWidth);
+                w.Write(BorderHeight);
+                for (int y = 0; y < BorderHeight; y++)
+                {
+                    for (int x = 0; x < BorderWidth; x++)
+                    {
+                        BorderBlocks[y][x].Write(true, w);
                     }
                 }
             }
@@ -208,7 +257,8 @@ namespace Kermalis.MapEditor.Core
             {
                 GC.SuppressFinalize(this);
             }
-            Bitmap.Dispose();
+            BlocksBitmap.Dispose();
+            BorderBlocksBitmap.Dispose();
         }
     }
 }

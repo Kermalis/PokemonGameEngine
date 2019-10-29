@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -7,7 +8,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
 {
     internal sealed class Map
     {
-        public sealed class Block
+        private sealed class Block
         {
             public readonly byte Behavior;
             public readonly Blockset.Block BlocksetBlock;
@@ -19,10 +20,13 @@ namespace Kermalis.PokemonGameEngine.Overworld
             }
         }
 
-        private readonly int _width;
-        private readonly int _height;
+        private readonly int _blocksWidth;
+        private readonly int _blocksHeight;
+        private readonly byte _borderWidth;
+        private readonly byte _borderHeight;
 
         private readonly Block[][] _blocks;
+        private readonly Blockset.Block[][] _borderBlocks;
 
         public readonly List<CharacterObj> Characters = new List<CharacterObj>();
 
@@ -30,29 +34,89 @@ namespace Kermalis.PokemonGameEngine.Overworld
         {
             using (var r = new EndianBinaryReader(Utils.GetResourceStream("Map." + name + ".pgemap")))
             {
-                _width = r.ReadInt32();
-                if (_width <= 0)
+                _blocksWidth = r.ReadInt32();
+                if (_blocksWidth <= 0)
                 {
                     throw new InvalidDataException();
                 }
-                _height = r.ReadInt32();
-                if (_height <= 0)
+                _blocksHeight = r.ReadInt32();
+                if (_blocksHeight <= 0)
                 {
                     throw new InvalidDataException();
                 }
-                _blocks = new Block[_height][];
-                for (int y = 0; y < _height; y++)
+                _blocks = new Block[_blocksHeight][];
+                for (int y = 0; y < _blocksHeight; y++)
                 {
-                    var arrY = new Block[_width];
-                    for (int x = 0; x < _width; x++)
+                    var arrY = new Block[_blocksWidth];
+                    for (int x = 0; x < _blocksWidth; x++)
                     {
                         arrY[x] = new Block(r);
                     }
                     _blocks[y] = arrY;
                 }
+                _borderWidth = r.ReadByte();
+                _borderHeight = r.ReadByte();
+                if (_borderHeight == 0)
+                {
+                    _borderBlocks = Array.Empty<Blockset.Block[]>();
+                }
+                else
+                {
+                    _borderBlocks = new Blockset.Block[_borderHeight][];
+                    for (int y = 0; y < _borderHeight; y++)
+                    {
+                        Blockset.Block[] arrY;
+                        if (_borderWidth == 0)
+                        {
+                            arrY = Array.Empty<Blockset.Block>();
+                        }
+                        else
+                        {
+                            arrY = new Blockset.Block[_borderWidth];
+                            for (int x = 0; x < _borderWidth; x++)
+                            {
+                                arrY[x] = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
+                            }
+                        }
+                        _borderBlocks[y] = arrY;
+                    }
+                }
             }
         }
 
+        private Blockset.Block GetBlock(int x, int y)
+        {
+            bool north = y < 0;
+            bool south = y >= _blocksHeight;
+            bool west = x < 0;
+            bool east = x >= _blocksWidth;
+            if (!north && !south && !west && !east)
+            {
+                return _blocks[y][x].BlocksetBlock;
+            }
+            else
+            {
+                // TODO: Connections
+                if (_borderWidth == 0 || _borderHeight == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    x %= _borderWidth;
+                    if (west)
+                    {
+                        x *= -1;
+                    }
+                    y %= _borderHeight;
+                    if (north)
+                    {
+                        y *= -1;
+                    }
+                    return _borderBlocks[y][x];
+                }
+            }
+        }
         public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             Obj camera = Obj.Camera;
@@ -78,7 +142,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 {
                     for (int blockX = startBlockX; blockX < endBlockX; blockX++)
                     {
-                        if (blockY >= 0 && blockY < cameraMap._height && blockX >= 0 && blockX < cameraMap._width)
+                        Blockset.Block b = cameraMap.GetBlock(blockX, blockY);
+                        if (b != null)
                         {
                             void Draw(Blockset.Block.Tile[] subLayers, int tx, int ty)
                             {
@@ -88,7 +153,6 @@ namespace Kermalis.PokemonGameEngine.Overworld
                                     RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
                                 }
                             }
-                            Blockset.Block b = cameraMap._blocks[blockY][blockX].BlocksetBlock;
                             Draw(b.TopLeft[z], curX, curY);
                             Draw(b.TopRight[z], curX + 8, curY);
                             Draw(b.BottomLeft[z], curX, curY + 8);
@@ -99,6 +163,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     curX = startX;
                     curY += 16;
                 }
+                // TODO: They will overlap each other regardless of y coordinate because of the order of the list
+                // TODO: Characters from other maps
                 for (int i = 0; i < cameraMap.Characters.Count; i++)
                 {
                     CharacterObj c = cameraMap.Characters[i];

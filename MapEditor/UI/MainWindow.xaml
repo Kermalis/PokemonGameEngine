@@ -29,7 +29,20 @@
       <TabControl Grid.Column="1">
         <TabItem Header="Map">
           <ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <local:MapImage Name="MapImage" />
+            <local:MapImage Name="MapBlocksImage">
+              <x:Arguments>
+                <x:Boolean>False</x:Boolean>
+              </x:Arguments>
+            </local:MapImage>
+          </ScrollViewer>
+        </TabItem>
+        <TabItem Header="Border">
+          <ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <local:MapImage Name="MapBorderBlocksImage">
+              <x:Arguments>
+                <x:Boolean>True</x:Boolean>
+              </x:Arguments>
+            </local:MapImage>
           </ScrollViewer>
         </TabItem>
       </TabControl>

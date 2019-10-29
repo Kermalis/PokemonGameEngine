@@ -18,7 +18,8 @@ namespace Kermalis.MapEditor.UI
 
         private readonly Map _map;
         private readonly BlocksetImage _blocksetImage;
-        private readonly MapImage _mapImage;
+        private readonly MapImage _mapBlocksImage;
+        private readonly MapImage _mapBorderBlocksImage;
 
         public MainWindow()
         {
@@ -28,55 +29,62 @@ namespace Kermalis.MapEditor.UI
             _blockset = Blockset.IsValidName(defaultBlocksetName) ? new Blockset(defaultBlocksetName) : Blockset.LoadOrGet(defaultBlocksetName);
             _blockset.OnChanged += Blockset_OnChanged;
             _blockset.OnRemoved += Blockset_OnRemoved;
-            _map = new Map(32, 32, _blockset.Blocks[0]);
+            _map = new Map("TestMapC");
+            //_map = new Map(32, 32, 2, 2, _blockset.Blocks[0]);
 
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            _mapImage = this.FindControl<MapImage>("MapImage");
-            _mapImage.Map = _map;
+            _mapBlocksImage = this.FindControl<MapImage>("MapBlocksImage");
+            _mapBlocksImage.Map = _map;
+            _mapBorderBlocksImage = this.FindControl<MapImage>("MapBorderBlocksImage");
+            _mapBorderBlocksImage.Map = _map;
 
             _blocksetImage = this.FindControl<BlocksetImage>("BlocksetImage");
             _blocksetImage.SelectionCompleted += BlocksetImage_SelectionCompleted;
             _blocksetImage.Blockset = _blockset;
         }
 
-        private void Blockset_OnChanged(Blockset blockset, Blockset.Block block)
+        private void UpdateMapBlock(Blockset blockset, Blockset.Block block, bool resetBlock)
         {
-            for (int y = 0; y < _map.Height; y++)
+            void Do(bool borderBlocks)
             {
-                Map.Block[] arrY = _map.Blocks[y];
-                for (int x = 0; x < _map.Width; x++)
+                Map.Block[][] arr = borderBlocks ? _map.BorderBlocks : _map.Blocks;
+                int width = borderBlocks ? _map.BorderWidth : _map.Width;
+                int height = borderBlocks ? _map.BorderHeight : _map.Height;
+                for (int y = 0; y < height; y++)
                 {
-                    Map.Block b = arrY[x];
-                    if (b.BlocksetBlock == block)
+                    Map.Block[] arrY = arr[y];
+                    for (int x = 0; x < width; x++)
                     {
-                        Map.DrawList.Add(b);
+                        Map.Block b = arrY[x];
+                        if (b.BlocksetBlock == block)
+                        {
+                            if (resetBlock)
+                            {
+                                b.BlocksetBlock = blockset.Blocks[0];
+                            }
+                            Map.DrawList.Add(b);
+                        }
                     }
                 }
+                _map.Draw(borderBlocks);
             }
-            _map.Draw();
+            Do(false);
+            Do(true);
+        }
+        private void Blockset_OnChanged(Blockset blockset, Blockset.Block block)
+        {
+            UpdateMapBlock(blockset, block, false);
         }
         private void Blockset_OnRemoved(Blockset blockset, Blockset.Block block)
         {
-            for (int y = 0; y < _map.Height; y++)
-            {
-                Map.Block[] arrY = _map.Blocks[y];
-                for (int x = 0; x < _map.Width; x++)
-                {
-                    Map.Block b = arrY[x];
-                    if (b.BlocksetBlock == block)
-                    {
-                        b.BlocksetBlock = blockset.Blocks[0];
-                        Map.DrawList.Add(b);
-                    }
-                }
-            }
-            _map.Draw();
+            UpdateMapBlock(blockset, block, true);
         }
         private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
         {
-            _mapImage.Selection = e;
+            _mapBlocksImage.Selection = e;
+            _mapBorderBlocksImage.Selection = e;
         }
 
         private void OpenBlockEditor()

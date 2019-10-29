@@ -5,7 +5,6 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
-using System;
 using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
@@ -18,6 +17,7 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly bool _borderBlocks;
         private Map _map;
         internal Map Map
         {
@@ -37,6 +37,11 @@ namespace Kermalis.MapEditor.UI
         internal Blockset.Block[][] Selection;
         private bool _isDrawing;
 
+        public MapImage(bool borderBlocks)
+        {
+            _borderBlocks = borderBlocks;
+        }
+
         private void UpdateMap(Map old)
         {
             if (old != null)
@@ -50,17 +55,20 @@ namespace Kermalis.MapEditor.UI
             InvalidateMeasure();
             InvalidateVisual();
         }
-        private void Map_OnDrew(object sender, EventArgs e)
+        private void Map_OnDrew(Map map, bool drewBorderBlocks)
         {
-            InvalidateMeasure();
-            InvalidateVisual();
+            if (_borderBlocks == drewBorderBlocks)
+            {
+                InvalidateMeasure();
+                InvalidateVisual();
+            }
         }
 
         public override void Render(DrawingContext context)
         {
             if (_map != null)
             {
-                IBitmap source = _map.Bitmap;
+                IBitmap source = _borderBlocks ? _map.BorderBlocksBitmap : _map.BlocksBitmap;
                 var viewPort = new Rect(Bounds.Size);
                 var r = new Rect(source.Size);
                 Rect destRect = viewPort.CenterRect(r).Intersect(viewPort);
@@ -73,7 +81,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_map != null)
             {
-                PixelSize sourcePixelSize = _map.Bitmap.PixelSize;
+                PixelSize sourcePixelSize = (_borderBlocks ? _map.BorderBlocksBitmap : _map.BlocksBitmap).PixelSize;
                 return new Size(sourcePixelSize.Width, sourcePixelSize.Height);
             }
             return new Size();
@@ -82,7 +90,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_map != null)
             {
-                PixelSize sourcePixelSize = _map.Bitmap.PixelSize;
+                PixelSize sourcePixelSize = (_borderBlocks ? _map.BorderBlocksBitmap : _map.BlocksBitmap).PixelSize;
                 return new Size(sourcePixelSize.Width, sourcePixelSize.Height);
             }
             return new Size();
@@ -99,7 +107,7 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_RectContains(pos))
                     {
                         _isDrawing = true;
-                        _map.Paste(Selection, (int)pos.X / 16, (int)pos.Y / 16);
+                        _map.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
                         InvalidateVisual();
                         e.Handled = true;
                     }
@@ -116,7 +124,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_RectContains(pos))
                     {
-                        _map.Paste(Selection, (int)pos.X / 16, (int)pos.Y / 16);
+                        _map.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
                         InvalidateVisual();
                         e.Handled = true;
                     }
