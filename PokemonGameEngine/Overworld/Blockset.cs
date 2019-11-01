@@ -91,7 +91,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         }
 
         private static readonly IdList _ids = new IdList("Blockset.BlocksetIds.txt");
-        private static readonly List<WeakReference<Blockset>> _loadedBlocksets = new List<WeakReference<Blockset>>();
+        private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new Dictionary<int, WeakReference<Blockset>>();
         public static Blockset LoadOrGet(int id)
         {
             string name = _ids[id];
@@ -100,10 +100,10 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
             Blockset b;
-            if (id >= _loadedBlocksets.Count)
+            if (!_loadedBlocksets.ContainsKey(id))
             {
                 b = new Blockset(name);
-                _loadedBlocksets.Add(new WeakReference<Blockset>(b));
+                _loadedBlocksets.Add(id, new WeakReference<Blockset>(b));
                 return b;
             }
             if (_loadedBlocksets[id].TryGetTarget(out b))

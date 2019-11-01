@@ -226,9 +226,7 @@ namespace Kermalis.MapEditor.Core
         internal WriteableBitmap Bitmap;
         internal event EventHandler<EventArgs> OnDrew;
 
-        private static readonly IdList _ids = new IdList(Path.Combine(Program.AssetPath, "Blockset", "BlocksetIds.txt"));
-
-        internal readonly string _name;
+        internal readonly string Name;
         internal readonly int Id;
         internal List<Block> Blocks;
 
@@ -243,7 +241,7 @@ namespace Kermalis.MapEditor.Core
                     Blocks.Add(new Block(this, i, r));
                 }
             }
-            _name = name;
+            Name = name;
             Id = id;
             UpdateBitmapSize();
             DrawAll();
@@ -251,9 +249,9 @@ namespace Kermalis.MapEditor.Core
         internal Blockset(string name)
         {
             Id = _ids.Add(name);
-            _loadedBlocksets.Add(new WeakReference<Blockset>(this));
+            _loadedBlocksets.Add(Id, new WeakReference<Blockset>(this));
             Blocks = new List<Block>() { new Block(this, 0) };
-            _name = name;
+            Name = name;
             Save();
             _ids.Save();
             UpdateBitmapSize();
@@ -269,7 +267,8 @@ namespace Kermalis.MapEditor.Core
             return !string.IsNullOrWhiteSpace(name) && !Utils.InvalidFileNameRegex.IsMatch(name) && _ids[name] == -1;
         }
 
-        private static readonly List<WeakReference<Blockset>> _loadedBlocksets = new List<WeakReference<Blockset>>();
+        private static readonly IdList _ids = new IdList(Path.Combine(Program.AssetPath, "Blockset", "BlocksetIds.txt"));
+        private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new Dictionary<int, WeakReference<Blockset>>();
         public static Blockset LoadOrGet(string name)
         {
             int id = _ids[name];
@@ -291,10 +290,10 @@ namespace Kermalis.MapEditor.Core
         private static Blockset LoadOrGet(string name, int id)
         {
             Blockset b;
-            if (id >= _loadedBlocksets.Count)
+            if (!_loadedBlocksets.ContainsKey(id))
             {
                 b = new Blockset(name, id);
-                _loadedBlocksets.Add(new WeakReference<Blockset>(b));
+                _loadedBlocksets.Add(id, new WeakReference<Blockset>(b));
                 return b;
             }
             if (_loadedBlocksets[id].TryGetTarget(out b))
@@ -454,7 +453,7 @@ namespace Kermalis.MapEditor.Core
 
         internal void Save()
         {
-            using (var w = new EndianBinaryWriter(File.OpenWrite(Path.Combine(Program.AssetPath, "Blockset", _name + ".pgeblockset"))))
+            using (var w = new EndianBinaryWriter(File.OpenWrite(Path.Combine(Program.AssetPath, "Blockset", Name + ".pgeblockset"))))
             {
                 ushort count = (ushort)Blocks.Count;
                 w.Write(count);

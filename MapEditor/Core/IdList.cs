@@ -17,7 +17,10 @@ namespace Kermalis.MapEditor.Core
                 string key;
                 while ((key = s.ReadLine()) != null)
                 {
-                    Add(key);
+                    if (!string.IsNullOrWhiteSpace(key))
+                    {
+                        Add(key);
+                    }
                 }
             }
         }

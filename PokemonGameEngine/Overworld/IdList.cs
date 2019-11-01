@@ -16,14 +16,17 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 string key;
                 while ((key = s.ReadLine()) != null)
                 {
-                    for (int i = 0; i < _entries.Count; i++)
+                    if (!string.IsNullOrWhiteSpace(key))
                     {
-                        if (key == _entries[i])
+                        for (int i = 0; i < _entries.Count; i++)
                         {
-                            throw new ArgumentOutOfRangeException(nameof(key));
+                            if (key == _entries[i])
+                            {
+                                throw new ArgumentOutOfRangeException(nameof(key));
+                            }
                         }
+                        _entries.Add(key);
                     }
-                    _entries.Add(key);
                 }
             }
         }

@@ -31,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         }
 
         private static readonly IdList _ids = new IdList("Tileset.TilesetIds.txt");
-        private static readonly List<WeakReference<Tileset>> _loadedTilesets = new List<WeakReference<Tileset>>();
+        private static readonly Dictionary<int, WeakReference<Tileset>> _loadedTilesets = new Dictionary<int, WeakReference<Tileset>>();
         public static Tileset LoadOrGet(int id)
         {
             string name = _ids[id];
@@ -40,10 +40,10 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
             Tileset t;
-            if (id >= _loadedTilesets.Count)
+            if (!_loadedTilesets.ContainsKey(id))
             {
                 t = new Tileset(name);
-                _loadedTilesets.Add(new WeakReference<Tileset>(t));
+                _loadedTilesets.Add(id, new WeakReference<Tileset>(t));
                 return t;
             }
             if (_loadedTilesets[id].TryGetTarget(out t))

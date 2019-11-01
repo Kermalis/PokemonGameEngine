@@ -27,8 +27,7 @@ namespace Kermalis.MapEditor.Core
         public const int BitmapNumTilesX = 8;
         public readonly WriteableBitmap Bitmap;
 
-        private static readonly IdList _ids = new IdList(Path.Combine(Program.AssetPath, "Tileset", "TilesetIds.txt"));
-
+        public readonly string Name;
         public readonly int Id;
         public readonly Tile[] Tiles;
 
@@ -40,6 +39,7 @@ namespace Kermalis.MapEditor.Core
             {
                 Tiles[i] = new Tile(this, i, t[i]);
             }
+            Name = name;
             Id = id;
             // Draw
             int numTilesY = (Tiles.Length / BitmapNumTilesX) + (Tiles.Length % BitmapNumTilesX != 0 ? 1 : 0);
@@ -72,7 +72,8 @@ namespace Kermalis.MapEditor.Core
             Dispose(false);
         }
 
-        private static readonly List<WeakReference<Tileset>> _loadedTilesets = new List<WeakReference<Tileset>>();
+        private static readonly IdList _ids = new IdList(Path.Combine(Program.AssetPath, "Tileset", "TilesetIds.txt"));
+        private static readonly Dictionary<int, WeakReference<Tileset>> _loadedTilesets = new Dictionary<int, WeakReference<Tileset>>();
         public static Tileset LoadOrGet(string name)
         {
             int id = _ids[name];
@@ -94,10 +95,10 @@ namespace Kermalis.MapEditor.Core
         private static Tileset LoadOrGet(string name, int id)
         {
             Tileset t;
-            if (id >= _loadedTilesets.Count)
+            if (!_loadedTilesets.ContainsKey(id))
             {
                 t = new Tileset(name, id);
-                _loadedTilesets.Add(new WeakReference<Tileset>(t));
+                _loadedTilesets.Add(id, new WeakReference<Tileset>(t));
                 return t;
             }
             if (_loadedTilesets[id].TryGetTarget(out t))
