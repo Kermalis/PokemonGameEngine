@@ -11,18 +11,25 @@ namespace Kermalis.MapEditor.Core
 
         public IdList(string path)
         {
-            _path = path;
-            using (StreamReader s = File.OpenText(_path))
+            if (File.Exists(path))
             {
-                string key;
-                while ((key = s.ReadLine()) != null)
+                using (StreamReader s = File.OpenText(path))
                 {
-                    if (!string.IsNullOrWhiteSpace(key))
+                    string key;
+                    while ((key = s.ReadLine()) != null)
                     {
-                        Add(key);
+                        if (!string.IsNullOrWhiteSpace(key))
+                        {
+                            Add(key);
+                        }
                     }
                 }
             }
+            else
+            {
+                File.CreateText(path).Dispose();
+            }
+            _path = path;
         }
 
         public int this[string key]

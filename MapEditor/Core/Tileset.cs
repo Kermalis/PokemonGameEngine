@@ -33,7 +33,7 @@ namespace Kermalis.MapEditor.Core
 
         private unsafe Tileset(string name, int id)
         {
-            uint[][][] t = RenderUtil.LoadSpriteSheet(Path.Combine(Program.AssetPath, "Tileset", name + ".png"), 8, 8);
+            uint[][][] t = RenderUtil.LoadSpriteSheet(Path.Combine(_tilesetPath, name + _tilesetExtension), 8, 8);
             Tiles = new Tile[t.Length];
             for (int i = 0; i < Tiles.Length; i++)
             {
@@ -72,7 +72,9 @@ namespace Kermalis.MapEditor.Core
             Dispose(false);
         }
 
-        private static readonly IdList _ids = new IdList(Path.Combine(Program.AssetPath, "Tileset", "TilesetIds.txt"));
+        private const string _tilesetExtension = ".png";
+        private static readonly string _tilesetPath = Path.Combine(Program.AssetPath, "Tileset");
+        private static readonly IdList _ids = new IdList(Path.Combine(_tilesetPath, "TilesetIds.txt"));
         private static readonly Dictionary<int, WeakReference<Tileset>> _loadedTilesets = new Dictionary<int, WeakReference<Tileset>>();
         public static Tileset LoadOrGet(string name)
         {
