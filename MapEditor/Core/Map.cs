@@ -9,62 +9,92 @@ using System.IO;
 
 namespace Kermalis.MapEditor.Core
 {
-    internal sealed class Map : IDisposable
+    internal sealed class Map
     {
-        public sealed class Block
+        public sealed class Layout : IDisposable
         {
-            public readonly int X;
-            public readonly int Y;
-
-            public byte Behavior;
-            public Blockset.Block BlocksetBlock;
-
-            public Block(bool isBorderBlock, int x, int y, EndianBinaryReader r)
+            public sealed class Block
             {
-                X = x;
-                Y = y;
-                if (!isBorderBlock)
+                public readonly int X;
+                public readonly int Y;
+
+                public byte Behavior;
+                public Blockset.Block BlocksetBlock;
+
+                public Block(bool isBorderBlock, int x, int y, EndianBinaryReader r)
                 {
-                    Behavior = r.ReadByte();
+                    X = x;
+                    Y = y;
+                    if (!isBorderBlock)
+                    {
+                        Behavior = r.ReadByte();
+                    }
+                    BlocksetBlock = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
                 }
-                BlocksetBlock = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
-            }
-            public Block(int x, int y, Blockset.Block defaultBlock)
-            {
-                X = x;
-                Y = y;
-                BlocksetBlock = defaultBlock;
-            }
-
-            public void Write(bool isBorderBlock, EndianBinaryWriter w)
-            {
-                if (!isBorderBlock)
+                public Block(int x, int y, Blockset.Block defaultBlock)
                 {
-                    w.Write(Behavior);
+                    X = x;
+                    Y = y;
+                    BlocksetBlock = defaultBlock;
                 }
-                w.Write(BlocksetBlock.Parent.Id);
-                w.Write(BlocksetBlock.Id);
+
+                public void Write(bool isBorderBlock, EndianBinaryWriter w)
+                {
+                    if (!isBorderBlock)
+                    {
+                        w.Write(Behavior);
+                    }
+                    w.Write(BlocksetBlock.Parent.Id);
+                    w.Write(BlocksetBlock.Id);
+                }
             }
-        }
 
-        public WriteableBitmap BlocksBitmap;
-        public WriteableBitmap BorderBlocksBitmap;
-        public delegate void MapDrewBitmapEventHandler(Map map, bool drewBorderBlocks);
-        public event MapDrewBitmapEventHandler OnDrew;
+            public readonly string Name;
+            public readonly int Id;
 
-        public int Width;
-        public int Height;
-        public byte BorderWidth;
-        public byte BorderHeight;
+            public WriteableBitmap BlocksBitmap;
+            public WriteableBitmap BorderBlocksBitmap;
+            public delegate void LayoutDrewBitmapEventHandler(Layout layout, bool drewBorderBlocks);
+            public event LayoutDrewBitmapEventHandler OnDrew;
 
-        public Block[][] Blocks;
-        public Block[][] BorderBlocks;
+            public int Width;
+            public int Height;
+            public Block[][] Blocks;
+            public byte BorderWidth;
+            public byte BorderHeight;
+            public Block[][] BorderBlocks;
 
-        public Map(string name)
-        {
-            using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(Program.AssetPath, "Map", name + ".pgemap"))))
+            private Layout(string name, int id)
             {
-                Block[][] Create(bool borderBlocks, int w, int h)
+                using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(_layoutPath, name + _layoutExtension))))
+                {
+                    Block[][] Create(bool borderBlocks, int w, int h)
+                    {
+                        var arr = new Block[h][];
+                        for (int y = 0; y < h; y++)
+                        {
+                            var arrY = new Block[w];
+                            for (int x = 0; x < w; x++)
+                            {
+                                arrY[x] = new Block(borderBlocks, x, y, r);
+                            }
+                            arr[y] = arrY;
+                        }
+                        return arr;
+                    }
+                    Blocks = Create(false, Width = r.ReadInt32(), Height = r.ReadInt32());
+                    BorderBlocks = Create(true, BorderWidth = r.ReadByte(), BorderHeight = r.ReadByte());
+                }
+                Name = name;
+                Id = id;
+                UpdateBitmapSize(false);
+                UpdateBitmapSize(true);
+            }
+            public Layout(string name, int width, int height, byte borderWidth, byte borderHeight, Blockset.Block defaultBlock)
+            {
+                Id = _ids.Add(name);
+                _loadedLayouts.Add(Id, new WeakReference<Layout>(this));
+                Block[][] Create(int w, int h)
                 {
                     var arr = new Block[h][];
                     for (int y = 0; y < h; y++)
@@ -72,193 +102,290 @@ namespace Kermalis.MapEditor.Core
                         var arrY = new Block[w];
                         for (int x = 0; x < w; x++)
                         {
-                            arrY[x] = new Block(borderBlocks, x, y, r);
+                            arrY[x] = new Block(x, y, defaultBlock);
                         }
                         arr[y] = arrY;
                     }
                     return arr;
                 }
-                Blocks = Create(false, Width = r.ReadInt32(), Height = r.ReadInt32());
-                BorderBlocks = Create(true, BorderWidth = r.ReadByte(), BorderHeight = r.ReadByte());
+                Blocks = Create(Width = width, Height = height);
+                BorderBlocks = Create(BorderWidth = borderWidth, BorderHeight = borderHeight);
+                Name = name;
+                Save();
+                _ids.Save();
                 UpdateBitmapSize(false);
                 UpdateBitmapSize(true);
             }
-        }
-        public Map(int width, int height, byte borderWidth, byte borderHeight, Blockset.Block defaultBlock)
-        {
-            Block[][] Create(int w, int h)
+            ~Layout()
             {
-                var arr = new Block[h][];
-                for (int y = 0; y < h; y++)
-                {
-                    var arrY = new Block[w];
-                    for (int x = 0; x < w; x++)
-                    {
-                        arrY[x] = new Block(x, y, defaultBlock);
-                    }
-                    arr[y] = arrY;
-                }
-                return arr;
+                Dispose(false);
             }
-            Blocks = Create(Width = width, Height = height);
-            BorderBlocks = Create(BorderWidth = borderWidth, BorderHeight = borderHeight);
-            UpdateBitmapSize(false);
-            UpdateBitmapSize(true);
-        }
-        ~Map()
-        {
-            Dispose(false);
-        }
 
-        public void Paste(bool borderBlocks, Blockset.Block[][] blocks, int destX, int destY)
-        {
-            Block[][] outArr = borderBlocks ? BorderBlocks : Blocks;
-            int width = borderBlocks ? BorderWidth : Width;
-            int height = borderBlocks ? BorderHeight : Height;
-            for (int y = 0; y < blocks.Length; y++)
+            private const string _layoutExtension = ".pgelayout";
+            private static readonly string _layoutPath = Path.Combine(Program.AssetPath, "Map", "Layout");
+            private static readonly IdList _ids = new IdList(Path.Combine(_layoutPath, "LayoutIds.txt"));
+            private static readonly Dictionary<int, WeakReference<Layout>> _loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
+            public static Layout LoadOrGet(string name)
             {
-                int dy = y + destY;
-                if (dy >= 0 && dy < height)
+                int id = _ids[name];
+                if (id == -1)
                 {
-                    Blockset.Block[] inArrY = blocks[y];
-                    Block[] outArrY = outArr[dy];
-                    for (int x = 0; x < inArrY.Length; x++)
+                    throw new ArgumentOutOfRangeException(nameof(name));
+                }
+                return LoadOrGet(name, id);
+            }
+            public static Layout LoadOrGet(int id)
+            {
+                string name = _ids[id];
+                if (name == null)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(id));
+                }
+                return LoadOrGet(name, id);
+            }
+            private static Layout LoadOrGet(string name, int id)
+            {
+                Layout l;
+                if (!_loadedLayouts.ContainsKey(id))
+                {
+                    l = new Layout(name, id);
+                    _loadedLayouts.Add(id, new WeakReference<Layout>(l));
+                    return l;
+                }
+                if (_loadedLayouts[id].TryGetTarget(out l))
+                {
+                    return l;
+                }
+                l = new Layout(name, id);
+                _loadedLayouts[id].SetTarget(l);
+                return l;
+            }
+
+            public void Paste(bool borderBlocks, Blockset.Block[][] blocks, int destX, int destY)
+            {
+                Block[][] outArr = borderBlocks ? BorderBlocks : Blocks;
+                int width = borderBlocks ? BorderWidth : Width;
+                int height = borderBlocks ? BorderHeight : Height;
+                List<Block> list = DrawList;
+                for (int y = 0; y < blocks.Length; y++)
+                {
+                    int dy = y + destY;
+                    if (dy >= 0 && dy < height)
                     {
-                        int dx = x + destX;
-                        if (dx >= 0 && dx < width)
+                        Blockset.Block[] inArrY = blocks[y];
+                        Block[] outArrY = outArr[dy];
+                        for (int x = 0; x < inArrY.Length; x++)
                         {
-                            Blockset.Block b = inArrY[x];
-                            if (b != null)
+                            int dx = x + destX;
+                            if (dx >= 0 && dx < width)
                             {
-                                Block outB = outArrY[dx];
-                                if (outB.BlocksetBlock != b)
+                                Blockset.Block b = inArrY[x];
+                                if (b != null)
                                 {
-                                    outB.BlocksetBlock = b;
-                                    DrawList.Add(outB);
+                                    Block outB = outArrY[dx];
+                                    if (outB.BlocksetBlock != b)
+                                    {
+                                        outB.BlocksetBlock = b;
+                                        list.Add(outB);
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                Draw(borderBlocks);
             }
-            Draw(borderBlocks);
-        }
 
-        private void UpdateBitmapSize(bool borderBlocks)
-        {
-            WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
-            int bmpWidth = (borderBlocks ? BorderWidth : Width) * 16;
-            int bmpHeight = (borderBlocks ? BorderHeight : Height) * 16;
-            bool createNew;
-            if (bmp == null)
+            private void UpdateBitmapSize(bool borderBlocks)
             {
-                createNew = true;
-            }
-            else
-            {
-                PixelSize ps = bmp.PixelSize;
-                createNew = ps.Width != bmpWidth || ps.Height != bmpHeight;
-            }
-            if (createNew)
-            {
-                bmp?.Dispose();
-                bmp = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Bgra8888);
-                if (borderBlocks)
+                WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
+                int bmpWidth = (borderBlocks ? BorderWidth : Width) * 16;
+                int bmpHeight = (borderBlocks ? BorderHeight : Height) * 16;
+                bool createNew;
+                if (bmp == null)
                 {
-                    BorderBlocksBitmap = bmp;
+                    createNew = true;
                 }
                 else
                 {
-                    BlocksBitmap = bmp;
+                    PixelSize ps = bmp.PixelSize;
+                    createNew = ps.Width != bmpWidth || ps.Height != bmpHeight;
                 }
-                DrawAll(borderBlocks);
+                if (createNew)
+                {
+                    bmp?.Dispose();
+                    bmp = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Bgra8888);
+                    if (borderBlocks)
+                    {
+                        BorderBlocksBitmap = bmp;
+                    }
+                    else
+                    {
+                        BlocksBitmap = bmp;
+                    }
+                    DrawAll(borderBlocks);
+                }
             }
-        }
-        public static readonly List<Block> DrawList = new List<Block>(); // Save allocations
-        public unsafe void Draw(bool borderBlocks)
-        {
-            if (DrawList.Count > 0)
+            public static readonly List<Block> DrawList = new List<Block>(); // Save allocations
+            public unsafe void Draw(bool borderBlocks)
+            {
+                List<Block> list = DrawList;
+                int count = list.Count;
+                if (count > 0)
+                {
+                    WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
+                    using (ILockedFramebuffer l = bmp.Lock())
+                    {
+                        uint* bmpAddress = (uint*)l.Address.ToPointer();
+                        int bmpWidth = (borderBlocks ? BorderWidth : Width) * 16;
+                        int bmpHeight = (borderBlocks ? BorderHeight : Height) * 16;
+                        for (int i = 0; i < count; i++)
+                        {
+                            Block b = list[i];
+                            int x = b.X * 16;
+                            int y = b.Y * 16;
+                            RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x, y, 16, 16, 0xFF000000);
+                            b.BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x, y);
+                        }
+                    }
+                    list.Clear();
+                    OnDrew?.Invoke(this, borderBlocks);
+                }
+            }
+            public unsafe void DrawAll(bool borderBlocks)
             {
                 WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
                 using (ILockedFramebuffer l = bmp.Lock())
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
-                    int bmpWidth = (borderBlocks ? BorderWidth : Width) * 16;
-                    int bmpHeight = (borderBlocks ? BorderHeight : Height) * 16;
-                    for (int i = 0; i < DrawList.Count; i++)
+                    int width = borderBlocks ? BorderWidth : Width;
+                    int height = borderBlocks ? BorderHeight : Height;
+                    int bmpWidth = width * 16;
+                    int bmpHeight = height * 16;
+                    RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
+                    Block[][] arr = borderBlocks ? BorderBlocks : Blocks;
+                    for (int y = 0; y < height; y++)
                     {
-                        Block b = DrawList[i];
-                        int x = b.X * 16;
-                        int y = b.Y * 16;
-                        RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x, y, 16, 16, 0xFF000000);
-                        b.BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x, y);
+                        Block[] arrY = arr[y];
+                        for (int x = 0; x < width; x++)
+                        {
+                            arrY[x].BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x * 16, y * 16);
+                        }
                     }
                 }
-                DrawList.Clear();
                 OnDrew?.Invoke(this, borderBlocks);
             }
-        }
-        public unsafe void DrawAll(bool borderBlocks)
-        {
-            WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
-            using (ILockedFramebuffer l = bmp.Lock())
+
+            public void Save()
             {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
-                int width = borderBlocks ? BorderWidth : Width;
-                int height = borderBlocks ? BorderHeight : Height;
-                int bmpWidth = width * 16;
-                int bmpHeight = height * 16;
-                RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
-                Block[][] arr = borderBlocks ? BorderBlocks : Blocks;
-                for (int y = 0; y < height; y++)
+                using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_layoutPath, Name + _layoutExtension))))
                 {
-                    Block[] arrY = arr[y];
-                    for (int x = 0; x < width; x++)
+                    w.Write(Width);
+                    w.Write(Height);
+                    for (int y = 0; y < Height; y++)
                     {
-                        arrY[x].BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x * 16, y * 16);
+                        for (int x = 0; x < Width; x++)
+                        {
+                            Blocks[y][x].Write(false, w);
+                        }
+                    }
+                    w.Write(BorderWidth);
+                    w.Write(BorderHeight);
+                    for (int y = 0; y < BorderHeight; y++)
+                    {
+                        for (int x = 0; x < BorderWidth; x++)
+                        {
+                            BorderBlocks[y][x].Write(true, w);
+                        }
                     }
                 }
             }
-            OnDrew?.Invoke(this, borderBlocks);
-        }
 
-        public void Save(string name)
-        {
-            using (var w = new EndianBinaryWriter(File.Create(Path.Combine(Program.AssetPath, "Map", name + ".pgemap"))))
+            public void Dispose()
             {
-                w.Write(Width);
-                w.Write(Height);
-                for (int y = 0; y < Height; y++)
+                Dispose(true);
+            }
+            private void Dispose(bool disposing)
+            {
+                if (disposing)
                 {
-                    for (int x = 0; x < Width; x++)
-                    {
-                        Blocks[y][x].Write(false, w);
-                    }
+                    GC.SuppressFinalize(this);
                 }
-                w.Write(BorderWidth);
-                w.Write(BorderHeight);
-                for (int y = 0; y < BorderHeight; y++)
-                {
-                    for (int x = 0; x < BorderWidth; x++)
-                    {
-                        BorderBlocks[y][x].Write(true, w);
-                    }
-                }
+                BlocksBitmap.Dispose();
+                BorderBlocksBitmap.Dispose();
             }
         }
 
-        public void Dispose()
+        public readonly string Name;
+        public readonly int Id;
+
+        public readonly Layout MapLayout;
+
+        private Map(string name, int id)
         {
-            Dispose(true);
-        }
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
+            using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(_mapPath, name + _mapExtension))))
             {
-                GC.SuppressFinalize(this);
+                MapLayout = Layout.LoadOrGet(r.ReadInt32());
             }
-            BlocksBitmap.Dispose();
-            BorderBlocksBitmap.Dispose();
+            Name = name;
+            Id = id;
+        }
+        public Map(string name, Layout layout)
+        {
+            Id = _ids.Add(name);
+            _loadedMaps.Add(Id, new WeakReference<Map>(this));
+            MapLayout = layout;
+            Name = name;
+            Save();
+            _ids.Save();
+        }
+
+        private const string _mapExtension = ".pgemap";
+        private static readonly string _mapPath = Path.Combine(Program.AssetPath, "Map");
+        private static readonly IdList _ids = new IdList(Path.Combine(_mapPath, "MapIds.txt"));
+        private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new Dictionary<int, WeakReference<Map>>();
+        public static Map LoadOrGet(string name)
+        {
+            int id = _ids[name];
+            if (id == -1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(name));
+            }
+            return LoadOrGet(name, id);
+        }
+        public static Map LoadOrGet(int id)
+        {
+            string name = _ids[id];
+            if (name == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id));
+            }
+            return LoadOrGet(name, id);
+        }
+        private static Map LoadOrGet(string name, int id)
+        {
+            Map m;
+            if (!_loadedMaps.ContainsKey(id))
+            {
+                m = new Map(name, id);
+                _loadedMaps.Add(id, new WeakReference<Map>(m));
+                return m;
+            }
+            if (_loadedMaps[id].TryGetTarget(out m))
+            {
+                return m;
+            }
+            m = new Map(name, id);
+            _loadedMaps[id].SetTarget(m);
+            return m;
+        }
+
+        public void Save()
+        {
+            using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_mapPath, Name + _mapExtension))))
+            {
+                w.Write(MapLayout.Id);
+            }
         }
     }
 }

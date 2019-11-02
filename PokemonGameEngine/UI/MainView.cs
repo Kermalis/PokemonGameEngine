@@ -31,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.UI
         public MainView()
         {
             _font = new Font("TestFont.kermfont");
-            var map = new Map("TestMapC");
+            var map = Map.LoadOrGet(0);
             const int x = 15;
             const int y = 9;
             Obj.Camera.Map = map;

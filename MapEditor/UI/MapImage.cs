@@ -26,10 +26,17 @@ namespace Kermalis.MapEditor.UI
             {
                 if (_map != value)
                 {
-                    Map old = _map;
+                    if (_map != null)
+                    {
+                        _map.MapLayout.OnDrew -= MapLayout_OnDrew;
+                    }
                     _map = value;
-                    UpdateMap(old);
-                    OnPropertyChanged(nameof(Map));
+                    if (_map != null)
+                    {
+                        _map.MapLayout.OnDrew += MapLayout_OnDrew;
+                    }
+                    InvalidateMeasure();
+                    InvalidateVisual();
                 }
             }
         }
@@ -42,20 +49,7 @@ namespace Kermalis.MapEditor.UI
             _borderBlocks = borderBlocks;
         }
 
-        private void UpdateMap(Map old)
-        {
-            if (old != null)
-            {
-                old.OnDrew -= Map_OnDrew;
-            }
-            if (_map != null)
-            {
-                _map.OnDrew += Map_OnDrew;
-            }
-            InvalidateMeasure();
-            InvalidateVisual();
-        }
-        private void Map_OnDrew(Map map, bool drewBorderBlocks)
+        private void MapLayout_OnDrew(Map.Layout layout, bool drewBorderBlocks)
         {
             if (_borderBlocks == drewBorderBlocks)
             {
@@ -68,7 +62,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_map != null)
             {
-                IBitmap source = _borderBlocks ? _map.BorderBlocksBitmap : _map.BlocksBitmap;
+                IBitmap source = _borderBlocks ? _map.MapLayout.BorderBlocksBitmap : _map.MapLayout.BlocksBitmap;
                 var viewPort = new Rect(Bounds.Size);
                 var r = new Rect(source.Size);
                 Rect destRect = viewPort.CenterRect(r).Intersect(viewPort);
@@ -81,8 +75,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_map != null)
             {
-                PixelSize sourcePixelSize = (_borderBlocks ? _map.BorderBlocksBitmap : _map.BlocksBitmap).PixelSize;
-                return new Size(sourcePixelSize.Width, sourcePixelSize.Height);
+                return (_borderBlocks ? _map.MapLayout.BorderBlocksBitmap : _map.MapLayout.BlocksBitmap).Size;
             }
             return new Size();
         }
@@ -90,8 +83,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_map != null)
             {
-                PixelSize sourcePixelSize = (_borderBlocks ? _map.BorderBlocksBitmap : _map.BlocksBitmap).PixelSize;
-                return new Size(sourcePixelSize.Width, sourcePixelSize.Height);
+                return (_borderBlocks ? _map.MapLayout.BorderBlocksBitmap : _map.MapLayout.BlocksBitmap).Size;
             }
             return new Size();
         }
@@ -107,7 +99,7 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_RectContains(pos))
                     {
                         _isDrawing = true;
-                        _map.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
+                        _map.MapLayout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
                         InvalidateVisual();
                         e.Handled = true;
                     }
@@ -124,7 +116,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_RectContains(pos))
                     {
-                        _map.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
+                        _map.MapLayout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
                         InvalidateVisual();
                         e.Handled = true;
                     }

@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Kermalis.MapEditor.Core;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 
 namespace Kermalis.MapEditor.UI
 {
@@ -29,8 +30,8 @@ namespace Kermalis.MapEditor.UI
             _blockset = Blockset.IsValidName(defaultBlocksetName) ? new Blockset(defaultBlocksetName) : Blockset.LoadOrGet(defaultBlocksetName);
             _blockset.OnChanged += Blockset_OnChanged;
             _blockset.OnRemoved += Blockset_OnRemoved;
-            _map = new Map("TestMapC");
-            //_map = new Map(32, 32, 2, 2, _blockset.Blocks[0]);
+            _map = Map.LoadOrGet("TestMapC");
+            //_map = new Map("TestMapN1", Map.Layout.LoadOrGet("TestMapN1"));
 
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
@@ -45,41 +46,43 @@ namespace Kermalis.MapEditor.UI
             _blocksetImage.Blockset = _blockset;
         }
 
-        private void UpdateMapBlock(Blockset blockset, Blockset.Block block, bool resetBlock)
+        private void UpdateMapLayoutBlock(Blockset blockset, Blockset.Block block, bool resetBlock)
         {
+            Map.Layout layout = _map.MapLayout;
+            List<Map.Layout.Block> list = Map.Layout.DrawList;
             void Do(bool borderBlocks)
             {
-                Map.Block[][] arr = borderBlocks ? _map.BorderBlocks : _map.Blocks;
-                int width = borderBlocks ? _map.BorderWidth : _map.Width;
-                int height = borderBlocks ? _map.BorderHeight : _map.Height;
+                Map.Layout.Block[][] arr = borderBlocks ? layout.BorderBlocks : layout.Blocks;
+                int width = borderBlocks ? layout.BorderWidth : layout.Width;
+                int height = borderBlocks ? layout.BorderHeight : layout.Height;
                 for (int y = 0; y < height; y++)
                 {
-                    Map.Block[] arrY = arr[y];
+                    Map.Layout.Block[] arrY = arr[y];
                     for (int x = 0; x < width; x++)
                     {
-                        Map.Block b = arrY[x];
+                        Map.Layout.Block b = arrY[x];
                         if (b.BlocksetBlock == block)
                         {
                             if (resetBlock)
                             {
                                 b.BlocksetBlock = blockset.Blocks[0];
                             }
-                            Map.DrawList.Add(b);
+                            list.Add(b);
                         }
                     }
                 }
-                _map.Draw(borderBlocks);
+                layout.Draw(borderBlocks);
             }
             Do(false);
             Do(true);
         }
         private void Blockset_OnChanged(Blockset blockset, Blockset.Block block)
         {
-            UpdateMapBlock(blockset, block, false);
+            UpdateMapLayoutBlock(blockset, block, false);
         }
         private void Blockset_OnRemoved(Blockset blockset, Blockset.Block block)
         {
-            UpdateMapBlock(blockset, block, true);
+            UpdateMapLayoutBlock(blockset, block, true);
         }
         private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
         {
@@ -109,13 +112,10 @@ namespace Kermalis.MapEditor.UI
             _blockEditor = null;
         }
 
-        private void New_Click(object sender, RoutedEventArgs e)
+        private void SaveMap(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("New");
-        }
-        private void Save_Click(object sender, RoutedEventArgs e)
-        {
-            _map.Save("TestMapC");
+            _map.MapLayout.Save();
+            _map.Save();
         }
 
         protected override void HandleClosed()
@@ -128,7 +128,7 @@ namespace Kermalis.MapEditor.UI
         {
             OpenBlockEditorCommand.Dispose();
             _blockEditor?.Close();
-            _map.Dispose();
+            _map.MapLayout.Dispose();
         }
     }
 }
