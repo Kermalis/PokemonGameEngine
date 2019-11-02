@@ -13,8 +13,8 @@ namespace Kermalis.PokemonGameEngine.UI
 {
     public sealed class MainView : Control, IDisposable
     {
-        public const int RenderWidth = 480;
-        public const int RenderHeight = 256;
+        public const int RenderWidth = 384;
+        public const int RenderHeight = 216;
         private readonly bool _showFPS = true;
 
         private bool _isDisposed;
