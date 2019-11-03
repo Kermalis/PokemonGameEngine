@@ -1,6 +1,9 @@
-﻿namespace Kermalis.PokemonGameEngine.Overworld
+﻿using Kermalis.PokemonGameEngine.Util;
+using System.Collections.Generic;
+
+namespace Kermalis.PokemonGameEngine.Overworld
 {
-    internal class Obj
+    internal sealed class Obj
     {
         public enum FacingDirection : byte
         {
@@ -14,9 +17,12 @@
             NorthEast
         }
 
+        public static readonly List<Obj> LoadedObjs = new List<Obj>();
+
         public const ushort PlayerId = ushort.MaxValue;
         public const ushort CameraId = PlayerId - 1;
 
+        public static readonly Obj Player = new Obj(PlayerId, "TestNPC.png", 32, 32);
         public static readonly Obj Camera = new Obj(CameraId);
 
         public readonly ushort Id;
@@ -24,19 +30,33 @@
         public FacingDirection Facing;
         public int X;
         public int Y;
+        public byte Z;
         public Map Map;
 
         public float MovementTimer;
         private float _movementSpeed; // TODO: Framerate
         private const float _diagonalMovementSpeedModifier = 0.7071067811865475f;
         private bool _isMoving;
-        protected bool _leg;
+        private bool _leg;
         public int XOffset;
         public int YOffset;
 
-        protected Obj(ushort id)
+        public readonly int SpriteWidth;
+        public readonly int SpriteHeight;
+        private readonly uint[][][] _tempSpriteSheet;
+
+        private Obj(ushort id)
         {
             Id = id;
+            LoadedObjs.Add(this);
+        }
+        public Obj(ushort id, string resource, int spriteWidth, int spriteHeight)
+        {
+            _tempSpriteSheet = RenderUtil.LoadSpriteSheet(resource, spriteWidth, spriteHeight);
+            Id = id;
+            SpriteWidth = spriteWidth;
+            SpriteHeight = spriteHeight;
+            LoadedObjs.Add(this);
         }
 
         public void Move(FacingDirection facing, bool run)
@@ -118,7 +138,6 @@
                 }
             }
         }
-
         public void UpdateMovement()
         {
             if (MovementTimer > 0)
@@ -179,6 +198,17 @@
                     }
                 }
             }
+        }
+
+        public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
+        {
+            bool ShowLegs()
+            {
+                return MovementTimer != 0 && MovementTimer <= 0.6f;
+            }
+            byte f = (byte)Facing;
+            int spriteNum = ShowLegs() ? (_leg ? f + 8 : f + 16) : f; // TODO: Fall-back to specific sprites if the target sprite doesn't exist
+            RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x, y, _tempSpriteSheet[spriteNum], false, false);
         }
     }
 }

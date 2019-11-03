@@ -9,6 +9,7 @@ using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Overworld;
 using Kermalis.PokemonGameEngine.Util;
 using System;
+using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.UI
 {
@@ -35,13 +36,14 @@ namespace Kermalis.PokemonGameEngine.UI
             var map = Map.LoadOrGet(0);
             const int x = 15;
             const int y = 9;
-            Obj.Camera.Map = map;
             Obj.Camera.X = x;
             Obj.Camera.Y = y;
-            CharacterObj.Player.Map = map;
-            CharacterObj.Player.X = x;
-            CharacterObj.Player.Y = y;
-            map.Characters.Add(CharacterObj.Player);
+            Obj.Camera.Map = map;
+            map.Objs.Add(Obj.Camera);
+            Obj.Player.X = x;
+            Obj.Player.Y = y;
+            Obj.Player.Map = map;
+            map.Objs.Add(Obj.Player);
             _screen = new WriteableBitmap(new PixelSize(RenderWidth, RenderHeight), new Vector(96, 96), PixelFormat.Bgra8888);
             _screenSize = new Size(RenderWidth, RenderHeight);
             _stretch = Stretch.Uniform;
@@ -57,7 +59,13 @@ namespace Kermalis.PokemonGameEngine.UI
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
                     RenderUtil.Fill(bmpAddress, RenderWidth, RenderHeight, 0, 0, RenderWidth, RenderHeight, 0xFF000000);
-                    if (Obj.Camera.MovementTimer == 0 && CharacterObj.Player.MovementTimer == 0)
+                    List<Obj> list = Obj.LoadedObjs;
+                    int count = list.Count;
+                    for (int i = 0; i < count; i++)
+                    {
+                        list[i].UpdateMovement();
+                    }
+                    if (Obj.Camera.MovementTimer == 0 && Obj.Player.MovementTimer == 0)
                     {
                         bool down = InputManager.IsPressed(Key.Down);
                         bool up = InputManager.IsPressed(Key.Up);
@@ -106,13 +114,8 @@ namespace Kermalis.PokemonGameEngine.UI
                             }
                             bool run = InputManager.IsPressed(Key.B);
                             Obj.Camera.Move(facing, run);
-                            CharacterObj.Player.Move(facing, run);
+                            Obj.Player.Move(facing, run);
                         }
-                    }
-                    else
-                    {
-                        Obj.Camera.UpdateMovement();
-                        CharacterObj.Player.UpdateMovement();
                     }
                     Map.Draw(bmpAddress, RenderWidth, RenderHeight);
                     if (_showFPS)

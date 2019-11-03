@@ -227,7 +227,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         private readonly Layout _layout;
         private readonly Connection[] _connections;
 
-        public readonly List<CharacterObj> Characters = new List<CharacterObj>();
+        public readonly List<Obj> Objs = new List<Obj>();
 
         private Map(string name)
         {
@@ -320,13 +320,13 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     curY += 16;
                 }
                 // TODO: They will overlap each other regardless of y coordinate because of the order of the list
-                // TODO: Characters from other maps
-                List<CharacterObj> list = cameraMap.Characters;
+                // TODO: Objs from other maps
+                List<Obj> list = cameraMap.Objs;
                 int count = list.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    CharacterObj c = list[i];
-                    if (c.Z == z)
+                    Obj c = list[i];
+                    if (c != camera && c.Z == z)
                     {
                         int objX = ((c.X - startBlockX) * 16) + c.XOffset + startX;
                         int objY = ((c.Y - startBlockY) * 16) + c.YOffset + startY;
