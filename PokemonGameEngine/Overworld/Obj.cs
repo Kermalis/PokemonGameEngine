@@ -35,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
         public float MovementTimer;
         private float _movementSpeed; // TODO: Framerate
-        private const float _diagonalMovementSpeedModifier = 0.7071067811865475f;
+        private const float _diagonalMovementSpeedModifier = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
         private bool _isMoving;
         private bool _leg;
         public int XOffset;
@@ -200,6 +200,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             }
         }
 
+        // TODO: Shadows, reflections
         public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
         {
             bool ShowLegs()
