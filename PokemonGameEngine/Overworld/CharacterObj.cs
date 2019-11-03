@@ -12,7 +12,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
         public byte Z;
 
-        public CharacterObj(ushort id, string resource, int spriteWidth, int spriteHeight) : base(id)
+        public CharacterObj(ushort id, string resource, int spriteWidth, int spriteHeight)
+            : base(id)
         {
             SpriteWidth = spriteWidth;
             SpriteHeight = spriteHeight;
@@ -21,7 +22,13 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
         public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
         {
-            RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x, y, _tempSpriteSheet[0], false, false);
+            bool ShowLegs()
+            {
+                return MovementTimer != 0 && MovementTimer <= 0.6f;
+            }
+            byte f = (byte)Facing;
+            int spriteNum = ShowLegs() ? (_leg ? f + 8 : f + 16) : f; // TODO: Fall-back to specific sprites if the target sprite doesn't exist
+            RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x, y, _tempSpriteSheet[spriteNum], false, false);
         }
     }
 }

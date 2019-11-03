@@ -276,8 +276,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
         public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             Obj camera = Obj.Camera;
-            int cameraX = (camera.X * 16) - (bmpWidth / 2) + 8;
-            int cameraY = (camera.Y * 16) - (bmpHeight / 2) + 8;
+            int cameraX = (camera.X * 16) - (bmpWidth / 2) + 8 + camera.XOffset;
+            int cameraY = (camera.Y * 16) - (bmpHeight / 2) + 8 + camera.YOffset;
             Map cameraMap = camera.Map;
             int xp16 = cameraX % 16;
             int yp16 = cameraY % 16;
@@ -321,13 +321,15 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 }
                 // TODO: They will overlap each other regardless of y coordinate because of the order of the list
                 // TODO: Characters from other maps
-                for (int i = 0; i < cameraMap.Characters.Count; i++)
+                List<CharacterObj> list = cameraMap.Characters;
+                int count = list.Count;
+                for (int i = 0; i < count; i++)
                 {
-                    CharacterObj c = cameraMap.Characters[i];
+                    CharacterObj c = list[i];
                     if (c.Z == z)
                     {
-                        int objX = ((c.X - startBlockX) * 16) + startX;
-                        int objY = ((c.Y - startBlockY) * 16) + startY;
+                        int objX = ((c.X - startBlockX) * 16) + c.XOffset + startX;
+                        int objY = ((c.Y - startBlockY) * 16) + c.YOffset + startY;
                         int objW = c.SpriteWidth;
                         int objH = c.SpriteHeight;
                         objX -= (objW - 16) / 2;

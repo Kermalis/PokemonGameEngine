@@ -5,6 +5,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.PokemonGameEngine.GUI;
+using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Overworld;
 using Kermalis.PokemonGameEngine.Util;
 using System;
@@ -56,6 +57,63 @@ namespace Kermalis.PokemonGameEngine.UI
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
                     RenderUtil.Fill(bmpAddress, RenderWidth, RenderHeight, 0, 0, RenderWidth, RenderHeight, 0xFF000000);
+                    if (Obj.Camera.MovementTimer == 0 && CharacterObj.Player.MovementTimer == 0)
+                    {
+                        bool down = InputManager.IsPressed(Key.Down);
+                        bool up = InputManager.IsPressed(Key.Up);
+                        bool left = InputManager.IsPressed(Key.Left);
+                        bool right = InputManager.IsPressed(Key.Right);
+                        if (down || up || left || right)
+                        {
+                            Obj.FacingDirection facing;
+                            if (down)
+                            {
+                                if (left)
+                                {
+                                    facing = Obj.FacingDirection.SouthWest;
+                                }
+                                else if (right)
+                                {
+                                    facing = Obj.FacingDirection.SouthEast;
+                                }
+                                else
+                                {
+                                    facing = Obj.FacingDirection.South;
+                                }
+                            }
+                            else if (up)
+                            {
+                                if (left)
+                                {
+                                    facing = Obj.FacingDirection.NorthWest;
+                                }
+                                else if (right)
+                                {
+                                    facing = Obj.FacingDirection.NorthEast;
+                                }
+                                else
+                                {
+                                    facing = Obj.FacingDirection.North;
+                                }
+                            }
+                            else if (left)
+                            {
+                                facing = Obj.FacingDirection.West;
+                            }
+                            else
+                            {
+                                facing = Obj.FacingDirection.East;
+                            }
+                            bool run = InputManager.IsPressed(Key.B);
+                            Obj.Camera.Move(facing, run);
+                            CharacterObj.Player.Move(facing, run);
+                        }
+                    }
+                    else
+                    {
+                        Obj.Camera.UpdateMovement();
+                        CharacterObj.Player.UpdateMovement();
+                    }
                     Map.Draw(bmpAddress, RenderWidth, RenderHeight);
                     if (_showFPS)
                     {
