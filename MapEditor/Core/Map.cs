@@ -223,6 +223,30 @@ namespace Kermalis.MapEditor.Core
                 }
                 Draw(borderBlocks);
             }
+            public void Fill(bool borderBlocks, Blockset.Block oldBlock, Blockset.Block newBlock, int destX, int destY)
+            {
+                Block[][] outArr = borderBlocks ? BorderBlocks : Blocks;
+                int width = borderBlocks ? BorderWidth : Width;
+                int height = borderBlocks ? BorderHeight : Height;
+                void Fill(int x, int y)
+                {
+                    if (x >= 0 && x < width && y >= 0 && y < height)
+                    {
+                        Block b = outArr[y][x];
+                        if (b.BlocksetBlock == oldBlock)
+                        {
+                            b.BlocksetBlock = newBlock;
+                            DrawList.Add(b);
+                            Fill(x, y + 1);
+                            Fill(x, y - 1);
+                            Fill(x + 1, y);
+                            Fill(x - 1, y);
+                        }
+                    }
+                }
+                Fill(destX, destY);
+                Draw(borderBlocks);
+            }
 
             private void UpdateBitmapSize(bool borderBlocks)
             {

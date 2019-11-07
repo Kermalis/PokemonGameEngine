@@ -89,15 +89,31 @@ namespace Kermalis.MapEditor.UI
             if (_map != null)
             {
                 PointerPoint pp = e.GetPointerPoint(this);
-                if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+                switch (pp.Properties.PointerUpdateKind)
                 {
-                    Point pos = pp.Position;
-                    if (Bounds.TemporaryFix_PointerInControl(pos))
+                    case PointerUpdateKind.LeftButtonPressed:
                     {
-                        _isDrawing = true;
-                        _map.MapLayout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
-                        InvalidateVisual();
-                        e.Handled = true;
+                        Point pos = pp.Position;
+                        if (Bounds.TemporaryFix_PointerInControl(pos))
+                        {
+                            _isDrawing = true;
+                            _map.MapLayout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
+                            e.Handled = true;
+                        }
+                        break;
+                    }
+                    case PointerUpdateKind.MiddleButtonPressed:
+                    {
+                        Point pos = pp.Position;
+                        if (Bounds.TemporaryFix_PointerInControl(pos))
+                        {
+                            int x = (int)pos.X / 16;
+                            int y = (int)pos.Y / 16;
+                            Map.Layout ml = _map.MapLayout;
+                            ml.Fill(_borderBlocks, (_borderBlocks ? ml.BorderBlocks : ml.Blocks)[y][x].BlocksetBlock, Selection[0][0], x, y);
+                            e.Handled = true;
+                        }
+                        break;
                     }
                 }
             }
@@ -113,7 +129,6 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _map.MapLayout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
-                        InvalidateVisual();
                         e.Handled = true;
                     }
                 }
