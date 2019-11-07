@@ -9,9 +9,37 @@ using System.IO;
 
 namespace Kermalis.MapEditor.Core
 {
-    internal sealed class Map
+    public sealed class Map
     {
-        public sealed class Layout : IDisposable
+        internal sealed class Connection
+        {
+            public enum Direction : byte
+            {
+                North,
+                West,
+                East,
+                South
+            }
+            public Direction Dir;
+            public int MapId;
+            public int Offset;
+
+            public Connection() { }
+            public Connection(EndianBinaryReader r)
+            {
+                Dir = (Direction)r.ReadByte();
+                MapId = r.ReadInt32();
+                Offset = r.ReadInt32();
+            }
+
+            public void Write(EndianBinaryWriter w)
+            {
+                w.Write((byte)Dir);
+                w.Write(MapId);
+                w.Write(Offset);
+            }
+        }
+        internal sealed class Layout : IDisposable
         {
             public sealed class Block
             {
@@ -54,7 +82,7 @@ namespace Kermalis.MapEditor.Core
 
             public WriteableBitmap BlocksBitmap;
             public WriteableBitmap BorderBlocksBitmap;
-            public delegate void LayoutDrewBitmapEventHandler(Layout layout, bool drewBorderBlocks);
+            public delegate void LayoutDrewBitmapEventHandler(Layout layout, bool drewBorderBlocks, bool wasResized);
             public event LayoutDrewBitmapEventHandler OnDrew;
 
             public int Width;
@@ -92,7 +120,7 @@ namespace Kermalis.MapEditor.Core
             }
             public Layout(string name, int width, int height, byte borderWidth, byte borderHeight, Blockset.Block defaultBlock)
             {
-                Id = _ids.Add(name);
+                Id = Ids.Add(name);
                 _loadedLayouts.Add(Id, new WeakReference<Layout>(this));
                 Block[][] Create(int w, int h)
                 {
@@ -112,7 +140,7 @@ namespace Kermalis.MapEditor.Core
                 BorderBlocks = Create(BorderWidth = borderWidth, BorderHeight = borderHeight);
                 Name = name;
                 Save();
-                _ids.Save();
+                Ids.Save();
                 UpdateBitmapSize(false);
                 UpdateBitmapSize(true);
             }
@@ -123,11 +151,11 @@ namespace Kermalis.MapEditor.Core
 
             private const string _layoutExtension = ".pgelayout";
             private static readonly string _layoutPath = Path.Combine(Program.AssetPath, "Map", "Layout");
-            private static readonly IdList _ids = new IdList(Path.Combine(_layoutPath, "LayoutIds.txt"));
+            public static IdList Ids { get; } = new IdList(Path.Combine(_layoutPath, "LayoutIds.txt"));
             private static readonly Dictionary<int, WeakReference<Layout>> _loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
             public static Layout LoadOrGet(string name)
             {
-                int id = _ids[name];
+                int id = Ids[name];
                 if (id == -1)
                 {
                     throw new ArgumentOutOfRangeException(nameof(name));
@@ -136,7 +164,7 @@ namespace Kermalis.MapEditor.Core
             }
             public static Layout LoadOrGet(int id)
             {
-                string name = _ids[id];
+                string name = Ids[id];
                 if (name == null)
                 {
                     throw new ArgumentOutOfRangeException(nameof(id));
@@ -223,7 +251,7 @@ namespace Kermalis.MapEditor.Core
                     {
                         BlocksBitmap = bmp;
                     }
-                    DrawAll(borderBlocks);
+                    DrawAll(borderBlocks, true);
                 }
             }
             public static readonly List<Block> DrawList = new List<Block>(); // Save allocations
@@ -249,10 +277,10 @@ namespace Kermalis.MapEditor.Core
                         }
                     }
                     list.Clear();
-                    OnDrew?.Invoke(this, borderBlocks);
+                    OnDrew?.Invoke(this, borderBlocks, false);
                 }
             }
-            public unsafe void DrawAll(bool borderBlocks)
+            public unsafe void DrawAll(bool borderBlocks, bool wasResized)
             {
                 WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
                 using (ILockedFramebuffer l = bmp.Lock())
@@ -273,7 +301,7 @@ namespace Kermalis.MapEditor.Core
                         }
                     }
                 }
-                OnDrew?.Invoke(this, borderBlocks);
+                OnDrew?.Invoke(this, borderBlocks, wasResized);
             }
 
             public void Save()
@@ -316,46 +344,54 @@ namespace Kermalis.MapEditor.Core
             }
         }
 
-        public readonly string Name;
-        public readonly int Id;
+        internal readonly string Name;
+        internal readonly int Id;
 
-        public readonly Layout MapLayout;
+        internal readonly Layout MapLayout;
+        internal readonly List<Connection> Connections;
 
         private Map(string name, int id)
         {
             using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(_mapPath, name + _mapExtension))))
             {
                 MapLayout = Layout.LoadOrGet(r.ReadInt32());
+                int numConnections = r.ReadByte();
+                Connections = new List<Connection>(numConnections);
+                for (int i = 0; i < numConnections; i++)
+                {
+                    Connections.Add(new Connection(r));
+                }
             }
             Name = name;
             Id = id;
         }
-        public Map(string name, Layout layout)
+        internal Map(string name, Layout layout)
         {
-            Id = _ids.Add(name);
+            Id = Ids.Add(name);
             _loadedMaps.Add(Id, new WeakReference<Map>(this));
             MapLayout = layout;
+            Connections = new List<Connection>();
             Name = name;
             Save();
-            _ids.Save();
+            Ids.Save();
         }
 
         private const string _mapExtension = ".pgemap";
         private static readonly string _mapPath = Path.Combine(Program.AssetPath, "Map");
-        private static readonly IdList _ids = new IdList(Path.Combine(_mapPath, "MapIds.txt"));
+        public static IdList Ids { get; } = new IdList(Path.Combine(_mapPath, "MapIds.txt"));
         private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new Dictionary<int, WeakReference<Map>>();
-        public static Map LoadOrGet(string name)
+        internal static Map LoadOrGet(string name)
         {
-            int id = _ids[name];
+            int id = Ids[name];
             if (id == -1)
             {
                 throw new ArgumentOutOfRangeException(nameof(name));
             }
             return LoadOrGet(name, id);
         }
-        public static Map LoadOrGet(int id)
+        internal static Map LoadOrGet(int id)
         {
-            string name = _ids[id];
+            string name = Ids[id];
             if (name == null)
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
@@ -385,6 +421,12 @@ namespace Kermalis.MapEditor.Core
             using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_mapPath, Name + _mapExtension))))
             {
                 w.Write(MapLayout.Id);
+                byte numConnections = (byte)Connections.Count;
+                w.Write(numConnections);
+                for (int i = 0; i < numConnections; i++)
+                {
+                    Connections[i].Write(w);
+                }
             }
         }
     }

@@ -6,18 +6,11 @@ using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using System;
-using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class BlocksetImage : Control, INotifyPropertyChanged
+    public sealed class BlocksetImage : Control
     {
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-        public new event PropertyChangedEventHandler PropertyChanged;
-
         private readonly bool _allowSelectingMultiple;
         private readonly double _scale;
 
@@ -46,7 +39,6 @@ namespace Kermalis.MapEditor.UI
                     ResetSelection();
                     InvalidateMeasure();
                     InvalidateVisual();
-                    OnPropertyChanged(nameof(Blockset));
                 }
             }
         }
@@ -100,7 +92,7 @@ namespace Kermalis.MapEditor.UI
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
                 {
                     Point pos = pp.Position;
-                    if (Bounds.TemporaryFix_RectContains(pos))
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _isSelecting = true;
                         _selection.Start((int)(pos.X / _scale) / 16, (int)(pos.Y / _scale) / 16, 1, 1);
@@ -117,7 +109,7 @@ namespace Kermalis.MapEditor.UI
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
                 {
                     Point pos = pp.Position;
-                    if (Bounds.TemporaryFix_RectContains(pos))
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _selection.Move((int)(pos.X / _scale) / 16, (int)(pos.Y / _scale) / 16);
                         e.Handled = true;

@@ -15,6 +15,7 @@ namespace Kermalis.MapEditor.UI
         public override void OnFrameworkInitializationCompleted()
         {
             Selection.CreateBrushes();
+            ConnectionModel.CreateBrush();
             switch (ApplicationLifetime)
             {
                 case IClassicDesktopStyleApplicationLifetime desktop: desktop.MainWindow = new MainWindow(); break;

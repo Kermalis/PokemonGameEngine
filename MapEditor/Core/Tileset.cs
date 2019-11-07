@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Kermalis.MapEditor.Core
 {
-    internal sealed class Tileset : IDisposable
+    public sealed class Tileset : IDisposable
     {
         public sealed class Tile
         {
@@ -24,12 +24,12 @@ namespace Kermalis.MapEditor.Core
             }
         }
 
-        public const int BitmapNumTilesX = 8;
-        public readonly WriteableBitmap Bitmap;
+        internal const int BitmapNumTilesX = 8;
+        internal readonly WriteableBitmap Bitmap;
 
-        public readonly string Name;
-        public readonly int Id;
-        public readonly Tile[] Tiles;
+        internal readonly string Name;
+        internal readonly int Id;
+        internal readonly Tile[] Tiles;
 
         private unsafe Tileset(string name, int id)
         {
@@ -74,20 +74,20 @@ namespace Kermalis.MapEditor.Core
 
         private const string _tilesetExtension = ".png";
         private static readonly string _tilesetPath = Path.Combine(Program.AssetPath, "Tileset");
-        private static readonly IdList _ids = new IdList(Path.Combine(_tilesetPath, "TilesetIds.txt"));
+        public static IdList Ids { get; } = new IdList(Path.Combine(_tilesetPath, "TilesetIds.txt"));
         private static readonly Dictionary<int, WeakReference<Tileset>> _loadedTilesets = new Dictionary<int, WeakReference<Tileset>>();
-        public static Tileset LoadOrGet(string name)
+        internal static Tileset LoadOrGet(string name)
         {
-            int id = _ids[name];
+            int id = Ids[name];
             if (id == -1)
             {
                 throw new ArgumentOutOfRangeException(nameof(name));
             }
             return LoadOrGet(name, id);
         }
-        public static Tileset LoadOrGet(int id)
+        internal static Tileset LoadOrGet(int id)
         {
-            string name = _ids[id];
+            string name = Ids[id];
             if (name == null)
             {
                 throw new ArgumentOutOfRangeException(nameof(id));

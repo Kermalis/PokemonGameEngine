@@ -5,18 +5,11 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
-using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class MapImage : Control, INotifyPropertyChanged
+    public sealed class MapImage : Control
     {
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-        public new event PropertyChangedEventHandler PropertyChanged;
-
         private readonly bool _borderBlocks;
         private Map _map;
         internal Map Map
@@ -49,11 +42,14 @@ namespace Kermalis.MapEditor.UI
             _borderBlocks = borderBlocks;
         }
 
-        private void MapLayout_OnDrew(Map.Layout layout, bool drewBorderBlocks)
+        private void MapLayout_OnDrew(Map.Layout layout, bool drewBorderBlocks, bool wasResized)
         {
             if (_borderBlocks == drewBorderBlocks)
             {
-                InvalidateMeasure();
+                if (wasResized)
+                {
+                    InvalidateMeasure();
+                }
                 InvalidateVisual();
             }
         }
@@ -96,7 +92,7 @@ namespace Kermalis.MapEditor.UI
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
                 {
                     Point pos = pp.Position;
-                    if (Bounds.TemporaryFix_RectContains(pos))
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _isDrawing = true;
                         _map.MapLayout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
@@ -114,7 +110,7 @@ namespace Kermalis.MapEditor.UI
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
                 {
                     Point pos = pp.Position;
-                    if (Bounds.TemporaryFix_RectContains(pos))
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _map.MapLayout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
                         InvalidateVisual();

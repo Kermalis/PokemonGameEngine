@@ -44,6 +44,9 @@
             </local:MapImage>
           </ScrollViewer>
         </TabItem>
+        <TabItem Header="Connections">
+          <local:ConnectionEditor Name="ConnectionEditor" />
+        </TabItem>
       </TabControl>
     </Grid>
   </DockPanel>

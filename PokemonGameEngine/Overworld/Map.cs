@@ -21,11 +21,11 @@ namespace Kermalis.PokemonGameEngine.Overworld
             public readonly int MapId;
             public readonly int Offset;
 
-            public Connection(Direction dir, int mapId, int offset)
+            public Connection(EndianBinaryReader r)
             {
-                Dir = dir;
-                MapId = mapId;
-                Offset = offset;
+                Dir = (Direction)r.ReadByte();
+                MapId = r.ReadInt32();
+                Offset = r.ReadInt32();
             }
         }
         private sealed class Layout
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     }
                     _borderWidth = r.ReadByte();
                     _borderHeight = r.ReadByte();
-                    if (_borderHeight == 0)
+                    if (_borderWidth == 0 || _borderHeight == 0)
                     {
                         _borderBlocks = Array.Empty<Blockset.Block[]>();
                     }
@@ -234,14 +234,11 @@ namespace Kermalis.PokemonGameEngine.Overworld
             using (var r = new EndianBinaryReader(Utils.GetResourceStream(_mapPath + name + _mapExtension)))
             {
                 _layout = Layout.LoadOrGet(r.ReadInt32());
-                //_connections = Array.Empty<Connection>();
-                if (name == "TestMapC")
+                int numConnections = r.ReadByte();
+                _connections = new Connection[numConnections];
+                for (int i = 0; i < numConnections; i++)
                 {
-                    _connections = new Connection[1] { new Connection(Connection.Direction.North, 1, 0) };
-                }
-                else
-                {
-                    _connections = new Connection[1] { new Connection(Connection.Direction.South, 0, 0) };
+                    _connections[i] = new Connection(r);
                 }
             }
         }

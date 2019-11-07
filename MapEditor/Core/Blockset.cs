@@ -222,7 +222,7 @@ namespace Kermalis.MapEditor.Core
         internal event BlocksetEventHandler OnChanged;
         internal event BlocksetEventHandler OnRemoved;
 
-        public const int BitmapNumBlocksX = 8;
+        internal const int BitmapNumBlocksX = 8;
         internal WriteableBitmap Bitmap;
         internal event EventHandler<EventArgs> OnDrew;
 
@@ -248,12 +248,12 @@ namespace Kermalis.MapEditor.Core
         }
         internal Blockset(string name)
         {
-            Id = _ids.Add(name);
+            Id = Ids.Add(name);
             _loadedBlocksets.Add(Id, new WeakReference<Blockset>(this));
             Blocks = new List<Block>() { new Block(this, 0) };
             Name = name;
             Save();
-            _ids.Save();
+            Ids.Save();
             UpdateBitmapSize();
             DrawAll();
         }
@@ -264,25 +264,25 @@ namespace Kermalis.MapEditor.Core
 
         internal static bool IsValidName(string name)
         {
-            return !string.IsNullOrWhiteSpace(name) && !Utils.InvalidFileNameRegex.IsMatch(name) && _ids[name] == -1;
+            return !string.IsNullOrWhiteSpace(name) && !Utils.InvalidFileNameRegex.IsMatch(name) && Ids[name] == -1;
         }
 
         private const string _blocksetExtension = ".pgeblockset";
         private static readonly string _blocksetPath = Path.Combine(Program.AssetPath, "Blockset");
-        private static readonly IdList _ids = new IdList(Path.Combine(_blocksetPath, "BlocksetIds.txt"));
+        public static IdList Ids { get; } = new IdList(Path.Combine(_blocksetPath, "BlocksetIds.txt"));
         private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new Dictionary<int, WeakReference<Blockset>>();
-        public static Blockset LoadOrGet(string name)
+        internal static Blockset LoadOrGet(string name)
         {
-            int id = _ids[name];
+            int id = Ids[name];
             if (id == -1)
             {
                 throw new ArgumentOutOfRangeException(nameof(name));
             }
             return LoadOrGet(name, id);
         }
-        public static Blockset LoadOrGet(int id)
+        internal static Blockset LoadOrGet(int id)
         {
-            string name = _ids[id];
+            string name = Ids[id];
             if (name == null)
             {
                 throw new ArgumentOutOfRangeException(nameof(id));

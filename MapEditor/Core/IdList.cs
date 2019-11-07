@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 
 namespace Kermalis.MapEditor.Core
 {
-    internal sealed class IdList
+    public sealed class IdList : IEnumerable<string>, INotifyCollectionChanged
     {
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
         private readonly string _path;
         private readonly List<string> _entries = new List<string>();
 
-        public IdList(string path)
+        internal IdList(string path)
         {
             if (File.Exists(path))
             {
@@ -32,7 +36,7 @@ namespace Kermalis.MapEditor.Core
             _path = path;
         }
 
-        public int this[string key]
+        internal int this[string key]
         {
             get
             {
@@ -46,7 +50,7 @@ namespace Kermalis.MapEditor.Core
                 return -1;
             }
         }
-        public string this[int id]
+        internal string this[int id]
         {
             get
             {
@@ -58,7 +62,7 @@ namespace Kermalis.MapEditor.Core
             }
         }
 
-        public int Add(string key)
+        internal int Add(string key)
         {
             int count = _entries.Count;
             for (int i = 0; i < count; i++)
@@ -69,10 +73,11 @@ namespace Kermalis.MapEditor.Core
                 }
             }
             _entries.Add(key);
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, key));
             return count;
         }
 
-        public void Save()
+        internal void Save()
         {
             using (var s = new StreamWriter(File.OpenWrite(_path)))
             {
@@ -81,6 +86,19 @@ namespace Kermalis.MapEditor.Core
                     s.WriteLine(_entries[i]);
                 }
             }
+        }
+
+        public IEnumerator<string> GetEnumerator()
+        {
+            int count = _entries.Count;
+            for (int i = 0; i < count; i++)
+            {
+                yield return _entries[i];
+            }
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

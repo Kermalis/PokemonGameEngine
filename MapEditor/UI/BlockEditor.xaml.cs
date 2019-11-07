@@ -241,8 +241,7 @@ namespace Kermalis.MapEditor.UI
                     int numToAdd = num - curCount;
                     for (int i = 0; i < numToAdd; i++)
                     {
-                        var s = new SubLayerModel(_selectedBlock, z, (byte)(curCount + i));
-                        SubLayers.Add(s);
+                        SubLayers.Add(new SubLayerModel(_selectedBlock, z, (byte)(curCount + i)));
                     }
                     if (_selectedSubLayerIndex == -1)
                     {
@@ -254,9 +253,9 @@ namespace Kermalis.MapEditor.UI
                     int numToRemove = curCount - num;
                     for (int i = 0; i < numToRemove; i++)
                     {
-                        int index = curCount - 1 - i;
-                        SubLayers[index].Dispose();
-                        SubLayers.RemoveAt(index);
+                        SubLayerModel s = SubLayers[curCount - 1 - i];
+                        s.Dispose();
+                        SubLayers.Remove(s);
                     }
                 }
             }

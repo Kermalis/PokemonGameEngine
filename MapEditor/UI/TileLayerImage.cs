@@ -118,7 +118,7 @@ namespace Kermalis.MapEditor.UI
                 case PointerUpdateKind.LeftButtonPressed:
                 {
                     Point pos = pp.Position;
-                    if (Bounds.TemporaryFix_RectContains(pos))
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _isDrawing = true;
                         SetTile(false, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
@@ -129,7 +129,7 @@ namespace Kermalis.MapEditor.UI
                 case PointerUpdateKind.MiddleButtonPressed:
                 {
                     Point pos = pp.Position;
-                    if (Bounds.TemporaryFix_RectContains(pos))
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         SetTile(true, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
                         e.Handled = true;
@@ -139,7 +139,7 @@ namespace Kermalis.MapEditor.UI
                 case PointerUpdateKind.RightButtonPressed:
                 {
                     Point pos = pp.Position;
-                    if (Bounds.TemporaryFix_RectContains(pos))
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         SubLayerModel.GetTile(_block, _zLayerNum, _subLayerNum, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0)?.CopyTo(Selection);
                         e.Handled = true;
@@ -156,7 +156,7 @@ namespace Kermalis.MapEditor.UI
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
                 {
                     Point pos = pp.Position;
-                    if (Bounds.TemporaryFix_RectContains(pos))
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         SetTile(false, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
                         e.Handled = true;

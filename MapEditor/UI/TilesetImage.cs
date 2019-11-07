@@ -6,18 +6,11 @@ using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using System;
-using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class TilesetImage : Control, INotifyPropertyChanged
+    public sealed class TilesetImage : Control
     {
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-        public new event PropertyChangedEventHandler PropertyChanged;
-
         private readonly double _scale;
 
         private bool _isSelecting;
@@ -38,7 +31,6 @@ namespace Kermalis.MapEditor.UI
                     FireSelectionCompleted();
                     InvalidateMeasure();
                     InvalidateVisual();
-                    OnPropertyChanged(nameof(Tileset));
                 }
             }
         }
@@ -91,7 +83,7 @@ namespace Kermalis.MapEditor.UI
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
                 {
                     Point pos = pp.Position;
-                    if (Bounds.TemporaryFix_RectContains(pos))
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _isSelecting = true;
                         _selection.Start((int)(pos.X / _scale) / 8, (int)(pos.Y / _scale) / 8, 1, 1);

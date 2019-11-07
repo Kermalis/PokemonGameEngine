@@ -21,6 +21,7 @@ namespace Kermalis.MapEditor.UI
         private readonly BlocksetImage _blocksetImage;
         private readonly MapImage _mapBlocksImage;
         private readonly MapImage _mapBorderBlocksImage;
+        private readonly ConnectionEditor _connectionEditor;
 
         public MainWindow()
         {
@@ -44,6 +45,9 @@ namespace Kermalis.MapEditor.UI
             _blocksetImage = this.FindControl<BlocksetImage>("BlocksetImage");
             _blocksetImage.SelectionCompleted += BlocksetImage_SelectionCompleted;
             _blocksetImage.Blockset = _blockset;
+
+            _connectionEditor = this.FindControl<ConnectionEditor>("ConnectionEditor");
+            _connectionEditor.SetMap(_map);
         }
 
         private void UpdateMapLayoutBlock(Blockset blockset, Blockset.Block block, bool resetBlock)
