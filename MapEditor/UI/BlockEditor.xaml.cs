@@ -257,6 +257,11 @@ namespace Kermalis.MapEditor.UI
                         s.Dispose();
                         SubLayers.Remove(s);
                     }
+                    int count = SubLayers.Count;
+                    if (_selectedSubLayerIndex >= count)
+                    {
+                        SelectedSubLayerIndex = count - 1;
+                    }
                 }
             }
         }
