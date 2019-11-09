@@ -110,7 +110,12 @@ namespace Kermalis.MapEditor.UI
                             int x = (int)pos.X / 16;
                             int y = (int)pos.Y / 16;
                             Map.Layout ml = _map.MapLayout;
-                            ml.Fill(_borderBlocks, (_borderBlocks ? ml.BorderBlocks : ml.Blocks)[y][x].BlocksetBlock, Selection[0][0], x, y);
+                            Blockset.Block oldBlock = (_borderBlocks ? ml.BorderBlocks : ml.Blocks)[y][x].BlocksetBlock;
+                            Blockset.Block newBlock = Selection[0][0];
+                            if (oldBlock != newBlock)
+                            {
+                                ml.Fill(_borderBlocks, oldBlock, newBlock, x, y);
+                            }
                             e.Handled = true;
                         }
                         break;
