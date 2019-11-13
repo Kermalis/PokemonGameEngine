@@ -1,4 +1,6 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Platform;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -12,7 +14,15 @@ namespace Kermalis.MapEditor.Util
         // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/3079
         public static bool TemporaryFix_PointerInControl(this Rect rect, Point pos)
         {
-            return pos.X < rect.Width && pos.Y < rect.Height;
+            double x = pos.X;
+            double y = pos.Y;
+            return x >= 0 && x < rect.Width && y >= 0 && y < rect.Height;
+        }
+        public static void ForceRedraw(this ComboBox c)
+        {
+            IBrush old = c.Background;
+            c.Background = old.Equals(Brushes.AliceBlue) ? Brushes.AntiqueWhite : Brushes.AliceBlue;
+            c.Background = old;
         }
 
         public static readonly Regex InvalidFileNameRegex = new Regex("[" + Regex.Escape(new string(Path.GetInvalidFileNameChars())) + "]");

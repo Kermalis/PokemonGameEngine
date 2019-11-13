@@ -15,7 +15,7 @@ namespace Kermalis.MapEditor.UI
 
         private bool _isSelecting;
         private readonly Selection _selection;
-        internal event EventHandler<Tileset.Tile> SelectionCompleted;
+        internal event EventHandler<Tileset.Tile[][]> SelectionCompleted;
 
         private Tileset _tileset;
         internal Tileset Tileset
@@ -38,7 +38,7 @@ namespace Kermalis.MapEditor.UI
         public TilesetImage(double scale)
         {
             _scale = scale;
-            _selection = new Selection();
+            _selection = new Selection(2, 2);
             _selection.Changed += OnSelectionChanged;
         }
 
@@ -92,6 +92,22 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
+        protected override void OnPointerMoved(PointerEventArgs e)
+        {
+            if (_tileset != null && _isSelecting)
+            {
+                PointerPoint pp = e.GetPointerPoint(this);
+                if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
+                {
+                    Point pos = pp.Position;
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
+                    {
+                        _selection.Move((int)(pos.X / _scale) / 8, (int)(pos.Y / _scale) / 8);
+                        e.Handled = true;
+                    }
+                }
+            }
+        }
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
             if (_tileset != null && _isSelecting)
@@ -114,8 +130,18 @@ namespace Kermalis.MapEditor.UI
         {
             if (SelectionCompleted != null)
             {
-                int index = _selection.X + (_selection.Y * Tileset.BitmapNumTilesX);
-                SelectionCompleted.Invoke(this, index >= _tileset.Tiles.Length ? null : _tileset.Tiles[index]);
+                var tiles = new Tileset.Tile[_selection.Height][];
+                for (int y = 0; y < _selection.Height; y++)
+                {
+                    var arrY = new Tileset.Tile[_selection.Width];
+                    for (int x = 0; x < _selection.Width; x++)
+                    {
+                        int index = x + _selection.X + ((y + _selection.Y) * Tileset.BitmapNumTilesX);
+                        arrY[x] = (index >= _tileset.Tiles.Length) ? null : _tileset.Tiles[index];
+                    }
+                    tiles[y] = arrY;
+                }
+                SelectionCompleted.Invoke(this, tiles);
             }
         }
     }

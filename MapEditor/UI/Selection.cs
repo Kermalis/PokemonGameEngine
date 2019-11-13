@@ -58,13 +58,18 @@ namespace Kermalis.MapEditor.UI
             }
         }
 
+        private readonly int _maxWidth;
+        private readonly int _maxHeight;
+
         public event EventHandler Changed;
 
         public static SolidColorBrush SelectionBrush, SelectingBrush;
         public static Pen SelectionPen, SelectingPen;
 
-        public Selection()
+        public Selection(int maxWidth = int.MaxValue, int maxHeight = int.MaxValue)
         {
+            _maxWidth = maxWidth;
+            _maxHeight = maxHeight;
             Start(0, 0, 1, 1);
         }
 
@@ -93,6 +98,10 @@ namespace Kermalis.MapEditor.UI
                 X -= 1 * diff;
                 w += 2 * diff;
             }
+            if (w > _maxWidth)
+            {
+                w = _maxWidth;
+            }
             Width = w;
             int h = y - _y + 1;
             if (h < 1)
@@ -100,6 +109,10 @@ namespace Kermalis.MapEditor.UI
                 int diff = 1 - h;
                 Y -= 1 * diff;
                 h += 2 * diff;
+            }
+            if (h > _maxHeight)
+            {
+                h = _maxHeight;
             }
             Height = h;
         }

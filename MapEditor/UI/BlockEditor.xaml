@@ -21,11 +21,12 @@
           </x:Arguments>
         </local:TileLayerImage>
       </Border>
-      <Border Width="18" Height="18" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
-        <Image Name="SelectionImage" Width="16" Height="16" RenderOptions.BitmapInterpolationMode="Default" />
-      </Border>
-      <CheckBox Content="X-Flip" IsChecked="{Binding ElementName=TileLayerImage, Path=Selection.XFlip}" />
-      <CheckBox Content="Y-Flip" IsChecked="{Binding ElementName=TileLayerImage, Path=Selection.YFlip}" />
+      <Panel Width="34" Height="34">
+        <Image Name="ClipboardImage" Width="32" Height="32" RenderOptions.BitmapInterpolationMode="Default" />
+        <Border HorizontalAlignment="Left" VerticalAlignment="Top" Width="{Binding ClipboardBorderWidth}" Height="{Binding ClipboardBorderHeight}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}" />
+      </Panel>
+      <CheckBox Content="X-Flip" IsChecked="{Binding XFlip}" />
+      <CheckBox Content="Y-Flip" IsChecked="{Binding YFlip}" />
     </StackPanel>
     <ComboBox Margin="5" Grid.Row="0" Grid.Column="1" Items="{Binding SubLayers}" SelectedIndex="{Binding SelectedSubLayerIndex}" Name="SubLayerComboBox">
       <ComboBox.ItemTemplate>

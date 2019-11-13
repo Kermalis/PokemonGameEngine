@@ -11,7 +11,6 @@ namespace Kermalis.MapEditor.UI
 {
     public sealed class BlocksetImage : Control
     {
-        private readonly bool _allowSelectingMultiple;
         private readonly double _scale;
 
         private bool _isSelecting;
@@ -45,9 +44,8 @@ namespace Kermalis.MapEditor.UI
 
         public BlocksetImage(bool allowSelectingMultiple, double scale)
         {
-            _allowSelectingMultiple = allowSelectingMultiple;
             _scale = scale;
-            _selection = new Selection();
+            _selection = allowSelectingMultiple ? new Selection() : new Selection(1, 1);
             _selection.Changed += OnSelectionChanged;
         }
 
@@ -103,7 +101,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerMoved(PointerEventArgs e)
         {
-            if (_blockset != null && _isSelecting && _allowSelectingMultiple)
+            if (_blockset != null && _isSelecting)
             {
                 PointerPoint pp = e.GetPointerPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)

@@ -46,16 +46,16 @@ namespace Kermalis.MapEditor.UI
             UpdateBitmap(Bitmap, _block, _zLayerNum, _subLayerNum);
         }
 
-        internal static Blockset.Block.Tile GetTile(Blockset.Block block, byte zLayerNum, byte subLayerNum, bool left, bool top)
+        internal static Blockset.Block.Tile GetTile(Blockset.Block block, byte zLayerNum, byte subLayerNum, int x, int y)
         {
             Blockset.Block.Tile Get(Dictionary<byte, List<Blockset.Block.Tile>> dict)
             {
                 List<Blockset.Block.Tile> layers = dict[zLayerNum];
                 return layers.Count <= subLayerNum ? null : layers[subLayerNum];
             }
-            if (top)
+            if (y == 0)
             {
-                if (left)
+                if (x == 0)
                 {
                     return Get(block.TopLeft);
                 }
@@ -66,7 +66,7 @@ namespace Kermalis.MapEditor.UI
             }
             else
             {
-                if (left)
+                if (x == 0)
                 {
                     return Get(block.BottomLeft);
                 }
@@ -82,10 +82,13 @@ namespace Kermalis.MapEditor.UI
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
                 RenderUtil.TransparencyGrid(bmpAddress, 16, 16, 4, 4);
-                GetTile(block, zLayerNum, subLayerNum, true, true)?.Draw(bmpAddress, 16, 16, 0, 0);
-                GetTile(block, zLayerNum, subLayerNum, false, true)?.Draw(bmpAddress, 16, 16, 8, 0);
-                GetTile(block, zLayerNum, subLayerNum, true, false)?.Draw(bmpAddress, 16, 16, 0, 8);
-                GetTile(block, zLayerNum, subLayerNum, false, false)?.Draw(bmpAddress, 16, 16, 8, 8);
+                for (int y = 0; y < 2; y++)
+                {
+                    for (int x = 0; x < 2; x++)
+                    {
+                        GetTile(block, zLayerNum, subLayerNum, x, y)?.Draw(bmpAddress, 16, 16, x * 8, y * 8);
+                    }
+                }
             }
         }
 

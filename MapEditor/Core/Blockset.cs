@@ -5,106 +5,63 @@ using Kermalis.EndianBinaryIO;
 using Kermalis.MapEditor.Util;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 
 namespace Kermalis.MapEditor.Core
 {
-    public sealed class Blockset : IDisposable
+    internal sealed class Blockset : IDisposable
     {
         public sealed class Block
         {
-            public sealed class Tile : INotifyPropertyChanged
+            public sealed class Tile
             {
-                private void OnPropertyChanged(string property)
-                {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-                }
-                public event PropertyChangedEventHandler PropertyChanged;
+                public bool XFlip;
+                public bool YFlip;
+                public Tileset.Tile TilesetTile;
 
-                private bool _xFlip;
-                public bool XFlip
+                public Tile() { }
+                public Tile(EndianBinaryReader r)
                 {
-                    get => _xFlip;
-                    set
-                    {
-                        if (_xFlip != value)
-                        {
-                            _xFlip = value;
-                            OnPropertyChanged(nameof(XFlip));
-                        }
-                    }
-                }
-                private bool _yFlip;
-                public bool YFlip
-                {
-                    get => _yFlip;
-                    set
-                    {
-                        if (_yFlip != value)
-                        {
-                            _yFlip = value;
-                            OnPropertyChanged(nameof(YFlip));
-                        }
-                    }
-                }
-                private Tileset.Tile _tilesetTile;
-                internal Tileset.Tile TilesetTile
-                {
-                    get => _tilesetTile;
-                    set
-                    {
-                        if (_tilesetTile != value)
-                        {
-                            _tilesetTile = value;
-                            OnPropertyChanged(nameof(TilesetTile));
-                        }
-                    }
+                    XFlip = r.ReadBoolean();
+                    YFlip = r.ReadBoolean();
+                    TilesetTile = Tileset.LoadOrGet(r.ReadInt32()).Tiles[r.ReadInt32()];
                 }
 
-                internal Tile() { }
-                internal Tile(EndianBinaryReader r)
+                public void CopyTo(Tile other)
                 {
-                    _xFlip = r.ReadBoolean();
-                    _yFlip = r.ReadBoolean();
-                    _tilesetTile = Tileset.LoadOrGet(r.ReadInt32()).Tiles[r.ReadInt32()];
+                    other.XFlip = XFlip;
+                    other.YFlip = YFlip;
+                    other.TilesetTile = TilesetTile;
                 }
 
-                internal void CopyTo(Tile other)
+                public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
                 {
-                    other.XFlip = _xFlip;
-                    other.YFlip = _yFlip;
-                    other.TilesetTile = _tilesetTile;
+                    RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x, y, TilesetTile.Colors, XFlip, YFlip);
                 }
 
-                internal unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
+                public bool Equals(Tile other)
                 {
-                    RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x, y, _tilesetTile.Colors, _xFlip, _yFlip);
+                    return other != null && XFlip == other.XFlip && YFlip == other.YFlip && TilesetTile == other.TilesetTile;
                 }
 
-                internal bool Equals(Tile other)
+                public void Write(EndianBinaryWriter w)
                 {
-                    return other != null && _xFlip == other._xFlip && _yFlip == other._yFlip && _tilesetTile == other._tilesetTile;
-                }
-
-                internal void Write(EndianBinaryWriter w)
-                {
-                    w.Write(_xFlip);
-                    w.Write(_yFlip);
-                    w.Write(_tilesetTile.Parent.Id);
-                    w.Write(_tilesetTile.Id);
+                    w.Write(XFlip);
+                    w.Write(YFlip);
+                    w.Write(TilesetTile.Parent.Id);
+                    w.Write(TilesetTile.Id);
                 }
             }
 
-            internal Blockset Parent;
-            internal int Id;
-            internal readonly Dictionary<byte, List<Tile>> TopLeft;
-            internal readonly Dictionary<byte, List<Tile>> TopRight;
-            internal readonly Dictionary<byte, List<Tile>> BottomLeft;
-            internal readonly Dictionary<byte, List<Tile>> BottomRight;
-            internal ushort Behavior;
+            public Blockset Parent;
+            public int Id;
+            public readonly Dictionary<byte, List<Tile>> TopLeft;
+            public readonly Dictionary<byte, List<Tile>> TopRight;
+            public readonly Dictionary<byte, List<Tile>> BottomLeft;
+            public readonly Dictionary<byte, List<Tile>> BottomRight;
+            public ushort Behavior;
 
-            internal Block(Blockset parent, int id, EndianBinaryReader r)
+            public Block(Blockset parent, int id, EndianBinaryReader r)
             {
                 Behavior = r.ReadUInt16();
                 Dictionary<byte, List<Tile>> Read()
@@ -135,7 +92,7 @@ namespace Kermalis.MapEditor.Core
                 Parent = parent;
                 Id = id;
             }
-            internal Block(Blockset parent, int id)
+            public Block(Blockset parent, int id)
             {
                 Parent = parent;
                 Id = id;
@@ -160,7 +117,7 @@ namespace Kermalis.MapEditor.Core
                 BottomRight = Create();
             }
 
-            internal unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
+            public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
             {
                 byte z = 0;
                 while (true)
@@ -173,7 +130,7 @@ namespace Kermalis.MapEditor.Core
                     z++;
                 }
             }
-            internal unsafe void DrawZ(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, byte z)
+            public unsafe void DrawZ(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, byte z)
             {
                 void Draw(List<Tile> subLayers, int tx, int ty)
                 {
@@ -188,7 +145,7 @@ namespace Kermalis.MapEditor.Core
                 Draw(BottomRight[z], x + 8, y + 8);
             }
 
-            internal void Write(EndianBinaryWriter w)
+            public void Write(EndianBinaryWriter w)
             {
                 w.Write(Behavior);
                 void Write(Dictionary<byte, List<Tile>> zLayers)
@@ -217,18 +174,18 @@ namespace Kermalis.MapEditor.Core
             }
         }
 
-        internal delegate void BlocksetEventHandler(Blockset blockset, Block block);
-        internal event BlocksetEventHandler OnAdded;
-        internal event BlocksetEventHandler OnChanged;
-        internal event BlocksetEventHandler OnRemoved;
+        public delegate void BlocksetEventHandler(Blockset blockset, Block block);
+        public event BlocksetEventHandler OnAdded;
+        public event BlocksetEventHandler OnChanged;
+        public event BlocksetEventHandler OnRemoved;
 
-        internal const int BitmapNumBlocksX = 8;
-        internal WriteableBitmap Bitmap;
-        internal event EventHandler<EventArgs> OnDrew;
+        public const int BitmapNumBlocksX = 8;
+        public WriteableBitmap Bitmap;
+        public event EventHandler<EventArgs> OnDrew;
 
-        internal readonly string Name;
-        internal readonly int Id;
-        internal List<Block> Blocks;
+        public readonly string Name;
+        public readonly int Id;
+        public List<Block> Blocks;
 
         private Blockset(string name, int id)
         {
@@ -246,7 +203,7 @@ namespace Kermalis.MapEditor.Core
             UpdateBitmapSize();
             DrawAll();
         }
-        internal Blockset(string name)
+        public Blockset(string name)
         {
             Id = Ids.Add(name);
             _loadedBlocksets.Add(Id, new WeakReference<Blockset>(this));
@@ -262,7 +219,7 @@ namespace Kermalis.MapEditor.Core
             Dispose(false);
         }
 
-        internal static bool IsValidName(string name)
+        public static bool IsValidName(string name)
         {
             return !string.IsNullOrWhiteSpace(name) && !Utils.InvalidFileNameRegex.IsMatch(name) && Ids[name] == -1;
         }
@@ -271,7 +228,7 @@ namespace Kermalis.MapEditor.Core
         private static readonly string _blocksetPath = Path.Combine(Program.AssetPath, "Blockset");
         public static IdList Ids { get; } = new IdList(Path.Combine(_blocksetPath, "BlocksetIds.txt"));
         private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new Dictionary<int, WeakReference<Blockset>>();
-        internal static Blockset LoadOrGet(string name)
+        public static Blockset LoadOrGet(string name)
         {
             int id = Ids[name];
             if (id == -1)
@@ -280,7 +237,7 @@ namespace Kermalis.MapEditor.Core
             }
             return LoadOrGet(name, id);
         }
-        internal static Blockset LoadOrGet(int id)
+        public static Blockset LoadOrGet(int id)
         {
             string name = Ids[id];
             if (name == null)
@@ -307,7 +264,7 @@ namespace Kermalis.MapEditor.Core
             return b;
         }
 
-        internal void Add()
+        public void Add()
         {
             var block = new Block(this, Blocks.Count);
             Blocks.Add(block);
@@ -321,7 +278,7 @@ namespace Kermalis.MapEditor.Core
                 DrawOne(block);
             }
         }
-        internal static void Clear(Block block)
+        public static void Clear(Block block)
         {
             byte z = 0;
             while (true)
@@ -340,7 +297,7 @@ namespace Kermalis.MapEditor.Core
             blockset.OnChanged?.Invoke(blockset, block);
             blockset.DrawOne(block);
         }
-        internal static void Remove(Block block)
+        public static void Remove(Block block)
         {
             Blockset blockset = block.Parent;
             blockset.Blocks.Remove(block);
@@ -359,7 +316,7 @@ namespace Kermalis.MapEditor.Core
                 blockset.DrawFrom(block.Id);
             }
         }
-        internal void FireChanged(Block block)
+        public void FireChanged(Block block)
         {
             OnChanged?.Invoke(this, block);
             DrawOne(block);
@@ -453,7 +410,7 @@ namespace Kermalis.MapEditor.Core
             OnDrew?.Invoke(this, EventArgs.Empty);
         }
 
-        internal void Save()
+        public void Save()
         {
             using (var w = new EndianBinaryWriter(File.OpenWrite(Path.Combine(_blocksetPath, Name + _blocksetExtension))))
             {

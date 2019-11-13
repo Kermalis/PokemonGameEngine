@@ -13,8 +13,14 @@ namespace Kermalis.MapEditor.UI
 {
     public sealed class TileLayerImage : Control, IDisposable
     {
-        public Blockset.Block.Tile Selection { get; } = new Blockset.Block.Tile();
+        internal readonly Blockset.Block.Tile[][] Clipboard;
+        internal int ClipboardWidth;
+        internal int ClipboardHeight;
+        internal EventHandler ClipboardChanged;
+
         private bool _isDrawing;
+        private bool _isSelecting;
+        private readonly Selection _selection;
 
         private byte _subLayerNum;
         private byte _zLayerNum;
@@ -26,6 +32,18 @@ namespace Kermalis.MapEditor.UI
         public TileLayerImage(double scale)
         {
             _scale = scale;
+            Clipboard = new Blockset.Block.Tile[2][];
+            for (int y = 0; y < 2; y++)
+            {
+                var arrY = new Blockset.Block.Tile[2];
+                for (int x = 0; x < 2; x++)
+                {
+                    arrY[x] = new Blockset.Block.Tile();
+                }
+                Clipboard[y] = arrY;
+            }
+            _selection = new Selection(2, 2);
+            _selection.Changed += OnSelectionChanged;
             _bitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
             _bitmapSize = new Size(16, 16);
         }
@@ -37,6 +55,12 @@ namespace Kermalis.MapEditor.UI
             Rect sourceRect = new Rect(_bitmapSize).CenterRect(new Rect(destRect.Size / _scale));
 
             context.DrawImage(_bitmap, 1, sourceRect, destRect);
+            if (_isSelecting)
+            {
+                var r = new Rect(_selection.X * 8 * _scale, _selection.Y * 8 * _scale, _selection.Width * 8 * _scale, _selection.Height * 8 * _scale);
+                context.FillRectangle(Selection.SelectingBrush, r);
+                context.DrawRectangle(Selection.SelectingPen, r);
+            }
         }
         protected override Size MeasureOverride(Size availableSize)
         {
@@ -47,66 +71,115 @@ namespace Kermalis.MapEditor.UI
             return _bitmapSize * _scale;
         }
 
-        private void SetTile(bool remove, bool left, bool top)
+        private void SetTiles(int startX, int startY)
         {
-            void Set(Dictionary<byte, List<Blockset.Block.Tile>> dict)
+            bool changed = false;
+            void Set(Dictionary<byte, List<Blockset.Block.Tile>> dict, Blockset.Block.Tile st)
             {
                 List<Blockset.Block.Tile> subLayers = dict[_zLayerNum];
-                if (subLayers.Count < _subLayerNum)
+                int subCount = subLayers.Count;
+                if (subCount < _subLayerNum)
                 {
                     throw new InvalidOperationException();
                 }
-                else if (subLayers.Count == _subLayerNum)
+                else if (subCount == _subLayerNum)
                 {
-                    if (!remove)
-                    {
-                        var t = new Blockset.Block.Tile();
-                        Selection.CopyTo(t);
-                        subLayers.Add(t);
-                        _block.Parent.FireChanged(_block);
-                        UpdateBitmap();
-                    }
+                    var t = new Blockset.Block.Tile();
+                    st.CopyTo(t);
+                    subLayers.Add(t);
+                    changed = true;
                 }
                 else
                 {
-                    if (remove)
+                    Blockset.Block.Tile t = subLayers[_subLayerNum];
+                    if (!st.Equals(t))
                     {
-                        subLayers.RemoveAt(_subLayerNum);
-                        _block.Parent.FireChanged(_block);
-                        UpdateBitmap();
+                        st.CopyTo(t);
+                        changed = true;
                     }
-                    else
+                }
+            }
+            for (int y = 0; y < ClipboardHeight; y++)
+            {
+                int curY = startY + y;
+                if (curY < 2)
+                {
+                    Blockset.Block.Tile[] arrY = Clipboard[y];
+                    for (int x = 0; x < ClipboardWidth; x++)
                     {
-                        Blockset.Block.Tile t = subLayers[_subLayerNum];
-                        if (!Selection.Equals(t))
+                        int curX = startX + x;
+                        if (curX < 2)
                         {
-                            Selection.CopyTo(t);
-                            _block.Parent.FireChanged(_block);
-                            UpdateBitmap();
+                            Blockset.Block.Tile st = arrY[x];
+                            if (curY == 0)
+                            {
+                                if (curX == 0)
+                                {
+                                    Set(_block.TopLeft, st);
+                                }
+                                else
+                                {
+                                    Set(_block.TopRight, st);
+                                }
+                            }
+                            else
+                            {
+                                if (curX == 0)
+                                {
+                                    Set(_block.BottomLeft, st);
+                                }
+                                else
+                                {
+                                    Set(_block.BottomRight, st);
+                                }
+                            }
                         }
                     }
                 }
             }
-            if (top)
+            if (changed)
             {
-                if (left)
+                _block.Parent.FireChanged(_block);
+                UpdateBitmap();
+            }
+        }
+        private void RemoveTile(int x, int y)
+        {
+            void Remove(Dictionary<byte, List<Blockset.Block.Tile>> dict)
+            {
+                List<Blockset.Block.Tile> subLayers = dict[_zLayerNum];
+                int subCount = subLayers.Count;
+                if (subCount < _subLayerNum)
                 {
-                    Set(_block.TopLeft);
+                    throw new InvalidOperationException();
+                }
+                else if (subCount > _subLayerNum)
+                {
+                    subLayers.RemoveAt(_subLayerNum);
+                    _block.Parent.FireChanged(_block);
+                    UpdateBitmap();
+                }
+            }
+            if (y == 0)
+            {
+                if (x == 0)
+                {
+                    Remove(_block.TopLeft);
                 }
                 else
                 {
-                    Set(_block.TopRight);
+                    Remove(_block.TopRight);
                 }
             }
             else
             {
-                if (left)
+                if (x == 0)
                 {
-                    Set(_block.BottomLeft);
+                    Remove(_block.BottomLeft);
                 }
                 else
                 {
-                    Set(_block.BottomRight);
+                    Remove(_block.BottomRight);
                 }
             }
         }
@@ -121,7 +194,7 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _isDrawing = true;
-                        SetTile(false, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
+                        SetTiles((int)(pos.X / _scale) / 8, (int)(pos.Y / _scale) / 8);
                         e.Handled = true;
                     }
                     break;
@@ -131,7 +204,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        SetTile(true, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
+                        RemoveTile((int)(pos.X / _scale) / 8, (int)(pos.Y / _scale) / 8);
                         e.Handled = true;
                     }
                     break;
@@ -141,7 +214,9 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        SubLayerModel.GetTile(_block, _zLayerNum, _subLayerNum, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0)?.CopyTo(Selection);
+                        _isSelecting = true;
+                        _selection.Start((int)(pos.X / _scale) / 8, (int)(pos.Y / _scale) / 8, 1, 1);
+                        InvalidateVisual();
                         e.Handled = true;
                     }
                     break;
@@ -150,7 +225,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerMoved(PointerEventArgs e)
         {
-            if (_isDrawing)
+            if (_isDrawing || _isSelecting)
             {
                 PointerPoint pp = e.GetPointerPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
@@ -158,7 +233,16 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        SetTile(false, (int)(pos.X / _scale) / 8 == 0, (int)(pos.Y / _scale) / 8 == 0);
+                        int x = (int)(pos.X / _scale) / 8;
+                        int y = (int)(pos.Y / _scale) / 8;
+                        if (_isDrawing)
+                        {
+                            SetTiles(x, y);
+                        }
+                        else
+                        {
+                            _selection.Move(x, y);
+                        }
                         e.Handled = true;
                     }
                 }
@@ -166,15 +250,66 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
-            if (_isDrawing)
+            if (_isDrawing || _isSelecting)
             {
                 PointerPoint pp = e.GetPointerPoint(this);
-                if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+                switch (pp.Properties.PointerUpdateKind)
                 {
-                    _isDrawing = false;
-                    e.Handled = true;
+                    case PointerUpdateKind.LeftButtonReleased:
+                    {
+                        _isDrawing = false;
+                        e.Handled = true;
+                        break;
+                    }
+                    case PointerUpdateKind.RightButtonReleased:
+                    {
+                        _isSelecting = false;
+                        int startX = _selection.X;
+                        int startY = _selection.Y;
+                        int width = _selection.Width;
+                        int height = _selection.Height;
+                        bool changed = false;
+                        if (ClipboardWidth != width)
+                        {
+                            ClipboardWidth = width;
+                            changed = true;
+                        }
+                        if (ClipboardHeight != height)
+                        {
+                            ClipboardHeight = height;
+                            changed = true;
+                        }
+                        for (int y = 0; y < height; y++)
+                        {
+                            Blockset.Block.Tile[] arrY = Clipboard[y];
+                            for (int x = 0; x < width; x++)
+                            {
+                                Blockset.Block.Tile got = SubLayerModel.GetTile(_block, _zLayerNum, _subLayerNum, startX + x, startY + y);
+                                if (got != null)
+                                {
+                                    Blockset.Block.Tile t = arrY[x];
+                                    if (!got.Equals(t))
+                                    {
+                                        got.CopyTo(t);
+                                        changed = true;
+                                    }
+                                }
+                            }
+                        }
+                        if (changed)
+                        {
+                            ClipboardChanged?.Invoke(this, EventArgs.Empty);
+                        }
+                        InvalidateVisual();
+                        e.Handled = true;
+                        break;
+                    }
                 }
             }
+        }
+        private void OnSelectionChanged(object sender, EventArgs e)
+        {
+            InvalidateVisual();
         }
 
         internal void SetBlock(Blockset.Block block)

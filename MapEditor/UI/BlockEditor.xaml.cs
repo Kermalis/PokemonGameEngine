@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
@@ -36,8 +35,8 @@ namespace Kermalis.MapEditor.UI
         public ReactiveCommand ClearBlockCommand { get; }
         public ReactiveCommand RemoveBlockCommand { get; }
 
-        private readonly WriteableBitmap _selectionBitmap;
-        private readonly Image _selectionImage;
+        private readonly WriteableBitmap _clipboardBitmap;
+        private readonly Image _clipboardImage;
 
         public ObservableCollection<SubLayerModel> SubLayers { get; }
         private int _selectedSubLayerIndex = -1;
@@ -70,6 +69,43 @@ namespace Kermalis.MapEditor.UI
             }
         }
         private Blockset.Block _selectedBlock;
+        private bool _ignoreFlipChange = false;
+        private bool? _xFlip = false;
+        public bool? XFlip
+        {
+            get => _xFlip;
+            set
+            {
+                if (_xFlip?.Equals(value) != true)
+                {
+                    _xFlip = value;
+                    if (!_ignoreFlipChange)
+                    {
+                        OnFlipChanged(true);
+                    }
+                    OnPropertyChanged(nameof(XFlip));
+                }
+            }
+        }
+        private bool? _yFlip = false;
+        public bool? YFlip
+        {
+            get => _yFlip;
+            set
+            {
+                if (_yFlip?.Equals(value) != true)
+                {
+                    _yFlip = value;
+                    if (!_ignoreFlipChange)
+                    {
+                        OnFlipChanged(false);
+                    }
+                    OnPropertyChanged(nameof(YFlip));
+                }
+            }
+        }
+        public int ClipboardBorderWidth { get; private set; }
+        public int ClipboardBorderHeight { get; private set; }
 
         public BlockEditor()
         {
@@ -81,7 +117,7 @@ namespace Kermalis.MapEditor.UI
             _blockset = Blockset.LoadOrGet("TestBlockset");
             _blockset.OnChanged += Blockset_OnChanged;
 
-            _selectionBitmap = new WriteableBitmap(new PixelSize(8, 8), new Vector(96, 96), PixelFormat.Bgra8888);
+            _clipboardBitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
 
             SubLayers = new ObservableCollection<SubLayerModel>(new List<SubLayerModel>(byte.MaxValue + 1));
 
@@ -103,11 +139,11 @@ namespace Kermalis.MapEditor.UI
             _subLayerComboBox = this.FindControl<ComboBox>("SubLayerComboBox");
             _zLayerComboBox = this.FindControl<ComboBox>("ZLayerComboBox");
 
-            _selectionImage = this.FindControl<Image>("SelectionImage");
-            _selectionImage.Source = _selectionBitmap;
+            _clipboardImage = this.FindControl<Image>("ClipboardImage");
+            _clipboardImage.Source = _clipboardBitmap;
 
             _tileLayerImage = this.FindControl<TileLayerImage>("TileLayerImage");
-            _tileLayerImage.Selection.PropertyChanged += Selection_PropertyChanged;
+            _tileLayerImage.ClipboardChanged += TileLayerImage_ClipboardChanged;
 
             _tilesetImage = this.FindControl<TilesetImage>("TilesetImage");
             _tilesetImage.SelectionCompleted += TilesetImage_SelectionCompleted;
@@ -138,39 +174,124 @@ namespace Kermalis.MapEditor.UI
             }
         }
 
+        private void OnFlipChanged(bool xFlipChanged)
+        {
+            bool? nv = xFlipChanged ? _xFlip : _yFlip;
+            if (nv.HasValue)
+            {
+                bool value = nv.Value;
+                TileLayerImage tli = _tileLayerImage;
+                Blockset.Block.Tile[][] c = tli.Clipboard;
+                for (int y = 0; y < tli.ClipboardHeight; y++)
+                {
+                    Blockset.Block.Tile[] arrY = c[y];
+                    for (int x = 0; x < tli.ClipboardWidth; x++)
+                    {
+                        Blockset.Block.Tile t = arrY[x];
+                        if (xFlipChanged)
+                        {
+                            t.XFlip = value;
+                        }
+                        else
+                        {
+                            t.YFlip = value;
+                        }
+                    }
+                }
+                DrawClipboard();
+            }
+        }
         private void Blockset_OnChanged(Blockset blockset, Blockset.Block block)
         {
             if (block == _selectedBlock)
             {
                 _tileLayerImage.UpdateBitmap();
                 CountSubLayers();
-                for (int i = 0; i < SubLayers.Count; i++)
+                int count = SubLayers.Count;
+                for (int i = 0; i < count; i++)
                 {
                     SubLayers[i].UpdateBitmap();
                 }
-                UpdateComboBox(_subLayerComboBox);
-                for (int i = 0; i < ZLayers.Length; i++)
+                _subLayerComboBox.ForceRedraw();
+                count = ZLayers.Length;
+                for (int i = 0; i < count; i++)
                 {
                     ZLayers[i].UpdateBitmap();
                 }
-                UpdateComboBox(_zLayerComboBox);
+                _zLayerComboBox.ForceRedraw();
             }
         }
-        private unsafe void Selection_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void TileLayerImage_ClipboardChanged(object sender, EventArgs e)
         {
-            using (ILockedFramebuffer l = _selectionBitmap.Lock())
+            TileLayerImage tli = _tileLayerImage;
+            Blockset.Block.Tile[][] c = tli.Clipboard;
+            bool? xf = null;
+            bool? yf = null;
+            for (int y = 0; y < tli.ClipboardHeight; y++)
             {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtil.TransparencyGrid(bmpAddress, 8, 8, 4, 4);
-                _tileLayerImage.Selection.Draw(bmpAddress, 8, 8, 0, 0);
+                Blockset.Block.Tile[] arrY = c[y];
+                for (int x = 0; x < tli.ClipboardWidth; x++)
+                {
+                    Blockset.Block.Tile t = arrY[x];
+                    bool txf = t.XFlip;
+                    bool tyf = t.YFlip;
+                    if (x == 0 && y == 0)
+                    {
+                        xf = txf;
+                        yf = tyf;
+                    }
+                    else
+                    {
+                        if (xf?.Equals(txf) != true)
+                        {
+                            xf = null;
+                        }
+                        if (yf?.Equals(tyf) != true)
+                        {
+                            yf = null;
+                        }
+                    }
+                }
             }
-            _selectionImage.InvalidateVisual();
+            _ignoreFlipChange = true;
+            XFlip = xf;
+            YFlip = yf;
+            _ignoreFlipChange = false;
+            UpdateClipboardBorders();
+            DrawClipboard();
         }
-        private void TilesetImage_SelectionCompleted(object sender, Tileset.Tile e)
+        private void TilesetImage_SelectionCompleted(object sender, Tileset.Tile[][] e)
         {
             if (e != null)
             {
-                _tileLayerImage.Selection.TilesetTile = e;
+                TileLayerImage tli = _tileLayerImage;
+                Blockset.Block.Tile[][] c = tli.Clipboard;
+                int el = e.Length;
+                tli.ClipboardHeight = el;
+                bool xV = _xFlip.HasValue;
+                bool yV = _yFlip.HasValue;
+                for (int y = 0; y < el; y++)
+                {
+                    Blockset.Block.Tile[] sy = c[y];
+                    Tileset.Tile[] ey = e[y];
+                    int eyl = ey.Length;
+                    tli.ClipboardWidth = eyl;
+                    for (int x = 0; x < eyl; x++)
+                    {
+                        Blockset.Block.Tile t = sy[x];
+                        t.TilesetTile = ey[x];
+                        if (xV)
+                        {
+                            t.XFlip = _xFlip.Value;
+                        }
+                        if (yV)
+                        {
+                            t.YFlip = _yFlip.Value;
+                        }
+                    }
+                }
+                UpdateClipboardBorders();
+                DrawClipboard();
             }
         }
         private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
@@ -179,19 +300,38 @@ namespace Kermalis.MapEditor.UI
             if (block != null && block != _selectedBlock)
             {
                 _selectedBlock = block;
-                _tileLayerImage.SetBlock(_selectedBlock);
+                _tileLayerImage.SetBlock(block);
                 CountSubLayers();
                 for (int i = 0; i < SubLayers.Count; i++)
                 {
-                    SubLayers[i].SetBlock(_selectedBlock);
+                    SubLayers[i].SetBlock(block);
                 }
-                UpdateComboBox(_subLayerComboBox);
+                _subLayerComboBox.ForceRedraw();
                 for (int i = 0; i < ZLayers.Length; i++)
                 {
-                    ZLayers[i].SetBlock(_selectedBlock);
+                    ZLayers[i].SetBlock(block);
                 }
-                UpdateComboBox(_zLayerComboBox);
+                _zLayerComboBox.ForceRedraw();
             }
+        }
+        private unsafe void DrawClipboard()
+        {
+            using (ILockedFramebuffer l = _clipboardBitmap.Lock())
+            {
+                uint* bmpAddress = (uint*)l.Address.ToPointer();
+                RenderUtil.TransparencyGrid(bmpAddress, 16, 16, 4, 4);
+                TileLayerImage tli = _tileLayerImage;
+                Blockset.Block.Tile[][] c = tli.Clipboard;
+                for (int y = 0; y < tli.ClipboardHeight; y++)
+                {
+                    Blockset.Block.Tile[] arrY = c[y];
+                    for (int x = 0; x < tli.ClipboardWidth; x++)
+                    {
+                        arrY[x].Draw(bmpAddress, 16, 16, x * 8, y * 8);
+                    }
+                }
+            }
+            _clipboardImage.InvalidateVisual();
         }
 
         private void SetSubLayer(byte s)
@@ -202,13 +342,13 @@ namespace Kermalis.MapEditor.UI
         {
             _tileLayerImage.SetZLayer(z);
             CountSubLayers();
-            for (int i = 0; i < SubLayers.Count; i++)
+            int count = SubLayers.Count;
+            for (int i = 0; i < count; i++)
             {
                 SubLayers[i].SetZLayer(z);
             }
-            UpdateComboBox(_subLayerComboBox);
+            _subLayerComboBox.ForceRedraw();
         }
-
         private void CountSubLayers()
         {
             int num = 0;
@@ -265,12 +405,13 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
-        private void UpdateComboBox(ComboBox c)
+        private void UpdateClipboardBorders()
         {
-            // This forces a redraw
-            IBrush old = c.Background;
-            c.Background = old.Equals(Brushes.AliceBlue) ? Brushes.AntiqueWhite : Brushes.AliceBlue;
-            c.Background = old;
+            TileLayerImage tli = _tileLayerImage;
+            ClipboardBorderHeight = (tli.ClipboardHeight * 8 * 2) + 2;
+            OnPropertyChanged(nameof(ClipboardBorderHeight));
+            ClipboardBorderWidth = (tli.ClipboardWidth * 8 * 2) + 2;
+            OnPropertyChanged(nameof(ClipboardBorderWidth));
         }
 
         protected override void HandleClosed()
@@ -290,7 +431,7 @@ namespace Kermalis.MapEditor.UI
             {
                 ZLayers[i].Dispose();
             }
-            _selectionBitmap.Dispose();
+            _clipboardBitmap.Dispose();
             _tileLayerImage.Dispose();
             AddBlockCommand.Dispose();
             ClearBlockCommand.Dispose();
