@@ -143,7 +143,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 else
                 {
                     // TODO: How should connections retain map references?
-                    for (int i = 0; i < connections.Length; i++)
+                    int numConnections = connections.Length;
+                    for (int i = 0; i < numConnections; i++)
                     {
                         Connection c = connections[i];
                         switch (c.Dir)
@@ -187,7 +188,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                                 }
                                 break;
                             }
-                            default:
+                            case Connection.Direction.South:
                             {
                                 if (south)
                                 {
@@ -300,7 +301,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
                         {
                             void Draw(Blockset.Block.Tile[] subLayers, int tx, int ty)
                             {
-                                for (int t = 0; t < subLayers.Length; t++)
+                                int numSubLayers = subLayers.Length;
+                                for (int t = 0; t < numSubLayers; t++)
                                 {
                                     Blockset.Block.Tile tile = subLayers[t];
                                     RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
@@ -318,11 +320,11 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 }
                 // TODO: They will overlap each other regardless of y coordinate because of the order of the list
                 // TODO: Objs from other maps
-                List<Obj> list = cameraMap.Objs;
-                int count = list.Count;
-                for (int i = 0; i < count; i++)
+                List<Obj> objs = cameraMap.Objs;
+                int numObjs = objs.Count;
+                for (int i = 0; i < numObjs; i++)
                 {
-                    Obj c = list[i];
+                    Obj c = objs[i];
                     if (c != camera && c.Z == z)
                     {
                         int objX = ((c.X - startBlockX) * 16) + c.XOffset + startX;
