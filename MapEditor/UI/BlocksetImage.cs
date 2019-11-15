@@ -9,7 +9,7 @@ using System;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class BlocksetImage : Control
+    public sealed class BlocksetImage : Control, IDisposable
     {
         private readonly double _scale;
 
@@ -25,12 +25,7 @@ namespace Kermalis.MapEditor.UI
             {
                 if (_blockset != value)
                 {
-                    if (_blockset != null)
-                    {
-                        _blockset.OnAdded -= Blockset_OnAddedRemoved;
-                        _blockset.OnRemoved -= Blockset_OnAddedRemoved;
-                        _blockset.OnDrew -= Blockset_OnDrew;
-                    }
+                    RemoveBlocksetEvents();
                     _blockset = value;
                     _blockset.OnAdded += Blockset_OnAddedRemoved;
                     _blockset.OnRemoved += Blockset_OnAddedRemoved;
@@ -165,6 +160,21 @@ namespace Kermalis.MapEditor.UI
                 }
                 SelectionCompleted.Invoke(this, blocks);
             }
+        }
+
+        private void RemoveBlocksetEvents()
+        {
+            if (_blockset != null)
+            {
+                _blockset.OnAdded -= Blockset_OnAddedRemoved;
+                _blockset.OnRemoved -= Blockset_OnAddedRemoved;
+                _blockset.OnDrew -= Blockset_OnDrew;
+            }
+        }
+        public void Dispose()
+        {
+            RemoveBlocksetEvents();
+            _selection.Changed -= OnSelectionChanged;
         }
     }
 }

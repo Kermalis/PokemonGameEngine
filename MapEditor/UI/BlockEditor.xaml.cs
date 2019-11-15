@@ -422,8 +422,13 @@ namespace Kermalis.MapEditor.UI
             return base.HandleClosing();
         }
 
+        private void RemoveBlocksetEvents()
+        {
+            _blockset.OnChanged -= Blockset_OnChanged;
+        }
         public void Dispose()
         {
+            RemoveBlocksetEvents();
             for (int i = 0; i < SubLayers.Count; i++)
             {
                 SubLayers[i].Dispose();
@@ -434,6 +439,11 @@ namespace Kermalis.MapEditor.UI
             }
             _clipboardBitmap.Dispose();
             _tileLayerImage.Dispose();
+            _tileLayerImage.ClipboardChanged -= TileLayerImage_ClipboardChanged;
+            _tilesetImage.Dispose();
+            _tilesetImage.SelectionCompleted -= TilesetImage_SelectionCompleted;
+            _blocksetImage.Dispose();
+            _blocksetImage.SelectionCompleted -= BlocksetImage_SelectionCompleted;
             AddBlockCommand.Dispose();
             ClearBlockCommand.Dispose();
             RemoveBlockCommand.Dispose();

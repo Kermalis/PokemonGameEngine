@@ -9,7 +9,7 @@ using System;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class TilesetImage : Control
+    public sealed class TilesetImage : Control, IDisposable
     {
         private readonly double _scale;
 
@@ -143,6 +143,11 @@ namespace Kermalis.MapEditor.UI
                 }
                 SelectionCompleted.Invoke(this, tiles);
             }
+        }
+
+        public void Dispose()
+        {
+            _selection.Changed -= OnSelectionChanged;
         }
     }
 }

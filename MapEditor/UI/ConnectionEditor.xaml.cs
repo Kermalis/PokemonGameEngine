@@ -13,7 +13,7 @@ using System.Reactive;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class ConnectionEditor : UserControl, INotifyPropertyChanged
+    public sealed class ConnectionEditor : UserControl, IDisposable, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
         {
@@ -122,9 +122,9 @@ namespace Kermalis.MapEditor.UI
                     if (!_switching)
                     {
                         _map.Connections[_selectedConnection].MapId = value;
-                        ConnectionModel cm = Connections[_selectedConnection + 1];
-                        cm.Map.MapLayout.OnDrew -= MapLayout_OnDrew;
-                        cm.SetMap(Map.LoadOrGet(value));
+                        ConnectionModel c = Connections[_selectedConnection + 1];
+                        c.Map.MapLayout.OnDrew -= MapLayout_OnDrew;
+                        c.SetMap(Map.LoadOrGet(value));
                         ArrangeConnections();
                     }
                     OnPropertyChanged(nameof(SelectedMap));
@@ -424,6 +424,15 @@ namespace Kermalis.MapEditor.UI
                     }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            for (int i = Connections.Count - 1; i >= 0; i--)
+            {
+                Connections[i].Map.MapLayout.OnDrew -= MapLayout_OnDrew;
+            }
+            _itemsControl.PointerPressed -= ItemsControl_PointerPressed;
         }
     }
 }

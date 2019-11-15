@@ -5,10 +5,11 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
+using System;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class MapImage : Control
+    public sealed class MapImage : Control, IDisposable
     {
         private readonly bool _borderBlocks;
         private Map _map;
@@ -19,15 +20,9 @@ namespace Kermalis.MapEditor.UI
             {
                 if (_map != value)
                 {
-                    if (_map != null)
-                    {
-                        _map.MapLayout.OnDrew -= MapLayout_OnDrew;
-                    }
+                    RemoveMapLayoutEvents();
                     _map = value;
-                    if (_map != null)
-                    {
-                        _map.MapLayout.OnDrew += MapLayout_OnDrew;
-                    }
+                    _map.MapLayout.OnDrew += MapLayout_OnDrew;
                     InvalidateMeasure();
                     InvalidateVisual();
                 }
@@ -150,6 +145,18 @@ namespace Kermalis.MapEditor.UI
                     e.Handled = true;
                 }
             }
+        }
+
+        private void RemoveMapLayoutEvents()
+        {
+            if (_map != null)
+            {
+                _map.MapLayout.OnDrew -= MapLayout_OnDrew;
+            }
+        }
+        public void Dispose()
+        {
+            RemoveMapLayoutEvents();
         }
     }
 }

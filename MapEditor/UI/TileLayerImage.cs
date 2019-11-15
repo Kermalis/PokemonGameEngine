@@ -340,6 +340,7 @@ namespace Kermalis.MapEditor.UI
         public void Dispose()
         {
             _bitmap.Dispose();
+            _selection.Changed -= OnSelectionChanged;
         }
     }
 }

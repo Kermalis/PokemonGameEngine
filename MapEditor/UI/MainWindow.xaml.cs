@@ -129,8 +129,19 @@ namespace Kermalis.MapEditor.UI
             return base.HandleClosing();
         }
 
+        private void RemoveBlocksetEvents()
+        {
+            _blockset.OnChanged -= Blockset_OnChanged;
+            _blockset.OnRemoved -= Blockset_OnRemoved;
+        }
         public void Dispose()
         {
+            RemoveBlocksetEvents();
+            _mapBlocksImage.Dispose();
+            _mapBorderBlocksImage.Dispose();
+            _blocksetImage.Dispose();
+            _blocksetImage.SelectionCompleted -= BlocksetImage_SelectionCompleted;
+            _connectionEditor.Dispose();
             OpenBlockEditorCommand.Dispose();
             _blockEditor?.Close();
             _map.MapLayout.Dispose();
