@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive;
 
 namespace Kermalis.MapEditor.UI
 {
@@ -31,9 +32,9 @@ namespace Kermalis.MapEditor.UI
         private readonly ComboBox _subLayerComboBox;
         private readonly ComboBox _zLayerComboBox;
 
-        public ReactiveCommand AddBlockCommand { get; }
-        public ReactiveCommand ClearBlockCommand { get; }
-        public ReactiveCommand RemoveBlockCommand { get; }
+        public ReactiveCommand<Unit, Unit> AddBlockCommand { get; }
+        public ReactiveCommand<Unit, Unit> ClearBlockCommand { get; }
+        public ReactiveCommand<Unit, Unit> RemoveBlockCommand { get; }
 
         private readonly WriteableBitmap _clipboardBitmap;
         private readonly Image _clipboardImage;
@@ -414,11 +415,11 @@ namespace Kermalis.MapEditor.UI
             OnPropertyChanged(nameof(ClipboardBorderWidth));
         }
 
-        protected override void HandleClosed()
+        protected override bool HandleClosing()
         {
             _blockset.Save();
             Dispose();
-            base.HandleClosed();
+            return base.HandleClosing();
         }
 
         public void Dispose()

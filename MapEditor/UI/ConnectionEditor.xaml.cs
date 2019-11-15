@@ -9,6 +9,7 @@ using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive;
 
 namespace Kermalis.MapEditor.UI
 {
@@ -20,8 +21,8 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        public ReactiveCommand AddCommand { get; }
-        public ReactiveCommand RemoveCommand { get; }
+        public ReactiveCommand<Unit, Unit> AddCommand { get; }
+        public ReactiveCommand<Unit, Unit> RemoveCommand { get; }
 
         private bool _addEnabled;
         public bool AddEnabled

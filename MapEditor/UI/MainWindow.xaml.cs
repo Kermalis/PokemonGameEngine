@@ -5,12 +5,13 @@ using Kermalis.MapEditor.Core;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Reactive;
 
 namespace Kermalis.MapEditor.UI
 {
     public sealed class MainWindow : Window, IDisposable
     {
-        public ReactiveCommand OpenBlockEditorCommand { get; }
+        public ReactiveCommand<Unit, Unit> OpenBlockEditorCommand { get; }
 
 #pragma warning disable IDE0069 // Disposable fields should be disposed
         private BlockEditor _blockEditor;
@@ -122,10 +123,10 @@ namespace Kermalis.MapEditor.UI
             _map.Save();
         }
 
-        protected override void HandleClosed()
+        protected override bool HandleClosing()
         {
             Dispose();
-            base.HandleClosed();
+            return base.HandleClosing();
         }
 
         public void Dispose()
