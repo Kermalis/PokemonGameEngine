@@ -77,12 +77,7 @@ namespace Kermalis.MapEditor.UI
             void Set(Dictionary<byte, List<Blockset.Block.Tile>> dict, Blockset.Block.Tile st)
             {
                 List<Blockset.Block.Tile> subLayers = dict[_zLayerNum];
-                int subCount = subLayers.Count;
-                if (subCount < _subLayerNum)
-                {
-                    throw new InvalidOperationException();
-                }
-                else if (subCount == _subLayerNum)
+                if (subLayers.Count <= _subLayerNum)
                 {
                     var t = new Blockset.Block.Tile();
                     st.CopyTo(t);
@@ -145,19 +140,14 @@ namespace Kermalis.MapEditor.UI
         }
         private void RemoveTile(int x, int y)
         {
+            bool changed = false;
             void Remove(Dictionary<byte, List<Blockset.Block.Tile>> dict)
             {
                 List<Blockset.Block.Tile> subLayers = dict[_zLayerNum];
-                int subCount = subLayers.Count;
-                if (subCount < _subLayerNum)
-                {
-                    throw new InvalidOperationException();
-                }
-                else if (subCount > _subLayerNum)
+                if (subLayers.Count > _subLayerNum)
                 {
                     subLayers.RemoveAt(_subLayerNum);
-                    _block.Parent.FireChanged(_block);
-                    UpdateBitmap();
+                    changed = true;
                 }
             }
             if (y == 0)
@@ -181,6 +171,11 @@ namespace Kermalis.MapEditor.UI
                 {
                     Remove(_block.BottomRight);
                 }
+            }
+            if (changed)
+            {
+                _block.Parent.FireChanged(_block);
+                UpdateBitmap();
             }
         }
         protected override void OnPointerPressed(PointerPressedEventArgs e)
