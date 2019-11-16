@@ -309,11 +309,8 @@ namespace Kermalis.MapEditor.UI
 
         internal void SetBlock(Blockset.Block block)
         {
-            if (block != null)
-            {
-                _block = block;
-                UpdateBitmap();
-            }
+            _block = block;
+            UpdateBitmap();
         }
         internal void SetSubLayer(byte s)
         {

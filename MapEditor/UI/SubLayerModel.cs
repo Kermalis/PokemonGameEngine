@@ -23,15 +23,13 @@ namespace Kermalis.MapEditor.UI
             _subLayerNum = subLayerNum;
             Text = $"Sub-Layer {_subLayerNum:D3}";
             Bitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
+            UpdateBitmap();
         }
 
         internal void SetBlock(Blockset.Block block)
         {
-            if (block != null)
-            {
-                _block = block;
-                UpdateBitmap();
-            }
+            _block = block;
+            UpdateBitmap();
         }
         internal void SetZLayer(byte z)
         {
