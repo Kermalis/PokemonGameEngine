@@ -398,7 +398,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_map != null)
             {
-                PointerPoint pp = e.GetPointerPoint(_itemsControl);
+                PointerPoint pp = e.GetCurrentPoint(_itemsControl);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
                 {
                     Point pos = pp.Position;

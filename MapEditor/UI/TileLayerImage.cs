@@ -180,7 +180,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
-            PointerPoint pp = e.GetPointerPoint(this);
+            PointerPoint pp = e.GetCurrentPoint(this);
             switch (pp.Properties.PointerUpdateKind)
             {
                 case PointerUpdateKind.LeftButtonPressed:
@@ -222,7 +222,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_isDrawing || _isSelecting)
             {
-                PointerPoint pp = e.GetPointerPoint(this);
+                PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
                 {
                     Point pos = pp.Position;
@@ -247,7 +247,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_isDrawing || _isSelecting)
             {
-                PointerPoint pp = e.GetPointerPoint(this);
+                PointerPoint pp = e.GetCurrentPoint(this);
                 switch (pp.Properties.PointerUpdateKind)
                 {
                     case PointerUpdateKind.LeftButtonReleased:

@@ -83,7 +83,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_map != null)
             {
-                PointerPoint pp = e.GetPointerPoint(this);
+                PointerPoint pp = e.GetCurrentPoint(this);
                 switch (pp.Properties.PointerUpdateKind)
                 {
                     case PointerUpdateKind.LeftButtonPressed:
@@ -122,7 +122,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_map != null && _isDrawing)
             {
-                PointerPoint pp = e.GetPointerPoint(this);
+                PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
                 {
                     Point pos = pp.Position;
@@ -138,7 +138,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_map != null && _isDrawing)
             {
-                PointerPoint pp = e.GetPointerPoint(this);
+                PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
                 {
                     _isDrawing = false;

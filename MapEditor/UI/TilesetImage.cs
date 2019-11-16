@@ -79,7 +79,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_tileset != null)
             {
-                PointerPoint pp = e.GetPointerPoint(this);
+                PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
                 {
                     Point pos = pp.Position;
@@ -96,7 +96,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_tileset != null && _isSelecting)
             {
-                PointerPoint pp = e.GetPointerPoint(this);
+                PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
                 {
                     Point pos = pp.Position;
@@ -112,7 +112,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_tileset != null && _isSelecting)
             {
-                PointerPoint pp = e.GetPointerPoint(this);
+                PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
                 {
                     _isSelecting = false;
