@@ -28,12 +28,12 @@ namespace Kermalis.MapEditor.UI
         {
             OpenBlockEditorCommand = ReactiveCommand.Create(OpenBlockEditor);
 
-            const string defaultBlocksetName = "TestBlockset"; // TODO: We will have a ComboBox with the available blocksets, and if there are none, it will prompt for a name
+            const string defaultBlocksetName = "TestBlocksetO"; // TODO: We will have a ComboBox with the available blocksets, and if there are none, it will prompt for a name
             _blockset = Blockset.IsValidName(defaultBlocksetName) ? new Blockset(defaultBlocksetName) : Blockset.LoadOrGet(defaultBlocksetName);
             _blockset.OnChanged += Blockset_OnChanged;
             _blockset.OnRemoved += Blockset_OnRemoved;
             _map = Map.LoadOrGet("TestMapC");
-            //_map = new Map("TestMapN1", Map.Layout.LoadOrGet("TestMapN1"));
+            //_map = new Map("TestMapW", new Map.Layout("TestMap2", 16, 16, 2, 2, _blockset.Blocks[0]));
 
             DataContext = this;
             AvaloniaXamlLoader.Load(this);

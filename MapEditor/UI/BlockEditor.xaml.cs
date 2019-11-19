@@ -114,8 +114,8 @@ namespace Kermalis.MapEditor.UI
             ClearBlockCommand = ReactiveCommand.Create(ClearBlock);
             RemoveBlockCommand = ReactiveCommand.Create(RemoveBlock);
 
-            _tileset = Tileset.LoadOrGet("TestTiles");
-            _blockset = Blockset.LoadOrGet("TestBlockset");
+            _tileset = Tileset.LoadOrGet("TestTilesO");
+            _blockset = Blockset.LoadOrGet("TestBlocksetO");
             _blockset.OnChanged += Blockset_OnChanged;
 
             _clipboardBitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);

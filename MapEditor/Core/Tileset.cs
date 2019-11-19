@@ -24,7 +24,7 @@ namespace Kermalis.MapEditor.Core
             }
         }
 
-        internal const int BitmapNumTilesX = 8;
+        internal const int BitmapNumTilesX = 16;
         internal readonly WriteableBitmap Bitmap;
 
         internal readonly string Name;
