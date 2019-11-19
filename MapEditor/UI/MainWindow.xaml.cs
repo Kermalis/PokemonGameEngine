@@ -114,6 +114,7 @@ namespace Kermalis.MapEditor.UI
         }
         private void BlockEditor_Closed(object sender, EventArgs e)
         {
+            _blockEditor.Closed -= BlockEditor_Closed;
             _blockEditor = null;
         }
 
