@@ -16,6 +16,7 @@ namespace Kermalis.PokemonGameEngine.UI
         {
             switch (ApplicationLifetime)
             {
+                case null: break;
                 case IClassicDesktopStyleApplicationLifetime desktop: desktop.MainWindow = new MainWindow(); break;
                 case ISingleViewApplicationLifetime singleView: singleView.MainView = new MainView(); break;
                 default: throw new PlatformNotSupportedException();

@@ -18,6 +18,7 @@ namespace Kermalis.MapEditor.UI
             ConnectionModel.CreateBrush();
             switch (ApplicationLifetime)
             {
+                case null: break;
                 case IClassicDesktopStyleApplicationLifetime desktop: desktop.MainWindow = new MainWindow(); break;
                 default: throw new PlatformNotSupportedException();
             }
