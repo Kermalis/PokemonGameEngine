@@ -79,12 +79,22 @@ namespace Kermalis.MapEditor.UI
             using (ILockedFramebuffer l = bitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtil.TransparencyGrid(bmpAddress, 16, 16, 4, 4);
                 for (int y = 0; y < 2; y++)
                 {
+                    int py = y * 8;
                     for (int x = 0; x < 2; x++)
                     {
-                        GetTile(block, zLayerNum, subLayerNum, x, y)?.Draw(bmpAddress, 16, 16, x * 8, y * 8);
+                        int px = x * 8;
+                        Blockset.Block.Tile t = GetTile(block, zLayerNum, subLayerNum, x, y);
+                        if (t != null)
+                        {
+                            RenderUtil.TransparencyGrid(bmpAddress, 16, 16, px, py, 4, 4, 2, 2);
+                            t.Draw(bmpAddress, 16, 16, px, py);
+                        }
+                        else
+                        {
+                            RenderUtil.ClearUnchecked(bmpAddress, 16, px, py, 8, 8);
+                        }
                     }
                 }
             }

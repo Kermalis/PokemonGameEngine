@@ -106,8 +106,6 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
-        public int ClipboardBorderWidth { get; private set; }
-        public int ClipboardBorderHeight { get; private set; }
 
         public BlocksetEditor()
         {
@@ -189,23 +187,31 @@ namespace Kermalis.MapEditor.UI
                 bool value = nv.Value;
                 TileLayerImage tli = _tileLayerImage;
                 Blockset.Block.Tile[][] c = tli.Clipboard;
-                for (int y = 0; y < tli.ClipboardHeight; y++)
+                bool changed = false;
+                for (int y = 0; y < 2; y++)
                 {
                     Blockset.Block.Tile[] arrY = c[y];
-                    for (int x = 0; x < tli.ClipboardWidth; x++)
+                    for (int x = 0; x < 2; x++)
                     {
                         Blockset.Block.Tile t = arrY[x];
-                        if (xFlipChanged)
+                        if (t.TilesetTile != null)
                         {
-                            t.XFlip = value;
-                        }
-                        else
-                        {
-                            t.YFlip = value;
+                            changed = true;
+                            if (xFlipChanged)
+                            {
+                                t.XFlip = value;
+                            }
+                            else
+                            {
+                                t.YFlip = value;
+                            }
                         }
                     }
                 }
-                DrawClipboard();
+                if (changed)
+                {
+                    DrawClipboard();
+                }
             }
         }
         private void Blockset_OnChanged(Blockset blockset, Blockset.Block block)
@@ -234,28 +240,33 @@ namespace Kermalis.MapEditor.UI
             Blockset.Block.Tile[][] c = tli.Clipboard;
             bool? xf = null;
             bool? yf = null;
-            for (int y = 0; y < tli.ClipboardHeight; y++)
+            bool first = true;
+            for (int y = 0; y < 2; y++)
             {
                 Blockset.Block.Tile[] arrY = c[y];
-                for (int x = 0; x < tli.ClipboardWidth; x++)
+                for (int x = 0; x < 2; x++)
                 {
                     Blockset.Block.Tile t = arrY[x];
-                    bool txf = t.XFlip;
-                    bool tyf = t.YFlip;
-                    if (x == 0 && y == 0)
+                    if (t.TilesetTile != null)
                     {
-                        xf = txf;
-                        yf = tyf;
-                    }
-                    else
-                    {
-                        if (xf?.Equals(txf) != true)
+                        bool txf = t.XFlip;
+                        bool tyf = t.YFlip;
+                        if (first)
                         {
-                            xf = null;
+                            first = false;
+                            xf = txf;
+                            yf = tyf;
                         }
-                        if (yf?.Equals(tyf) != true)
+                        else
                         {
-                            yf = null;
+                            if (xf?.Equals(txf) != true)
+                            {
+                                xf = null;
+                            }
+                            if (yf?.Equals(tyf) != true)
+                            {
+                                yf = null;
+                            }
                         }
                     }
                 }
@@ -264,7 +275,6 @@ namespace Kermalis.MapEditor.UI
             XFlip = xf;
             YFlip = yf;
             _ignoreFlipChange = false;
-            UpdateClipboardBorders();
             DrawClipboard();
         }
         private void TilesetImage_SelectionCompleted(object sender, Tileset.Tile[][] e)
@@ -273,31 +283,34 @@ namespace Kermalis.MapEditor.UI
             {
                 TileLayerImage tli = _tileLayerImage;
                 Blockset.Block.Tile[][] c = tli.Clipboard;
-                int el = e.Length;
-                tli.ClipboardHeight = el;
                 bool xV = _xFlip.HasValue;
                 bool yV = _yFlip.HasValue;
-                for (int y = 0; y < el; y++)
+                for (int y = 0; y < 2; y++)
                 {
-                    Blockset.Block.Tile[] sy = c[y];
-                    Tileset.Tile[] ey = e[y];
-                    int eyl = ey.Length;
-                    tli.ClipboardWidth = eyl;
-                    for (int x = 0; x < eyl; x++)
+                    Blockset.Block.Tile[] cy = c[y];
+                    for (int x = 0; x < 2; x++)
                     {
-                        Blockset.Block.Tile t = sy[x];
-                        t.TilesetTile = ey[x];
-                        if (xV)
+                        Blockset.Block.Tile t = cy[x];
+                        if (y < e.Length)
                         {
-                            t.XFlip = _xFlip.Value;
+                            Tileset.Tile[] ey = e[y];
+                            if (x < ey.Length)
+                            {
+                                t.TilesetTile = e[y][x];
+                                if (xV)
+                                {
+                                    t.XFlip = _xFlip.Value;
+                                }
+                                if (yV)
+                                {
+                                    t.YFlip = _yFlip.Value;
+                                }
+                                continue;
+                            }
                         }
-                        if (yV)
-                        {
-                            t.YFlip = _yFlip.Value;
-                        }
+                        t.TilesetTile = null;
                     }
                 }
-                UpdateClipboardBorders();
                 DrawClipboard();
             }
         }
@@ -326,15 +339,22 @@ namespace Kermalis.MapEditor.UI
             using (ILockedFramebuffer l = _clipboardBitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtil.TransparencyGrid(bmpAddress, 16, 16, 4, 4);
+                RenderUtil.ClearUnchecked(bmpAddress, 16, 0, 0, 16, 16);
                 TileLayerImage tli = _tileLayerImage;
                 Blockset.Block.Tile[][] c = tli.Clipboard;
-                for (int y = 0; y < tli.ClipboardHeight; y++)
+                for (int y = 0; y < 2; y++)
                 {
+                    int ty = y * 8;
                     Blockset.Block.Tile[] arrY = c[y];
-                    for (int x = 0; x < tli.ClipboardWidth; x++)
+                    for (int x = 0; x < 2; x++)
                     {
-                        arrY[x].Draw(bmpAddress, 16, 16, x * 8, y * 8);
+                        Blockset.Block.Tile t = arrY[x];
+                        if (t.TilesetTile != null)
+                        {
+                            int tx = x * 8;
+                            RenderUtil.TransparencyGrid(bmpAddress, 16, 16, tx, ty, 4, 4, 2, 2);
+                            t.Draw(bmpAddress, 16, 16, tx, ty);
+                        }
                     }
                 }
             }
@@ -411,14 +431,6 @@ namespace Kermalis.MapEditor.UI
                     }
                 }
             }
-        }
-        private void UpdateClipboardBorders()
-        {
-            TileLayerImage tli = _tileLayerImage;
-            ClipboardBorderHeight = (tli.ClipboardHeight * 8 * 2) + 2;
-            OnPropertyChanged(nameof(ClipboardBorderHeight));
-            ClipboardBorderWidth = (tli.ClipboardWidth * 8 * 2) + 2;
-            OnPropertyChanged(nameof(ClipboardBorderWidth));
         }
 
         protected override bool HandleClosing()

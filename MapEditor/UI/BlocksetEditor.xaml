@@ -17,10 +17,7 @@
               <x:Double>2</x:Double>
             </x:Arguments>
           </ui:TileLayerImage>
-          <Panel Width="34" Height="34">
-            <Image Name="ClipboardImage" Width="32" Height="32" RenderOptions.BitmapInterpolationMode="Default" />
-            <Border HorizontalAlignment="Left" VerticalAlignment="Top" Width="{Binding ClipboardBorderWidth}" Height="{Binding ClipboardBorderHeight}" BorderBrush="Red" BorderThickness="1" />
-          </Panel>
+          <Image Name="ClipboardImage" Width="32" Height="32" RenderOptions.BitmapInterpolationMode="Default" />
           <CheckBox Content="X-Flip" IsChecked="{Binding XFlip}" />
           <CheckBox Content="Y-Flip" IsChecked="{Binding YFlip}" />
         </StackPanel>

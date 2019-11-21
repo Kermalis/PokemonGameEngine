@@ -49,17 +49,19 @@ namespace Kermalis.MapEditor.Util
             }
         }
 
-        public static unsafe void TransparencyGrid(uint* bmpAddress, int bmpWidth, int bmpHeight, int blockW, int blockH)
+        public static unsafe void TransparencyGrid(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int blockW, int blockH, int numX, int numY)
         {
-            int numW = (bmpWidth / blockW) + (bmpWidth % blockW == 0 ? 0 : 1);
-            int numH = (bmpHeight / blockH) + (bmpHeight % blockH == 0 ? 0 : 1);
-            for (int by = 0; by < numH; by++)
+            for (int by = 0; by < numY; by++)
             {
-                for (int bx = 0; bx < numW; bx++)
+                for (int bx = 0; bx < numX; bx++)
                 {
-                    Fill(bmpAddress, bmpWidth, bmpHeight, bx * blockW, by * blockH, blockW, blockH, (bx + by) % 2 == 0 ? 0xFFBFBFBF : 0xFFFFFFFF);
+                    Fill(bmpAddress, bmpWidth, bmpHeight, (bx * blockW) + x, (by * blockH) + y, blockW, blockH, (bx + by) % 2 == 0 ? 0xFFBFBFBF : 0xFFFFFFFF);
                 }
             }
+        }
+        public static unsafe void TransparencyGrid(uint* bmpAddress, int bmpWidth, int bmpHeight, int blockW, int blockH)
+        {
+            TransparencyGrid(bmpAddress, bmpWidth, bmpHeight, 0, 0, blockW, blockH, (bmpWidth / blockW) + (bmpWidth % blockW == 0 ? 0 : 1), (bmpHeight / blockH) + (bmpHeight % blockH == 0 ? 0 : 1));
         }
 
         public static unsafe void Fill(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
@@ -112,6 +114,18 @@ namespace Kermalis.MapEditor.Util
                         DrawUnchecked(bmpAddress + x + px + ((y + py) * bmpWidth), color);
                         DrawUnchecked(bmpAddress + x + (width - 1 - px) + ((y + py) * bmpWidth), color);
                     }
+                }
+            }
+        }
+
+        public static unsafe void ClearUnchecked(uint* bmpAddress, int bmpWidth, int x, int y, int width, int height)
+        {
+            for (int py = y; py < y + height; py++)
+            {
+                for (int px = x; px < x + width; px++)
+                {
+                    uint* pixelAddress = bmpAddress + px + (py * bmpWidth);
+                    *pixelAddress = 0x00000000;
                 }
             }
         }

@@ -14,8 +14,6 @@ namespace Kermalis.MapEditor.UI
     public sealed class TileLayerImage : Control, IDisposable
     {
         internal readonly Blockset.Block.Tile[][] Clipboard;
-        internal int ClipboardWidth;
-        internal int ClipboardHeight;
         internal EventHandler ClipboardChanged;
 
         private bool _isDrawing;
@@ -79,53 +77,56 @@ namespace Kermalis.MapEditor.UI
                 List<Blockset.Block.Tile> subLayers = dict[_zLayerNum];
                 if (subLayers.Count <= _subLayerNum)
                 {
+                    changed = true;
                     var t = new Blockset.Block.Tile();
                     st.CopyTo(t);
                     subLayers.Add(t);
-                    changed = true;
                 }
                 else
                 {
                     Blockset.Block.Tile t = subLayers[_subLayerNum];
                     if (!st.Equals(t))
                     {
-                        st.CopyTo(t);
                         changed = true;
+                        st.CopyTo(t);
                     }
                 }
             }
-            for (int y = 0; y < ClipboardHeight; y++)
+            for (int y = 0; y < 2; y++)
             {
                 int curY = startY + y;
                 if (curY < 2)
                 {
                     Blockset.Block.Tile[] arrY = Clipboard[y];
-                    for (int x = 0; x < ClipboardWidth; x++)
+                    for (int x = 0; x < 2; x++)
                     {
                         int curX = startX + x;
                         if (curX < 2)
                         {
                             Blockset.Block.Tile st = arrY[x];
-                            if (curY == 0)
+                            if (st.TilesetTile != null)
                             {
-                                if (curX == 0)
+                                if (curY == 0)
                                 {
-                                    Set(_block.TopLeft, st);
+                                    if (curX == 0)
+                                    {
+                                        Set(_block.TopLeft, st);
+                                    }
+                                    else
+                                    {
+                                        Set(_block.TopRight, st);
+                                    }
                                 }
                                 else
                                 {
-                                    Set(_block.TopRight, st);
-                                }
-                            }
-                            else
-                            {
-                                if (curX == 0)
-                                {
-                                    Set(_block.BottomLeft, st);
-                                }
-                                else
-                                {
-                                    Set(_block.BottomRight, st);
+                                    if (curX == 0)
+                                    {
+                                        Set(_block.BottomLeft, st);
+                                    }
+                                    else
+                                    {
+                                        Set(_block.BottomRight, st);
+                                    }
                                 }
                             }
                         }
@@ -146,8 +147,8 @@ namespace Kermalis.MapEditor.UI
                 List<Blockset.Block.Tile> subLayers = dict[_zLayerNum];
                 if (subLayers.Count > _subLayerNum)
                 {
-                    subLayers.RemoveAt(_subLayerNum);
                     changed = true;
+                    subLayers.RemoveAt(_subLayerNum);
                 }
             }
             if (y == 0)
@@ -264,31 +265,30 @@ namespace Kermalis.MapEditor.UI
                         int width = _selection.Width;
                         int height = _selection.Height;
                         bool changed = false;
-                        if (ClipboardWidth != width)
-                        {
-                            ClipboardWidth = width;
-                            changed = true;
-                        }
-                        if (ClipboardHeight != height)
-                        {
-                            ClipboardHeight = height;
-                            changed = true;
-                        }
-                        for (int y = 0; y < height; y++)
+                        for (int y = 0; y < 2; y++)
                         {
                             Blockset.Block.Tile[] arrY = Clipboard[y];
-                            for (int x = 0; x < width; x++)
+                            for (int x = 0; x < 2; x++)
                             {
-                                Blockset.Block.Tile got = SubLayerModel.GetTile(_block, _zLayerNum, _subLayerNum, startX + x, startY + y);
-                                if (got != null)
+                                Blockset.Block.Tile t = arrY[x];
+                                if (x < width && y < height)
                                 {
-                                    Blockset.Block.Tile t = arrY[x];
-                                    if (!got.Equals(t))
+                                    Blockset.Block.Tile got = SubLayerModel.GetTile(_block, _zLayerNum, _subLayerNum, startX + x, startY + y);
+                                    if (got != null)
                                     {
-                                        got.CopyTo(t);
-                                        changed = true;
+                                        if (!got.Equals(t))
+                                        {
+                                            changed = true;
+                                            got.CopyTo(t);
+                                        }
+                                        continue;
                                     }
                                 }
+                                if (t.TilesetTile != null)
+                                {
+                                    changed = true;
+                                }
+                                t.TilesetTile = null;
                             }
                         }
                         if (changed)
