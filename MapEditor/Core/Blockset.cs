@@ -66,8 +66,8 @@ namespace Kermalis.MapEditor.Core
                 Behavior = r.ReadUInt16();
                 Dictionary<byte, List<Tile>> Read()
                 {
-                    var zLayers = new Dictionary<byte, List<Tile>>(byte.MaxValue + 1);
-                    byte z = 0;
+                    var eLayers = new Dictionary<byte, List<Tile>>(byte.MaxValue + 1);
+                    byte e = 0;
                     while (true)
                     {
                         byte count = r.ReadByte();
@@ -76,14 +76,14 @@ namespace Kermalis.MapEditor.Core
                         {
                             subLayers.Add(new Tile(r));
                         }
-                        zLayers.Add(z, subLayers);
-                        if (z == byte.MaxValue)
+                        eLayers.Add(e, subLayers);
+                        if (e == byte.MaxValue)
                         {
                             break;
                         }
-                        z++;
+                        e++;
                     }
-                    return zLayers;
+                    return eLayers;
                 }
                 TopLeft = Read();
                 TopRight = Read();
@@ -99,15 +99,15 @@ namespace Kermalis.MapEditor.Core
                 Dictionary<byte, List<Tile>> Create()
                 {
                     var d = new Dictionary<byte, List<Tile>>(byte.MaxValue + 1);
-                    byte z = 0;
+                    byte e = 0;
                     while (true)
                     {
-                        d.Add(z, new List<Tile>());
-                        if (z == byte.MaxValue)
+                        d.Add(e, new List<Tile>());
+                        if (e == byte.MaxValue)
                         {
                             break;
                         }
-                        z++;
+                        e++;
                     }
                     return d;
                 }
@@ -119,18 +119,18 @@ namespace Kermalis.MapEditor.Core
 
             public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
             {
-                byte z = 0;
+                byte e = 0;
                 while (true)
                 {
-                    DrawZ(bmpAddress, bmpWidth, bmpHeight, x, y, z);
-                    if (z == byte.MaxValue)
+                    Draw(bmpAddress, bmpWidth, bmpHeight, x, y, e);
+                    if (e == byte.MaxValue)
                     {
                         break;
                     }
-                    z++;
+                    e++;
                 }
             }
-            public unsafe void DrawZ(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, byte z)
+            public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, byte e)
             {
                 void Draw(List<Tile> subLayers, int tx, int ty)
                 {
@@ -139,32 +139,32 @@ namespace Kermalis.MapEditor.Core
                         subLayers[t].Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty);
                     }
                 }
-                Draw(TopLeft[z], x, y);
-                Draw(TopRight[z], x + 8, y);
-                Draw(BottomLeft[z], x, y + 8);
-                Draw(BottomRight[z], x + 8, y + 8);
+                Draw(TopLeft[e], x, y);
+                Draw(TopRight[e], x + 8, y);
+                Draw(BottomLeft[e], x, y + 8);
+                Draw(BottomRight[e], x + 8, y + 8);
             }
 
             public void Write(EndianBinaryWriter w)
             {
                 w.Write(Behavior);
-                void Write(Dictionary<byte, List<Tile>> zLayers)
+                void Write(Dictionary<byte, List<Tile>> eLayers)
                 {
-                    byte z = 0;
+                    byte e = 0;
                     while (true)
                     {
-                        List<Tile> subLayers = zLayers[z];
+                        List<Tile> subLayers = eLayers[e];
                         byte count = (byte)subLayers.Count;
                         w.Write(count);
                         for (int i = 0; i < count; i++)
                         {
                             subLayers[i].Write(w);
                         }
-                        if (z == byte.MaxValue)
+                        if (e == byte.MaxValue)
                         {
                             break;
                         }
-                        z++;
+                        e++;
                     }
                 }
                 Write(TopLeft);
@@ -280,18 +280,18 @@ namespace Kermalis.MapEditor.Core
         }
         public static void Clear(Block block)
         {
-            byte z = 0;
+            byte e = 0;
             while (true)
             {
-                block.TopLeft[z].Clear();
-                block.TopRight[z].Clear();
-                block.BottomLeft[z].Clear();
-                block.BottomRight[z].Clear();
-                if (z == byte.MaxValue)
+                block.TopLeft[e].Clear();
+                block.TopRight[e].Clear();
+                block.BottomLeft[e].Clear();
+                block.BottomRight[e].Clear();
+                if (e == byte.MaxValue)
                 {
                     break;
                 }
-                z++;
+                e++;
             }
             Blockset blockset = block.Parent;
             blockset.OnChanged?.Invoke(blockset, block);

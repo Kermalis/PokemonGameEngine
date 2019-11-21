@@ -11,15 +11,15 @@ namespace Kermalis.MapEditor.UI
     public sealed class SubLayerModel : IDisposable
     {
         private Blockset.Block _block;
-        private byte _zLayerNum;
+        private byte _eLayerNum;
         private readonly byte _subLayerNum;
         public string Text { get; }
         public WriteableBitmap Bitmap { get; }
 
-        internal SubLayerModel(Blockset.Block block, byte zLayerNum, byte subLayerNum)
+        internal SubLayerModel(Blockset.Block block, byte eLayerNum, byte subLayerNum)
         {
             _block = block;
-            _zLayerNum = zLayerNum;
+            _eLayerNum = eLayerNum;
             _subLayerNum = subLayerNum;
             Text = $"Sub-Layer {_subLayerNum:D3}";
             Bitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
@@ -31,24 +31,24 @@ namespace Kermalis.MapEditor.UI
             _block = block;
             UpdateBitmap();
         }
-        internal void SetZLayer(byte z)
+        internal void SetELayer(byte e)
         {
-            if (_zLayerNum != z)
+            if (_eLayerNum != e)
             {
-                _zLayerNum = z;
+                _eLayerNum = e;
                 UpdateBitmap();
             }
         }
         internal void UpdateBitmap()
         {
-            UpdateBitmap(Bitmap, _block, _zLayerNum, _subLayerNum);
+            UpdateBitmap(Bitmap, _block, _eLayerNum, _subLayerNum);
         }
 
-        internal static Blockset.Block.Tile GetTile(Blockset.Block block, byte zLayerNum, byte subLayerNum, int x, int y)
+        internal static Blockset.Block.Tile GetTile(Blockset.Block block, byte eLayerNum, byte subLayerNum, int x, int y)
         {
             Blockset.Block.Tile Get(Dictionary<byte, List<Blockset.Block.Tile>> dict)
             {
-                List<Blockset.Block.Tile> layers = dict[zLayerNum];
+                List<Blockset.Block.Tile> layers = dict[eLayerNum];
                 return layers.Count <= subLayerNum ? null : layers[subLayerNum];
             }
             if (y == 0)
@@ -74,7 +74,7 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
-        internal static unsafe void UpdateBitmap(WriteableBitmap bitmap, Blockset.Block block, byte zLayerNum, byte subLayerNum)
+        internal static unsafe void UpdateBitmap(WriteableBitmap bitmap, Blockset.Block block, byte eLayerNum, byte subLayerNum)
         {
             using (ILockedFramebuffer l = bitmap.Lock())
             {
@@ -85,7 +85,7 @@ namespace Kermalis.MapEditor.UI
                     for (int x = 0; x < 2; x++)
                     {
                         int px = x * 8;
-                        Blockset.Block.Tile t = GetTile(block, zLayerNum, subLayerNum, x, y);
+                        Blockset.Block.Tile t = GetTile(block, eLayerNum, subLayerNum, x, y);
                         if (t != null)
                         {
                             RenderUtil.TransparencyGrid(bmpAddress, 16, 16, px, py, 4, 4, 2, 2);

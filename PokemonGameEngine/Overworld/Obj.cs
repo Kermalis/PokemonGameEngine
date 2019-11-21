@@ -30,7 +30,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         public FacingDirection Facing;
         public int X;
         public int Y;
-        public byte Z;
+        public byte Elevation;
         public Map Map;
 
         public float MovementTimer;

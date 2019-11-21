@@ -22,7 +22,7 @@
           <CheckBox Content="Y-Flip" IsChecked="{Binding YFlip}" />
         </StackPanel>
         <StackPanel DockPanel.Dock="Right" Spacing="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-          <ComboBox Items="{Binding ZLayers}" SelectedIndex="{Binding SelectedZLayerIndex}" Name="ZLayerComboBox">
+          <ComboBox Items="{Binding ELayers}" SelectedIndex="{Binding SelectedELayerIndex}" Name="ELayerComboBox">
             <ComboBox.ItemTemplate>
               <DataTemplate>
                 <StackPanel Orientation="Horizontal">

@@ -21,7 +21,7 @@ namespace Kermalis.MapEditor.UI
         private readonly Selection _selection;
 
         private byte _subLayerNum;
-        private byte _zLayerNum;
+        private byte _eLayerNum;
         private Blockset.Block _block;
         private readonly WriteableBitmap _bitmap;
         private readonly Size _bitmapSize;
@@ -74,7 +74,7 @@ namespace Kermalis.MapEditor.UI
             bool changed = false;
             void Set(Dictionary<byte, List<Blockset.Block.Tile>> dict, Blockset.Block.Tile st)
             {
-                List<Blockset.Block.Tile> subLayers = dict[_zLayerNum];
+                List<Blockset.Block.Tile> subLayers = dict[_eLayerNum];
                 if (subLayers.Count <= _subLayerNum)
                 {
                     changed = true;
@@ -144,7 +144,7 @@ namespace Kermalis.MapEditor.UI
             bool changed = false;
             void Remove(Dictionary<byte, List<Blockset.Block.Tile>> dict)
             {
-                List<Blockset.Block.Tile> subLayers = dict[_zLayerNum];
+                List<Blockset.Block.Tile> subLayers = dict[_eLayerNum];
                 if (subLayers.Count > _subLayerNum)
                 {
                     changed = true;
@@ -273,7 +273,7 @@ namespace Kermalis.MapEditor.UI
                                 Blockset.Block.Tile t = arrY[x];
                                 if (x < width && y < height)
                                 {
-                                    Blockset.Block.Tile got = SubLayerModel.GetTile(_block, _zLayerNum, _subLayerNum, startX + x, startY + y);
+                                    Blockset.Block.Tile got = SubLayerModel.GetTile(_block, _eLayerNum, _subLayerNum, startX + x, startY + y);
                                     if (got != null)
                                     {
                                         if (!got.Equals(t))
@@ -320,17 +320,17 @@ namespace Kermalis.MapEditor.UI
                 UpdateBitmap();
             }
         }
-        internal void SetZLayer(byte z)
+        internal void SetELayer(byte e)
         {
-            if (_zLayerNum != z)
+            if (_eLayerNum != e)
             {
-                _zLayerNum = z;
+                _eLayerNum = e;
                 UpdateBitmap();
             }
         }
         internal unsafe void UpdateBitmap()
         {
-            SubLayerModel.UpdateBitmap(_bitmap, _block, _zLayerNum, _subLayerNum);
+            SubLayerModel.UpdateBitmap(_bitmap, _block, _eLayerNum, _subLayerNum);
             InvalidateVisual();
         }
 

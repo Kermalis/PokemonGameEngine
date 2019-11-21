@@ -30,7 +30,7 @@ namespace Kermalis.MapEditor.UI
         private readonly TilesetImage _tilesetImage;
         private readonly BlocksetImage _blocksetImage;
         private readonly ComboBox _subLayerComboBox;
-        private readonly ComboBox _zLayerComboBox;
+        private readonly ComboBox _eLayerComboBox;
 
         public ReactiveCommand<Unit, Unit> SaveBlocksetCommand { get; }
         public ReactiveCommand<Unit, Unit> AddBlockCommand { get; }
@@ -55,18 +55,18 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
-        public ZLayerModel[] ZLayers { get; }
-        private int _selectedZLayerIndex = -1;
-        public int SelectedZLayerIndex
+        public ELayerModel[] ELayers { get; }
+        private int _selectedELayerIndex = -1;
+        public int SelectedELayerIndex
         {
-            get => _selectedZLayerIndex;
+            get => _selectedELayerIndex;
             set
             {
-                if (value != -1 && _selectedZLayerIndex != value)
+                if (value != -1 && _selectedELayerIndex != value)
                 {
-                    _selectedZLayerIndex = value;
-                    OnPropertyChanged(nameof(SelectedZLayerIndex));
-                    SetZLayer((byte)_selectedZLayerIndex);
+                    _selectedELayerIndex = value;
+                    OnPropertyChanged(nameof(SelectedELayerIndex));
+                    SetELayer((byte)_selectedELayerIndex);
                 }
             }
         }
@@ -122,23 +122,23 @@ namespace Kermalis.MapEditor.UI
 
             SubLayers = new ObservableCollection<SubLayerModel>(new List<SubLayerModel>(byte.MaxValue + 1));
 
-            ZLayers = new ZLayerModel[byte.MaxValue + 1];
-            byte z = 0;
+            ELayers = new ELayerModel[byte.MaxValue + 1];
+            byte e = 0;
             while (true)
             {
-                ZLayers[z] = new ZLayerModel(z);
-                if (z == byte.MaxValue)
+                ELayers[e] = new ELayerModel(e);
+                if (e == byte.MaxValue)
                 {
                     break;
                 }
-                z++;
+                e++;
             }
 
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
             _subLayerComboBox = this.FindControl<ComboBox>("SubLayerComboBox");
-            _zLayerComboBox = this.FindControl<ComboBox>("ZLayerComboBox");
+            _eLayerComboBox = this.FindControl<ComboBox>("ELayerComboBox");
 
             _clipboardImage = this.FindControl<Image>("ClipboardImage");
             _clipboardImage.Source = _clipboardBitmap;
@@ -226,12 +226,12 @@ namespace Kermalis.MapEditor.UI
                     SubLayers[i].UpdateBitmap();
                 }
                 _subLayerComboBox.ForceRedraw();
-                count = ZLayers.Length;
+                count = ELayers.Length;
                 for (int i = 0; i < count; i++)
                 {
-                    ZLayers[i].UpdateBitmap();
+                    ELayers[i].UpdateBitmap();
                 }
-                _zLayerComboBox.ForceRedraw();
+                _eLayerComboBox.ForceRedraw();
             }
         }
         private void TileLayerImage_ClipboardChanged(object sender, EventArgs e)
@@ -327,11 +327,11 @@ namespace Kermalis.MapEditor.UI
                     SubLayers[i].SetBlock(block);
                 }
                 _subLayerComboBox.ForceRedraw();
-                for (int i = 0; i < ZLayers.Length; i++)
+                for (int i = 0; i < ELayers.Length; i++)
                 {
-                    ZLayers[i].SetBlock(block);
+                    ELayers[i].SetBlock(block);
                 }
-                _zLayerComboBox.ForceRedraw();
+                _eLayerComboBox.ForceRedraw();
             }
         }
         private unsafe void DrawClipboard()
@@ -365,14 +365,14 @@ namespace Kermalis.MapEditor.UI
         {
             _tileLayerImage.SetSubLayer(s);
         }
-        private void SetZLayer(byte z)
+        private void SetELayer(byte e)
         {
-            _tileLayerImage.SetZLayer(z);
+            _tileLayerImage.SetELayer(e);
             CountSubLayers();
             int count = SubLayers.Count;
             for (int i = 0; i < count; i++)
             {
-                SubLayers[i].SetZLayer(z);
+                SubLayers[i].SetELayer(e);
             }
             _subLayerComboBox.ForceRedraw();
         }
@@ -387,15 +387,15 @@ namespace Kermalis.MapEditor.UI
                     num = count;
                 }
             }
-            if (_selectedZLayerIndex == -1)
+            if (_selectedELayerIndex == -1)
             {
-                SelectedZLayerIndex = 0;
+                SelectedELayerIndex = 0;
             }
-            byte z = (byte)_selectedZLayerIndex;
-            Count(_selectedBlock.TopLeft[z]);
-            Count(_selectedBlock.TopRight[z]);
-            Count(_selectedBlock.BottomLeft[z]);
-            Count(_selectedBlock.BottomRight[z]);
+            byte e = (byte)_selectedELayerIndex;
+            Count(_selectedBlock.TopLeft[e]);
+            Count(_selectedBlock.TopRight[e]);
+            Count(_selectedBlock.BottomLeft[e]);
+            Count(_selectedBlock.BottomRight[e]);
             if (num < byte.MaxValue + 1)
             {
                 num++;
@@ -408,7 +408,7 @@ namespace Kermalis.MapEditor.UI
                     int numToAdd = num - curCount;
                     for (int i = 0; i < numToAdd; i++)
                     {
-                        SubLayers.Add(new SubLayerModel(_selectedBlock, z, (byte)(curCount + i)));
+                        SubLayers.Add(new SubLayerModel(_selectedBlock, e, (byte)(curCount + i)));
                     }
                     if (_selectedSubLayerIndex == -1)
                     {
@@ -450,9 +450,9 @@ namespace Kermalis.MapEditor.UI
             {
                 SubLayers[i].Dispose();
             }
-            for (int i = 0; i < ZLayers.Length; i++)
+            for (int i = 0; i < ELayers.Length; i++)
             {
-                ZLayers[i].Dispose();
+                ELayers[i].Dispose();
             }
             _clipboardBitmap.Dispose();
             _tileLayerImage.Dispose();

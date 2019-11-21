@@ -7,17 +7,17 @@ using System;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class ZLayerModel : IDisposable
+    public sealed class ELayerModel : IDisposable
     {
-        private readonly byte _zLayerNum;
+        private readonly byte _eLayerNum;
         private Blockset.Block _block;
         public string Text { get; }
         public WriteableBitmap Bitmap { get; }
 
-        internal ZLayerModel(byte zLayerNum)
+        internal ELayerModel(byte eLayerNum)
         {
-            _zLayerNum = zLayerNum;
-            Text = $"Z-Layer {_zLayerNum:D3}";
+            _eLayerNum = eLayerNum;
+            Text = $"E-Layer {_eLayerNum:D3}";
             Bitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
         }
 
@@ -32,7 +32,7 @@ namespace Kermalis.MapEditor.UI
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
                 RenderUtil.TransparencyGrid(bmpAddress, 16, 16, 0, 0, 4, 4, 4, 4);
-                _block.DrawZ(bmpAddress, 16, 16, 0, 0, _zLayerNum);
+                _block.Draw(bmpAddress, 16, 16, 0, 0, _eLayerNum);
             }
         }
 

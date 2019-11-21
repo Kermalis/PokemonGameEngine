@@ -287,7 +287,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             int endBlockY = startBlockY + numBlocksY + (yp16 == 0 ? 0 : 1);
             int startX = xp16 >= 0 ? -xp16 : -xp16 - 16;
             int startY = yp16 >= 0 ? -yp16 : -yp16 - 16;
-            byte z = 0;
+            byte e = 0;
             while (true)
             {
                 int curX = startX;
@@ -308,10 +308,10 @@ namespace Kermalis.PokemonGameEngine.Overworld
                                     RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
                                 }
                             }
-                            Draw(b.TopLeft[z], curX, curY);
-                            Draw(b.TopRight[z], curX + 8, curY);
-                            Draw(b.BottomLeft[z], curX, curY + 8);
-                            Draw(b.BottomRight[z], curX + 8, curY + 8);
+                            Draw(b.TopLeft[e], curX, curY);
+                            Draw(b.TopRight[e], curX + 8, curY);
+                            Draw(b.BottomLeft[e], curX, curY + 8);
+                            Draw(b.BottomRight[e], curX + 8, curY + 8);
                         }
                         curX += 16;
                     }
@@ -325,7 +325,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 for (int i = 0; i < numObjs; i++)
                 {
                     Obj c = objs[i];
-                    if (c != camera && c.Z == z)
+                    if (c != camera && c.Elevation == e)
                     {
                         int objX = ((c.X - startBlockX) * 16) + c.XOffset + startX;
                         int objY = ((c.Y - startBlockY) * 16) + c.YOffset + startY;
@@ -339,11 +339,11 @@ namespace Kermalis.PokemonGameEngine.Overworld
                         }
                     }
                 }
-                if (z == byte.MaxValue)
+                if (e == byte.MaxValue)
                 {
                     break;
                 }
-                z++;
+                e++;
             }
         }
     }
