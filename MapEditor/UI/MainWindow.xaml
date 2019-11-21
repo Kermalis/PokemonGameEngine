@@ -1,53 +1,40 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
+        xmlns:core="clr-namespace:Kermalis.MapEditor.Core;assembly=MapEditor"
+        xmlns:ui="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
         x:Class="Kermalis.MapEditor.UI.MainWindow"
-        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Pokémon Game Engine Map Editor">
-  <DockPanel>
-    <Menu DockPanel.Dock="Top">
-      <MenuItem Header="_File">
-        <MenuItem Header="_Save map" Click="SaveMap"/>
-      </MenuItem>
-    </Menu>
-    <Menu DockPanel.Dock="Top">
-      <Button Content="Block Editor" Command="{Binding OpenBlockEditorCommand}" />
-    </Menu>
-    <Grid DockPanel.Dock="Top" Margin="15">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition />
-      </Grid.ColumnDefinitions>
-      <ScrollViewer Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <local:BlocksetImage Name="BlocksetImage">
-          <x:Arguments>
-            <x:Boolean>True</x:Boolean>
-            <x:Double>1</x:Double>
-          </x:Arguments>
-        </local:BlocksetImage>
-      </ScrollViewer>
-      <TabControl Grid.Column="1">
-        <TabItem Header="Map">
-          <ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <local:MapImage Name="MapBlocksImage">
-              <x:Arguments>
-                <x:Boolean>False</x:Boolean>
-              </x:Arguments>
-            </local:MapImage>
-          </ScrollViewer>
-        </TabItem>
-        <TabItem Header="Border">
-          <ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <local:MapImage Name="MapBorderBlocksImage">
-              <x:Arguments>
-                <x:Boolean>True</x:Boolean>
-              </x:Arguments>
-            </local:MapImage>
-          </ScrollViewer>
-        </TabItem>
-        <TabItem Header="Connections">
-          <local:ConnectionEditor Name="ConnectionEditor" />
-        </TabItem>
-      </TabControl>
-    </Grid>
-  </DockPanel>
+        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Pokémon Game Engine Map Editor" Padding="5">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+    <Border Grid.Row="0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <StackPanel Spacing="5" Orientation="Horizontal">
+        <Button Content="Save Map" Command="{Binding SaveMapCommand}" VerticalAlignment="Center" />
+        <Button Content="Blockset Editor" Command="{Binding OpenBlocksetEditorCommand}" VerticalAlignment="Center" />
+      </StackPanel>
+    </Border>
+    <Border Margin="0,2,0,0" Padding="2" Grid.Row="1" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="1*" />
+          <ColumnDefinition Width="9*" />
+        </Grid.ColumnDefinitions>
+        <ListBox Grid.Column="0" Items="{x:Static core:Map.Ids}" SelectionMode="AlwaysSelected" SelectedItem="{Binding SelectedMap}" />
+        <TabControl Margin="2,0,0,0" Grid.Column="1">
+          <TabItem Header="Map">
+            <Border Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+              <ui:MapEditor Name="MapEditor" />
+            </Border>
+          </TabItem>
+          <TabItem Header="Connections">
+            <Border Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+              <ui:ConnectionEditor Name="ConnectionEditor" />
+            </Border>
+          </TabItem>
+        </TabControl>
+      </Grid>
+    </Border>
+  </Grid>
 </Window>

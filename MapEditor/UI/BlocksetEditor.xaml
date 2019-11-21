@@ -1,0 +1,83 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
+        x:Class="Kermalis.MapEditor.UI.BlocksetEditor"
+        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Block Editor" Padding="5">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+    <Border Grid.Row="0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Left" Spacing="5" Orientation="Horizontal">
+          <ui:TileLayerImage Name="TileLayerImage">
+            <x:Arguments>
+              <x:Double>2</x:Double>
+            </x:Arguments>
+          </ui:TileLayerImage>
+          <Panel Width="34" Height="34">
+            <Image Name="ClipboardImage" Width="32" Height="32" RenderOptions.BitmapInterpolationMode="Default" />
+            <Border HorizontalAlignment="Left" VerticalAlignment="Top" Width="{Binding ClipboardBorderWidth}" Height="{Binding ClipboardBorderHeight}" BorderBrush="Red" BorderThickness="1" />
+          </Panel>
+          <CheckBox Content="X-Flip" IsChecked="{Binding XFlip}" />
+          <CheckBox Content="Y-Flip" IsChecked="{Binding YFlip}" />
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Right" Spacing="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+          <ComboBox Items="{Binding ZLayers}" SelectedIndex="{Binding SelectedZLayerIndex}" Name="ZLayerComboBox">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="{Binding Text}" />
+                  <Image Source="{Binding Bitmap}" Margin="5,0" />
+                </StackPanel>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+          <ComboBox Items="{Binding SubLayers}" SelectedIndex="{Binding SelectedSubLayerIndex}" Name="SubLayerComboBox">
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="{Binding Text}" />
+                  <Image Source="{Binding Bitmap}" Margin="5,0" />
+                </StackPanel>
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+        </StackPanel>
+      </DockPanel>
+    </Border>
+    <Border Margin="0,2" Padding="2" Grid.Row="1" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <StackPanel Spacing="5" Orientation="Horizontal">
+        <Button Content="Save Blockset" Command="{Binding SaveBlocksetCommand}" VerticalAlignment="Center" />
+        <Button Content="Add Block" Command="{Binding AddBlockCommand}" VerticalAlignment="Center" />
+        <Button Content="Clear Block" Command="{Binding ClearBlockCommand}" VerticalAlignment="Center" />
+        <Button Content="Remove Block" Command="{Binding RemoveBlockCommand}" VerticalAlignment="Center" />
+      </StackPanel>
+    </Border>
+    <Border Grid.Row="2" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="1*" />
+          <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+          <ui:BlocksetImage Name="BlocksetImage">
+            <x:Arguments>
+              <x:Boolean>False</x:Boolean>
+              <x:Double>2</x:Double>
+            </x:Arguments>
+          </ui:BlocksetImage>
+        </ScrollViewer>
+        <ScrollViewer Margin="5,0,0,0" Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+          <ui:TilesetImage Name="TilesetImage">
+            <x:Arguments>
+              <x:Double>2</x:Double>
+            </x:Arguments>
+          </ui:TilesetImage>
+        </ScrollViewer>
+      </Grid>
+    </Border>
+  </Grid>
+</Window>

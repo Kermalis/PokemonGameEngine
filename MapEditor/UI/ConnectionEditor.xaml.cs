@@ -24,6 +24,19 @@ namespace Kermalis.MapEditor.UI
         public ReactiveCommand<Unit, Unit> AddCommand { get; }
         public ReactiveCommand<Unit, Unit> RemoveCommand { get; }
 
+        private string _numConnectionsText;
+        public string NumConnectionsText
+        {
+            get => _numConnectionsText;
+            private set
+            {
+                if (value != _numConnectionsText)
+                {
+                    _numConnectionsText = value;
+                    OnPropertyChanged(nameof(NumConnectionsText));
+                }
+            }
+        }
         private bool _addEnabled;
         public bool AddEnabled
         {
@@ -60,7 +73,7 @@ namespace Kermalis.MapEditor.UI
                 {
                     if (_selectedConnection != -1 && _selectedConnection < _map.Connections.Count)
                     {
-                        Connections[_selectedConnection + 1].Select(false);
+                        Maps[_selectedConnection + 1].Select(false);
                     }
                     _selectedConnection = value;
                     if (value != -1)
@@ -86,7 +99,7 @@ namespace Kermalis.MapEditor.UI
                     if (!_switching)
                     {
                         _map.Connections[_selectedConnection].Dir = (Map.Connection.Direction)value;
-                        ArrangeConnections();
+                        ArrangeMaps();
                     }
                     OnPropertyChanged(nameof(SelectedDirection));
                 }
@@ -104,7 +117,7 @@ namespace Kermalis.MapEditor.UI
                     if (!_switching)
                     {
                         _map.Connections[_selectedConnection].Offset = (int)value;
-                        ArrangeConnections();
+                        ArrangeMaps();
                     }
                     OnPropertyChanged(nameof(Offset));
                 }
@@ -122,10 +135,10 @@ namespace Kermalis.MapEditor.UI
                     if (!_switching)
                     {
                         _map.Connections[_selectedConnection].MapId = value;
-                        ConnectionModel c = Connections[_selectedConnection + 1];
+                        ConnectionModel c = Maps[_selectedConnection + 1];
                         c.Map.MapLayout.OnDrew -= MapLayout_OnDrew;
                         c.SetMap(Map.LoadOrGet(value));
-                        ArrangeConnections();
+                        ArrangeMaps();
                     }
                     OnPropertyChanged(nameof(SelectedMap));
                 }
@@ -173,9 +186,9 @@ namespace Kermalis.MapEditor.UI
         }
 
         public Array Directions { get; } = Enum.GetValues(typeof(Map.Connection.Direction));
-        public ObservableCollection<ConnectionModel> Connections { get; } = new ObservableCollection<ConnectionModel>();
+        public ObservableCollection<ConnectionModel> Maps { get; } = new ObservableCollection<ConnectionModel>();
 
-        private readonly ItemsControl _itemsControl;
+        private readonly ItemsControl _mapsItemsControl;
         private Map _map;
 
         public ConnectionEditor()
@@ -186,13 +199,13 @@ namespace Kermalis.MapEditor.UI
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            _itemsControl = this.FindControl<ItemsControl>("ConnectionsItemsControl");
-            _itemsControl.PointerPressed += ItemsControl_PointerPressed;
+            _mapsItemsControl = this.FindControl<ItemsControl>("MapsItemsControl");
+            _mapsItemsControl.PointerPressed += MapsItemsControl_PointerPressed;
         }
 
         private void UpdateSelectionDetails()
         {
-            Connections[_selectedConnection + 1].Select(true);
+            Maps[_selectedConnection + 1].Select(true);
             Map.Connection c = _map.Connections[_selectedConnection];
             _switching = true;
             SelectedDirection = (int)c.Dir;
@@ -207,7 +220,8 @@ namespace Kermalis.MapEditor.UI
 
         internal void SetMap(Map map)
         {
-            for (int i = Connections.Count - 1; i >= 0; i--)
+            SelectedConnection = -1;
+            for (int i = Maps.Count - 1; i >= 0; i--)
             {
                 Remove(i);
             }
@@ -215,11 +229,7 @@ namespace Kermalis.MapEditor.UI
             BackgroundBrush = new ImageBrush(map.MapLayout.BorderBlocksBitmap) { Stretch = Stretch.None, TileMode = TileMode.Tile, DestinationRect = new RelativeRect(0, 0, 32, 32, RelativeUnit.Absolute) };
             Add(map);
             int count = map.Connections.Count;
-            if (count == 0)
-            {
-                SelectedConnection = -1;
-            }
-            else
+            if (count != 0)
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -227,8 +237,9 @@ namespace Kermalis.MapEditor.UI
                 }
                 SelectedConnection = 0;
             }
-            ArrangeConnections();
+            ArrangeMaps();
             UpdateAddEnabled();
+            UpdateNumConnectionsText();
         }
 
         private void AddButton()
@@ -238,8 +249,9 @@ namespace Kermalis.MapEditor.UI
             _map.Connections.Insert(index, c);
             Add(Map.LoadOrGet(c.MapId));
             SelectedConnection = index;
-            ArrangeConnections();
+            ArrangeMaps();
             UpdateAddEnabled();
+            UpdateNumConnectionsText();
         }
         private void RemoveButton()
         {
@@ -253,21 +265,26 @@ namespace Kermalis.MapEditor.UI
             {
                 UpdateSelectionDetails();
             }
-            ArrangeConnections();
+            ArrangeMaps();
             UpdateAddEnabled();
+            UpdateNumConnectionsText();
         }
         private void Add(Map map)
         {
             map.MapLayout.OnDrew += MapLayout_OnDrew;
-            Connections.Add(new ConnectionModel(map, map == _map));
+            Maps.Add(new ConnectionModel(map, map == _map));
         }
         private void Remove(int index)
         {
-            ConnectionModel c = Connections[index];
+            ConnectionModel c = Maps[index];
             c.Map.MapLayout.OnDrew -= MapLayout_OnDrew;
-            Connections.Remove(c);
+            Maps.Remove(c);
         }
-        private void ArrangeConnections()
+        private void UpdateNumConnectionsText()
+        {
+            NumConnectionsText = $"{_map.Connections.Count}/{byte.MaxValue} Connections";
+        }
+        private void ArrangeMaps()
         {
             Map.Layout ml = _map.MapLayout;
             int mWidth = ml.Width * 16;
@@ -276,7 +293,7 @@ namespace Kermalis.MapEditor.UI
             int mostLeft = 0;
             int mostRight = 0;
             int mostDown = 0;
-            int count = Connections.Count;
+            int count = Maps.Count;
             for (int i = 1; i < count; i++)
             {
                 void Up(int up)
@@ -317,7 +334,7 @@ namespace Kermalis.MapEditor.UI
                     Up(-off * 16);
                     Down((off * 16) + (height * 16) - mHeight);
                 }
-                ConnectionModel cm = Connections[i];
+                ConnectionModel cm = Maps[i];
                 Map.Layout cml = cm.Map.MapLayout;
                 Map.Connection c = _map.Connections[i - 1];
                 switch (c.Dir)
@@ -348,10 +365,10 @@ namespace Kermalis.MapEditor.UI
                     }
                 }
             }
-            Connections[0].Position = new Point(mostLeft, mostUp);
+            Maps[0].Position = new Point(mostLeft, mostUp);
             for (int i = 1; i < count; i++)
             {
-                ConnectionModel cm = Connections[i];
+                ConnectionModel cm = Maps[i];
                 Map.Layout cml = cm.Map.MapLayout;
                 Map.Connection c = _map.Connections[i - 1];
                 switch (c.Dir)
@@ -386,30 +403,30 @@ namespace Kermalis.MapEditor.UI
         {
             if (!drewBorderBlocks && wasResized)
             {
-                ArrangeConnections();
+                ArrangeMaps();
             }
             if (!drewBorderBlocks || layout == _map.MapLayout)
             {
-                _itemsControl.InvalidateVisual();
+                _mapsItemsControl.InvalidateVisual();
             }
         }
 
-        private void ItemsControl_PointerPressed(object sender, PointerPressedEventArgs e)
+        private void MapsItemsControl_PointerPressed(object sender, PointerPressedEventArgs e)
         {
             if (_map != null)
             {
-                PointerPoint pp = e.GetCurrentPoint(_itemsControl);
+                PointerPoint pp = e.GetCurrentPoint(_mapsItemsControl);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
                 {
                     Point pos = pp.Position;
-                    if (_itemsControl.Bounds.TemporaryFix_PointerInControl(pos))
+                    if (_mapsItemsControl.Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         double x = pos.X;
                         double y = pos.Y;
-                        int count = Connections.Count;
+                        int count = Maps.Count;
                         for (int i = 1; i < count; i++)
                         {
-                            ConnectionModel cm = Connections[i];
+                            ConnectionModel cm = Maps[i];
                             Map.Layout cml = cm.Map.MapLayout;
                             Point cmp = cm.Position;
                             double cmx = cmp.X;
@@ -428,11 +445,11 @@ namespace Kermalis.MapEditor.UI
 
         public void Dispose()
         {
-            for (int i = Connections.Count - 1; i >= 0; i--)
+            for (int i = Maps.Count - 1; i >= 0; i--)
             {
-                Connections[i].Map.MapLayout.OnDrew -= MapLayout_OnDrew;
+                Maps[i].Map.MapLayout.OnDrew -= MapLayout_OnDrew;
             }
-            _itemsControl.PointerPressed -= ItemsControl_PointerPressed;
+            _mapsItemsControl.PointerPressed -= MapsItemsControl_PointerPressed;
         }
     }
 }

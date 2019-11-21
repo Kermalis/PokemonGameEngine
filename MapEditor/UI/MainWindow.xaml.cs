@@ -1,124 +1,95 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Kermalis.MapEditor.Core;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reactive;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class MainWindow : Window, IDisposable
+    public sealed class MainWindow : Window, IDisposable, INotifyPropertyChanged
     {
-        public ReactiveCommand<Unit, Unit> OpenBlockEditorCommand { get; }
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+        public new event PropertyChangedEventHandler PropertyChanged;
+
+        public ReactiveCommand<Unit, Unit> SaveMapCommand { get; }
+        public ReactiveCommand<Unit, Unit> OpenBlocksetEditorCommand { get; }
 
 #pragma warning disable IDE0069 // Disposable fields should be disposed
-        private BlockEditor _blockEditor;
-        private readonly Blockset _blockset;
+        private BlocksetEditor _blocksetEditor;
 #pragma warning restore IDE0069 // Disposable fields should be disposed
 
-        private readonly Map _map;
-        private readonly BlocksetImage _blocksetImage;
-        private readonly MapImage _mapBlocksImage;
-        private readonly MapImage _mapBorderBlocksImage;
+        private readonly MapEditor _mapEditor;
         private readonly ConnectionEditor _connectionEditor;
+
+        private Map _map;
+        private string _selectedMap = null;
+        public string SelectedMap
+        {
+            get => _selectedMap;
+            set
+            {
+                if (value != _selectedMap)
+                {
+                    _selectedMap = value;
+                    if (IsInitialized)
+                    {
+                        OnMapChanged();
+                    }
+                    OnPropertyChanged(nameof(SelectedMap));
+                }
+            }
+        }
 
         public MainWindow()
         {
-            OpenBlockEditorCommand = ReactiveCommand.Create(OpenBlockEditor);
-
-            const string defaultBlocksetName = "TestBlocksetO"; // TODO: We will have a ComboBox with the available blocksets, and if there are none, it will prompt for a name
-            _blockset = Blockset.IsValidName(defaultBlocksetName) ? new Blockset(defaultBlocksetName) : Blockset.LoadOrGet(defaultBlocksetName);
-            _blockset.OnChanged += Blockset_OnChanged;
-            _blockset.OnRemoved += Blockset_OnRemoved;
-            _map = Map.LoadOrGet("TestMapC");
-            //_map = new Map("TestMapW", new Map.Layout("TestMap2", 16, 16, 2, 2, _blockset.Blocks[0]));
+            SaveMapCommand = ReactiveCommand.Create(SaveMap);
+            OpenBlocksetEditorCommand = ReactiveCommand.Create(OpenBlocksetEditor);
 
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            _mapBlocksImage = this.FindControl<MapImage>("MapBlocksImage");
-            _mapBlocksImage.Map = _map;
-            _mapBorderBlocksImage = this.FindControl<MapImage>("MapBorderBlocksImage");
-            _mapBorderBlocksImage.Map = _map;
-
-            _blocksetImage = this.FindControl<BlocksetImage>("BlocksetImage");
-            _blocksetImage.SelectionCompleted += BlocksetImage_SelectionCompleted;
-            _blocksetImage.Blockset = _blockset;
-
+            _mapEditor = this.FindControl<MapEditor>("MapEditor");
             _connectionEditor = this.FindControl<ConnectionEditor>("ConnectionEditor");
+            OnMapChanged();
+        }
+
+        private void OnMapChanged()
+        {
+            _map = Map.LoadOrGet(_selectedMap);
+            _mapEditor.SetMap(_map);
             _connectionEditor.SetMap(_map);
         }
 
-        private void UpdateMapLayoutBlock(Blockset blockset, Blockset.Block block, bool resetBlock)
+        private void OpenBlocksetEditor()
         {
-            Map.Layout layout = _map.MapLayout;
-            List<Map.Layout.Block> list = Map.Layout.DrawList;
-            void Do(bool borderBlocks)
+            if (_blocksetEditor != null)
             {
-                Map.Layout.Block[][] arr = borderBlocks ? layout.BorderBlocks : layout.Blocks;
-                int width = borderBlocks ? layout.BorderWidth : layout.Width;
-                int height = borderBlocks ? layout.BorderHeight : layout.Height;
-                for (int y = 0; y < height; y++)
+                // This "if" takes care of https://github.com/AvaloniaUI/Avalonia/issues/2975
+                if (_blocksetEditor.WindowState == WindowState.Minimized)
                 {
-                    Map.Layout.Block[] arrY = arr[y];
-                    for (int x = 0; x < width; x++)
-                    {
-                        Map.Layout.Block b = arrY[x];
-                        if (b.BlocksetBlock == block)
-                        {
-                            if (resetBlock)
-                            {
-                                b.BlocksetBlock = blockset.Blocks[0];
-                            }
-                            list.Add(b);
-                        }
-                    }
+                    _blocksetEditor.WindowState = WindowState.Normal;
                 }
-                layout.Draw(borderBlocks);
-            }
-            Do(false);
-            Do(true);
-        }
-        private void Blockset_OnChanged(Blockset blockset, Blockset.Block block)
-        {
-            UpdateMapLayoutBlock(blockset, block, false);
-        }
-        private void Blockset_OnRemoved(Blockset blockset, Blockset.Block block)
-        {
-            UpdateMapLayoutBlock(blockset, block, true);
-        }
-        private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
-        {
-            _mapBlocksImage.Selection = e;
-            _mapBorderBlocksImage.Selection = e;
-        }
-
-        private void OpenBlockEditor()
-        {
-            if (_blockEditor != null)
-            {
-                if (_blockEditor.WindowState == WindowState.Minimized)
-                {
-                    _blockEditor.WindowState = WindowState.Normal;
-                }
-                _blockEditor.Activate();
+                _blocksetEditor.Activate();
             }
             else
             {
-                _blockEditor = new BlockEditor();
-                _blockEditor.Show();
-                _blockEditor.Closed += BlockEditor_Closed;
+                _blocksetEditor = new BlocksetEditor();
+                _blocksetEditor.Show();
+                _blocksetEditor.Closed += BlocksetEditor_Closed;
             }
         }
-        private void BlockEditor_Closed(object sender, EventArgs e)
+        private void BlocksetEditor_Closed(object sender, EventArgs e)
         {
-            _blockEditor.Closed -= BlockEditor_Closed;
-            _blockEditor = null;
+            _blocksetEditor.Closed -= BlocksetEditor_Closed;
+            _blocksetEditor = null;
         }
 
-        private void SaveMap(object sender, RoutedEventArgs e)
+        private void SaveMap()
         {
             _map.MapLayout.Save();
             _map.Save();
@@ -130,21 +101,13 @@ namespace Kermalis.MapEditor.UI
             return base.HandleClosing();
         }
 
-        private void RemoveBlocksetEvents()
-        {
-            _blockset.OnChanged -= Blockset_OnChanged;
-            _blockset.OnRemoved -= Blockset_OnRemoved;
-        }
         public void Dispose()
         {
-            RemoveBlocksetEvents();
-            _mapBlocksImage.Dispose();
-            _mapBorderBlocksImage.Dispose();
-            _blocksetImage.Dispose();
-            _blocksetImage.SelectionCompleted -= BlocksetImage_SelectionCompleted;
+            _mapEditor.Dispose();
             _connectionEditor.Dispose();
-            OpenBlockEditorCommand.Dispose();
-            _blockEditor?.Close();
+            SaveMapCommand.Dispose();
+            OpenBlocksetEditorCommand.Dispose();
+            _blocksetEditor?.Close();
             _map.MapLayout.Dispose();
         }
     }

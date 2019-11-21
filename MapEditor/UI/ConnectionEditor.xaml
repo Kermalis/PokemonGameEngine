@@ -1,41 +1,52 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:core="clr-namespace:Kermalis.MapEditor.Core;assembly=MapEditor"
-        xmlns:local="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
-        x:Class="Kermalis.MapEditor.UI.ConnectionEditor">
-  <DockPanel Margin="10">
-    <StackPanel DockPanel.Dock="Top" Spacing="5" Orientation="Horizontal">
-      <Button Content="Add" Command="{Binding AddCommand}" IsEnabled="{Binding AddEnabled}" />
-      <Button Content="Remove" Command="{Binding RemoveCommand}" IsEnabled="{Binding HasSelection}" />
-      <ComboBox Items="{x:Static core:Map.Ids}" SelectedIndex="{Binding SelectedMap}" IsEnabled="{Binding HasSelection}" />
-      <ComboBox Items="{Binding Directions}" SelectedIndex="{Binding SelectedDirection}" IsEnabled="{Binding HasSelection}" />
-      <NumericUpDown Value="{Binding Offset}" IsEnabled="{Binding HasSelection}" />
-    </StackPanel>
-    <ScrollViewer DockPanel.Dock="Top" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-      <ItemsControl Name="ConnectionsItemsControl" Items="{Binding Connections}" Width="{Binding PanelWidth}" Height="{Binding PanelHeight}">
-        <ItemsControl.Styles>
-          <Style Selector="ContentPresenter">
-            <Setter Property="Canvas.Left" Value="{Binding Position.X}"/>
-            <Setter Property="Canvas.Top" Value="{Binding Position.Y}"/>
-            <Setter Property="ZIndex" Value="1"/>
-          </Style>
-        </ItemsControl.Styles>
-        <ItemsControl.ItemsPanel>
-          <ItemsPanelTemplate>
-            <Canvas Background="{Binding BackgroundBrush}" Width="{Binding PanelWidth}" Height="{Binding PanelHeight}">
-              <Rectangle Fill="#80000000" Width="{Binding PanelWidth}" Height="{Binding PanelHeight}" />
-            </Canvas>
-          </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <Panel Width="{Binding Width}" Height="{Binding Height}">
-              <Image Source="{Binding Bitmap}" />
-              <Rectangle Fill="{Binding OpacityMask}" Stroke="{Binding BorderBrush}" StrokeThickness="{Binding BorderThickness}" />
-            </Panel>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
-    </ScrollViewer>
+        x:Class="Kermalis.MapEditor.UI.ConnectionEditor" Padding="2">
+  <DockPanel>
+    <Border DockPanel.Dock="Top" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <StackPanel Spacing="5" Orientation="Horizontal">
+        <Button Content="Add" Command="{Binding AddCommand}" IsEnabled="{Binding AddEnabled}" />
+        <Button Content="Remove" Command="{Binding RemoveCommand}" IsEnabled="{Binding HasSelection}" />
+        <TextBlock Text="{Binding NumConnectionsText}" VerticalAlignment="Center" />
+      </StackPanel>
+    </Border>
+    <Border Margin="0,2" Padding="2" DockPanel.Dock="Top" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <StackPanel Spacing="5" Orientation="Horizontal">
+        <TextBlock Text="Map:" VerticalAlignment="Center" />
+        <ComboBox Items="{x:Static core:Map.Ids}" SelectedIndex="{Binding SelectedMap}" IsEnabled="{Binding HasSelection}" />
+        <TextBlock Text="Direction:" Margin="5,0,0,0" VerticalAlignment="Center" />
+        <ComboBox Items="{Binding Directions}" SelectedIndex="{Binding SelectedDirection}" IsEnabled="{Binding HasSelection}" />
+        <TextBlock Text="Offset:" Margin="5,0,0,0" VerticalAlignment="Center" />
+        <NumericUpDown Value="{Binding Offset}" IsEnabled="{Binding HasSelection}" />
+      </StackPanel>
+    </Border>
+    <Border DockPanel.Dock="Top" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <ItemsControl Name="MapsItemsControl" Items="{Binding Maps}" Width="{Binding PanelWidth}" Height="{Binding PanelHeight}">
+          <ItemsControl.Styles>
+            <Style Selector="ContentPresenter">
+              <Setter Property="Canvas.Left" Value="{Binding Position.X}"/>
+              <Setter Property="Canvas.Top" Value="{Binding Position.Y}"/>
+              <Setter Property="ZIndex" Value="1"/>
+            </Style>
+          </ItemsControl.Styles>
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <Canvas Background="{Binding BackgroundBrush}" Width="{Binding PanelWidth}" Height="{Binding PanelHeight}">
+                <Rectangle Fill="#80000000" Width="{Binding PanelWidth}" Height="{Binding PanelHeight}" />
+              </Canvas>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Panel Width="{Binding Width}" Height="{Binding Height}">
+                <Image Source="{Binding Bitmap}" />
+                <Rectangle Fill="{Binding OpacityMask}" Stroke="{Binding BorderBrush}" StrokeThickness="{Binding BorderThickness}" />
+              </Panel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </Border>
   </DockPanel>
 </UserControl>

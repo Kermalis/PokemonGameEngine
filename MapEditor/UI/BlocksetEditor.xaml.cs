@@ -14,7 +14,7 @@ using System.Reactive;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class BlockEditor : Window, IDisposable, INotifyPropertyChanged
+    public sealed class BlocksetEditor : Window, IDisposable, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
         {
@@ -32,6 +32,7 @@ namespace Kermalis.MapEditor.UI
         private readonly ComboBox _subLayerComboBox;
         private readonly ComboBox _zLayerComboBox;
 
+        public ReactiveCommand<Unit, Unit> SaveBlocksetCommand { get; }
         public ReactiveCommand<Unit, Unit> AddBlockCommand { get; }
         public ReactiveCommand<Unit, Unit> ClearBlockCommand { get; }
         public ReactiveCommand<Unit, Unit> RemoveBlockCommand { get; }
@@ -108,8 +109,9 @@ namespace Kermalis.MapEditor.UI
         public int ClipboardBorderWidth { get; private set; }
         public int ClipboardBorderHeight { get; private set; }
 
-        public BlockEditor()
+        public BlocksetEditor()
         {
+            SaveBlocksetCommand = ReactiveCommand.Create(SaveBlockset);
             AddBlockCommand = ReactiveCommand.Create(AddBlock);
             ClearBlockCommand = ReactiveCommand.Create(ClearBlock);
             RemoveBlockCommand = ReactiveCommand.Create(RemoveBlock);
@@ -155,6 +157,10 @@ namespace Kermalis.MapEditor.UI
             _blocksetImage.Blockset = _blockset;
         }
 
+        private void SaveBlockset()
+        {
+            _blockset.Save();
+        }
         private void AddBlock()
         {
             _blockset.Add();
@@ -417,7 +423,6 @@ namespace Kermalis.MapEditor.UI
 
         protected override bool HandleClosing()
         {
-            _blockset.Save();
             Dispose();
             return base.HandleClosing();
         }
@@ -444,6 +449,7 @@ namespace Kermalis.MapEditor.UI
             _tilesetImage.SelectionCompleted -= TilesetImage_SelectionCompleted;
             _blocksetImage.Dispose();
             _blocksetImage.SelectionCompleted -= BlocksetImage_SelectionCompleted;
+            SaveBlocksetCommand.Dispose();
             AddBlockCommand.Dispose();
             ClearBlockCommand.Dispose();
             RemoveBlockCommand.Dispose();
