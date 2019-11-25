@@ -77,8 +77,8 @@ namespace Kermalis.MapEditor.UI
         {
             SelectionBrush = new SolidColorBrush(0x64FF0000);
             SelectingBrush = new SolidColorBrush(0x64FFFF00);
-            SelectionPen = new Pen(0x80FF0000);
-            SelectingPen = new Pen(0x80FFFF00);
+            SelectionPen = new Pen(SelectionBrush);
+            SelectingPen = new Pen(SelectingBrush);
         }
 
         public void Start(int x, int y, int w, int h)
