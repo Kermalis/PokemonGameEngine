@@ -69,12 +69,7 @@ namespace Kermalis.MapEditor.UI
         {
             if (_blocksetEditor != null)
             {
-                // This "if" takes care of https://github.com/AvaloniaUI/Avalonia/issues/2975
-                if (_blocksetEditor.WindowState == WindowState.Minimized)
-                {
-                    _blocksetEditor.WindowState = WindowState.Normal;
-                }
-                _blocksetEditor.Activate();
+                _blocksetEditor.TemporaryFix_Activate();
             }
             else
             {

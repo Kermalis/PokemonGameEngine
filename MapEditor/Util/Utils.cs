@@ -18,6 +18,15 @@ namespace Kermalis.MapEditor.Util
             double y = pos.Y;
             return x >= 0 && x < rect.Width && y >= 0 && y < rect.Height;
         }
+        // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2975
+        public static void TemporaryFix_Activate(this Window window)
+        {
+            if (window.WindowState == WindowState.Minimized)
+            {
+                window.WindowState = WindowState.Normal;
+            }
+            window.Activate();
+        }
         public static void ForceRedraw(this ComboBox c)
         {
             IBrush old = c.Background;
