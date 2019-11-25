@@ -15,10 +15,10 @@ namespace Kermalis.MapEditor.Core
         {
             public enum Direction : byte
             {
+                South,
                 North,
                 West,
-                East,
-                South
+                East
             }
             public Direction Dir;
             public int MapId;

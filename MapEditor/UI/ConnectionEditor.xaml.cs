@@ -296,6 +296,13 @@ namespace Kermalis.MapEditor.UI
             int count = Maps.Count;
             for (int i = 1; i < count; i++)
             {
+                void Down(int down)
+                {
+                    if (down > mostDown)
+                    {
+                        mostDown = down;
+                    }
+                }
                 void Up(int up)
                 {
                     if (up > mostUp)
@@ -317,13 +324,6 @@ namespace Kermalis.MapEditor.UI
                         mostRight = right;
                     }
                 }
-                void Down(int down)
-                {
-                    if (down > mostDown)
-                    {
-                        mostDown = down;
-                    }
-                }
                 void Horizontal(int off, int width)
                 {
                     Left(-off * 16);
@@ -339,6 +339,12 @@ namespace Kermalis.MapEditor.UI
                 Map.Connection c = _map.Connections[i - 1];
                 switch (c.Dir)
                 {
+                    case Map.Connection.Direction.South:
+                    {
+                        Down(cml.Height * 16);
+                        Horizontal(c.Offset, cml.Width);
+                        break;
+                    }
                     case Map.Connection.Direction.North:
                     {
                         Up(cml.Height * 16);
@@ -357,12 +363,6 @@ namespace Kermalis.MapEditor.UI
                         Vertical(c.Offset, cml.Height);
                         break;
                     }
-                    case Map.Connection.Direction.South:
-                    {
-                        Down(cml.Height * 16);
-                        Horizontal(c.Offset, cml.Width);
-                        break;
-                    }
                 }
             }
             Maps[0].Position = new Point(mostLeft, mostUp);
@@ -373,6 +373,11 @@ namespace Kermalis.MapEditor.UI
                 Map.Connection c = _map.Connections[i - 1];
                 switch (c.Dir)
                 {
+                    case Map.Connection.Direction.South:
+                    {
+                        cm.Position = new Point(mostLeft + (c.Offset * 16), mostUp + mHeight + (mostDown - (cml.Height * 16)));
+                        break;
+                    }
                     case Map.Connection.Direction.North:
                     {
                         cm.Position = new Point(mostLeft + (c.Offset * 16), mostUp - (cml.Height * 16));
@@ -386,11 +391,6 @@ namespace Kermalis.MapEditor.UI
                     case Map.Connection.Direction.East:
                     {
                         cm.Position = new Point(mostLeft + mWidth + (mostRight - (cml.Width * 16)), mostUp + (c.Offset * 16));
-                        break;
-                    }
-                    case Map.Connection.Direction.South:
-                    {
-                        cm.Position = new Point(mostLeft + (c.Offset * 16), mostUp + mHeight + (mostDown - (cml.Height * 16)));
                         break;
                     }
                 }

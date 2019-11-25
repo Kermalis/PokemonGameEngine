@@ -12,10 +12,10 @@ namespace Kermalis.PokemonGameEngine.Overworld
         {
             public enum Direction : byte
             {
+                South,
                 North,
                 West,
-                East,
-                South
+                East
             }
             public readonly Direction Dir;
             public readonly int MapId;
@@ -142,13 +142,26 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 }
                 else
                 {
-                    // TODO: How should connections retain map references?
+                    // TODO: How should connections retain map references? Answer: Visible maps/objs list
                     int numConnections = connections.Length;
                     for (int i = 0; i < numConnections; i++)
                     {
                         Connection c = connections[i];
                         switch (c.Dir)
                         {
+                            case Connection.Direction.South:
+                            {
+                                if (south)
+                                {
+                                    var m = Map.LoadOrGet(c.MapId);
+                                    Layout l = m._layout;
+                                    if (x >= c.Offset && x < c.Offset + l._blocksWidth)
+                                    {
+                                        return l.GetBlock(x - c.Offset, y - _blocksHeight, m._connections);
+                                    }
+                                }
+                                break;
+                            }
                             case Connection.Direction.North:
                             {
                                 if (north)
@@ -184,19 +197,6 @@ namespace Kermalis.PokemonGameEngine.Overworld
                                     if (y >= c.Offset && y < c.Offset + l._blocksHeight)
                                     {
                                         return l.GetBlock(x - _blocksWidth, y - c.Offset, m._connections);
-                                    }
-                                }
-                                break;
-                            }
-                            case Connection.Direction.South:
-                            {
-                                if (south)
-                                {
-                                    var m = Map.LoadOrGet(c.MapId);
-                                    Layout l = m._layout;
-                                    if (x >= c.Offset && x < c.Offset + l._blocksWidth)
-                                    {
-                                        return l.GetBlock(x - c.Offset, y - _blocksHeight, m._connections);
                                     }
                                 }
                                 break;
