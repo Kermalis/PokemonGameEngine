@@ -11,10 +11,10 @@ namespace Kermalis.PokemonGameEngine.Overworld
             North,
             West,
             East,
-            SouthWest,
-            SouthEast,
-            NorthWest,
-            NorthEast
+            Southwest,
+            Southeast,
+            Northwest,
+            Northeast
         }
 
         public static readonly List<Obj> LoadedObjs = new List<Obj>();
@@ -96,7 +96,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     XOffset = -15;
                     break;
                 }
-                case FacingDirection.SouthWest:
+                case FacingDirection.Southwest:
                 {
                     _movementSpeed *= _diagonalMovementSpeedModifier;
                     _isMoving = true;
@@ -106,7 +106,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     YOffset = -15;
                     break;
                 }
-                case FacingDirection.SouthEast:
+                case FacingDirection.Southeast:
                 {
                     _movementSpeed *= _diagonalMovementSpeedModifier;
                     _isMoving = true;
@@ -116,7 +116,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     YOffset = -15;
                     break;
                 }
-                case FacingDirection.NorthWest:
+                case FacingDirection.Northwest:
                 {
                     _movementSpeed *= _diagonalMovementSpeedModifier;
                     _isMoving = true;
@@ -126,7 +126,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     YOffset = 15;
                     break;
                 }
-                case FacingDirection.NorthEast:
+                case FacingDirection.Northeast:
                 {
                     _movementSpeed *= _diagonalMovementSpeedModifier;
                     _isMoving = true;
@@ -172,25 +172,25 @@ namespace Kermalis.PokemonGameEngine.Overworld
                         XOffset = (int)(MovementTimer * -15);
                         break;
                     }
-                    case FacingDirection.SouthWest:
+                    case FacingDirection.Southwest:
                     {
                         XOffset = (int)(MovementTimer * 15);
                         YOffset = (int)(MovementTimer * -15);
                         break;
                     }
-                    case FacingDirection.SouthEast:
+                    case FacingDirection.Southeast:
                     {
                         XOffset = (int)(MovementTimer * -15);
                         YOffset = (int)(MovementTimer * -15);
                         break;
                     }
-                    case FacingDirection.NorthWest:
+                    case FacingDirection.Northwest:
                     {
                         XOffset = (int)(MovementTimer * 15);
                         YOffset = (int)(MovementTimer * 15);
                         break;
                     }
-                    case FacingDirection.NorthEast:
+                    case FacingDirection.Northeast:
                     {
                         XOffset = (int)(MovementTimer * -15);
                         YOffset = (int)(MovementTimer * 15);

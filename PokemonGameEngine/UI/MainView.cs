@@ -78,11 +78,11 @@ namespace Kermalis.PokemonGameEngine.UI
                             {
                                 if (left)
                                 {
-                                    facing = Obj.FacingDirection.SouthWest;
+                                    facing = Obj.FacingDirection.Southwest;
                                 }
                                 else if (right)
                                 {
-                                    facing = Obj.FacingDirection.SouthEast;
+                                    facing = Obj.FacingDirection.Southeast;
                                 }
                                 else
                                 {
@@ -93,11 +93,11 @@ namespace Kermalis.PokemonGameEngine.UI
                             {
                                 if (left)
                                 {
-                                    facing = Obj.FacingDirection.NorthWest;
+                                    facing = Obj.FacingDirection.Northwest;
                                 }
                                 else if (right)
                                 {
-                                    facing = Obj.FacingDirection.NorthEast;
+                                    facing = Obj.FacingDirection.Northeast;
                                 }
                                 else
                                 {
