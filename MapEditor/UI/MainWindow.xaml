@@ -11,6 +11,7 @@
     </Grid.RowDefinitions>
     <Border Grid.Row="0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <StackPanel Spacing="5" Orientation="Horizontal">
+        <Button Content="Save Layout" Command="{Binding SaveLayoutCommand}" VerticalAlignment="Center" />
         <Button Content="Save Map" Command="{Binding SaveMapCommand}" VerticalAlignment="Center" />
         <Button Content="Blockset Editor" Command="{Binding OpenBlocksetEditorCommand}" VerticalAlignment="Center" />
       </StackPanel>
@@ -23,9 +24,9 @@
         </Grid.ColumnDefinitions>
         <ListBox Grid.Column="0" Items="{x:Static core:Map.Ids}" SelectionMode="AlwaysSelected" SelectedItem="{Binding SelectedMap}" />
         <TabControl Margin="2,0,0,0" Grid.Column="1">
-          <TabItem Header="Map">
+          <TabItem Header="Layout">
             <Border Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
-              <ui:MapEditor Name="MapEditor" />
+              <ui:LayoutEditor Name="LayoutEditor" />
             </Border>
           </TabItem>
           <TabItem Header="Connections">

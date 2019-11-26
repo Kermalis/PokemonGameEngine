@@ -9,20 +9,20 @@ using System;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class MapImage : Control, IDisposable
+    public sealed class LayoutImage : Control, IDisposable
     {
         private readonly bool _borderBlocks;
-        private Map _map;
-        internal Map Map
+        private Map.Layout _layout;
+        internal Map.Layout Layout
         {
-            get => _map;
+            get => _layout;
             set
             {
-                if (_map != value)
+                if (_layout != value)
                 {
-                    RemoveMapLayoutEvents();
-                    _map = value;
-                    _map.MapLayout.OnDrew += MapLayout_OnDrew;
+                    RemoveLayoutEvents();
+                    _layout = value;
+                    _layout.OnDrew += MapLayout_OnDrew;
                     InvalidateMeasure();
                     InvalidateVisual();
                 }
@@ -32,7 +32,7 @@ namespace Kermalis.MapEditor.UI
         internal Blockset.Block[][] Selection;
         private bool _isDrawing;
 
-        public MapImage(bool borderBlocks)
+        public LayoutImage(bool borderBlocks)
         {
             _borderBlocks = borderBlocks;
         }
@@ -51,9 +51,9 @@ namespace Kermalis.MapEditor.UI
 
         public override void Render(DrawingContext context)
         {
-            if (_map != null)
+            if (_layout != null)
             {
-                IBitmap source = _borderBlocks ? _map.MapLayout.BorderBlocksBitmap : _map.MapLayout.BlocksBitmap;
+                IBitmap source = _borderBlocks ? _layout.BorderBlocksBitmap : _layout.BlocksBitmap;
                 var viewPort = new Rect(Bounds.Size);
                 var r = new Rect(source.Size);
                 Rect destRect = viewPort.CenterRect(r).Intersect(viewPort);
@@ -64,24 +64,24 @@ namespace Kermalis.MapEditor.UI
         }
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (_map != null)
+            if (_layout != null)
             {
-                return (_borderBlocks ? _map.MapLayout.BorderBlocksBitmap : _map.MapLayout.BlocksBitmap).Size;
+                return (_borderBlocks ? _layout.BorderBlocksBitmap : _layout.BlocksBitmap).Size;
             }
             return new Size();
         }
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (_map != null)
+            if (_layout != null)
             {
-                return (_borderBlocks ? _map.MapLayout.BorderBlocksBitmap : _map.MapLayout.BlocksBitmap).Size;
+                return (_borderBlocks ? _layout.BorderBlocksBitmap : _layout.BlocksBitmap).Size;
             }
             return new Size();
         }
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
-            if (_map != null)
+            if (_layout != null)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 switch (pp.Properties.PointerUpdateKind)
@@ -92,7 +92,7 @@ namespace Kermalis.MapEditor.UI
                         if (Bounds.TemporaryFix_PointerInControl(pos))
                         {
                             _isDrawing = true;
-                            _map.MapLayout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
+                            _layout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
                             e.Handled = true;
                         }
                         break;
@@ -102,14 +102,13 @@ namespace Kermalis.MapEditor.UI
                         Point pos = pp.Position;
                         if (Bounds.TemporaryFix_PointerInControl(pos))
                         {
-                            int x = (int)pos.X / 16;
-                            int y = (int)pos.Y / 16;
-                            Map.Layout ml = _map.MapLayout;
-                            Blockset.Block oldBlock = (_borderBlocks ? ml.BorderBlocks : ml.Blocks)[y][x].BlocksetBlock;
+                            int destX = (int)pos.X / 16;
+                            int destY = (int)pos.Y / 16;
+                            Blockset.Block oldBlock = (_borderBlocks ? _layout.BorderBlocks : _layout.Blocks)[destY][destX].BlocksetBlock;
                             Blockset.Block newBlock = Selection[0][0];
                             if (oldBlock != newBlock)
                             {
-                                ml.Fill(_borderBlocks, oldBlock, newBlock, x, y);
+                                _layout.Fill(_borderBlocks, oldBlock, newBlock, destX, destY);
                             }
                             e.Handled = true;
                         }
@@ -120,7 +119,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerMoved(PointerEventArgs e)
         {
-            if (_map != null && _isDrawing)
+            if (_layout != null && _isDrawing)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
@@ -128,7 +127,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        _map.MapLayout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
+                        _layout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
                         e.Handled = true;
                     }
                 }
@@ -136,7 +135,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
-            if (_map != null && _isDrawing)
+            if (_layout != null && _isDrawing)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
@@ -147,16 +146,16 @@ namespace Kermalis.MapEditor.UI
             }
         }
 
-        private void RemoveMapLayoutEvents()
+        private void RemoveLayoutEvents()
         {
-            if (_map != null)
+            if (_layout != null)
             {
-                _map.MapLayout.OnDrew -= MapLayout_OnDrew;
+                _layout.OnDrew -= MapLayout_OnDrew;
             }
         }
         public void Dispose()
         {
-            RemoveMapLayoutEvents();
+            RemoveLayoutEvents();
         }
     }
 }

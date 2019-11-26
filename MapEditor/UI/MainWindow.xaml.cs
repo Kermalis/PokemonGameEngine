@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Kermalis.MapEditor.Core;
+using Kermalis.MapEditor.Util;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -16,6 +17,7 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
+        public ReactiveCommand<Unit, Unit> SaveLayoutCommand { get; }
         public ReactiveCommand<Unit, Unit> SaveMapCommand { get; }
         public ReactiveCommand<Unit, Unit> OpenBlocksetEditorCommand { get; }
 
@@ -23,7 +25,7 @@ namespace Kermalis.MapEditor.UI
         private BlocksetEditor _blocksetEditor;
 #pragma warning restore IDE0069 // Disposable fields should be disposed
 
-        private readonly MapEditor _mapEditor;
+        private readonly LayoutEditor _layoutEditor;
         private readonly ConnectionEditor _connectionEditor;
 
         private Map _map;
@@ -47,22 +49,24 @@ namespace Kermalis.MapEditor.UI
 
         public MainWindow()
         {
+            SaveLayoutCommand = ReactiveCommand.Create(SaveLayout);
             SaveMapCommand = ReactiveCommand.Create(SaveMap);
             OpenBlocksetEditorCommand = ReactiveCommand.Create(OpenBlocksetEditor);
 
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            _mapEditor = this.FindControl<MapEditor>("MapEditor");
+            _layoutEditor = this.FindControl<LayoutEditor>("LayoutEditor");
             _connectionEditor = this.FindControl<ConnectionEditor>("ConnectionEditor");
             OnMapChanged();
         }
 
         private void OnMapChanged()
         {
-            _map = Map.LoadOrGet(_selectedMap);
-            _mapEditor.SetMap(_map);
-            _connectionEditor.SetMap(_map);
+            Map map = _map = Map.LoadOrGet(_selectedMap);
+            Map.Layout ml = map.MapLayout;
+            _layoutEditor.SetLayout(ml);
+            _connectionEditor.SetMap(map);
         }
 
         private void OpenBlocksetEditor()
@@ -84,9 +88,12 @@ namespace Kermalis.MapEditor.UI
             _blocksetEditor = null;
         }
 
-        private void SaveMap()
+        private void SaveLayout()
         {
             _map.MapLayout.Save();
+        }
+        private void SaveMap()
+        {
             _map.Save();
         }
 
@@ -98,8 +105,9 @@ namespace Kermalis.MapEditor.UI
 
         public void Dispose()
         {
-            _mapEditor.Dispose();
+            _layoutEditor.Dispose();
             _connectionEditor.Dispose();
+            SaveLayoutCommand.Dispose();
             SaveMapCommand.Dispose();
             OpenBlocksetEditorCommand.Dispose();
             _blocksetEditor?.Close();

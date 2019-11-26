@@ -1,19 +1,19 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
-        x:Class="Kermalis.MapEditor.UI.MapEditor" Padding="2">
+        x:Class="Kermalis.MapEditor.UI.LayoutEditor" Padding="2">
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="4*" />
+      <ColumnDefinition Width="5*" />
       <ColumnDefinition Width="1*" />
     </Grid.ColumnDefinitions>
     <Border Grid.Column="0" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <ui:MapImage Name="MapBlocksImage">
+        <ui:LayoutImage Name="LayoutBlocksImage">
           <x:Arguments>
             <x:Boolean>False</x:Boolean>
           </x:Arguments>
-        </ui:MapImage>
+        </ui:LayoutImage>
       </ScrollViewer>
     </Border>
     <Border Grid.Column="1" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
@@ -26,11 +26,11 @@
           <TextBlock DockPanel.Dock="Top" Text="Border" />
           <Border Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-              <ui:MapImage Name="MapBorderBlocksImage">
+              <ui:LayoutImage Name="LayoutBorderBlocksImage">
                 <x:Arguments>
                   <x:Boolean>True</x:Boolean>
                 </x:Arguments>
-              </ui:MapImage>
+              </ui:LayoutImage>
             </ScrollViewer>
           </Border>
         </DockPanel>
