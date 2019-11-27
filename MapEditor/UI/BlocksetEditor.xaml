@@ -27,8 +27,8 @@
             <ComboBox.ItemTemplate>
               <DataTemplate>
                 <StackPanel Orientation="Horizontal">
-                  <TextBlock Text="{Binding Text}" />
                   <Image Source="{Binding Bitmap}" Margin="5,0" />
+                  <TextBlock Text="{Binding Text}" />
                 </StackPanel>
               </DataTemplate>
             </ComboBox.ItemTemplate>
@@ -37,8 +37,8 @@
             <ComboBox.ItemTemplate>
               <DataTemplate>
                 <StackPanel Orientation="Horizontal">
-                  <TextBlock Text="{Binding Text}" />
                   <Image Source="{Binding Bitmap}" Margin="5,0" />
+                  <TextBlock Text="{Binding Text}" />
                 </StackPanel>
               </DataTemplate>
             </ComboBox.ItemTemplate>
