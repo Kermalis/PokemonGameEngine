@@ -79,7 +79,7 @@ namespace Kermalis.MapEditor.Core
 
         internal void Save()
         {
-            using (var s = new StreamWriter(File.OpenWrite(_path)))
+            using (var s = new StreamWriter(File.Create(_path)))
             {
                 for (int i = 0; i < _entries.Count; i++)
                 {

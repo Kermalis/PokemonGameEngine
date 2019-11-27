@@ -413,7 +413,7 @@ namespace Kermalis.MapEditor.Core
 
         public void Save()
         {
-            using (var w = new EndianBinaryWriter(File.OpenWrite(Path.Combine(_blocksetPath, Name + _blocksetExtension))))
+            using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_blocksetPath, Name + _blocksetExtension))))
             {
                 ushort count = (ushort)Blocks.Count;
                 w.Write(count);
