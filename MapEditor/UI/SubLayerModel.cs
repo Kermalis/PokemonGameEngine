@@ -21,7 +21,7 @@ namespace Kermalis.MapEditor.UI
             _block = block;
             _eLayerNum = eLayerNum;
             _subLayerNum = subLayerNum;
-            Text = $"Sub-Layer {_subLayerNum:D3}";
+            Text = $"Sub-Layer {_subLayerNum:X2}";
             Bitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
             UpdateBitmap();
         }

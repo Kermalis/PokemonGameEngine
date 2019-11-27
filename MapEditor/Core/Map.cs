@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.EndianBinaryIO;
 using Kermalis.MapEditor.Util;
+using Kermalis.PokemonGameEngine.Overworld;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,7 +47,8 @@ namespace Kermalis.MapEditor.Core
                 public readonly int X;
                 public readonly int Y;
 
-                public byte Behavior;
+                public byte Elevation;
+                public LayoutBlockPassage Passage;
                 public Blockset.Block BlocksetBlock;
 
                 public Block(bool isBorderBlock, int x, int y, EndianBinaryReader r)
@@ -55,7 +57,8 @@ namespace Kermalis.MapEditor.Core
                     Y = y;
                     if (!isBorderBlock)
                     {
-                        Behavior = r.ReadByte();
+                        Elevation = r.ReadByte();
+                        Passage = r.ReadEnum<LayoutBlockPassage>();
                     }
                     BlocksetBlock = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
                 }
@@ -70,7 +73,8 @@ namespace Kermalis.MapEditor.Core
                 {
                     if (!isBorderBlock)
                     {
-                        w.Write(Behavior);
+                        w.Write(Elevation);
+                        w.Write(Passage);
                     }
                     w.Write(BlocksetBlock.Parent.Id);
                     w.Write(BlocksetBlock.Id);

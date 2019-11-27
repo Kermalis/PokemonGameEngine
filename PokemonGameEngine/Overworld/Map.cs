@@ -32,12 +32,14 @@ namespace Kermalis.PokemonGameEngine.Overworld
         {
             private sealed class Block
             {
-                public readonly byte Behavior;
+                public readonly byte Elevation;
+                public readonly LayoutBlockPassage Passage;
                 public readonly Blockset.Block BlocksetBlock;
 
                 public Block(EndianBinaryReader r)
                 {
-                    Behavior = r.ReadByte();
+                    Elevation = r.ReadByte();
+                    Passage = r.ReadEnum<LayoutBlockPassage>();
                     BlocksetBlock = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
                 }
             }

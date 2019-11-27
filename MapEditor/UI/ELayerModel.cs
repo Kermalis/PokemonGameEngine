@@ -17,7 +17,7 @@ namespace Kermalis.MapEditor.UI
         internal ELayerModel(byte eLayerNum)
         {
             _eLayerNum = eLayerNum;
-            Text = $"E-Layer {_eLayerNum:D3}";
+            Text = $"E-Layer {_eLayerNum:X2}";
             Bitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
         }
 

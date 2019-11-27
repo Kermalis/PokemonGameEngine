@@ -26,6 +26,7 @@ namespace Kermalis.MapEditor.UI
 #pragma warning restore IDE0069 // Disposable fields should be disposed
 
         private readonly LayoutEditor _layoutEditor;
+        private readonly MovementEditor _movementEditor;
         private readonly ConnectionEditor _connectionEditor;
 
         private Map _map;
@@ -57,6 +58,7 @@ namespace Kermalis.MapEditor.UI
             AvaloniaXamlLoader.Load(this);
 
             _layoutEditor = this.FindControl<LayoutEditor>("LayoutEditor");
+            _movementEditor = this.FindControl<MovementEditor>("MovementEditor");
             _connectionEditor = this.FindControl<ConnectionEditor>("ConnectionEditor");
             OnMapChanged();
         }
@@ -66,6 +68,7 @@ namespace Kermalis.MapEditor.UI
             Map map = _map = Map.LoadOrGet(_selectedMap);
             Map.Layout ml = map.MapLayout;
             _layoutEditor.SetLayout(ml);
+            _movementEditor.SetLayout(ml);
             _connectionEditor.SetMap(map);
         }
 
@@ -106,6 +109,7 @@ namespace Kermalis.MapEditor.UI
         public void Dispose()
         {
             _layoutEditor.Dispose();
+            _movementEditor.Dispose();
             _connectionEditor.Dispose();
             SaveLayoutCommand.Dispose();
             SaveMapCommand.Dispose();

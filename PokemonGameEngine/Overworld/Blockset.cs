@@ -25,15 +25,15 @@ namespace Kermalis.PokemonGameEngine.Overworld
             }
 
             public readonly Blockset Parent;
+            public readonly BlocksetBlockBehavior Behavior;
             public readonly Dictionary<byte, Tile[]> TopLeft;
             public readonly Dictionary<byte, Tile[]> TopRight;
             public readonly Dictionary<byte, Tile[]> BottomLeft;
             public readonly Dictionary<byte, Tile[]> BottomRight;
-            public readonly ushort Behavior;
 
             public Block(Blockset parent, EndianBinaryReader r)
             {
-                Behavior = r.ReadUInt16();
+                Behavior = r.ReadEnum<BlocksetBlockBehavior>();
                 Dictionary<byte, Tile[]> Read()
                 {
                     var eLayers = new Dictionary<byte, Tile[]>(byte.MaxValue + 1);
