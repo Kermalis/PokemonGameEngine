@@ -22,7 +22,7 @@ namespace Kermalis.MapEditor.UI
                 {
                     RemoveLayoutEvents();
                     _layout = value;
-                    _layout.OnDrew += MapLayout_OnDrew;
+                    value.OnDrew += MapLayout_OnDrew;
                     InvalidateMeasure();
                     InvalidateVisual();
                 }

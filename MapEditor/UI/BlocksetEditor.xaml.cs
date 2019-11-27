@@ -51,7 +51,7 @@ namespace Kermalis.MapEditor.UI
                 {
                     _selectedSubLayerIndex = value;
                     OnPropertyChanged(nameof(SelectedSubLayerIndex));
-                    SetSubLayer((byte)_selectedSubLayerIndex);
+                    SetSubLayer((byte)value);
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace Kermalis.MapEditor.UI
                 {
                     _selectedELayerIndex = value;
                     OnPropertyChanged(nameof(SelectedELayerIndex));
-                    SetELayer((byte)_selectedELayerIndex);
+                    SetELayer((byte)value);
                 }
             }
         }
