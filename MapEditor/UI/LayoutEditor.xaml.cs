@@ -3,14 +3,39 @@ using Avalonia.Markup.Xaml;
 using Kermalis.MapEditor.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class LayoutEditor : UserControl, IDisposable
+    public sealed class LayoutEditor : UserControl, IDisposable, INotifyPropertyChanged
     {
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+        public new event PropertyChangedEventHandler PropertyChanged;
+
 #pragma warning disable IDE0069 // Disposable fields should be disposed
-        private readonly Blockset _blockset;
+        private Blockset _blockset;
 #pragma warning restore IDE0069 // Disposable fields should be disposed
+        private string _selectedBlockset;
+        public string SelectedBlockset
+        {
+            get => _selectedBlockset;
+            set
+            {
+                if (_selectedBlockset != value)
+                {
+                    _selectedBlockset = value;
+                    RemoveBlocksetEvents();
+                    _blockset = Blockset.LoadOrGet(value);
+                    _blockset.OnChanged += Blockset_OnChanged;
+                    _blockset.OnRemoved += Blockset_OnRemoved;
+                    _blocksetImage.Blockset = _blockset;
+                    OnPropertyChanged(nameof(SelectedBlockset));
+                }
+            }
+        }
 
         private readonly BlocksetImage _blocksetImage;
         private readonly LayoutImage _layoutBlocksImage;
@@ -20,11 +45,6 @@ namespace Kermalis.MapEditor.UI
 
         public LayoutEditor()
         {
-            const string defaultBlocksetName = "TestBlocksetO"; // TODO: We will have a ComboBox with the available blocksets, and if there are none, it will prompt for a name
-            _blockset = Blockset.IsValidName(defaultBlocksetName) ? new Blockset(defaultBlocksetName) : Blockset.LoadOrGet(defaultBlocksetName);
-            _blockset.OnChanged += Blockset_OnChanged;
-            _blockset.OnRemoved += Blockset_OnRemoved;
-
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
@@ -32,7 +52,7 @@ namespace Kermalis.MapEditor.UI
             _layoutBorderBlocksImage = this.FindControl<LayoutImage>("LayoutBorderBlocksImage");
             _blocksetImage = this.FindControl<BlocksetImage>("BlocksetImage");
             _blocksetImage.SelectionCompleted += BlocksetImage_SelectionCompleted;
-            _blocksetImage.Blockset = _blockset;
+            SelectedBlockset = Blockset.Ids[0];
         }
 
         internal void SetLayout(Map.Layout layout)
@@ -87,8 +107,11 @@ namespace Kermalis.MapEditor.UI
 
         private void RemoveBlocksetEvents()
         {
-            _blockset.OnChanged -= Blockset_OnChanged;
-            _blockset.OnRemoved -= Blockset_OnRemoved;
+            if (_blockset != null)
+            {
+                _blockset.OnChanged -= Blockset_OnChanged;
+                _blockset.OnRemoved -= Blockset_OnRemoved;
+            }
         }
         public void Dispose()
         {

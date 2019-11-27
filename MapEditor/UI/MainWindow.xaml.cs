@@ -30,19 +30,21 @@ namespace Kermalis.MapEditor.UI
         private readonly ConnectionEditor _connectionEditor;
 
         private Map _map;
-        private string _selectedMap = null;
+        private string _selectedMap;
         public string SelectedMap
         {
             get => _selectedMap;
             set
             {
-                if (value != _selectedMap)
+                if (IsInitialized && value != _selectedMap)
                 {
                     _selectedMap = value;
-                    if (IsInitialized)
-                    {
-                        OnMapChanged();
-                    }
+                    var map = Map.LoadOrGet(value);
+                    _map = map;
+                    Map.Layout ml = map.MapLayout;
+                    _layoutEditor.SetLayout(ml);
+                    _movementEditor.SetLayout(ml);
+                    _connectionEditor.SetMap(map);
                     OnPropertyChanged(nameof(SelectedMap));
                 }
             }
@@ -60,16 +62,7 @@ namespace Kermalis.MapEditor.UI
             _layoutEditor = this.FindControl<LayoutEditor>("LayoutEditor");
             _movementEditor = this.FindControl<MovementEditor>("MovementEditor");
             _connectionEditor = this.FindControl<ConnectionEditor>("ConnectionEditor");
-            OnMapChanged();
-        }
-
-        private void OnMapChanged()
-        {
-            Map map = _map = Map.LoadOrGet(_selectedMap);
-            Map.Layout ml = map.MapLayout;
-            _layoutEditor.SetLayout(ml);
-            _movementEditor.SetLayout(ml);
-            _connectionEditor.SetMap(map);
+            SelectedMap = Map.Ids[0];
         }
 
         private void OpenBlocksetEditor()
@@ -105,7 +98,6 @@ namespace Kermalis.MapEditor.UI
             Dispose();
             return base.HandleClosing();
         }
-
         public void Dispose()
         {
             _layoutEditor.Dispose();

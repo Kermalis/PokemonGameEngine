@@ -23,8 +23,7 @@ namespace Kermalis.MapEditor.UI
         public new event PropertyChangedEventHandler PropertyChanged;
 
 #pragma warning disable IDE0069 // Disposable fields should be disposed
-        private readonly Tileset _tileset;
-        private readonly Blockset _blockset;
+        private Blockset _blockset;
 #pragma warning restore IDE0069 // Disposable fields should be disposed
         private readonly TileLayerImage _tileLayerImage;
         private readonly TilesetImage _tilesetImage;
@@ -39,6 +38,38 @@ namespace Kermalis.MapEditor.UI
 
         private readonly WriteableBitmap _clipboardBitmap;
         private readonly Image _clipboardImage;
+
+        private string _selectedBlockset;
+        public string SelectedBlockset
+        {
+            get => _selectedBlockset;
+            set
+            {
+                if (_selectedBlockset != value)
+                {
+                    _selectedBlockset = value;
+                    RemoveBlocksetEvents();
+                    _blockset = Blockset.LoadOrGet(value);
+                    _blockset.OnChanged += Blockset_OnChanged;
+                    _blocksetImage.Blockset = _blockset;
+                    OnPropertyChanged(nameof(SelectedBlockset));
+                }
+            }
+        }
+        private string _selectedTileset;
+        public string SelectedTileset
+        {
+            get => _selectedTileset;
+            set
+            {
+                if (_selectedTileset != value)
+                {
+                    _selectedTileset = value;
+                    _tilesetImage.Tileset = Tileset.LoadOrGet(value);
+                    OnPropertyChanged(nameof(SelectedTileset));
+                }
+            }
+        }
 
         public ObservableCollection<SubLayerModel> SubLayers { get; }
         private int _selectedSubLayerIndex = -1;
@@ -114,10 +145,6 @@ namespace Kermalis.MapEditor.UI
             ClearBlockCommand = ReactiveCommand.Create(ClearBlock);
             RemoveBlockCommand = ReactiveCommand.Create(RemoveBlock);
 
-            _tileset = Tileset.LoadOrGet("TestTilesO");
-            _blockset = Blockset.LoadOrGet("TestBlocksetO");
-            _blockset.OnChanged += Blockset_OnChanged;
-
             _clipboardBitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
 
             SubLayers = new ObservableCollection<SubLayerModel>(new List<SubLayerModel>(byte.MaxValue + 1));
@@ -148,11 +175,11 @@ namespace Kermalis.MapEditor.UI
 
             _tilesetImage = this.FindControl<TilesetImage>("TilesetImage");
             _tilesetImage.SelectionCompleted += TilesetImage_SelectionCompleted;
-            _tilesetImage.Tileset = _tileset;
 
             _blocksetImage = this.FindControl<BlocksetImage>("BlocksetImage");
             _blocksetImage.SelectionCompleted += BlocksetImage_SelectionCompleted;
-            _blocksetImage.Blockset = _blockset;
+            SelectedBlockset = Blockset.Ids[0];
+            SelectedTileset = Tileset.Ids[0];
         }
 
         private void SaveBlockset()
@@ -438,10 +465,12 @@ namespace Kermalis.MapEditor.UI
             Dispose();
             return base.HandleClosing();
         }
-
         private void RemoveBlocksetEvents()
         {
-            _blockset.OnChanged -= Blockset_OnChanged;
+            if (_blockset != null)
+            {
+                _blockset.OnChanged -= Blockset_OnChanged;
+            }
         }
         public void Dispose()
         {
