@@ -34,6 +34,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         Sign_AutoStartScript,
         Warp_WalkSouthOnExit,
         Warp_Teleport,
+        WildBattle,
         Surf,
         Waterfall,
         Ledge_S,

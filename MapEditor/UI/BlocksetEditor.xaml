@@ -47,12 +47,18 @@
       </DockPanel>
     </Border>
     <Border Margin="0,2" Padding="2" Grid.Row="1" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
-      <StackPanel Spacing="5" Orientation="Horizontal">
-        <Button Content="Save Blockset" Command="{Binding SaveBlocksetCommand}" VerticalAlignment="Center" />
-        <Button Content="Add Block" Command="{Binding AddBlockCommand}" VerticalAlignment="Center" />
-        <Button Content="Clear Block" Command="{Binding ClearBlockCommand}" VerticalAlignment="Center" />
-        <Button Content="Remove Block" Command="{Binding RemoveBlockCommand}" VerticalAlignment="Center" />
-      </StackPanel>
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Left" Spacing="5" Orientation="Horizontal" VerticalAlignment="Center">
+          <Button Content="Save Blockset" Command="{Binding SaveBlocksetCommand}" VerticalAlignment="Center" />
+          <Button Content="Add Block" Command="{Binding AddBlockCommand}" VerticalAlignment="Center" />
+          <Button Content="Clear Block" Command="{Binding ClearBlockCommand}" VerticalAlignment="Center" />
+          <Button Content="Remove Block" Command="{Binding RemoveBlockCommand}" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Right" Spacing="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+          <TextBlock Text="Behavior:" VerticalAlignment="Center" />
+          <ComboBox Items="{Binding Behaviors}" SelectedItem="{Binding SelectedBehavior}" VerticalAlignment="Center" />
+        </StackPanel>
+      </DockPanel>
     </Border>
     <Border Grid.Row="2" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <Grid>
