@@ -52,6 +52,14 @@ namespace Kermalis.PokemonGameEngine.Overworld
         Blocked_SW,
         Blocked_SE,
         Blocked_NW,
-        Blocked_NE
+        Blocked_NE,
+        Spin_S,
+        Spin_N,
+        Spin_W,
+        Spin_E,
+        Spin_SW,
+        Spin_SE,
+        Spin_NW,
+        Spin_NE
     }
 }
