@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Platform;
-using Kermalis.PokemonBattleEngine;
+using Kermalis.PokemonBattleEngine.Utils;
 using System.IO;
 using System.Reflection;
 
@@ -31,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.Util
         public static string WorkingDirectory { get; private set; }
         public static void SetWorkingDirectory(string workingDirectory)
         {
-            PBEUtils.CreateDatabaseConnection(workingDirectory);
+            PBEUtils.InitEngine(workingDirectory);
             WorkingDirectory = workingDirectory;
         }
     }
