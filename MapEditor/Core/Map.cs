@@ -28,14 +28,14 @@ namespace Kermalis.MapEditor.Core
             public Connection() { }
             public Connection(EndianBinaryReader r)
             {
-                Dir = (Direction)r.ReadByte();
+                Dir = r.ReadEnum<Direction>();
                 MapId = r.ReadInt32();
                 Offset = r.ReadInt32();
             }
 
             public void Write(EndianBinaryWriter w)
             {
-                w.Write((byte)Dir);
+                w.Write(Dir);
                 w.Write(MapId);
                 w.Write(Offset);
             }
@@ -334,18 +334,20 @@ namespace Kermalis.MapEditor.Core
                     w.Write(Height);
                     for (int y = 0; y < Height; y++)
                     {
+                        Block[] bY = Blocks[y];
                         for (int x = 0; x < Width; x++)
                         {
-                            Blocks[y][x].Write(w);
+                            bY[x].Write(w);
                         }
                     }
                     w.Write(BorderWidth);
                     w.Write(BorderHeight);
                     for (int y = 0; y < BorderHeight; y++)
                     {
+                        Block[] bY = BorderBlocks[y];
                         for (int x = 0; x < BorderWidth; x++)
                         {
-                            BorderBlocks[y][x].Write(w);
+                            bY[x].Write(w);
                         }
                     }
                 }

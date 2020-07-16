@@ -23,7 +23,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
             public Connection(EndianBinaryReader r)
             {
-                Dir = (Direction)r.ReadByte();
+                Dir = r.ReadEnum<Direction>();
                 MapId = r.ReadInt32();
                 Offset = r.ReadInt32();
             }
