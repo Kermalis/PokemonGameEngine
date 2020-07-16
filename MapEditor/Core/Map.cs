@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.EndianBinaryIO;
 using Kermalis.MapEditor.Util;
+using Kermalis.PokemonGameEngine.Overworld;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,17 +47,16 @@ namespace Kermalis.MapEditor.Core
                 public readonly int X;
                 public readonly int Y;
 
-                public byte Behavior;
+                public byte Elevation;
+                public LayoutBlockPassage Passage;
                 public Blockset.Block BlocksetBlock;
 
-                public Block(bool isBorderBlock, int x, int y, EndianBinaryReader r)
+                public Block(int x, int y, EndianBinaryReader r)
                 {
                     X = x;
                     Y = y;
-                    if (!isBorderBlock)
-                    {
-                        Behavior = r.ReadByte();
-                    }
+                    Elevation = r.ReadByte();
+                    Passage = r.ReadEnum<LayoutBlockPassage>();
                     BlocksetBlock = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
                 }
                 public Block(int x, int y, Blockset.Block defaultBlock)
@@ -66,12 +66,10 @@ namespace Kermalis.MapEditor.Core
                     BlocksetBlock = defaultBlock;
                 }
 
-                public void Write(bool isBorderBlock, EndianBinaryWriter w)
+                public void Write(EndianBinaryWriter w)
                 {
-                    if (!isBorderBlock)
-                    {
-                        w.Write(Behavior);
-                    }
+                    w.Write(Elevation);
+                    w.Write(Passage);
                     w.Write(BlocksetBlock.Parent.Id);
                     w.Write(BlocksetBlock.Id);
                 }
@@ -96,7 +94,7 @@ namespace Kermalis.MapEditor.Core
             {
                 using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(_layoutPath, name + _layoutExtension))))
                 {
-                    Block[][] Create(bool borderBlocks, int w, int h)
+                    Block[][] Create(int w, int h)
                     {
                         var arr = new Block[h][];
                         for (int y = 0; y < h; y++)
@@ -104,14 +102,14 @@ namespace Kermalis.MapEditor.Core
                             var arrY = new Block[w];
                             for (int x = 0; x < w; x++)
                             {
-                                arrY[x] = new Block(borderBlocks, x, y, r);
+                                arrY[x] = new Block(x, y, r);
                             }
                             arr[y] = arrY;
                         }
                         return arr;
                     }
-                    Blocks = Create(false, Width = r.ReadInt32(), Height = r.ReadInt32());
-                    BorderBlocks = Create(true, BorderWidth = r.ReadByte(), BorderHeight = r.ReadByte());
+                    Blocks = Create(Width = r.ReadInt32(), Height = r.ReadInt32());
+                    BorderBlocks = Create(BorderWidth = r.ReadByte(), BorderHeight = r.ReadByte());
                 }
                 Name = name;
                 Id = id;
@@ -338,7 +336,7 @@ namespace Kermalis.MapEditor.Core
                     {
                         for (int x = 0; x < Width; x++)
                         {
-                            Blocks[y][x].Write(false, w);
+                            Blocks[y][x].Write(w);
                         }
                     }
                     w.Write(BorderWidth);
@@ -347,7 +345,7 @@ namespace Kermalis.MapEditor.Core
                     {
                         for (int x = 0; x < BorderWidth; x++)
                         {
-                            BorderBlocks[y][x].Write(true, w);
+                            BorderBlocks[y][x].Write(w);
                         }
                     }
                 }

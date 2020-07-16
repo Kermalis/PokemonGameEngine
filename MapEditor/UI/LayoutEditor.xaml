@@ -1,5 +1,6 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:core="clr-namespace:Kermalis.MapEditor.Core;assembly=MapEditor"
         xmlns:ui="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
         x:Class="Kermalis.MapEditor.UI.LayoutEditor" Padding="2">
   <Grid>
@@ -36,6 +37,7 @@
         </DockPanel>
         <DockPanel Grid.Row="1">
           <TextBlock DockPanel.Dock="Top" Text="Blockset" />
+          <ComboBox DockPanel.Dock="Top" Items="{x:Static core:Blockset.Ids}" SelectedItem="{Binding SelectedBlockset}" />
           <Border Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
               <ui:BlocksetImage Name="BlocksetImage">

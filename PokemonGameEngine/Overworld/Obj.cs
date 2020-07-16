@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Util;
+using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Overworld
@@ -33,11 +34,14 @@ namespace Kermalis.PokemonGameEngine.Overworld
         public byte Elevation;
         public Map Map;
 
-        public float MovementTimer;
+        public bool CanMove = true; // Not too thought-out, so will probably end up removing when scripting/waterfall/currents/spin tiles etc are implemented
+        private float _movementTimer;
         private float _movementSpeed; // TODO: Framerate
         private const float _diagonalMovementSpeedModifier = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
-        private bool _isMoving;
+        private const float _blockedMovementSpeedModifier = 0.8f;
         private bool _leg;
+        private int PrevX;
+        private int PrevY;
         public int XOffset;
         public int YOffset;
 
@@ -59,145 +63,270 @@ namespace Kermalis.PokemonGameEngine.Overworld
             LoadedObjs.Add(this);
         }
 
-        public void Move(FacingDirection facing, bool run)
+        public bool Move(FacingDirection facing, bool run)
         {
-            MovementTimer = 1;
+            CanMove = false;
+            _movementTimer = 1;
             _movementSpeed = run ? 0.25f : 0.1f;
             _leg = !_leg;
             Facing = facing;
-            // TODO: Collisions, map crossing
+            PrevX = X;
+            PrevY = Y;
+            bool success = false;
+            // TODO: Elevations, map crossing, ledges
+            Map.Layout.Block b = Map.GetBlock(X, Y);
+            BlocksetBlockBehavior b_behavior = b.BlocksetBlock.Behavior;
             switch (facing)
             {
                 case FacingDirection.South:
                 {
-                    _isMoving = true;
-                    Y++;
-                    YOffset = -15;
+                    if (b_behavior != BlocksetBlockBehavior.Blocked_S)
+                    {
+                        Map.Layout.Block b_s = Map.GetBlock(X, Y + 1);
+                        if ((b_s.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
+                        {
+                            BlocksetBlockBehavior b_s_behavior = b_s.BlocksetBlock.Behavior;
+                            if (b_s_behavior != BlocksetBlockBehavior.Surf && b_s_behavior != BlocksetBlockBehavior.Blocked_N)
+                            {
+                                success = true;
+                                Y++;
+                            }
+                        }
+                    }
                     break;
                 }
                 case FacingDirection.North:
                 {
-                    _isMoving = true;
-                    Y--;
-                    YOffset = 15;
+                    if (b_behavior != BlocksetBlockBehavior.Blocked_N)
+                    {
+                        Map.Layout.Block b_n = Map.GetBlock(X, Y - 1);
+                        if ((b_n.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
+                        {
+                            BlocksetBlockBehavior b_n_behavior = b_n.BlocksetBlock.Behavior;
+                            if (b_n_behavior != BlocksetBlockBehavior.Surf && b_n_behavior != BlocksetBlockBehavior.Blocked_S)
+                            {
+                                success = true;
+                                Y--;
+                            }
+                        }
+                    }
                     break;
                 }
                 case FacingDirection.West:
                 {
-                    _isMoving = true;
-                    X--;
-                    XOffset = 15;
+                    if (b_behavior != BlocksetBlockBehavior.Blocked_W)
+                    {
+                        Map.Layout.Block b_w = Map.GetBlock(X - 1, Y);
+                        if ((b_w.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
+                        {
+                            BlocksetBlockBehavior b_w_behavior = b_w.BlocksetBlock.Behavior;
+                            if (b_w_behavior != BlocksetBlockBehavior.Surf && b_w_behavior != BlocksetBlockBehavior.Blocked_E)
+                            {
+                                success = true;
+                                X--;
+                            }
+                        }
+                    }
                     break;
                 }
                 case FacingDirection.East:
                 {
-                    _isMoving = true;
-                    X++;
-                    XOffset = -15;
+                    if (b_behavior != BlocksetBlockBehavior.Blocked_E)
+                    {
+                        Map.Layout.Block b_e = Map.GetBlock(X + 1, Y);
+                        if ((b_e.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
+                        {
+                            BlocksetBlockBehavior b_e_behavior = b_e.BlocksetBlock.Behavior;
+                            if (b_e_behavior != BlocksetBlockBehavior.Surf && b_e_behavior != BlocksetBlockBehavior.Blocked_W)
+                            {
+                                success = true;
+                                X++;
+                            }
+                        }
+                    }
                     break;
                 }
                 case FacingDirection.Southwest:
                 {
-                    _movementSpeed *= _diagonalMovementSpeedModifier;
-                    _isMoving = true;
-                    X--;
-                    Y++;
-                    XOffset = 15;
-                    YOffset = -15;
+                    if (b_behavior != BlocksetBlockBehavior.Blocked_S && b_behavior != BlocksetBlockBehavior.Blocked_W && b_behavior != BlocksetBlockBehavior.Blocked_SW)
+                    {
+                        Map.Layout.Block b_sw = Map.GetBlock(X - 1, Y + 1);
+                        if ((b_sw.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
+                        {
+                            BlocksetBlockBehavior b_sw_behavior = b_sw.BlocksetBlock.Behavior;
+                            if (b_sw_behavior != BlocksetBlockBehavior.Surf && b_sw_behavior != BlocksetBlockBehavior.Blocked_N && b_sw_behavior != BlocksetBlockBehavior.Blocked_E && b_sw_behavior != BlocksetBlockBehavior.Blocked_NE)
+                            {
+                                Map.Layout.Block b_w = Map.GetBlock(X - 1, Y);
+                                if ((b_w.Passage & LayoutBlockPassage.SoutheastPassage) != 0)
+                                {
+                                    BlocksetBlockBehavior b_w_behavior = b_w.BlocksetBlock.Behavior;
+                                    if (b_w_behavior != BlocksetBlockBehavior.Blocked_E && b_w_behavior != BlocksetBlockBehavior.Blocked_S && b_w_behavior != BlocksetBlockBehavior.Blocked_SE)
+                                    {
+                                        Map.Layout.Block b_s = Map.GetBlock(X, Y + 1);
+                                        if ((b_s.Passage & LayoutBlockPassage.NorthwestPassage) != 0)
+                                        {
+                                            BlocksetBlockBehavior b_s_behavior = b_s.BlocksetBlock.Behavior;
+                                            if (b_s_behavior != BlocksetBlockBehavior.Blocked_N && b_s_behavior != BlocksetBlockBehavior.Blocked_W && b_s_behavior != BlocksetBlockBehavior.Blocked_NW)
+                                            {
+                                                success = true;
+                                                X--;
+                                                Y++;
+                                                _movementSpeed *= _diagonalMovementSpeedModifier;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     break;
                 }
                 case FacingDirection.Southeast:
                 {
-                    _movementSpeed *= _diagonalMovementSpeedModifier;
-                    _isMoving = true;
-                    X++;
-                    Y++;
-                    XOffset = -15;
-                    YOffset = -15;
+                    if (b_behavior != BlocksetBlockBehavior.Blocked_S && b_behavior != BlocksetBlockBehavior.Blocked_E && b_behavior != BlocksetBlockBehavior.Blocked_SE)
+                    {
+                        Map.Layout.Block b_se = Map.GetBlock(X + 1, Y + 1);
+                        if ((b_se.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
+                        {
+                            BlocksetBlockBehavior b_se_behavior = b_se.BlocksetBlock.Behavior;
+                            if (b_se_behavior != BlocksetBlockBehavior.Surf && b_se_behavior != BlocksetBlockBehavior.Blocked_N && b_se_behavior != BlocksetBlockBehavior.Blocked_W && b_se_behavior != BlocksetBlockBehavior.Blocked_NW)
+                            {
+                                Map.Layout.Block b_e = Map.GetBlock(X + 1, Y);
+                                if ((b_e.Passage & LayoutBlockPassage.SouthwestPassage) != 0)
+                                {
+                                    BlocksetBlockBehavior b_e_behavior = b_e.BlocksetBlock.Behavior;
+                                    if (b_e_behavior != BlocksetBlockBehavior.Blocked_W && b_e_behavior != BlocksetBlockBehavior.Blocked_S && b_e_behavior != BlocksetBlockBehavior.Blocked_SW)
+                                    {
+                                        Map.Layout.Block b_s = Map.GetBlock(X, Y + 1);
+                                        if ((b_s.Passage & LayoutBlockPassage.NortheastPassage) != 0)
+                                        {
+                                            BlocksetBlockBehavior b_s_behavior = b_s.BlocksetBlock.Behavior;
+                                            if (b_s_behavior != BlocksetBlockBehavior.Blocked_N && b_s_behavior != BlocksetBlockBehavior.Blocked_E && b_s_behavior != BlocksetBlockBehavior.Blocked_NE)
+                                            {
+                                                success = true;
+                                                X++;
+                                                Y++;
+                                                _movementSpeed *= _diagonalMovementSpeedModifier;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     break;
                 }
                 case FacingDirection.Northwest:
                 {
-                    _movementSpeed *= _diagonalMovementSpeedModifier;
-                    _isMoving = true;
-                    X--;
-                    Y--;
-                    XOffset = 15;
-                    YOffset = 15;
+                    if (b_behavior != BlocksetBlockBehavior.Blocked_N && b_behavior != BlocksetBlockBehavior.Blocked_W && b_behavior != BlocksetBlockBehavior.Blocked_NW)
+                    {
+                        Map.Layout.Block b_nw = Map.GetBlock(X - 1, Y - 1);
+                        if ((b_nw.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
+                        {
+                            BlocksetBlockBehavior b_nw_behavior = b_nw.BlocksetBlock.Behavior;
+                            if (b_nw_behavior != BlocksetBlockBehavior.Surf && b_nw_behavior != BlocksetBlockBehavior.Blocked_S && b_nw_behavior != BlocksetBlockBehavior.Blocked_E && b_nw_behavior != BlocksetBlockBehavior.Blocked_SE)
+                            {
+                                Map.Layout.Block b_w = Map.GetBlock(X - 1, Y);
+                                if ((b_w.Passage & LayoutBlockPassage.NortheastPassage) != 0)
+                                {
+                                    BlocksetBlockBehavior b_w_behavior = b_w.BlocksetBlock.Behavior;
+                                    if (b_w_behavior != BlocksetBlockBehavior.Blocked_E && b_w_behavior != BlocksetBlockBehavior.Blocked_N && b_w_behavior != BlocksetBlockBehavior.Blocked_NE)
+                                    {
+                                        Map.Layout.Block b_n = Map.GetBlock(X, Y - 1);
+                                        if ((b_n.Passage & LayoutBlockPassage.SouthwestPassage) != 0)
+                                        {
+                                            BlocksetBlockBehavior b_n_behavior = b_n.BlocksetBlock.Behavior;
+                                            if (b_n_behavior != BlocksetBlockBehavior.Blocked_S && b_n_behavior != BlocksetBlockBehavior.Blocked_W && b_n_behavior != BlocksetBlockBehavior.Blocked_SW)
+                                            {
+                                                success = true;
+                                                X--;
+                                                Y--;
+                                                _movementSpeed *= _diagonalMovementSpeedModifier;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     break;
                 }
                 case FacingDirection.Northeast:
                 {
-                    _movementSpeed *= _diagonalMovementSpeedModifier;
-                    _isMoving = true;
-                    X++;
-                    Y--;
-                    XOffset = -15;
-                    YOffset = 15;
+                    if (b_behavior != BlocksetBlockBehavior.Blocked_N && b_behavior != BlocksetBlockBehavior.Blocked_E && b_behavior != BlocksetBlockBehavior.Blocked_NE)
+                    {
+                        Map.Layout.Block b_ne = Map.GetBlock(X + 1, Y - 1);
+                        if ((b_ne.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
+                        {
+                            BlocksetBlockBehavior b_ne_behavior = b_ne.BlocksetBlock.Behavior;
+                            if (b_ne_behavior != BlocksetBlockBehavior.Surf && b_ne_behavior != BlocksetBlockBehavior.Blocked_S && b_ne_behavior != BlocksetBlockBehavior.Blocked_W && b_ne_behavior != BlocksetBlockBehavior.Blocked_SW)
+                            {
+                                Map.Layout.Block b_e = Map.GetBlock(X + 1, Y);
+                                if ((b_e.Passage & LayoutBlockPassage.NorthwestPassage) != 0)
+                                {
+                                    BlocksetBlockBehavior b_e_behavior = b_e.BlocksetBlock.Behavior;
+                                    if (b_e_behavior != BlocksetBlockBehavior.Blocked_W && b_e_behavior != BlocksetBlockBehavior.Blocked_N && b_e_behavior != BlocksetBlockBehavior.Blocked_NW)
+                                    {
+                                        Map.Layout.Block b_n = Map.GetBlock(X, Y - 1);
+                                        if ((b_n.Passage & LayoutBlockPassage.SoutheastPassage) != 0)
+                                        {
+                                            BlocksetBlockBehavior b_n_behavior = b_n.BlocksetBlock.Behavior;
+                                            if (b_n_behavior != BlocksetBlockBehavior.Blocked_S && b_n_behavior != BlocksetBlockBehavior.Blocked_E && b_n_behavior != BlocksetBlockBehavior.Blocked_SE)
+                                            {
+                                                success = true;
+                                                X++;
+                                                Y--;
+                                                _movementSpeed *= _diagonalMovementSpeedModifier;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     break;
                 }
+                default: throw new ArgumentOutOfRangeException(nameof(facing));
+            }
+            if (!success)
+            {
+                _movementSpeed *= _blockedMovementSpeedModifier;
+            }
+            UpdateXYOffsets();
+            return success;
+        }
+        private void UpdateXYOffsets()
+        {
+            float t = _movementTimer;
+            XOffset = (int)(t * (PrevX - X) * 16);
+            YOffset = (int)(t * (PrevY - Y) * 16);
+        }
+        public void UpdateMovementTimer()
+        {
+            if (_movementTimer > 0)
+            {
+                _movementTimer -= _movementSpeed;
+                if (_movementTimer < 0)
+                {
+                    _movementTimer = 0;
+                    // TODO: Keep going for currents/waterfall/spin tiles
+                    CanMove = true;
+                }
+                UpdateXYOffsets();
             }
         }
-        public void UpdateMovement()
+        public void CopyXY(Obj other)
         {
-            if (MovementTimer > 0)
-            {
-                MovementTimer -= _movementSpeed;
-                if (MovementTimer < 0)
-                {
-                    MovementTimer = 0;
-                }
-            }
-            if (_isMoving)
-            {
-                switch (Facing)
-                {
-                    case FacingDirection.South:
-                    {
-                        YOffset = (int)(MovementTimer * -15);
-                        break;
-                    }
-                    case FacingDirection.North:
-                    {
-                        YOffset = (int)(MovementTimer * 15);
-                        break;
-                    }
-                    case FacingDirection.West:
-                    {
-                        XOffset = (int)(MovementTimer * 15);
-                        break;
-                    }
-                    case FacingDirection.East:
-                    {
-                        XOffset = (int)(MovementTimer * -15);
-                        break;
-                    }
-                    case FacingDirection.Southwest:
-                    {
-                        XOffset = (int)(MovementTimer * 15);
-                        YOffset = (int)(MovementTimer * -15);
-                        break;
-                    }
-                    case FacingDirection.Southeast:
-                    {
-                        XOffset = (int)(MovementTimer * -15);
-                        YOffset = (int)(MovementTimer * -15);
-                        break;
-                    }
-                    case FacingDirection.Northwest:
-                    {
-                        XOffset = (int)(MovementTimer * 15);
-                        YOffset = (int)(MovementTimer * 15);
-                        break;
-                    }
-                    case FacingDirection.Northeast:
-                    {
-                        XOffset = (int)(MovementTimer * -15);
-                        YOffset = (int)(MovementTimer * 15);
-                        break;
-                    }
-                }
-            }
+            CanMove = other.CanMove;
+            _movementTimer = other._movementTimer;
+            _movementSpeed = other._movementSpeed;
+            _leg = other._leg;
+            X = other.X;
+            Y = other.Y;
+            PrevX = other.PrevX;
+            PrevY = other.PrevY;
+            XOffset = other.XOffset;
+            YOffset = other.YOffset;
         }
 
         // TODO: Shadows, reflections
@@ -205,7 +334,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
         {
             bool ShowLegs()
             {
-                return MovementTimer != 0 && MovementTimer <= 0.6f;
+                float t = _movementTimer;
+                return t != 0 && t <= 0.6f;
             }
             byte f = (byte)Facing;
             int spriteNum = ShowLegs() ? (_leg ? f + 8 : f + 16) : f; // TODO: Fall-back to specific sprites if the target sprite doesn't exist

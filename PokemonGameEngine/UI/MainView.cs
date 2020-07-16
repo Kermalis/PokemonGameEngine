@@ -63,9 +63,9 @@ namespace Kermalis.PokemonGameEngine.UI
                     int count = list.Count;
                     for (int i = 0; i < count; i++)
                     {
-                        list[i].UpdateMovement();
+                        list[i].UpdateMovementTimer();
                     }
-                    if (Obj.Camera.MovementTimer == 0 && Obj.Player.MovementTimer == 0)
+                    if (Obj.Camera.CanMove && Obj.Player.CanMove)
                     {
                         bool down = InputManager.IsPressed(Key.Down);
                         bool up = InputManager.IsPressed(Key.Up);
@@ -113,8 +113,11 @@ namespace Kermalis.PokemonGameEngine.UI
                                 facing = Obj.FacingDirection.East;
                             }
                             bool run = InputManager.IsPressed(Key.B);
-                            Obj.Camera.Move(facing, run);
-                            Obj.Player.Move(facing, run);
+                            // TODO: Lock camera at a specific xy offset away from the player
+                            if (Obj.Player.Move(facing, run))
+                            {
+                                Obj.Camera.CopyXY(Obj.Player);
+                            }
                         }
                     }
                     Map.Draw(bmpAddress, RenderWidth, RenderHeight);

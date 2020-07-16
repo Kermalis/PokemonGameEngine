@@ -1,0 +1,31 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
+        x:Class="Kermalis.MapEditor.UI.MovementEditor" Padding="2">
+  <UserControl.Resources>
+    <ui:MovementImage Name="MovementImage" x:Key="MovementImage" />
+  </UserControl.Resources>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="5*" />
+      <ColumnDefinition Width="1*" />
+    </Grid.ColumnDefinitions>
+    <Border Grid.Column="0" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Content="{StaticResource MovementImage}" />
+    </Border>
+    <Border Grid.Column="1" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <StackPanel Orientation="Vertical" Spacing="5">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+          <RadioButton Content="Passage" IsChecked="{Binding ElementName=MovementImage, Path=PassageShown}" />
+          <RadioButton Content="Elevation" IsChecked="{Binding ElementName=MovementImage, Path=!PassageShown}" />
+        </StackPanel>
+        <CheckBox Content="Allow Occupancy" IsChecked="{Binding ElementName=MovementImage, Path=Passage, Converter={StaticResource MovementImage}, ConverterParameter=O}" IsVisible="{Binding ElementName=MovementImage, Path=PassageShown}" />
+        <CheckBox Content="Southwest Passage" IsChecked="{Binding ElementName=MovementImage, Path=Passage, Converter={StaticResource MovementImage}, ConverterParameter=SW}" IsVisible="{Binding ElementName=MovementImage, Path=PassageShown}" />
+        <CheckBox Content="Southeast Passage" IsChecked="{Binding ElementName=MovementImage, Path=Passage, Converter={StaticResource MovementImage}, ConverterParameter=SE}" IsVisible="{Binding ElementName=MovementImage, Path=PassageShown}" />
+        <CheckBox Content="Northwest Passage" IsChecked="{Binding ElementName=MovementImage, Path=Passage, Converter={StaticResource MovementImage}, ConverterParameter=NW}" IsVisible="{Binding ElementName=MovementImage, Path=PassageShown}" />
+        <CheckBox Content="Northeast Passage" IsChecked="{Binding ElementName=MovementImage, Path=Passage, Converter={StaticResource MovementImage}, ConverterParameter=NE}" IsVisible="{Binding ElementName=MovementImage, Path=PassageShown}" />
+        <NumericUpDown Minimum="0" Maximum="255" ClipValueToMinMax="True" Value="{Binding ElementName=MovementImage, Path=SelectedElevation}" IsVisible="{Binding ElementName=MovementImage, Path=!PassageShown}" />
+      </StackPanel>
+    </Border>
+  </Grid>
+</UserControl>

@@ -8,7 +8,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
 {
     internal sealed class Map
     {
-        private sealed class Connection
+        public sealed class Connection
         {
             public enum Direction : byte
             {
@@ -28,16 +28,18 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 Offset = r.ReadInt32();
             }
         }
-        private sealed class Layout
+        public sealed class Layout
         {
-            private sealed class Block
+            public sealed class Block
             {
-                public readonly byte Behavior;
+                public readonly byte Elevation;
+                public readonly LayoutBlockPassage Passage;
                 public readonly Blockset.Block BlocksetBlock;
 
                 public Block(EndianBinaryReader r)
                 {
-                    Behavior = r.ReadByte();
+                    Elevation = r.ReadByte();
+                    Passage = r.ReadEnum<LayoutBlockPassage>();
                     BlocksetBlock = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
                 }
             }
@@ -47,7 +49,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             private readonly Block[][] _blocks;
             private readonly byte _borderWidth;
             private readonly byte _borderHeight;
-            private readonly Blockset.Block[][] _borderBlocks;
+            private readonly Block[][] _borderBlocks;
 
             private Layout(string name)
             {
@@ -77,25 +79,17 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     _borderHeight = r.ReadByte();
                     if (_borderWidth == 0 || _borderHeight == 0)
                     {
-                        _borderBlocks = Array.Empty<Blockset.Block[]>();
+                        _borderBlocks = Array.Empty<Block[]>();
                     }
                     else
                     {
-                        _borderBlocks = new Blockset.Block[_borderHeight][];
+                        _borderBlocks = new Block[_borderHeight][];
                         for (int y = 0; y < _borderHeight; y++)
                         {
-                            Blockset.Block[] arrY;
-                            if (_borderWidth == 0)
+                            var arrY = new Block[_borderWidth];
+                            for (int x = 0; x < _borderWidth; x++)
                             {
-                                arrY = Array.Empty<Blockset.Block>();
-                            }
-                            else
-                            {
-                                arrY = new Blockset.Block[_borderWidth];
-                                for (int x = 0; x < _borderWidth; x++)
-                                {
-                                    arrY[x] = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
-                                }
+                                arrY[x] = new Block(r);
                             }
                             _borderBlocks[y] = arrY;
                         }
@@ -130,7 +124,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 return l;
             }
 
-            public Blockset.Block GetBlock(int x, int y, Connection[] connections)
+            public Block GetBlock(int x, int y, Connection[] connections)
             {
                 bool north = y < 0;
                 bool south = y >= _blocksHeight;
@@ -138,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 bool east = x >= _blocksWidth;
                 if (!north && !south && !west && !east)
                 {
-                    return _blocks[y][x].BlocksetBlock;
+                    return _blocks[y][x];
                 }
                 else
                 {
@@ -271,6 +265,11 @@ namespace Kermalis.PokemonGameEngine.Overworld
             return m;
         }
 
+        public Layout.Block GetBlock(int x, int y)
+        {
+            return _layout.GetBlock(x, y, _connections);
+        }
+
         public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             Obj camera = Obj.Camera;
@@ -296,7 +295,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 {
                     for (int blockX = startBlockX; blockX < endBlockX; blockX++)
                     {
-                        Blockset.Block b = cameraMap._layout.GetBlock(blockX, blockY, cameraMap._connections);
+                        Blockset.Block b = cameraMap.GetBlock(blockX, blockY).BlocksetBlock;
                         if (b != null)
                         {
                             void Draw(Blockset.Block.Tile[] subLayers, int tx, int ty)

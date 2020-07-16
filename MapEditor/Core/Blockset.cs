@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.EndianBinaryIO;
 using Kermalis.MapEditor.Util;
+using Kermalis.PokemonGameEngine.Overworld;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -55,15 +56,15 @@ namespace Kermalis.MapEditor.Core
 
             public Blockset Parent;
             public int Id;
+            public BlocksetBlockBehavior Behavior;
             public readonly Dictionary<byte, List<Tile>> TopLeft;
             public readonly Dictionary<byte, List<Tile>> TopRight;
             public readonly Dictionary<byte, List<Tile>> BottomLeft;
             public readonly Dictionary<byte, List<Tile>> BottomRight;
-            public ushort Behavior;
 
             public Block(Blockset parent, int id, EndianBinaryReader r)
             {
-                Behavior = r.ReadUInt16();
+                Behavior = r.ReadEnum<BlocksetBlockBehavior>();
                 Dictionary<byte, List<Tile>> Read()
                 {
                     var eLayers = new Dictionary<byte, List<Tile>>(byte.MaxValue + 1);
@@ -412,7 +413,7 @@ namespace Kermalis.MapEditor.Core
 
         public void Save()
         {
-            using (var w = new EndianBinaryWriter(File.OpenWrite(Path.Combine(_blocksetPath, Name + _blocksetExtension))))
+            using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_blocksetPath, Name + _blocksetExtension))))
             {
                 ushort count = (ushort)Blocks.Count;
                 w.Write(count);

@@ -5,6 +5,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
+using Kermalis.PokemonGameEngine.Overworld;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,7 @@ namespace Kermalis.MapEditor.UI
         public new event PropertyChangedEventHandler PropertyChanged;
 
 #pragma warning disable IDE0069 // Disposable fields should be disposed
-        private readonly Tileset _tileset;
-        private readonly Blockset _blockset;
+        private Blockset _blockset;
 #pragma warning restore IDE0069 // Disposable fields should be disposed
         private readonly TileLayerImage _tileLayerImage;
         private readonly TilesetImage _tilesetImage;
@@ -40,6 +40,59 @@ namespace Kermalis.MapEditor.UI
         private readonly WriteableBitmap _clipboardBitmap;
         private readonly Image _clipboardImage;
 
+        private bool _ignoreChange = false;
+
+        public static Array Behaviors { get; } = Enum.GetValues(typeof(BlocksetBlockBehavior));
+        private BlocksetBlockBehavior _selectedBehavior;
+        public BlocksetBlockBehavior SelectedBehavior
+        {
+            get => _selectedBehavior;
+            set
+            {
+                if (_selectedBehavior != value)
+                {
+                    _selectedBehavior = value;
+                    if (!_ignoreChange)
+                    {
+                        _selectedBlock.Behavior = value;
+                    }
+                    OnPropertyChanged(nameof(SelectedBehavior));
+                }
+            }
+        }
+
+        private string _selectedBlockset;
+        public string SelectedBlockset
+        {
+            get => _selectedBlockset;
+            set
+            {
+                if (_selectedBlockset != value)
+                {
+                    _selectedBlockset = value;
+                    RemoveBlocksetEvents();
+                    _blockset = Blockset.LoadOrGet(value);
+                    _blockset.OnChanged += Blockset_OnChanged;
+                    _blocksetImage.Blockset = _blockset;
+                    OnPropertyChanged(nameof(SelectedBlockset));
+                }
+            }
+        }
+        private string _selectedTileset;
+        public string SelectedTileset
+        {
+            get => _selectedTileset;
+            set
+            {
+                if (_selectedTileset != value)
+                {
+                    _selectedTileset = value;
+                    _tilesetImage.Tileset = Tileset.LoadOrGet(value);
+                    OnPropertyChanged(nameof(SelectedTileset));
+                }
+            }
+        }
+
         public ObservableCollection<SubLayerModel> SubLayers { get; }
         private int _selectedSubLayerIndex = -1;
         public int SelectedSubLayerIndex
@@ -51,7 +104,7 @@ namespace Kermalis.MapEditor.UI
                 {
                     _selectedSubLayerIndex = value;
                     OnPropertyChanged(nameof(SelectedSubLayerIndex));
-                    SetSubLayer((byte)_selectedSubLayerIndex);
+                    SetSubLayer((byte)value);
                 }
             }
         }
@@ -66,12 +119,11 @@ namespace Kermalis.MapEditor.UI
                 {
                     _selectedELayerIndex = value;
                     OnPropertyChanged(nameof(SelectedELayerIndex));
-                    SetELayer((byte)_selectedELayerIndex);
+                    SetELayer((byte)value);
                 }
             }
         }
         private Blockset.Block _selectedBlock;
-        private bool _ignoreFlipChange = false;
         private bool? _xFlip = false;
         public bool? XFlip
         {
@@ -81,7 +133,7 @@ namespace Kermalis.MapEditor.UI
                 if (_xFlip?.Equals(value) != true)
                 {
                     _xFlip = value;
-                    if (!_ignoreFlipChange)
+                    if (!_ignoreChange)
                     {
                         OnFlipChanged(true);
                     }
@@ -98,7 +150,7 @@ namespace Kermalis.MapEditor.UI
                 if (_yFlip?.Equals(value) != true)
                 {
                     _yFlip = value;
-                    if (!_ignoreFlipChange)
+                    if (!_ignoreChange)
                     {
                         OnFlipChanged(false);
                     }
@@ -113,10 +165,6 @@ namespace Kermalis.MapEditor.UI
             AddBlockCommand = ReactiveCommand.Create(AddBlock);
             ClearBlockCommand = ReactiveCommand.Create(ClearBlock);
             RemoveBlockCommand = ReactiveCommand.Create(RemoveBlock);
-
-            _tileset = Tileset.LoadOrGet("TestTilesO");
-            _blockset = Blockset.LoadOrGet("TestBlocksetO");
-            _blockset.OnChanged += Blockset_OnChanged;
 
             _clipboardBitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
 
@@ -148,11 +196,11 @@ namespace Kermalis.MapEditor.UI
 
             _tilesetImage = this.FindControl<TilesetImage>("TilesetImage");
             _tilesetImage.SelectionCompleted += TilesetImage_SelectionCompleted;
-            _tilesetImage.Tileset = _tileset;
 
             _blocksetImage = this.FindControl<BlocksetImage>("BlocksetImage");
             _blocksetImage.SelectionCompleted += BlocksetImage_SelectionCompleted;
-            _blocksetImage.Blockset = _blockset;
+            SelectedBlockset = Blockset.Ids[0];
+            SelectedTileset = Tileset.Ids[0];
         }
 
         private void SaveBlockset()
@@ -271,10 +319,10 @@ namespace Kermalis.MapEditor.UI
                     }
                 }
             }
-            _ignoreFlipChange = true;
+            _ignoreChange = true;
             XFlip = xf;
             YFlip = yf;
-            _ignoreFlipChange = false;
+            _ignoreChange = false;
             DrawClipboard();
         }
         private void TilesetImage_SelectionCompleted(object sender, Tileset.Tile[][] e)
@@ -320,6 +368,9 @@ namespace Kermalis.MapEditor.UI
             if (block != null && block != _selectedBlock)
             {
                 _selectedBlock = block;
+                _ignoreChange = true;
+                SelectedBehavior = block.Behavior;
+                _ignoreChange = false;
                 _tileLayerImage.SetBlock(block);
                 CountSubLayers();
                 for (int i = 0; i < SubLayers.Count; i++)
@@ -438,10 +489,12 @@ namespace Kermalis.MapEditor.UI
             Dispose();
             return base.HandleClosing();
         }
-
         private void RemoveBlocksetEvents()
         {
-            _blockset.OnChanged -= Blockset_OnChanged;
+            if (_blockset != null)
+            {
+                _blockset.OnChanged -= Blockset_OnChanged;
+            }
         }
         public void Dispose()
         {

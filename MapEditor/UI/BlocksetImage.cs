@@ -27,9 +27,9 @@ namespace Kermalis.MapEditor.UI
                 {
                     RemoveBlocksetEvents();
                     _blockset = value;
-                    _blockset.OnAdded += Blockset_OnAddedRemoved;
-                    _blockset.OnRemoved += Blockset_OnAddedRemoved;
-                    _blockset.OnDrew += Blockset_OnDrew;
+                    value.OnAdded += Blockset_OnAddedRemoved;
+                    value.OnRemoved += Blockset_OnAddedRemoved;
+                    value.OnDrew += Blockset_OnDrew;
                     ResetSelection();
                     InvalidateMeasure();
                     InvalidateVisual();

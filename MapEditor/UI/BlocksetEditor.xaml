@@ -1,5 +1,6 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:core="clr-namespace:Kermalis.MapEditor.Core;assembly=MapEditor"
         xmlns:ui="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
         x:Class="Kermalis.MapEditor.UI.BlocksetEditor"
         SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Block Editor" Padding="5">
@@ -26,8 +27,8 @@
             <ComboBox.ItemTemplate>
               <DataTemplate>
                 <StackPanel Orientation="Horizontal">
-                  <TextBlock Text="{Binding Text}" />
                   <Image Source="{Binding Bitmap}" Margin="5,0" />
+                  <TextBlock Text="{Binding Text}" />
                 </StackPanel>
               </DataTemplate>
             </ComboBox.ItemTemplate>
@@ -36,8 +37,8 @@
             <ComboBox.ItemTemplate>
               <DataTemplate>
                 <StackPanel Orientation="Horizontal">
-                  <TextBlock Text="{Binding Text}" />
                   <Image Source="{Binding Bitmap}" Margin="5,0" />
+                  <TextBlock Text="{Binding Text}" />
                 </StackPanel>
               </DataTemplate>
             </ComboBox.ItemTemplate>
@@ -46,12 +47,18 @@
       </DockPanel>
     </Border>
     <Border Margin="0,2" Padding="2" Grid.Row="1" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
-      <StackPanel Spacing="5" Orientation="Horizontal">
-        <Button Content="Save Blockset" Command="{Binding SaveBlocksetCommand}" VerticalAlignment="Center" />
-        <Button Content="Add Block" Command="{Binding AddBlockCommand}" VerticalAlignment="Center" />
-        <Button Content="Clear Block" Command="{Binding ClearBlockCommand}" VerticalAlignment="Center" />
-        <Button Content="Remove Block" Command="{Binding RemoveBlockCommand}" VerticalAlignment="Center" />
-      </StackPanel>
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Left" Spacing="5" Orientation="Horizontal" VerticalAlignment="Center">
+          <Button Content="Save Blockset" Command="{Binding SaveBlocksetCommand}" VerticalAlignment="Center" />
+          <Button Content="Add Block" Command="{Binding AddBlockCommand}" VerticalAlignment="Center" />
+          <Button Content="Clear Block" Command="{Binding ClearBlockCommand}" VerticalAlignment="Center" />
+          <Button Content="Remove Block" Command="{Binding RemoveBlockCommand}" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Right" Spacing="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+          <TextBlock Text="Behavior:" VerticalAlignment="Center" />
+          <ComboBox Items="{Binding Behaviors}" SelectedItem="{Binding SelectedBehavior}" VerticalAlignment="Center" />
+        </StackPanel>
+      </DockPanel>
     </Border>
     <Border Grid.Row="2" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <Grid>
@@ -59,7 +66,13 @@
           <ColumnDefinition Width="1*" />
           <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <ComboBox Grid.Column="0" Grid.Row="0" Items="{x:Static core:Blockset.Ids}" SelectedItem="{Binding SelectedBlockset}" />
+        <ComboBox Grid.Column="1" Grid.Row="0" Items="{x:Static core:Tileset.Ids}" SelectedItem="{Binding SelectedTileset}" />
+        <ScrollViewer Margin="0,2,0,0" Grid.Column="0" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
           <ui:BlocksetImage Name="BlocksetImage">
             <x:Arguments>
               <x:Boolean>False</x:Boolean>
@@ -67,7 +80,7 @@
             </x:Arguments>
           </ui:BlocksetImage>
         </ScrollViewer>
-        <ScrollViewer Margin="5,0,0,0" Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Margin="5,2,0,0" Grid.Column="1" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
           <ui:TilesetImage Name="TilesetImage">
             <x:Arguments>
               <x:Double>2</x:Double>

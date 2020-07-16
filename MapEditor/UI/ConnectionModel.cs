@@ -57,7 +57,7 @@ namespace Kermalis.MapEditor.UI
         public double BorderThickness
         {
             get => _borderThickness;
-            set
+            private set
             {
                 if (_borderThickness != value)
                 {
