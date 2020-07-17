@@ -306,7 +306,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             if (_movementTimer > 0)
             {
                 _movementTimer -= _movementSpeed;
-                if (_movementTimer < 0)
+                if (_movementTimer <= 0)
                 {
                     _movementTimer = 0;
                     // TODO: Keep going for currents/waterfall/spin tiles
