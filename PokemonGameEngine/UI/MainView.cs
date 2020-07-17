@@ -4,12 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Kermalis.PokemonGameEngine.GUI;
-using Kermalis.PokemonGameEngine.Input;
-using Kermalis.PokemonGameEngine.Overworld;
-using Kermalis.PokemonGameEngine.Util;
 using System;
-using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.UI
 {
@@ -27,23 +22,8 @@ namespace Kermalis.PokemonGameEngine.UI
         private TimeSpan _lastRenderTime;
         private bool _readyForRender = true;
 
-        private readonly Font _font;
-        private readonly uint[] _fontColors = new uint[] { 0x00000000, 0xFFFFFFFF, 0xFF848484 };
-
         public MainView()
         {
-            _font = new Font("TestFont.kermfont");
-            var map = Map.LoadOrGet(0);
-            const int x = 15;
-            const int y = 9;
-            Obj.Camera.X = x;
-            Obj.Camera.Y = y;
-            Obj.Camera.Map = map;
-            map.Objs.Add(Obj.Camera);
-            Obj.Player.X = x;
-            Obj.Player.Y = y;
-            Obj.Player.Map = map;
-            map.Objs.Add(Obj.Player);
             _screen = new WriteableBitmap(new PixelSize(RenderWidth, RenderHeight), new Vector(96, 96), PixelFormat.Bgra8888);
             _screenSize = new Size(RenderWidth, RenderHeight);
             _stretch = Stretch.Uniform;
@@ -58,72 +38,10 @@ namespace Kermalis.PokemonGameEngine.UI
                 using (ILockedFramebuffer l = _screen.Lock())
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
-                    RenderUtil.Fill(bmpAddress, RenderWidth, RenderHeight, 0, 0, RenderWidth, RenderHeight, 0xFF000000);
-                    List<Obj> list = Obj.LoadedObjs;
-                    int count = list.Count;
-                    for (int i = 0; i < count; i++)
-                    {
-                        list[i].UpdateMovementTimer();
-                    }
-                    if (Obj.Camera.CanMove && Obj.Player.CanMove)
-                    {
-                        bool down = InputManager.IsPressed(Key.Down);
-                        bool up = InputManager.IsPressed(Key.Up);
-                        bool left = InputManager.IsPressed(Key.Left);
-                        bool right = InputManager.IsPressed(Key.Right);
-                        if (down || up || left || right)
-                        {
-                            Obj.FacingDirection facing;
-                            if (down)
-                            {
-                                if (left)
-                                {
-                                    facing = Obj.FacingDirection.Southwest;
-                                }
-                                else if (right)
-                                {
-                                    facing = Obj.FacingDirection.Southeast;
-                                }
-                                else
-                                {
-                                    facing = Obj.FacingDirection.South;
-                                }
-                            }
-                            else if (up)
-                            {
-                                if (left)
-                                {
-                                    facing = Obj.FacingDirection.Northwest;
-                                }
-                                else if (right)
-                                {
-                                    facing = Obj.FacingDirection.Northeast;
-                                }
-                                else
-                                {
-                                    facing = Obj.FacingDirection.North;
-                                }
-                            }
-                            else if (left)
-                            {
-                                facing = Obj.FacingDirection.West;
-                            }
-                            else
-                            {
-                                facing = Obj.FacingDirection.East;
-                            }
-                            bool run = InputManager.IsPressed(Key.B);
-                            // TODO: Lock camera at a specific xy offset away from the player
-                            if (Obj.Player.Move(facing, run))
-                            {
-                                Obj.Camera.CopyXY(Obj.Player);
-                            }
-                        }
-                    }
-                    Map.Draw(bmpAddress, RenderWidth, RenderHeight);
+                    Game.Game.RenderTick(bmpAddress, RenderWidth, RenderHeight);
                     if (_showFPS)
                     {
-                        RenderUtil.Draw(bmpAddress, RenderWidth, RenderHeight, 0, 0, ((int)Math.Round(1000 / time.Subtract(_lastRenderTime).TotalMilliseconds)).ToString(), _font, _fontColors);
+                        Game.Game.RenderFPS(bmpAddress, RenderWidth, RenderHeight, (int)Math.Round(1000 / time.Subtract(_lastRenderTime).TotalMilliseconds));
                     }
                 }
                 _lastRenderTime = time;

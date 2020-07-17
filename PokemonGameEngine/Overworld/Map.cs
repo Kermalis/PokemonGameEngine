@@ -265,6 +265,10 @@ namespace Kermalis.PokemonGameEngine.Overworld
             return m;
         }
 
+        public static Layout.Block GetBlock(Obj obj)
+        {
+            return obj.Map.GetBlock(obj.X, obj.Y);
+        }
         public Layout.Block GetBlock(int x, int y)
         {
             return _layout.GetBlock(x, y, _connections);
@@ -304,7 +308,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                                 for (int t = 0; t < numSubLayers; t++)
                                 {
                                     Blockset.Block.Tile tile = subLayers[t];
-                                    RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
+                                    RenderUtil.DrawImage(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
                                 }
                             }
                             Draw(b.TopLeft[e], curX, curY);

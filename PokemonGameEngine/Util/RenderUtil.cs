@@ -7,6 +7,39 @@ namespace Kermalis.PokemonGameEngine.Util
 {
     internal sealed class RenderUtil
     {
+        public static unsafe uint[][] LoadSprite(string resource)
+        {
+            var bmp = new Bitmap(Utils.GetResourceStream(resource));
+            using (var wb = new WriteableBitmap(bmp.PixelSize, bmp.Dpi, PixelFormat.Bgra8888))
+            {
+                using (IRenderTarget rtb = Utils.RenderInterface.CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
+                using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
+                {
+                    var rect = new Rect(bmp.Size);
+                    ctx.DrawImage(bmp.PlatformImpl, 1, rect, rect);
+                }
+                bmp.Dispose();
+                using (ILockedFramebuffer l = wb.Lock())
+                {
+                    uint* bmpAddress = (uint*)l.Address.ToPointer();
+                    PixelSize ps = wb.PixelSize;
+                    int spriteHeight = ps.Height;
+                    int spriteWidth = ps.Width;
+                    uint[][] arrY = new uint[spriteHeight][];
+                    for (int py = 0; py < spriteHeight; py++)
+                    {
+                        uint[] arrX = new uint[spriteWidth];
+                        for (int px = 0; px < spriteWidth; px++)
+                        {
+                            arrX[px] = *(bmpAddress + (px) + ((py) * spriteWidth));
+                        }
+                        arrY[py] = arrX;
+                    }
+                    return arrY;
+                }
+            }
+        }
+
         public static unsafe uint[][][] LoadSpriteSheet(string resource, int spriteWidth, int spriteHeight)
         {
             var bmp = new Bitmap(Utils.GetResourceStream(resource));
@@ -50,7 +83,7 @@ namespace Kermalis.PokemonGameEngine.Util
             }
         }
 
-        public static unsafe void Fill(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
+        public static unsafe void FillColor(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
         {
             for (int py = y; py < y + height; py++)
             {
@@ -67,7 +100,7 @@ namespace Kermalis.PokemonGameEngine.Util
             }
         }
 
-        public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint[][] colors, bool xFlip, bool yFlip)
+        public static unsafe void DrawImage(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint[][] colors, bool xFlip, bool yFlip)
         {
             int height = colors.Length;
             for (int cy = 0; cy < height; cy++)
@@ -89,7 +122,31 @@ namespace Kermalis.PokemonGameEngine.Util
             }
         }
 
-        public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, string str, Font font, uint[] colors)
+        public static unsafe void DrawStretchedImage(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint[][] colors)
+        {
+            int cHeight = colors.Length;
+            float hScale = (float)height / cHeight;
+            for (int cy = 0; cy < height; cy++)
+            {
+                int py = y + cy;
+                if (py >= 0 && py < bmpHeight)
+                {
+                    uint[] arrY = colors[(int)(cy / hScale)];
+                    int cWidth = arrY.Length;
+                    float wScale = (float)width / cWidth;
+                    for (int cx = 0; cx < width; cx++)
+                    {
+                        int px = x + cx;
+                        if (px >= 0 && px < bmpWidth)
+                        {
+                            DrawUnchecked(bmpAddress + px + (py * bmpWidth), arrY[(int)(cx / wScale)]);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, string str, Font font, uint[] fontColors)
         {
             int index = 0;
             int nextXOffset = 0;
@@ -109,7 +166,7 @@ namespace Kermalis.PokemonGameEngine.Util
                         {
                             if (py >= 0 && py < bmpHeight && px >= 0 && px < bmpWidth)
                             {
-                                DrawUnchecked(bmpAddress + px + (py * bmpWidth), colors[(glyph.Bitmap[curByte] >> (8 - font.BitsPerPixel - curBit)) % (1 << font.BitsPerPixel)]);
+                                DrawUnchecked(bmpAddress + px + (py * bmpWidth), fontColors[(glyph.Bitmap[curByte] >> (8 - font.BitsPerPixel - curBit)) % (1 << font.BitsPerPixel)]);
                             }
                             curBit = (curBit + font.BitsPerPixel) % 8;
                             if (curBit == 0)

@@ -34,9 +34,11 @@ namespace Kermalis.PokemonGameEngine.Overworld
         public byte Elevation;
         public Map Map;
 
-        public bool CanMove = true; // Not too thought-out, so will probably end up removing when scripting/waterfall/currents/spin tiles etc are implemented
+        public bool CanMove = true; // Not too thought-out, so I'll probably end up removing it when scripting/waterfall/currents/spin tiles etc are implemented
         private float _movementTimer;
-        private float _movementSpeed; // TODO: Framerate
+        private float _movementSpeed;
+        private const float _normalMovementSpeed = 1 / 6f;
+        private const float _runningMovementSpeed = 1 / 4f;
         private const float _diagonalMovementSpeedModifier = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
         private const float _blockedMovementSpeedModifier = 0.8f;
         private bool _leg;
@@ -67,7 +69,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         {
             CanMove = false;
             _movementTimer = 1;
-            _movementSpeed = run ? 0.25f : 0.1f;
+            _movementSpeed = run ? _runningMovementSpeed : _normalMovementSpeed;
             _leg = !_leg;
             Facing = facing;
             PrevX = X;
@@ -339,7 +341,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             }
             byte f = (byte)Facing;
             int spriteNum = ShowLegs() ? (_leg ? f + 8 : f + 16) : f; // TODO: Fall-back to specific sprites if the target sprite doesn't exist
-            RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x, y, _tempSpriteSheet[spriteNum], false, false);
+            RenderUtil.DrawImage(bmpAddress, bmpWidth, bmpHeight, x, y, _tempSpriteSheet[spriteNum], false, false);
         }
     }
 }
