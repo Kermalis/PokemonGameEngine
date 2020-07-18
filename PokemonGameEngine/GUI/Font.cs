@@ -28,16 +28,33 @@ namespace Kermalis.PokemonGameEngine.GUI
         public byte FontHeight { get; }
         public byte BitsPerPixel { get; }
         private readonly Dictionary<ushort, Glyph> _glyphs;
+        private readonly (string OldKey, ushort NewKey)[] _overrides;
 
-        private static readonly (string OldKey, ushort NewKey)[] _tempOverrides = new (string OldKey, ushort NewKey)[]
+        public static Font Default { get; }
+        public static uint[] DefaultWhite { get; } = new uint[] { 0x00000000, 0xFFEFEFEF, 0xFF848484 };
+        public static uint[] DefaultDark { get; } = new uint[] { 0x00000000, 0xFF5A5252, 0xFFA5A5AD };
+        public static uint[] DefaultMale { get; } = new uint[] { 0x00000000, 0xFF7394FF, 0xFF0000D6 };
+        public static uint[] DefaultFemale { get; } = new uint[] { 0x00000000, 0xFFFF7373, 0xFFC60000 };
+        public static Font PartyNumbers { get; }
+
+        static Font()
         {
-            ("♂", 0x246D),
-            ("♀", 0x246E),
-            ("[PK]", 0x2486),
-            ("[MN]", 0x2487)
-        };
+            Default = new Font("Fonts.Default.kermfont", new (string, ushort)[]
+            {
+                ("♂", 0x246D),
+                ("♀", 0x246E),
+                ("[PK]", 0x2486),
+                ("[MN]", 0x2487)
+            });
+            PartyNumbers = new Font("Fonts.PartyNumbers.kermfont", new (string, ushort)[]
+            {
+                ("[ID]", 0x0049),
+                ("[LV]", 0x004C),
+                ("[NO]", 0x004E)
+            });
+        }
 
-        public Font(string resource)
+        private Font(string resource, (string, ushort)[] overrides)
         {
             using (var r = new EndianBinaryReader(Utils.GetResourceStream(resource), Endianness.LittleEndian))
             {
@@ -49,6 +66,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 {
                     _glyphs.Add(r.ReadUInt16(), new Glyph(r, this));
                 }
+                _overrides = overrides;
             }
         }
 
@@ -70,9 +88,9 @@ namespace Kermalis.PokemonGameEngine.GUI
             else
             {
                 Glyph ret = null;
-                for (int i = 0; i < _tempOverrides.Length; i++)
+                for (int i = 0; i < _overrides.Length; i++)
                 {
-                    (string oldKey, ushort newKey) = _tempOverrides[i];
+                    (string oldKey, ushort newKey) = _overrides[i];
                     int ol = oldKey.Length;
                     if (index + ol <= str.Length && str.Substring(index, ol) == oldKey)
                     {

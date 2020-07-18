@@ -15,7 +15,7 @@ namespace Kermalis.PokemonGameEngine.GUI
     {
         private const int WaitMilliseconds = 1750;
         private const string ThreadName = "Battle Thread";
-        private static readonly uint[][] _battleBackground = RenderUtil.LoadSprite("Battle.Background.BG_Grass_Single.png");
+        private static readonly uint[][] _battleBackground = RenderUtil.LoadSprite("GUI.Battle.Background.BG_Grass_Single.png");
 
         private const int TransitionDuration = 40;
         private const float TransitionDurationF = TransitionDuration;
@@ -62,7 +62,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             _actionsGUI?.LogicTick();
         }
 
-        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight, Font font, uint[] fontColors)
+        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             PBEBattle battle = _battle;
             if (!_transitionDone)
@@ -76,31 +76,33 @@ namespace Kermalis.PokemonGameEngine.GUI
                     _transitionDone = true;
                     new Thread(battle.Begin) { Name = ThreadName }.Start();
                 }
+                return;
             }
-            else
+
+            Font fontDefault = Font.Default;
+            uint[] defaultWhite = Font.DefaultWhite;
+            RenderUtil.DrawStretchedImage(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, _battleBackground);
+            // Before we have sprites we will do this :)
+            PBEBattlePokemon foe = battle.Trainers[1].Party[0];
+            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.13f), "Level " + foe.Level.ToString(), fontDefault, defaultWhite);
+            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.19f), foe.HPPercentage.ToString("P2"), fontDefault, defaultWhite);
+            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.25f), foe.Species.ToString(), fontDefault, defaultWhite);
+            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.31f), foe.Form.ToString(), fontDefault, defaultWhite);
+            PBEBattlePokemon ally = battle.Trainers[0].Party[0];
+            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.53f), "Level " + ally.Level.ToString(), fontDefault, defaultWhite);
+            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.59f), ally.HPPercentage.ToString("P2"), fontDefault, defaultWhite);
+            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.65f), ally.Species.ToString(), fontDefault, defaultWhite);
+            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.71f), ally.Form.ToString(), fontDefault, defaultWhite);
+
+            string msg = _message;
+            if (msg != null)
             {
-                RenderUtil.DrawStretchedImage(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, _battleBackground);
-                // Before we have sprites we will do this :)
-                PBEBattlePokemon foe = battle.Trainers[1].Party[0];
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.13f), "Level " + foe.Level.ToString(), font, fontColors);
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.19f), foe.HPPercentage.ToString("P2"), font, fontColors);
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.25f), foe.Species.ToString(), font, fontColors);
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.31f), foe.Form.ToString(), font, fontColors);
-                PBEBattlePokemon ally = battle.Trainers[0].Party[0];
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.53f), "Level " + ally.Level.ToString(), font, fontColors);
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.59f), ally.HPPercentage.ToString("P2"), font, fontColors);
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.65f), ally.Species.ToString(), font, fontColors);
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.71f), ally.Form.ToString(), font, fontColors);
-
-                string msg = _message;
-                if (msg != null)
-                {
-                    RenderUtil.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, (int)(bmpHeight * 0.79f), bmpWidth, (int)(bmpHeight * 0.16f), 0x80313131);
-                    RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.1f), (int)(bmpHeight * 0.8f), msg, font, fontColors);
-                }
-
-                _actionsGUI?.RenderTick(bmpAddress, bmpWidth, bmpHeight, font, fontColors);
+                RenderUtil.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, (int)(bmpHeight * 0.79f), bmpWidth, (int)(bmpHeight * 0.16f), 0x80313131);
+                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.1f), (int)(bmpHeight * 0.8f), msg, fontDefault, defaultWhite);
             }
+
+            _actionsGUI?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+
         }
 
 

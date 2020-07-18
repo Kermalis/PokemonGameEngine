@@ -6,6 +6,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
     internal sealed class SpiralTransition
     {
         // This will leave artifacts if NumBoxes is not cleanly divisible by the width and height of the screen
+        // In the future we can have it draw bigger squares if it's not cleanly divisible (like, outside the bounds of the screen)
         private const int NumBoxes = 8;
 
         private int _counterX;

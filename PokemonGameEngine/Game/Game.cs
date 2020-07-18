@@ -14,16 +14,12 @@ namespace Kermalis.PokemonGameEngine.Game
     {
         private const int NumTicksPerSecond = 20;
 
-        private static readonly Font _font;
-        private static readonly uint[] _fontColors = new uint[] { 0x00000000, 0xFFFFFFFF, 0xFF848484 };
-
         private static readonly OverworldGUI _overworldGUI = new OverworldGUI();
         private static SpiralTransition _transition;
         private static BattleGUI _battleGUI;
 
         static Game()
         {
-            _font = new Font("TestFont.kermfont");
             var map = Map.LoadOrGet(0);
             const int x = 2;
             const int y = 12;
@@ -77,8 +73,6 @@ namespace Kermalis.PokemonGameEngine.Game
 
         public static unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            Font font = _font;
-            uint[] fontColors = _fontColors;
             if (_transition != null)
             {
                 _transition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
@@ -86,14 +80,14 @@ namespace Kermalis.PokemonGameEngine.Game
             }
             if (_battleGUI != null)
             {
-                _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight, font, fontColors);
+                _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                 return;
             }
             _overworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
         }
         public static unsafe void RenderFPS(uint* bmpAddress, int bmpWidth, int bmpHeight, int fps)
         {
-            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, fps.ToString(), _font, _fontColors);
+            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, fps.ToString(), Font.Default, Font.DefaultFemale);
         }
     }
 }

@@ -22,6 +22,9 @@
       <SubType>Designer</SubType>
     </AvaloniaResource>
     <EmbeddedResource Include="Assets\**" />
+    <EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
+      <Link>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </EmbeddedResource>
     <Content Include="Dependencies\PokemonBattleEngine.db">
       <Link>PokemonBattleEngine.db</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
