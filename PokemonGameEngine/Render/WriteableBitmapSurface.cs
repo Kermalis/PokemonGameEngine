@@ -2,7 +2,7 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
-namespace Kermalis.PokemonGameEngine.Util
+namespace Kermalis.PokemonGameEngine.Render
 {
     internal sealed class WriteableBitmapSurface : IFramebufferPlatformSurface
     {

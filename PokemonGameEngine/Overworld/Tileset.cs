@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Util;
+﻿using Kermalis.PokemonGameEngine.Render;
 using System;
 using System.Collections.Generic;
 
@@ -9,12 +9,12 @@ namespace Kermalis.PokemonGameEngine.Overworld
         public sealed class Tile
         {
             public readonly Tileset Parent;
-            public readonly uint[][] Colors;
+            public readonly uint[] Bitmap;
 
-            public Tile(Tileset parent, uint[][] colors)
+            public Tile(Tileset parent, uint[] bitmap)
             {
                 Parent = parent;
-                Colors = colors;
+                Bitmap = bitmap;
             }
         }
 
@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
         private Tileset(string name)
         {
-            uint[][][] t = RenderUtil.LoadSpriteSheet(_tilesetPath + name + _tilesetExtension, 8, 8);
+            uint[][] t = RenderUtils.LoadBitmapSheet(_tilesetPath + name + _tilesetExtension, 8, 8);
             Tiles = new Tile[t.Length];
             for (int i = 0; i < t.Length; i++)
             {

@@ -3,35 +3,45 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.GUI.Transition;
+using Kermalis.PokemonGameEngine.Render;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace Kermalis.PokemonGameEngine.GUI
+namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
     internal sealed class BattleGUI
     {
         private const int WaitMilliseconds = 1750;
         private const string ThreadName = "Battle Thread";
-        private static readonly uint[][] _battleBackground = RenderUtil.LoadSprite("GUI.Battle.Background.BG_Grass_Single.png");
+        private static readonly Sprite _battleBackground = new Sprite("GUI.Battle.Background.BG_Grass_Single.png");
 
         private const int TransitionDuration = 40;
         private const float TransitionDurationF = TransitionDuration;
         private int _transitionCounter;
         private bool _transitionDone;
+        private FadeToColorTransition _battleEndedTransition;
+        private Action _onClosed;
 
         private readonly PBEBattle _battle;
+        private readonly SpritedBattlePokemonParty[] _spritedParties;
         private readonly PBETrainer _trainer;
         private string _message;
         private ActionsGUI _actionsGUI;
 
-        public BattleGUI(PBEBattle battle)
+        public BattleGUI(PBEBattle battle, Action onClosed)
         {
             _battle = battle;
             _trainer = battle.Trainers[0];
+            _spritedParties = new SpritedBattlePokemonParty[battle.Trainers.Count];
+            for (int i = 0; i < battle.Trainers.Count; i++)
+            {
+                _spritedParties[i] = new SpritedBattlePokemonParty(battle.Trainers[i].Party);
+            }
             _transitionCounter = TransitionDuration;
+            _onClosed = onClosed;
             battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
             battle.OnStateChanged += SinglePlayerBattle_OnStateChanged;
         }
@@ -47,6 +57,17 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             switch (battle.BattleState)
             {
+                case PBEBattleState.Ended:
+                {
+                    void OnBattleEndedTransitionEnded()
+                    {
+                        _battleEndedTransition = null;
+                        _onClosed.Invoke();
+                        _onClosed = null;
+                    }
+                    _battleEndedTransition = new FadeToColorTransition(20, 0, OnBattleEndedTransitionEnded);
+                    break;
+                }
                 case PBEBattleState.ReadyToRunSwitches: new Thread(battle.RunSwitches) { Name = ThreadName }.Start(); break;
                 case PBEBattleState.ReadyToRunTurn: new Thread(battle.RunTurn) { Name = ThreadName }.Start(); break;
             }
@@ -59,6 +80,10 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public void LogicTick()
         {
+            if (_battleEndedTransition != null)
+            {
+                return;
+            }
             _actionsGUI?.LogicTick();
         }
 
@@ -69,8 +94,8 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 float t = _transitionCounter / TransitionDurationF;
                 float t1 = t + 1;
-                RenderUtil.DrawStretchedImage(bmpAddress, bmpWidth, bmpHeight, 0, 0, (int)(bmpWidth * t1), (int)(bmpHeight * t1), _battleBackground);
-                RenderUtil.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, (uint)(t * 0xFF) << 24);
+                _battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, (int)(bmpWidth * t1), (int)(bmpHeight * t1));
+                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, (uint)(t * 0xFF) << 24);
                 if (--_transitionCounter <= 0)
                 {
                     _transitionDone = true;
@@ -81,28 +106,34 @@ namespace Kermalis.PokemonGameEngine.GUI
 
             Font fontDefault = Font.Default;
             uint[] defaultWhite = Font.DefaultWhite;
-            RenderUtil.DrawStretchedImage(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, _battleBackground);
+            _battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
             // Before we have sprites we will do this :)
-            PBEBattlePokemon foe = battle.Trainers[1].Party[0];
-            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.13f), "Level " + foe.Level.ToString(), fontDefault, defaultWhite);
-            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.19f), foe.HPPercentage.ToString("P2"), fontDefault, defaultWhite);
-            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.25f), foe.Species.ToString(), fontDefault, defaultWhite);
-            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.65f), (int)(bmpHeight * 0.31f), foe.Form.ToString(), fontDefault, defaultWhite);
-            PBEBattlePokemon ally = battle.Trainers[0].Party[0];
-            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.53f), "Level " + ally.Level.ToString(), fontDefault, defaultWhite);
-            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.59f), ally.HPPercentage.ToString("P2"), fontDefault, defaultWhite);
-            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.65f), ally.Species.ToString(), fontDefault, defaultWhite);
-            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.25f), (int)(bmpHeight * 0.71f), ally.Form.ToString(), fontDefault, defaultWhite);
+            SpritedBattlePokemon sPkmn = _spritedParties[1].SpritedParty[0];
+            PBEBattlePokemon pkmn = sPkmn.Pkmn;
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.5f), (int)(bmpHeight * 0.05f), "Level " + pkmn.Level.ToString(), defaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.5f), (int)(bmpHeight * 0.1f), pkmn.HPPercentage.ToString("P2"), defaultWhite);
+            Sprite sprite = sPkmn.FrontSprite;
+            int width = sprite.Width;
+            int height = sprite.Height;
+            sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75f) - (width / 2), (int)(bmpHeight * 0.55f) - height);
+            sPkmn = _spritedParties[0].SpritedParty[0];
+            pkmn = sPkmn.Pkmn;
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.05f), (int)(bmpHeight * 0.45f), "Level " + pkmn.Level.ToString(), defaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.05f), (int)(bmpHeight * 0.5f), pkmn.HPPercentage.ToString("P2"), defaultWhite);
+            sprite = sPkmn.BackSprite;
+            width = sprite.Width * 2;
+            height = sprite.Height * 2;
+            sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.35f) - (width / 2), (int)(bmpHeight * 0.95f) - height, width, height);
 
             string msg = _message;
             if (msg != null)
             {
-                RenderUtil.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, (int)(bmpHeight * 0.79f), bmpWidth, (int)(bmpHeight * 0.16f), 0x80313131);
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.1f), (int)(bmpHeight * 0.8f), msg, fontDefault, defaultWhite);
+                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, (int)(bmpHeight * 0.79f), bmpWidth, (int)(bmpHeight * 0.16f), 0x80313131);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.1f), (int)(bmpHeight * 0.8f), msg, defaultWhite);
             }
 
             _actionsGUI?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-
+            _battleEndedTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
         }
 
 
@@ -130,7 +161,8 @@ namespace Kermalis.PokemonGameEngine.GUI
             else
             {
                 AddMessage($"What will {_actions[i].Nickname} do?");
-                _actionsGUI = new ActionsGUI(this, _actions[i]);
+                SpritedBattlePokemonParty party = _spritedParties[_trainer.Id];
+                _actionsGUI = new ActionsGUI(this, party, party.SpritedParty[i]);
             }
         }
 

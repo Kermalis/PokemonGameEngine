@@ -1,11 +1,11 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.GUI;
+using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Overworld;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Wild;
-using Kermalis.PokemonGameEngine.Util;
 using System.Threading;
 
 namespace Kermalis.PokemonGameEngine.Game
@@ -14,8 +14,9 @@ namespace Kermalis.PokemonGameEngine.Game
     {
         private const int NumTicksPerSecond = 20;
 
-        private static readonly OverworldGUI _overworldGUI = new OverworldGUI();
-        private static SpiralTransition _transition;
+        private static readonly OverworldGUI _overworldGUI;
+        private static FadeFromColorTransition _fadeFromTransition;
+        private static SpiralTransition _battleTransition;
         private static BattleGUI _battleGUI;
 
         static Game()
@@ -31,6 +32,7 @@ namespace Kermalis.PokemonGameEngine.Game
             Obj.Player.Y = y;
             Obj.Player.Map = map;
             map.Objs.Add(Obj.Player);
+            _overworldGUI = new OverworldGUI();
             new Thread(LogicThreadMainLoop) { Name = "Logic Thread" }.Start();
         }
 
@@ -49,17 +51,26 @@ namespace Kermalis.PokemonGameEngine.Game
             var encounter = WildEncounter.GetTestEncounter();
             var me = new PBETrainerInfo(new Party { PartyPokemon.GetTestPokemon(PBESpecies.Skitty, 0) }, "Dawn");
             var wild = new PBETrainerInfo(new Party { PartyPokemon.GetTestWildPokemon(encounter) }, "WILD");
-            _battleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, me, wild));
-            void OnTransitionEnded()
+            void OnBattleEnded()
             {
-                _transition = null;
+                _battleGUI = null;
+                void FadeFromTransitionEnded()
+                {
+                    _fadeFromTransition = null;
+                }
+                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
             }
-            _transition = new SpiralTransition(OnTransitionEnded);
+            _battleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, me, wild), OnBattleEnded);
+            void OnBattleTransitionEnded()
+            {
+                _battleTransition = null;
+            }
+            _battleTransition = new SpiralTransition(OnBattleTransitionEnded);
         }
 
         private static void LogicTick()
         {
-            if (_transition != null)
+            if (_battleTransition != null || _fadeFromTransition != null)
             {
                 return;
             }
@@ -73,9 +84,9 @@ namespace Kermalis.PokemonGameEngine.Game
 
         public static unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            if (_transition != null)
+            if (_battleTransition != null)
             {
-                _transition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                _battleTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                 return;
             }
             if (_battleGUI != null)
@@ -84,10 +95,15 @@ namespace Kermalis.PokemonGameEngine.Game
                 return;
             }
             _overworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            if (_fadeFromTransition != null)
+            {
+                _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                return;
+            }
         }
         public static unsafe void RenderFPS(uint* bmpAddress, int bmpWidth, int bmpHeight, int fps)
         {
-            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, fps.ToString(), Font.Default, Font.DefaultFemale);
+            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, fps.ToString(), Font.DefaultFemale);
         }
     }
 }

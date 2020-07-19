@@ -2,10 +2,9 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Input;
-using Kermalis.PokemonGameEngine.Util;
 using System;
 
-namespace Kermalis.PokemonGameEngine.GUI
+namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
     // TODO: Switches (party menu)
     // TODO: Switch-ins
@@ -15,7 +14,8 @@ namespace Kermalis.PokemonGameEngine.GUI
     internal sealed class ActionsGUI
     {
         private readonly BattleGUI _parent;
-        private readonly PBEBattlePokemon _pkmn;
+        private readonly SpritedBattlePokemonParty _party;
+        private readonly SpritedBattlePokemon _pkmn;
 
         private bool _isShowingMoves = false;
         private FadeFromColorTransition _fadeFromTransition;
@@ -24,9 +24,10 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private int _selectedMove = 0;
 
-        public ActionsGUI(BattleGUI parent, PBEBattlePokemon pkmn)
+        public ActionsGUI(BattleGUI parent, SpritedBattlePokemonParty party, SpritedBattlePokemon pkmn)
         {
             _parent = parent;
+            _party = party;
             _pkmn = pkmn;
         }
 
@@ -42,7 +43,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 return;
             }
 
-            PBEBattlePokemon pkmn = _pkmn;
+            PBEBattlePokemon pkmn = _pkmn.Pkmn;
             PBEBattleMoveset moves = pkmn.Moves;
 
             // Handle selection input
@@ -89,7 +90,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                                     _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
                                     _partyMenuGUI = null;
                                 }
-                                _partyMenuGUI = new PartyMenuGUI(_pkmn.Trainer.Party, OnPartyMenuGUIClosed);
+                                _partyMenuGUI = new PartyMenuGUI(_party, OnPartyMenuGUIClosed);
                             }
                             _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
                             break;
@@ -142,40 +143,40 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            PBEBattlePokemon pkmn = _pkmn;
-            PBEBattleMoveset moves = pkmn.Moves;
+            if (_partyMenuGUI != null)
+            {
+                _partyMenuGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                return;
+            }
 
             Font fontDefault = Font.Default;
             uint[] defaultWhite = Font.DefaultWhite;
 
             if (!_isShowingMoves)
             {
-                if (_partyMenuGUI != null)
-                {
-                    _partyMenuGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    return;
-                }
-
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (1 * 0.06))), "Fight", fontDefault, defaultWhite);
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (0 * 0.06))), "Pokémon", fontDefault, defaultWhite);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (1 * 0.06))), "Fight", defaultWhite);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (0 * 0.06))), "Pokémon", defaultWhite);
 
                 // Draw selection arrow
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75), (int)((bmpHeight * 0.7) - (bmpHeight * ((2 - 1 - _selectedMove) * 0.06))), "→", fontDefault, defaultWhite);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75), (int)((bmpHeight * 0.7) - (bmpHeight * ((2 - 1 - _selectedMove) * 0.06))), "→", defaultWhite);
 
                 _fadeFromTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                 _fadeToTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                 return;
             }
 
+            PBEBattlePokemon pkmn = _pkmn.Pkmn;
+            PBEBattleMoveset moves = pkmn.Moves;
+
             // Draw moves
             for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
             {
                 PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[moves.Count - 1 - i];
-                RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (i * 0.06))), PBELocalizedString.GetMoveName(slot.Move).English, fontDefault, defaultWhite);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (i * 0.06))), PBELocalizedString.GetMoveName(slot.Move).English, defaultWhite);
             }
 
             // Draw selection arrow
-            RenderUtil.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75), (int)((bmpHeight * 0.7) - (bmpHeight * ((PBESettings.DefaultNumMoves - 1 - _selectedMove) * 0.06))), "→", fontDefault, defaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75), (int)((bmpHeight * 0.7) - (bmpHeight * ((PBESettings.DefaultNumMoves - 1 - _selectedMove) * 0.06))), "→", defaultWhite);
         }
     }
 }

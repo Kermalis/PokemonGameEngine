@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
 using System;
 using System.Collections.Generic;
@@ -308,7 +309,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                                 for (int t = 0; t < numSubLayers; t++)
                                 {
                                     Blockset.Block.Tile tile = subLayers[t];
-                                    RenderUtil.DrawImage(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Colors, tile.XFlip, tile.YFlip);
+                                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Bitmap, 8, 8, xFlip: tile.XFlip, yFlip: tile.YFlip);
                                 }
                             }
                             Draw(b.TopLeft[e], curX, curY);

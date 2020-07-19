@@ -1,7 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Overworld;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.Render;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.GUI
@@ -32,9 +32,17 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 return;
             }
-            if (CheckForWildBattle())
+            if (Obj.Player.FinishedMoving)
             {
-                return;
+                // Check the current tile after moving for a trigger or for the behavior
+                if (CheckForWildBattle())
+                {
+                    return;
+                }
+            }
+            for (int i = 0; i < count; i++)
+            {
+                list[i].FinishedMoving = false;
             }
 
             bool down = InputManager.IsDown(Key.Down);
@@ -93,7 +101,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            RenderUtil.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
+            RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0xFF000000);
             Map.Draw(bmpAddress, bmpWidth, bmpHeight);
         }
     }

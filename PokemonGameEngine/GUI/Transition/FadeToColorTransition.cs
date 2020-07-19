@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Util;
+﻿using Kermalis.PokemonGameEngine.Render;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            RenderUtil.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, ((uint)(_counter / _transitionDurationF * 0xFF) << 24) + _color);
+            RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, ((uint)(_counter / _transitionDurationF * 0xFF) << 24) + _color);
 
             if (_counter++ >= _transitionDuration)
             {

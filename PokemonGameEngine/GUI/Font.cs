@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +14,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
             public byte CharWidth { get; }
             public byte CharSpace { get; }
-            public ReadOnlyCollection<byte> Bitmap { get; }
+            public byte[] Bitmap { get; }
 
             public Glyph(EndianBinaryReader r, Font parent)
             {
@@ -22,7 +23,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 CharWidth = r.ReadByte();
                 CharSpace = r.ReadByte();
                 int numBitsToRead = parent.FontHeight * CharWidth * parent.BitsPerPixel;
-                Bitmap = new ReadOnlyCollection<byte>(r.ReadBytes((numBitsToRead / 8) + ((numBitsToRead % 8) != 0 ? 1 : 0)));
+                Bitmap = r.ReadBytes((numBitsToRead / 8) + ((numBitsToRead % 8) != 0 ? 1 : 0));
             }
         }
         public byte FontHeight { get; }
@@ -132,6 +133,40 @@ namespace Kermalis.PokemonGameEngine.GUI
                     if (xOffset > width)
                     {
                         width = xOffset;
+                    }
+                }
+            }
+        }
+
+        public unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, string str, uint[] fontColors)
+        {
+            int index = 0;
+            int nextXOffset = 0;
+            int nextYOffset = 0;
+            while (index < str.Length)
+            {
+                int xOffset = x + nextXOffset;
+                int yOffset = y + nextYOffset;
+                Glyph glyph = GetGlyph(str, ref index, ref nextXOffset, ref nextYOffset);
+                if (glyph == null)
+                {
+                    continue;
+                }
+                int curBit = 0;
+                int curByte = 0;
+                for (int py = yOffset; py < yOffset + FontHeight; py++)
+                {
+                    for (int px = xOffset; px < xOffset + glyph.CharWidth; px++)
+                    {
+                        if (py >= 0 && py < bmpHeight && px >= 0 && px < bmpWidth)
+                        {
+                            RenderUtils.DrawUnchecked(bmpAddress + px + (py * bmpWidth), fontColors[(glyph.Bitmap[curByte] >> (8 - BitsPerPixel - curBit)) % (1 << BitsPerPixel)]);
+                        }
+                        curBit = (curBit + BitsPerPixel) % 8;
+                        if (curBit == 0)
+                        {
+                            curByte++;
+                        }
                     }
                 }
             }

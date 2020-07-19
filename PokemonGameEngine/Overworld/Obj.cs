@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Util;
+﻿using Kermalis.PokemonGameEngine.Render;
 using System;
 using System.Collections.Generic;
 
@@ -35,6 +35,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         public Map Map;
 
         public bool CanMove = true; // Not too thought-out, so I'll probably end up removing it when scripting/waterfall/currents/spin tiles etc are implemented
+        public bool FinishedMoving = false;
         private float _movementTimer;
         private float _movementSpeed;
         private const float _normalMovementSpeed = 1 / 6f;
@@ -49,7 +50,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
         public readonly int SpriteWidth;
         public readonly int SpriteHeight;
-        private readonly uint[][][] _tempSpriteSheet;
+        private readonly Sprite[] _tempSpriteSheet;
 
         private Obj(ushort id)
         {
@@ -58,7 +59,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         }
         public Obj(ushort id, string resource, int spriteWidth, int spriteHeight)
         {
-            _tempSpriteSheet = RenderUtil.LoadSpriteSheet(resource, spriteWidth, spriteHeight);
+            _tempSpriteSheet = RenderUtils.LoadSpriteSheet(resource, spriteWidth, spriteHeight);
             Id = id;
             SpriteWidth = spriteWidth;
             SpriteHeight = spriteHeight;
@@ -313,6 +314,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     _movementTimer = 0;
                     // TODO: Keep going for currents/waterfall/spin tiles
                     CanMove = true;
+                    FinishedMoving = true;
                 }
                 UpdateXYOffsets();
             }
@@ -341,7 +343,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             }
             byte f = (byte)Facing;
             int spriteNum = ShowLegs() ? (_leg ? f + 8 : f + 16) : f; // TODO: Fall-back to specific sprites if the target sprite doesn't exist
-            RenderUtil.DrawImage(bmpAddress, bmpWidth, bmpHeight, x, y, _tempSpriteSheet[spriteNum], false, false);
+            _tempSpriteSheet[spriteNum].DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y);
         }
     }
 }
