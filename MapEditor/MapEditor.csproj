@@ -22,9 +22,9 @@
       <SubType>Designer</SubType>
     </AvaloniaResource>
     <Compile Include="..\PokemonGameEngine\Overworld\OverworldEnums.cs" Link="Core\OverworldEnums.cs" />
-    <PackageReference Include="Avalonia" Version="0.9.0-preview7" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.0-preview7" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.0-preview7" />
+    <PackageReference Include="Avalonia" Version="0.9.11" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.11" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.11" />
     <Reference Include="EndianBinaryIO">
       <HintPath>..\Shared Dependencies\EndianBinaryIO.dll</HintPath>
     </Reference>
