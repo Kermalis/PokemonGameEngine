@@ -5,12 +5,12 @@
   <DockPanel>
     <Border DockPanel.Dock="Top" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <StackPanel Spacing="5" Orientation="Horizontal">
-        <Button Content="Add" Command="{Binding AddCommand}" IsEnabled="{Binding AddEnabled}" />
-        <Button Content="Remove" Command="{Binding RemoveCommand}" IsEnabled="{Binding HasSelection}" />
+        <Button Content="Add Connection" Command="{Binding AddCommand}" IsEnabled="{Binding AddEnabled}" />
+        <Button Content="Remove Selected Connection" Command="{Binding RemoveCommand}" IsEnabled="{Binding HasSelection}" />
         <TextBlock Text="{Binding NumConnectionsText}" VerticalAlignment="Center" />
       </StackPanel>
     </Border>
-    <Border Margin="0,2" Padding="2" DockPanel.Dock="Top" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+    <Border DockPanel.Dock="Top" Margin="0,2,0,2" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <StackPanel Spacing="5" Orientation="Horizontal">
         <TextBlock Text="Map:" VerticalAlignment="Center" />
         <ComboBox Items="{x:Static core:Map.Ids}" SelectedIndex="{Binding SelectedMap}" IsEnabled="{Binding HasSelection}" />

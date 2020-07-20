@@ -17,7 +17,7 @@
         </ui:LayoutImage>
       </ScrollViewer>
     </Border>
-    <Border Grid.Column="1" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+    <Border Grid.Column="1" Margin="2,0,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
@@ -38,7 +38,7 @@
         <DockPanel Grid.Row="1">
           <TextBlock DockPanel.Dock="Top" Text="Blockset" />
           <ComboBox DockPanel.Dock="Top" Items="{x:Static core:Blockset.Ids}" SelectedItem="{Binding SelectedBlockset}" />
-          <Border Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+          <Border Margin="0,2,0,0" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
               <ui:BlocksetImage Name="BlocksetImage">
                 <x:Arguments>
