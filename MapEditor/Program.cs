@@ -7,7 +7,7 @@ namespace Kermalis.MapEditor
 {
     internal static class Program
     {
-        public static string AssetPath = @"../../../../PokemonGameEngine/Assets";
+        public const string AssetPath = @"../../../../PokemonGameEngine/Assets";
 
         [STAThread]
         private static void Main()

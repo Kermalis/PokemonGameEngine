@@ -440,7 +440,7 @@ namespace Kermalis.MapEditor.Core
             return m;
         }
 
-        public void Save()
+        internal void Save()
         {
             using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_mapPath, Name + _mapExtension))))
             {

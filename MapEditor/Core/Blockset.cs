@@ -10,9 +10,9 @@ using System.IO;
 
 namespace Kermalis.MapEditor.Core
 {
-    internal sealed class Blockset : IDisposable
+    public sealed class Blockset : IDisposable
     {
-        public sealed class Block
+        internal sealed class Block
         {
             public sealed class Tile
             {
@@ -175,18 +175,18 @@ namespace Kermalis.MapEditor.Core
             }
         }
 
-        public delegate void BlocksetEventHandler(Blockset blockset, Block block);
-        public event BlocksetEventHandler OnAdded;
-        public event BlocksetEventHandler OnChanged;
-        public event BlocksetEventHandler OnRemoved;
+        internal delegate void BlocksetEventHandler(Blockset blockset, Block block);
+        internal event BlocksetEventHandler OnAdded;
+        internal event BlocksetEventHandler OnChanged;
+        internal event BlocksetEventHandler OnRemoved;
 
-        public const int BitmapNumBlocksX = 8;
-        public WriteableBitmap Bitmap;
-        public event EventHandler<EventArgs> OnDrew;
+        internal const int BitmapNumBlocksX = 8;
+        internal WriteableBitmap Bitmap;
+        internal event EventHandler<EventArgs> OnDrew;
 
-        public readonly string Name;
-        public readonly int Id;
-        public List<Block> Blocks;
+        internal readonly string Name;
+        internal readonly int Id;
+        internal readonly List<Block> Blocks;
 
         private Blockset(string name, int id)
         {
@@ -204,7 +204,7 @@ namespace Kermalis.MapEditor.Core
             UpdateBitmapSize();
             DrawAll();
         }
-        public Blockset(string name)
+        internal Blockset(string name)
         {
             Id = Ids.Add(name);
             _loadedBlocksets.Add(Id, new WeakReference<Blockset>(this));
@@ -220,7 +220,7 @@ namespace Kermalis.MapEditor.Core
             Dispose(false);
         }
 
-        public static bool IsValidName(string name)
+        internal static bool IsValidName(string name)
         {
             return !string.IsNullOrWhiteSpace(name) && !Utils.InvalidFileNameRegex.IsMatch(name) && Ids[name] == -1;
         }
@@ -229,7 +229,7 @@ namespace Kermalis.MapEditor.Core
         private static readonly string _blocksetPath = Path.Combine(Program.AssetPath, "Blockset");
         public static IdList Ids { get; } = new IdList(Path.Combine(_blocksetPath, "BlocksetIds.txt"));
         private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new Dictionary<int, WeakReference<Blockset>>();
-        public static Blockset LoadOrGet(string name)
+        internal static Blockset LoadOrGet(string name)
         {
             int id = Ids[name];
             if (id == -1)
@@ -238,7 +238,7 @@ namespace Kermalis.MapEditor.Core
             }
             return LoadOrGet(name, id);
         }
-        public static Blockset LoadOrGet(int id)
+        internal static Blockset LoadOrGet(int id)
         {
             string name = Ids[id];
             if (name == null)
@@ -265,7 +265,7 @@ namespace Kermalis.MapEditor.Core
             return b;
         }
 
-        public void Add()
+        internal void Add()
         {
             var block = new Block(this, Blocks.Count);
             Blocks.Add(block);
@@ -279,7 +279,7 @@ namespace Kermalis.MapEditor.Core
                 DrawOne(block);
             }
         }
-        public static void Clear(Block block)
+        internal static void Clear(Block block)
         {
             byte e = 0;
             while (true)
@@ -298,7 +298,7 @@ namespace Kermalis.MapEditor.Core
             blockset.OnChanged?.Invoke(blockset, block);
             blockset.DrawOne(block);
         }
-        public static void Remove(Block block)
+        internal static void Remove(Block block)
         {
             Blockset blockset = block.Parent;
             blockset.Blocks.Remove(block);
@@ -317,7 +317,7 @@ namespace Kermalis.MapEditor.Core
                 blockset.DrawFrom(block.Id);
             }
         }
-        public void FireChanged(Block block)
+        internal void FireChanged(Block block)
         {
             OnChanged?.Invoke(this, block);
             DrawOne(block);
@@ -411,7 +411,7 @@ namespace Kermalis.MapEditor.Core
             OnDrew?.Invoke(this, EventArgs.Empty);
         }
 
-        public void Save()
+        internal void Save()
         {
             using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_blocksetPath, Name + _blocksetExtension))))
             {
