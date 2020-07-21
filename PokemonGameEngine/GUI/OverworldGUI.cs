@@ -32,17 +32,18 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 return;
             }
-            if (Obj.Player.FinishedMoving)
+            bool check = Obj.Player.FinishedMoving;
+            for (int i = 0; i < count; i++)
+            {
+                list[i].FinishedMoving = false;
+            }
+            if (check) // #12 - Do not return before setting FinishedMoving to false
             {
                 // Check the current tile after moving for a trigger or for the behavior
                 if (CheckForWildBattle())
                 {
                     return;
                 }
-            }
-            for (int i = 0; i < count; i++)
-            {
-                list[i].FinishedMoving = false;
             }
 
             bool down = InputManager.IsDown(Key.Down);
