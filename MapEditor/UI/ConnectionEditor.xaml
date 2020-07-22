@@ -5,8 +5,8 @@
   <DockPanel>
     <Border DockPanel.Dock="Top" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <StackPanel Spacing="5" Orientation="Horizontal">
-        <Button Content="Add Connection" Command="{Binding AddCommand}" IsEnabled="{Binding AddEnabled}" />
-        <Button Content="Remove Selected Connection" Command="{Binding RemoveCommand}" IsEnabled="{Binding HasSelection}" />
+        <Button Content="Add Connection" Command="{Binding AddButton}" IsEnabled="{Binding AddEnabled}" />
+        <Button Content="Remove Selected Connection" Command="{Binding RemoveButton}" IsEnabled="{Binding HasSelection}" />
         <TextBlock Text="{Binding NumConnectionsText}" VerticalAlignment="Center" />
       </StackPanel>
     </Border>

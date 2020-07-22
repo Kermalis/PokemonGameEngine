@@ -11,9 +11,9 @@
     </Grid.RowDefinitions>
     <Border Grid.Row="0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <StackPanel Spacing="5" Orientation="Horizontal">
-        <Button Content="Save Layout" Command="{Binding SaveLayoutCommand}" VerticalAlignment="Center" />
-        <Button Content="Save Map" Command="{Binding SaveMapCommand}" VerticalAlignment="Center" />
-        <Button Content="Blockset Editor" Command="{Binding OpenBlocksetEditorCommand}" VerticalAlignment="Center" />
+        <Button Content="Save Layout" Command="{Binding SaveLayout}" VerticalAlignment="Center" />
+        <Button Content="Save Map" Command="{Binding SaveMap}" VerticalAlignment="Center" />
+        <Button Content="Blockset Editor" Command="{Binding OpenBlocksetEditor}" VerticalAlignment="Center" />
       </StackPanel>
     </Border>
     <Border Margin="0,2,0,0" Padding="2" Grid.Row="1" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">

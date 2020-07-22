@@ -5,11 +5,9 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
-using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reactive;
 
 namespace Kermalis.MapEditor.UI
 {
@@ -20,9 +18,6 @@ namespace Kermalis.MapEditor.UI
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
         public new event PropertyChangedEventHandler PropertyChanged;
-
-        public ReactiveCommand<Unit, Unit> AddCommand { get; }
-        public ReactiveCommand<Unit, Unit> RemoveCommand { get; }
 
         private string _numConnectionsText;
         public string NumConnectionsText
@@ -193,9 +188,6 @@ namespace Kermalis.MapEditor.UI
 
         public ConnectionEditor()
         {
-            AddCommand = ReactiveCommand.Create(AddButton);
-            RemoveCommand = ReactiveCommand.Create(RemoveButton);
-
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
@@ -242,7 +234,7 @@ namespace Kermalis.MapEditor.UI
             UpdateNumConnectionsText();
         }
 
-        private void AddButton()
+        public void AddButton()
         {
             int index = _map.Connections.Count;
             var c = new Map.Connection();
@@ -253,7 +245,7 @@ namespace Kermalis.MapEditor.UI
             UpdateAddEnabled();
             UpdateNumConnectionsText();
         }
-        private void RemoveButton()
+        public void RemoveButton()
         {
             _map.Connections.RemoveAt(_selectedConnection);
             Remove(_selectedConnection + 1);

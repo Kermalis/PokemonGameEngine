@@ -2,10 +2,8 @@
 using Avalonia.Markup.Xaml;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
-using ReactiveUI;
 using System;
 using System.ComponentModel;
-using System.Reactive;
 
 namespace Kermalis.MapEditor.UI
 {
@@ -16,10 +14,6 @@ namespace Kermalis.MapEditor.UI
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
         public new event PropertyChangedEventHandler PropertyChanged;
-
-        public ReactiveCommand<Unit, Unit> SaveLayoutCommand { get; }
-        public ReactiveCommand<Unit, Unit> SaveMapCommand { get; }
-        public ReactiveCommand<Unit, Unit> OpenBlocksetEditorCommand { get; }
 
 #pragma warning disable IDE0069 // Disposable fields should be disposed
         private BlocksetEditor _blocksetEditor;
@@ -52,10 +46,6 @@ namespace Kermalis.MapEditor.UI
 
         public MainWindow()
         {
-            SaveLayoutCommand = ReactiveCommand.Create(SaveLayout);
-            SaveMapCommand = ReactiveCommand.Create(SaveMap);
-            OpenBlocksetEditorCommand = ReactiveCommand.Create(OpenBlocksetEditor);
-
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
@@ -65,7 +55,7 @@ namespace Kermalis.MapEditor.UI
             SelectedMap = Map.Ids[0];
         }
 
-        private void OpenBlocksetEditor()
+        public void OpenBlocksetEditor()
         {
             if (_blocksetEditor != null)
             {
@@ -84,11 +74,11 @@ namespace Kermalis.MapEditor.UI
             _blocksetEditor = null;
         }
 
-        private void SaveLayout()
+        public void SaveLayout()
         {
             _map.MapLayout.Save();
         }
-        private void SaveMap()
+        public void SaveMap()
         {
             _map.Save();
         }
@@ -103,9 +93,6 @@ namespace Kermalis.MapEditor.UI
             _layoutEditor.Dispose();
             _movementEditor.Dispose();
             _connectionEditor.Dispose();
-            SaveLayoutCommand.Dispose();
-            SaveMapCommand.Dispose();
-            OpenBlocksetEditorCommand.Dispose();
             _blocksetEditor?.Close();
             _map.MapLayout.Dispose();
         }

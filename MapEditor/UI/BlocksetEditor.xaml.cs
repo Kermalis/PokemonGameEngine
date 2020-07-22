@@ -6,12 +6,10 @@ using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using Kermalis.PokemonGameEngine.Overworld;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reactive;
 
 namespace Kermalis.MapEditor.UI
 {
@@ -31,11 +29,6 @@ namespace Kermalis.MapEditor.UI
         private readonly BlocksetImage _blocksetImage;
         private readonly ComboBox _subLayerComboBox;
         private readonly ComboBox _eLayerComboBox;
-
-        public ReactiveCommand<Unit, Unit> SaveBlocksetCommand { get; }
-        public ReactiveCommand<Unit, Unit> AddBlockCommand { get; }
-        public ReactiveCommand<Unit, Unit> ClearBlockCommand { get; }
-        public ReactiveCommand<Unit, Unit> RemoveBlockCommand { get; }
 
         private readonly WriteableBitmap _clipboardBitmap;
         private readonly Image _clipboardImage;
@@ -161,11 +154,6 @@ namespace Kermalis.MapEditor.UI
 
         public BlocksetEditor()
         {
-            SaveBlocksetCommand = ReactiveCommand.Create(SaveBlockset);
-            AddBlockCommand = ReactiveCommand.Create(AddBlock);
-            ClearBlockCommand = ReactiveCommand.Create(ClearBlock);
-            RemoveBlockCommand = ReactiveCommand.Create(RemoveBlock);
-
             _clipboardBitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
 
             SubLayers = new ObservableCollection<SubLayerModel>(new List<SubLayerModel>(byte.MaxValue + 1));
@@ -203,19 +191,19 @@ namespace Kermalis.MapEditor.UI
             SelectedTileset = Tileset.Ids[0];
         }
 
-        private void SaveBlockset()
+        public void SaveBlockset()
         {
             _blockset.Save();
         }
-        private void AddBlock()
+        public void AddBlock()
         {
             _blockset.Add();
         }
-        private void ClearBlock()
+        public void ClearBlock()
         {
             Blockset.Clear(_selectedBlock);
         }
-        private void RemoveBlock()
+        public void RemoveBlock()
         {
             if (_selectedBlock.Parent.Blocks.Count == 1)
             {
@@ -514,10 +502,6 @@ namespace Kermalis.MapEditor.UI
             _tilesetImage.SelectionCompleted -= TilesetImage_SelectionCompleted;
             _blocksetImage.Dispose();
             _blocksetImage.SelectionCompleted -= BlocksetImage_SelectionCompleted;
-            SaveBlocksetCommand.Dispose();
-            AddBlockCommand.Dispose();
-            ClearBlockCommand.Dispose();
-            RemoveBlockCommand.Dispose();
         }
     }
 }
