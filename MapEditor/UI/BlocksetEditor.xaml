@@ -3,7 +3,7 @@
         xmlns:core="clr-namespace:Kermalis.MapEditor.Core;assembly=MapEditor"
         xmlns:ui="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
         x:Class="Kermalis.MapEditor.UI.BlocksetEditor"
-        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Block Editor" Padding="5">
+        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Blockset Editor" Padding="5">
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
