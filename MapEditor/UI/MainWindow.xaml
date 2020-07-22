@@ -39,6 +39,11 @@
               <ui:ConnectionEditor Name="ConnectionEditor" />
             </Border>
           </TabItem>
+          <TabItem Header="Encounters">
+            <Border Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+              <ui:EncounterEditor Name="EncounterEditor" />
+            </Border>
+          </TabItem>
         </TabControl>
       </Grid>
     </Border>

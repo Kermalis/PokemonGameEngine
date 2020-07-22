@@ -1,0 +1,78 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:core="clr-namespace:Kermalis.MapEditor.Core;assembly=MapEditor"
+             xmlns:pbedata="clr-namespace:Kermalis.PokemonBattleEngine.Data;assembly=PokemonBattleEngine"
+             x:Class="Kermalis.MapEditor.UI.EncounterEditor" Padding="2">
+  <DockPanel>
+    <TextBlock DockPanel.Dock="Top" Text="Map Encounter Group" />
+    <Border DockPanel.Dock="Top" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Left" Spacing="5" Orientation="Horizontal">
+          <TextBlock Text="Group:" VerticalAlignment="Center" />
+          <ComboBox Items="{Binding GroupNames}" SelectedIndex="{Binding SelectedGroup}" />
+          <Button Content="Add Encounter Group" Command="{Binding AddEncounterGroup}" />
+          <Button Content="Remove Selected Encounter Group" Command="{Binding RemoveEncounterGroup}" />
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Spacing="5" Orientation="Horizontal">
+          <Button Content="Create Encounter Table" Command="{Binding CreateEncounterTable}" />
+        </StackPanel>
+      </DockPanel>
+    </Border>
+    <Border IsVisible="{Binding TableExists}" DockPanel.Dock="Top" Margin="0,2,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+          <StackPanel DockPanel.Dock="Left" Spacing="5" Orientation="Horizontal">
+            <TextBlock Text="Encounter Table:" VerticalAlignment="Center" />
+            <ComboBox Items="{x:Static core:EncounterTable.Ids}" SelectedIndex="{Binding SelectedTable}" />
+          </StackPanel>
+          <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Spacing="5" Orientation="Horizontal">
+            <Button Content="Save Encounter Table" Command="{Binding SaveEncounterTable}" />
+          </StackPanel>
+        </DockPanel>
+        <Border DockPanel.Dock="Top" Margin="0,2,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+          <StackPanel Spacing="5" Orientation="Horizontal">
+            <TextBlock Text="Chance:" VerticalAlignment="Center" />
+            <NumericUpDown Value="{Binding Chance}" Minimum="0" Maximum="255" />
+            <TextBlock Text="{Binding ChanceProbability}" VerticalAlignment="Center" />
+            <Button Content="Add Encounter" Command="{Binding AddEncounter}" IsEnabled="{Binding AddEncounterEnabled}" />
+            <TextBlock Text="{Binding NumEncountersText}" VerticalAlignment="Center" />
+          </StackPanel>
+        </Border>
+        <Border DockPanel.Dock="Top" Margin="0,2,0,0" Padding="2,0,2,2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+          <DockPanel>
+            <TextBlock DockPanel.Dock="Top" Text="Encounters" />
+            <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+              <ItemsControl Items="{Binding Encounters}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border Margin="0,2,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+                      <DockPanel>
+                        <StackPanel DockPanel.Dock="Left" Spacing="5" Orientation="Horizontal">
+                          <TextBlock Text="MinLevel:" VerticalAlignment="Center" />
+                          <NumericUpDown Value="{Binding MinLevel}" Minimum="1" Maximum="100" />
+                          <TextBlock Text="MaxLevel:" Margin="5,0,0,0" VerticalAlignment="Center" />
+                          <NumericUpDown Value="{Binding MaxLevel}" Minimum="1" Maximum="100" />
+                          <TextBlock Text="Species:" Margin="5,0,0,0" VerticalAlignment="Center" />
+                          <ComboBox Items="{x:Static pbedata:PBEDataUtils.AllSpecies}" SelectedItem="{Binding Species}" />
+                          <TextBlock Text="Form:" Margin="5,0,0,0" VerticalAlignment="Center" />
+                          <ComboBox Items="{Binding SelectableForms}" SelectedIndex="{Binding Form}" IsEnabled="{Binding FormsEnabled}" />
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Right" Spacing="5" Orientation="Horizontal" HorizontalAlignment="Right">
+                          <TextBlock Text="Chance:" Margin="5,0,0,0" VerticalAlignment="Center" />
+                          <NumericUpDown Value="{Binding Chance}" Minimum="0" Maximum="255" />
+                          <TextBlock Text="{Binding ChanceProbability}" VerticalAlignment="Center" />
+                          <TextBlock Text="{Binding CombinedProbability}" VerticalAlignment="Center" />
+                          <Button Content="Remove" Command="{Binding Remove}" />
+                        </StackPanel>
+                      </DockPanel>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </ScrollViewer>
+          </DockPanel>
+        </Border>
+      </DockPanel>
+    </Border>
+  </DockPanel>
+</UserControl>

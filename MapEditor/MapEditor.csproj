@@ -22,11 +22,20 @@
       <SubType>Designer</SubType>
     </AvaloniaResource>
     <Compile Include="..\PokemonGameEngine\Overworld\OverworldEnums.cs" Link="Core\OverworldEnums.cs" />
+    <Content Include="..\Shared Dependencies\PokemonBattleEngine.db">
+      <Link>PokemonBattleEngine.db</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <PackageReference Include="Avalonia" Version="0.9.11" />
     <PackageReference Include="Avalonia.Desktop" Version="0.9.11" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.11" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.4" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.3" />
     <Reference Include="EndianBinaryIO">
       <HintPath>..\Shared Dependencies\EndianBinaryIO.dll</HintPath>
+    </Reference>
+    <Reference Include="PokemonBattleEngine">
+      <HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   

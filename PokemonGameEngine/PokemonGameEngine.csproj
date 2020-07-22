@@ -25,11 +25,10 @@
     <EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
       <Link>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</Link>
     </EmbeddedResource>
-    <Content Include="Dependencies\PokemonBattleEngine.db">
+    <Content Include="..\Shared Dependencies\PokemonBattleEngine.db">
       <Link>PokemonBattleEngine.db</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Remove="Dependencies\**" />
     <PackageReference Include="Avalonia" Version="0.9.11" />
     <PackageReference Include="Avalonia.Desktop" Version="0.9.11" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.4" />
@@ -39,7 +38,7 @@
       <HintPath>..\Shared Dependencies\EndianBinaryIO.dll</HintPath>
     </Reference>
     <Reference Include="PokemonBattleEngine">
-      <HintPath>Dependencies\PokemonBattleEngine.dll</HintPath>
+      <HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   

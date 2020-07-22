@@ -163,7 +163,7 @@ namespace Kermalis.MapEditor.Core
             public static Layout LoadOrGet(int id)
             {
                 string name = Ids[id];
-                if (name == null)
+                if (name is null)
                 {
                     throw new ArgumentOutOfRangeException(nameof(id));
                 }
@@ -372,6 +372,7 @@ namespace Kermalis.MapEditor.Core
         internal readonly int Id;
 
         internal readonly Layout MapLayout;
+        internal readonly EncounterGroups Encounters;
         internal readonly List<Connection> Connections;
 
         private Map(string name, int id)
@@ -379,6 +380,7 @@ namespace Kermalis.MapEditor.Core
             using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(_mapPath, name + _mapExtension))))
             {
                 MapLayout = Layout.LoadOrGet(r.ReadInt32());
+                Encounters = new EncounterGroups(r);
                 int numConnections = r.ReadByte();
                 Connections = new List<Connection>(numConnections);
                 for (int i = 0; i < numConnections; i++)
@@ -394,6 +396,7 @@ namespace Kermalis.MapEditor.Core
             Id = Ids.Add(name);
             _loadedMaps.Add(Id, new WeakReference<Map>(this));
             MapLayout = layout;
+            Encounters = new EncounterGroups();
             Connections = new List<Connection>();
             Name = name;
             Save();
@@ -445,6 +448,7 @@ namespace Kermalis.MapEditor.Core
             using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_mapPath, Name + _mapExtension))))
             {
                 w.Write(MapLayout.Id);
+                Encounters.Write(w);
                 byte numConnections = (byte)Connections.Count;
                 w.Write(numConnections);
                 for (int i = 0; i < numConnections; i++)

@@ -27,6 +27,20 @@ namespace Kermalis.PokemonGameEngine.Overworld
         Northeast = 128
     }
 
+    // More can be added easily but this is all I'll have for testing
+    public enum EncounterType : byte
+    {
+        Default,
+        Surf,
+        SuperRod,
+        DarkGrass,
+        RareDefault, // Rustling Grass & Dust Clouds
+        RareSurf, // Rippling Water
+        RareSuperRod, // Rippling Water
+        HeadbuttTree,
+        HoneyTree
+    }
+
     public enum BlocksetBlockBehavior : byte
     {
         None,
@@ -34,7 +48,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         Sign_AutoStartScript,
         Warp_WalkSouthOnExit,
         Warp_Teleport,
-        WildBattle,
+        WildEncounter,
         Surf,
         Waterfall,
         Ledge_S,
@@ -60,6 +74,9 @@ namespace Kermalis.PokemonGameEngine.Overworld
         Spin_SW,
         Spin_SE,
         Spin_NW,
-        Spin_NE
+        Spin_NE,
+        DarkGrass,
+        HeadbuttTree,
+        HoneyTree
     }
 }

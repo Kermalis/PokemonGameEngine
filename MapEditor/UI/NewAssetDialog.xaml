@@ -1,0 +1,12 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Kermalis.MapEditor.UI.NewAssetDialog"
+        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Pokémon Game Engine Map Editor - New Asset" Padding="5">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Spacing="5" Orientation="Horizontal">
+            <Button Content="Okay" Command="{Binding OkClicked}" IsEnabled="{Binding OkEnabled}" />
+            <Button Content="Cancel" Command="{Binding CancelClicked}" />
+        </StackPanel>
+        <TextBox Watermark="AssetName" AcceptsReturn="False" AcceptsTab="False" Name="TextBox" HorizontalAlignment="Center" VerticalAlignment="Center" />
+    </DockPanel>
+</Window>

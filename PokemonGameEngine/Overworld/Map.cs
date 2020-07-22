@@ -221,6 +221,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         }
 
         private readonly Layout _layout;
+        public readonly EncounterGroups Encounters;
         private readonly Connection[] _connections;
 
         public readonly List<Obj> Objs = new List<Obj>();
@@ -230,6 +231,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             using (var r = new EndianBinaryReader(Utils.GetResourceStream(_mapPath + name + _mapExtension)))
             {
                 _layout = Layout.LoadOrGet(r.ReadInt32());
+                Encounters = new EncounterGroups(r);
                 int numConnections = r.ReadByte();
                 _connections = new Connection[numConnections];
                 for (int i = 0; i < numConnections; i++)
@@ -246,7 +248,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         public static Map LoadOrGet(int id)
         {
             string name = _ids[id];
-            if (name == null)
+            if (name is null)
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
             }

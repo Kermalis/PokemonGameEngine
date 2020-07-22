@@ -5,7 +5,6 @@ using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Overworld;
 using Kermalis.PokemonGameEngine.Pkmn;
-using Kermalis.PokemonGameEngine.Pkmn.Wild;
 using System.Threading;
 
 namespace Kermalis.PokemonGameEngine.Game
@@ -21,6 +20,7 @@ namespace Kermalis.PokemonGameEngine.Game
 
         static Game()
         {
+            Save _ = Save.Instance; // Load/initialize Save
             var map = Map.LoadOrGet(0);
             const int x = 2;
             const int y = 12;
@@ -46,11 +46,12 @@ namespace Kermalis.PokemonGameEngine.Game
         }
 
         // Temp - start a test wild battle
-        public static void TempCreateBattle()
+        public static void TempCreateBattle(EncounterTable.Encounter encounter)
         {
-            var encounter = WildEncounter.GetTestEncounter();
-            var me = new PBETrainerInfo(new Party { PartyPokemon.GetTestPokemon(PBESpecies.Skitty, 0) }, "Dawn");
-            var wild = new PBETrainerInfo(new Party { PartyPokemon.GetTestWildPokemon(encounter) }, "WILD");
+            Save sav = Save.Instance;
+            var me = new PBETrainerInfo(sav.PlayerParty, sav.PlayerName);
+            var wildPkmn = PartyPokemon.GetTestWildPokemon(encounter);
+            var wild = new PBETrainerInfo(new Party { wildPkmn }, "Wild " + PBELocalizedString.GetSpeciesName(wildPkmn.Species).English);
             void OnBattleEnded()
             {
                 _battleGUI = null;

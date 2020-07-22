@@ -1,0 +1,12 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Kermalis.MapEditor.UI.SelectSomethingDialog"
+        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Pokémon Game Engine Map Editor - Select Item" Padding="5">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Spacing="5" Orientation="Horizontal">
+            <Button Content="Okay" Command="{Binding OkClicked}" />
+            <Button Content="Cancel" Command="{Binding CancelClicked}" />
+        </StackPanel>
+        <ComboBox Items="{Binding Items}" SelectedItem="{Binding SelectedItem}" SelectedIndex="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+    </DockPanel>
+</Window>

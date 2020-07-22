@@ -88,7 +88,7 @@ namespace Kermalis.MapEditor.Core
         internal static Tileset LoadOrGet(int id)
         {
             string name = Ids[id];
-            if (name == null)
+            if (name is null)
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
             }

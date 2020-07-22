@@ -220,11 +220,6 @@ namespace Kermalis.MapEditor.Core
             Dispose(false);
         }
 
-        internal static bool IsValidName(string name)
-        {
-            return !string.IsNullOrWhiteSpace(name) && !Utils.InvalidFileNameRegex.IsMatch(name) && Ids[name] == -1;
-        }
-
         private const string _blocksetExtension = ".pgeblockset";
         private static readonly string _blocksetPath = Path.Combine(Program.AssetPath, "Blockset");
         public static IdList Ids { get; } = new IdList(Path.Combine(_blocksetPath, "BlocksetIds.txt"));
@@ -241,7 +236,7 @@ namespace Kermalis.MapEditor.Core
         internal static Blockset LoadOrGet(int id)
         {
             string name = Ids[id];
-            if (name == null)
+            if (name is null)
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
             }

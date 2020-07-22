@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Utils;
-using Kermalis.PokemonGameEngine.Input;
+﻿using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Overworld;
 using Kermalis.PokemonGameEngine.Render;
 using System.Collections.Generic;
@@ -8,18 +7,6 @@ namespace Kermalis.PokemonGameEngine.GUI
 {
     internal sealed class OverworldGUI
     {
-        private const int TempWildBattleRate = 10;
-
-        private bool CheckForWildBattle()
-        {
-            bool ret = Map.GetBlock(Obj.Player).BlocksetBlock.Behavior == BlocksetBlockBehavior.WildBattle && PBEUtils.GlobalRandom.RandomBool(TempWildBattleRate, 100);
-            if (ret)
-            {
-                Game.Game.TempCreateBattle();
-            }
-            return ret;
-        }
-
         public void LogicTick()
         {
             List<Obj> list = Obj.LoadedObjs;
@@ -40,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             if (check) // #12 - Do not return before setting FinishedMoving to false
             {
                 // Check the current tile after moving for a trigger or for the behavior
-                if (CheckForWildBattle())
+                if (Overworld.Overworld.CheckForWildBattle(false))
                 {
                     return;
                 }

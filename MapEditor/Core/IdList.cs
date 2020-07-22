@@ -73,7 +73,7 @@ namespace Kermalis.MapEditor.Core
                 }
             }
             _entries.Add(key);
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, key));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, key, count));
             return count;
         }
 

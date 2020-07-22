@@ -97,7 +97,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         public static Blockset LoadOrGet(int id)
         {
             string name = _ids[id];
-            if (name == null)
+            if (name is null)
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
             }

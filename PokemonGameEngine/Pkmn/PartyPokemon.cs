@@ -1,7 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonBattleEngine.Utils;
-using Kermalis.PokemonGameEngine.Pkmn.Wild;
+using Kermalis.PokemonGameEngine.Overworld;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Pkmn
@@ -80,7 +80,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             return GetTest(species, form, PBESettings.DefaultMaxLevel);
         }
-        public static PartyPokemon GetTestWildPokemon(WildEncounter encounter)
+        public static PartyPokemon GetTestWildPokemon(EncounterTable.Encounter encounter)
         {
             return GetTest(encounter.Species, encounter.Form, (byte)PBEUtils.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel));
         }

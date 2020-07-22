@@ -1,0 +1,9 @@
+TestEncountersDefaultC
+TestEncountersSurfC
+TestEncountersSuperRodC
+TestEncountersDarkGrassC
+TestEncountersRareDefaultC
+TestEncountersRareSurfC
+TestEncountersRareSuperRodC
+TestEncountersHeadbuttTree
+TestEncountersHoneyTree
