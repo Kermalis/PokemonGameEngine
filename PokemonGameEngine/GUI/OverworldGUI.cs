@@ -37,54 +37,51 @@ namespace Kermalis.PokemonGameEngine.GUI
             bool up = InputManager.IsDown(Key.Up);
             bool left = InputManager.IsDown(Key.Left);
             bool right = InputManager.IsDown(Key.Right);
-            if (down || up || left || right)
+            if (!down && !up && !left && !right)
             {
-                Obj.FacingDirection facing;
-                if (down)
+                return;
+            }
+            Obj.FacingDirection facing;
+            if (down)
+            {
+                if (left)
                 {
-                    if (left)
-                    {
-                        facing = Obj.FacingDirection.Southwest;
-                    }
-                    else if (right)
-                    {
-                        facing = Obj.FacingDirection.Southeast;
-                    }
-                    else
-                    {
-                        facing = Obj.FacingDirection.South;
-                    }
+                    facing = Obj.FacingDirection.Southwest;
                 }
-                else if (up)
+                else if (right)
                 {
-                    if (left)
-                    {
-                        facing = Obj.FacingDirection.Northwest;
-                    }
-                    else if (right)
-                    {
-                        facing = Obj.FacingDirection.Northeast;
-                    }
-                    else
-                    {
-                        facing = Obj.FacingDirection.North;
-                    }
-                }
-                else if (left)
-                {
-                    facing = Obj.FacingDirection.West;
+                    facing = Obj.FacingDirection.Southeast;
                 }
                 else
                 {
-                    facing = Obj.FacingDirection.East;
-                }
-                bool run = InputManager.IsDown(Key.B);
-                // TODO: Lock camera at a specific xy offset away from the player
-                if (Obj.Player.Move(facing, run))
-                {
-                    Obj.Camera.CopyXY(Obj.Player);
+                    facing = Obj.FacingDirection.South;
                 }
             }
+            else if (up)
+            {
+                if (left)
+                {
+                    facing = Obj.FacingDirection.Northwest;
+                }
+                else if (right)
+                {
+                    facing = Obj.FacingDirection.Northeast;
+                }
+                else
+                {
+                    facing = Obj.FacingDirection.North;
+                }
+            }
+            else if (left)
+            {
+                facing = Obj.FacingDirection.West;
+            }
+            else
+            {
+                facing = Obj.FacingDirection.East;
+            }
+            bool run = InputManager.IsDown(Key.B);
+            Obj.Player.Move(facing, run, false);
         }
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)

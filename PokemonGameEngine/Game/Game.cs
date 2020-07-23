@@ -24,14 +24,13 @@ namespace Kermalis.PokemonGameEngine.Game
             var map = Map.LoadOrGet(0);
             const int x = 2;
             const int y = 12;
-            Obj.Camera.X = x;
-            Obj.Camera.Y = y;
-            Obj.Camera.Map = map;
-            map.Objs.Add(Obj.Camera);
             Obj.Player.X = x;
             Obj.Player.Y = y;
             Obj.Player.Map = map;
             map.Objs.Add(Obj.Player);
+            Obj.Camera.Map = map;
+            map.Objs.Add(Obj.Camera);
+            Obj.CameraCopyMovement();
             _overworldGUI = new OverworldGUI();
             new Thread(LogicThreadMainLoop) { Name = "Logic Thread" }.Start();
         }
