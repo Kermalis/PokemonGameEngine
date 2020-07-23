@@ -68,6 +68,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 Level = level,
                 Item = PBEUtils.GlobalRandom.RandomElement(PBEDataUtils.GetValidItems(species, form)),
                 Ability = PBEUtils.GlobalRandom.RandomElement(pData.Abilities),
+                Gender = PBEUtils.GlobalRandom.RandomGender(pData.GenderRatio),
                 Nature = PBEUtils.GlobalRandom.RandomElement(PBEDataUtils.AllNatures),
                 EffortValues = new EVs(),
                 IndividualValues = new IVs()
