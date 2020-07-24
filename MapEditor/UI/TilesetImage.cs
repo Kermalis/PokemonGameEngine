@@ -136,7 +136,7 @@ namespace Kermalis.MapEditor.UI
                     var arrY = new Tileset.Tile[_selection.Width];
                     for (int x = 0; x < _selection.Width; x++)
                     {
-                        int index = x + _selection.X + ((y + _selection.Y) * Tileset.BitmapNumTilesX);
+                        int index = x + _selection.X + ((y + _selection.Y) * _tileset.BitmapNumTilesX);
                         arrY[x] = (index >= _tileset.Tiles.Length) ? null : _tileset.Tiles[index];
                     }
                     tiles[y] = arrY;

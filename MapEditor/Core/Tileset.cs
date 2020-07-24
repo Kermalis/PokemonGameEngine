@@ -24,7 +24,7 @@ namespace Kermalis.MapEditor.Core
             }
         }
 
-        internal const int BitmapNumTilesX = 16;
+        internal readonly int BitmapNumTilesX;
         internal readonly WriteableBitmap Bitmap;
 
         internal readonly string Name;
@@ -33,7 +33,8 @@ namespace Kermalis.MapEditor.Core
 
         private unsafe Tileset(string name, int id)
         {
-            uint[][][] t = RenderUtil.LoadSpriteSheet(Path.Combine(_tilesetPath, name + _tilesetExtension), 8, 8);
+            uint[][][] t = RenderUtil.LoadSpriteSheet(Path.Combine(_tilesetPath, name + _tilesetExtension), 8, 8, out int bmpWidth, out int bmpHeight);
+            BitmapNumTilesX = bmpWidth / 8;
             Tiles = new Tile[t.Length];
             for (int i = 0; i < Tiles.Length; i++)
             {
@@ -42,9 +43,6 @@ namespace Kermalis.MapEditor.Core
             Name = name;
             Id = id;
             // Draw
-            int numTilesY = (Tiles.Length / BitmapNumTilesX) + (Tiles.Length % BitmapNumTilesX != 0 ? 1 : 0);
-            const int bmpWidth = BitmapNumTilesX * 8;
-            int bmpHeight = numTilesY * 8;
             Bitmap = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Bgra8888);
             using (ILockedFramebuffer l = Bitmap.Lock())
             {

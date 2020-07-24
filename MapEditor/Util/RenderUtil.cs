@@ -6,7 +6,7 @@ namespace Kermalis.MapEditor.Util
 {
     internal sealed class RenderUtil
     {
-        public static unsafe uint[][][] LoadSpriteSheet(string fileName, int spriteWidth, int spriteHeight)
+        public static unsafe uint[][][] LoadSpriteSheet(string fileName, int spriteWidth, int spriteHeight, out int sheetWidth, out int sheetHeight)
         {
             var bmp = new Bitmap(fileName);
             using (var wb = new WriteableBitmap(bmp.PixelSize, bmp.Dpi, PixelFormat.Bgra8888))
@@ -23,8 +23,10 @@ namespace Kermalis.MapEditor.Util
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
                     PixelSize ps = wb.PixelSize;
-                    int numSpritesX = ps.Width / spriteWidth;
-                    int numSpritesY = ps.Height / spriteHeight;
+                    sheetWidth = ps.Width;
+                    sheetHeight = ps.Height;
+                    int numSpritesX = sheetWidth / spriteWidth;
+                    int numSpritesY = sheetHeight / spriteHeight;
                     sprites = new uint[numSpritesX * numSpritesY][][];
                     int sprite = 0;
                     for (int sy = 0; sy < numSpritesY; sy++)
@@ -37,7 +39,7 @@ namespace Kermalis.MapEditor.Util
                                 uint[] arrX = new uint[spriteWidth];
                                 for (int px = 0; px < spriteWidth; px++)
                                 {
-                                    arrX[px] = *(bmpAddress + ((sx * spriteWidth) + px) + (((sy * spriteHeight) + py) * ps.Width));
+                                    arrX[px] = *(bmpAddress + ((sx * spriteWidth) + px) + (((sy * spriteHeight) + py) * sheetWidth));
                                 }
                                 arrY[py] = arrX;
                             }
