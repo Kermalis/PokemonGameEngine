@@ -35,22 +35,49 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public IVs IndividualValues { get; set; }
         IPBEReadOnlyStatCollection IPBEPokemon.IndividualValues => IndividualValues;
 
+        private void SetMaxHP(PBEPokemonData pData)
+        {
+            HP = PBEDataUtils.CalculateStat(pData, PBEStat.HP, Nature, EffortValues.HP, IndividualValues.HP, Level, PBESettings.DefaultSettings);
+        }
+        public void SetMaxHP()
+        {
+            var pData = PBEPokemonData.GetData(Species, Form);
+            SetMaxHP(pData);
+        }
+        public void HealStatus()
+        {
+            Status1 = PBEStatus1.None;
+            SleepTurns = 0;
+        }
+        public void HealMoves()
+        {
+            for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
+            {
+                Moveset[i].SetMaxPP();
+            }
+        }
+        public void HealFully()
+        {
+            SetMaxHP();
+            HealStatus();
+            HealMoves();
+        }
+
         public void RandomizeMoves()
         {
             var moves = new List<PBEMove>(PBELegalityChecker.GetLegalMoves(Species, Form, Level, PBESettings.DefaultSettings));
-            int i = 0;
-            for (; i < Moveset.Count; i++)
+            for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
             {
                 Moveset[i].Clear();
             }
-            for (i = 0; i < Moveset.Count && moves.Count > 0; i++)
+            for (int i = 0; i < PBESettings.DefaultNumMoves && moves.Count > 0; i++)
             {
                 Moveset.MovesetSlot slot = Moveset[i];
                 PBEMove move = PBEUtils.GlobalRandom.RandomElement(moves);
                 moves.Remove(move);
                 slot.Move = move;
                 slot.PPUps = 0;
-                slot.PP = PBEDataUtils.CalcMaxPP(move, slot.PPUps, PBESettings.DefaultSettings);
+                slot.SetMaxPP();
             }
         }
 
@@ -73,13 +100,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 EffortValues = new EVs(),
                 IndividualValues = new IVs()
             };
-            p.HP = PBEDataUtils.CalculateStat(pData, PBEStat.HP, p.Nature, p.EffortValues.HP, p.IndividualValues.HP, p.Level, PBESettings.DefaultSettings);
+            p.SetMaxHP(pData);
             p.RandomizeMoves();
             return p;
         }
-        public static PartyPokemon GetTestPokemon(PBESpecies species, PBEForm form)
+        public static PartyPokemon GetTestPokemon(PBESpecies species, PBEForm form, byte level)
         {
-            return GetTest(species, form, PBESettings.DefaultMaxLevel);
+            return GetTest(species, form, level);
         }
         public static PartyPokemon GetTestWildPokemon(EncounterTable.Encounter encounter)
         {

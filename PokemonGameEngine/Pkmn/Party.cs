@@ -18,6 +18,14 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             _slots.Add(pkmn);
         }
 
+        public void HealFully()
+        {
+            foreach (PartyPokemon pkmn in _slots)
+            {
+                pkmn.HealFully();
+            }
+        }
+
         public IEnumerator<PartyPokemon> GetEnumerator()
         {
             return _slots.GetEnumerator();

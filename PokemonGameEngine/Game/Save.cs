@@ -13,7 +13,13 @@ namespace Kermalis.PokemonGameEngine.Game
         private Save()
         {
             PlayerName = "Dawn";
-            PlayerParty = new Party() { PartyPokemon.GetTestPokemon(PBESpecies.Skitty, 0) };
+            PlayerParty = new Party() { PartyPokemon.GetTestPokemon(PBESpecies.Skitty, 0, PBESettings.DefaultMaxLevel) };
+        }
+
+        // TODO: If party is full, send to a box, if boxes are full, error
+        public void GivePokemon(PartyPokemon pkmn)
+        {
+            PlayerParty.Add(pkmn);
         }
     }
 }

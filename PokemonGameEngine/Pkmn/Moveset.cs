@@ -18,6 +18,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 PP = 0;
                 PPUps = 0;
             }
+
+            public void SetMaxPP()
+            {
+                PP = PBEDataUtils.CalcMaxPP(Move, PPUps, PBESettings.DefaultSettings);
+            }
         }
 
         private readonly MovesetSlot[] _slots;

@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Overworld;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Script;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.GUI
@@ -31,6 +32,16 @@ namespace Kermalis.PokemonGameEngine.GUI
                 {
                     return;
                 }
+            }
+
+            if (InputManager.IsPressed(Key.A)) // Temporary
+            {
+                ScriptContext ctx = ScriptLoader.LoadScript("TestScript");
+                while (!ctx.TempDone)
+                {
+                    ctx.RunNextCommand();
+                }
+                return;
             }
 
             bool down = InputManager.IsDown(Key.Down);
