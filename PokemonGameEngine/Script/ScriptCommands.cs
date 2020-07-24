@@ -23,6 +23,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.GivePokemonForm: GivePokemonFormCommand(); break;
                 case ScriptCommand.GivePokemonFormItem: GivePokemonFormItemCommand(); break;
                 case ScriptCommand.MoveObj: MoveObjCommand(); break;
+                case ScriptCommand.AwaitObjMovement: AwaitObjMovementCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -86,10 +87,28 @@ namespace Kermalis.PokemonGameEngine.Script
         private void MoveObjCommand()
         {
             ushort id = _reader.ReadUInt16();
-            uint offset = _reader.ReadUInt16();
-            // Temp ignore the args
-            Obj obj = Obj.Player;
-            obj.Move(Obj.FacingDirection.South, false, true);
+            uint offset = _reader.ReadUInt32();
+            _callStack.Push(_reader.BaseStream.Position);
+            _reader.BaseStream.Position = offset;
+            var obj = Obj.GetObj(id);
+            while (true)
+            {
+                ScriptMovement m = _reader.ReadEnum<ScriptMovement>();
+                if (m == ScriptMovement.End)
+                {
+                    break;
+                }
+                obj.QueuedScriptMovements.Enqueue(m);
+            }
+            _reader.BaseStream.Position = _callStack.Pop();
+            obj.RunNextScriptMovement();
+        }
+
+        private void AwaitObjMovementCommand()
+        {
+            ushort id = _reader.ReadUInt16();
+            var obj = Obj.GetObj(id);
+            _waitMovementObj = obj;
         }
     }
 }

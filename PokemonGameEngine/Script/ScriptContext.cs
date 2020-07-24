@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonGameEngine.Overworld;
 using System;
 using System.Collections.Generic;
 
@@ -8,16 +9,56 @@ namespace Kermalis.PokemonGameEngine.Script
     {
         private readonly EndianBinaryReader _reader;
         private readonly Stack<long> _callStack = new Stack<long>();
-        public bool TempDone;
+        private bool _isDisposed;
+        private int _delay;
+        private Obj _waitMovementObj;
 
         public ScriptContext(EndianBinaryReader r)
         {
             _reader = r;
         }
 
+        private bool ShouldLeaveLogicTick(bool update)
+        {
+            if (_isDisposed)
+            {
+                return true;
+            }
+            if (_delay != 0)
+            {
+                if (update)
+                {
+                    _delay--;
+                }
+                return true;
+            }
+            if (_waitMovementObj != null)
+            {
+                if (!_waitMovementObj.CanMove)
+                {
+                    return true;
+                }
+                if (update)
+                {
+                    _waitMovementObj = null;
+                }
+            }
+            return false;
+        }
+        public void LogicTick()
+        {
+            bool update = true;
+            while (!ShouldLeaveLogicTick(update))
+            {
+                update = false;
+                RunNextCommand();
+            }
+        }
+
         public void Dispose()
         {
-            TempDone = true;
+            _isDisposed = true;
+            Game.Game.Scripts.Remove(this);
             _reader.Dispose();
         }
     }

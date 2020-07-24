@@ -5,6 +5,8 @@ using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Overworld;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Script;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Kermalis.PokemonGameEngine.Game
@@ -12,6 +14,8 @@ namespace Kermalis.PokemonGameEngine.Game
     internal static class Game
     {
         private const int NumTicksPerSecond = 20;
+
+        public static readonly List<ScriptContext> Scripts = new List<ScriptContext>();
 
         private static readonly OverworldGUI _overworldGUI;
         private static FadeFromColorTransition _fadeFromTransition;
@@ -24,6 +28,15 @@ namespace Kermalis.PokemonGameEngine.Game
             var map = Map.LoadOrGet(0);
             const int x = 2;
             const int y = 12;
+            for (int i = 1; i < 6; i++)
+            {
+                var o = new Obj((ushort)(Obj.CameraId - i), "TestNPC.png", 32, 32)
+                {
+                    X = x + i,
+                    Y = y + i
+                };
+                map.Objs.Add(o);
+            }
             Obj.Player.X = x;
             Obj.Player.Y = y;
             Obj.Player.Map = map;

@@ -30,7 +30,7 @@ namespace Kermalis.PokemonGameEngine.Script
             return new EndianBinaryReader(Utils.GetResourceStream(_scriptFile), encoding: EncodingType.UTF16);
         }
 
-        public static ScriptContext LoadScript(string label)
+        public static void LoadScript(string label)
         {
             if (!_globalScriptOffsets.TryGetValue(label, out uint offset))
             {
@@ -38,7 +38,7 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             EndianBinaryReader r = GetReader();
             r.BaseStream.Position = offset;
-            return new ScriptContext(r);
+            Game.Game.Scripts.Add(new ScriptContext(r));
         }
     }
 }

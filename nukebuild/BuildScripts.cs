@@ -25,6 +25,7 @@ public sealed partial class Build
     private const string CommentChars = "//";
     private const string LocalLabelChars = "#";
     private const string GlobalLabelChars = "@";
+    private const string MovementPrefix = "M.";
 
     private static readonly Dictionary<Type, string> _enumDefines = new Dictionary<Type, string>()
     {
@@ -84,17 +85,6 @@ public sealed partial class Build
         }
     }
 
-    // Write an enum like "Species.Bulbasaur"
-    private void WriteEnum(Type argType, string prefix, string str)
-    {
-        if (str.StartsWith(prefix))
-        {
-            str = str.Substring(prefix.Length);
-            _writer.Write((Enum)Enum.Parse(argType, str));
-            return;
-        }
-        throw new Exception($"Failed to parse enum of type \"{argType}\"");
-    }
     private void WriteArg(Type argType, string str)
     {
         switch (argType.FullName)
@@ -115,12 +105,18 @@ public sealed partial class Build
             }
             default:
             {
+                // Write an enum like "Species.Bulbasaur"
                 if (!_enumDefines.TryGetValue(argType, out string prefix))
                 {
                     throw new ArgumentOutOfRangeException(nameof(argType));
                 }
-                WriteEnum(argType, prefix, str);
-                break;
+                if (str.StartsWith(prefix))
+                {
+                    str = str.Substring(prefix.Length);
+                    _writer.Write((Enum)Enum.Parse(argType, str));
+                    break;
+                }
+                throw new Exception($"Failed to parse enum of type \"{argType}\"");
             }
         }
     }
@@ -143,6 +139,12 @@ public sealed partial class Build
         {
             if (readingCmd)
             {
+                if (str.StartsWith(MovementPrefix))
+                {
+                    str = str.Substring(MovementPrefix.Length);
+                    _writer.Write((ScriptMovement)Enum.Parse(typeof(ScriptMovement), str));
+                    return;
+                }
                 foreach (ScriptCommand cmd in ScriptBuilderHelper.Commands)
                 {
                     if (str == cmd.ToString())

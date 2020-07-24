@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Overworld
 {
-    internal sealed class Obj
+    // Script movements handled in Script/ScriptMovements.cs
+    internal sealed partial class Obj
     {
         public enum FacingDirection : byte
         {
@@ -38,9 +39,9 @@ namespace Kermalis.PokemonGameEngine.Overworld
         public Map Map;
 
         public bool CanMove = true; // Not too thought-out, so I'll probably end up removing it when scripting/waterfall/currents/spin tiles etc are implemented
-        public bool FinishedMoving = false;
         private float _movementTimer;
         private float _movementSpeed;
+        private const float _faceMovementSpeed = 1 / 3f;
         private const float _normalMovementSpeed = 1 / 6f;
         private const float _runningMovementSpeed = 1 / 4f;
         private const float _diagonalMovementSpeedModifier = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
@@ -266,6 +267,18 @@ namespace Kermalis.PokemonGameEngine.Overworld
             return success;
         }
 
+        public void Face(FacingDirection facing)
+        {
+            CanMove = false;
+            _movementTimer = 1;
+            _movementSpeed = _faceMovementSpeed;
+            _leg = !_leg;
+            Facing = facing;
+            PrevX = X;
+            PrevY = Y;
+            UpdateXYOffsets();
+        }
+
         private void UpdateXYOffsets()
         {
             float t = _movementTimer;
@@ -274,18 +287,26 @@ namespace Kermalis.PokemonGameEngine.Overworld
         }
         public void UpdateMovementTimer()
         {
-            if (_movementTimer > 0)
+            if (_movementTimer <= 0)
             {
-                _movementTimer -= _movementSpeed;
-                if (_movementTimer <= 0)
-                {
-                    _movementTimer = 0;
-                    // TODO: Keep going for currents/waterfall/spin tiles
-                    CanMove = true;
-                    FinishedMoving = true;
-                }
-                UpdateXYOffsets();
+                return;
             }
+            _movementTimer -= _movementSpeed;
+            if (_movementTimer <= 0)
+            {
+                _movementTimer = 0;
+                UpdateXYOffsets();
+                // Check if we have queued movements
+                if (QueuedScriptMovements.Count > 0)
+                {
+                    RunNextScriptMovement();
+                    return;
+                }
+                // TODO: Check if we should keep going for currents/waterfall/spin tiles
+                CanMove = true;
+                return;
+            }
+            UpdateXYOffsets();
         }
         public static void CameraCopyMovement()
         {
@@ -314,6 +335,18 @@ namespace Kermalis.PokemonGameEngine.Overworld
             PrevY = other.PrevY;
             XOffset = other.XOffset;
             YOffset = other.YOffset;
+        }
+
+        public static Obj GetObj(ushort id)
+        {
+            foreach (Obj o in LoadedObjs)
+            {
+                if (o.Id == id)
+                {
+                    return o;
+                }
+            }
+            return null;
         }
 
         // TODO: Shadows, reflections

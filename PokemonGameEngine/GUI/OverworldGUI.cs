@@ -8,6 +8,8 @@ namespace Kermalis.PokemonGameEngine.GUI
 {
     internal sealed class OverworldGUI
     {
+        private bool _shouldRunTriggers;
+
         public void LogicTick()
         {
             List<Obj> list = Obj.LoadedObjs;
@@ -20,27 +22,24 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 return;
             }
-            bool check = Obj.Player.FinishedMoving;
-            for (int i = 0; i < count; i++)
+            // Check the current block after moving for a trigger or for the behavior
+            if (_shouldRunTriggers)
             {
-                list[i].FinishedMoving = false;
-            }
-            if (check) // #12 - Do not return before setting FinishedMoving to false
-            {
-                // Check the current tile after moving for a trigger or for the behavior
+                _shouldRunTriggers = false; // #12 - Do not return before setting FinishedMoving to false
                 if (Overworld.Overworld.CheckForWildBattle(false))
                 {
                     return;
                 }
             }
 
-            if (InputManager.IsPressed(Key.A)) // Temporary
+            foreach (ScriptContext ctx in Game.Game.Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
             {
-                ScriptContext ctx = ScriptLoader.LoadScript("TestScript");
-                while (!ctx.TempDone)
-                {
-                    ctx.RunNextCommand();
-                }
+                ctx.LogicTick();
+            }
+
+            if (Game.Game.Scripts.Count == 0 && InputManager.IsPressed(Key.A)) // Temporary
+            {
+                ScriptLoader.LoadScript("TestScript");
                 return;
             }
 
