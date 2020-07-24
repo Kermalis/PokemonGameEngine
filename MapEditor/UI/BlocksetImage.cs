@@ -30,7 +30,9 @@ namespace Kermalis.MapEditor.UI
                     value.OnAdded += Blockset_OnAddedRemoved;
                     value.OnRemoved += Blockset_OnAddedRemoved;
                     value.OnDrew += Blockset_OnDrew;
-                    ResetSelection();
+                    _isSelecting = false;
+                    _selection.Start(0, 0, 1, 1);
+                    FireSelectionCompleted();
                     InvalidateMeasure();
                     InvalidateVisual();
                 }
@@ -42,6 +44,15 @@ namespace Kermalis.MapEditor.UI
             _scale = scale;
             _selection = allowSelectingMultiple ? new Selection() : new Selection(1, 1);
             _selection.Changed += OnSelectionChanged;
+        }
+
+        public void SelectBlock(Blockset blockset, int index)
+        {
+            int numBlocks = blockset.Blocks.Count;
+            _isSelecting = false;
+            _selection.Start(index % Blockset.BitmapNumBlocksX, index / Blockset.BitmapNumBlocksX, 1, 1);
+            FireSelectionCompleted();
+            InvalidateVisual();
         }
 
         public override void Render(DrawingContext context)
@@ -130,18 +141,14 @@ namespace Kermalis.MapEditor.UI
         }
         private void Blockset_OnAddedRemoved(Blockset blockset, Blockset.Block block)
         {
-            ResetSelection();
+            _selection.Constrain(Math.Min(Blockset.BitmapNumBlocksX, blockset.Blocks.Count), blockset.GetNumBlockRows());
+            FireSelectionCompleted();
+            InvalidateVisual();
         }
         private void Blockset_OnDrew(object sender, EventArgs e)
         {
             InvalidateMeasure();
             InvalidateVisual();
-        }
-        private void ResetSelection()
-        {
-            _isSelecting = false;
-            _selection.Start(0, 0, 1, 1);
-            FireSelectionCompleted();
         }
         private void FireSelectionCompleted()
         {

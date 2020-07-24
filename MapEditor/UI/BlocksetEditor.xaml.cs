@@ -205,13 +205,21 @@ namespace Kermalis.MapEditor.UI
         }
         public void RemoveBlock()
         {
-            if (_selectedBlock.Parent.Blocks.Count == 1)
+            Blockset.Block b = _selectedBlock;
+            Blockset blockset = b.Parent;
+            int oldCount = blockset.Blocks.Count;
+            if (oldCount == 1)
             {
-                Blockset.Clear(_selectedBlock);
+                Blockset.Clear(b);
             }
             else
             {
-                Blockset.Remove(_selectedBlock);
+                int index = blockset.Blocks.IndexOf(b);
+                Blockset.Remove(b);
+                if (index == oldCount - 1)
+                {
+                    _blocksetImage.SelectBlock(blockset, oldCount - 2);
+                }
             }
         }
 

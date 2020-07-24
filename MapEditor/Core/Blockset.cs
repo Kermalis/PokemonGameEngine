@@ -318,10 +318,13 @@ namespace Kermalis.MapEditor.Core
             DrawOne(block);
         }
 
+        internal int GetNumBlockRows()
+        {
+            return (Blocks.Count / BitmapNumBlocksX) + (Blocks.Count % BitmapNumBlocksX != 0 ? 1 : 0);
+        }
         private int GetBitmapHeight()
         {
-            int numBlocksY = (Blocks.Count / BitmapNumBlocksX) + (Blocks.Count % BitmapNumBlocksX != 0 ? 1 : 0);
-            return numBlocksY * 16;
+            return GetNumBlockRows() * 16;
         }
         private bool UpdateBitmapSize()
         {

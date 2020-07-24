@@ -89,6 +89,32 @@ namespace Kermalis.MapEditor.UI
             Height = h;
         }
 
+        public void Constrain(int newWidth, int newHeight)
+        {
+            while (_x + _width > newWidth)
+            {
+                if (_width > 1)
+                {
+                    _width--;
+                }
+                else
+                {
+                    _x--;
+                }
+            }
+            while (_y + _height > newHeight)
+            {
+                if (_height > 1)
+                {
+                    _height--;
+                }
+                else
+                {
+                    _y--;
+                }
+            }
+        }
+
         public void Move(int x, int y)
         {
             int w = x - _x + 1;
