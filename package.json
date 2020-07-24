@@ -1,7 +1,0 @@
-{
-  ".nuke": {
-    "BeforeBuild": [
-      "Compile"
-    ]
-  }
-}
