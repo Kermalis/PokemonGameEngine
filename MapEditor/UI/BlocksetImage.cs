@@ -46,9 +46,8 @@ namespace Kermalis.MapEditor.UI
             _selection.Changed += OnSelectionChanged;
         }
 
-        public void SelectBlock(Blockset blockset, int index)
+        public void SelectBlock(int index)
         {
-            int numBlocks = blockset.Blocks.Count;
             _isSelecting = false;
             _selection.Start(index % Blockset.BitmapNumBlocksX, index / Blockset.BitmapNumBlocksX, 1, 1);
             FireSelectionCompleted();

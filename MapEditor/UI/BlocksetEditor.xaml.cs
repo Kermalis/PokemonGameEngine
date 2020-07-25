@@ -218,7 +218,7 @@ namespace Kermalis.MapEditor.UI
                 Blockset.Remove(b);
                 if (index == oldCount - 1)
                 {
-                    _blocksetImage.SelectBlock(blockset, oldCount - 2);
+                    _blocksetImage.SelectBlock(oldCount - 2);
                 }
             }
         }
