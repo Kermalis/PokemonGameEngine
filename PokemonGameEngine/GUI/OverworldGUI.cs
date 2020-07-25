@@ -92,6 +92,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
             bool run = InputManager.IsDown(Key.B);
             Obj.Player.Move(facing, run, false);
+            _shouldRunTriggers = true;
         }
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
