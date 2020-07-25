@@ -148,6 +148,7 @@ namespace Kermalis.MapEditor.UI
         public void Dispose()
         {
             _selection.Changed -= OnSelectionChanged;
+            SelectionCompleted = null;
         }
     }
 }

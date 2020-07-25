@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class EncounterModel : INotifyPropertyChanged
+    public sealed class EncounterModel : INotifyPropertyChanged, IDisposable
     {
         private void OnPropertyChanged(string property)
         {
@@ -128,6 +128,12 @@ namespace Kermalis.MapEditor.UI
         public void Remove()
         {
             RemoveReady?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void Dispose()
+        {
+            PropertyChanged = null;
+            RemoveReady = null;
         }
     }
 }

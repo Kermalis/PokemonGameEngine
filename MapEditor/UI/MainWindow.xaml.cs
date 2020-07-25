@@ -93,6 +93,7 @@ namespace Kermalis.MapEditor.UI
         }
         public void Dispose()
         {
+            PropertyChanged = null;
             _layoutEditor.Dispose();
             _movementEditor.Dispose();
             _connectionEditor.Dispose();

@@ -137,8 +137,8 @@ namespace Kermalis.MapEditor.UI
                 return;
             }
             _tbl = tbl;
+            DisposeEncounters();
             Encounters.Clear();
-            RemoveEncounterEvents();
             if (tbl is null)
             {
                 SelectedTable = -1;
@@ -221,7 +221,7 @@ namespace Kermalis.MapEditor.UI
         private void RemoveEncounter(object sender, EventArgs e)
         {
             var enc = (EncounterModel)sender;
-            RemoveEncounterEvents(enc);
+            enc.Dispose();
             Encounters.Remove(enc);
             _tbl.Encounters.Remove(enc.Encounter);
             UpdateAddEncounterEnabled();
@@ -262,22 +262,18 @@ namespace Kermalis.MapEditor.UI
             }
         }
 
-        private void RemoveEncounterEvents(EncounterModel e)
-        {
-            e.PropertyChanged -= EncounterUpdated;
-            e.RemoveReady -= RemoveEncounter;
-        }
-        private void RemoveEncounterEvents()
+        private void DisposeEncounters()
         {
             foreach (EncounterModel e in Encounters)
             {
-                RemoveEncounterEvents(e);
+                e.Dispose();
             }
         }
 
         public void Dispose()
         {
-            RemoveEncounterEvents();
+            PropertyChanged = null;
+            DisposeEncounters();
         }
     }
 }

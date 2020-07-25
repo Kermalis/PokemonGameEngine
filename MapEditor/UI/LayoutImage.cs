@@ -30,6 +30,7 @@ namespace Kermalis.MapEditor.UI
         }
 
         internal Blockset.Block[][] Selection;
+        internal event EventHandler<Blockset.Block> SelectionCompleted;
         private bool _isDrawing;
 
         public LayoutImage(bool borderBlocks)
@@ -81,39 +82,55 @@ namespace Kermalis.MapEditor.UI
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
-            if (_layout != null)
+            if (_layout == null)
             {
-                PointerPoint pp = e.GetCurrentPoint(this);
-                switch (pp.Properties.PointerUpdateKind)
+                return;
+            }
+            PointerPoint pp = e.GetCurrentPoint(this);
+            switch (pp.Properties.PointerUpdateKind)
+            {
+                case PointerUpdateKind.LeftButtonPressed:
                 {
-                    case PointerUpdateKind.LeftButtonPressed:
+                    Point pos = pp.Position;
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        Point pos = pp.Position;
-                        if (Bounds.TemporaryFix_PointerInControl(pos))
-                        {
-                            _isDrawing = true;
-                            _layout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
-                            e.Handled = true;
-                        }
-                        break;
+                        int destX = (int)pos.X / 16;
+                        int destY = (int)pos.Y / 16;
+                        _isDrawing = true;
+                        _layout.Paste(_borderBlocks, Selection, destX, destY);
+                        e.Handled = true;
                     }
-                    case PointerUpdateKind.MiddleButtonPressed:
+                    break;
+                }
+                case PointerUpdateKind.MiddleButtonPressed:
+                {
+                    Point pos = pp.Position;
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        Point pos = pp.Position;
-                        if (Bounds.TemporaryFix_PointerInControl(pos))
+                        int destX = (int)pos.X / 16;
+                        int destY = (int)pos.Y / 16;
+                        Blockset.Block oldBlock = (_borderBlocks ? _layout.BorderBlocks : _layout.Blocks)[destY][destX].BlocksetBlock;
+                        Blockset.Block newBlock = Selection[0][0];
+                        if (oldBlock != newBlock)
                         {
-                            int destX = (int)pos.X / 16;
-                            int destY = (int)pos.Y / 16;
-                            Blockset.Block oldBlock = (_borderBlocks ? _layout.BorderBlocks : _layout.Blocks)[destY][destX].BlocksetBlock;
-                            Blockset.Block newBlock = Selection[0][0];
-                            if (oldBlock != newBlock)
-                            {
-                                _layout.Fill(_borderBlocks, oldBlock, newBlock, destX, destY);
-                            }
-                            e.Handled = true;
+                            _layout.Fill(_borderBlocks, oldBlock, newBlock, destX, destY);
                         }
-                        break;
+                        e.Handled = true;
                     }
+                    break;
+                }
+                case PointerUpdateKind.RightButtonPressed:
+                {
+                    Point pos = pp.Position;
+                    if (Bounds.TemporaryFix_PointerInControl(pos))
+                    {
+                        int destX = (int)pos.X / 16;
+                        int destY = (int)pos.Y / 16;
+                        Blockset.Block block = (_borderBlocks ? _layout.BorderBlocks : _layout.Blocks)[destY][destX].BlocksetBlock;
+                        SelectionCompleted?.Invoke(this, block);
+                        e.Handled = true;
+                    }
+                    break;
                 }
             }
         }
@@ -127,7 +144,9 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        _layout.Paste(_borderBlocks, Selection, (int)pos.X / 16, (int)pos.Y / 16);
+                        int destX = (int)pos.X / 16;
+                        int destY = (int)pos.Y / 16;
+                        _layout.Paste(_borderBlocks, Selection, destX, destY);
                         e.Handled = true;
                     }
                 }
@@ -156,6 +175,7 @@ namespace Kermalis.MapEditor.UI
         public void Dispose()
         {
             RemoveLayoutEvents();
+            SelectionCompleted = null;
         }
     }
 }

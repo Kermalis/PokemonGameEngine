@@ -49,7 +49,9 @@ namespace Kermalis.MapEditor.UI
             AvaloniaXamlLoader.Load(this);
 
             _layoutBlocksImage = this.FindControl<LayoutImage>("LayoutBlocksImage");
+            _layoutBlocksImage.SelectionCompleted += LayoutImage_SelectionCompleted;
             _layoutBorderBlocksImage = this.FindControl<LayoutImage>("LayoutBorderBlocksImage");
+            _layoutBorderBlocksImage.SelectionCompleted += LayoutImage_SelectionCompleted;
             _blocksetImage = this.FindControl<BlocksetImage>("BlocksetImage");
             _blocksetImage.SelectionCompleted += BlocksetImage_SelectionCompleted;
             SelectedBlockset = Blockset.Ids[0];
@@ -104,6 +106,10 @@ namespace Kermalis.MapEditor.UI
             _layoutBlocksImage.Selection = e;
             _layoutBorderBlocksImage.Selection = e;
         }
+        private void LayoutImage_SelectionCompleted(object sender, Blockset.Block e)
+        {
+            _blocksetImage.SelectBlock(_blockset.Blocks.IndexOf(e));
+        }
 
         private void RemoveBlocksetEvents()
         {
@@ -115,11 +121,11 @@ namespace Kermalis.MapEditor.UI
         }
         public void Dispose()
         {
+            PropertyChanged = null;
             RemoveBlocksetEvents();
             _layoutBlocksImage.Dispose();
             _layoutBorderBlocksImage.Dispose();
             _blocksetImage.Dispose();
-            _blocksetImage.SelectionCompleted -= BlocksetImage_SelectionCompleted;
         }
     }
 }

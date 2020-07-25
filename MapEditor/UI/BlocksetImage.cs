@@ -181,6 +181,7 @@ namespace Kermalis.MapEditor.UI
         {
             RemoveBlocksetEvents();
             _selection.Changed -= OnSelectionChanged;
+            SelectionCompleted = null;
         }
     }
 }

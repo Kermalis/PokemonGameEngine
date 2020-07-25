@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using System;
 using System.Threading.Tasks;
 
 namespace Kermalis.MapEditor.UI
@@ -65,7 +66,11 @@ namespace Kermalis.MapEditor.UI
             }
 
             var tcs = new TaskCompletionSource<MessageBoxResult>();
-            msgbox.Closed += delegate { tcs.TrySetResult(ret); };
+            void OnClosed(object sender, EventArgs e)
+            {
+                tcs.TrySetResult(ret);
+            }
+            msgbox.Closed += OnClosed;
             if (owner != null)
             {
                 msgbox.ShowDialog(owner);
@@ -74,6 +79,7 @@ namespace Kermalis.MapEditor.UI
             {
                 msgbox.Show();
             }
+            msgbox.Closed -= OnClosed;
             return tcs.Task;
         }
     }

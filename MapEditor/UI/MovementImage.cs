@@ -385,6 +385,7 @@ namespace Kermalis.MapEditor.UI
         }
         public void Dispose()
         {
+            PropertyChanged = null;
             RemoveLayoutEvents();
         }
 

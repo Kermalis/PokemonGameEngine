@@ -338,6 +338,7 @@ namespace Kermalis.MapEditor.UI
         {
             _bitmap.Dispose();
             _selection.Changed -= OnSelectionChanged;
+            ClipboardChanged = null;
         }
     }
 }

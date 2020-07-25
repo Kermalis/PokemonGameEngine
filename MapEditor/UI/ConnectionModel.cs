@@ -2,11 +2,12 @@
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
+using System;
 using System.ComponentModel;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class ConnectionModel : INotifyPropertyChanged
+    public sealed class ConnectionModel : INotifyPropertyChanged, IDisposable
     {
         private void OnPropertyChanged(string property)
         {
@@ -138,6 +139,11 @@ namespace Kermalis.MapEditor.UI
         private IBrush GetOpacityMask(bool s)
         {
             return s ? null : _opacityBrush;
+        }
+
+        public void Dispose()
+        {
+            PropertyChanged = null;
         }
     }
 }

@@ -269,6 +269,7 @@ namespace Kermalis.MapEditor.UI
         private void Remove(int index)
         {
             ConnectionModel c = Maps[index];
+            c.Dispose();
             c.Map.MapLayout.OnDrew -= MapLayout_OnDrew;
             Maps.Remove(c);
         }
@@ -437,9 +438,12 @@ namespace Kermalis.MapEditor.UI
 
         public void Dispose()
         {
+            PropertyChanged = null;
             for (int i = Maps.Count - 1; i >= 0; i--)
             {
-                Maps[i].Map.MapLayout.OnDrew -= MapLayout_OnDrew;
+                ConnectionModel c = Maps[i];
+                c.Dispose();
+                c.Map.MapLayout.OnDrew -= MapLayout_OnDrew;
             }
             _mapsItemsControl.PointerPressed -= MapsItemsControl_PointerPressed;
         }
