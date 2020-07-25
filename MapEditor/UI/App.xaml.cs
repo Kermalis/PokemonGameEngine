@@ -16,6 +16,7 @@ namespace Kermalis.MapEditor.UI
         {
             Selection.CreateBrushes();
             ConnectionModel.CreateBrush();
+            StandardGrid.CreatePen();
             switch (ApplicationLifetime)
             {
                 case null: break;

@@ -36,6 +36,21 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
+        private bool _showGrid;
+        public bool ShowGrid
+        {
+            get => _showGrid;
+            set
+            {
+                if (value != _showGrid)
+                {
+                    _showGrid = value;
+                    _layoutBlocksImage.ShowGrid = value;
+                    _layoutBorderBlocksImage.ShowGrid = value;
+                    OnPropertyChanged(nameof(ShowGrid));
+                }
+            }
+        }
 
         private readonly BlocksetImage _blocksetImage;
         private readonly LayoutImage _layoutBlocksImage;

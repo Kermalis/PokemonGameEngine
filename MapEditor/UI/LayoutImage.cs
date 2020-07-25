@@ -28,6 +28,19 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
+        private bool _showGrid;
+        internal bool ShowGrid
+        {
+            get => _showGrid;
+            set
+            {
+                if (value != _showGrid)
+                {
+                    _showGrid = value;
+                    InvalidateVisual();
+                }
+            }
+        }
 
         internal Blockset.Block[][] Selection;
         internal event EventHandler<Blockset.Block> SelectionCompleted;
@@ -52,15 +65,23 @@ namespace Kermalis.MapEditor.UI
 
         public override void Render(DrawingContext context)
         {
-            if (_layout != null)
+            if (_layout == null)
             {
-                IBitmap source = _borderBlocks ? _layout.BorderBlocksBitmap : _layout.BlocksBitmap;
-                var viewPort = new Rect(Bounds.Size);
-                var r = new Rect(source.Size);
-                Rect destRect = viewPort.CenterRect(r).Intersect(viewPort);
-                Rect sourceRect = r.CenterRect(new Rect(destRect.Size));
+                return;
+            }
+            IBitmap source = _borderBlocks ? _layout.BorderBlocksBitmap : _layout.BlocksBitmap;
+            var viewPort = new Rect(Bounds.Size);
+            var r = new Rect(source.Size);
+            Rect destRect = viewPort.CenterRect(r).Intersect(viewPort);
+            Rect sourceRect = r.CenterRect(new Rect(destRect.Size));
 
-                context.DrawImage(source, 1, sourceRect, destRect);
+            context.DrawImage(source, 1, sourceRect, destRect);
+
+            if (_showGrid)
+            {
+                int width = _borderBlocks ? _layout.BorderWidth : _layout.Width;
+                int height = _borderBlocks ? _layout.BorderHeight : _layout.Height;
+                StandardGrid.RenderGrid(context, width, height, 16, 16);
             }
         }
         protected override Size MeasureOverride(Size availableSize)
