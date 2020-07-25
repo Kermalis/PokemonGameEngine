@@ -123,7 +123,9 @@ namespace Kermalis.MapEditor.UI
         }
         private void LayoutImage_SelectionCompleted(object sender, Blockset.Block e)
         {
-            _blocksetImage.SelectBlock(_blockset.Blocks.IndexOf(e));
+            Blockset bs = e.Parent;
+            SelectedBlockset = bs.Name;
+            _blocksetImage.SelectBlock(bs.Blocks.IndexOf(e));
         }
 
         private void RemoveBlocksetEvents()
