@@ -58,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private void HealPartyCommand()
         {
-            Save.Instance.PlayerParty.HealFully();
+            Game.Game.Instance.Save.PlayerParty.HealFully();
         }
 
         private void GivePokemonCommand()
@@ -66,7 +66,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = _reader.ReadEnum<PBESpecies>();
             byte level = _reader.ReadByte();
             var pkmn = PartyPokemon.GetTestPokemon(species, 0, level);
-            Save.Instance.GivePokemon(pkmn);
+            Game.Game.Instance.Save.GivePokemon(pkmn);
         }
 
         private void GivePokemonFormCommand()
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBEForm form = _reader.ReadEnum<PBEForm>();
             byte level = _reader.ReadByte();
             var pkmn = PartyPokemon.GetTestPokemon(species, form, level);
-            Save.Instance.GivePokemon(pkmn);
+            Game.Game.Instance.Save.GivePokemon(pkmn);
         }
 
         private void GivePokemonFormItemCommand()
@@ -86,7 +86,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBEItem item = _reader.ReadEnum<PBEItem>();
             var pkmn = PartyPokemon.GetTestPokemon(species, form, level);
             pkmn.Item = item;
-            Save.Instance.GivePokemon(pkmn);
+            Game.Game.Instance.Save.GivePokemon(pkmn);
         }
 
         private void MoveObjCommand()
@@ -138,13 +138,13 @@ namespace Kermalis.PokemonGameEngine.Script
         private void SetFlagCommand()
         {
             Flag flag = _reader.ReadEnum<Flag>();
-            Save.Instance.Flags[flag] = true;
+            Game.Game.Instance.Save.Flags[flag] = true;
         }
 
         private void ClearFlagCommand()
         {
             Flag flag = _reader.ReadEnum<Flag>();
-            Save.Instance.Flags[flag] = false;
+            Game.Game.Instance.Save.Flags[flag] = false;
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.Script
         public void Dispose()
         {
             _isDisposed = true;
-            Game.Game.Scripts.Remove(this);
+            Game.Game.Instance.Scripts.Remove(this);
             _reader.Dispose();
         }
     }

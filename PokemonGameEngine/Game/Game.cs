@@ -11,20 +11,23 @@ using System.Threading;
 
 namespace Kermalis.PokemonGameEngine.Game
 {
-    internal static class Game
+    internal sealed class Game
     {
         private const int NumTicksPerSecond = 20;
 
-        public static readonly List<ScriptContext> Scripts = new List<ScriptContext>();
+        public static Game Instance { get; } = new Game();
+        public Save Save { get; }
 
-        private static readonly OverworldGUI _overworldGUI;
-        private static FadeFromColorTransition _fadeFromTransition;
-        private static SpiralTransition _battleTransition;
-        private static BattleGUI _battleGUI;
+        public readonly List<ScriptContext> Scripts = new List<ScriptContext>();
 
-        static Game()
+        private readonly OverworldGUI _overworldGUI;
+        private FadeFromColorTransition _fadeFromTransition;
+        private SpiralTransition _battleTransition;
+        private BattleGUI _battleGUI;
+
+        private Game()
         {
-            Save _ = Save.Instance; // Load/initialize Save
+            Save = new Save(); // Load/initialize Save
             var map = Map.LoadOrGet(0);
             const int x = 2;
             const int y = 12;
@@ -48,7 +51,7 @@ namespace Kermalis.PokemonGameEngine.Game
             new Thread(LogicThreadMainLoop) { Name = "Logic Thread" }.Start();
         }
 
-        private static void LogicThreadMainLoop()
+        private void LogicThreadMainLoop()
         {
             while (true)
             {
@@ -58,9 +61,9 @@ namespace Kermalis.PokemonGameEngine.Game
         }
 
         // Temp - start a test wild battle
-        public static void TempCreateBattle(EncounterTable.Encounter encounter)
+        public void TempCreateWildBattle(EncounterTable.Encounter encounter)
         {
-            Save sav = Save.Instance;
+            Save sav = Save;
             var me = new PBETrainerInfo(sav.PlayerParty, sav.PlayerName);
             var wildPkmn = PartyPokemon.GetTestWildPokemon(encounter);
             var wild = new PBETrainerInfo(new Party { wildPkmn }, "Wild " + PBELocalizedString.GetSpeciesName(wildPkmn.Species).English);
@@ -81,7 +84,7 @@ namespace Kermalis.PokemonGameEngine.Game
             _battleTransition = new SpiralTransition(OnBattleTransitionEnded);
         }
 
-        private static void LogicTick()
+        private void LogicTick()
         {
             if (_battleTransition != null || _fadeFromTransition != null)
             {
@@ -95,7 +98,7 @@ namespace Kermalis.PokemonGameEngine.Game
             _overworldGUI.LogicTick();
         }
 
-        public static unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             if (_battleTransition != null)
             {
@@ -114,7 +117,7 @@ namespace Kermalis.PokemonGameEngine.Game
                 return;
             }
         }
-        public static unsafe void RenderFPS(uint* bmpAddress, int bmpWidth, int bmpHeight, int fps)
+        public unsafe void RenderFPS(uint* bmpAddress, int bmpWidth, int bmpHeight, int fps)
         {
             Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, fps.ToString(), Font.DefaultFemale);
         }

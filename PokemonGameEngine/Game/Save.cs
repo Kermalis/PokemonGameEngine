@@ -4,19 +4,19 @@ using Kermalis.PokemonGameEngine.Pkmn;
 
 namespace Kermalis.PokemonGameEngine.Game
 {
-    internal class Save
+    internal sealed class Save
     {
-        public static Save Instance { get; } = new Save();
-
         public Flags Flags { get; }
         public string PlayerName { get; }
+        public bool PlayerIsFemale { get; }
         public Party PlayerParty { get; }
         public PlayerInventory PlayerInventory { get; }
 
-        private Save()
+        public Save()
         {
             Flags = new Flags();
             PlayerName = "Dawn";
+            PlayerIsFemale = true;
             PlayerParty = new Party() { PartyPokemon.GetTestPokemon(PBESpecies.Skitty, 0, PBESettings.DefaultMaxLevel) };
             PlayerInventory = new PlayerInventory();
         }

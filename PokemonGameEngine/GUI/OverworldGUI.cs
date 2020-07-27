@@ -32,12 +32,12 @@ namespace Kermalis.PokemonGameEngine.GUI
                 }
             }
 
-            foreach (ScriptContext ctx in Game.Game.Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
+            foreach (ScriptContext ctx in Game.Game.Instance.Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
             {
                 ctx.LogicTick();
             }
 
-            if (Game.Game.Scripts.Count == 0 && InputManager.IsPressed(Key.A)) // Temporary
+            if (Game.Game.Instance.Scripts.Count == 0 && InputManager.IsPressed(Key.A)) // Temporary
             {
                 ScriptLoader.LoadScript("TestScript");
                 return;

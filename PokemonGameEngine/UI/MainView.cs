@@ -38,10 +38,10 @@ namespace Kermalis.PokemonGameEngine.UI
                 using (ILockedFramebuffer l = _screen.Lock())
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
-                    Game.Game.RenderTick(bmpAddress, RenderWidth, RenderHeight);
+                    Game.Game.Instance.RenderTick(bmpAddress, RenderWidth, RenderHeight);
                     if (_showFPS)
                     {
-                        Game.Game.RenderFPS(bmpAddress, RenderWidth, RenderHeight, (int)Math.Round(1000 / time.Subtract(_lastRenderTime).TotalMilliseconds));
+                        Game.Game.Instance.RenderFPS(bmpAddress, RenderWidth, RenderHeight, (int)Math.Round(1000 / time.Subtract(_lastRenderTime).TotalMilliseconds));
                     }
                 }
                 _lastRenderTime = time;

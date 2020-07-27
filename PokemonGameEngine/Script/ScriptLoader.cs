@@ -38,7 +38,7 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             EndianBinaryReader r = GetReader();
             r.BaseStream.Position = offset;
-            Game.Game.Scripts.Add(new ScriptContext(r));
+            Game.Game.Instance.Scripts.Add(new ScriptContext(r));
         }
     }
 }
