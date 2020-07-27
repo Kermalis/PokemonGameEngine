@@ -143,6 +143,12 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
+            // Slight optimization
+            if (width == otherBmpWidth && height == otherBmpHeight)
+            {
+                DrawBitmap(bmpAddress, bmpWidth, bmpHeight, x, y, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+                return;
+            }
             float hScale = (float)height / otherBmpHeight;
             float wScale = (float)width / otherBmpWidth;
             for (int cy = 0; cy < height; cy++)
