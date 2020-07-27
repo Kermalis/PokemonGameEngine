@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Render;
 using System;
@@ -98,11 +99,21 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x) - (width / 2), (int)(bmpHeight * y) - height, width, height);
         }
-        private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, SpritedBattlePokemon sPkmn)
+        private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, bool ally, SpritedBattlePokemon sPkmn)
         {
+            Font fontDefault = Font.Default;
+
             PBEBattlePokemon pkmn = sPkmn.Pkmn;
-            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * y), "Level " + pkmn.Level.ToString(), Font.DefaultWhite);
-            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.05f)), pkmn.HPPercentage.ToString("P2"), Font.DefaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.00f)), pkmn.KnownNickname, Font.DefaultWhite);
+            string prefix = ally ? pkmn.HP.ToString() + "/" + pkmn.MaxHP.ToString() + " - " : string.Empty;
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.06f)), prefix + pkmn.HPPercentage.ToString("P2"), Font.DefaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.12f)), "Level " + pkmn.Level.ToString(), Font.DefaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.18f)), "Status: " + pkmn.Status1.ToString(), Font.DefaultWhite);
+            PBEGender gender = pkmn.KnownGender;
+            if (gender != PBEGender.Genderless)
+            {
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.24f)), gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultMale : Font.DefaultFemale);
+            }
         }
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
@@ -133,8 +144,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 return;
             }
 
-            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, 0.50f, 0.05f, foe);
-            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, 0.05f, 0.45f, ally);
+            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, 0.50f, 0.05f, false, foe);
+            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, 0.05f, 0.45f, true, ally);
 
             string msg = _message;
             if (msg != null)
