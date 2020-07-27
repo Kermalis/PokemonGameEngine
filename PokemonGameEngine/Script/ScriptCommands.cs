@@ -27,6 +27,8 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.DetachCamera: DetachCameraCommand(); break;
                 case ScriptCommand.AttachCamera: AttachCameraCommand(); break;
                 case ScriptCommand.Delay: DelayCommand(); break;
+                case ScriptCommand.SetFlag: SetFlagCommand(); break;
+                case ScriptCommand.ClearFlag: ClearFlagCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -131,6 +133,18 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             ushort delay = _reader.ReadUInt16();
             _delay = delay;
+        }
+
+        private void SetFlagCommand()
+        {
+            Flag flag = _reader.ReadEnum<Flag>();
+            Save.Instance.Flags[flag] = true;
+        }
+
+        private void ClearFlagCommand()
+        {
+            Flag flag = _reader.ReadEnum<Flag>();
+            Save.Instance.Flags[flag] = false;
         }
     }
 }

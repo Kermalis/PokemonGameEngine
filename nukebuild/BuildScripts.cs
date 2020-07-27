@@ -1,5 +1,4 @@
 ﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Scripts;
 using Nuke.Common.IO;
 using System;
@@ -26,13 +25,6 @@ public sealed partial class Build
     private const string LocalLabelChars = "#";
     private const string GlobalLabelChars = "@";
     private const string MovementPrefix = "M.";
-
-    private static readonly Dictionary<Type, string> _enumDefines = new Dictionary<Type, string>()
-    {
-        { typeof(PBEForm), "Form." },
-        { typeof(PBEItem), "Item." },
-        { typeof(PBESpecies), "Species." }
-    };
 
     private readonly Dictionary<string, Pair> _labels = new Dictionary<string, Pair>();
     private readonly List<Pointer> _pointers = new List<Pointer>();
@@ -106,7 +98,7 @@ public sealed partial class Build
             default:
             {
                 // Write an enum like "Species.Bulbasaur"
-                if (!_enumDefines.TryGetValue(argType, out string prefix))
+                if (!ScriptBuilderHelper.EnumDefines.TryGetValue(argType, out string prefix))
                 {
                     throw new ArgumentOutOfRangeException(nameof(argType));
                 }

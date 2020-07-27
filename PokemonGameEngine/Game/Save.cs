@@ -8,12 +8,14 @@ namespace Kermalis.PokemonGameEngine.Game
     {
         public static Save Instance { get; } = new Save();
 
+        public Flags Flags { get; }
         public string PlayerName { get; }
         public Party PlayerParty { get; }
         public PlayerInventory PlayerInventory { get; }
 
         private Save()
         {
+            Flags = new Flags();
             PlayerName = "Dawn";
             PlayerParty = new Party() { PartyPokemon.GetTestPokemon(PBESpecies.Skitty, 0, PBESettings.DefaultMaxLevel) };
             PlayerInventory = new PlayerInventory();
