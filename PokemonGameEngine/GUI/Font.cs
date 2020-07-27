@@ -33,6 +33,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public static Font Default { get; }
         public static uint[] DefaultWhite { get; } = new uint[] { 0x00000000, 0xFFEFEFEF, 0xFF848484 };
+        public static uint[] DefaultSelected { get; } = new uint[] { 0x00000000, 0xFFFFE016, 0xFFBCA510 };
         public static uint[] DefaultDark { get; } = new uint[] { 0x00000000, 0xFF5A5252, 0xFFA5A5AD };
         public static uint[] DefaultMale { get; } = new uint[] { 0x00000000, 0xFF7394FF, 0xFF0000D6 };
         public static uint[] DefaultFemale { get; } = new uint[] { 0x00000000, 0xFFFF7373, 0xFFC60000 };

@@ -151,14 +151,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
             Font fontDefault = Font.Default;
             uint[] defaultWhite = Font.DefaultWhite;
+            uint[] defaultSelected = Font.DefaultSelected;
+            int selected = _selectedMove;
 
             if (!_isShowingMoves)
             {
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (1 * 0.06))), "Fight", defaultWhite);
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (0 * 0.06))), "Pokémon", defaultWhite);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (1 * 0.06))), "Fight", selected == 0 ? defaultSelected : defaultWhite);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (0 * 0.06))), "Pokémon", selected == 1 ? defaultSelected : defaultWhite);
 
                 // Draw selection arrow
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75), (int)((bmpHeight * 0.7) - (bmpHeight * ((2 - 1 - _selectedMove) * 0.06))), "→", defaultWhite);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75), (int)((bmpHeight * 0.7) - (bmpHeight * ((2 - 1 - selected) * 0.06))), "→", defaultSelected);
 
                 _fadeFromTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                 _fadeToTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
@@ -171,12 +173,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             // Draw moves
             for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
             {
-                PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[moves.Count - 1 - i];
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (i * 0.06))), PBELocalizedString.GetMoveName(slot.Move).English, defaultWhite);
+                PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[PBESettings.DefaultNumMoves - 1 - i];
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (i * 0.06))), PBELocalizedString.GetMoveName(slot.Move).English, selected == PBESettings.DefaultNumMoves - 1 - i ? defaultSelected : defaultWhite);
             }
 
             // Draw selection arrow
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75), (int)((bmpHeight * 0.7) - (bmpHeight * ((PBESettings.DefaultNumMoves - 1 - _selectedMove) * 0.06))), "→", defaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75), (int)((bmpHeight * 0.7) - (bmpHeight * ((PBESettings.DefaultNumMoves - 1 - selected) * 0.06))), "→", defaultSelected);
         }
     }
 }
