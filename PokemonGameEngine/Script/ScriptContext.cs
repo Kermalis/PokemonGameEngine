@@ -10,7 +10,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private readonly EndianBinaryReader _reader;
         private readonly Stack<long> _callStack = new Stack<long>();
         private bool _isDisposed;
-        private int _delay;
+        private ushort _delay;
         private Obj _waitMovementObj;
 
         public ScriptContext(EndianBinaryReader r)

@@ -46,7 +46,8 @@ namespace Kermalis.PokemonGameEngine.Scripts
         MoveObj,
         AwaitObjMovement,
         DetachCamera,
-        AttachCamera
+        AttachCamera,
+        Delay
     }
 
     // If you are going to add script commands, you need to edit the below dictionary to define their arguments for the script builder
@@ -67,7 +68,8 @@ namespace Kermalis.PokemonGameEngine.Scripts
             { ScriptCommand.MoveObj, new[] { typeof(ushort), typeof(void*) } },
             { ScriptCommand.AwaitObjMovement, new[] { typeof(ushort) } },
             { ScriptCommand.DetachCamera, Array.Empty<Type>() },
-            { ScriptCommand.AttachCamera, new[] { typeof(ushort) } }
+            { ScriptCommand.AttachCamera, new[] { typeof(ushort) } },
+            { ScriptCommand.Delay, new[] { typeof(ushort) } }
         };
 
         static ScriptBuilderHelper()

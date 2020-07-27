@@ -26,6 +26,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.AwaitObjMovement: AwaitObjMovementCommand(); break;
                 case ScriptCommand.DetachCamera: DetachCameraCommand(); break;
                 case ScriptCommand.AttachCamera: AttachCameraCommand(); break;
+                case ScriptCommand.Delay: DelayCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -124,6 +125,12 @@ namespace Kermalis.PokemonGameEngine.Script
             var obj = Obj.GetObj(id);
             Obj.CameraAttachedTo = obj;
             Obj.CameraCopyMovement();
+        }
+
+        private void DelayCommand()
+        {
+            ushort delay = _reader.ReadUInt16();
+            _delay = delay;
         }
     }
 }
