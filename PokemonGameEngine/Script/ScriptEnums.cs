@@ -44,7 +44,8 @@ namespace Kermalis.PokemonGameEngine.Scripts
         GivePokemonForm,
         GivePokemonFormItem,
         MoveObj,
-        AwaitObjMovement
+        AwaitObjMovement,
+        DetachCamera
     }
 
     // If you are going to add script commands, you need to edit the below dictionary to define their arguments for the script builder
@@ -63,7 +64,8 @@ namespace Kermalis.PokemonGameEngine.Scripts
             { ScriptCommand.GivePokemonForm, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte) } },
             { ScriptCommand.GivePokemonFormItem, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte), typeof(PBEItem) } },
             { ScriptCommand.MoveObj, new[] { typeof(ushort), typeof(void*) } },
-            { ScriptCommand.AwaitObjMovement, new[] { typeof(ushort) } }
+            { ScriptCommand.AwaitObjMovement, new[] { typeof(ushort) } },
+            { ScriptCommand.DetachCamera, Array.Empty<Type>() }
         };
 
         static ScriptBuilderHelper()
