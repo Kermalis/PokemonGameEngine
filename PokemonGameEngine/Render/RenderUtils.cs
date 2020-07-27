@@ -107,6 +107,16 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
+        public static unsafe void Modulate(uint* bmpAddress, int bmpWidth, int bmpHeight, float aMod, float rMod, float gMod, float bMod)
+        {
+            for (int y = 0; y < bmpHeight; y++)
+            {
+                for (int x = 0; x < bmpWidth; x++)
+                {
+                    ModulateUnchecked(bmpAddress + x + (y * bmpWidth), aMod, rMod, gMod, bMod);
+                }
+            }
+        }
 
         public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
@@ -187,6 +197,19 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
 
+        public static unsafe void ModulateUnchecked(uint* pixelAddress, float aMod, float rMod, float gMod, float bMod)
+        {
+            uint current = *pixelAddress;
+            uint a = current >> 24;
+            uint r = (current >> 16) & 0xFF;
+            uint g = (current >> 8) & 0xFF;
+            uint b = current & 0xFF;
+            a = (byte)(a * aMod);
+            r = (byte)(r * rMod);
+            g = (byte)(g * gMod);
+            b = (byte)(b * bMod);
+            *pixelAddress = (a << 24) | (r << 16) | (g << 8) | b;
+        }
         public static unsafe void DrawUnchecked(uint* pixelAddress, uint color)
         {
             if (color == 0x00000000)

@@ -86,14 +86,44 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _actionsGUI?.LogicTick();
         }
 
+        private unsafe void RenderPkmn(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, bool ally, SpritedBattlePokemon sPkmn)
+        {
+            Sprite sprite = ally ? sPkmn.BackSprite : sPkmn.FrontSprite; // TODO: Substitute
+            int width = sprite.Width;
+            int height = sprite.Height;
+            if (ally)
+            {
+                width *= 2;
+                height *= 2;
+            }
+            sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x) - (width / 2), (int)(bmpHeight * y) - height, width, height);
+        }
+        private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, SpritedBattlePokemon sPkmn)
+        {
+            PBEBattlePokemon pkmn = sPkmn.Pkmn;
+            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * y), "Level " + pkmn.Level.ToString(), Font.DefaultWhite);
+            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.05f)), pkmn.HPPercentage.ToString("P2"), Font.DefaultWhite);
+        }
+
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             PBEBattle battle = _battle;
+
+            Font fontDefault = Font.Default;
+            uint[] defaultWhite = Font.DefaultWhite;
+            _battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
+            SpritedBattlePokemon foe = _spritedParties[1].SpritedParty[0];
+            SpritedBattlePokemon ally = _spritedParties[0].SpritedParty[0];
+            RenderPkmn(bmpAddress, bmpWidth, bmpHeight, 0.75f, 0.55f, false, foe);
+            RenderPkmn(bmpAddress, bmpWidth, bmpHeight, 0.35f, 0.95f, true, ally);
+
+            DayTint.Render(bmpAddress, bmpWidth, bmpHeight); // TODO: Indoors battles
+
             if (!_transitionDone)
             {
                 float t = _transitionCounter / TransitionDurationF;
                 float t1 = t + 1;
-                _battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, (int)(bmpWidth * t1), (int)(bmpHeight * t1));
+                //_battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, (int)(bmpWidth * t1), (int)(bmpHeight * t1));
                 RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, (uint)(t * 0xFF) << 24);
                 if (--_transitionCounter <= 0)
                 {
@@ -103,32 +133,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 return;
             }
 
-            Font fontDefault = Font.Default;
-            uint[] defaultWhite = Font.DefaultWhite;
-            _battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
-            // Before we have sprites we will do this :)
-            SpritedBattlePokemon sPkmn = _spritedParties[1].SpritedParty[0];
-            PBEBattlePokemon pkmn = sPkmn.Pkmn;
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.5f), (int)(bmpHeight * 0.05f), "Level " + pkmn.Level.ToString(), defaultWhite);
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.5f), (int)(bmpHeight * 0.1f), pkmn.HPPercentage.ToString("P2"), defaultWhite);
-            Sprite sprite = sPkmn.FrontSprite;
-            int width = sprite.Width;
-            int height = sprite.Height;
-            sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75f) - (width / 2), (int)(bmpHeight * 0.55f) - height);
-            sPkmn = _spritedParties[0].SpritedParty[0];
-            pkmn = sPkmn.Pkmn;
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.05f), (int)(bmpHeight * 0.45f), "Level " + pkmn.Level.ToString(), defaultWhite);
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.05f), (int)(bmpHeight * 0.5f), pkmn.HPPercentage.ToString("P2"), defaultWhite);
-            sprite = sPkmn.BackSprite;
-            width = sprite.Width * 2;
-            height = sprite.Height * 2;
-            sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.35f) - (width / 2), (int)(bmpHeight * 0.95f) - height, width, height);
+            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, 0.50f, 0.05f, foe);
+            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, 0.05f, 0.45f, ally);
 
             string msg = _message;
             if (msg != null)
             {
                 RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, (int)(bmpHeight * 0.79f), bmpWidth, (int)(bmpHeight * 0.16f), 0x80313131);
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.1f), (int)(bmpHeight * 0.8f), msg, defaultWhite);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.10f), (int)(bmpHeight * 0.80f), msg, defaultWhite);
             }
 
             _actionsGUI?.RenderTick(bmpAddress, bmpWidth, bmpHeight);

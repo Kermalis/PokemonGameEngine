@@ -16,13 +16,12 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * Scripting
 * Wild encounters
 * Very non-limiting mapping (elevations, layers, no color limits, transparency, etc)
+* [Day & Night Cycle](https://gfycat.com/TightTediousEuropeanpolecat)
 
 ----
 ## To Do:
-* Day/night cycle/tint
 * Changable tiles based on day/night
 * Tile animations
-* Inventory
 * Saving
 * Flags/vars
 * Events/NPCs on the maps
