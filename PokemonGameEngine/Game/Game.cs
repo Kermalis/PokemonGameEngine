@@ -31,22 +31,21 @@ namespace Kermalis.PokemonGameEngine.Game
             var map = Map.LoadOrGet(0);
             const int x = 2;
             const int y = 12;
-            for (int i = 1; i < 6; i++)
-            {
-                var o = new Obj((ushort)(Obj.CameraId - i), "TestNPC.png", 32, 32)
-                {
-                    X = x + i,
-                    Y = y + i
-                };
-                map.Objs.Add(o);
-            }
-            Obj.Player.X = x;
-            Obj.Player.Y = y;
+            Obj.Player.Pos.X = x;
+            Obj.Player.Pos.Y = y;
             Obj.Player.Map = map;
             map.Objs.Add(Obj.Player);
             Obj.Camera.Map = map;
             map.Objs.Add(Obj.Camera);
             Obj.CameraCopyMovement();
+            for (int i = 1; i < 6; i++)
+            {
+                var o = new Obj((ushort)(Obj.CameraId - i), "TestNPC.png", 32, 32);
+                o.Pos.X = x + i;
+                o.Pos.Y = y + i;
+                o.Map = map;
+                map.Objs.Add(o);
+            }
             _overworldGUI = new OverworldGUI();
             new Thread(LogicThreadMainLoop) { Name = "Logic Thread" }.Start();
         }

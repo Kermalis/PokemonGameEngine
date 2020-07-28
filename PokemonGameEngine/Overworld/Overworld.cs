@@ -27,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             Obj player = Obj.Player;
             Map map = player.Map;
             EncounterType t;
-            switch (map.GetBlock(player.X, player.Y).BlocksetBlock.Behavior)
+            switch (player.GetBlock().BlocksetBlock.Behavior)
             {
                 case BlocksetBlockBehavior.DarkGrass: t = EncounterType.DarkGrass; break;
                 case BlocksetBlockBehavior.Surf: t = EncounterType.Surf; break;

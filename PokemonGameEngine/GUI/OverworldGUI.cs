@@ -51,44 +51,44 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 return;
             }
-            Obj.FacingDirection facing;
+            FacingDirection facing;
             if (down)
             {
                 if (left)
                 {
-                    facing = Obj.FacingDirection.Southwest;
+                    facing = FacingDirection.Southwest;
                 }
                 else if (right)
                 {
-                    facing = Obj.FacingDirection.Southeast;
+                    facing = FacingDirection.Southeast;
                 }
                 else
                 {
-                    facing = Obj.FacingDirection.South;
+                    facing = FacingDirection.South;
                 }
             }
             else if (up)
             {
                 if (left)
                 {
-                    facing = Obj.FacingDirection.Northwest;
+                    facing = FacingDirection.Northwest;
                 }
                 else if (right)
                 {
-                    facing = Obj.FacingDirection.Northeast;
+                    facing = FacingDirection.Northeast;
                 }
                 else
                 {
-                    facing = Obj.FacingDirection.North;
+                    facing = FacingDirection.North;
                 }
             }
             else if (left)
             {
-                facing = Obj.FacingDirection.West;
+                facing = FacingDirection.West;
             }
             else
             {
-                facing = Obj.FacingDirection.East;
+                facing = FacingDirection.East;
             }
             bool run = InputManager.IsDown(Key.B);
             Obj.Player.Move(facing, run, false);

@@ -268,10 +268,6 @@ namespace Kermalis.PokemonGameEngine.Overworld
             return m;
         }
 
-        public static Layout.Block GetBlock(Obj obj)
-        {
-            return obj.Map.GetBlock(obj.X, obj.Y);
-        }
         public Layout.Block GetBlock(int x, int y)
         {
             return _layout.GetBlock(x, y, _connections);
@@ -280,8 +276,9 @@ namespace Kermalis.PokemonGameEngine.Overworld
         public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             Obj camera = Obj.Camera;
-            int cameraX = (camera.X * 16) - (bmpWidth / 2) + 8 + camera.XOffset;
-            int cameraY = (camera.Y * 16) - (bmpHeight / 2) + 8 + camera.YOffset;
+            Obj.Position cameraPos = camera.Pos;
+            int cameraX = (cameraPos.X * 16) - (bmpWidth / 2) + 8 + camera.ProgressX + Obj.CameraOfsX;
+            int cameraY = (cameraPos.Y * 16) - (bmpHeight / 2) + 8 + camera.ProgressY + Obj.CameraOfsY;
             Map cameraMap = camera.Map;
             int xp16 = cameraX % 16;
             int yp16 = cameraY % 16;
@@ -331,18 +328,24 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 for (int i = 0; i < numObjs; i++)
                 {
                     Obj c = objs[i];
-                    if (c != camera && c.Elevation == e)
+                    if (c == camera)
                     {
-                        int objX = ((c.X - startBlockX) * 16) + c.XOffset + startX;
-                        int objY = ((c.Y - startBlockY) * 16) + c.YOffset + startY;
-                        int objW = c.SpriteWidth;
-                        int objH = c.SpriteHeight;
-                        objX -= (objW - 16) / 2;
-                        objY -= objH - 16;
-                        if (objX < bmpWidth && objX + objW > 0 && objY < bmpHeight && objY + objH > 0)
-                        {
-                            c.Draw(bmpAddress, bmpWidth, bmpHeight, objX, objY);
-                        }
+                        continue;
+                    }
+                    Obj.Position cPos = c.Pos;
+                    if (cPos.Elevation != e)
+                    {
+                        continue;
+                    }
+                    int objX = ((cPos.X - startBlockX) * 16) + c.ProgressX + startX;
+                    int objY = ((cPos.Y - startBlockY) * 16) + c.ProgressY + startY;
+                    int objW = c.SpriteWidth;
+                    int objH = c.SpriteHeight;
+                    objX -= (objW - 16) / 2;
+                    objY -= objH - 16;
+                    if (objX < bmpWidth && objX + objW > 0 && objY < bmpHeight && objY + objH > 0)
+                    {
+                        c.Draw(bmpAddress, bmpWidth, bmpHeight, objX, objY);
                     }
                 }
                 if (e == byte.MaxValue)

@@ -2,6 +2,18 @@
 
 namespace Kermalis.PokemonGameEngine.Overworld
 {
+    public enum FacingDirection : byte
+    {
+        South,
+        North,
+        West,
+        East,
+        Southwest,
+        Southeast,
+        Northwest,
+        Northeast
+    }
+
     [Flags]
     public enum LayoutBlockPassage : byte
     {
@@ -77,6 +89,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
         Spin_NE,
         DarkGrass,
         HeadbuttTree,
-        HoneyTree
+        HoneyTree,
+        Stair_W,
+        Stair_E
     }
 }
