@@ -63,15 +63,16 @@
     <Border Grid.Row="2" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <Grid>
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="1*" />
-          <ColumnDefinition Width="1*" />
+          <ColumnDefinition />
+          <ColumnDefinition Width="5" />
+          <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
           <RowDefinition />
         </Grid.RowDefinitions>
         <ComboBox Grid.Column="0" Grid.Row="0" Items="{x:Static core:Blockset.Ids}" SelectedItem="{Binding SelectedBlockset}" />
-        <ComboBox Grid.Column="1" Grid.Row="0" Items="{x:Static core:Tileset.Ids}" SelectedItem="{Binding SelectedTileset}" />
+        <ComboBox Grid.Column="2" Grid.Row="0" Items="{x:Static core:Tileset.Ids}" SelectedItem="{Binding SelectedTileset}" />
         <ScrollViewer Margin="0,2,0,0" Grid.Column="0" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
           <ui:BlocksetImage Name="BlocksetImage">
             <x:Arguments>
@@ -80,7 +81,8 @@
             </x:Arguments>
           </ui:BlocksetImage>
         </ScrollViewer>
-        <ScrollViewer Margin="5,2,0,0" Grid.Column="1" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <GridSplitter Grid.Column="1" Grid.Row="1" />
+        <ScrollViewer Margin="0,2,0,0" Grid.Column="2" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
           <ui:TilesetImage Name="TilesetImage">
             <x:Arguments>
               <x:Double>2</x:Double>

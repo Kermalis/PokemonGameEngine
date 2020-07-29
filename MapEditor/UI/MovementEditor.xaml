@@ -7,13 +7,15 @@
   </UserControl.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="5*" />
-      <ColumnDefinition Width="1*" />
+      <ColumnDefinition />
+      <ColumnDefinition Width="5" />
+      <ColumnDefinition />
     </Grid.ColumnDefinitions>
-    <Border Grid.Column="0" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+    <Border Grid.Column="0" Margin="0,0,2,0" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Content="{StaticResource MovementImage}" />
     </Border>
-    <Border Grid.Column="1" Margin="2,0,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+    <GridSplitter Grid.Column="1" />
+    <Border Grid.Column="2" Margin="2,0,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <StackPanel Orientation="Vertical" Spacing="5">
         <StackPanel Orientation="Horizontal" Spacing="5">
           <RadioButton Content="Passage" IsChecked="{Binding ElementName=MovementImage, Path=PassageShown}" />

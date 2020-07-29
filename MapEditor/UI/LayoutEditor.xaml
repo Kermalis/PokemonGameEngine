@@ -10,10 +10,11 @@
     <Border Margin="0,2,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <Grid>
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="5*" />
-          <ColumnDefinition Width="1*" />
+          <ColumnDefinition />
+          <ColumnDefinition Width="5" />
+          <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+        <Border Grid.Column="0" Margin="0,0,2,0" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
           <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <ui:LayoutImage Name="LayoutBlocksImage">
               <x:Arguments>
@@ -22,7 +23,8 @@
             </ui:LayoutImage>
           </ScrollViewer>
         </Border>
-        <Border Grid.Column="1" Margin="2,0,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+        <GridSplitter Grid.Column="1" />
+        <Border Grid.Column="2" Margin="2,0,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
           <Grid>
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto" />
