@@ -5,7 +5,7 @@ using Kermalis.MapEditor.Core;
 using System;
 using System.ComponentModel;
 
-namespace Kermalis.MapEditor.UI
+namespace Kermalis.MapEditor.UI.Models
 {
     public sealed class ConnectionModel : INotifyPropertyChanged, IDisposable
     {

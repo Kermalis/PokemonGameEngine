@@ -5,7 +5,7 @@ using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using System;
 
-namespace Kermalis.MapEditor.UI
+namespace Kermalis.MapEditor.UI.Models
 {
     public sealed class ELayerModel : IDisposable
     {

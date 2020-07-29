@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Kermalis.MapEditor.Core;
+using Kermalis.MapEditor.UI.Models;
 using Kermalis.PokemonGameEngine.Overworld;
 using System;
 using System.Collections.Generic;

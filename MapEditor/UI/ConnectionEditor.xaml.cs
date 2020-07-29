@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Kermalis.MapEditor.Core;
+using Kermalis.MapEditor.UI.Models;
 using Kermalis.MapEditor.Util;
 using System;
 using System.Collections.ObjectModel;
@@ -205,10 +206,6 @@ namespace Kermalis.MapEditor.UI
             Offset = c.Offset;
             _switching = false;
         }
-        private void UpdateAddEnabled()
-        {
-            AddEnabled = _map.Connections.Count < byte.MaxValue;
-        }
 
         internal void SetMap(Map map)
         {
@@ -230,8 +227,7 @@ namespace Kermalis.MapEditor.UI
                 SelectedConnection = 0;
             }
             ArrangeMaps();
-            UpdateAddEnabled();
-            UpdateNumConnectionsText();
+            UpdateNumConnections();
         }
 
         public void AddButton()
@@ -242,8 +238,7 @@ namespace Kermalis.MapEditor.UI
             Add(Map.LoadOrGet(c.MapId));
             SelectedConnection = index;
             ArrangeMaps();
-            UpdateAddEnabled();
-            UpdateNumConnectionsText();
+            UpdateNumConnections();
         }
         public void RemoveButton()
         {
@@ -258,8 +253,7 @@ namespace Kermalis.MapEditor.UI
                 UpdateSelectionDetails();
             }
             ArrangeMaps();
-            UpdateAddEnabled();
-            UpdateNumConnectionsText();
+            UpdateNumConnections();
         }
         private void Add(Map map)
         {
@@ -273,9 +267,11 @@ namespace Kermalis.MapEditor.UI
             c.Map.MapLayout.OnDrew -= MapLayout_OnDrew;
             Maps.Remove(c);
         }
-        private void UpdateNumConnectionsText()
+        private void UpdateNumConnections()
         {
-            NumConnectionsText = $"{_map.Connections.Count}/{byte.MaxValue} Connections";
+            int count = _map.Connections.Count;
+            AddEnabled = count < byte.MaxValue;
+            NumConnectionsText = $"{count}/{byte.MaxValue} Connections";
         }
         private void ArrangeMaps()
         {

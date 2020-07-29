@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Kermalis.MapEditor.UI
+namespace Kermalis.MapEditor.UI.Models
 {
     public sealed class EncounterModel : INotifyPropertyChanged, IDisposable
     {

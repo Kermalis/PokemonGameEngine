@@ -6,7 +6,7 @@ using Kermalis.MapEditor.Util;
 using System;
 using System.Collections.Generic;
 
-namespace Kermalis.MapEditor.UI
+namespace Kermalis.MapEditor.UI.Models
 {
     public sealed class SubLayerModel : IDisposable
     {

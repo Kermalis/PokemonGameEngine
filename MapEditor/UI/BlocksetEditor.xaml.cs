@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
+using Kermalis.MapEditor.UI.Models;
 using Kermalis.MapEditor.Util;
 using Kermalis.PokemonGameEngine.Overworld;
 using System;

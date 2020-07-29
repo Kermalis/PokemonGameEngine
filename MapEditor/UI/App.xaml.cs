@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Kermalis.MapEditor.UI.Models;
 using System;
 
 namespace Kermalis.MapEditor.UI
