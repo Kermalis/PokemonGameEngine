@@ -19,7 +19,8 @@ public sealed partial class Build
         public long Offset;
     }
 
-    private static readonly AbsolutePath ScriptPath = RootDirectory / "PokemonGameEngine" / "Assets" / "Script";
+    public static readonly AbsolutePath AssetPath = RootDirectory / "PokemonGameEngine" / "Assets";
+    private static readonly AbsolutePath ScriptPath = AssetPath / "Script";
     private static readonly AbsolutePath ScriptOutputPath = ScriptPath / "Scripts.bin";
     private const string CommentChars = "//";
     private const string LocalLabelChars = "#";
@@ -95,9 +96,32 @@ public sealed partial class Build
                 _writer.Write(0u); // Write a nullptr which we will update later
                 break;
             }
-            default:
+            case "System.String": // Write an ID like "Map.TestMapC" or "0"
             {
-                // Write an enum like "Species.Bulbasaur"
+                int index = str.IndexOf('.');
+                if (index == -1)
+                {
+                    // Fallback to an int
+                    _writer.Write((int)ParseInt(str));
+                    break;
+                }
+                index++; // Include the '.'
+                string prefix = str.Substring(0, index);
+                if (!ScriptBuilderHelper.StringDefines.TryGetValue(prefix, out IdList idList))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(prefix));
+                }
+                str = str.Substring(index);
+                index = idList[str];
+                if (index == -1)
+                {
+                    throw new Exception($"\"{str}\" was not a valid string for \"{prefix}\"");
+                }
+                _writer.Write(index);
+                break;
+            }
+            default: // Write an enum like "Species.Bulbasaur"
+            {
                 if (!ScriptBuilderHelper.EnumDefines.TryGetValue(argType, out string prefix))
                 {
                     throw new ArgumentOutOfRangeException(nameof(argType));
