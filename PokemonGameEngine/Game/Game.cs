@@ -22,6 +22,7 @@ namespace Kermalis.PokemonGameEngine.Game
 
         private readonly OverworldGUI _overworldGUI;
         private FadeFromColorTransition _fadeFromTransition;
+        private FadeToColorTransition _fadeToTransition;
         private SpiralTransition _battleTransition;
         private BattleGUI _battleGUI;
 
@@ -59,6 +60,26 @@ namespace Kermalis.PokemonGameEngine.Game
             }
         }
 
+        public void TempWarp(IWarp warp)
+        {
+            void FadeToTransitionEnded()
+            {
+                Obj player = Obj.Player;
+                player.Warp(warp);
+                void FadeFromTransitionEnded()
+                {
+                    _fadeFromTransition = null;
+                }
+                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
+                if (player.QueuedScriptMovements.Count > 0)
+                {
+                    player.RunNextScriptMovement();
+                }
+                _fadeToTransition = null;
+            }
+            _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
+        }
+
         // Temp - start a test wild battle
         public void TempCreateWildBattle(EncounterTable.Encounter encounter)
         {
@@ -68,12 +89,12 @@ namespace Kermalis.PokemonGameEngine.Game
             var wild = new PBETrainerInfo(new Party { wildPkmn }, "Wild " + PBELocalizedString.GetSpeciesName(wildPkmn.Species).English);
             void OnBattleEnded()
             {
-                _battleGUI = null;
                 void FadeFromTransitionEnded()
                 {
                     _fadeFromTransition = null;
                 }
                 _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
+                _battleGUI = null;
             }
             _battleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, me, wild), OnBattleEnded);
             void OnBattleTransitionEnded()
@@ -85,7 +106,7 @@ namespace Kermalis.PokemonGameEngine.Game
 
         private void LogicTick()
         {
-            if (_battleTransition != null || _fadeFromTransition != null)
+            if (_battleTransition != null || _fadeFromTransition != null || _fadeToTransition != null)
             {
                 return;
             }
@@ -113,6 +134,11 @@ namespace Kermalis.PokemonGameEngine.Game
             if (_fadeFromTransition != null)
             {
                 _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                return;
+            }
+            if (_fadeToTransition != null)
+            {
+                _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                 return;
             }
         }

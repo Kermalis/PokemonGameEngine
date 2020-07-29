@@ -34,6 +34,11 @@
               <ui:MovementEditor Name="MovementEditor" />
             </Border>
           </TabItem>
+          <TabItem Header="Events">
+            <Border Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+              <ui:EventEditor Name="EventEditor" />
+            </Border>
+          </TabItem>
           <TabItem Header="Connections">
             <Border Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
               <ui:ConnectionEditor Name="ConnectionEditor" />

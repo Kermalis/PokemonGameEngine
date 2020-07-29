@@ -40,6 +40,69 @@ namespace Kermalis.MapEditor.Core
                 w.Write(Offset);
             }
         }
+        internal sealed class Events
+        {
+            public sealed class WarpEvent
+            {
+                public int X;
+                public int Y;
+                public byte Elevation;
+
+                public int DestMapId;
+                public int DestX;
+                public int DestY;
+                public byte DestElevation;
+
+                public WarpEvent() { }
+                public WarpEvent(EndianBinaryReader r)
+                {
+                    X = r.ReadInt32();
+                    Y = r.ReadInt32();
+                    Elevation = r.ReadByte();
+                    DestMapId = r.ReadInt32();
+                    DestX = r.ReadInt32();
+                    DestY = r.ReadInt32();
+                    DestElevation = r.ReadByte();
+                }
+
+                public void Write(EndianBinaryWriter w)
+                {
+                    w.Write(X);
+                    w.Write(Y);
+                    w.Write(Elevation);
+                    w.Write(DestMapId);
+                    w.Write(DestX);
+                    w.Write(DestY);
+                    w.Write(DestElevation);
+                }
+            }
+
+            public readonly List<WarpEvent> Warps;
+
+            public Events()
+            {
+                Warps = new List<WarpEvent>();
+            }
+            public Events(EndianBinaryReader r)
+            {
+                ushort count = r.ReadUInt16();
+                Warps = new List<WarpEvent>(count);
+                for (int i = 0; i < count; i++)
+                {
+                    Warps.Add(new WarpEvent(r));
+                }
+            }
+
+            public void Write(EndianBinaryWriter w)
+            {
+                ushort count = (ushort)Warps.Count;
+                w.Write(count);
+                for (int i = 0; i < count; i++)
+                {
+                    Warps[i].Write(w);
+                }
+            }
+        }
         internal sealed class Layout : IDisposable
         {
             public sealed class Block
@@ -372,6 +435,7 @@ namespace Kermalis.MapEditor.Core
         internal readonly int Id;
 
         internal readonly Layout MapLayout;
+        internal readonly Events MapEvents;
         internal readonly EncounterGroups Encounters;
         internal readonly List<Connection> Connections;
 
@@ -380,6 +444,7 @@ namespace Kermalis.MapEditor.Core
             using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(_mapPath, name + _mapExtension))))
             {
                 MapLayout = Layout.LoadOrGet(r.ReadInt32());
+                MapEvents = new Events(r);
                 Encounters = new EncounterGroups(r);
                 int numConnections = r.ReadByte();
                 Connections = new List<Connection>(numConnections);
@@ -396,6 +461,7 @@ namespace Kermalis.MapEditor.Core
             Id = Ids.Add(name);
             _loadedMaps.Add(Id, new WeakReference<Map>(this));
             MapLayout = layout;
+            MapEvents = new Events();
             Encounters = new EncounterGroups();
             Connections = new List<Connection>();
             Name = name;
@@ -448,6 +514,7 @@ namespace Kermalis.MapEditor.Core
             using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_mapPath, Name + _mapExtension))))
             {
                 w.Write(MapLayout.Id);
+                MapEvents.Write(w);
                 Encounters.Write(w);
                 byte numConnections = (byte)Connections.Count;
                 w.Write(numConnections);

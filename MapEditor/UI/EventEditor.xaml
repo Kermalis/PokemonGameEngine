@@ -1,0 +1,77 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:core="clr-namespace:Kermalis.MapEditor.Core;assembly=MapEditor"
+        xmlns:ui="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
+        x:Class="Kermalis.MapEditor.UI.EventEditor" Padding="2">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition />
+      <ColumnDefinition Width="5" />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+    <Border Grid.Column="0" Margin="0,0,2,0" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <ui:EventsImage Name="EventsImage" />
+      </ScrollViewer>
+    </Border>
+    <GridSplitter Grid.Column="1" />
+    <Border Grid.Column="2" Margin="2,0,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+      <TabControl>
+        <TabItem Header="Warps">
+          <Border Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+            <DockPanel>
+              <Border DockPanel.Dock="Top" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                  <Button Content="Add Warp" Command="{Binding AddWarp}" IsEnabled="{Binding AddWarpEnabled}" />
+                  <Button Content="Remove Selected Warp" Command="{Binding RemoveWarp}" IsEnabled="{Binding !!SelectedWarp}" />
+                  <TextBlock Text="{Binding NumWarpsText}" VerticalAlignment="Center" />
+                </StackPanel>
+              </Border>
+              <Border IsVisible="{Binding !!SelectedWarp}" Margin="0,2,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+                <StackPanel Spacing="5" Orientation="Vertical">
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Selected Warp: " VerticalAlignment="Center" />
+                    <ComboBox Items="{Binding Warps}" SelectedItem="{Binding SelectedWarp}">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <StackPanel Spacing="5" Orientation="Horizontal">
+                            <TextBlock Text="X: "/>
+                            <TextBlock Text="{Binding X}"/>
+                            <TextBlock Text="  Y: "/>
+                            <TextBlock Text="{Binding Y}"/>
+                            <TextBlock Text="  Elevation: "/>
+                            <TextBlock Text="{Binding Elevation}"/>
+                          </StackPanel>
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="X: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedWarp.X}" />
+                    <TextBlock Text="  Y: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedWarp.Y}" />
+                    <TextBlock Text="  Elevation: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedWarp.Elevation}" />
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Dest. Map: " VerticalAlignment="Center" />
+                    <ComboBox Items="{x:Static core:Map.Ids}" SelectedIndex="{Binding SelectedWarp.DestMapId}" />
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Dest. X: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedWarp.DestX}" />
+                    <TextBlock Text="  Dest. Y: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedWarp.DestY}" />
+                    <TextBlock Text="  Dest. Elevation: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedWarp.DestElevation}" />
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+            </DockPanel>
+          </Border>
+        </TabItem>
+      </TabControl>
+    </Border>
+  </Grid>
+</UserControl>

@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Scripts;
 using System;
 using System.Collections.Generic;
 
@@ -448,6 +449,9 @@ namespace Kermalis.PokemonGameEngine.Overworld
             PrevPos = other.PrevPos;
             ProgressX = other.ProgressX;
             ProgressY = other.ProgressY;
+            Map.Objs.Remove(this);
+            Map = other.Map;
+            Map.Objs.Add(this);
         }
 
         public static Obj GetObj(ushort id)
@@ -466,6 +470,32 @@ namespace Kermalis.PokemonGameEngine.Overworld
         {
             Position p = Pos;
             return Map.GetBlock(p.X, p.Y);
+        }
+
+        public void Warp(IWarp warp)
+        {
+            Map.Objs.Remove(this);
+            var map = Map.LoadOrGet(warp.DestMapId);
+            int x = warp.DestX;
+            int y = warp.DestY;
+            Map = map;
+            map.Objs.Add(this);
+            Pos.X = x;
+            Pos.Y = y;
+            Pos.Elevation = warp.DestElevation;
+            PrevPos = Pos;
+            Map.Layout.Block block = map.GetBlock(x, y);
+            // Facing is of the original direction unless the block behavior says otherwise
+            // All QueuedScriptMovements will be run after the warp is complete
+            if (block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Warp_WalkSouthOnExit)
+            {
+                Facing = FacingDirection.South;
+                QueuedScriptMovements.Enqueue(ScriptMovement.Walk_S);
+            }
+            if (CameraAttachedTo == this)
+            {
+                CameraCopyMovement();
+            }
         }
 
         // TODO: Shadows, reflections

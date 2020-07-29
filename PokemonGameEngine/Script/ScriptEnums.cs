@@ -46,5 +46,6 @@
         Delay,
         SetFlag,
         ClearFlag,
+        Warp,
     }
 }

@@ -29,6 +29,43 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 Offset = r.ReadInt32();
             }
         }
+        public sealed class Events
+        {
+            public sealed class WarpEvent : IWarp
+            {
+                public int X { get; }
+                public int Y { get; }
+                public byte Elevation { get; }
+
+                public int DestMapId { get; }
+                public int DestX { get; }
+                public int DestY { get; }
+                public byte DestElevation { get; }
+
+                public WarpEvent(EndianBinaryReader r)
+                {
+                    X = r.ReadInt32();
+                    Y = r.ReadInt32();
+                    Elevation = r.ReadByte();
+                    DestMapId = r.ReadInt32();
+                    DestX = r.ReadInt32();
+                    DestY = r.ReadInt32();
+                    DestElevation = r.ReadByte();
+                }
+            }
+
+            public readonly WarpEvent[] Warps;
+
+            public Events(EndianBinaryReader r)
+            {
+                ushort count = r.ReadUInt16();
+                Warps = new WarpEvent[count];
+                for (int i = 0; i < count; i++)
+                {
+                    Warps[i] = new WarpEvent(r);
+                }
+            }
+        }
         public sealed class Layout
         {
             public sealed class Block
@@ -221,6 +258,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         }
 
         private readonly Layout _layout;
+        public readonly Events MapEvents;
         public readonly EncounterGroups Encounters;
         private readonly Connection[] _connections;
 
@@ -231,6 +269,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             using (var r = new EndianBinaryReader(Utils.GetResourceStream(_mapPath + name + _mapExtension)))
             {
                 _layout = Layout.LoadOrGet(r.ReadInt32());
+                MapEvents = new Events(r);
                 Encounters = new EncounterGroups(r);
                 int numConnections = r.ReadByte();
                 _connections = new Connection[numConnections];

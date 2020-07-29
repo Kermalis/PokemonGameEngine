@@ -18,7 +18,8 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 list[i].UpdateMovementTimer();
             }
-            if (!Obj.Camera.CanMove || !Obj.Player.CanMove)
+            Obj player = Obj.Player;
+            if (!Obj.Camera.CanMove || !player.CanMove)
             {
                 return;
             }
@@ -26,6 +27,17 @@ namespace Kermalis.PokemonGameEngine.GUI
             if (_shouldRunTriggers)
             {
                 _shouldRunTriggers = false; // #12 - Do not return before setting FinishedMoving to false
+                Obj.Position playerPos = player.Pos;
+                // Warp
+                foreach (Map.Events.WarpEvent warp in player.Map.MapEvents.Warps)
+                {
+                    if (playerPos.X == warp.X && playerPos.Y == warp.Y && playerPos.Elevation == warp.Elevation)
+                    {
+                        Game.Game.Instance.TempWarp(warp);
+                        return;
+                    }
+                }
+                // Battle
                 if (Overworld.Overworld.CheckForWildBattle(false))
                 {
                     return;
@@ -91,7 +103,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 facing = FacingDirection.East;
             }
             bool run = InputManager.IsDown(Key.B);
-            Obj.Player.Move(facing, run, false);
+            player.Move(facing, run, false);
             _shouldRunTriggers = true;
         }
 

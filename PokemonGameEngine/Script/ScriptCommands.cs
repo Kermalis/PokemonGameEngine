@@ -29,6 +29,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.Delay: DelayCommand(); break;
                 case ScriptCommand.SetFlag: SetFlagCommand(); break;
                 case ScriptCommand.ClearFlag: ClearFlagCommand(); break;
+                case ScriptCommand.Warp: WarpCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -145,6 +146,15 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             Flag flag = _reader.ReadEnum<Flag>();
             Game.Game.Instance.Save.Flags[flag] = false;
+        }
+
+        private void WarpCommand()
+        {
+            int mapId = _reader.ReadInt32();
+            int x = _reader.ReadInt32();
+            int y = _reader.ReadInt32();
+            byte elevation = _reader.ReadByte();
+            Game.Game.Instance.TempWarp(new Warp(mapId, x, y, elevation));
         }
     }
 }
