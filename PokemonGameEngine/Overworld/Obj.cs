@@ -424,8 +424,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 // Scale from previous value to new value based on % of transition
                 return (int)(prevVisualOfs + (t * visualOfsScale));
             }
-            ProgressX = DoTheMath(pos.X, PrevPos.X, pos.XOffset, prevPos.XOffset);
-            ProgressY = DoTheMath(pos.Y, PrevPos.Y, pos.YOffset, PrevPos.YOffset);
+            ProgressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset);
+            ProgressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset);
         }
         public void UpdateMovementTimer()
         {
