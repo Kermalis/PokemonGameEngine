@@ -297,7 +297,6 @@ namespace Kermalis.PokemonGameEngine.Overworld
         }
         private void ApplyMovement(FacingDirection facing)
         {
-            // Move to the new position, keeping track of which axis we moved
             switch (facing)
             {
                 case FacingDirection.South:
