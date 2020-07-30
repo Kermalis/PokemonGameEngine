@@ -297,6 +297,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         }
         private void ApplyMovement(FacingDirection facing)
         {
+            // Move to the new position, keeping track of which axis we moved
             switch (facing)
             {
                 case FacingDirection.South:
@@ -352,10 +353,27 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     break;
                 }
             }
-            Pos.Elevation = GetBlock().Elevation;
+            Map.Layout.Block block = GetBlock(out Map map);
+            Pos.Elevation = block.Elevation;
+            Map curMap = Map;
+            if (map == curMap)
+            {
+                return;
+            }
+            // Map crossing - Update Map, Pos, and PrevPos
+            curMap.Objs.Remove(this);
+            map.Objs.Add(this);
+            Map = map;
+
+            int x = Pos.X;
+            int y = Pos.Y;
+            Pos.X = block.X;
+            Pos.Y = block.Y;
+            PrevPos.X += block.X - x;
+            PrevPos.Y += block.Y - y;
         }
 
-        // TODO: Map crossing, ledges, etc
+        // TODO: Ledges, waterfall, etc
         public bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
         {
             CanMove = false;
@@ -468,8 +486,12 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
         public Map.Layout.Block GetBlock()
         {
+            return GetBlock(out _);
+        }
+        public Map.Layout.Block GetBlock(out Map map)
+        {
             Position p = Pos;
-            return Map.GetBlock(p.X, p.Y);
+            return Map.GetBlock(p.X, p.Y, out map);
         }
 
         public void Warp(IWarp warp)

@@ -70,74 +70,82 @@ namespace Kermalis.PokemonGameEngine.Overworld
         {
             public sealed class Block
             {
+                public readonly Layout Parent;
+                public readonly int X;
+                public readonly int Y;
+
                 public readonly byte Elevation;
                 public readonly LayoutBlockPassage Passage;
                 public readonly Blockset.Block BlocksetBlock;
 
-                public Block(EndianBinaryReader r)
+                public Block(Layout parent, int x, int y, EndianBinaryReader r)
                 {
+                    Parent = parent;
+                    X = x;
+                    Y = y;
+
                     Elevation = r.ReadByte();
                     Passage = r.ReadEnum<LayoutBlockPassage>();
                     BlocksetBlock = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
                 }
             }
 
-            private readonly int _blocksWidth;
-            private readonly int _blocksHeight;
-            private readonly Block[][] _blocks;
-            private readonly byte _borderWidth;
-            private readonly byte _borderHeight;
-            private readonly Block[][] _borderBlocks;
+            public readonly int BlocksWidth;
+            public readonly int BlocksHeight;
+            public readonly Block[][] Blocks;
+            public readonly byte BorderWidth;
+            public readonly byte BorderHeight;
+            public readonly Block[][] BorderBlocks;
 
             private Layout(string name)
             {
-                using (var r = new EndianBinaryReader(Utils.GetResourceStream(_layoutPath + name + _layoutExtension)))
+                using (var r = new EndianBinaryReader(Utils.GetResourceStream(LayoutPath + name + LayoutExtension)))
                 {
-                    _blocksWidth = r.ReadInt32();
-                    if (_blocksWidth <= 0)
+                    BlocksWidth = r.ReadInt32();
+                    if (BlocksWidth <= 0)
                     {
                         throw new InvalidDataException();
                     }
-                    _blocksHeight = r.ReadInt32();
-                    if (_blocksHeight <= 0)
+                    BlocksHeight = r.ReadInt32();
+                    if (BlocksHeight <= 0)
                     {
                         throw new InvalidDataException();
                     }
-                    _blocks = new Block[_blocksHeight][];
-                    for (int y = 0; y < _blocksHeight; y++)
+                    Blocks = new Block[BlocksHeight][];
+                    for (int y = 0; y < BlocksHeight; y++)
                     {
-                        var arrY = new Block[_blocksWidth];
-                        for (int x = 0; x < _blocksWidth; x++)
+                        var arrY = new Block[BlocksWidth];
+                        for (int x = 0; x < BlocksWidth; x++)
                         {
-                            arrY[x] = new Block(r);
+                            arrY[x] = new Block(this, x, y, r);
                         }
-                        _blocks[y] = arrY;
+                        Blocks[y] = arrY;
                     }
-                    _borderWidth = r.ReadByte();
-                    _borderHeight = r.ReadByte();
-                    if (_borderWidth == 0 || _borderHeight == 0)
+                    BorderWidth = r.ReadByte();
+                    BorderHeight = r.ReadByte();
+                    if (BorderWidth == 0 || BorderHeight == 0)
                     {
-                        _borderBlocks = Array.Empty<Block[]>();
+                        BorderBlocks = Array.Empty<Block[]>();
                     }
                     else
                     {
-                        _borderBlocks = new Block[_borderHeight][];
-                        for (int y = 0; y < _borderHeight; y++)
+                        BorderBlocks = new Block[BorderHeight][];
+                        for (int y = 0; y < BorderHeight; y++)
                         {
-                            var arrY = new Block[_borderWidth];
-                            for (int x = 0; x < _borderWidth; x++)
+                            var arrY = new Block[BorderWidth];
+                            for (int x = 0; x < BorderWidth; x++)
                             {
-                                arrY[x] = new Block(r);
+                                arrY[x] = new Block(this, -1, -1, r);
                             }
-                            _borderBlocks[y] = arrY;
+                            BorderBlocks[y] = arrY;
                         }
                     }
                 }
             }
 
-            private const string _layoutExtension = ".pgelayout";
-            private const string _layoutPath = "Map.Layout.";
-            private static readonly IdList _ids = new IdList(_layoutPath + "LayoutIds.txt");
+            private const string LayoutExtension = ".pgelayout";
+            private const string LayoutPath = "Map.Layout.";
+            private static readonly IdList _ids = new IdList(LayoutPath + "LayoutIds.txt");
             private static readonly Dictionary<int, WeakReference<Layout>> loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
             public static Layout LoadOrGet(int id)
             {
@@ -161,128 +169,34 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 loadedLayouts[id].SetTarget(l);
                 return l;
             }
-
-            public Block GetBlock(int x, int y, Connection[] connections)
-            {
-                bool north = y < 0;
-                bool south = y >= _blocksHeight;
-                bool west = x < 0;
-                bool east = x >= _blocksWidth;
-                if (!north && !south && !west && !east)
-                {
-                    return _blocks[y][x];
-                }
-                else
-                {
-                    // TODO: How should connections retain map references? Answer: Visible maps/objs list
-                    int numConnections = connections.Length;
-                    for (int i = 0; i < numConnections; i++)
-                    {
-                        Connection c = connections[i];
-                        switch (c.Dir)
-                        {
-                            case Connection.Direction.South:
-                            {
-                                if (south)
-                                {
-                                    var m = Map.LoadOrGet(c.MapId);
-                                    Layout l = m._layout;
-                                    if (x >= c.Offset && x < c.Offset + l._blocksWidth)
-                                    {
-                                        return l.GetBlock(x - c.Offset, y - _blocksHeight, m._connections);
-                                    }
-                                }
-                                break;
-                            }
-                            case Connection.Direction.North:
-                            {
-                                if (north)
-                                {
-                                    var m = Map.LoadOrGet(c.MapId);
-                                    Layout l = m._layout;
-                                    if (x >= c.Offset && x < c.Offset + l._blocksWidth)
-                                    {
-                                        return l.GetBlock(x - c.Offset, l._blocksHeight + y, m._connections);
-                                    }
-                                }
-                                break;
-                            }
-                            case Connection.Direction.West:
-                            {
-                                if (west)
-                                {
-                                    var m = Map.LoadOrGet(c.MapId);
-                                    Layout l = m._layout;
-                                    if (y >= c.Offset && y < c.Offset + l._blocksHeight)
-                                    {
-                                        return l.GetBlock(l._blocksWidth + x, y - c.Offset, m._connections);
-                                    }
-                                }
-                                break;
-                            }
-                            case Connection.Direction.East:
-                            {
-                                if (east)
-                                {
-                                    var m = Map.LoadOrGet(c.MapId);
-                                    Layout l = m._layout;
-                                    if (y >= c.Offset && y < c.Offset + l._blocksHeight)
-                                    {
-                                        return l.GetBlock(x - _blocksWidth, y - c.Offset, m._connections);
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    if (_borderWidth == 0 || _borderHeight == 0)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        x %= _borderWidth;
-                        if (west)
-                        {
-                            x *= -1;
-                        }
-                        y %= _borderHeight;
-                        if (north)
-                        {
-                            y *= -1;
-                        }
-                        return _borderBlocks[y][x];
-                    }
-                }
-            }
         }
 
-        private readonly Layout _layout;
+        public readonly Layout MapLayout;
         public readonly Events MapEvents;
         public readonly EncounterGroups Encounters;
-        private readonly Connection[] _connections;
+        public readonly Connection[] Connections;
 
         public readonly List<Obj> Objs = new List<Obj>();
 
         private Map(string name)
         {
-            using (var r = new EndianBinaryReader(Utils.GetResourceStream(_mapPath + name + _mapExtension)))
+            using (var r = new EndianBinaryReader(Utils.GetResourceStream(MapPath + name + MapExtension)))
             {
-                _layout = Layout.LoadOrGet(r.ReadInt32());
+                MapLayout = Layout.LoadOrGet(r.ReadInt32());
                 MapEvents = new Events(r);
                 Encounters = new EncounterGroups(r);
                 int numConnections = r.ReadByte();
-                _connections = new Connection[numConnections];
+                Connections = new Connection[numConnections];
                 for (int i = 0; i < numConnections; i++)
                 {
-                    _connections[i] = new Connection(r);
+                    Connections[i] = new Connection(r);
                 }
             }
         }
 
-        private const string _mapExtension = ".pgemap";
-        private const string _mapPath = "Map.";
-        private static readonly IdList _ids = new IdList(_mapPath + "MapIds.txt");
+        private const string MapExtension = ".pgemap";
+        private const string MapPath = "Map.";
+        private static readonly IdList _ids = new IdList(MapPath + "MapIds.txt");
         private static readonly Dictionary<int, WeakReference<Map>> loadedMaps = new Dictionary<int, WeakReference<Map>>();
         public static Map LoadOrGet(int id)
         {
@@ -307,9 +221,103 @@ namespace Kermalis.PokemonGameEngine.Overworld
             return m;
         }
 
+        public Layout.Block GetBlock(int x, int y, out Map map)
+        {
+            Layout ml = MapLayout;
+            bool north = y < 0;
+            bool south = y >= ml.BlocksHeight;
+            bool west = x < 0;
+            bool east = x >= ml.BlocksWidth;
+            if (!north && !south && !west && !east)
+            {
+                map = this;
+                return ml.Blocks[y][x];
+            }
+            // TODO: How should connections retain map references? Answer: Visible maps/objs list
+            Connection[] connections = Connections;
+            int numConnections = connections.Length;
+            for (int i = 0; i < numConnections; i++)
+            {
+                Connection c = connections[i];
+                switch (c.Dir)
+                {
+                    case Connection.Direction.South:
+                    {
+                        if (south)
+                        {
+                            Map m = LoadOrGet(c.MapId);
+                            Layout l = m.MapLayout;
+                            if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                            {
+                                return m.GetBlock(x - c.Offset, y - ml.BlocksHeight, out map);
+                            }
+                        }
+                        break;
+                    }
+                    case Connection.Direction.North:
+                    {
+                        if (north)
+                        {
+                            Map m = LoadOrGet(c.MapId);
+                            Layout l = m.MapLayout;
+                            if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                            {
+                                return m.GetBlock(x - c.Offset, l.BlocksHeight + y, out map);
+                            }
+                        }
+                        break;
+                    }
+                    case Connection.Direction.West:
+                    {
+                        if (west)
+                        {
+                            Map m = LoadOrGet(c.MapId);
+                            Layout l = m.MapLayout;
+                            if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                            {
+                                return m.GetBlock(l.BlocksWidth + x, y - c.Offset, out map);
+                            }
+                        }
+                        break;
+                    }
+                    case Connection.Direction.East:
+                    {
+                        if (east)
+                        {
+                            Map m = LoadOrGet(c.MapId);
+                            Layout l = m.MapLayout;
+                            if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                            {
+                                return m.GetBlock(x - ml.BlocksWidth, y - c.Offset, out map);
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            // Border blocks should count as the calling map
+            map = this;
+            // No border should render pure black
+            if (ml.BorderWidth == 0 || ml.BorderHeight == 0)
+            {
+                return null;
+            }
+            // Has a border
+            x %= ml.BorderWidth;
+            if (west)
+            {
+                x *= -1;
+            }
+            y %= ml.BorderHeight;
+            if (north)
+            {
+                y *= -1;
+            }
+            return ml.BorderBlocks[y][x];
+        }
         public Layout.Block GetBlock(int x, int y)
         {
-            return _layout.GetBlock(x, y, _connections);
+            return GetBlock(x, y, out _);
         }
 
         public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight)
@@ -338,9 +346,10 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 {
                     for (int blockX = startBlockX; blockX < endBlockX; blockX++)
                     {
-                        Blockset.Block b = cameraMap.GetBlock(blockX, blockY).BlocksetBlock;
-                        if (b != null)
+                        Layout.Block block = cameraMap.GetBlock(blockX, blockY, out _);
+                        if (block != null)
                         {
+                            Blockset.Block b = block.BlocksetBlock;
                             void Draw(Blockset.Block.Tile[] subLayers, int tx, int ty)
                             {
                                 int numSubLayers = subLayers.Length;
