@@ -23,11 +23,11 @@
               <Border DockPanel.Dock="Top" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
                 <StackPanel Spacing="5" Orientation="Horizontal">
                   <Button Content="Add Warp" Command="{Binding AddWarp}" IsEnabled="{Binding AddWarpEnabled}" />
-                  <Button Content="Remove Selected Warp" Command="{Binding RemoveWarp}" IsEnabled="{Binding !!SelectedWarp}" />
+                  <Button Content="Remove Selected Warp" Command="{Binding RemoveWarp}" IsEnabled="{Binding SelectedWarp, Converter={x:Static ObjectConverters.IsNotNull}}" />
                   <TextBlock Text="{Binding NumWarpsText}" VerticalAlignment="Center" />
                 </StackPanel>
               </Border>
-              <Border IsVisible="{Binding !!SelectedWarp}" Margin="0,2,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+              <Border IsVisible="{Binding SelectedWarp, Converter={x:Static ObjectConverters.IsNotNull}}" Margin="0,2,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
                 <StackPanel Spacing="5" Orientation="Vertical">
                   <StackPanel Spacing="5" Orientation="Horizontal">
                     <TextBlock Text="Selected Warp: " VerticalAlignment="Center" />

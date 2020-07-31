@@ -135,6 +135,7 @@ namespace Kermalis.MapEditor.UI
 
         public void Dispose()
         {
+            PropertyChanged = null;
             DisposeModels();
             _eventsImage.Dispose();
         }

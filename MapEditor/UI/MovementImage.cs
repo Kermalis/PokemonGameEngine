@@ -389,31 +389,26 @@ namespace Kermalis.MapEditor.UI
             RemoveLayoutEvents();
         }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        private LayoutBlockPassage GetFlag(object parameter)
         {
             switch (parameter)
             {
-                case "O": return _passage.HasFlag(LayoutBlockPassage.AllowOccupancy);
-                case "SW": return _passage.HasFlag(LayoutBlockPassage.SouthwestPassage);
-                case "SE": return _passage.HasFlag(LayoutBlockPassage.SoutheastPassage);
-                case "NW": return _passage.HasFlag(LayoutBlockPassage.NorthwestPassage);
-                case "NE": return _passage.HasFlag(LayoutBlockPassage.NortheastPassage);
+                case "O": return LayoutBlockPassage.AllowOccupancy;
+                case "SW": return LayoutBlockPassage.SouthwestPassage;
+                case "SE": return LayoutBlockPassage.SoutheastPassage;
+                case "NW": return LayoutBlockPassage.NorthwestPassage;
+                case "NE": return LayoutBlockPassage.NortheastPassage;
                 default: throw new ArgumentOutOfRangeException(nameof(parameter));
             }
+        }
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return _passage.HasFlag(GetFlag(parameter));
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool b = (bool)value;
-            LayoutBlockPassage flag;
-            switch (parameter)
-            {
-                case "O": flag = LayoutBlockPassage.AllowOccupancy; break;
-                case "SW": flag = LayoutBlockPassage.SouthwestPassage; break;
-                case "SE": flag = LayoutBlockPassage.SoutheastPassage; break;
-                case "NW": flag = LayoutBlockPassage.NorthwestPassage; break;
-                case "NE": flag = LayoutBlockPassage.NortheastPassage; break;
-                default: throw new ArgumentOutOfRangeException(nameof(parameter));
-            }
+            LayoutBlockPassage flag = GetFlag(parameter);
             if (b)
             {
                 _passage |= flag;
