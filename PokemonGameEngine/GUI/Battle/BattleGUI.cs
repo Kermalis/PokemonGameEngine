@@ -129,7 +129,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             RenderPkmn(bmpAddress, bmpWidth, bmpHeight, 0.75f, 0.55f, false, foe);
             RenderPkmn(bmpAddress, bmpWidth, bmpHeight, 0.35f, 0.95f, true, ally);
 
-            DayTint.Render(bmpAddress, bmpWidth, bmpHeight); // TODO: Indoors battles
+            if (Overworld.Overworld.ShouldRenderDayTint())
+            {
+                DayTint.Render(bmpAddress, bmpWidth, bmpHeight);
+            }
 
             if (!_transitionDone)
             {

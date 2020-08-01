@@ -111,7 +111,10 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0xFF000000);
             Map.Draw(bmpAddress, bmpWidth, bmpHeight);
-            DayTint.Render(bmpAddress, bmpWidth, bmpHeight); // TODO: Indoors maps
+            if (Overworld.Overworld.ShouldRenderDayTint())
+            {
+                DayTint.Render(bmpAddress, bmpWidth, bmpHeight);
+            }
         }
     }
 }

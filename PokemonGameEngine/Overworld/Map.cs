@@ -29,6 +29,21 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 Offset = r.ReadInt32();
             }
         }
+        internal sealed class Details
+        {
+            public readonly MapFlags Flags;
+            public readonly MapSection Section;
+            public readonly MapWeather Weather;
+            public readonly Song Music;
+
+            public Details(EndianBinaryReader r)
+            {
+                Flags = r.ReadEnum<MapFlags>();
+                Section = r.ReadEnum<MapSection>();
+                Weather = r.ReadEnum<MapWeather>();
+                Music = r.ReadEnum<Song>();
+            }
+        }
         public sealed class Events
         {
             public sealed class WarpEvent : IWarp
@@ -172,6 +187,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
         }
 
         public readonly Layout MapLayout;
+        public readonly Details MapDetails;
         public readonly Events MapEvents;
         public readonly EncounterGroups Encounters;
         public readonly Connection[] Connections;
@@ -183,6 +199,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             using (var r = new EndianBinaryReader(Utils.GetResourceStream(MapPath + name + MapExtension)))
             {
                 MapLayout = Layout.LoadOrGet(r.ReadInt32());
+                MapDetails = new Details(r);
                 MapEvents = new Events(r);
                 Encounters = new EncounterGroups(r);
                 int numConnections = r.ReadByte();

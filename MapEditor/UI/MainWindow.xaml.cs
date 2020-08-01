@@ -24,6 +24,7 @@ namespace Kermalis.MapEditor.UI
         private readonly EventEditor _eventEditor;
         private readonly ConnectionEditor _connectionEditor;
         private readonly EncounterEditor _encounterEditor;
+        private readonly MapDetailsEditor _mapDetailsEditor;
 
         private Map _map;
         private string _selectedMap;
@@ -43,6 +44,7 @@ namespace Kermalis.MapEditor.UI
                     _eventEditor.SetMap(map);
                     _connectionEditor.SetMap(map);
                     _encounterEditor.SetEncounterGroup(map.Encounters);
+                    _mapDetailsEditor.SetDetails(map.MapDetails);
                     OnPropertyChanged(nameof(SelectedMap));
                 }
             }
@@ -58,6 +60,7 @@ namespace Kermalis.MapEditor.UI
             _eventEditor = this.FindControl<EventEditor>("EventEditor");
             _connectionEditor = this.FindControl<ConnectionEditor>("ConnectionEditor");
             _encounterEditor = this.FindControl<EncounterEditor>("EncounterEditor");
+            _mapDetailsEditor = this.FindControl<MapDetailsEditor>("MapDetailsEditor");
             SelectedMap = Map.Ids[0];
         }
 

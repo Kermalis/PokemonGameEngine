@@ -40,6 +40,30 @@ namespace Kermalis.MapEditor.Core
                 w.Write(Offset);
             }
         }
+        internal sealed class Details
+        {
+            public MapFlags Flags;
+            public MapSection Section;
+            public MapWeather Weather;
+            public Song Music;
+
+            public Details() { }
+            public Details(EndianBinaryReader r)
+            {
+                Flags = r.ReadEnum<MapFlags>();
+                Section = r.ReadEnum<MapSection>();
+                Weather = r.ReadEnum<MapWeather>();
+                Music = r.ReadEnum<Song>();
+            }
+
+            public void Write(EndianBinaryWriter w)
+            {
+                w.Write(Flags);
+                w.Write(Section);
+                w.Write(Weather);
+                w.Write(Music);
+            }
+        }
         internal sealed class Events
         {
             public sealed class WarpEvent
@@ -435,6 +459,7 @@ namespace Kermalis.MapEditor.Core
         internal readonly int Id;
 
         internal readonly Layout MapLayout;
+        internal readonly Details MapDetails;
         internal readonly Events MapEvents;
         internal readonly EncounterGroups Encounters;
         internal readonly List<Connection> Connections;
@@ -444,6 +469,7 @@ namespace Kermalis.MapEditor.Core
             using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(_mapPath, name + _mapExtension))))
             {
                 MapLayout = Layout.LoadOrGet(r.ReadInt32());
+                MapDetails = new Details(r);
                 MapEvents = new Events(r);
                 Encounters = new EncounterGroups(r);
                 int numConnections = r.ReadByte();
@@ -461,6 +487,7 @@ namespace Kermalis.MapEditor.Core
             Id = Ids.Add(name);
             _loadedMaps.Add(Id, new WeakReference<Map>(this));
             MapLayout = layout;
+            MapDetails = new Details();
             MapEvents = new Events();
             Encounters = new EncounterGroups();
             Connections = new List<Connection>();
@@ -514,6 +541,7 @@ namespace Kermalis.MapEditor.Core
             using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_mapPath, Name + _mapExtension))))
             {
                 w.Write(MapLayout.Id);
+                MapDetails.Write(w);
                 MapEvents.Write(w);
                 Encounters.Write(w);
                 byte numConnections = (byte)Connections.Count;

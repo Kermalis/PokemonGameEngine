@@ -1,0 +1,29 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:core="clr-namespace:Kermalis.MapEditor.Core;assembly=MapEditor"
+        xmlns:ui="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
+        x:Class="Kermalis.MapEditor.UI.MapDetailsEditor" Padding="2">
+  <UserControl.Resources>
+    <ui:MapFlagsConverter x:Key="MapFlagsConverter" />
+  </UserControl.Resources>
+  <StackPanel Orientation="Vertical" Spacing="5">
+    <CheckBox Content="Day/night tint" IsChecked="{Binding Flags, Converter={StaticResource MapFlagsConverter}, ConverterParameter=DayTint}" />
+    <CheckBox Content="Bike allowed" IsChecked="{Binding Flags, Converter={StaticResource MapFlagsConverter}, ConverterParameter=Bike}" />
+    <CheckBox Content="Fly allowed" IsChecked="{Binding Flags, Converter={StaticResource MapFlagsConverter}, ConverterParameter=Fly}" />
+    <CheckBox Content="Teleport allowed" IsChecked="{Binding Flags, Converter={StaticResource MapFlagsConverter}, ConverterParameter=Teleport}" />
+    <CheckBox Content="Dig/EscapeRope allowed" IsChecked="{Binding Flags, Converter={StaticResource MapFlagsConverter}, ConverterParameter=Dig_EscapeRope}" />
+    <CheckBox Content="Show map section name on enter" IsChecked="{Binding Flags, Converter={StaticResource MapFlagsConverter}, ConverterParameter=ShowMapName}" />
+    <StackPanel Spacing="5" Orientation="Horizontal">
+      <TextBlock Text="Map section:" />
+      <ComboBox Items="{Binding SelectableMapSections}" SelectedItem="{Binding Section}" />
+    </StackPanel>
+    <StackPanel Spacing="5" Orientation="Horizontal">
+      <TextBlock Text="Map weather:" />
+      <ComboBox Items="{Binding SelectableWeathers}" SelectedItem="{Binding Weather}" />
+    </StackPanel>
+    <StackPanel Spacing="5" Orientation="Horizontal">
+      <TextBlock Text="Map music:" />
+      <ComboBox Items="{Binding SelectableSongs}" SelectedItem="{Binding Music}" />
+    </StackPanel>
+  </StackPanel>
+</UserControl>

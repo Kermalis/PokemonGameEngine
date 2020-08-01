@@ -7,3 +7,4 @@ TestEncountersRareSurfC
 TestEncountersRareSuperRodC
 TestEncountersHeadbuttTree
 TestEncountersHoneyTree
+TestEncountersCave

@@ -81,7 +81,7 @@ namespace Kermalis.PokemonGameEngine.Game
         }
 
         // Temp - start a test wild battle
-        public void TempCreateWildBattle(EncounterTable.Encounter encounter)
+        public void TempCreateWildBattle(Map map, Map.Layout.Block block, EncounterTable.Encounter encounter)
         {
             Save sav = Save;
             var me = new PBETrainerInfo(sav.PlayerParty, sav.PlayerName);
@@ -96,7 +96,10 @@ namespace Kermalis.PokemonGameEngine.Game
                 _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
                 _battleGUI = null;
             }
-            _battleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, me, wild), OnBattleEnded);
+            _battleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, me, wild,
+                battleTerrain: Overworld.Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock),
+                weather: Overworld.Overworld.GetPBEWeatherFromMap(map)),
+                OnBattleEnded);
             void OnBattleTransitionEnded()
             {
                 _battleTransition = null;

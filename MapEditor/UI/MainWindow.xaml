@@ -49,6 +49,11 @@
               <ui:EncounterEditor Name="EncounterEditor" />
             </Border>
           </TabItem>
+          <TabItem Header="Map Details">
+            <Border Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+              <ui:MapDetailsEditor Name="MapDetailsEditor" />
+            </Border>
+          </TabItem>
         </TabControl>
       </Grid>
     </Border>

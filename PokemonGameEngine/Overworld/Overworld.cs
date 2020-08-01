@@ -25,13 +25,15 @@ namespace Kermalis.PokemonGameEngine.Overworld
         public static bool CheckForWildBattle(bool ignoreAbilityOrItem)
         {
             Obj player = Obj.Player;
-            Map map = player.Map;
+            Map.Layout.Block block = player.GetBlock(out Map map);
             EncounterType t;
-            switch (player.GetBlock().BlocksetBlock.Behavior)
+            switch (block.BlocksetBlock.Behavior)
             {
-                case BlocksetBlockBehavior.DarkGrass: t = EncounterType.DarkGrass; break;
+                case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter:
+                case BlocksetBlockBehavior.Cave_Encounter:
+                case BlocksetBlockBehavior.Grass_Encounter: t = EncounterType.Default; break;
+                case BlocksetBlockBehavior.Grass_SpecialEncounter: t = EncounterType.DarkGrass; break;
                 case BlocksetBlockBehavior.Surf: t = EncounterType.Surf; break;
-                case BlocksetBlockBehavior.WildEncounter: t = EncounterType.Default; break;
                 default: return false;
             }
             EncounterTable tbl = map.Encounters.GetEncounterTable(t);
@@ -79,8 +81,50 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 return false;
             }
             EncounterTable.Encounter encounter0 = RollEncounter(tbl, combinedChance);
-            Game.Game.Instance.TempCreateWildBattle(encounter0);
+            Game.Game.Instance.TempCreateWildBattle(map, block, encounter0);
             return true;
+        }
+
+        public static bool ShouldRenderDayTint()
+        {
+            return Obj.Camera.Map.MapDetails.Flags.HasFlag(MapFlags.DayTint);
+        }
+        public static PBEWeather GetPBEWeatherFromMap(Map map)
+        {
+            MapWeather weather = map.MapDetails.Weather;
+            switch (weather)
+            {
+                case MapWeather.Drought: return PBEWeather.HarshSunlight;
+                case MapWeather.Rain_Light:
+                case MapWeather.Rain_Medium: return PBEWeather.Rain;
+                case MapWeather.Sandstorm: return PBEWeather.Sandstorm;
+                case MapWeather.Snow_Hail: return PBEWeather.Hailstorm;
+                default: return PBEWeather.None;
+            }
+        }
+        public static PBEBattleTerrain GetPBEBattleTerrainFromBlock(Blockset.Block block)
+        {
+            BlocksetBlockBehavior behavior = block.Behavior;
+            switch (behavior)
+            {
+                case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter:
+                case BlocksetBlockBehavior.Cave_Encounter: return PBEBattleTerrain.Cave;
+                case BlocksetBlockBehavior.Grass_Encounter:
+                case BlocksetBlockBehavior.Grass_SpecialEncounter: return PBEBattleTerrain.Grass;
+                case BlocksetBlockBehavior.Surf: return PBEBattleTerrain.Water;
+                default: return PBEBattleTerrain.Plain;
+            }
+        }
+
+        // Returns true if the behavior is a stair (but not a sideways stair)
+        public static bool AllowsElevationChange(BlocksetBlockBehavior b)
+        {
+            switch (b)
+            {
+                case BlocksetBlockBehavior.AllowElevationChange:
+                case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter: return true;
+                default: return false;
+            }
         }
     }
 }

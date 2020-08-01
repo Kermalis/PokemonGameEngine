@@ -17,7 +17,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             public int YOffset;
         }
 
-        public static readonly List<Obj> LoadedObjs = new List<Obj>();
+        public static readonly List<Obj> LoadedObjs = new List<Obj>(); // TODO: Unload ones that are too far (right now they stay forever and hold references to their map)
 
         public const ushort PlayerId = ushort.MaxValue;
         public const ushort CameraId = PlayerId - 1;
@@ -92,7 +92,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             {
                 return false;
             }
-            bool canChangeElevation = curBehavior == BlocksetBlockBehavior.AllowElevationChange || targetBehavior == BlocksetBlockBehavior.AllowElevationChange;
+            bool canChangeElevation = Overworld.AllowsElevationChange(curBehavior) || Overworld.AllowsElevationChange(targetBehavior);
             if (!canChangeElevation && targetBlock.Elevation != p.Elevation)
             {
                 return false;
@@ -145,7 +145,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             }
             if (!canChangeElevation)
             {
-                canChangeElevation = curBehavior == BlocksetBlockBehavior.AllowElevationChange || targetBehavior == BlocksetBlockBehavior.AllowElevationChange;
+                canChangeElevation = Overworld.AllowsElevationChange(curBehavior) || Overworld.AllowsElevationChange(targetBehavior);
                 if (!canChangeElevation && targetBlock.Elevation != p.Elevation)
                 {
                     return false;
@@ -184,7 +184,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             {
                 return false;
             }
-            bool canChangeElevation = curBehavior == BlocksetBlockBehavior.AllowElevationChange || targetBehavior == BlocksetBlockBehavior.AllowElevationChange;
+            bool canChangeElevation = Overworld.AllowsElevationChange(curBehavior) || Overworld.AllowsElevationChange(targetBehavior);
             if (!canChangeElevation && targetBlock.Elevation != p.Elevation)
             {
                 return false;
@@ -499,20 +499,31 @@ namespace Kermalis.PokemonGameEngine.Overworld
             var map = Map.LoadOrGet(warp.DestMapId);
             int x = warp.DestX;
             int y = warp.DestY;
+            byte e = warp.DestElevation;
             Map = map;
             map.Objs.Add(this);
-            Pos.X = x;
-            Pos.Y = y;
-            Pos.Elevation = warp.DestElevation;
-            PrevPos = Pos;
             Map.Layout.Block block = map.GetBlock(x, y);
             // Facing is of the original direction unless the block behavior says otherwise
             // All QueuedScriptMovements will be run after the warp is complete
-            if (block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Warp_WalkSouthOnExit)
+            switch (block.BlocksetBlock.Behavior)
             {
-                Facing = FacingDirection.South;
-                QueuedScriptMovements.Enqueue(ScriptMovement.Walk_S);
+                case BlocksetBlockBehavior.Warp_WalkSouthOnExit:
+                {
+                    Facing = FacingDirection.South;
+                    QueuedScriptMovements.Enqueue(ScriptMovement.Walk_S);
+                    break;
+                }
+                case BlocksetBlockBehavior.Warp_NoOccupancy_S:
+                {
+                    Facing = FacingDirection.North;
+                    y--;
+                    break;
+                }
             }
+            Pos.X = x;
+            Pos.Y = y;
+            Pos.Elevation = e;
+            PrevPos = Pos;
             if (CameraAttachedTo == this)
             {
                 CameraCopyMovement();
