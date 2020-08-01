@@ -14,13 +14,13 @@ namespace Kermalis.MapEditor.Core
         {
             public readonly Tileset Parent;
             public readonly int Id;
-            public readonly uint[][] Colors;
+            public readonly uint[] Bitmap;
 
-            public Tile(Tileset parent, int id, uint[][] colors)
+            public Tile(Tileset parent, int id, uint[] bitmap)
             {
                 Parent = parent;
                 Id = id;
-                Colors = colors;
+                Bitmap = bitmap;
             }
         }
 
@@ -33,7 +33,7 @@ namespace Kermalis.MapEditor.Core
 
         private unsafe Tileset(string name, int id)
         {
-            uint[][][] t = RenderUtil.LoadSpriteSheet(Path.Combine(_tilesetPath, name + _tilesetExtension), 8, 8, out int bmpWidth, out int bmpHeight);
+            uint[][] t = RenderUtils.LoadBitmapSheet(Path.Combine(_tilesetPath, name + _tilesetExtension), 8, 8, out int bmpWidth, out int bmpHeight);
             BitmapNumTilesX = bmpWidth / 8;
             Tiles = new Tile[t.Length];
             for (int i = 0; i < Tiles.Length; i++)
@@ -47,7 +47,7 @@ namespace Kermalis.MapEditor.Core
             using (ILockedFramebuffer l = Bitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtil.TransparencyGrid(bmpAddress, bmpWidth, bmpHeight, 4, 4);
+                RenderUtils.TransparencyGrid(bmpAddress, bmpWidth, bmpHeight, 4, 4);
                 int x = 0;
                 int y = 0;
                 for (int i = 0; i < Tiles.Length; i++, x++)
@@ -57,11 +57,11 @@ namespace Kermalis.MapEditor.Core
                         x = 0;
                         y++;
                     }
-                    RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x * 8, y * 8, Tiles[i].Colors, false, false);
+                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, x * 8, y * 8, Tiles[i].Bitmap, 8, 8, xFlip: false, yFlip: false);
                 }
                 for (; x < BitmapNumTilesX; x++)
                 {
-                    RenderUtil.DrawCrossUnchecked(bmpAddress, bmpWidth, x * 8, y * 8, 8, 8, 0xFFFF0000);
+                    RenderUtils.DrawCrossUnchecked(bmpAddress, bmpWidth, x * 8, y * 8, 8, 8, 0xFFFF0000);
                 }
             }
         }

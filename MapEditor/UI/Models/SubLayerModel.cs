@@ -88,12 +88,12 @@ namespace Kermalis.MapEditor.UI.Models
                         Blockset.Block.Tile t = GetTile(block, eLayerNum, subLayerNum, x, y);
                         if (t != null)
                         {
-                            RenderUtil.TransparencyGrid(bmpAddress, 16, 16, px, py, 4, 4, 2, 2);
+                            RenderUtils.TransparencyGrid(bmpAddress, 16, 16, px, py, 4, 4, 2, 2);
                             t.Draw(bmpAddress, 16, 16, px, py);
                         }
                         else
                         {
-                            RenderUtil.ClearUnchecked(bmpAddress, 16, px, py, 8, 8);
+                            RenderUtils.ClearUnchecked(bmpAddress, 16, px, py, 8, 8);
                         }
                     }
                 }

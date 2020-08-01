@@ -387,7 +387,7 @@ namespace Kermalis.MapEditor.UI
             using (ILockedFramebuffer l = _clipboardBitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtil.ClearUnchecked(bmpAddress, 16, 0, 0, 16, 16);
+                RenderUtils.ClearUnchecked(bmpAddress, 16, 0, 0, 16, 16);
                 TileLayerImage tli = _tileLayerImage;
                 Blockset.Block.Tile[][] c = tli.Clipboard;
                 for (int y = 0; y < 2; y++)
@@ -400,7 +400,7 @@ namespace Kermalis.MapEditor.UI
                         if (t.TilesetTile != null)
                         {
                             int tx = x * 8;
-                            RenderUtil.TransparencyGrid(bmpAddress, 16, 16, tx, ty, 4, 4, 2, 2);
+                            RenderUtils.TransparencyGrid(bmpAddress, 16, 16, tx, ty, 4, 4, 2, 2);
                             t.Draw(bmpAddress, 16, 16, tx, ty);
                         }
                     }

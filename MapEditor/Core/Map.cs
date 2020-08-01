@@ -381,7 +381,7 @@ namespace Kermalis.MapEditor.Core
                             Block b = list[i];
                             int x = b.X * 16;
                             int y = b.Y * 16;
-                            RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x, y, 16, 16, 0xFF000000);
+                            RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, x, y, 16, 16, 0xFF000000);
                             b.BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x, y);
                         }
                     }
@@ -399,7 +399,7 @@ namespace Kermalis.MapEditor.Core
                     int height = borderBlocks ? BorderHeight : Height;
                     int bmpWidth = width * 16;
                     int bmpHeight = height * 16;
-                    RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
+                    RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
                     Block[][] arr = borderBlocks ? BorderBlocks : Blocks;
                     for (int y = 0; y < height; y++)
                     {

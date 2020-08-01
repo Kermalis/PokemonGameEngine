@@ -37,7 +37,7 @@ namespace Kermalis.MapEditor.Core
 
                 public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
                 {
-                    RenderUtil.Draw(bmpAddress, bmpWidth, bmpHeight, x, y, TilesetTile.Colors, XFlip, YFlip);
+                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, x, y, TilesetTile.Bitmap, 8, 8, xFlip: XFlip, yFlip: YFlip);
                 }
 
                 public bool Equals(Tile other)
@@ -346,7 +346,7 @@ namespace Kermalis.MapEditor.Core
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
                 int x = block.Id % BitmapNumBlocksX * 16;
                 int y = block.Id / BitmapNumBlocksX * 16;
-                RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, x, y, 16, 16, 0xFF000000);
+                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, x, y, 16, 16, 0xFF000000);
                 block.Draw(bmpAddress, bmpWidth, bmpHeight, x, y);
             }
             OnDrew?.Invoke(this, EventArgs.Empty);
@@ -369,15 +369,15 @@ namespace Kermalis.MapEditor.Core
                     }
                     int bx = x * 16;
                     int by = y * 16;
-                    RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, bx, by, 16, 16, 0xFF000000);
+                    RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, bx, by, 16, 16, 0xFF000000);
                     Blocks[index].Draw(bmpAddress, bmpWidth, bmpHeight, bx, by);
                 }
                 for (; x < BitmapNumBlocksX; x++)
                 {
                     int bx = x * 16;
                     int by = y * 16;
-                    RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, bx, by, 16, 16, 0xFF000000);
-                    RenderUtil.DrawCrossUnchecked(bmpAddress, bmpWidth, bx, by, 16, 16, 0xFFFF0000);
+                    RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, bx, by, 16, 16, 0xFF000000);
+                    RenderUtils.DrawCrossUnchecked(bmpAddress, bmpWidth, bx, by, 16, 16, 0xFFFF0000);
                 }
             }
             OnDrew?.Invoke(this, EventArgs.Empty);
@@ -389,7 +389,7 @@ namespace Kermalis.MapEditor.Core
             using (ILockedFramebuffer l = Bitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtil.Fill(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
+                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
                 int x = 0;
                 int y = 0;
                 for (int i = 0; i < Blocks.Count; i++, x++)
@@ -403,7 +403,7 @@ namespace Kermalis.MapEditor.Core
                 }
                 for (; x < BitmapNumBlocksX; x++)
                 {
-                    RenderUtil.DrawCrossUnchecked(bmpAddress, bmpWidth, x * 16, y * 16, 16, 16, 0xFFFF0000);
+                    RenderUtils.DrawCrossUnchecked(bmpAddress, bmpWidth, x * 16, y * 16, 16, 16, 0xFFFF0000);
                 }
             }
             OnDrew?.Invoke(this, EventArgs.Empty);
