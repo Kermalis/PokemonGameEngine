@@ -25,6 +25,9 @@
     <EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
       <Link>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\BG\**\*.*">
+      <Link>Assets\GUI\Battle\Background\%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </EmbeddedResource>
     <Content Include="..\Shared Dependencies\PokemonBattleEngine.db">
       <Link>PokemonBattleEngine.db</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
