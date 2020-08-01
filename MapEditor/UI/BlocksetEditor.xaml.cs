@@ -36,7 +36,7 @@ namespace Kermalis.MapEditor.UI
 
         private bool _ignoreChange = false;
 
-        public static Array Behaviors { get; } = Enum.GetValues(typeof(BlocksetBlockBehavior));
+        public static IEnumerable<BlocksetBlockBehavior> Behaviors { get; } = Utils.GetEnumValues<BlocksetBlockBehavior>();
         private BlocksetBlockBehavior _selectedBehavior;
         public BlocksetBlockBehavior SelectedBehavior
         {

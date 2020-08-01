@@ -181,7 +181,7 @@ namespace Kermalis.MapEditor.UI
             }
         }
 
-        public Array Directions { get; } = Enum.GetValues(typeof(Map.Connection.Direction));
+        public Array Directions { get; } = Enum.GetValues(typeof(Map.Connection.Direction)); // Not using Utils.GetEnumValues because _selectedDirection relies on index
         public ObservableCollection<ConnectionModel> Maps { get; } = new ObservableCollection<ConnectionModel>();
 
         private readonly ItemsControl _mapsItemsControl;

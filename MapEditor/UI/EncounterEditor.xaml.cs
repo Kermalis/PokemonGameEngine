@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.UI.Models;
+using Kermalis.MapEditor.Util;
 using Kermalis.PokemonGameEngine.Overworld;
 using System;
 using System.Collections.Generic;
@@ -161,7 +162,7 @@ namespace Kermalis.MapEditor.UI
         public async void AddEncounterGroup()
         {
             Window window = ((IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime).MainWindow;
-            var dialog = new SelectSomethingDialog(Enum.GetValues(typeof(EncounterType)).Cast<EncounterType>().Where(t => !_grp.Groups.Any(g => g.Type == t)));
+            var dialog = new SelectSomethingDialog(Utils.GetEnumValues<EncounterType>().Where(t => !_grp.Groups.Any(g => g.Type == t)));
             object result = await dialog.ShowDialog<object>(window);
             if (result is null)
             {
@@ -240,7 +241,7 @@ namespace Kermalis.MapEditor.UI
 
         private void UpdateGroupNames()
         {
-            GroupNames = _grp.Groups.Select(t => t.Type);
+            GroupNames = _grp.Groups.Select(t => t.Type).OrderBy(e => e.ToString());
             OnPropertyChanged(nameof(GroupNames));
         }
         private void UpdateGroups()

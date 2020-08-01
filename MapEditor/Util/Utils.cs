@@ -2,7 +2,10 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Platform;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Kermalis.MapEditor.Util
@@ -35,5 +38,10 @@ namespace Kermalis.MapEditor.Util
         }
 
         public static readonly Regex InvalidFileNameRegex = new Regex("[" + Regex.Escape(new string(Path.GetInvalidFileNameChars())) + "]");
+
+        public static IEnumerable<T> GetEnumValues<T>() where T : Enum
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>().OrderBy(e => e.ToString());
+        }
     }
 }
