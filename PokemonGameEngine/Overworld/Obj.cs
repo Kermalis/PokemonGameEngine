@@ -466,9 +466,17 @@ namespace Kermalis.PokemonGameEngine.Overworld
             PrevPos = other.PrevPos;
             ProgressX = other.ProgressX;
             ProgressY = other.ProgressY;
-            Map.Objs.Remove(this);
-            Map = other.Map;
-            Map.Objs.Add(this);
+            UpdateMap(other.Map);
+        }
+        private void UpdateMap(Map newMap)
+        {
+            Map curMap = Map;
+            if (curMap != newMap)
+            {
+                curMap.Objs.Remove(this);
+                newMap.Objs.Add(this);
+                Map = newMap;
+            }
         }
 
         public static Obj GetObj(ushort id)
@@ -495,14 +503,11 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
         public void Warp(IWarp warp)
         {
-            Map.Objs.Remove(this);
             var map = Map.LoadOrGet(warp.DestMapId);
             int x = warp.DestX;
             int y = warp.DestY;
             byte e = warp.DestElevation;
-            Map = map;
-            map.Objs.Add(this);
-            Map.Layout.Block block = map.GetBlock(x, y);
+            Map.Layout.Block block = map.GetBlock(x, y, out map); // Out map in case our warp is actually in a connection for some reason
             // Facing is of the original direction unless the block behavior says otherwise
             // All QueuedScriptMovements will be run after the warp is complete
             switch (block.BlocksetBlock.Behavior)
@@ -520,6 +525,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     break;
                 }
             }
+            UpdateMap(map);
             Pos.X = x;
             Pos.Y = y;
             Pos.Elevation = e;
