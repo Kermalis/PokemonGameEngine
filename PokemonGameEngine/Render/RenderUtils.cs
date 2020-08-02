@@ -14,7 +14,7 @@ namespace Kermalis.PokemonGameEngine.Render
             using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
             {
                 var rect = new Rect(bmp.Size);
-                ctx.DrawImage(bmp.PlatformImpl, 1, rect, rect);
+                ctx.DrawBitmap(bmp.PlatformImpl, 1, rect, rect);
             }
             bmp.Dispose();
             return wb;

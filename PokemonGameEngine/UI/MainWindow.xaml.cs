@@ -10,7 +10,9 @@ namespace Kermalis.PokemonGameEngine.UI
         {
             AvaloniaXamlLoader.Load(this);
             MinWidth = MainView.RenderWidth;
+            Width = MainView.RenderWidth;
             MinHeight = MainView.RenderHeight;
+            Height = MainView.RenderHeight;
         }
 
         protected override void OnKeyDown(Avalonia.Input.KeyEventArgs e)

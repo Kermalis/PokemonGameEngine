@@ -1,7 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:Kermalis.PokemonGameEngine.UI;assembly=PokemonGameEngine"
+        xmlns:ui="clr-namespace:Kermalis.PokemonGameEngine.UI;assembly=PokemonGameEngine"
         x:Class="Kermalis.PokemonGameEngine.UI.MainWindow"
-        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Title="Pokémon Game Engine">
-  <local:MainView />
+        WindowStartupLocation="CenterScreen" Title="Pokémon Game Engine">
+  <ui:MainView />
 </Window>
