@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using System;
 
 namespace Kermalis.MapEditor.Util
 {
@@ -114,20 +115,154 @@ namespace Kermalis.MapEditor.Util
             }
         }
 
-        public static unsafe void DrawCrossUnchecked(uint* bmpAddress, int bmpWidth, int x, int y, int width, int height, uint color)
+        public static unsafe void DrawHorizontalLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, uint color)
         {
-            for (int py = 0; py < height; py++)
+            if (y < 0 || y >= bmpHeight)
             {
-                for (int px = 0; px < width; px++)
+                return;
+            }
+            int target = x + width;
+            for (int px = x; px < target; px++)
+            {
+                if (px >= 0 && px < bmpWidth)
                 {
-                    if (px == py)
-                    {
-                        DrawUnchecked(bmpAddress + x + px + ((y + py) * bmpWidth), color);
-                        DrawUnchecked(bmpAddress + x + (width - 1 - px) + ((y + py) * bmpWidth), color);
-                    }
+                    DrawUnchecked(bmpAddress + px + (y * bmpWidth), color);
                 }
             }
         }
+        public static unsafe void DrawVerticalLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int height, uint color)
+        {
+            if (x < 0 || x >= bmpWidth)
+            {
+                return;
+            }
+            int target = y + height;
+            for (int py = y; py < target; py++)
+            {
+                if (py >= 0 && py < bmpHeight)
+                {
+                    DrawUnchecked(bmpAddress + x + (py * bmpWidth), color);
+                }
+            }
+        }
+        // Bresenham's line algorithm
+        public static unsafe void DrawLineLow(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, uint color)
+        {
+            int dx = x2 - x1;
+            int dy = y2 - y1;
+            int yi = 1;
+            if (dy < 0)
+            {
+                yi = -1;
+                dy = -dy;
+            }
+            int d = 2 * dy - dx;
+            int py = y1;
+            for (int px = x1; px <= x2; px++)
+            {
+                if (px >= 0 && px < bmpWidth && py >= 0 && py < bmpHeight)
+                {
+                    DrawUnchecked(bmpAddress + px + (py * bmpWidth), color);
+                }
+                if (d > 0)
+                {
+                    py += yi;
+                    d -= 2 * dx;
+                }
+                d += 2 * dy;
+            }
+        }
+        public static unsafe void DrawLineHigh(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, uint color)
+        {
+            int dx = x2 - x1;
+            int dy = y2 - y1;
+            int xi = 1;
+            if (dx < 0)
+            {
+                xi = -1;
+                dx = -dx;
+            }
+            int d = 2 * dx - dy;
+            int px = x1;
+            for (int py = y1; py <= y2; py++)
+            {
+                if (px >= 0 && px < bmpWidth && py >= 0 && py < bmpHeight)
+                {
+                    DrawUnchecked(bmpAddress + px + (py * bmpWidth), color);
+                }
+                if (d > 0)
+                {
+                    px += xi;
+                    d -= 2 * dy;
+                }
+                d += 2 * dx;
+            }
+        }
+        public static unsafe void DrawLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, uint color)
+        {
+            if (x1 == x2)
+            {
+                int y;
+                int height;
+                if (y1 < y2)
+                {
+                    y = y1;
+                    height = y2 - y1;
+                }
+                else
+                {
+                    y = y2;
+                    height = y1 - y2;
+                }
+                DrawVerticalLine(bmpAddress, bmpWidth, bmpHeight, x1, y, height, color);
+            }
+            else if (y1 == y2)
+            {
+                int x;
+                int width;
+                if (x1 < x2)
+                {
+                    x = x1;
+                    width = x2 - x1;
+                }
+                else
+                {
+                    x = x2;
+                    width = x1 - x2;
+                }
+                DrawVerticalLine(bmpAddress, bmpWidth, bmpHeight, x, y1, width, color);
+            }
+            else if (Math.Abs(y2 - y1) < Math.Abs(x2 - x1))
+            {
+                if (x1 > x2)
+                {
+                    DrawLineLow(bmpAddress, bmpWidth, bmpHeight, x2, y2, x1, y1, color);
+                }
+                else
+                {
+                    DrawLineLow(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, y2, color);
+                }
+            }
+            else
+            {
+                if (y1 > y2)
+                {
+                    DrawLineHigh(bmpAddress, bmpWidth, bmpHeight, x2, y2, x1, y1, color);
+                }
+                else
+                {
+                    DrawLineHigh(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, y2, color);
+                }
+            }
+        }
+        public static unsafe void DrawCross(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
+        {
+            int x2 = x + width - 1;
+            int y2 = y + height - 1;
+            DrawLine(bmpAddress, bmpWidth, bmpHeight, x, y, x2, y2, color);
+            DrawLine(bmpAddress, bmpWidth, bmpHeight, x, y2, x2, y, color);
+        }
+
         public static unsafe void ClearUnchecked(uint* bmpAddress, int bmpWidth, int x, int y, int width, int height)
         {
             for (int py = y; py < y + height; py++)

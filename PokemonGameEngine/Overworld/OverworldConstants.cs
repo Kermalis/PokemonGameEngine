@@ -2,6 +2,22 @@
 
 namespace Kermalis.PokemonGameEngine.Overworld
 {
+    public static class OverworldConstants
+    {
+        // If you want to change a tile or block's size, you will need to delete all of your assets and remake them
+        // It's in your own best interest to keep the tile pixels divisible by 2
+
+        // A tile is 8x8 pixels
+        public const int Tile_NumPixelsX = 8;
+        public const int Tile_NumPixelsY = 8;
+
+        // A block is 2x2 tiles (16x16 pixels)
+        public const int Block_NumTilesX = 2;
+        public const int Block_NumTilesY = 2;
+        public const int Block_NumPixelsX = Block_NumTilesX * Tile_NumPixelsX;
+        public const int Block_NumPixelsY = Block_NumTilesY * Tile_NumPixelsY;
+    }
+
     public enum FacingDirection : byte
     {
         South,

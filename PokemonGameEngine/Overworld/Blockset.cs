@@ -26,10 +26,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
             public readonly Blockset Parent;
             public readonly BlocksetBlockBehavior Behavior;
-            public readonly Dictionary<byte, Tile[]> TopLeft;
-            public readonly Dictionary<byte, Tile[]> TopRight;
-            public readonly Dictionary<byte, Tile[]> BottomLeft;
-            public readonly Dictionary<byte, Tile[]> BottomRight;
+            public readonly Dictionary<byte, Tile[]>[][] Tiles;
 
             public Block(Blockset parent, EndianBinaryReader r)
             {
@@ -63,10 +60,16 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     }
                     return eLayers;
                 }
-                TopLeft = Read();
-                TopRight = Read();
-                BottomLeft = Read();
-                BottomRight = Read();
+                Tiles = new Dictionary<byte, Tile[]>[OverworldConstants.Block_NumTilesY][];
+                for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
+                {
+                    var arrY = new Dictionary<byte, Tile[]>[OverworldConstants.Block_NumTilesX];
+                    for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
+                    {
+                        arrY[x] = Read();
+                    }
+                    Tiles[y] = arrY;
+                }
                 Parent = parent;
             }
         }

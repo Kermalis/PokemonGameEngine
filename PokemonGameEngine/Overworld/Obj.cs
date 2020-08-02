@@ -414,9 +414,9 @@ namespace Kermalis.PokemonGameEngine.Overworld
             Position prevPos = PrevPos;
             Position pos = Pos;
             float t = _movementTimer; // Goes from 0% to 100%
-            int DoTheMath(int cur, int prev, int curOfs, int prevOfs)
+            int DoTheMath(int cur, int prev, int curOfs, int prevOfs, int numPixelsInBlock)
             {
-                int blockDiff = (prev - cur) * 16;
+                int blockDiff = (prev - cur) * numPixelsInBlock;
                 int prevVisualOfs = blockDiff + prevOfs;
                 // If we are going from 6 to -10, visualOfsScale would be -16
                 // If we are going from 6 to  00, visualOfsScale would be -06
@@ -424,8 +424,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 // Scale from previous value to new value based on % of transition
                 return (int)(prevVisualOfs + (t * visualOfsScale));
             }
-            ProgressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset);
-            ProgressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset);
+            ProgressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, OverworldConstants.Block_NumPixelsX);
+            ProgressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, OverworldConstants.Block_NumPixelsY);
         }
         public void UpdateMovementTimer()
         {
