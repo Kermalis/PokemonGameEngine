@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
         private Tileset(string name)
         {
-            uint[][] t = RenderUtils.LoadBitmapSheet(_tilesetPath + name + _tilesetExtension, 8, 8);
+            uint[][] t = RenderUtils.LoadBitmapSheet(_tilesetPath + name + _tilesetExtension, OverworldConstants.Tile_NumPixelsX, OverworldConstants.Tile_NumPixelsY);
             Tiles = new Tile[t.Length];
             for (int i = 0; i < t.Length; i++)
             {

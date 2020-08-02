@@ -18,7 +18,7 @@
               <x:Double>2</x:Double>
             </x:Arguments>
           </ui:TileLayerImage>
-          <Image Name="ClipboardImage" Width="32" Height="32" RenderOptions.BitmapInterpolationMode="Default" />
+          <Image Name="ClipboardImage" RenderOptions.BitmapInterpolationMode="Default" />
           <CheckBox Content="X-Flip" IsChecked="{Binding XFlip}" />
           <CheckBox Content="Y-Flip" IsChecked="{Binding YFlip}" />
         </StackPanel>

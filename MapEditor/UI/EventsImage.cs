@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
+using Kermalis.PokemonGameEngine.Overworld;
 using System;
 
 namespace Kermalis.MapEditor.UI
@@ -34,7 +35,7 @@ namespace Kermalis.MapEditor.UI
         {
             _brush = new SolidColorBrush();
             _pen = new Pen(_brush);
-            _text = new FormattedText { Constraint = new Size(16, 16), TextAlignment = TextAlignment.Center, Typeface = Typeface.Default };
+            _text = new FormattedText { Constraint = new Size(OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY), TextAlignment = TextAlignment.Center, Typeface = Typeface.Default };
         }
 
         private void MapLayout_OnDrew(Map.Layout layout, bool drewBorderBlocks, bool wasResized)
@@ -67,9 +68,9 @@ namespace Kermalis.MapEditor.UI
                 _text.Text = "W";
                 foreach (Map.Events.WarpEvent warp in events.Warps)
                 {
-                    int ex = warp.X * 16;
-                    int ey = warp.Y * 16;
-                    var r2 = new Rect(ex, ey, 16, 16);
+                    int ex = warp.X * OverworldConstants.Block_NumPixelsX;
+                    int ey = warp.Y * OverworldConstants.Block_NumPixelsY;
+                    var r2 = new Rect(ex, ey, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY);
                     context.FillRectangle(_brush, r2);
                     context.DrawRectangle(_pen, r2);
                     context.DrawText(Brushes.White, new Point(ex, ey), _text);

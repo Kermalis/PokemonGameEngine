@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
+using Kermalis.PokemonGameEngine.Overworld;
 using System;
 using System.Collections.Generic;
 
@@ -22,7 +23,7 @@ namespace Kermalis.MapEditor.UI.Models
             _eLayerNum = eLayerNum;
             _subLayerNum = subLayerNum;
             Text = $"Sub-Layer {_subLayerNum:X2}";
-            Bitmap = new WriteableBitmap(new PixelSize(16, 16), new Vector(96, 96), PixelFormat.Bgra8888);
+            Bitmap = new WriteableBitmap(new PixelSize(OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Bgra8888);
             UpdateBitmap();
         }
 
@@ -46,54 +47,29 @@ namespace Kermalis.MapEditor.UI.Models
 
         internal static Blockset.Block.Tile GetTile(Blockset.Block block, byte eLayerNum, byte subLayerNum, int x, int y)
         {
-            Blockset.Block.Tile Get(Dictionary<byte, List<Blockset.Block.Tile>> dict)
-            {
-                List<Blockset.Block.Tile> layers = dict[eLayerNum];
-                return layers.Count <= subLayerNum ? null : layers[subLayerNum];
-            }
-            if (y == 0)
-            {
-                if (x == 0)
-                {
-                    return Get(block.TopLeft);
-                }
-                else
-                {
-                    return Get(block.TopRight);
-                }
-            }
-            else
-            {
-                if (x == 0)
-                {
-                    return Get(block.BottomLeft);
-                }
-                else
-                {
-                    return Get(block.BottomRight);
-                }
-            }
+            List<Blockset.Block.Tile> layers = block.Tiles[y][x][eLayerNum];
+            return layers.Count <= subLayerNum ? null : layers[subLayerNum];
         }
         internal static unsafe void UpdateBitmap(WriteableBitmap bitmap, Blockset.Block block, byte eLayerNum, byte subLayerNum)
         {
             using (ILockedFramebuffer l = bitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
-                for (int y = 0; y < 2; y++)
+                for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
                 {
-                    int py = y * 8;
-                    for (int x = 0; x < 2; x++)
+                    int py = y * OverworldConstants.Tile_NumPixelsY;
+                    for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
                     {
-                        int px = x * 8;
+                        int px = x * OverworldConstants.Tile_NumPixelsX;
                         Blockset.Block.Tile t = GetTile(block, eLayerNum, subLayerNum, x, y);
                         if (t != null)
                         {
-                            RenderUtils.TransparencyGrid(bmpAddress, 16, 16, px, py, 4, 4, 2, 2);
-                            t.Draw(bmpAddress, 16, 16, px, py);
+                            RenderUtils.TransparencyGrid(bmpAddress, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, px, py, OverworldConstants.Tile_NumPixelsX / 2, OverworldConstants.Tile_NumPixelsY / 2, OverworldConstants.Block_NumTilesX, OverworldConstants.Block_NumTilesY);
+                            t.Draw(bmpAddress, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, px, py);
                         }
                         else
                         {
-                            RenderUtils.ClearUnchecked(bmpAddress, 16, px, py, 8, 8);
+                            RenderUtils.ClearUnchecked(bmpAddress, OverworldConstants.Block_NumPixelsX, px, py, OverworldConstants.Tile_NumPixelsX, OverworldConstants.Tile_NumPixelsY);
                         }
                     }
                 }

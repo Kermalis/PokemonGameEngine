@@ -105,33 +105,34 @@ namespace Kermalis.MapEditor.UI
             _passageGeometries = new Dictionary<LayoutBlockPassage, Geometry>((byte)max + 1);
             for (LayoutBlockPassage i = 0; i <= max; i++)
             {
+                // Spaghetti town, don't worry about it :)
                 string s;
                 if (i.HasFlag(LayoutBlockPassage.AllowOccupancy))
                 {
                     s = string.Empty;
                     if (!i.HasFlag(LayoutBlockPassage.SouthwestPassage))
                     {
-                        s += "M 0,9 V 16 H 8 L 0,9";
+                        s += $"M 0,{OverworldConstants.Block_NumPixelsY / 2 + 1} V {OverworldConstants.Block_NumPixelsY} H {OverworldConstants.Block_NumPixelsX / 2} L 0,{OverworldConstants.Block_NumPixelsY / 2 + 1}";
                     }
                     if (!i.HasFlag(LayoutBlockPassage.SoutheastPassage))
                     {
-                        s += "M 9,16 H 16 V 9 L 9,16";
+                        s += $"M {OverworldConstants.Block_NumPixelsX / 2 + 1},{OverworldConstants.Block_NumPixelsY} H {OverworldConstants.Block_NumPixelsX} V {OverworldConstants.Block_NumPixelsY / 2 + 1} L {OverworldConstants.Block_NumPixelsX / 2 + 1},{OverworldConstants.Block_NumPixelsY}";
                     }
                     if (!i.HasFlag(LayoutBlockPassage.NorthwestPassage))
                     {
-                        s += "M 8,0 H 0 V 8 L 8,0";
+                        s += $"M {OverworldConstants.Block_NumPixelsX / 2},0 H 0 V {OverworldConstants.Block_NumPixelsY / 2} L {OverworldConstants.Block_NumPixelsX / 2},0";
                     }
                     if (!i.HasFlag(LayoutBlockPassage.NortheastPassage))
                     {
-                        s += "M 16,8 V 0 H 9 L 16,8";
+                        s += $"M {OverworldConstants.Block_NumPixelsX},{OverworldConstants.Block_NumPixelsY / 2} V 0 H {OverworldConstants.Block_NumPixelsX / 2 + 1} L {OverworldConstants.Block_NumPixelsX},{OverworldConstants.Block_NumPixelsY / 2}";
                     }
                 }
                 else
                 {
-                    s = (i.HasFlag(LayoutBlockPassage.SouthwestPassage) ? "M 0,9 L 8,16" : "M 0,16 H 8")
-                    + (i.HasFlag(LayoutBlockPassage.SoutheastPassage) ? " H 9 L 16,9" : " H 16")
-                    + (i.HasFlag(LayoutBlockPassage.NortheastPassage) ? " V 8 L 9,0" : " V 0")
-                    + (i.HasFlag(LayoutBlockPassage.NorthwestPassage) ? " H 8 L 0,8" : " H 0")
+                    s = (i.HasFlag(LayoutBlockPassage.SouthwestPassage) ? $"M 0,{OverworldConstants.Block_NumPixelsY / 2 + 1} L {OverworldConstants.Block_NumPixelsX / 2},{OverworldConstants.Block_NumPixelsY}" : $"M 0,{OverworldConstants.Block_NumPixelsY} H {OverworldConstants.Block_NumPixelsX / 2}")
+                    + (i.HasFlag(LayoutBlockPassage.SoutheastPassage) ? $" H {OverworldConstants.Block_NumPixelsX / 2 + 1} L {OverworldConstants.Block_NumPixelsX},{OverworldConstants.Block_NumPixelsY / 2 + 1}" : $" H {OverworldConstants.Block_NumPixelsX}")
+                    + (i.HasFlag(LayoutBlockPassage.NortheastPassage) ? $" V {OverworldConstants.Block_NumPixelsY / 2} L {OverworldConstants.Block_NumPixelsX / 2 + 1},0" : $" V 0")
+                    + (i.HasFlag(LayoutBlockPassage.NorthwestPassage) ? $" H {OverworldConstants.Block_NumPixelsX / 2} L 0,{OverworldConstants.Block_NumPixelsY / 2}" : $" H 0")
                     + " Z";
                 }
                 var geo = Geometry.Parse(s);
@@ -143,7 +144,7 @@ namespace Kermalis.MapEditor.UI
         {
             _brush = new SolidColorBrush();
             _pen = new Pen(_brush);
-            _text = new FormattedText { Constraint = new Size(16, 16), TextAlignment = TextAlignment.Center, Typeface = Typeface.Default };
+            _text = new FormattedText { Constraint = new Size(OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY), TextAlignment = TextAlignment.Center, Typeface = Typeface.Default };
         }
 
         private void MapLayout_OnDrew(Map.Layout layout, bool drewBorderBlocks, bool wasResized)
@@ -172,12 +173,12 @@ namespace Kermalis.MapEditor.UI
 
                 for (int y = 0; y < _layout.Height; y++)
                 {
-                    int by = y * 16;
+                    int by = y * OverworldConstants.Block_NumPixelsY;
                     Map.Layout.Block[] arrY = _layout.Blocks[y];
                     for (int x = 0; x < _layout.Width; x++)
                     {
-                        int bx = x * 16;
-                        var r2 = new Rect(bx, by, 16, 16);
+                        int bx = x * OverworldConstants.Block_NumPixelsX;
+                        var r2 = new Rect(bx, by, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY);
                         Map.Layout.Block b = arrY[x];
                         if (_passageShown)
                         {
@@ -255,7 +256,7 @@ namespace Kermalis.MapEditor.UI
                         if (Bounds.TemporaryFix_PointerInControl(pos))
                         {
                             _isDrawing = true;
-                            Set((int)pos.X / 16, (int)pos.Y / 16);
+                            Set((int)pos.X / OverworldConstants.Block_NumPixelsX, (int)pos.Y / OverworldConstants.Block_NumPixelsY);
                             e.Handled = true;
                         }
                         break;
@@ -265,8 +266,8 @@ namespace Kermalis.MapEditor.UI
                         Point pos = pp.Position;
                         if (Bounds.TemporaryFix_PointerInControl(pos))
                         {
-                            int destX = (int)pos.X / 16;
-                            int destY = (int)pos.Y / 16;
+                            int destX = (int)pos.X / OverworldConstants.Block_NumPixelsX;
+                            int destY = (int)pos.Y / OverworldConstants.Block_NumPixelsY;
                             Map.Layout.Block[][] outArr = _layout.Blocks;
                             if (_passageShown)
                             {
@@ -331,7 +332,7 @@ namespace Kermalis.MapEditor.UI
                         Point pos = pp.Position;
                         if (Bounds.TemporaryFix_PointerInControl(pos))
                         {
-                            Map.Layout.Block b = _layout.Blocks[(int)pos.Y / 16][(int)pos.X / 16];
+                            Map.Layout.Block b = _layout.Blocks[(int)pos.Y / OverworldConstants.Block_NumPixelsY][(int)pos.X / OverworldConstants.Block_NumPixelsX];
                             if (_passageShown)
                             {
                                 Passage = b.Passage;
@@ -357,7 +358,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        Set((int)pos.X / 16, (int)pos.Y / 16);
+                        Set((int)pos.X / OverworldConstants.Block_NumPixelsX, (int)pos.Y / OverworldConstants.Block_NumPixelsY);
                         e.Handled = true;
                     }
                 }
