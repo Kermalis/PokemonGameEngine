@@ -399,7 +399,7 @@ namespace Kermalis.MapEditor.Core
                     int bx = x * OverworldConstants.Block_NumPixelsX;
                     int by = y * OverworldConstants.Block_NumPixelsY;
                     RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, bx, by, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, 0xFF000000);
-                    RenderUtils.DrawCrossUnchecked(bmpAddress, bmpWidth, bx, by, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, 0xFFFF0000);
+                    RenderUtils.DrawCross(bmpAddress, bmpWidth, bmpHeight, bx, by, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, 0xFFFF0000);
                 }
             }
             OnDrew?.Invoke(this, EventArgs.Empty);
@@ -425,7 +425,7 @@ namespace Kermalis.MapEditor.Core
                 }
                 for (; x < BitmapNumBlocksX; x++)
                 {
-                    RenderUtils.DrawCrossUnchecked(bmpAddress, bmpWidth, x * OverworldConstants.Block_NumPixelsX, y * OverworldConstants.Block_NumPixelsY, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, 0xFFFF0000);
+                    RenderUtils.DrawCross(bmpAddress, bmpWidth, bmpHeight, x * OverworldConstants.Block_NumPixelsX, y * OverworldConstants.Block_NumPixelsY, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, 0xFFFF0000);
                 }
             }
             OnDrew?.Invoke(this, EventArgs.Empty);

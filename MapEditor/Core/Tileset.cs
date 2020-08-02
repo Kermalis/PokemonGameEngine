@@ -62,7 +62,7 @@ namespace Kermalis.MapEditor.Core
                 }
                 for (; x < BitmapNumTilesX; x++)
                 {
-                    RenderUtils.DrawCrossUnchecked(bmpAddress, bmpWidth, x * OverworldConstants.Tile_NumPixelsX, y * OverworldConstants.Tile_NumPixelsY, OverworldConstants.Tile_NumPixelsX, OverworldConstants.Tile_NumPixelsY, 0xFFFF0000);
+                    RenderUtils.DrawCross(bmpAddress, bmpWidth, bmpHeight, x * OverworldConstants.Tile_NumPixelsX, y * OverworldConstants.Tile_NumPixelsY, OverworldConstants.Tile_NumPixelsX, OverworldConstants.Tile_NumPixelsY, 0xFFFF0000);
                 }
             }
         }

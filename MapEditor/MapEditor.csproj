@@ -21,7 +21,7 @@
     <AvaloniaResource Include="**\*.xaml">
       <SubType>Designer</SubType>
     </AvaloniaResource>
-    <Compile Include="..\PokemonGameEngine\Overworld\OverworldEnums.cs" Link="Core\OverworldEnums.cs" />
+    <Compile Include="..\PokemonGameEngine\Overworld\OverworldConstants.cs" Link="Core\OverworldConstants.cs" />
     <Content Include="..\Shared Dependencies\PokemonBattleEngine.db">
       <Link>PokemonBattleEngine.db</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
