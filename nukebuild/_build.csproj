@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="C:\Users\Kermalis\Documents\Development\GitHub\PokemonGameEngine\PokemonGameEngine\Core\FlagEnum.cs" Link="FlagEnum.cs" />
+    <Compile Include="..\PokemonGameEngine\Core\FlagEnum.cs" Link="FlagEnum.cs" />
     <Compile Include="..\PokemonGameEngine\Script\ScriptEnums.cs" Link="ScriptEnums.cs" />
     <PackageReference Include="Nuke.Common" Version="0.24.11" />
     <Reference Include="EndianBinaryIO">
