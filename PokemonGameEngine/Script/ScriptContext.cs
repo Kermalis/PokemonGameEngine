@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 
@@ -58,7 +59,7 @@ namespace Kermalis.PokemonGameEngine.Script
         public void Dispose()
         {
             _isDisposed = true;
-            Game.Game.Instance.Scripts.Remove(this);
+            Game.Instance.Scripts.Remove(this);
             _reader.Dispose();
         }
     }

@@ -1,5 +1,6 @@
-﻿using Kermalis.PokemonGameEngine.Input;
-using Kermalis.PokemonGameEngine.Overworld;
+﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Input;
+using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Script;
 using System.Collections.Generic;
@@ -33,23 +34,23 @@ namespace Kermalis.PokemonGameEngine.GUI
                 {
                     if (playerPos.X == warp.X && playerPos.Y == warp.Y && playerPos.Elevation == warp.Elevation)
                     {
-                        Game.Game.Instance.TempWarp(warp);
+                        Game.Instance.TempWarp(warp);
                         return;
                     }
                 }
                 // Battle
-                if (Overworld.Overworld.CheckForWildBattle(false))
+                if (Overworld.CheckForWildBattle(false))
                 {
                     return;
                 }
             }
 
-            foreach (ScriptContext ctx in Game.Game.Instance.Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
+            foreach (ScriptContext ctx in Game.Instance.Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
             {
                 ctx.LogicTick();
             }
 
-            if (Game.Game.Instance.Scripts.Count == 0 && InputManager.IsPressed(Key.A)) // Temporary
+            if (Game.Instance.Scripts.Count == 0 && InputManager.IsPressed(Key.A)) // Temporary
             {
                 ScriptLoader.LoadScript("TestScript");
                 return;
@@ -111,7 +112,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0xFF000000);
             Map.Draw(bmpAddress, bmpWidth, bmpHeight);
-            if (Overworld.Overworld.ShouldRenderDayTint())
+            if (Overworld.ShouldRenderDayTint())
             {
                 DayTint.Render(bmpAddress, bmpWidth, bmpHeight);
             }

@@ -3,7 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 
@@ -23,7 +23,7 @@ namespace Kermalis.MapEditor.UI.Models
             _eLayerNum = eLayerNum;
             _subLayerNum = subLayerNum;
             Text = $"Sub-Layer {_subLayerNum:X2}";
-            Bitmap = new WriteableBitmap(new PixelSize(OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Bgra8888);
+            Bitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Bgra8888);
             UpdateBitmap();
         }
 
@@ -55,21 +55,21 @@ namespace Kermalis.MapEditor.UI.Models
             using (ILockedFramebuffer l = bitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
-                for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
+                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                 {
-                    int py = y * OverworldConstants.Tile_NumPixelsY;
-                    for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
+                    int py = y * Overworld.Tile_NumPixelsY;
+                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
-                        int px = x * OverworldConstants.Tile_NumPixelsX;
+                        int px = x * Overworld.Tile_NumPixelsX;
                         Blockset.Block.Tile t = GetTile(block, eLayerNum, subLayerNum, x, y);
                         if (t != null)
                         {
-                            RenderUtils.TransparencyGrid(bmpAddress, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, px, py, OverworldConstants.Tile_NumPixelsX / 2, OverworldConstants.Tile_NumPixelsY / 2, OverworldConstants.Block_NumTilesX, OverworldConstants.Block_NumTilesY);
-                            t.Draw(bmpAddress, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, px, py);
+                            RenderUtils.TransparencyGrid(bmpAddress, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, px, py, Overworld.Tile_NumPixelsX / 2, Overworld.Tile_NumPixelsY / 2, Overworld.Block_NumTilesX, Overworld.Block_NumTilesY);
+                            t.Draw(bmpAddress, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, px, py);
                         }
                         else
                         {
-                            RenderUtils.ClearUnchecked(bmpAddress, OverworldConstants.Block_NumPixelsX, px, py, OverworldConstants.Tile_NumPixelsX, OverworldConstants.Tile_NumPixelsY);
+                            RenderUtils.ClearUnchecked(bmpAddress, Overworld.Block_NumPixelsX, px, py, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
                         }
                     }
                 }

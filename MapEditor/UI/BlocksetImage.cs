@@ -5,7 +5,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System;
 
 namespace Kermalis.MapEditor.UI
@@ -66,7 +66,7 @@ namespace Kermalis.MapEditor.UI
                 Rect sourceRect = new Rect(sourceSize).CenterRect(new Rect(destRect.Size / _scale));
 
                 context.DrawImage(source, 1, sourceRect, destRect);
-                var r = new Rect(_selection.X * OverworldConstants.Block_NumPixelsX * _scale, _selection.Y * OverworldConstants.Block_NumPixelsY * _scale, _selection.Width * OverworldConstants.Block_NumPixelsX * _scale, _selection.Height * OverworldConstants.Block_NumPixelsY * _scale);
+                var r = new Rect(_selection.X * Overworld.Block_NumPixelsX * _scale, _selection.Y * Overworld.Block_NumPixelsY * _scale, _selection.Width * Overworld.Block_NumPixelsX * _scale, _selection.Height * Overworld.Block_NumPixelsY * _scale);
                 context.FillRectangle(_isSelecting ? Selection.SelectingBrush : Selection.SelectionBrush, r);
                 context.DrawRectangle(_isSelecting ? Selection.SelectingPen : Selection.SelectionPen, r);
             }
@@ -99,7 +99,7 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _isSelecting = true;
-                        _selection.Start((int)(pos.X / _scale) / OverworldConstants.Block_NumPixelsX, (int)(pos.Y / _scale) / OverworldConstants.Block_NumPixelsY, 1, 1);
+                        _selection.Start((int)(pos.X / _scale) / Overworld.Block_NumPixelsX, (int)(pos.Y / _scale) / Overworld.Block_NumPixelsY, 1, 1);
                         e.Handled = true;
                     }
                 }
@@ -115,7 +115,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        _selection.Move((int)(pos.X / _scale) / OverworldConstants.Block_NumPixelsX, (int)(pos.Y / _scale) / OverworldConstants.Block_NumPixelsY);
+                        _selection.Move((int)(pos.X / _scale) / Overworld.Block_NumPixelsX, (int)(pos.Y / _scale) / Overworld.Block_NumPixelsY);
                         e.Handled = true;
                     }
                 }

@@ -5,7 +5,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System;
 
 namespace Kermalis.MapEditor.UI
@@ -82,7 +82,7 @@ namespace Kermalis.MapEditor.UI
             {
                 int width = _borderBlocks ? _layout.BorderWidth : _layout.Width;
                 int height = _borderBlocks ? _layout.BorderHeight : _layout.Height;
-                StandardGrid.RenderGrid(context, width, height, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY);
+                StandardGrid.RenderGrid(context, width, height, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
             }
         }
         protected override Size MeasureOverride(Size availableSize)
@@ -116,8 +116,8 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        int destX = (int)pos.X / OverworldConstants.Block_NumPixelsX;
-                        int destY = (int)pos.Y / OverworldConstants.Block_NumPixelsY;
+                        int destX = (int)pos.X / Overworld.Block_NumPixelsX;
+                        int destY = (int)pos.Y / Overworld.Block_NumPixelsY;
                         _isDrawing = true;
                         _layout.Paste(_borderBlocks, Selection, destX, destY);
                         e.Handled = true;
@@ -129,8 +129,8 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        int destX = (int)pos.X / OverworldConstants.Block_NumPixelsX;
-                        int destY = (int)pos.Y / OverworldConstants.Block_NumPixelsY;
+                        int destX = (int)pos.X / Overworld.Block_NumPixelsX;
+                        int destY = (int)pos.Y / Overworld.Block_NumPixelsY;
                         Blockset.Block oldBlock = (_borderBlocks ? _layout.BorderBlocks : _layout.Blocks)[destY][destX].BlocksetBlock;
                         Blockset.Block newBlock = Selection[0][0];
                         if (oldBlock != newBlock)
@@ -146,8 +146,8 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        int destX = (int)pos.X / OverworldConstants.Block_NumPixelsX;
-                        int destY = (int)pos.Y / OverworldConstants.Block_NumPixelsY;
+                        int destX = (int)pos.X / Overworld.Block_NumPixelsX;
+                        int destY = (int)pos.Y / Overworld.Block_NumPixelsY;
                         Blockset.Block block = (_borderBlocks ? _layout.BorderBlocks : _layout.Blocks)[destY][destX].BlocksetBlock;
                         SelectionCompleted?.Invoke(this, block);
                         e.Handled = true;
@@ -166,8 +166,8 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        int destX = (int)pos.X / OverworldConstants.Block_NumPixelsX;
-                        int destY = (int)pos.Y / OverworldConstants.Block_NumPixelsY;
+                        int destX = (int)pos.X / Overworld.Block_NumPixelsX;
+                        int destY = (int)pos.Y / Overworld.Block_NumPixelsY;
                         _layout.Paste(_borderBlocks, Selection, destX, destY);
                         e.Handled = true;
                     }

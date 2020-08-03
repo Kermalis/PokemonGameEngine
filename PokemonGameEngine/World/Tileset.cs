@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Kermalis.PokemonGameEngine.Overworld
+namespace Kermalis.PokemonGameEngine.World
 {
     internal sealed class Tileset
     {
@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
 
         private Tileset(string name)
         {
-            uint[][] t = RenderUtils.LoadBitmapSheet(_tilesetPath + name + _tilesetExtension, OverworldConstants.Tile_NumPixelsX, OverworldConstants.Tile_NumPixelsY);
+            uint[][] t = RenderUtils.LoadBitmapSheet(_tilesetPath + name + _tilesetExtension, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
             Tiles = new Tile[t.Length];
             for (int i = 0; i < t.Length; i++)
             {

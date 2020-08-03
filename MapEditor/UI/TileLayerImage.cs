@@ -7,7 +7,7 @@ using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.UI.Models;
 using Kermalis.MapEditor.Util;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 
@@ -32,20 +32,20 @@ namespace Kermalis.MapEditor.UI
         public TileLayerImage(double scale)
         {
             _scale = scale;
-            Clipboard = new Blockset.Block.Tile[OverworldConstants.Block_NumTilesY][];
-            for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
+            Clipboard = new Blockset.Block.Tile[Overworld.Block_NumTilesY][];
+            for (int y = 0; y < Overworld.Block_NumTilesY; y++)
             {
-                var arrY = new Blockset.Block.Tile[OverworldConstants.Block_NumTilesX];
-                for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
+                var arrY = new Blockset.Block.Tile[Overworld.Block_NumTilesX];
+                for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                 {
                     arrY[x] = new Blockset.Block.Tile();
                 }
                 Clipboard[y] = arrY;
             }
-            _selection = new Selection(OverworldConstants.Block_NumTilesX, OverworldConstants.Block_NumTilesY);
+            _selection = new Selection(Overworld.Block_NumTilesX, Overworld.Block_NumTilesY);
             _selection.Changed += OnSelectionChanged;
-            _bitmap = new WriteableBitmap(new PixelSize(OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Bgra8888);
-            _bitmapSize = new Size(OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY);
+            _bitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Bgra8888);
+            _bitmapSize = new Size(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
         }
 
         public override void Render(DrawingContext context)
@@ -57,7 +57,7 @@ namespace Kermalis.MapEditor.UI
             context.DrawImage(_bitmap, 1, sourceRect, destRect);
             if (_isSelecting)
             {
-                var r = new Rect(_selection.X * OverworldConstants.Tile_NumPixelsX * _scale, _selection.Y * OverworldConstants.Tile_NumPixelsY * _scale, _selection.Width * OverworldConstants.Tile_NumPixelsX * _scale, _selection.Height * OverworldConstants.Tile_NumPixelsY * _scale);
+                var r = new Rect(_selection.X * Overworld.Tile_NumPixelsX * _scale, _selection.Y * Overworld.Tile_NumPixelsY * _scale, _selection.Width * Overworld.Tile_NumPixelsX * _scale, _selection.Height * Overworld.Tile_NumPixelsY * _scale);
                 context.FillRectangle(Selection.SelectingBrush, r);
                 context.DrawRectangle(Selection.SelectingPen, r);
             }
@@ -94,16 +94,16 @@ namespace Kermalis.MapEditor.UI
                     }
                 }
             }
-            for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
+            for (int y = 0; y < Overworld.Block_NumTilesY; y++)
             {
                 int curY = startY + y;
-                if (curY < OverworldConstants.Block_NumTilesY)
+                if (curY < Overworld.Block_NumTilesY)
                 {
                     Blockset.Block.Tile[] arrY = Clipboard[y];
-                    for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
+                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
                         int curX = startX + x;
-                        if (curX < OverworldConstants.Block_NumTilesX)
+                        if (curX < Overworld.Block_NumTilesX)
                         {
                             Blockset.Block.Tile st = arrY[x];
                             if (st.TilesetTile != null)
@@ -141,7 +141,7 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _isDrawing = true;
-                        SetTiles((int)(pos.X / _scale) / OverworldConstants.Tile_NumPixelsX, (int)(pos.Y / _scale) / OverworldConstants.Tile_NumPixelsY);
+                        SetTiles((int)(pos.X / _scale) / Overworld.Tile_NumPixelsX, (int)(pos.Y / _scale) / Overworld.Tile_NumPixelsY);
                         e.Handled = true;
                     }
                     break;
@@ -151,7 +151,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        RemoveTile((int)(pos.X / _scale) / OverworldConstants.Tile_NumPixelsX, (int)(pos.Y / _scale) / OverworldConstants.Tile_NumPixelsY);
+                        RemoveTile((int)(pos.X / _scale) / Overworld.Tile_NumPixelsX, (int)(pos.Y / _scale) / Overworld.Tile_NumPixelsY);
                         e.Handled = true;
                     }
                     break;
@@ -162,7 +162,7 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _isSelecting = true;
-                        _selection.Start((int)(pos.X / _scale) / OverworldConstants.Tile_NumPixelsX, (int)(pos.Y / _scale) / OverworldConstants.Tile_NumPixelsY, 1, 1);
+                        _selection.Start((int)(pos.X / _scale) / Overworld.Tile_NumPixelsX, (int)(pos.Y / _scale) / Overworld.Tile_NumPixelsY, 1, 1);
                         InvalidateVisual();
                         e.Handled = true;
                     }
@@ -180,8 +180,8 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        int x = (int)(pos.X / _scale) / OverworldConstants.Tile_NumPixelsX;
-                        int y = (int)(pos.Y / _scale) / OverworldConstants.Tile_NumPixelsY;
+                        int x = (int)(pos.X / _scale) / Overworld.Tile_NumPixelsX;
+                        int y = (int)(pos.Y / _scale) / Overworld.Tile_NumPixelsY;
                         if (_isDrawing)
                         {
                             SetTiles(x, y);
@@ -216,10 +216,10 @@ namespace Kermalis.MapEditor.UI
                         int width = _selection.Width;
                         int height = _selection.Height;
                         bool changed = false;
-                        for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
+                        for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                         {
                             Blockset.Block.Tile[] arrY = Clipboard[y];
-                            for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
+                            for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                             {
                                 Blockset.Block.Tile t = arrY[x];
                                 if (x < width && y < height)

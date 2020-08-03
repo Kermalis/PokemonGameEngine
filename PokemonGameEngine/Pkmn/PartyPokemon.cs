@@ -1,7 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonBattleEngine.Utils;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Pkmn

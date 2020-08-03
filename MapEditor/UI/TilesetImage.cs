@@ -5,7 +5,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System;
 
 namespace Kermalis.MapEditor.UI
@@ -39,7 +39,7 @@ namespace Kermalis.MapEditor.UI
         public TilesetImage(double scale)
         {
             _scale = scale;
-            _selection = new Selection(OverworldConstants.Block_NumTilesX, OverworldConstants.Block_NumTilesY);
+            _selection = new Selection(Overworld.Block_NumTilesX, Overworld.Block_NumTilesY);
             _selection.Changed += OnSelectionChanged;
         }
 
@@ -54,7 +54,7 @@ namespace Kermalis.MapEditor.UI
                 Rect sourceRect = new Rect(sourceSize).CenterRect(new Rect(destRect.Size / _scale));
 
                 context.DrawImage(source, 1, sourceRect, destRect);
-                var r = new Rect(_selection.X * OverworldConstants.Tile_NumPixelsX * _scale, _selection.Y * OverworldConstants.Tile_NumPixelsY * _scale, _selection.Width * OverworldConstants.Tile_NumPixelsX * _scale, _selection.Height * OverworldConstants.Tile_NumPixelsY * _scale);
+                var r = new Rect(_selection.X * Overworld.Tile_NumPixelsX * _scale, _selection.Y * Overworld.Tile_NumPixelsY * _scale, _selection.Width * Overworld.Tile_NumPixelsX * _scale, _selection.Height * Overworld.Tile_NumPixelsY * _scale);
                 context.FillRectangle(_isSelecting ? Selection.SelectingBrush : Selection.SelectionBrush, r);
                 context.DrawRectangle(_isSelecting ? Selection.SelectingPen : Selection.SelectionPen, r);
             }
@@ -87,7 +87,7 @@ namespace Kermalis.MapEditor.UI
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
                         _isSelecting = true;
-                        _selection.Start((int)(pos.X / _scale) / OverworldConstants.Tile_NumPixelsX, (int)(pos.Y / _scale) / OverworldConstants.Tile_NumPixelsY, 1, 1);
+                        _selection.Start((int)(pos.X / _scale) / Overworld.Tile_NumPixelsX, (int)(pos.Y / _scale) / Overworld.Tile_NumPixelsY, 1, 1);
                         e.Handled = true;
                     }
                 }
@@ -103,7 +103,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        _selection.Move((int)(pos.X / _scale) / OverworldConstants.Tile_NumPixelsX, (int)(pos.Y / _scale) / OverworldConstants.Tile_NumPixelsY);
+                        _selection.Move((int)(pos.X / _scale) / Overworld.Tile_NumPixelsX, (int)(pos.Y / _scale) / Overworld.Tile_NumPixelsY);
                         e.Handled = true;
                     }
                 }

@@ -5,6 +5,7 @@ using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -129,7 +130,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             RenderPkmn(bmpAddress, bmpWidth, bmpHeight, 0.75f, 0.55f, false, foe);
             RenderPkmn(bmpAddress, bmpWidth, bmpHeight, 0.35f, 0.95f, true, ally);
 
-            if (Overworld.Overworld.ShouldRenderDayTint())
+            if (Overworld.ShouldRenderDayTint())
             {
                 DayTint.Render(bmpAddress, bmpWidth, bmpHeight);
             }

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Kermalis.PokemonGameEngine.Overworld
+namespace Kermalis.PokemonGameEngine.World
 {
     internal sealed class Map
     {
@@ -341,19 +341,19 @@ namespace Kermalis.PokemonGameEngine.Overworld
         {
             Obj camera = Obj.Camera;
             Obj.Position cameraPos = camera.Pos;
-            int cameraX = (cameraPos.X * OverworldConstants.Block_NumPixelsX) - (bmpWidth / 2) + (OverworldConstants.Block_NumPixelsX / 2) + camera.ProgressX + Obj.CameraOfsX;
-            int cameraY = (cameraPos.Y * OverworldConstants.Block_NumPixelsY) - (bmpHeight / 2) + (OverworldConstants.Block_NumPixelsY / 2) + camera.ProgressY + Obj.CameraOfsY;
+            int cameraX = (cameraPos.X * Overworld.Block_NumPixelsX) - (bmpWidth / 2) + (Overworld.Block_NumPixelsX / 2) + camera.ProgressX + Obj.CameraOfsX;
+            int cameraY = (cameraPos.Y * Overworld.Block_NumPixelsY) - (bmpHeight / 2) + (Overworld.Block_NumPixelsY / 2) + camera.ProgressY + Obj.CameraOfsY;
             Map cameraMap = camera.Map;
-            int xpBX = cameraX % OverworldConstants.Block_NumPixelsX;
-            int ypBY = cameraY % OverworldConstants.Block_NumPixelsY;
-            int startBlockX = (cameraX / OverworldConstants.Block_NumPixelsX) - (xpBX >= 0 ? 0 : 1);
-            int startBlockY = (cameraY / OverworldConstants.Block_NumPixelsY) - (ypBY >= 0 ? 0 : 1);
-            int numBlocksX = (bmpWidth / OverworldConstants.Block_NumPixelsX) + (bmpWidth % OverworldConstants.Block_NumPixelsX == 0 ? 0 : 1);
-            int numBlocksY = (bmpHeight / OverworldConstants.Block_NumPixelsY) + (bmpHeight % OverworldConstants.Block_NumPixelsY == 0 ? 0 : 1);
+            int xpBX = cameraX % Overworld.Block_NumPixelsX;
+            int ypBY = cameraY % Overworld.Block_NumPixelsY;
+            int startBlockX = (cameraX / Overworld.Block_NumPixelsX) - (xpBX >= 0 ? 0 : 1);
+            int startBlockY = (cameraY / Overworld.Block_NumPixelsY) - (ypBY >= 0 ? 0 : 1);
+            int numBlocksX = (bmpWidth / Overworld.Block_NumPixelsX) + (bmpWidth % Overworld.Block_NumPixelsX == 0 ? 0 : 1);
+            int numBlocksY = (bmpHeight / Overworld.Block_NumPixelsY) + (bmpHeight % Overworld.Block_NumPixelsY == 0 ? 0 : 1);
             int endBlockX = startBlockX + numBlocksX + (xpBX == 0 ? 0 : 1);
             int endBlockY = startBlockY + numBlocksY + (ypBY == 0 ? 0 : 1);
-            int startX = xpBX >= 0 ? -xpBX : -xpBX - OverworldConstants.Block_NumPixelsX;
-            int startY = ypBY >= 0 ? -ypBY : -ypBY - OverworldConstants.Block_NumPixelsY;
+            int startX = xpBX >= 0 ? -xpBX : -xpBX - Overworld.Block_NumPixelsX;
+            int startY = ypBY >= 0 ? -ypBY : -ypBY - Overworld.Block_NumPixelsY;
             byte e = 0;
             while (true)
             {
@@ -373,23 +373,23 @@ namespace Kermalis.PokemonGameEngine.Overworld
                                 for (int t = 0; t < numSubLayers; t++)
                                 {
                                     Blockset.Block.Tile tile = subLayers[t];
-                                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Bitmap, OverworldConstants.Tile_NumPixelsX, OverworldConstants.Tile_NumPixelsY, xFlip: tile.XFlip, yFlip: tile.YFlip);
+                                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: tile.XFlip, yFlip: tile.YFlip);
                                 }
                             }
-                            for (int ly = 0; ly < OverworldConstants.Block_NumTilesY; ly++)
+                            for (int ly = 0; ly < Overworld.Block_NumTilesY; ly++)
                             {
                                 Dictionary<byte, Blockset.Block.Tile[]>[] arrY = b.Tiles[ly];
-                                int py = ly * OverworldConstants.Tile_NumPixelsY;
-                                for (int lx = 0; lx < OverworldConstants.Block_NumTilesX; lx++)
+                                int py = ly * Overworld.Tile_NumPixelsY;
+                                for (int lx = 0; lx < Overworld.Block_NumTilesX; lx++)
                                 {
-                                    Draw(arrY[lx][e], curX + (lx * OverworldConstants.Tile_NumPixelsX), curY + py);
+                                    Draw(arrY[lx][e], curX + (lx * Overworld.Tile_NumPixelsX), curY + py);
                                 }
                             }
                         }
-                        curX += OverworldConstants.Block_NumPixelsX;
+                        curX += Overworld.Block_NumPixelsX;
                     }
                     curX = startX;
-                    curY += OverworldConstants.Block_NumPixelsY;
+                    curY += Overworld.Block_NumPixelsY;
                 }
                 // TODO: They will overlap each other regardless of y coordinate because of the order of the list
                 // TODO: Objs from other maps
@@ -407,12 +407,12 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     {
                         continue;
                     }
-                    int objX = ((cPos.X - startBlockX) * OverworldConstants.Block_NumPixelsX) + c.ProgressX + startX;
-                    int objY = ((cPos.Y - startBlockY) * OverworldConstants.Block_NumPixelsY) + c.ProgressY + startY;
+                    int objX = ((cPos.X - startBlockX) * Overworld.Block_NumPixelsX) + c.ProgressX + startX;
+                    int objY = ((cPos.Y - startBlockY) * Overworld.Block_NumPixelsY) + c.ProgressY + startY;
                     int objW = c.SpriteWidth;
                     int objH = c.SpriteHeight;
-                    objX -= (objW - OverworldConstants.Block_NumPixelsX) / 2;
-                    objY -= objH - OverworldConstants.Block_NumPixelsY;
+                    objX -= (objW - Overworld.Block_NumPixelsX) / 2;
+                    objY -= objH - Overworld.Block_NumPixelsY;
                     if (objX < bmpWidth && objX + objW > 0 && objY < bmpHeight && objY + objH > 0)
                     {
                         c.Draw(bmpAddress, bmpWidth, bmpHeight, objX, objY);

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Kermalis.PokemonGameEngine.Game
+namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Flags
     {

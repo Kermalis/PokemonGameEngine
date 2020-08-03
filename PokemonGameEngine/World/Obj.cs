@@ -3,7 +3,7 @@ using Kermalis.PokemonGameEngine.Scripts;
 using System;
 using System.Collections.Generic;
 
-namespace Kermalis.PokemonGameEngine.Overworld
+namespace Kermalis.PokemonGameEngine.World
 {
     // Script movements handled in Script/ScriptMovements.cs
     internal sealed partial class Obj
@@ -424,8 +424,8 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 // Scale from previous value to new value based on % of transition
                 return (int)(prevVisualOfs + (t * visualOfsScale));
             }
-            ProgressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, OverworldConstants.Block_NumPixelsX);
-            ProgressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, OverworldConstants.Block_NumPixelsY);
+            ProgressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, Overworld.Block_NumPixelsX);
+            ProgressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, Overworld.Block_NumPixelsY);
         }
         public void UpdateMovementTimer()
         {

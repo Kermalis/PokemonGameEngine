@@ -2,7 +2,7 @@
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.ComponentModel;
 
@@ -119,8 +119,8 @@ namespace Kermalis.MapEditor.UI.Models
         internal void SetMap(Map map)
         {
             Map.Layout ml = map.MapLayout;
-            Width = ml.Width * OverworldConstants.Block_NumPixelsX;
-            Height = ml.Height * OverworldConstants.Block_NumPixelsY;
+            Width = ml.Width * Overworld.Block_NumPixelsX;
+            Height = ml.Height * Overworld.Block_NumPixelsY;
             Map = map;
             Bitmap = Map.MapLayout.BlocksBitmap;
         }

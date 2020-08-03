@@ -1,5 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Game;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Scripts;
 using System;
 using System.Collections.Generic;

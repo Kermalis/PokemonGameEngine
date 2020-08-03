@@ -6,7 +6,7 @@ using Avalonia.Platform;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.UI.Models;
 using Kermalis.MapEditor.Util;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -155,7 +155,7 @@ namespace Kermalis.MapEditor.UI
 
         public BlocksetEditor()
         {
-            _clipboardBitmap = new WriteableBitmap(new PixelSize(OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Bgra8888);
+            _clipboardBitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Bgra8888);
 
             SubLayers = new ObservableCollection<SubLayerModel>(new List<SubLayerModel>(byte.MaxValue + 1));
 
@@ -178,8 +178,8 @@ namespace Kermalis.MapEditor.UI
             _eLayerComboBox = this.FindControl<ComboBox>("ELayerComboBox");
 
             _clipboardImage = this.FindControl<Image>("ClipboardImage");
-            _clipboardImage.Width = OverworldConstants.Block_NumPixelsX * 2;
-            _clipboardImage.Height = OverworldConstants.Block_NumPixelsY * 2;
+            _clipboardImage.Width = Overworld.Block_NumPixelsX * 2;
+            _clipboardImage.Height = Overworld.Block_NumPixelsY * 2;
             _clipboardImage.Source = _clipboardBitmap;
 
             _tileLayerImage = this.FindControl<TileLayerImage>("TileLayerImage");
@@ -235,10 +235,10 @@ namespace Kermalis.MapEditor.UI
                 TileLayerImage tli = _tileLayerImage;
                 Blockset.Block.Tile[][] c = tli.Clipboard;
                 bool changed = false;
-                for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
+                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                 {
                     Blockset.Block.Tile[] arrY = c[y];
-                    for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
+                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
                         Blockset.Block.Tile t = arrY[x];
                         if (t.TilesetTile != null)
@@ -288,10 +288,10 @@ namespace Kermalis.MapEditor.UI
             bool? xf = null;
             bool? yf = null;
             bool first = true;
-            for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
+            for (int y = 0; y < Overworld.Block_NumTilesY; y++)
             {
                 Blockset.Block.Tile[] arrY = c[y];
-                for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
+                for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                 {
                     Blockset.Block.Tile t = arrY[x];
                     if (t.TilesetTile != null)
@@ -332,10 +332,10 @@ namespace Kermalis.MapEditor.UI
                 Blockset.Block.Tile[][] c = tli.Clipboard;
                 bool xV = _xFlip.HasValue;
                 bool yV = _yFlip.HasValue;
-                for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
+                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                 {
                     Blockset.Block.Tile[] cy = c[y];
-                    for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
+                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
                         Blockset.Block.Tile t = cy[x];
                         if (y < e.Length)
@@ -389,21 +389,21 @@ namespace Kermalis.MapEditor.UI
             using (ILockedFramebuffer l = _clipboardBitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtils.ClearUnchecked(bmpAddress, OverworldConstants.Block_NumPixelsX, 0, 0, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY);
+                RenderUtils.ClearUnchecked(bmpAddress, Overworld.Block_NumPixelsX, 0, 0, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
                 TileLayerImage tli = _tileLayerImage;
                 Blockset.Block.Tile[][] c = tli.Clipboard;
-                for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
+                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                 {
-                    int ty = y * OverworldConstants.Tile_NumPixelsY;
+                    int ty = y * Overworld.Tile_NumPixelsY;
                     Blockset.Block.Tile[] arrY = c[y];
-                    for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
+                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
                         Blockset.Block.Tile t = arrY[x];
                         if (t.TilesetTile != null)
                         {
-                            int tx = x * OverworldConstants.Tile_NumPixelsX;
-                            RenderUtils.TransparencyGrid(bmpAddress, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, tx, ty, OverworldConstants.Tile_NumPixelsX / 2, OverworldConstants.Tile_NumPixelsY / 2, OverworldConstants.Block_NumTilesX, OverworldConstants.Block_NumTilesY);
-                            t.Draw(bmpAddress, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, tx, ty);
+                            int tx = x * Overworld.Tile_NumPixelsX;
+                            RenderUtils.TransparencyGrid(bmpAddress, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, tx, ty, Overworld.Tile_NumPixelsX / 2, Overworld.Tile_NumPixelsY / 2, Overworld.Block_NumTilesX, Overworld.Block_NumTilesY);
+                            t.Draw(bmpAddress, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, tx, ty);
                         }
                     }
                 }
@@ -442,10 +442,10 @@ namespace Kermalis.MapEditor.UI
                 SelectedELayerIndex = 0;
             }
             byte e = (byte)_selectedELayerIndex;
-            for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
+            for (int y = 0; y < Overworld.Block_NumTilesY; y++)
             {
                 Dictionary<byte, List<Blockset.Block.Tile>>[] arrY = _selectedBlock.Tiles[y];
-                for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
+                for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                 {
                     Count(arrY[x][e]);
                 }

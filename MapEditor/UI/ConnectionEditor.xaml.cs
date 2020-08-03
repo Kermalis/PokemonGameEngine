@@ -6,7 +6,7 @@ using Avalonia.Media;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.UI.Models;
 using Kermalis.MapEditor.Util;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -221,7 +221,7 @@ namespace Kermalis.MapEditor.UI
             {
                 Stretch = Stretch.None,
                 TileMode = TileMode.Tile,
-                DestinationRect = new RelativeRect(0, 0, ml.BorderWidth * OverworldConstants.Block_NumPixelsX, ml.BorderHeight * OverworldConstants.Block_NumPixelsY, RelativeUnit.Absolute)
+                DestinationRect = new RelativeRect(0, 0, ml.BorderWidth * Overworld.Block_NumPixelsX, ml.BorderHeight * Overworld.Block_NumPixelsY, RelativeUnit.Absolute)
             };
             Add(map);
             int count = map.Connections.Count;
@@ -283,8 +283,8 @@ namespace Kermalis.MapEditor.UI
         private void ArrangeMaps()
         {
             Map.Layout ml = _map.MapLayout;
-            int mWidth = ml.Width * OverworldConstants.Block_NumPixelsX;
-            int mHeight = ml.Height * OverworldConstants.Block_NumPixelsY;
+            int mWidth = ml.Width * Overworld.Block_NumPixelsX;
+            int mHeight = ml.Height * Overworld.Block_NumPixelsY;
             int mostUp = 0;
             int mostLeft = 0;
             int mostRight = 0;
@@ -322,13 +322,13 @@ namespace Kermalis.MapEditor.UI
                 }
                 void Horizontal(int off, int width)
                 {
-                    Left(-off * OverworldConstants.Block_NumPixelsX);
-                    Right((off * OverworldConstants.Block_NumPixelsX) + (width * OverworldConstants.Block_NumPixelsX) - mWidth);
+                    Left(-off * Overworld.Block_NumPixelsX);
+                    Right((off * Overworld.Block_NumPixelsX) + (width * Overworld.Block_NumPixelsX) - mWidth);
                 }
                 void Vertical(int off, int height)
                 {
-                    Up(-off * OverworldConstants.Block_NumPixelsY);
-                    Down((off * OverworldConstants.Block_NumPixelsY) + (height * OverworldConstants.Block_NumPixelsY) - mHeight);
+                    Up(-off * Overworld.Block_NumPixelsY);
+                    Down((off * Overworld.Block_NumPixelsY) + (height * Overworld.Block_NumPixelsY) - mHeight);
                 }
                 ConnectionModel cm = Maps[i];
                 Map.Layout cml = cm.Map.MapLayout;
@@ -337,25 +337,25 @@ namespace Kermalis.MapEditor.UI
                 {
                     case Map.Connection.Direction.South:
                     {
-                        Down(cml.Height * OverworldConstants.Block_NumPixelsY);
+                        Down(cml.Height * Overworld.Block_NumPixelsY);
                         Horizontal(c.Offset, cml.Width);
                         break;
                     }
                     case Map.Connection.Direction.North:
                     {
-                        Up(cml.Height * OverworldConstants.Block_NumPixelsY);
+                        Up(cml.Height * Overworld.Block_NumPixelsY);
                         Horizontal(c.Offset, cml.Width);
                         break;
                     }
                     case Map.Connection.Direction.West:
                     {
-                        Left(cml.Width * OverworldConstants.Block_NumPixelsX);
+                        Left(cml.Width * Overworld.Block_NumPixelsX);
                         Vertical(c.Offset, cml.Height);
                         break;
                     }
                     case Map.Connection.Direction.East:
                     {
-                        Right(cml.Width * OverworldConstants.Block_NumPixelsX);
+                        Right(cml.Width * Overworld.Block_NumPixelsX);
                         Vertical(c.Offset, cml.Height);
                         break;
                     }
@@ -371,22 +371,22 @@ namespace Kermalis.MapEditor.UI
                 {
                     case Map.Connection.Direction.South:
                     {
-                        cm.Position = new Point(mostLeft + (c.Offset * OverworldConstants.Block_NumPixelsX), mostUp + mHeight + (mostDown - (cml.Height * OverworldConstants.Block_NumPixelsY)));
+                        cm.Position = new Point(mostLeft + (c.Offset * Overworld.Block_NumPixelsX), mostUp + mHeight + (mostDown - (cml.Height * Overworld.Block_NumPixelsY)));
                         break;
                     }
                     case Map.Connection.Direction.North:
                     {
-                        cm.Position = new Point(mostLeft + (c.Offset * OverworldConstants.Block_NumPixelsX), mostUp - (cml.Height * OverworldConstants.Block_NumPixelsY));
+                        cm.Position = new Point(mostLeft + (c.Offset * Overworld.Block_NumPixelsX), mostUp - (cml.Height * Overworld.Block_NumPixelsY));
                         break;
                     }
                     case Map.Connection.Direction.West:
                     {
-                        cm.Position = new Point(mostLeft - (cml.Width * OverworldConstants.Block_NumPixelsX), mostUp + (c.Offset * OverworldConstants.Block_NumPixelsY));
+                        cm.Position = new Point(mostLeft - (cml.Width * Overworld.Block_NumPixelsX), mostUp + (c.Offset * Overworld.Block_NumPixelsY));
                         break;
                     }
                     case Map.Connection.Direction.East:
                     {
-                        cm.Position = new Point(mostLeft + mWidth + (mostRight - (cml.Width * OverworldConstants.Block_NumPixelsX)), mostUp + (c.Offset * OverworldConstants.Block_NumPixelsY));
+                        cm.Position = new Point(mostLeft + mWidth + (mostRight - (cml.Width * Overworld.Block_NumPixelsX)), mostUp + (c.Offset * Overworld.Block_NumPixelsY));
                         break;
                     }
                 }
@@ -427,7 +427,7 @@ namespace Kermalis.MapEditor.UI
                             Point cmp = cm.Position;
                             double cmx = cmp.X;
                             double cmy = cmp.Y;
-                            if (x >= cmx && x < cmx + (cml.Width * OverworldConstants.Block_NumPixelsX) && y >= cmy && y < cmy + (cml.Height * OverworldConstants.Block_NumPixelsY))
+                            if (x >= cmx && x < cmx + (cml.Width * Overworld.Block_NumPixelsX) && y >= cmy && y < cmy + (cml.Height * Overworld.Block_NumPixelsY))
                             {
                                 SelectedConnection = i - 1;
                                 e.Handled = true;

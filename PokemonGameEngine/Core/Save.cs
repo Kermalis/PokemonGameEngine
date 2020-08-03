@@ -2,7 +2,7 @@
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 
-namespace Kermalis.PokemonGameEngine.Game
+namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Save
     {

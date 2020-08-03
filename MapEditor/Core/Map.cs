@@ -3,7 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.EndianBinaryIO;
 using Kermalis.MapEditor.Util;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -336,8 +336,8 @@ namespace Kermalis.MapEditor.Core
             private void UpdateBitmapSize(bool borderBlocks)
             {
                 WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
-                int bmpWidth = (borderBlocks ? BorderWidth : Width) * OverworldConstants.Block_NumPixelsX;
-                int bmpHeight = (borderBlocks ? BorderHeight : Height) * OverworldConstants.Block_NumPixelsY;
+                int bmpWidth = (borderBlocks ? BorderWidth : Width) * Overworld.Block_NumPixelsX;
+                int bmpHeight = (borderBlocks ? BorderHeight : Height) * Overworld.Block_NumPixelsY;
                 bool createNew;
                 if (bmp == null)
                 {
@@ -374,14 +374,14 @@ namespace Kermalis.MapEditor.Core
                     using (ILockedFramebuffer l = bmp.Lock())
                     {
                         uint* bmpAddress = (uint*)l.Address.ToPointer();
-                        int bmpWidth = (borderBlocks ? BorderWidth : Width) * OverworldConstants.Block_NumPixelsX;
-                        int bmpHeight = (borderBlocks ? BorderHeight : Height) * OverworldConstants.Block_NumPixelsY;
+                        int bmpWidth = (borderBlocks ? BorderWidth : Width) * Overworld.Block_NumPixelsX;
+                        int bmpHeight = (borderBlocks ? BorderHeight : Height) * Overworld.Block_NumPixelsY;
                         for (int i = 0; i < count; i++)
                         {
                             Block b = list[i];
-                            int x = b.X * OverworldConstants.Block_NumPixelsX;
-                            int y = b.Y * OverworldConstants.Block_NumPixelsY;
-                            RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, x, y, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY, 0xFF000000);
+                            int x = b.X * Overworld.Block_NumPixelsX;
+                            int y = b.Y * Overworld.Block_NumPixelsY;
+                            RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, x, y, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, 0xFF000000);
                             b.BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x, y);
                         }
                     }
@@ -397,8 +397,8 @@ namespace Kermalis.MapEditor.Core
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
                     int width = borderBlocks ? BorderWidth : Width;
                     int height = borderBlocks ? BorderHeight : Height;
-                    int bmpWidth = width * OverworldConstants.Block_NumPixelsX;
-                    int bmpHeight = height * OverworldConstants.Block_NumPixelsY;
+                    int bmpWidth = width * Overworld.Block_NumPixelsX;
+                    int bmpHeight = height * Overworld.Block_NumPixelsY;
                     RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
                     Block[][] arr = borderBlocks ? BorderBlocks : Blocks;
                     for (int y = 0; y < height; y++)
@@ -406,7 +406,7 @@ namespace Kermalis.MapEditor.Core
                         Block[] arrY = arr[y];
                         for (int x = 0; x < width; x++)
                         {
-                            arrY[x].BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x * OverworldConstants.Block_NumPixelsX, y * OverworldConstants.Block_NumPixelsY);
+                            arrY[x].BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x * Overworld.Block_NumPixelsX, y * Overworld.Block_NumPixelsY);
                         }
                     }
                 }

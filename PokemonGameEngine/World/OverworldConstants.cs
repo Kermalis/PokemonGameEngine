@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Kermalis.PokemonGameEngine.Overworld
+namespace Kermalis.PokemonGameEngine.World
 {
-    public static class OverworldConstants
+    internal static partial class Overworld
     {
         // If you want to change a tile or block's size, you will need to delete all of your assets and remake them
         // It's in your own best interest to keep the tile pixels divisible by 2

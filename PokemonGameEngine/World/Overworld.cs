@@ -1,11 +1,12 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
 using System;
 
-namespace Kermalis.PokemonGameEngine.Overworld
+namespace Kermalis.PokemonGameEngine.World
 {
-    internal static class Overworld
+    internal static partial class Overworld
     {
         private static EncounterTable.Encounter RollEncounter(EncounterTable tbl, ushort combinedChance)
         {
@@ -46,7 +47,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
             // This is an option because some encounters (like rock smash) do not use the ability to modify the rate
             if (!ignoreAbilityOrItem)
             {
-                PartyPokemon pkmn = Game.Game.Instance.Save.PlayerParty[0];
+                PartyPokemon pkmn = Game.Instance.Save.PlayerParty[0];
                 PBEAbility abilityOfFirstInParty = pkmn.Ability;
                 PBEItem itemOfFirstInParty = pkmn.Item;
                 // TODO: CompoundEyes
@@ -81,7 +82,7 @@ namespace Kermalis.PokemonGameEngine.Overworld
                 return false;
             }
             EncounterTable.Encounter encounter0 = RollEncounter(tbl, combinedChance);
-            Game.Game.Instance.TempCreateWildBattle(map, block, encounter0);
+            Game.Instance.TempCreateWildBattle(map, block, encounter0);
             return true;
         }
 

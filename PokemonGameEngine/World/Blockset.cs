@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Kermalis.PokemonGameEngine.Overworld
+namespace Kermalis.PokemonGameEngine.World
 {
     internal sealed class Blockset
     {
@@ -60,11 +60,11 @@ namespace Kermalis.PokemonGameEngine.Overworld
                     }
                     return eLayers;
                 }
-                Tiles = new Dictionary<byte, Tile[]>[OverworldConstants.Block_NumTilesY][];
-                for (int y = 0; y < OverworldConstants.Block_NumTilesY; y++)
+                Tiles = new Dictionary<byte, Tile[]>[Overworld.Block_NumTilesY][];
+                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                 {
-                    var arrY = new Dictionary<byte, Tile[]>[OverworldConstants.Block_NumTilesX];
-                    for (int x = 0; x < OverworldConstants.Block_NumTilesX; x++)
+                    var arrY = new Dictionary<byte, Tile[]>[Overworld.Block_NumTilesX];
+                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
                         arrY[x] = Read();
                     }

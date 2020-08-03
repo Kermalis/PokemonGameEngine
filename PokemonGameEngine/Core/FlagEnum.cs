@@ -1,4 +1,4 @@
-﻿namespace Kermalis.PokemonGameEngine.Game
+﻿namespace Kermalis.PokemonGameEngine.Core
 {
     public enum Flag : byte
     {

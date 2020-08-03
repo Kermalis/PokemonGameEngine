@@ -3,13 +3,13 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Transition;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Script;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Kermalis.PokemonGameEngine.Game
+namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Game
     {
@@ -97,8 +97,8 @@ namespace Kermalis.PokemonGameEngine.Game
                 _battleGUI = null;
             }
             _battleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, me, wild,
-                battleTerrain: Overworld.Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock),
-                weather: Overworld.Overworld.GetPBEWeatherFromMap(map)),
+                battleTerrain: Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock),
+                weather: Overworld.GetPBEWeatherFromMap(map)),
                 OnBattleEnded);
             void OnBattleTransitionEnded()
             {

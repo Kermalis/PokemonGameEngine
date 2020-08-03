@@ -6,7 +6,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -112,27 +112,27 @@ namespace Kermalis.MapEditor.UI
                     s = string.Empty;
                     if (!i.HasFlag(LayoutBlockPassage.SouthwestPassage))
                     {
-                        s += $"M 0,{OverworldConstants.Block_NumPixelsY / 2 + 1} V {OverworldConstants.Block_NumPixelsY} H {OverworldConstants.Block_NumPixelsX / 2} L 0,{OverworldConstants.Block_NumPixelsY / 2 + 1}";
+                        s += $"M 0,{Overworld.Block_NumPixelsY / 2 + 1} V {Overworld.Block_NumPixelsY} H {Overworld.Block_NumPixelsX / 2} L 0,{Overworld.Block_NumPixelsY / 2 + 1}";
                     }
                     if (!i.HasFlag(LayoutBlockPassage.SoutheastPassage))
                     {
-                        s += $"M {OverworldConstants.Block_NumPixelsX / 2 + 1},{OverworldConstants.Block_NumPixelsY} H {OverworldConstants.Block_NumPixelsX} V {OverworldConstants.Block_NumPixelsY / 2 + 1} L {OverworldConstants.Block_NumPixelsX / 2 + 1},{OverworldConstants.Block_NumPixelsY}";
+                        s += $"M {Overworld.Block_NumPixelsX / 2 + 1},{Overworld.Block_NumPixelsY} H {Overworld.Block_NumPixelsX} V {Overworld.Block_NumPixelsY / 2 + 1} L {Overworld.Block_NumPixelsX / 2 + 1},{Overworld.Block_NumPixelsY}";
                     }
                     if (!i.HasFlag(LayoutBlockPassage.NorthwestPassage))
                     {
-                        s += $"M {OverworldConstants.Block_NumPixelsX / 2},0 H 0 V {OverworldConstants.Block_NumPixelsY / 2} L {OverworldConstants.Block_NumPixelsX / 2},0";
+                        s += $"M {Overworld.Block_NumPixelsX / 2},0 H 0 V {Overworld.Block_NumPixelsY / 2} L {Overworld.Block_NumPixelsX / 2},0";
                     }
                     if (!i.HasFlag(LayoutBlockPassage.NortheastPassage))
                     {
-                        s += $"M {OverworldConstants.Block_NumPixelsX},{OverworldConstants.Block_NumPixelsY / 2} V 0 H {OverworldConstants.Block_NumPixelsX / 2 + 1} L {OverworldConstants.Block_NumPixelsX},{OverworldConstants.Block_NumPixelsY / 2}";
+                        s += $"M {Overworld.Block_NumPixelsX},{Overworld.Block_NumPixelsY / 2} V 0 H {Overworld.Block_NumPixelsX / 2 + 1} L {Overworld.Block_NumPixelsX},{Overworld.Block_NumPixelsY / 2}";
                     }
                 }
                 else
                 {
-                    s = (i.HasFlag(LayoutBlockPassage.SouthwestPassage) ? $"M 0,{OverworldConstants.Block_NumPixelsY / 2 + 1} L {OverworldConstants.Block_NumPixelsX / 2},{OverworldConstants.Block_NumPixelsY}" : $"M 0,{OverworldConstants.Block_NumPixelsY} H {OverworldConstants.Block_NumPixelsX / 2}")
-                    + (i.HasFlag(LayoutBlockPassage.SoutheastPassage) ? $" H {OverworldConstants.Block_NumPixelsX / 2 + 1} L {OverworldConstants.Block_NumPixelsX},{OverworldConstants.Block_NumPixelsY / 2 + 1}" : $" H {OverworldConstants.Block_NumPixelsX}")
-                    + (i.HasFlag(LayoutBlockPassage.NortheastPassage) ? $" V {OverworldConstants.Block_NumPixelsY / 2} L {OverworldConstants.Block_NumPixelsX / 2 + 1},0" : $" V 0")
-                    + (i.HasFlag(LayoutBlockPassage.NorthwestPassage) ? $" H {OverworldConstants.Block_NumPixelsX / 2} L 0,{OverworldConstants.Block_NumPixelsY / 2}" : $" H 0")
+                    s = (i.HasFlag(LayoutBlockPassage.SouthwestPassage) ? $"M 0,{Overworld.Block_NumPixelsY / 2 + 1} L {Overworld.Block_NumPixelsX / 2},{Overworld.Block_NumPixelsY}" : $"M 0,{Overworld.Block_NumPixelsY} H {Overworld.Block_NumPixelsX / 2}")
+                    + (i.HasFlag(LayoutBlockPassage.SoutheastPassage) ? $" H {Overworld.Block_NumPixelsX / 2 + 1} L {Overworld.Block_NumPixelsX},{Overworld.Block_NumPixelsY / 2 + 1}" : $" H {Overworld.Block_NumPixelsX}")
+                    + (i.HasFlag(LayoutBlockPassage.NortheastPassage) ? $" V {Overworld.Block_NumPixelsY / 2} L {Overworld.Block_NumPixelsX / 2 + 1},0" : $" V 0")
+                    + (i.HasFlag(LayoutBlockPassage.NorthwestPassage) ? $" H {Overworld.Block_NumPixelsX / 2} L 0,{Overworld.Block_NumPixelsY / 2}" : $" H 0")
                     + " Z";
                 }
                 var geo = Geometry.Parse(s);
@@ -144,7 +144,7 @@ namespace Kermalis.MapEditor.UI
         {
             _brush = new SolidColorBrush();
             _pen = new Pen(_brush);
-            _text = new FormattedText { Constraint = new Size(OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY), TextAlignment = TextAlignment.Center, Typeface = Typeface.Default };
+            _text = new FormattedText { Constraint = new Size(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), TextAlignment = TextAlignment.Center, Typeface = Typeface.Default };
         }
 
         private void MapLayout_OnDrew(Map.Layout layout, bool drewBorderBlocks, bool wasResized)
@@ -173,12 +173,12 @@ namespace Kermalis.MapEditor.UI
 
                 for (int y = 0; y < _layout.Height; y++)
                 {
-                    int by = y * OverworldConstants.Block_NumPixelsY;
+                    int by = y * Overworld.Block_NumPixelsY;
                     Map.Layout.Block[] arrY = _layout.Blocks[y];
                     for (int x = 0; x < _layout.Width; x++)
                     {
-                        int bx = x * OverworldConstants.Block_NumPixelsX;
-                        var r2 = new Rect(bx, by, OverworldConstants.Block_NumPixelsX, OverworldConstants.Block_NumPixelsY);
+                        int bx = x * Overworld.Block_NumPixelsX;
+                        var r2 = new Rect(bx, by, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
                         Map.Layout.Block b = arrY[x];
                         if (_passageShown)
                         {
@@ -256,7 +256,7 @@ namespace Kermalis.MapEditor.UI
                         if (Bounds.TemporaryFix_PointerInControl(pos))
                         {
                             _isDrawing = true;
-                            Set((int)pos.X / OverworldConstants.Block_NumPixelsX, (int)pos.Y / OverworldConstants.Block_NumPixelsY);
+                            Set((int)pos.X / Overworld.Block_NumPixelsX, (int)pos.Y / Overworld.Block_NumPixelsY);
                             e.Handled = true;
                         }
                         break;
@@ -266,8 +266,8 @@ namespace Kermalis.MapEditor.UI
                         Point pos = pp.Position;
                         if (Bounds.TemporaryFix_PointerInControl(pos))
                         {
-                            int destX = (int)pos.X / OverworldConstants.Block_NumPixelsX;
-                            int destY = (int)pos.Y / OverworldConstants.Block_NumPixelsY;
+                            int destX = (int)pos.X / Overworld.Block_NumPixelsX;
+                            int destY = (int)pos.Y / Overworld.Block_NumPixelsY;
                             Map.Layout.Block[][] outArr = _layout.Blocks;
                             if (_passageShown)
                             {
@@ -332,7 +332,7 @@ namespace Kermalis.MapEditor.UI
                         Point pos = pp.Position;
                         if (Bounds.TemporaryFix_PointerInControl(pos))
                         {
-                            Map.Layout.Block b = _layout.Blocks[(int)pos.Y / OverworldConstants.Block_NumPixelsY][(int)pos.X / OverworldConstants.Block_NumPixelsX];
+                            Map.Layout.Block b = _layout.Blocks[(int)pos.Y / Overworld.Block_NumPixelsY][(int)pos.X / Overworld.Block_NumPixelsX];
                             if (_passageShown)
                             {
                                 Passage = b.Passage;
@@ -358,7 +358,7 @@ namespace Kermalis.MapEditor.UI
                     Point pos = pp.Position;
                     if (Bounds.TemporaryFix_PointerInControl(pos))
                     {
-                        Set((int)pos.X / OverworldConstants.Block_NumPixelsX, (int)pos.Y / OverworldConstants.Block_NumPixelsY);
+                        Set((int)pos.X / Overworld.Block_NumPixelsX, (int)pos.Y / Overworld.Block_NumPixelsY);
                         e.Handled = true;
                     }
                 }

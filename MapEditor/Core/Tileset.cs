@@ -2,7 +2,7 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.MapEditor.Util;
-using Kermalis.PokemonGameEngine.Overworld;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,8 +34,8 @@ namespace Kermalis.MapEditor.Core
 
         private unsafe Tileset(string name, int id)
         {
-            uint[][] t = RenderUtils.LoadBitmapSheet(Path.Combine(_tilesetPath, name + _tilesetExtension), OverworldConstants.Tile_NumPixelsX, OverworldConstants.Tile_NumPixelsY, out int bmpWidth, out int bmpHeight);
-            BitmapNumTilesX = bmpWidth / OverworldConstants.Tile_NumPixelsX;
+            uint[][] t = RenderUtils.LoadBitmapSheet(Path.Combine(_tilesetPath, name + _tilesetExtension), Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, out int bmpWidth, out int bmpHeight);
+            BitmapNumTilesX = bmpWidth / Overworld.Tile_NumPixelsX;
             Tiles = new Tile[t.Length];
             for (int i = 0; i < Tiles.Length; i++)
             {
@@ -48,7 +48,7 @@ namespace Kermalis.MapEditor.Core
             using (ILockedFramebuffer l = Bitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtils.TransparencyGrid(bmpAddress, bmpWidth, bmpHeight, OverworldConstants.Tile_NumPixelsX / 2, OverworldConstants.Tile_NumPixelsY / 2);
+                RenderUtils.TransparencyGrid(bmpAddress, bmpWidth, bmpHeight, Overworld.Tile_NumPixelsX / 2, Overworld.Tile_NumPixelsY / 2);
                 int x = 0;
                 int y = 0;
                 for (int i = 0; i < Tiles.Length; i++, x++)
@@ -58,11 +58,11 @@ namespace Kermalis.MapEditor.Core
                         x = 0;
                         y++;
                     }
-                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, x * OverworldConstants.Tile_NumPixelsX, y * OverworldConstants.Tile_NumPixelsY, Tiles[i].Bitmap, OverworldConstants.Tile_NumPixelsX, OverworldConstants.Tile_NumPixelsY, xFlip: false, yFlip: false);
+                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, x * Overworld.Tile_NumPixelsX, y * Overworld.Tile_NumPixelsY, Tiles[i].Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: false, yFlip: false);
                 }
                 for (; x < BitmapNumTilesX; x++)
                 {
-                    RenderUtils.DrawCross(bmpAddress, bmpWidth, bmpHeight, x * OverworldConstants.Tile_NumPixelsX, y * OverworldConstants.Tile_NumPixelsY, OverworldConstants.Tile_NumPixelsX, OverworldConstants.Tile_NumPixelsY, 0xFFFF0000);
+                    RenderUtils.DrawCross(bmpAddress, bmpWidth, bmpHeight, x * Overworld.Tile_NumPixelsX, y * Overworld.Tile_NumPixelsY, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, 0xFFFF0000);
                 }
             }
         }

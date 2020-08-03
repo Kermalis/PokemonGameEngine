@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Threading;
 
@@ -50,10 +51,10 @@ namespace Kermalis.PokemonGameEngine.UI
                 using (ILockedFramebuffer l = _screen.Lock())
                 {
                     uint* bmpAddress = (uint*)l.Address.ToPointer();
-                    Game.Game.Instance.RenderTick(bmpAddress, RenderWidth, RenderHeight);
+                    Game.Instance.RenderTick(bmpAddress, RenderWidth, RenderHeight);
                     if (_showFPS)
                     {
-                        Game.Game.Instance.RenderFPS(bmpAddress, RenderWidth, RenderHeight, (int)Math.Round(1_000 / now.Subtract(lastRenderTime).TotalMilliseconds));
+                        Game.Instance.RenderFPS(bmpAddress, RenderWidth, RenderHeight, (int)Math.Round(1_000 / now.Subtract(lastRenderTime).TotalMilliseconds));
                     }
                 }
                 InvalidateVisual();

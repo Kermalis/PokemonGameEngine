@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Kermalis.PokemonGameEngine.Overworld
+namespace Kermalis.PokemonGameEngine.World
 {
     internal sealed partial class Obj
     {
