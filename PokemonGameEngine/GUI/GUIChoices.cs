@@ -9,19 +9,24 @@ namespace Kermalis.PokemonGameEngine.GUI
     {
         public string Text;
         public Action Command;
+        public bool IsEnabled;
 
         public Font Font;
         public uint[] FontColors;
         public uint[] SelectedColors;
+        public uint[] DisabledColors;
 
-        public GUIChoice(string text, Action command, Font font = null, uint[] fontColors = null, uint[] selectedColors = null)
+        public GUIChoice(string text, Action command, bool isEnabled = true,
+            Font font = null, uint[] fontColors = null, uint[] selectedColors = null, uint[] disabledColors = null)
         {
             Text = text;
             Command = command;
+            IsEnabled = isEnabled;
 
             Font = font;
             FontColors = fontColors;
             SelectedColors = selectedColors;
+            DisabledColors = disabledColors;
         }
     }
 
@@ -37,10 +42,12 @@ namespace Kermalis.PokemonGameEngine.GUI
         public Font Font;
         public uint[] FontColors;
         public uint[] SelectedColors;
+        public uint[] DisabledColors;
 
-        public int Selected;
+        public int Selected = 0;
 
-        public GUIChoices(float x, float y, float spacing, Action backCommand = null, Font font = null, uint[] fontColors = null, uint[] selectedColors = null)
+        public GUIChoices(float x, float y, float spacing, Action backCommand = null,
+            Font font = null, uint[] fontColors = null, uint[] selectedColors = null, uint[] disabledColors = null)
         {
             X = x;
             Y = y;
@@ -50,6 +57,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             Font = font;
             FontColors = fontColors;
             SelectedColors = selectedColors;
+            DisabledColors = disabledColors;
         }
 
         public void HandleInputs()
@@ -85,7 +93,10 @@ namespace Kermalis.PokemonGameEngine.GUI
             if (a)
             {
                 GUIChoice c = _choices[curSelected];
-                c.Command.Invoke();
+                if (c.IsEnabled)
+                {
+                    c.Command.Invoke();
+                }
             }
         }
 
@@ -98,7 +109,17 @@ namespace Kermalis.PokemonGameEngine.GUI
                 GUIChoice c = _choices[i];
                 Font font = c.Font ?? Font;
                 bool isSelected = Selected == i;
-                uint[] colors = isSelected ? c.SelectedColors ?? SelectedColors : c.FontColors ?? FontColors;
+                uint[] colors;
+                if (c.IsEnabled)
+                {
+                    colors = isSelected
+                        ? c.SelectedColors ?? SelectedColors
+                        : c.FontColors ?? FontColors;
+                }
+                else
+                {
+                    colors = c.DisabledColors ?? DisabledColors;
+                }
                 int placementY = drawUpwards ? count - 1 - i : i;
                 int y = (int)((bmpHeight * Y) - (bmpHeight * (placementY * Spacing)));
                 font.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * X), y, c.Text, colors);
