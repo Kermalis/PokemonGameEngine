@@ -294,22 +294,23 @@ namespace Kermalis.MapEditor.Core
         }
         internal static void Clear(Block block)
         {
-            byte e = 0;
-            while (true)
+            for (int y = 0; y < Overworld.Block_NumTilesY; y++)
             {
-                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
+                Dictionary<byte, List<Block.Tile>>[] arrY = block.Tiles[y];
+                for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                 {
-                    Dictionary<byte, List<Block.Tile>>[] arrY = block.Tiles[y];
-                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
+                    Dictionary<byte, List<Block.Tile>> arrX = arrY[x];
+                    byte e = 0;
+                    while (true)
                     {
-                        arrY[x].Clear();
+                        arrX[e].Clear();
+                        if (e == byte.MaxValue)
+                        {
+                            break;
+                        }
+                        e++;
                     }
                 }
-                if (e == byte.MaxValue)
-                {
-                    break;
-                }
-                e++;
             }
             Blockset blockset = block.Parent;
             blockset.OnChanged?.Invoke(blockset, block);
