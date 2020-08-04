@@ -7,7 +7,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
     // TODO: Switches (party menu)
     // TODO: Switch-ins
-    // TODO: Usable moves
     // TODO: Non-single battles
     // TODO: Targets
     internal sealed class ActionsGUI : IDisposable
@@ -21,7 +20,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private FadeToColorTransition _fadeToTransition;
         private PartyMenuGUI _partyMenuGUI;
         private readonly GUIChoices _fightChoices;
-        private readonly GUIChoices _moveChoices;
+        private GUIChoices _moveChoices;
 
         public ActionsGUI(BattleGUI parent, SpritedBattlePokemonParty party, SpritedBattlePokemon sPkmn)
         {
@@ -29,27 +28,59 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _party = party;
             _pkmn = sPkmn;
 
-            Font fontDefault = Font.Default;
-            uint[] defaultWhite = Font.DefaultWhite;
-            uint[] defaultSelected = Font.DefaultSelected;
-            _fightChoices = new GUIChoices(0.8f, 0.7f, 0.06f, font: fontDefault, fontColors: defaultWhite, selectedColors: defaultSelected)
+            _fightChoices = new GUIChoices(0.8f, 0.7f, 0.06f,
+                font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors : Font.DefaultDisabled)
             {
-                new GUIChoice("Fight", () => _isShowingMoves = true),
-                new GUIChoice("Pokémon", PokemonChoice)
+                new GUIChoice("Fight", FightChoice)
             };
-
-
-            PBEBattlePokemon pkmn = sPkmn.Pkmn;
-            PBEBattleMoveset moves = pkmn.Moves;
-            _moveChoices = new GUIChoices(0.8f, 0.7f, 0.06f, backCommand: () => _isShowingMoves = false, font: fontDefault, fontColors: defaultWhite, selectedColors: defaultSelected);
-            for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
-            {
-                PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[i];
-                PBEMove m = slot.Move;
-                _moveChoices.Add(new GUIChoice(PBELocalizedString.GetMoveName(m).English, () => SelectMoveForTurn(m)));
-            }
+            PBEBattlePokemon pkmn = _pkmn.Pkmn;
+            bool enabled = pkmn.CanSwitchOut();
+            Action command = enabled ? PokemonChoice : (Action)null;
+            _fightChoices.Add(new GUIChoice("Pokémon", command, isEnabled: enabled));
         }
 
+        private void FightChoice()
+        {
+            PBEBattlePokemon pkmn = _pkmn.Pkmn;
+            // Check if there's a move we must use
+            bool auto = false;
+            if (pkmn.IsForcedToStruggle())
+            {
+                pkmn.TurnAction = new PBETurnAction(pkmn, PBEMove.Struggle, PBEBattleUtils.GetPossibleTargets(pkmn, pkmn.GetMoveTargets(PBEMove.Struggle))[0]);
+                auto = true;
+            }
+            else if (pkmn.TempLockedMove != PBEMove.None)
+            {
+                pkmn.TurnAction = new PBETurnAction(pkmn, pkmn.TempLockedMove, pkmn.TempLockedTargets);
+                auto = true;
+            }
+            if (auto)
+            {
+                _parent.ActionsLoop(false);
+                return;
+            }
+
+            // Create move choices if it's not already created
+            if (_moveChoices is null)
+            {
+                PBEBattleMoveset moves = pkmn.Moves;
+                PBEMove[] usableMoves = pkmn.GetUsableMoves();
+                _moveChoices = new GUIChoices(0.8f, 0.7f, 0.06f, backCommand: () => _isShowingMoves = false,
+                    font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled);
+                for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
+                {
+                    PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[i];
+                    PBEMove m = slot.Move;
+                    string text = PBELocalizedString.GetMoveName(m).English;
+                    bool enabled = Array.IndexOf(usableMoves, m) != -1;
+                    Action command = enabled ? () => SelectMoveForTurn(m) : (Action)null;
+                    _moveChoices.Add(new GUIChoice(text, command, isEnabled: enabled));
+                }
+            }
+
+            // Show moves
+            _isShowingMoves = true;
+        }
         private void PokemonChoice()
         {
             void FadeToTransitionEnded()
@@ -137,7 +168,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public void Dispose()
         {
             _fightChoices.Dispose();
-            _moveChoices.Dispose();
+            _moveChoices?.Dispose();
         }
     }
 }
