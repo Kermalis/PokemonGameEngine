@@ -64,6 +64,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     void OnBattleEndedTransitionEnded()
                     {
                         _battleEndedTransition = null;
+                        if (_actionsGUI != null)
+                        {
+                            _actionsGUI.Dispose();
+                            _actionsGUI = null;
+                        }
                         _onClosed.Invoke();
                         _onClosed = null;
                     }
@@ -138,7 +143,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             if (!_transitionDone)
             {
                 float t = _transitionCounter / TransitionDurationF;
-                float t1 = t + 1;
+                //float t1 = t + 1;
                 //_battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, (int)(bmpWidth * t1), (int)(bmpHeight * t1));
                 RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, (uint)(t * 0xFF) << 24);
                 if (--_transitionCounter <= 0)
@@ -182,6 +187,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             int i = _actions.FindIndex(p => p.TurnAction == null);
             if (i == -1)
             {
+                _actionsGUI.Dispose();
                 _actionsGUI = null;
                 new Thread(() => PBEBattle.SelectActionsIfValid(_trainer, _actions.Select(p => p.TurnAction).ToArray())) { Name = ThreadName }.Start();
             }

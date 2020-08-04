@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.GUI.Transition;
-using Kermalis.PokemonGameEngine.Input;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
@@ -11,7 +10,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
     // TODO: Usable moves
     // TODO: Non-single battles
     // TODO: Targets
-    internal sealed class ActionsGUI
+    internal sealed class ActionsGUI : IDisposable
     {
         private readonly BattleGUI _parent;
         private readonly SpritedBattlePokemonParty _party;
@@ -21,14 +20,79 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private FadeFromColorTransition _fadeFromTransition;
         private FadeToColorTransition _fadeToTransition;
         private PartyMenuGUI _partyMenuGUI;
+        private readonly GUIChoices _fightChoices;
+        private readonly GUIChoices _moveChoices;
 
-        private int _selectedMove = 0;
-
-        public ActionsGUI(BattleGUI parent, SpritedBattlePokemonParty party, SpritedBattlePokemon pkmn)
+        public ActionsGUI(BattleGUI parent, SpritedBattlePokemonParty party, SpritedBattlePokemon sPkmn)
         {
             _parent = parent;
             _party = party;
-            _pkmn = pkmn;
+            _pkmn = sPkmn;
+
+            Font fontDefault = Font.Default;
+            uint[] defaultWhite = Font.DefaultWhite;
+            uint[] defaultSelected = Font.DefaultSelected;
+            _fightChoices = new GUIChoices(0.8f, 0.7f, 0.06f, font: fontDefault, fontColors: defaultWhite, selectedColors: defaultSelected)
+            {
+                new GUIChoice("Fight", () => _isShowingMoves = true),
+                new GUIChoice("Pokémon", PokemonChoice)
+            };
+
+
+            PBEBattlePokemon pkmn = sPkmn.Pkmn;
+            PBEBattleMoveset moves = pkmn.Moves;
+            _moveChoices = new GUIChoices(0.8f, 0.7f, 0.06f, backCommand: () => _isShowingMoves = false, font: fontDefault, fontColors: defaultWhite, selectedColors: defaultSelected);
+            for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
+            {
+                PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[i];
+                PBEMove m = slot.Move;
+                _moveChoices.Add(new GUIChoice(PBELocalizedString.GetMoveName(m).English, () => SelectMoveForTurn(m)));
+            }
+        }
+
+        private void PokemonChoice()
+        {
+            void FadeToTransitionEnded()
+            {
+                _fadeToTransition = null;
+                void OnPartyMenuGUIClosed()
+                {
+                    void FadeFromTransitionEnded()
+                    {
+                        _fadeFromTransition = null;
+                    }
+                    _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
+                    _partyMenuGUI = null;
+                }
+                _partyMenuGUI = new PartyMenuGUI(_party, OnPartyMenuGUIClosed);
+            }
+            _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
+        }
+
+        private void SelectMoveForTurn(PBEMove move)
+        {
+            PBEBattlePokemon pkmn = _pkmn.Pkmn;
+            PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(move);
+            // Single battle only
+            PBETurnTarget targets;
+            switch (possibleTargets)
+            {
+                case PBEMoveTarget.All: targets = PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter; break;
+                case PBEMoveTarget.AllFoes:
+                case PBEMoveTarget.AllFoesSurrounding:
+                case PBEMoveTarget.AllSurrounding:
+                case PBEMoveTarget.RandomFoeSurrounding:
+                case PBEMoveTarget.SingleFoeSurrounding:
+                case PBEMoveTarget.SingleNotSelf:
+                case PBEMoveTarget.SingleSurrounding: targets = PBETurnTarget.FoeCenter; break;
+                case PBEMoveTarget.AllTeam:
+                case PBEMoveTarget.Self:
+                case PBEMoveTarget.SelfOrAllySurrounding:
+                case PBEMoveTarget.SingleAllySurrounding: targets = PBETurnTarget.AllyCenter; break;
+                default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+            }
+            pkmn.TurnAction = new PBETurnAction(pkmn, move, targets);
+            _parent.ActionsLoop(false);
         }
 
         public void LogicTick()
@@ -42,103 +106,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _partyMenuGUI.LogicTick();
                 return;
             }
-
-            PBEBattlePokemon pkmn = _pkmn.Pkmn;
-            PBEBattleMoveset moves = pkmn.Moves;
-
-            // Handle selection input
-            bool down = InputManager.IsPressed(Key.Down);
-            bool up = InputManager.IsPressed(Key.Up);
-            bool a = InputManager.IsPressed(Key.A);
-            bool b = InputManager.IsPressed(Key.B);
-            if (!down && !up && !a && !b)
+            if (_isShowingMoves)
             {
+                _moveChoices.HandleInputs();
                 return;
             }
-
-            if (!_isShowingMoves)
-            {
-                if (down && _selectedMove < 2 - 1)
-                {
-                    _selectedMove++;
-                }
-                if (up && _selectedMove > 0)
-                {
-                    _selectedMove--;
-                }
-                if (a)
-                {
-                    switch (_selectedMove)
-                    {
-                        case 0:
-                        {
-                            _isShowingMoves = true;
-                            _selectedMove = 0;
-                            break;
-                        }
-                        case 1:
-                        {
-                            void FadeToTransitionEnded()
-                            {
-                                _fadeToTransition = null;
-                                void OnPartyMenuGUIClosed()
-                                {
-                                    void FadeFromTransitionEnded()
-                                    {
-                                        _fadeFromTransition = null;
-                                    }
-                                    _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
-                                    _partyMenuGUI = null;
-                                }
-                                _partyMenuGUI = new PartyMenuGUI(_party, OnPartyMenuGUIClosed);
-                            }
-                            _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
-                            break;
-                        }
-                    }
-                }
-                return;
-            }
-
-            if (b)
-            {
-                _isShowingMoves = false;
-                _selectedMove = 0;
-                return;
-            }
-            if (down && _selectedMove < PBESettings.DefaultNumMoves - 1)
-            {
-                _selectedMove++;
-            }
-            if (up && _selectedMove > 0)
-            {
-                _selectedMove--;
-            }
-            if (a)
-            {
-                PBEMove move = moves[_selectedMove].Move;
-                PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(move);
-                // Single battle only
-                PBETurnTarget targets;
-                switch (possibleTargets)
-                {
-                    case PBEMoveTarget.All: targets = PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter; break;
-                    case PBEMoveTarget.AllFoes:
-                    case PBEMoveTarget.AllFoesSurrounding:
-                    case PBEMoveTarget.AllSurrounding:
-                    case PBEMoveTarget.RandomFoeSurrounding:
-                    case PBEMoveTarget.SingleFoeSurrounding:
-                    case PBEMoveTarget.SingleNotSelf:
-                    case PBEMoveTarget.SingleSurrounding: targets = PBETurnTarget.FoeCenter; break;
-                    case PBEMoveTarget.AllTeam:
-                    case PBEMoveTarget.Self:
-                    case PBEMoveTarget.SelfOrAllySurrounding:
-                    case PBEMoveTarget.SingleAllySurrounding: targets = PBETurnTarget.AllyCenter; break;
-                    default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
-                }
-                pkmn.TurnAction = new PBETurnAction(pkmn, move, targets);
-                _parent.ActionsLoop(false);
-            }
+            _fightChoices.HandleInputs();
         }
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
@@ -149,36 +122,22 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 return;
             }
 
-            Font fontDefault = Font.Default;
-            uint[] defaultWhite = Font.DefaultWhite;
-            uint[] defaultSelected = Font.DefaultSelected;
-            int selected = _selectedMove;
-
             if (!_isShowingMoves)
             {
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (1 * 0.06))), "Fight", selected == 0 ? defaultSelected : defaultWhite);
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (0 * 0.06))), "Pokémon", selected == 1 ? defaultSelected : defaultWhite);
-
-                // Draw selection arrow
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75), (int)((bmpHeight * 0.7) - (bmpHeight * ((2 - 1 - selected) * 0.06))), "→", defaultSelected);
+                _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
 
                 _fadeFromTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                 _fadeToTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                 return;
             }
 
-            PBEBattlePokemon pkmn = _pkmn.Pkmn;
-            PBEBattleMoveset moves = pkmn.Moves;
+            _moveChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+        }
 
-            // Draw moves
-            for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
-            {
-                PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[PBESettings.DefaultNumMoves - 1 - i];
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.8), (int)((bmpHeight * 0.7) - (bmpHeight * (i * 0.06))), PBELocalizedString.GetMoveName(slot.Move).English, selected == PBESettings.DefaultNumMoves - 1 - i ? defaultSelected : defaultWhite);
-            }
-
-            // Draw selection arrow
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.75), (int)((bmpHeight * 0.7) - (bmpHeight * ((PBESettings.DefaultNumMoves - 1 - selected) * 0.06))), "→", defaultSelected);
+        public void Dispose()
+        {
+            _fightChoices.Dispose();
+            _moveChoices.Dispose();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         public float Height { get; set; }
     }
 
-    internal sealed class GUIButtons<T> : IEnumerable<T> where T : GUIButton
+    internal class GUIButtons<T> : IEnumerable<T> where T : GUIButton
     {
         private readonly List<T> _buttons = new List<T>();
 
