@@ -159,7 +159,7 @@ namespace Kermalis.PokemonGameEngine.World
             }
 
             private const string LayoutExtension = ".pgelayout";
-            private const string LayoutPath = "Map.Layout.";
+            private const string LayoutPath = "Layout.";
             private static readonly IdList _ids = new IdList(LayoutPath + "LayoutIds.txt");
             private static readonly Dictionary<int, WeakReference<Layout>> loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
             public static Layout LoadOrGet(int id)

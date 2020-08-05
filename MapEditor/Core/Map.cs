@@ -235,7 +235,7 @@ namespace Kermalis.MapEditor.Core
             }
 
             private const string _layoutExtension = ".pgelayout";
-            private static readonly string _layoutPath = Path.Combine(Program.AssetPath, "Map", "Layout");
+            private static readonly string _layoutPath = Path.Combine(Program.AssetPath, "Layout");
             public static IdList Ids { get; } = new IdList(Path.Combine(_layoutPath, "LayoutIds.txt"));
             private static readonly Dictionary<int, WeakReference<Layout>> _loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
             public static Layout LoadOrGet(string name)
