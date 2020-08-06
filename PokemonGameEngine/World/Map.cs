@@ -188,9 +188,9 @@ namespace Kermalis.PokemonGameEngine.World
 
         public readonly Layout MapLayout;
         public readonly Details MapDetails;
-        public readonly Events MapEvents;
-        public readonly EncounterGroups Encounters;
         public readonly Connection[] Connections;
+        public readonly EncounterGroups Encounters;
+        public readonly Events MapEvents;
 
         public readonly List<Obj> Objs = new List<Obj>();
 
@@ -200,14 +200,14 @@ namespace Kermalis.PokemonGameEngine.World
             {
                 MapLayout = Layout.LoadOrGet(r.ReadInt32());
                 MapDetails = new Details(r);
-                MapEvents = new Events(r);
-                Encounters = new EncounterGroups(r);
                 int numConnections = r.ReadByte();
                 Connections = new Connection[numConnections];
                 for (int i = 0; i < numConnections; i++)
                 {
                     Connections[i] = new Connection(r);
                 }
+                Encounters = new EncounterGroups(r);
+                MapEvents = new Events(r);
             }
         }
 

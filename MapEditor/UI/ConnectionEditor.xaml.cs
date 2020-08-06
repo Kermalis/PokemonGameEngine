@@ -8,6 +8,7 @@ using Kermalis.MapEditor.UI.Models;
 using Kermalis.MapEditor.Util;
 using Kermalis.PokemonGameEngine.World;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -84,18 +85,18 @@ namespace Kermalis.MapEditor.UI
         }
 
         private bool _switching;
-        public int _selectedDirection;
-        public int SelectedDirection
+        public Map.Connection.Dir _selectedDirection;
+        public Map.Connection.Dir SelectedDirection
         {
             get => _selectedDirection;
             set
             {
-                if (value != -1 && _selectedDirection != value)
+                if (_selectedDirection != value)
                 {
                     _selectedDirection = value;
                     if (!_switching)
                     {
-                        _map.Connections[_selectedConnection].Dir = (Map.Connection.Direction)value;
+                        _map.Connections[_selectedConnection].Direction = value;
                         ArrangeMaps();
                     }
                     OnPropertyChanged(nameof(SelectedDirection));
@@ -120,18 +121,18 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
-        public int _selectedMap;
-        public int SelectedMap
+        public string _selectedMap;
+        public string SelectedMap
         {
             get => _selectedMap;
             set
             {
-                if (value != -1 && _selectedMap != value)
+                if (_selectedMap != value)
                 {
                     _selectedMap = value;
                     if (!_switching)
                     {
-                        _map.Connections[_selectedConnection].MapId = value;
+                        _map.Connections[_selectedConnection].Map = value;
                         ConnectionModel c = Maps[_selectedConnection + 1];
                         c.Map.MapLayout.OnDrew -= MapLayout_OnDrew;
                         c.SetMap(Map.LoadOrGet(value));
@@ -182,7 +183,7 @@ namespace Kermalis.MapEditor.UI
             }
         }
 
-        public Array Directions { get; } = Enum.GetValues(typeof(Map.Connection.Direction)); // Not using Utils.GetEnumValues because _selectedDirection relies on index
+        public IEnumerable<Map.Connection.Dir> Directions { get; } = Utils.GetEnumValues<Map.Connection.Dir>();
         public ObservableCollection<ConnectionModel> Maps { get; } = new ObservableCollection<ConnectionModel>();
 
         private readonly ItemsControl _mapsItemsControl;
@@ -202,8 +203,8 @@ namespace Kermalis.MapEditor.UI
             Maps[_selectedConnection + 1].Select(true);
             Map.Connection c = _map.Connections[_selectedConnection];
             _switching = true;
-            SelectedDirection = (int)c.Dir;
-            SelectedMap = c.MapId;
+            SelectedDirection = c.Direction;
+            SelectedMap = c.Map;
             Offset = c.Offset;
             _switching = false;
         }
@@ -229,7 +230,7 @@ namespace Kermalis.MapEditor.UI
             {
                 for (int i = 0; i < count; i++)
                 {
-                    Add(Map.LoadOrGet(map.Connections[i].MapId));
+                    Add(Map.LoadOrGet(map.Connections[i].Map));
                 }
                 SelectedConnection = 0;
             }
@@ -242,7 +243,7 @@ namespace Kermalis.MapEditor.UI
             int index = _map.Connections.Count;
             var c = new Map.Connection();
             _map.Connections.Insert(index, c);
-            Add(Map.LoadOrGet(c.MapId));
+            Add(Map.LoadOrGet(c.Map));
             SelectedConnection = index;
             ArrangeMaps();
             UpdateNumConnections();
@@ -333,27 +334,27 @@ namespace Kermalis.MapEditor.UI
                 ConnectionModel cm = Maps[i];
                 Map.Layout cml = cm.Map.MapLayout;
                 Map.Connection c = _map.Connections[i - 1];
-                switch (c.Dir)
+                switch (c.Direction)
                 {
-                    case Map.Connection.Direction.South:
+                    case Map.Connection.Dir.South:
                     {
                         Down(cml.Height * Overworld.Block_NumPixelsY);
                         Horizontal(c.Offset, cml.Width);
                         break;
                     }
-                    case Map.Connection.Direction.North:
+                    case Map.Connection.Dir.North:
                     {
                         Up(cml.Height * Overworld.Block_NumPixelsY);
                         Horizontal(c.Offset, cml.Width);
                         break;
                     }
-                    case Map.Connection.Direction.West:
+                    case Map.Connection.Dir.West:
                     {
                         Left(cml.Width * Overworld.Block_NumPixelsX);
                         Vertical(c.Offset, cml.Height);
                         break;
                     }
-                    case Map.Connection.Direction.East:
+                    case Map.Connection.Dir.East:
                     {
                         Right(cml.Width * Overworld.Block_NumPixelsX);
                         Vertical(c.Offset, cml.Height);
@@ -367,24 +368,24 @@ namespace Kermalis.MapEditor.UI
                 ConnectionModel cm = Maps[i];
                 Map.Layout cml = cm.Map.MapLayout;
                 Map.Connection c = _map.Connections[i - 1];
-                switch (c.Dir)
+                switch (c.Direction)
                 {
-                    case Map.Connection.Direction.South:
+                    case Map.Connection.Dir.South:
                     {
                         cm.Position = new Point(mostLeft + (c.Offset * Overworld.Block_NumPixelsX), mostUp + mHeight + (mostDown - (cml.Height * Overworld.Block_NumPixelsY)));
                         break;
                     }
-                    case Map.Connection.Direction.North:
+                    case Map.Connection.Dir.North:
                     {
                         cm.Position = new Point(mostLeft + (c.Offset * Overworld.Block_NumPixelsX), mostUp - (cml.Height * Overworld.Block_NumPixelsY));
                         break;
                     }
-                    case Map.Connection.Direction.West:
+                    case Map.Connection.Dir.West:
                     {
                         cm.Position = new Point(mostLeft - (cml.Width * Overworld.Block_NumPixelsX), mostUp + (c.Offset * Overworld.Block_NumPixelsY));
                         break;
                     }
-                    case Map.Connection.Direction.East:
+                    case Map.Connection.Dir.East:
                     {
                         cm.Position = new Point(mostLeft + mWidth + (mostRight - (cml.Width * Overworld.Block_NumPixelsX)), mostUp + (c.Offset * Overworld.Block_NumPixelsY));
                         break;

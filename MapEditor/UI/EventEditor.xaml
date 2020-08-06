@@ -56,7 +56,7 @@
                   </StackPanel>
                   <StackPanel Spacing="5" Orientation="Horizontal">
                     <TextBlock Text="Dest. Map: " VerticalAlignment="Center" />
-                    <ComboBox Items="{x:Static core:Map.Ids}" SelectedIndex="{Binding SelectedWarp.DestMapId}" />
+                    <ComboBox Items="{x:Static core:Map.Ids}" SelectedItem="{Binding SelectedWarp.DestMap}" />
                   </StackPanel>
                   <StackPanel Spacing="5" Orientation="Horizontal">
                     <TextBlock Text="Dest. X: " VerticalAlignment="Center" />

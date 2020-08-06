@@ -31,12 +31,19 @@ public sealed partial class Build
     private readonly List<Pointer> _pointers = new List<Pointer>();
     private EndianBinaryWriter _writer;
 
+    private void CleanScripts()
+    {
+        if (File.Exists(ScriptOutputPath))
+        {
+            File.Delete(ScriptOutputPath);
+        }
+    }
     private void BuildScripts()
     {
         using (var ms = new MemoryStream())
         using (_writer = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
         {
-            foreach (string file in Directory.EnumerateFiles(ScriptPath, "*.txt"))
+            foreach (AbsolutePath file in ScriptPath.GlobFiles("*.txt"))
             {
                 ParseFile(file);
             }

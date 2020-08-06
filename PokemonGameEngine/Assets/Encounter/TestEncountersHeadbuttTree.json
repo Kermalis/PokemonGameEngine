@@ -1,0 +1,54 @@
+{
+  "ChanceOfPhenomenon": 51,
+  "Encounters": [
+    {
+      "Chance": 20,
+      "MinLevel": 7,
+      "MaxLevel": 15,
+      "Species": "Yanma",
+      "Form": 0
+    },
+    {
+      "Chance": 10,
+      "MinLevel": 10,
+      "MaxLevel": 17,
+      "Species": "Skorupi",
+      "Form": 0
+    },
+    {
+      "Chance": 5,
+      "MinLevel": 9,
+      "MaxLevel": 16,
+      "Species": "Chingling",
+      "Form": 0
+    },
+    {
+      "Chance": 20,
+      "MinLevel": 8,
+      "MaxLevel": 13,
+      "Species": "Pineco",
+      "Form": 0
+    },
+    {
+      "Chance": 10,
+      "MinLevel": 12,
+      "MaxLevel": 19,
+      "Species": "Pansage",
+      "Form": 0
+    },
+    {
+      "Chance": 10,
+      "MinLevel": 7,
+      "MaxLevel": 10,
+      "Species": "Burmy",
+      "Form": 0
+    },
+    {
+      "Chance": 10,
+      "MinLevel": 11,
+      "MaxLevel": 18,
+      "Species": "Ferroseed",
+      "Form": 0
+    }
+  ]
+}

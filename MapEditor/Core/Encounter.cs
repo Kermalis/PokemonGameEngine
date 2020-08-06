@@ -1,6 +1,8 @@
-﻿using Kermalis.EndianBinaryIO;
+﻿using Kermalis.MapEditor.Util;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.World;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,41 +27,48 @@ namespace Kermalis.MapEditor.Core
                 Species = PBESpecies.Bulbasaur;
                 Form = 0;
             }
-            public Encounter(EndianBinaryReader r)
+            public Encounter(JToken j)
             {
-                Chance = r.ReadByte();
-                MinLevel = r.ReadByte();
-                MaxLevel = r.ReadByte();
-                Species = r.ReadEnum<PBESpecies>();
-                Form = r.ReadEnum<PBEForm>();
+                Chance = j[nameof(Chance)].Value<byte>();
+                MinLevel = j[nameof(MinLevel)].Value<byte>();
+                MaxLevel = j[nameof(MaxLevel)].Value<byte>();
+                Species = j[nameof(Species)].EnumValue<PBESpecies>();
+                Form = (PBEForm)j[nameof(Form)].Value<byte>(); // Do not use "EnumValue" because strings are bad for forms
             }
 
-            public void Write(EndianBinaryWriter w)
+            public void Write(JsonTextWriter w)
             {
-                w.Write(Chance);
-                w.Write(MinLevel);
-                w.Write(MaxLevel);
-                w.Write(Species);
-                w.Write(Form);
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(Chance));
+                w.WriteValue(Chance);
+                w.WritePropertyName(nameof(MinLevel));
+                w.WriteValue(MinLevel);
+                w.WritePropertyName(nameof(MaxLevel));
+                w.WriteValue(MaxLevel);
+                w.WritePropertyName(nameof(Species));
+                w.WriteEnum(Species);
+                w.WritePropertyName(nameof(Form));
+                w.WriteValue((byte)Form); // Do not use "WriteEnum" because strings are bad for forms
+                w.WriteEndObject();
             }
         }
 
         internal readonly string Name;
         internal readonly int Id;
+
         internal byte ChanceOfPhenomenon;
         internal readonly List<Encounter> Encounters;
 
         private EncounterTable(string name, int id)
         {
-            using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(_encounterTablePath, name + _encounterTableExtension))))
+            var json = JObject.Parse(File.ReadAllText(Path.Combine(EncounterTablePath, name + ".json")));
+            ChanceOfPhenomenon = json[nameof(ChanceOfPhenomenon)].Value<byte>();
+            var encs = (JArray)json[nameof(Encounters)];
+            int numEncounters = encs.Count;
+            Encounters = new List<Encounter>(numEncounters);
+            for (int i = 0; i < numEncounters; i++)
             {
-                ChanceOfPhenomenon = r.ReadByte();
-                byte count = r.ReadByte();
-                Encounters = new List<Encounter>(count);
-                for (int i = 0; i < count; i++)
-                {
-                    Encounters.Add(new Encounter(r));
-                }
+                Encounters.Add(new Encounter(encs[i]));
             }
             Name = name;
             Id = id;
@@ -75,9 +84,8 @@ namespace Kermalis.MapEditor.Core
             Ids.Save();
         }
 
-        private const string _encounterTableExtension = ".pgeenctbl";
-        private static readonly string _encounterTablePath = Path.Combine(Program.AssetPath, "Encounter");
-        public static IdList Ids { get; } = new IdList(Path.Combine(_encounterTablePath, "EncounterTableIds.txt"));
+        private static readonly string EncounterTablePath = Path.Combine(Program.AssetPath, "Encounter");
+        public static IdList Ids { get; } = new IdList(Path.Combine(EncounterTablePath, "EncounterTableIds.txt"));
         private static readonly Dictionary<int, WeakReference<EncounterTable>> _loadedEncounterTables = new Dictionary<int, WeakReference<EncounterTable>>();
         internal static EncounterTable LoadOrGet(string name)
         {
@@ -131,15 +139,19 @@ namespace Kermalis.MapEditor.Core
 
         internal void Save()
         {
-            using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_encounterTablePath, Name + _encounterTableExtension))))
+            using (var w = new JsonTextWriter(File.CreateText(Path.Combine(EncounterTablePath, Name + ".json"))) { Formatting = Formatting.Indented })
             {
-                w.Write(ChanceOfPhenomenon);
-                byte count = (byte)Encounters.Count;
-                w.Write(count);
-                for (int i = 0; i < count; i++)
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(ChanceOfPhenomenon));
+                w.WriteValue(ChanceOfPhenomenon);
+                w.WritePropertyName(nameof(Encounters));
+                w.WriteStartArray();
+                foreach (Encounter e in Encounters)
                 {
-                    Encounters[i].Write(w);
+                    e.Write(w);
                 }
+                w.WriteEndArray();
+                w.WriteEndObject();
             }
         }
     }
@@ -156,16 +168,20 @@ namespace Kermalis.MapEditor.Core
                 Type = t;
                 Table = tbl;
             }
-            public EncounterGroup(EndianBinaryReader r)
+            public EncounterGroup(JToken j)
             {
-                Type = r.ReadEnum<EncounterType>();
-                Table = EncounterTable.LoadOrGet(r.ReadInt32());
+                Type = j[nameof(Type)].EnumValue<EncounterType>();
+                Table = EncounterTable.LoadOrGet(j[nameof(Table)].Value<string>());
             }
 
-            public void Write(EndianBinaryWriter w)
+            public void Write(JsonTextWriter w)
             {
-                w.Write(Type);
-                w.Write(Table.Id);
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(Type));
+                w.WriteEnum(Type);
+                w.WritePropertyName(nameof(Table));
+                w.WriteValue(Table.Name);
+                w.WriteEndObject();
             }
         }
 
@@ -175,24 +191,25 @@ namespace Kermalis.MapEditor.Core
         {
             Groups = new List<EncounterGroup>();
         }
-        public EncounterGroups(EndianBinaryReader r)
+        public EncounterGroups(JToken j)
         {
-            byte count = r.ReadByte();
+            var arr = (JArray)j;
+            int count = arr.Count;
             Groups = new List<EncounterGroup>(count);
             for (int i = 0; i < count; i++)
             {
-                Groups.Add(new EncounterGroup(r));
+                Groups.Add(new EncounterGroup(arr[i]));
             }
         }
 
-        public void Write(EndianBinaryWriter w)
+        public void Write(JsonTextWriter w)
         {
-            byte count = (byte)Groups.Count;
-            w.Write(count);
-            for (int i = 0; i < count; i++)
+            w.WriteStartArray();
+            foreach (EncounterGroup g in Groups)
             {
-                Groups[i].Write(w);
+                g.Write(w);
             }
+            w.WriteEndArray();
         }
     }
 }

@@ -13,9 +13,9 @@
     <Border DockPanel.Dock="Top" Margin="0,2,0,2" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
       <StackPanel Spacing="5" Orientation="Horizontal">
         <TextBlock Text="Map:" VerticalAlignment="Center" />
-        <ComboBox Items="{x:Static core:Map.Ids}" SelectedIndex="{Binding SelectedMap}" IsEnabled="{Binding HasSelection}" />
+        <ComboBox Items="{x:Static core:Map.Ids}" SelectedItem="{Binding SelectedMap}" IsEnabled="{Binding HasSelection}" />
         <TextBlock Text="Direction:" Margin="5,0,0,0" VerticalAlignment="Center" />
-        <ComboBox Items="{Binding Directions}" SelectedIndex="{Binding SelectedDirection}" IsEnabled="{Binding HasSelection}" />
+        <ComboBox Items="{Binding Directions}" SelectedItem="{Binding SelectedDirection}" IsEnabled="{Binding HasSelection}" />
         <TextBlock Text="Offset:" Margin="5,0,0,0" VerticalAlignment="Center" />
         <NumericUpDown Value="{Binding Offset}" IsEnabled="{Binding HasSelection}" />
       </StackPanel>

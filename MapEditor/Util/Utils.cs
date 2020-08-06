@@ -2,6 +2,8 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Platform;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,9 +41,54 @@ namespace Kermalis.MapEditor.Util
 
         public static readonly Regex InvalidFileNameRegex = new Regex("[" + Regex.Escape(new string(Path.GetInvalidFileNameChars())) + "]");
 
-        public static IEnumerable<T> GetEnumValues<T>() where T : Enum
+        public static IEnumerable<TEnum> GetEnumValues<TEnum>() where TEnum : struct, Enum
         {
-            return Enum.GetValues(typeof(T)).Cast<T>().OrderBy(e => e.ToString());
+            return Enum.GetValues(typeof(TEnum)).Cast<TEnum>().OrderBy(e => e.ToString());
+        }
+
+        public static TEnum EnumValue<TEnum>(this JToken j) where TEnum : struct, Enum
+        {
+            Type type = typeof(TEnum);
+            // If it has the [Flags] attribute, read a series of bools
+            if (type.IsDefined(typeof(FlagsAttribute), false))
+            {
+                ulong value = 0;
+                foreach (TEnum flag in Enum.GetValues(type))
+                {
+                    ulong ulFlag = Convert.ToUInt64(flag);
+                    if (ulFlag != 0uL && j[flag.ToString()].Value<bool>())
+                    {
+                        value |= ulFlag;
+                    }
+                }
+                return (TEnum)Enum.ToObject(typeof(TEnum), value);
+            }
+            else
+            {
+                return (TEnum)Enum.Parse(type, j.Value<string>()); // Must use this because of .net48
+                //return Enum.Parse<TEnum>(j.Value<string>());
+            }
+        }
+        public static void WriteEnum<TEnum>(this JsonTextWriter w, TEnum value) where TEnum : struct, Enum
+        {
+            // If it has the [Flags] attribute, write a series of bools
+            if (typeof(TEnum).IsDefined(typeof(FlagsAttribute), false))
+            {
+                w.WriteStartObject();
+                foreach (TEnum flag in GetEnumValues<TEnum>())
+                {
+                    if (Convert.ToUInt64(flag) != 0uL)
+                    {
+                        w.WritePropertyName(flag.ToString());
+                        w.WriteValue(value.HasFlag(flag));
+                    }
+                }
+                w.WriteEndObject();
+            }
+            else
+            {
+                w.WriteValue(value.ToString());
+            }
         }
     }
 }

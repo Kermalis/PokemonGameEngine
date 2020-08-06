@@ -1,0 +1,75 @@
+{
+  "ChanceOfPhenomenon": 230,
+  "Encounters": [
+    {
+      "Chance": 15,
+      "MinLevel": 18,
+      "MaxLevel": 22,
+      "Species": "Spinda",
+      "Form": 0
+    },
+    {
+      "Chance": 10,
+      "MinLevel": 5,
+      "MaxLevel": 15,
+      "Species": "Combee",
+      "Form": 0
+    },
+    {
+      "Chance": 1,
+      "MinLevel": 10,
+      "MaxLevel": 17,
+      "Species": "Munchlax",
+      "Form": 0
+    },
+    {
+      "Chance": 15,
+      "MinLevel": 10,
+      "MaxLevel": 15,
+      "Species": "Cherubi",
+      "Form": 0
+    },
+    {
+      "Chance": 12,
+      "MinLevel": 12,
+      "MaxLevel": 19,
+      "Species": "Pachirisu",
+      "Form": 0
+    },
+    {
+      "Chance": 1,
+      "MinLevel": 19,
+      "MaxLevel": 19,
+      "Species": "Vespiquen",
+      "Form": 0
+    },
+    {
+      "Chance": 15,
+      "MinLevel": 14,
+      "MaxLevel": 18,
+      "Species": "Heracross",
+      "Form": 0
+    },
+    {
+      "Chance": 10,
+      "MinLevel": 13,
+      "MaxLevel": 17,
+      "Species": "Nincada",
+      "Form": 0
+    },
+    {
+      "Chance": 12,
+      "MinLevel": 15,
+      "MaxLevel": 18,
+      "Species": "Beedrill",
+      "Form": 0
+    },
+    {
+      "Chance": 9,
+      "MinLevel": 13,
+      "MaxLevel": 19,
+      "Species": "Pinsir",
+      "Form": 0
+    }
+  ]
+}

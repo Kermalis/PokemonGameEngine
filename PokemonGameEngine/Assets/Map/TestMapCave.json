@@ -1,0 +1,36 @@
+{
+  "Layout": "TestLayoutCave",
+  "Details": {
+    "Flags": {
+      "Bike": true,
+      "DayTint": false,
+      "Dig_EscapeRope": true,
+      "Fly": false,
+      "ShowMapName": true,
+      "Teleport": false
+    },
+    "Section": "TestCave",
+    "Weather": "None",
+    "Music": "None"
+  },
+  "Connections": [],
+  "Encounters": [
+    {
+      "Type": "Default",
+      "Table": "TestEncountersCave"
+    }
+  ],
+  "Events": {
+    "Warps": [
+      {
+        "X": 14,
+        "Y": 27,
+        "Elevation": 0,
+        "DestMap": "TestMapW",
+        "DestX": 7,
+        "DestY": 8,
+        "DestElevation": 0
+      }
+    ]
+  }
+}

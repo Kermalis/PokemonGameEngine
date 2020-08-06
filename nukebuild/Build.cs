@@ -1,6 +1,5 @@
 ﻿using Nuke.Common;
 using Nuke.Common.Execution;
-using System.IO;
 
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
@@ -12,15 +11,9 @@ public sealed partial class Build : NukeBuild
     }
 
     private Target Clean => _ => _
-    .Executes(() =>
-    {
-        if (File.Exists(ScriptOutputPath))
-        {
-            File.Delete(ScriptOutputPath);
-        }
-    });
+    .Executes(CleanWorld, CleanScripts);
 
     private Target Compile => _ => _
     .After(Clean)
-    .Executes(BuildScripts);
+    .Executes(BuildWorld, BuildScripts);
 }

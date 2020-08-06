@@ -1,0 +1,54 @@
+{
+  "ChanceOfPhenomenon": 102,
+  "Encounters": [
+    {
+      "Chance": 20,
+      "MinLevel": 33,
+      "MaxLevel": 35,
+      "Species": "Azumarill",
+      "Form": 0
+    },
+    {
+      "Chance": 20,
+      "MinLevel": 25,
+      "MaxLevel": 30,
+      "Species": "Mantyke",
+      "Form": 0
+    },
+    {
+      "Chance": 5,
+      "MinLevel": 20,
+      "MaxLevel": 27,
+      "Species": "Dratini",
+      "Form": 0
+    },
+    {
+      "Chance": 30,
+      "MinLevel": 32,
+      "MaxLevel": 36,
+      "Species": "Floatzel",
+      "Form": 0
+    },
+    {
+      "Chance": 15,
+      "MinLevel": 28,
+      "MaxLevel": 31,
+      "Species": "Simipour",
+      "Form": 0
+    },
+    {
+      "Chance": 8,
+      "MinLevel": 30,
+      "MaxLevel": 34,
+      "Species": "Masquerain",
+      "Form": 0
+    },
+    {
+      "Chance": 6,
+      "MinLevel": 30,
+      "MaxLevel": 31,
+      "Species": "Gastrodon",
+      "Form": 0
+    }
+  ]
+}

@@ -49,15 +49,15 @@ namespace Kermalis.MapEditor.UI.Models
                 }
             }
         }
-        public int DestMapId
+        public string DestMap
         {
-            get => Warp.DestMapId;
+            get => Warp.DestMap;
             set
             {
-                if (value != Warp.DestMapId)
+                if (value != Warp.DestMap)
                 {
-                    Warp.DestMapId = value;
-                    OnPropertyChanged(nameof(DestMapId));
+                    Warp.DestMap = value;
+                    OnPropertyChanged(nameof(DestMap));
                 }
             }
         }

@@ -1,0 +1,26 @@
+{
+  "ChanceOfPhenomenon": 51,
+  "Encounters": [
+    {
+      "Chance": 1,
+      "MinLevel": 15,
+      "MaxLevel": 69,
+      "Species": "Feebas",
+      "Form": 0
+    },
+    {
+      "Chance": 30,
+      "MinLevel": 10,
+      "MaxLevel": 20,
+      "Species": "Finneon",
+      "Form": 0
+    },
+    {
+      "Chance": 80,
+      "MinLevel": 12,
+      "MaxLevel": 33,
+      "Species": "Remoraid",
+      "Form": 0
+    }
+  ]
+}

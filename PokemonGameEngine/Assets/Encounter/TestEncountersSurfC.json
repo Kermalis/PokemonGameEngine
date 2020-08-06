@@ -1,0 +1,47 @@
+{
+  "ChanceOfPhenomenon": 26,
+  "Encounters": [
+    {
+      "Chance": 20,
+      "MinLevel": 10,
+      "MaxLevel": 23,
+      "Species": "Psyduck",
+      "Form": 0
+    },
+    {
+      "Chance": 3,
+      "MinLevel": 25,
+      "MaxLevel": 31,
+      "Species": "Jellicent",
+      "Form": 0
+    },
+    {
+      "Chance": 20,
+      "MinLevel": 15,
+      "MaxLevel": 27,
+      "Species": "Wailmer",
+      "Form": 0
+    },
+    {
+      "Chance": 34,
+      "MinLevel": 13,
+      "MaxLevel": 18,
+      "Species": "Horsea",
+      "Form": 0
+    },
+    {
+      "Chance": 34,
+      "MinLevel": 12,
+      "MaxLevel": 19,
+      "Species": "Wingull",
+      "Form": 0
+    },
+    {
+      "Chance": 9,
+      "MinLevel": 9,
+      "MaxLevel": 16,
+      "Species": "Marill",
+      "Form": 0
+    }
+  ]
+}

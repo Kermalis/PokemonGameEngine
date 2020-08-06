@@ -4,6 +4,8 @@ using Avalonia.Platform;
 using Kermalis.EndianBinaryIO;
 using Kermalis.MapEditor.Util;
 using Kermalis.PokemonGameEngine.World;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,32 +14,37 @@ namespace Kermalis.MapEditor.Core
 {
     public sealed class Map
     {
-        internal sealed class Connection
+        public sealed class Connection
         {
-            public enum Direction : byte
+            public enum Dir : byte
             {
                 South,
                 North,
                 West,
                 East
             }
-            public Direction Dir;
-            public int MapId;
-            public int Offset;
+            internal Dir Direction;
+            internal string Map;
+            internal int Offset;
 
-            public Connection() { }
-            public Connection(EndianBinaryReader r)
+            internal Connection() { }
+            internal Connection(JToken j)
             {
-                Dir = r.ReadEnum<Direction>();
-                MapId = r.ReadInt32();
-                Offset = r.ReadInt32();
+                Direction = j[nameof(Direction)].EnumValue<Dir>();
+                Map = j[nameof(Map)].Value<string>();
+                Offset = j[nameof(Offset)].Value<int>();
             }
 
-            public void Write(EndianBinaryWriter w)
+            internal void Write(JsonTextWriter w)
             {
-                w.Write(Dir);
-                w.Write(MapId);
-                w.Write(Offset);
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(Direction));
+                w.WriteEnum(Direction);
+                w.WritePropertyName(nameof(Map));
+                w.WriteValue(Map);
+                w.WritePropertyName(nameof(Offset));
+                w.WriteValue(Offset);
+                w.WriteEndObject();
             }
         }
         internal sealed class Details
@@ -48,20 +55,26 @@ namespace Kermalis.MapEditor.Core
             public Song Music;
 
             public Details() { }
-            public Details(EndianBinaryReader r)
+            public Details(JToken j)
             {
-                Flags = r.ReadEnum<MapFlags>();
-                Section = r.ReadEnum<MapSection>();
-                Weather = r.ReadEnum<MapWeather>();
-                Music = r.ReadEnum<Song>();
+                Flags = j[nameof(Flags)].EnumValue<MapFlags>();
+                Section = j[nameof(Section)].EnumValue<MapSection>();
+                Weather = j[nameof(Weather)].EnumValue<MapWeather>();
+                Music = j[nameof(Music)].EnumValue<Song>();
             }
 
-            public void Write(EndianBinaryWriter w)
+            public void Write(JsonTextWriter w)
             {
-                w.Write(Flags);
-                w.Write(Section);
-                w.Write(Weather);
-                w.Write(Music);
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(Flags));
+                w.WriteEnum(Flags);
+                w.WritePropertyName(nameof(Section));
+                w.WriteEnum(Section);
+                w.WritePropertyName(nameof(Weather));
+                w.WriteEnum(Weather);
+                w.WritePropertyName(nameof(Music));
+                w.WriteEnum(Music);
+                w.WriteEndObject();
             }
         }
         internal sealed class Events
@@ -72,32 +85,43 @@ namespace Kermalis.MapEditor.Core
                 public int Y;
                 public byte Elevation;
 
-                public int DestMapId;
+                public string DestMap;
                 public int DestX;
                 public int DestY;
                 public byte DestElevation;
 
                 public WarpEvent() { }
-                public WarpEvent(EndianBinaryReader r)
+                public WarpEvent(JToken j)
                 {
-                    X = r.ReadInt32();
-                    Y = r.ReadInt32();
-                    Elevation = r.ReadByte();
-                    DestMapId = r.ReadInt32();
-                    DestX = r.ReadInt32();
-                    DestY = r.ReadInt32();
-                    DestElevation = r.ReadByte();
+                    X = j[nameof(X)].Value<int>();
+                    Y = j[nameof(Y)].Value<int>();
+                    Elevation = j[nameof(Elevation)].Value<byte>();
+
+                    DestMap = j[nameof(DestMap)].Value<string>();
+                    DestX = j[nameof(DestX)].Value<int>();
+                    DestY = j[nameof(DestY)].Value<int>();
+                    DestElevation = j[nameof(DestElevation)].Value<byte>();
                 }
 
-                public void Write(EndianBinaryWriter w)
+                public void Write(JsonTextWriter w)
                 {
-                    w.Write(X);
-                    w.Write(Y);
-                    w.Write(Elevation);
-                    w.Write(DestMapId);
-                    w.Write(DestX);
-                    w.Write(DestY);
-                    w.Write(DestElevation);
+                    w.WriteStartObject();
+                    w.WritePropertyName(nameof(X));
+                    w.WriteValue(X);
+                    w.WritePropertyName(nameof(Y));
+                    w.WriteValue(Y);
+                    w.WritePropertyName(nameof(Elevation));
+                    w.WriteValue(Elevation);
+
+                    w.WritePropertyName(nameof(DestMap));
+                    w.WriteValue(DestMap);
+                    w.WritePropertyName(nameof(DestX));
+                    w.WriteValue(DestX);
+                    w.WritePropertyName(nameof(DestY));
+                    w.WriteValue(DestY);
+                    w.WritePropertyName(nameof(DestElevation));
+                    w.WriteValue(DestElevation);
+                    w.WriteEndObject();
                 }
             }
 
@@ -107,24 +131,28 @@ namespace Kermalis.MapEditor.Core
             {
                 Warps = new List<WarpEvent>();
             }
-            public Events(EndianBinaryReader r)
+            public Events(JToken j)
             {
-                ushort count = r.ReadUInt16();
+                var arr = (JArray)j[nameof(Warps)];
+                int count = arr.Count;
                 Warps = new List<WarpEvent>(count);
                 for (int i = 0; i < count; i++)
                 {
-                    Warps.Add(new WarpEvent(r));
+                    Warps.Add(new WarpEvent(arr[i]));
                 }
             }
 
-            public void Write(EndianBinaryWriter w)
+            public void Write(JsonTextWriter w)
             {
-                ushort count = (ushort)Warps.Count;
-                w.Write(count);
-                for (int i = 0; i < count; i++)
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(Warps));
+                w.WriteStartArray();
+                foreach (WarpEvent warp in Warps)
                 {
-                    Warps[i].Write(w);
+                    warp.Write(w);
                 }
+                w.WriteEndArray();
+                w.WriteEndObject();
             }
         }
         internal sealed class Layout : IDisposable
@@ -179,7 +207,7 @@ namespace Kermalis.MapEditor.Core
 
             private Layout(string name, int id)
             {
-                using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(_layoutPath, name + _layoutExtension))))
+                using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(LayoutPath, name + LayoutExtension))))
                 {
                     Block[][] Create(int w, int h)
                     {
@@ -234,9 +262,9 @@ namespace Kermalis.MapEditor.Core
                 Dispose(false);
             }
 
-            private const string _layoutExtension = ".pgelayout";
-            private static readonly string _layoutPath = Path.Combine(Program.AssetPath, "Layout");
-            public static IdList Ids { get; } = new IdList(Path.Combine(_layoutPath, "LayoutIds.txt"));
+            private const string LayoutExtension = ".pgelayout";
+            private static readonly string LayoutPath = Path.Combine(Program.AssetPath, "Layout");
+            public static IdList Ids { get; } = new IdList(Path.Combine(LayoutPath, "LayoutIds.txt"));
             private static readonly Dictionary<int, WeakReference<Layout>> _loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
             public static Layout LoadOrGet(string name)
             {
@@ -415,7 +443,7 @@ namespace Kermalis.MapEditor.Core
 
             public void Save()
             {
-                using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_layoutPath, Name + _layoutExtension))))
+                using (var w = new EndianBinaryWriter(File.Create(Path.Combine(LayoutPath, Name + LayoutExtension))))
                 {
                     w.Write(Width);
                     w.Write(Height);
@@ -460,25 +488,24 @@ namespace Kermalis.MapEditor.Core
 
         internal readonly Layout MapLayout;
         internal readonly Details MapDetails;
-        internal readonly Events MapEvents;
-        internal readonly EncounterGroups Encounters;
         internal readonly List<Connection> Connections;
+        internal readonly EncounterGroups Encounters;
+        internal readonly Events MapEvents;
 
         private Map(string name, int id)
         {
-            using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(_mapPath, name + _mapExtension))))
+            var json = JObject.Parse(File.ReadAllText(Path.Combine(MapPath, name + ".json")));
+            MapLayout = Layout.LoadOrGet(json[nameof(Layout)].Value<string>());
+            MapDetails = new Details(json[nameof(Details)]);
+            var cons = (JArray)json[nameof(Connections)];
+            int numConnections = cons.Count;
+            Connections = new List<Connection>(numConnections);
+            for (int i = 0; i < numConnections; i++)
             {
-                MapLayout = Layout.LoadOrGet(r.ReadInt32());
-                MapDetails = new Details(r);
-                MapEvents = new Events(r);
-                Encounters = new EncounterGroups(r);
-                int numConnections = r.ReadByte();
-                Connections = new List<Connection>(numConnections);
-                for (int i = 0; i < numConnections; i++)
-                {
-                    Connections.Add(new Connection(r));
-                }
+                Connections.Add(new Connection(cons[i]));
             }
+            Encounters = new EncounterGroups(json[nameof(Encounters)]);
+            MapEvents = new Events(json[nameof(Events)]);
             Name = name;
             Id = id;
         }
@@ -488,17 +515,16 @@ namespace Kermalis.MapEditor.Core
             _loadedMaps.Add(Id, new WeakReference<Map>(this));
             MapLayout = layout;
             MapDetails = new Details();
-            MapEvents = new Events();
-            Encounters = new EncounterGroups();
             Connections = new List<Connection>();
+            Encounters = new EncounterGroups();
+            MapEvents = new Events();
             Name = name;
             Save();
             Ids.Save();
         }
 
-        private const string _mapExtension = ".pgemap";
-        private static readonly string _mapPath = Path.Combine(Program.AssetPath, "Map");
-        public static IdList Ids { get; } = new IdList(Path.Combine(_mapPath, "MapIds.txt"));
+        private static readonly string MapPath = Path.Combine(Program.AssetPath, "Map");
+        public static IdList Ids { get; } = new IdList(Path.Combine(MapPath, "MapIds.txt"));
         private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new Dictionary<int, WeakReference<Map>>();
         internal static Map LoadOrGet(string name)
         {
@@ -538,18 +564,25 @@ namespace Kermalis.MapEditor.Core
 
         internal void Save()
         {
-            using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_mapPath, Name + _mapExtension))))
+            using (var w = new JsonTextWriter(File.CreateText(Path.Combine(MapPath, Name + ".json"))) { Formatting = Formatting.Indented })
             {
-                w.Write(MapLayout.Id);
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(Layout));
+                w.WriteValue(MapLayout.Name);
+                w.WritePropertyName(nameof(Details));
                 MapDetails.Write(w);
-                MapEvents.Write(w);
-                Encounters.Write(w);
-                byte numConnections = (byte)Connections.Count;
-                w.Write(numConnections);
-                for (int i = 0; i < numConnections; i++)
+                w.WritePropertyName(nameof(Connections));
+                w.WriteStartArray();
+                foreach (Connection c in Connections)
                 {
-                    Connections[i].Write(w);
+                    c.Write(w);
                 }
+                w.WriteEndArray();
+                w.WritePropertyName(nameof(Encounters));
+                Encounters.Write(w);
+                w.WritePropertyName(nameof(Events));
+                MapEvents.Write(w);
+                w.WriteEndObject();
             }
         }
     }

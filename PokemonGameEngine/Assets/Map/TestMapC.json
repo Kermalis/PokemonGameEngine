@@ -1,0 +1,74 @@
+{
+  "Layout": "TestLayoutC",
+  "Details": {
+    "Flags": {
+      "Bike": true,
+      "DayTint": true,
+      "Dig_EscapeRope": false,
+      "Fly": true,
+      "ShowMapName": true,
+      "Teleport": true
+    },
+    "Section": "TestMapC",
+    "Weather": "Normal",
+    "Music": "None"
+  },
+  "Connections": [
+    {
+      "Direction": "West",
+      "Map": "TestMapW",
+      "Offset": 8
+    }
+  ],
+  "Encounters": [
+    {
+      "Type": "Default",
+      "Table": "TestEncountersDefaultC"
+    },
+    {
+      "Type": "Surf",
+      "Table": "TestEncountersSurfC"
+    },
+    {
+      "Type": "SuperRod",
+      "Table": "TestEncountersSuperRodC"
+    },
+    {
+      "Type": "DarkGrass",
+      "Table": "TestEncountersDarkGrassC"
+    },
+    {
+      "Type": "RareDefault",
+      "Table": "TestEncountersRareDefaultC"
+    },
+    {
+      "Type": "RareSurf",
+      "Table": "TestEncountersRareSurfC"
+    },
+    {
+      "Type": "RareSuperRod",
+      "Table": "TestEncountersRareSuperRodC"
+    },
+    {
+      "Type": "HeadbuttTree",
+      "Table": "TestEncountersHeadbuttTree"
+    },
+    {
+      "Type": "HoneyTree",
+      "Table": "TestEncountersHoneyTree"
+    }
+  ],
+  "Events": {
+    "Warps": [
+      {
+        "X": 2,
+        "Y": 11,
+        "Elevation": 0,
+        "DestMap": "TestMapW",
+        "DestX": 7,
+        "DestY": 8,
+        "DestElevation": 0
+      }
+    ]
+  }
+}

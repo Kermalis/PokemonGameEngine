@@ -1,0 +1,40 @@
+{
+  "ChanceOfPhenomenon": 26,
+  "Encounters": [
+    {
+      "Chance": 55,
+      "MinLevel": 23,
+      "MaxLevel": 23,
+      "Species": "Linoone",
+      "Form": 0
+    },
+    {
+      "Chance": 13,
+      "MinLevel": 25,
+      "MaxLevel": 25,
+      "Species": "Tranquill",
+      "Form": 0
+    },
+    {
+      "Chance": 5,
+      "MinLevel": 27,
+      "MaxLevel": 27,
+      "Species": "Galvantula",
+      "Form": 0
+    },
+    {
+      "Chance": 5,
+      "MinLevel": 26,
+      "MaxLevel": 26,
+      "Species": "Sawsbuck",
+      "Form": 3
+    },
+    {
+      "Chance": 1,
+      "MinLevel": 29,
+      "MaxLevel": 30,
+      "Species": "Mismagius",
+      "Form": 0
+    }
+  ]
+}

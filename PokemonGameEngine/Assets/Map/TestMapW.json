@@ -1,0 +1,37 @@
+{
+  "Layout": "TestLayout2",
+  "Details": {
+    "Flags": {
+      "Bike": true,
+      "DayTint": true,
+      "Dig_EscapeRope": false,
+      "Fly": true,
+      "ShowMapName": true,
+      "Teleport": true
+    },
+    "Section": "TestMapW",
+    "Weather": "Normal",
+    "Music": "None"
+  },
+  "Connections": [
+    {
+      "Direction": "East",
+      "Map": "TestMapC",
+      "Offset": -8
+    }
+  ],
+  "Encounters": [],
+  "Events": {
+    "Warps": [
+      {
+        "X": 7,
+        "Y": 8,
+        "Elevation": 0,
+        "DestMap": "TestMapCave",
+        "DestX": 14,
+        "DestY": 27,
+        "DestElevation": 0
+      }
+    ]
+  }
+}
