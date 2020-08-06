@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         private Tileset(string name)
         {
-            uint[][] t = RenderUtils.LoadBitmapSheet(_tilesetPath + name + _tilesetExtension, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
+            uint[][] t = RenderUtils.LoadBitmapSheet(TilesetPath + name + TilesetExtension, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
             Tiles = new Tile[t.Length];
             for (int i = 0; i < t.Length; i++)
             {
@@ -30,9 +30,9 @@ namespace Kermalis.PokemonGameEngine.World
             }
         }
 
-        private const string _tilesetExtension = ".png";
-        private const string _tilesetPath = "Tileset.";
-        private static readonly IdList _ids = new IdList(_tilesetPath + "TilesetIds.txt");
+        private const string TilesetExtension = ".png";
+        private const string TilesetPath = "Tileset.";
+        private static readonly IdList _ids = new IdList(TilesetPath + "TilesetIds.txt");
         private static readonly Dictionary<int, WeakReference<Tileset>> _loadedTilesets = new Dictionary<int, WeakReference<Tileset>>();
         public static Tileset LoadOrGet(int id)
         {

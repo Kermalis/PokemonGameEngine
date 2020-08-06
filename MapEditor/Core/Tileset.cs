@@ -34,7 +34,7 @@ namespace Kermalis.MapEditor.Core
 
         private unsafe Tileset(string name, int id)
         {
-            uint[][] t = RenderUtils.LoadBitmapSheet(Path.Combine(_tilesetPath, name + _tilesetExtension), Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, out int bmpWidth, out int bmpHeight);
+            uint[][] t = RenderUtils.LoadBitmapSheet(Path.Combine(TilesetPath, name + TilesetExtension), Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, out int bmpWidth, out int bmpHeight);
             BitmapNumTilesX = bmpWidth / Overworld.Tile_NumPixelsX;
             Tiles = new Tile[t.Length];
             for (int i = 0; i < Tiles.Length; i++)
@@ -71,9 +71,9 @@ namespace Kermalis.MapEditor.Core
             Dispose(false);
         }
 
-        private const string _tilesetExtension = ".png";
-        private static readonly string _tilesetPath = Path.Combine(Program.AssetPath, "Tileset");
-        public static IdList Ids { get; } = new IdList(Path.Combine(_tilesetPath, "TilesetIds.txt"));
+        private const string TilesetExtension = ".png";
+        private static readonly string TilesetPath = Path.Combine(Program.AssetPath, "Tileset");
+        public static IdList Ids { get; } = new IdList(Path.Combine(TilesetPath, "TilesetIds.txt"));
         private static readonly Dictionary<int, WeakReference<Tileset>> _loadedTilesets = new Dictionary<int, WeakReference<Tileset>>();
         internal static Tileset LoadOrGet(string name)
         {

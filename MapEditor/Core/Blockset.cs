@@ -208,7 +208,7 @@ namespace Kermalis.MapEditor.Core
 
         private Blockset(string name, int id)
         {
-            using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(_blocksetPath, name + _blocksetExtension))))
+            using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(BlocksetPath, name + BlocksetExtension))))
             {
                 ushort count = r.ReadUInt16();
                 Blocks = new List<Block>(count);
@@ -238,9 +238,9 @@ namespace Kermalis.MapEditor.Core
             Dispose(false);
         }
 
-        private const string _blocksetExtension = ".pgeblockset";
-        private static readonly string _blocksetPath = Path.Combine(Program.AssetPath, "Blockset");
-        public static IdList Ids { get; } = new IdList(Path.Combine(_blocksetPath, "BlocksetIds.txt"));
+        private const string BlocksetExtension = ".pgeblockset";
+        private static readonly string BlocksetPath = Path.Combine(Program.AssetPath, "Blockset");
+        public static IdList Ids { get; } = new IdList(Path.Combine(BlocksetPath, "BlocksetIds.txt"));
         private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new Dictionary<int, WeakReference<Blockset>>();
         internal static Blockset LoadOrGet(string name)
         {
@@ -434,7 +434,7 @@ namespace Kermalis.MapEditor.Core
 
         internal void Save()
         {
-            using (var w = new EndianBinaryWriter(File.Create(Path.Combine(_blocksetPath, Name + _blocksetExtension))))
+            using (var w = new EndianBinaryWriter(File.Create(Path.Combine(BlocksetPath, Name + BlocksetExtension))))
             {
                 ushort count = (ushort)Blocks.Count;
                 w.Write(count);
