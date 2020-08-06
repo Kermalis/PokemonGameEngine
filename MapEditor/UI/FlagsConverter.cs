@@ -5,13 +5,13 @@ using System.Globalization;
 
 namespace Kermalis.MapEditor.UI
 {
-    public sealed class MapFlagsConverter : IValueConverter
+    public abstract class FlagsConverter<TEnum> : IValueConverter where TEnum : struct, Enum
     {
-        internal MapFlags Flags;
+        internal TEnum Flags;
 
-        private MapFlags GetFlag(object parameter)
+        private TEnum GetFlag(object parameter)
         {
-            return (MapFlags)Enum.Parse(typeof(MapFlags), (string)parameter);
+            return (TEnum)Enum.Parse(typeof(TEnum), (string)parameter);
         }
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -20,16 +20,19 @@ namespace Kermalis.MapEditor.UI
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool b = (bool)value;
-            MapFlags flag = GetFlag(parameter);
+            TEnum flag = GetFlag(parameter);
             if (b)
             {
-                Flags |= flag;
+                Flags = (TEnum)Enum.ToObject(typeof(TEnum), System.Convert.ToUInt64(Flags) | System.Convert.ToUInt64(flag));
             }
             else
             {
-                Flags &= ~flag;
+                Flags = (TEnum)Enum.ToObject(typeof(TEnum), System.Convert.ToUInt64(Flags) & ~System.Convert.ToUInt64(flag));
             }
             return Flags;
         }
+    }
+    public sealed class MapFlagsConverter : FlagsConverter<MapFlags>
+    {
     }
 }

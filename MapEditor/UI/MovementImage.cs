@@ -390,6 +390,7 @@ namespace Kermalis.MapEditor.UI
             RemoveLayoutEvents();
         }
 
+        // This is the same as "FlagsConverter<LayoutBlockPassage>"
         private LayoutBlockPassage GetFlag(object parameter)
         {
             switch (parameter)
