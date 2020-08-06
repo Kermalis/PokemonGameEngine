@@ -8,6 +8,8 @@ It can run on any platform, even phones!
 ![MapEditorPreview](MapEditorPreview.png)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.
+You will need an extension in your IDE to support NUKE build, (for Visual Studio, it's called `NUKE Support`), and will need to attach it to the build process (for Visual Studio, you use the Task Runner Explorer).
+If you do not want to do that, you will need to run the `_build` project every time you want to build assets.
 If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX).
 
 ## Features:
@@ -20,6 +22,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 
 ----
 ## To Do:
+* Proper documentation/installation guide
 * Changable tiles based on day/night
 * Tile animations
 * Saving
