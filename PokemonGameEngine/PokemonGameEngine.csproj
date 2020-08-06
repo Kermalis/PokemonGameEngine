@@ -22,6 +22,7 @@
       <SubType>Designer</SubType>
     </AvaloniaResource>
     <EmbeddedResource Include="Assets\**" />
+    <EmbeddedResource Remove="Assets\Script\**\*.txt" />
     <EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
       <Link>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</Link>
     </EmbeddedResource>
