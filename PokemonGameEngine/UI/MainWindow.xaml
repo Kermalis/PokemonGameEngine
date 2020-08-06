@@ -2,6 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Kermalis.PokemonGameEngine.UI;assembly=PokemonGameEngine"
         x:Class="Kermalis.PokemonGameEngine.UI.MainWindow"
-        WindowStartupLocation="CenterScreen" Title="Pokémon Game Engine">
+        Background="Black" WindowStartupLocation="CenterScreen" Title="Pokémon Game Engine">
   <ui:MainView />
 </Window>
