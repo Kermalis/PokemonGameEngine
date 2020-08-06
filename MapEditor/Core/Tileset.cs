@@ -15,6 +15,7 @@ namespace Kermalis.MapEditor.Core
         {
             public readonly Tileset Parent;
             public readonly int Id;
+
             public readonly uint[] Bitmap;
 
             public Tile(Tileset parent, int id, uint[] bitmap)
@@ -25,11 +26,12 @@ namespace Kermalis.MapEditor.Core
             }
         }
 
+        internal readonly string Name;
+        internal readonly int Id;
+
         internal readonly int BitmapNumTilesX;
         internal readonly WriteableBitmap Bitmap;
 
-        internal readonly string Name;
-        internal readonly int Id;
         internal readonly Tile[] Tiles;
 
         private unsafe Tileset(string name, int id)

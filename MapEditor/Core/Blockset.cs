@@ -56,6 +56,7 @@ namespace Kermalis.MapEditor.Core
 
             public Blockset Parent;
             public int Id;
+
             public BlocksetBlockBehavior Behavior;
             public readonly Dictionary<byte, List<Tile>>[][] Tiles;
 
@@ -198,12 +199,13 @@ namespace Kermalis.MapEditor.Core
         internal event BlocksetEventHandler OnChanged;
         internal event BlocksetEventHandler OnRemoved;
 
+        internal readonly string Name;
+        internal readonly int Id;
+
         internal const int BitmapNumBlocksX = 8;
         internal WriteableBitmap Bitmap;
         internal event EventHandler<EventArgs> OnDrew;
 
-        internal readonly string Name;
-        internal readonly int Id;
         internal readonly List<Block> Blocks;
 
         private Blockset(string name, int id)
