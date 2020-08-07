@@ -49,6 +49,7 @@ namespace Kermalis.MapEditor.UI.Models
                 }
             }
         }
+
         public string DestMap
         {
             get => Warp.DestMap;

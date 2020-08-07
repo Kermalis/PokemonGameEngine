@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.World;
 using Newtonsoft.Json.Linq;
 using Nuke.Common.IO;
@@ -236,8 +237,59 @@ public sealed partial class Build
                 w.Write(DestElevation);
             }
         }
+        private sealed class ObjEvent
+        {
+            private readonly int X;
+            private readonly int Y;
+            private readonly byte Elevation;
+
+            private readonly ushort Id;
+            private readonly string Sprite;
+            private readonly ObjMovementType MovementType;
+            private readonly int MovementX;
+            private readonly int MovementY;
+            private readonly TrainerType TrainerType;
+            private readonly byte TrainerSight;
+            private readonly string Script;
+            private readonly Flag Flag;
+
+            public ObjEvent(JToken j)
+            {
+                X = j[nameof(X)].Value<int>();
+                Y = j[nameof(Y)].Value<int>();
+                Elevation = j[nameof(Elevation)].Value<byte>();
+
+                Id = j[nameof(Id)].Value<ushort>();
+                Sprite = j[nameof(Sprite)].Value<string>();
+                MovementType = j[nameof(MovementType)].EnumValue<ObjMovementType>();
+                MovementX = j[nameof(MovementX)].Value<int>();
+                MovementY = j[nameof(MovementY)].Value<int>();
+                TrainerType = j[nameof(TrainerType)].EnumValue<TrainerType>();
+                TrainerSight = j[nameof(TrainerSight)].Value<byte>();
+                Script = j[nameof(Script)].Value<string>();
+                Flag = j[nameof(Flag)].EnumValue<Flag>();
+            }
+
+            public void Write(EndianBinaryWriter w)
+            {
+                w.Write(X);
+                w.Write(Y);
+                w.Write(Elevation);
+
+                w.Write(Id);
+                w.Write(Sprite, true);
+                w.Write(MovementType);
+                w.Write(MovementX);
+                w.Write(MovementY);
+                w.Write(TrainerType);
+                w.Write(TrainerSight);
+                w.Write(Script, true);
+                w.Write(Flag);
+            }
+        }
 
         private readonly WarpEvent[] Warps;
+        private readonly ObjEvent[] Objs;
 
         public Events(JToken j)
         {
@@ -248,6 +300,13 @@ public sealed partial class Build
             {
                 Warps[i] = new WarpEvent(arr[i]);
             }
+            arr = (JArray)j[nameof(Objs)];
+            count = arr.Count;
+            Objs = new ObjEvent[count];
+            for (int i = 0; i < count; i++)
+            {
+                Objs[i] = new ObjEvent(arr[i]);
+            }
         }
 
         public void Write(EndianBinaryWriter w)
@@ -257,6 +316,12 @@ public sealed partial class Build
             for (int i = 0; i < count; i++)
             {
                 Warps[i].Write(w);
+            }
+            count = (ushort)Objs.Length;
+            w.Write(count);
+            for (int i = 0; i < count; i++)
+            {
+                Objs[i].Write(w);
             }
         }
     }

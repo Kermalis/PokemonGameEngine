@@ -1,8 +1,9 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Input;
-using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Script;
+using Kermalis.PokemonGameEngine.World;
+using Kermalis.PokemonGameEngine.World.Objs;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.GUI
@@ -19,8 +20,8 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 list[i].UpdateMovementTimer();
             }
-            Obj player = Obj.Player;
-            if (!Obj.Camera.CanMove || !player.CanMove)
+            PlayerObj player = PlayerObj.Player;
+            if (!CameraObj.Camera.CanMove || !player.CanMove)
             {
                 return;
             }

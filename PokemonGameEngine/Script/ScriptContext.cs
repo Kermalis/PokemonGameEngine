@@ -1,6 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.World;
+using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
 

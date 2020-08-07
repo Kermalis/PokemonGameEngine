@@ -35,6 +35,7 @@ namespace Kermalis.PokemonGameEngine.UI
             _screen = new WriteableBitmap(new PixelSize(RenderWidth, RenderHeight), new Vector(96, 96), PixelFormat.Bgra8888);
             _screenSize = new Size(RenderWidth, RenderHeight);
             _stretch = Stretch.Uniform;
+            new Game(); // Init game
             _renderThread = new Thread(RenderTick) { Name = "Render Thread" };
             _renderThread.Start();
         }

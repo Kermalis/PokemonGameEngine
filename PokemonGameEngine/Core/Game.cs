@@ -8,6 +8,7 @@ using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Script;
 using System.Collections.Generic;
 using System.Threading;
+using Kermalis.PokemonGameEngine.World.Objs;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
@@ -15,7 +16,7 @@ namespace Kermalis.PokemonGameEngine.Core
     {
         private const int NumTicksPerSecond = 20;
 
-        public static Game Instance { get; } = new Game();
+        public static Game Instance { get; private set; }
         public Save Save { get; }
 
         public readonly List<ScriptContext> Scripts = new List<ScriptContext>();
@@ -26,27 +27,21 @@ namespace Kermalis.PokemonGameEngine.Core
         private SpiralTransition _battleTransition;
         private BattleGUI _battleGUI;
 
-        private Game()
+        public Game()
         {
+            Instance = this;
             Save = new Save(); // Load/initialize Save
             var map = Map.LoadOrGet(0);
             const int x = 2;
             const int y = 12;
-            Obj.Player.Pos.X = x;
-            Obj.Player.Pos.Y = y;
-            Obj.Player.Map = map;
-            map.Objs.Add(Obj.Player);
-            Obj.Camera.Map = map;
-            map.Objs.Add(Obj.Camera);
-            Obj.CameraCopyMovement();
-            for (int i = 1; i < 6; i++)
-            {
-                var o = new Obj((ushort)(Obj.CameraId - i), "TestNPC.png", 32, 32);
-                o.Pos.X = x + i;
-                o.Pos.Y = y + i;
-                o.Map = map;
-                map.Objs.Add(o);
-            }
+            PlayerObj.Player.Pos.X = x;
+            PlayerObj.Player.Pos.Y = y;
+            PlayerObj.Player.Map = map;
+            map.Objs.Add(PlayerObj.Player);
+            CameraObj.Camera.Pos = PlayerObj.Player.Pos;
+            CameraObj.Camera.Map = map;
+            map.Objs.Add(CameraObj.Camera);
+            map.LoadObjEvents();
             _overworldGUI = new OverworldGUI();
             new Thread(LogicThreadMainLoop) { Name = "Logic Thread" }.Start();
         }
@@ -64,7 +59,7 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             void FadeToTransitionEnded()
             {
-                Obj player = Obj.Player;
+                Obj player = PlayerObj.Player;
                 player.Warp(warp);
                 void FadeFromTransitionEnded()
                 {

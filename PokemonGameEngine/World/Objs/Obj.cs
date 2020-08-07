@@ -3,10 +3,10 @@ using Kermalis.PokemonGameEngine.Scripts;
 using System;
 using System.Collections.Generic;
 
-namespace Kermalis.PokemonGameEngine.World
+namespace Kermalis.PokemonGameEngine.World.Objs
 {
     // Script movements handled in Script/ScriptMovements.cs
-    internal sealed partial class Obj
+    internal abstract partial class Obj
     {
         public struct Position
         {
@@ -15,18 +15,18 @@ namespace Kermalis.PokemonGameEngine.World
             public byte Elevation;
             public int XOffset;
             public int YOffset;
+
+            public Position(Map.Events.ObjEvent e)
+            {
+                X = e.X;
+                Y = e.Y;
+                Elevation = e.Elevation;
+                XOffset = 0;
+                YOffset = 0;
+            }
         }
 
-        public static readonly List<Obj> LoadedObjs = new List<Obj>(); // TODO: Unload ones that are too far (right now they stay forever and hold references to their map)
-
-        public const ushort PlayerId = ushort.MaxValue;
-        public const ushort CameraId = PlayerId - 1;
-
-        public static readonly Obj Player = new Obj(PlayerId, "TestNPC.png", 32, 32);
-        public static readonly Obj Camera = new Obj(CameraId);
-        public static int CameraOfsX;
-        public static int CameraOfsY;
-        public static Obj CameraAttachedTo = Player;
+        public static readonly List<Obj> LoadedObjs = new List<Obj>();
 
         public readonly ushort Id;
 
@@ -36,37 +36,28 @@ namespace Kermalis.PokemonGameEngine.World
         public Map Map;
 
         public bool CanMove = true; // Not too thought-out, so I'll probably end up removing it when scripting/waterfall/currents/spin tiles etc are implemented
-        private float _movementTimer = 1;
-        private float _movementSpeed;
-        private const float FaceMovementSpeed = 1 / 3f;
-        private const float NormalMovementSpeed = 1 / 6f;
-        private const float RunningMovementSpeed = 1 / 4f;
-        private const float DiagonalMovementSpeedModifier = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
-        private const float BlockedMovementSpeedModifier = 0.8f;
-        private const int StairYOffset = 6; // Any offset will work
-        private bool _leg;
+        protected float _movementTimer = 1;
+        protected float _movementSpeed;
+        protected const float FaceMovementSpeed = 1 / 3f;
+        protected const float NormalMovementSpeed = 1 / 6f;
+        protected const float RunningMovementSpeed = 1 / 4f;
+        protected const float DiagonalMovementSpeedModifier = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
+        protected const float BlockedMovementSpeedModifier = 0.8f;
+        protected const int StairYOffset = 6; // Any offset will work
         public int ProgressX;
         public int ProgressY;
 
-        public readonly int SpriteWidth;
-        public readonly int SpriteHeight;
-        private readonly Sprite[] _tempSpriteSheet;
-
-        private Obj(ushort id)
+        protected Obj(ushort id)
         {
             Id = id;
             Pos = new Position();
             PrevPos = new Position();
             LoadedObjs.Add(this);
         }
-        public Obj(ushort id, string resource, int spriteWidth, int spriteHeight)
+        protected Obj(ushort id, Position pos)
         {
-            _tempSpriteSheet = RenderUtils.LoadSpriteSheet(resource, spriteWidth, spriteHeight);
             Id = id;
-            Pos = new Position();
-            PrevPos = new Position();
-            SpriteWidth = spriteWidth;
-            SpriteHeight = spriteHeight;
+            PrevPos = Pos = pos;
             LoadedObjs.Add(this);
         }
 
@@ -373,12 +364,11 @@ namespace Kermalis.PokemonGameEngine.World
         }
 
         // TODO: Ledges, waterfall, etc
-        public bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
+        public virtual bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
         {
             CanMove = false;
             _movementTimer = 0;
             _movementSpeed = run ? RunningMovementSpeed : NormalMovementSpeed;
-            _leg = !_leg;
             Facing = facing;
             PrevPos = Pos;
             bool success = ignoreLegalCheck || IsMovementLegal(facing);
@@ -386,9 +376,9 @@ namespace Kermalis.PokemonGameEngine.World
             {
                 ApplyMovement(facing);
                 UpdateXYProgress();
-                if (CameraAttachedTo == this)
+                if (CameraObj.CameraAttachedTo == this)
                 {
-                    CameraCopyMovement();
+                    CameraObj.CameraCopyMovement();
                 }
             }
             else
@@ -398,12 +388,11 @@ namespace Kermalis.PokemonGameEngine.World
             return success;
         }
 
-        public void Face(FacingDirection facing)
+        public virtual void Face(FacingDirection facing)
         {
             CanMove = false;
             _movementTimer = 0;
             _movementSpeed = FaceMovementSpeed;
-            _leg = !_leg;
             Facing = facing;
             PrevPos = Pos;
             UpdateXYProgress();
@@ -450,25 +439,18 @@ namespace Kermalis.PokemonGameEngine.World
             }
             UpdateXYProgress();
         }
-        public static void CameraCopyMovement()
-        {
-            Obj c = Camera;
-            Obj other = CameraAttachedTo;
-            c.CopyMovement(other);
-        }
-        public void CopyMovement(Obj other)
+        public virtual void CopyMovement(Obj other)
         {
             CanMove = other.CanMove;
             _movementTimer = other._movementTimer;
             _movementSpeed = other._movementSpeed;
-            _leg = other._leg;
             Pos = other.Pos;
             PrevPos = other.PrevPos;
             ProgressX = other.ProgressX;
             ProgressY = other.ProgressY;
             UpdateMap(other.Map);
         }
-        private void UpdateMap(Map newMap)
+        protected virtual void UpdateMap(Map newMap)
         {
             Map curMap = Map;
             if (curMap != newMap)
@@ -530,23 +512,10 @@ namespace Kermalis.PokemonGameEngine.World
             Pos.Y = y;
             Pos.Elevation = e;
             PrevPos = Pos;
-            if (CameraAttachedTo == this)
+            if (CameraObj.CameraAttachedTo == this)
             {
-                CameraCopyMovement();
+                CameraObj.CameraCopyMovement();
             }
-        }
-
-        // TODO: Shadows, reflections
-        public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
-        {
-            bool ShowLegs()
-            {
-                float t = _movementTimer;
-                return t != 1 && t >= 0.6f;
-            }
-            byte f = (byte)Facing;
-            int spriteNum = ShowLegs() ? (_leg ? f + 8 : f + 16) : f; // TODO: Fall-back to specific sprites if the target sprite doesn't exist
-            _tempSpriteSheet[spriteNum].DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y);
         }
     }
 }

@@ -27,7 +27,8 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * Tile animations
 * Saving
 * Flags/vars
-* Events/NPCs on the maps
+* Events on the maps
+* Trainers
 * Capturing Pokémon
 * Default menus
 * Sound/music

@@ -1,6 +1,8 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,14 +64,49 @@ namespace Kermalis.PokemonGameEngine.World
                     X = r.ReadInt32();
                     Y = r.ReadInt32();
                     Elevation = r.ReadByte();
+
                     DestMapId = r.ReadInt32();
                     DestX = r.ReadInt32();
                     DestY = r.ReadInt32();
                     DestElevation = r.ReadByte();
                 }
             }
+            public sealed class ObjEvent
+            {
+                public readonly int X;
+                public readonly int Y;
+                public readonly byte Elevation;
+
+                public readonly ushort Id;
+                public readonly string Sprite;
+                public readonly ObjMovementType MovementType;
+                public readonly int MovementX;
+                public readonly int MovementY;
+                public readonly TrainerType TrainerType;
+                public readonly byte TrainerSight;
+                public readonly string Script;
+                public readonly Flag Flag;
+
+                public ObjEvent(EndianBinaryReader r)
+                {
+                    X = r.ReadInt32();
+                    Y = r.ReadInt32();
+                    Elevation = r.ReadByte();
+
+                    Id = r.ReadUInt16();
+                    Sprite = r.ReadStringNullTerminated();
+                    MovementType = r.ReadEnum<ObjMovementType>();
+                    MovementX = r.ReadInt32();
+                    MovementY = r.ReadInt32();
+                    TrainerType = r.ReadEnum<TrainerType>();
+                    TrainerSight = r.ReadByte();
+                    Script = r.ReadStringNullTerminated();
+                    Flag = r.ReadEnum<Flag>();
+                }
+            }
 
             public readonly WarpEvent[] Warps;
+            public readonly ObjEvent[] Objs;
 
             public Events(EndianBinaryReader r)
             {
@@ -78,6 +115,12 @@ namespace Kermalis.PokemonGameEngine.World
                 for (int i = 0; i < count; i++)
                 {
                     Warps[i] = new WarpEvent(r);
+                }
+                count = r.ReadUInt16();
+                Objs = new ObjEvent[count];
+                for (int i = 0; i < count; i++)
+                {
+                    Objs[i] = new ObjEvent(r);
                 }
             }
         }
@@ -339,10 +382,10 @@ namespace Kermalis.PokemonGameEngine.World
 
         public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            Obj camera = Obj.Camera;
+            CameraObj camera = CameraObj.Camera;
             Obj.Position cameraPos = camera.Pos;
-            int cameraX = (cameraPos.X * Overworld.Block_NumPixelsX) - (bmpWidth / 2) + (Overworld.Block_NumPixelsX / 2) + camera.ProgressX + Obj.CameraOfsX;
-            int cameraY = (cameraPos.Y * Overworld.Block_NumPixelsY) - (bmpHeight / 2) + (Overworld.Block_NumPixelsY / 2) + camera.ProgressY + Obj.CameraOfsY;
+            int cameraX = (cameraPos.X * Overworld.Block_NumPixelsX) - (bmpWidth / 2) + (Overworld.Block_NumPixelsX / 2) + camera.ProgressX + CameraObj.CameraOfsX;
+            int cameraY = (cameraPos.Y * Overworld.Block_NumPixelsY) - (bmpHeight / 2) + (Overworld.Block_NumPixelsY / 2) + camera.ProgressY + CameraObj.CameraOfsY;
             Map cameraMap = camera.Map;
             int xpBX = cameraX % Overworld.Block_NumPixelsX;
             int ypBY = cameraY % Overworld.Block_NumPixelsY;
@@ -397,25 +440,24 @@ namespace Kermalis.PokemonGameEngine.World
                 int numObjs = objs.Count;
                 for (int i = 0; i < numObjs; i++)
                 {
-                    Obj c = objs[i];
-                    if (c == camera)
+                    Obj o = objs[i];
+                    Obj.Position oPos = o.Pos;
+                    if (oPos.Elevation != e)
                     {
                         continue;
                     }
-                    Obj.Position cPos = c.Pos;
-                    if (cPos.Elevation != e)
+                    if (o is VisualObj v)
                     {
-                        continue;
-                    }
-                    int objX = ((cPos.X - startBlockX) * Overworld.Block_NumPixelsX) + c.ProgressX + startX;
-                    int objY = ((cPos.Y - startBlockY) * Overworld.Block_NumPixelsY) + c.ProgressY + startY;
-                    int objW = c.SpriteWidth;
-                    int objH = c.SpriteHeight;
-                    objX -= (objW - Overworld.Block_NumPixelsX) / 2;
-                    objY -= objH - Overworld.Block_NumPixelsY;
-                    if (objX < bmpWidth && objX + objW > 0 && objY < bmpHeight && objY + objH > 0)
-                    {
-                        c.Draw(bmpAddress, bmpWidth, bmpHeight, objX, objY);
+                        int objX = ((oPos.X - startBlockX) * Overworld.Block_NumPixelsX) + v.ProgressX + startX;
+                        int objY = ((oPos.Y - startBlockY) * Overworld.Block_NumPixelsY) + v.ProgressY + startY;
+                        int objW = v.SpriteWidth;
+                        int objH = v.SpriteHeight;
+                        objX -= (objW - Overworld.Block_NumPixelsX) / 2;
+                        objY -= objH - Overworld.Block_NumPixelsY;
+                        if (objX < bmpWidth && objX + objW > 0 && objY < bmpHeight && objY + objH > 0)
+                        {
+                            v.Draw(bmpAddress, bmpWidth, bmpHeight, objX, objY);
+                        }
                     }
                 }
                 if (e == byte.MaxValue)
@@ -424,6 +466,29 @@ namespace Kermalis.PokemonGameEngine.World
                 }
                 e++;
             }
+        }
+
+        public void LoadObjEvents()
+        {
+            Flags flags = Game.Instance.Save.Flags;
+            foreach (Events.ObjEvent oe in MapEvents.Objs)
+            {
+                if (!flags[oe.Flag])
+                {
+                    new EventObj(oe, this);
+                }
+            }
+        }
+        public void UnloadObjEvents()
+        {
+            foreach (Obj o in Objs)
+            {
+                if (o.Id != Overworld.CameraId && o != CameraObj.CameraAttachedTo)
+                {
+                    Obj.LoadedObjs.Remove(o);
+                }
+            }
+            Objs.Clear();
         }
     }
 }

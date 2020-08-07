@@ -1,8 +1,9 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Scripts;
+using Kermalis.PokemonGameEngine.World;
+using Kermalis.PokemonGameEngine.World.Objs;
 using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Script
@@ -119,15 +120,15 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private void DetachCameraCommand()
         {
-            Obj.CameraAttachedTo = null;
+            CameraObj.CameraAttachedTo = null;
         }
 
         private void AttachCameraCommand()
         {
             ushort id = _reader.ReadUInt16();
             var obj = Obj.GetObj(id);
-            Obj.CameraAttachedTo = obj;
-            Obj.CameraCopyMovement();
+            CameraObj.CameraAttachedTo = obj;
+            CameraObj.CameraCopyMovement();
         }
 
         private void DelayCommand()
