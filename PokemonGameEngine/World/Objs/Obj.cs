@@ -131,11 +131,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             return true;
         }
-        public bool CollidesWithAny_InBounds(Map map, int x, int y)
+        public bool CollidesWithAny_InBounds(Map map, int x, int y, byte elevation)
         {
             if (CollidesWithOthers())
             {
-                foreach (Obj o in map.GetObjs_InBounds(x, y, this))
+                foreach (Obj o in map.GetObjs_InBounds(x, y, elevation, this))
                 {
                     if (o.CollidesWithOthers())
                     {

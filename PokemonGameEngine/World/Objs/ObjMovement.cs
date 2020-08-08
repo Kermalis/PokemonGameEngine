@@ -30,12 +30,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return false;
             }
             // Check elevation
-            if (checkElevation && !ElevationCheck(curBehavior, targetBehavior, curElevation, targetBlock.Elevation))
+            byte targetElevation = targetBlock.Elevation;
+            if (checkElevation && !ElevationCheck(curBehavior, targetBehavior, curElevation, targetElevation))
             {
                 return false;
             }
             // Check if we can pass through objs at the position
-            if (CollidesWithAny_InBounds(outMap, outX, outY))
+            if (CollidesWithAny_InBounds(outMap, outX, outY, targetElevation))
             {
                 return false;
             }
@@ -80,7 +81,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 if (upStairBehavior == upBehavior)
                 {
                     // Check if we can pass through objs on the position
-                    if (CollidesWithAny_InBounds(upStairMap, upStairX, upStairY))
+                    if (CollidesWithAny_InBounds(upStairMap, upStairX, upStairY, upStairBlock.Elevation))
                     {
                         return false;
                     }
@@ -133,25 +134,27 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return false;
             }
             // Check elevation
-            if (!ElevationCheck(curBehavior, targetBehavior, p.Elevation, targetBlock.Elevation))
+            byte curElevation = p.Elevation;
+            byte targetElevation = targetBlock.Elevation;
+            if (!ElevationCheck(curBehavior, targetBehavior, curElevation, targetElevation))
             {
                 return false;
             }
             // Check if we can pass through objs at the position
-            if (CollidesWithAny_InBounds(targetOutMap, targetOutX, targetOutY))
+            if (CollidesWithAny_InBounds(targetOutMap, targetOutX, targetOutY, targetElevation))
             {
                 return false;
             }
             // Target's neighbors - check if we can pass through them diagonally
-            if (!CanPassThroughDiagonally(neighbor1X, neighbor1Y, neighbor1Passage, blockedTargetCardinal2, blockedTargetCardinal1, blockedNeighbor1)
-                || !CanPassThroughDiagonally(neighbor2X, neighbor2Y, neighbor2Passage, blockedTargetCardinal1, blockedTargetCardinal2, blockedNeighbor2))
+            if (!CanPassThroughDiagonally(neighbor1X, neighbor1Y, curElevation, neighbor1Passage, blockedTargetCardinal2, blockedTargetCardinal1, blockedNeighbor1)
+                || !CanPassThroughDiagonally(neighbor2X, neighbor2Y, curElevation, neighbor2Passage, blockedTargetCardinal1, blockedTargetCardinal2, blockedNeighbor2))
             {
                 return false;
             }
             return true;
         }
 
-        private bool CanPassThroughDiagonally(int x, int y, LayoutBlockPassage diagonalPassage,
+        private bool CanPassThroughDiagonally(int x, int y, byte elevation, LayoutBlockPassage diagonalPassage,
             BlocksetBlockBehavior blockedCardinal1, BlocksetBlockBehavior blockedCardinal2, BlocksetBlockBehavior blockedDiagonal)
         {
             // Get the x/y/map of the block
@@ -168,8 +171,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 return false;
             }
-            // Check if we can pass through objs at the position
-            if (CollidesWithAny_InBounds(outMap, outX, outY))
+            // Check if we can pass through objs at the position (only checks current elevation, not the target elevation or any other elevations)
+            if (CollidesWithAny_InBounds(outMap, outX, outY, elevation))
             {
                 return false;
             }

@@ -434,7 +434,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         // "exceptThisOne" is used so objs aren't checking if they collide with themselves
         // The camera is not hardcoded here because we can have some objs disable collisions, plus someone might want to get the camera from this
-        public List<Obj> GetObjs_InBounds(int x, int y, Obj exceptThisOne)
+        public List<Obj> GetObjs_InBounds(int x, int y, byte elevation, Obj exceptThisOne)
         {
             var list = new List<Obj>();
             foreach (Obj o in Objs)
@@ -442,7 +442,7 @@ namespace Kermalis.PokemonGameEngine.World
                 if (o != exceptThisOne)
                 {
                     Obj.Position pos = o.Pos;
-                    if (pos.X == x && pos.Y == y)
+                    if (pos.X == x && pos.Y == y && pos.Elevation == elevation)
                     {
                         list.Add(o);
                     }
