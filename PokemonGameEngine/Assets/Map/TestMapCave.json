@@ -39,7 +39,7 @@
         "Elevation": 0,
         "Id": 0,
         "Sprite": "Player",
-        "MovementType": "FaceSouth",
+        "MovementType": "Face_South",
         "MovementX": 0,
         "MovementY": 0,
         "TrainerType": "None",

@@ -176,7 +176,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return true;
         }
 
-        private bool IsMovementLegal(FacingDirection facing)
+        protected bool IsMovementLegal(FacingDirection facing)
         {
             Position p = Pos;
             int x = p.X;

@@ -40,7 +40,7 @@
         "Elevation": 0,
         "Id": 1,
         "Sprite": "Item",
-        "MovementType": "FaceSouth",
+        "MovementType": "Face_South",
         "MovementX": 0,
         "MovementY": 0,
         "TrainerType": "None",

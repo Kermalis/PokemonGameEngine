@@ -106,16 +106,24 @@ namespace Kermalis.PokemonGameEngine.World
         SeeAllDirections
     }
 
+    // To add the code that handles these, go to World/Objs/EventObj.cs
+    // It is very simple to add movements, and they can be as complex as you like
     public enum ObjMovementType : byte
     {
-        FaceSouth,
-        FaceSouthwest,
-        FaceSoutheast,
-        FaceNorth,
-        FaceNorthwest,
-        FaceNortheast,
-        FaceWest,
-        FaceEast
+        Face_South,
+        Face_Southwest,
+        Face_Southeast,
+        Face_North,
+        Face_Northwest,
+        Face_Northeast,
+        Face_West,
+        Face_East,
+        Face_Randomly,
+        Wander_Randomly,
+        Wander_SouthAndNorth,
+        Wander_WestAndEast,
+        Walk_WestThenReturn,
+        Walk_EastThenReturn
     }
 
     // These are the sections that define the map name and map location on the world map

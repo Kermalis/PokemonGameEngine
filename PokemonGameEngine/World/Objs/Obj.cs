@@ -145,5 +145,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             return false;
         }
+
+        public virtual void LogicTick()
+        {
+        }
     }
 }
