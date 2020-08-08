@@ -33,6 +33,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 Map = newMap;
             }
         }
+        public override bool CollidesWithOthers()
+        {
+            return false;
+        }
 
         public static unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
@@ -65,7 +69,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 {
                     for (int blockX = startBlockX; blockX < endBlockX; blockX++)
                     {
-                        Map.Layout.Block block = cameraMap.GetBlock(blockX, blockY, out _);
+                        Map.Layout.Block block = cameraMap.GetBlock_CrossMap(blockX, blockY, out _);
                         if (block != null)
                         {
                             Blockset.Block b = block.BlocksetBlock;

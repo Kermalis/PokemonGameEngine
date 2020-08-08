@@ -282,103 +282,131 @@ namespace Kermalis.PokemonGameEngine.World
             return m;
         }
 
-        public Layout.Block GetBlock(int x, int y, out Map map)
+        public void GetXYMap(int x, int y, out int outX, out int outY, out Map outMap)
         {
             Layout ml = MapLayout;
             bool north = y < 0;
             bool south = y >= ml.BlocksHeight;
             bool west = x < 0;
             bool east = x >= ml.BlocksWidth;
-            if (!north && !south && !west && !east)
+            // If we're out of bounds, try to branch into a connection. If we don't find one, we meet at the bottom
+            if (north || south || west || east)
             {
-                map = this;
-                return ml.Blocks[y][x];
-            }
-            // TODO: How should connections retain map references? Answer: Visible maps/objs list
-            Connection[] connections = Connections;
-            int numConnections = connections.Length;
-            for (int i = 0; i < numConnections; i++)
-            {
-                Connection c = connections[i];
-                switch (c.Dir)
+                // TODO: How should connections retain map references? Answer: Visible maps/objs list
+                Connection[] connections = Connections;
+                int numConnections = connections.Length;
+                for (int i = 0; i < numConnections; i++)
                 {
-                    case Connection.Direction.South:
+                    Connection c = connections[i];
+                    switch (c.Dir)
                     {
-                        if (south)
+                        case Connection.Direction.South:
                         {
-                            Map m = LoadOrGet(c.MapId);
-                            Layout l = m.MapLayout;
-                            if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                            if (south)
                             {
-                                return m.GetBlock(x - c.Offset, y - ml.BlocksHeight, out map);
+                                Map m = LoadOrGet(c.MapId);
+                                Layout l = m.MapLayout;
+                                if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                                {
+                                    m.GetXYMap(x - c.Offset, y - ml.BlocksHeight, out outX, out outY, out outMap);
+                                    return;
+                                }
                             }
+                            break;
                         }
-                        break;
-                    }
-                    case Connection.Direction.North:
-                    {
-                        if (north)
+                        case Connection.Direction.North:
                         {
-                            Map m = LoadOrGet(c.MapId);
-                            Layout l = m.MapLayout;
-                            if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                            if (north)
                             {
-                                return m.GetBlock(x - c.Offset, l.BlocksHeight + y, out map);
+                                Map m = LoadOrGet(c.MapId);
+                                Layout l = m.MapLayout;
+                                if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                                {
+                                    m.GetXYMap(x - c.Offset, l.BlocksHeight + y, out outX, out outY, out outMap);
+                                    return;
+                                }
                             }
+                            break;
                         }
-                        break;
-                    }
-                    case Connection.Direction.West:
-                    {
-                        if (west)
+                        case Connection.Direction.West:
                         {
-                            Map m = LoadOrGet(c.MapId);
-                            Layout l = m.MapLayout;
-                            if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                            if (west)
                             {
-                                return m.GetBlock(l.BlocksWidth + x, y - c.Offset, out map);
+                                Map m = LoadOrGet(c.MapId);
+                                Layout l = m.MapLayout;
+                                if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                                {
+                                    m.GetXYMap(l.BlocksWidth + x, y - c.Offset, out outX, out outY, out outMap);
+                                    return;
+                                }
                             }
+                            break;
                         }
-                        break;
-                    }
-                    case Connection.Direction.East:
-                    {
-                        if (east)
+                        case Connection.Direction.East:
                         {
-                            Map m = LoadOrGet(c.MapId);
-                            Layout l = m.MapLayout;
-                            if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                            if (east)
                             {
-                                return m.GetBlock(x - ml.BlocksWidth, y - c.Offset, out map);
+                                Map m = LoadOrGet(c.MapId);
+                                Layout l = m.MapLayout;
+                                if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                                {
+                                    m.GetXYMap(x - ml.BlocksWidth, y - c.Offset, out outX, out outY, out outMap);
+                                    return;
+                                }
                             }
+                            break;
                         }
-                        break;
                     }
                 }
+
             }
-            // Border blocks should count as the calling map
-            map = this;
+            // If we are in bounds, return the current map
+            // If we didn't find a connection, we are at the border, which counts as the current map
+            outX = x;
+            outY = y;
+            outMap = this;
+        }
+        public Layout.Block GetBlock_CrossMap(int x, int y, out Map outMap)
+        {
+            GetXYMap(x, y, out int outX, out int outY, out outMap);
+            return outMap.GetBlock_InBounds(outX, outY);
+        }
+        public Layout.Block GetBlock_CrossMap(int x, int y)
+        {
+            return GetBlock_CrossMap(x, y, out _);
+        }
+        public Layout.Block GetBlock_InBounds(int x, int y)
+        {
+            Layout ml = MapLayout;
+            bool north = y < 0;
+            bool south = y >= ml.BlocksHeight;
+            bool west = x < 0;
+            bool east = x >= ml.BlocksWidth;
+            // In bounds
+            if (!north && !south && !west && !east)
+            {
+                return ml.Blocks[y][x];
+            }
+            // Border blocks
+            byte bw = ml.BorderWidth;
+            byte bh = ml.BorderHeight;
             // No border should render pure black
-            if (ml.BorderWidth == 0 || ml.BorderHeight == 0)
+            if (bw == 0 || bh == 0)
             {
                 return null;
             }
             // Has a border
-            x %= ml.BorderWidth;
+            x %= bw;
             if (west)
             {
                 x *= -1;
             }
-            y %= ml.BorderHeight;
+            y %= bh;
             if (north)
             {
                 y *= -1;
             }
             return ml.BorderBlocks[y][x];
-        }
-        public Layout.Block GetBlock(int x, int y)
-        {
-            return GetBlock(x, y, out _);
         }
 
         public void LoadObjEvents()
@@ -402,6 +430,25 @@ namespace Kermalis.PokemonGameEngine.World
                 }
             }
             Objs.Clear();
+        }
+
+        // "exceptThisOne" is used so objs aren't checking if they collide with themselves
+        // The camera is not hardcoded here because we can have some objs disable collisions, plus someone might want to get the camera from this
+        public List<Obj> GetObjs_InBounds(int x, int y, Obj exceptThisOne)
+        {
+            var list = new List<Obj>();
+            foreach (Obj o in Objs)
+            {
+                if (o != exceptThisOne)
+                {
+                    Obj.Position pos = o.Pos;
+                    if (pos.X == x && pos.Y == y)
+                    {
+                        list.Add(o);
+                    }
+                }
+            }
+            return list;
         }
     }
 }
