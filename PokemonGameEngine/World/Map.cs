@@ -204,7 +204,7 @@ namespace Kermalis.PokemonGameEngine.World
             private const string LayoutExtension = ".pgelayout";
             private const string LayoutPath = "Layout.";
             private static readonly IdList _ids = new IdList(LayoutPath + "LayoutIds.txt");
-            private static readonly Dictionary<int, WeakReference<Layout>> loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
+            private static readonly Dictionary<int, WeakReference<Layout>> _loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
             public static Layout LoadOrGet(int id)
             {
                 string name = _ids[id];
@@ -213,18 +213,19 @@ namespace Kermalis.PokemonGameEngine.World
                     throw new ArgumentOutOfRangeException(nameof(id));
                 }
                 Layout l;
-                if (!loadedLayouts.ContainsKey(id))
+                if (!_loadedLayouts.ContainsKey(id))
                 {
                     l = new Layout(name);
-                    loadedLayouts.Add(id, new WeakReference<Layout>(l));
+                    _loadedLayouts.Add(id, new WeakReference<Layout>(l));
                     return l;
                 }
-                if (loadedLayouts[id].TryGetTarget(out l))
+                WeakReference<Layout> w = _loadedLayouts[id];
+                if (w.TryGetTarget(out l))
                 {
                     return l;
                 }
                 l = new Layout(name);
-                loadedLayouts[id].SetTarget(l);
+                w.SetTarget(l);
                 return l;
             }
         }
@@ -257,7 +258,7 @@ namespace Kermalis.PokemonGameEngine.World
         private const string MapExtension = ".pgemap";
         private const string MapPath = "Map.";
         private static readonly IdList _ids = new IdList(MapPath + "MapIds.txt");
-        private static readonly Dictionary<int, WeakReference<Map>> loadedMaps = new Dictionary<int, WeakReference<Map>>();
+        private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new Dictionary<int, WeakReference<Map>>();
         public static Map LoadOrGet(int id)
         {
             string name = _ids[id];
@@ -266,18 +267,19 @@ namespace Kermalis.PokemonGameEngine.World
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
             Map m;
-            if (!loadedMaps.ContainsKey(id))
+            if (!_loadedMaps.ContainsKey(id))
             {
                 m = new Map(name);
-                loadedMaps.Add(id, new WeakReference<Map>(m));
+                _loadedMaps.Add(id, new WeakReference<Map>(m));
                 return m;
             }
-            if (loadedMaps[id].TryGetTarget(out m))
+            WeakReference<Map> w = _loadedMaps[id];
+            if (w.TryGetTarget(out m))
             {
                 return m;
             }
             m = new Map(name);
-            loadedMaps[id].SetTarget(m);
+            w.SetTarget(m);
             return m;
         }
 

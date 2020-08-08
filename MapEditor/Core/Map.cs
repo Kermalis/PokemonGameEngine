@@ -378,12 +378,13 @@ namespace Kermalis.MapEditor.Core
                     _loadedLayouts.Add(id, new WeakReference<Layout>(l));
                     return l;
                 }
-                if (_loadedLayouts[id].TryGetTarget(out l))
+                WeakReference<Layout> w = _loadedLayouts[id];
+                if (w.TryGetTarget(out l))
                 {
                     return l;
                 }
                 l = new Layout(name, id);
-                _loadedLayouts[id].SetTarget(l);
+                w.SetTarget(l);
                 return l;
             }
 
@@ -638,12 +639,13 @@ namespace Kermalis.MapEditor.Core
                 _loadedMaps.Add(id, new WeakReference<Map>(m));
                 return m;
             }
-            if (_loadedMaps[id].TryGetTarget(out m))
+            WeakReference<Map> w = _loadedMaps[id];
+            if (w.TryGetTarget(out m))
             {
                 return m;
             }
             m = new Map(name, id);
-            _loadedMaps[id].SetTarget(m);
+            w.SetTarget(m);
             return m;
         }
 
