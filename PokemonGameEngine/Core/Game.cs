@@ -14,7 +14,7 @@ namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Game
     {
-        private const int NumTicksPerSecond = 20;
+        public const int NumTicksPerSecond = 20;
         private readonly object _threadLockObj = new object();
 
         public static Game Instance { get; private set; }
