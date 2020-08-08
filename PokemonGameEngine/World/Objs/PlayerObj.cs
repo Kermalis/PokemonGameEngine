@@ -42,15 +42,36 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
             }
 
-            foreach (ScriptContext ctx in Game.Instance.Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
+            if (InputManager.IsPressed(Key.A))
             {
-                ctx.LogicTick();
-            }
-
-            if (Game.Instance.Scripts.Count == 0 && InputManager.IsPressed(Key.A)) // Temporary
-            {
-                ScriptLoader.LoadScript("TestScript");
-                return;
+                // TODO: This does not consider sideways stairs or countertops when fetching the target block
+                // TODO: Stuff like surf and signs
+                // TODO: Block behaviors that start scripts (like bookshelves, tvs, and the PC)
+                Position p = Pos;
+                int x = p.X;
+                int y = p.Y;
+                switch (Facing)
+                {
+                    case FacingDirection.South: y++; break;
+                    case FacingDirection.Southwest: x--; y++; break;
+                    case FacingDirection.Southeast: x++; y++; break;
+                    case FacingDirection.North: y--; break;
+                    case FacingDirection.Northwest: x--; y--; break;
+                    case FacingDirection.Northeast: x++; y--; break;
+                    case FacingDirection.West: x--; break;
+                    case FacingDirection.East: x++; break;
+                }
+                Map.GetXYMap(x, y, out x, out y, out Map map);
+                //BlocksetBlockBehavior beh = map.GetBlock_InBounds(x, y).BlocksetBlock.Behavior;
+                foreach (EventObj o in map.GetObjs_InBounds(x, y, p.Elevation, this))
+                {
+                    string script = o.Script;
+                    if (script != string.Empty)
+                    {
+                        ScriptLoader.LoadScript(script);
+                        return;
+                    }
+                }
             }
 
             bool down = InputManager.IsDown(Key.Down);

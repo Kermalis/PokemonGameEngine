@@ -107,6 +107,10 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             lock (_threadLockObj)
             {
+                foreach (ScriptContext ctx in Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
+                {
+                    ctx.LogicTick();
+                }
                 if (_battleTransition != null || _fadeFromTransition != null || _fadeToTransition != null)
                 {
                     return;
