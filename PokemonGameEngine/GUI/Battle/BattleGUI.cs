@@ -16,7 +16,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
     internal sealed class BattleGUI
     {
         private const int WaitMilliseconds = 1750;
-        private const string ThreadName = "Battle Thread";
+        private const string ThreadName = "Battle Thread"; // TODO: Put this on LogicTick somehow so it can be locked with render thread
         private readonly Sprite _battleBackground;
 
         private const int TransitionDuration = 40;
