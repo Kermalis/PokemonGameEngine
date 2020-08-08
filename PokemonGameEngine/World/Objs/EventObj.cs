@@ -13,7 +13,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public Flag Flag;
 
         public EventObj(Map.Events.ObjEvent oe, Map map)
-            : base(oe.Id, oe.Sprite, 32, 32, new Position(oe)) // TODO: Size, "loaded sprites"
+            : base(oe.Id, oe.Sprite, new Position(oe))
         {
             MovementType = oe.MovementType;
             switch (MovementType)

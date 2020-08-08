@@ -4,6 +4,7 @@
 # PokemonGameEngine's built binary assets
 PokemonGameEngine/Assets/Encounter/**/*.pgeenctbl
 PokemonGameEngine/Assets/Map/**/*.pgemap
+PokemonGameEngine/Assets/ObjSprites/ObjSprites.bin
 PokemonGameEngine/Assets/Script/Scripts.bin
 
 # User-specific files

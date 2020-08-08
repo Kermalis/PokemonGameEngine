@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
@@ -380,94 +379,6 @@ namespace Kermalis.PokemonGameEngine.World
         public Layout.Block GetBlock(int x, int y)
         {
             return GetBlock(x, y, out _);
-        }
-
-        public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight)
-        {
-            CameraObj camera = CameraObj.Camera;
-            Obj.Position cameraPos = camera.Pos;
-            int cameraX = (cameraPos.X * Overworld.Block_NumPixelsX) - (bmpWidth / 2) + (Overworld.Block_NumPixelsX / 2) + camera.ProgressX + CameraObj.CameraOfsX;
-            int cameraY = (cameraPos.Y * Overworld.Block_NumPixelsY) - (bmpHeight / 2) + (Overworld.Block_NumPixelsY / 2) + camera.ProgressY + CameraObj.CameraOfsY;
-            Map cameraMap = camera.Map;
-            int xpBX = cameraX % Overworld.Block_NumPixelsX;
-            int ypBY = cameraY % Overworld.Block_NumPixelsY;
-            int startBlockX = (cameraX / Overworld.Block_NumPixelsX) - (xpBX >= 0 ? 0 : 1);
-            int startBlockY = (cameraY / Overworld.Block_NumPixelsY) - (ypBY >= 0 ? 0 : 1);
-            int numBlocksX = (bmpWidth / Overworld.Block_NumPixelsX) + (bmpWidth % Overworld.Block_NumPixelsX == 0 ? 0 : 1);
-            int numBlocksY = (bmpHeight / Overworld.Block_NumPixelsY) + (bmpHeight % Overworld.Block_NumPixelsY == 0 ? 0 : 1);
-            int endBlockX = startBlockX + numBlocksX + (xpBX == 0 ? 0 : 1);
-            int endBlockY = startBlockY + numBlocksY + (ypBY == 0 ? 0 : 1);
-            int startX = xpBX >= 0 ? -xpBX : -xpBX - Overworld.Block_NumPixelsX;
-            int startY = ypBY >= 0 ? -ypBY : -ypBY - Overworld.Block_NumPixelsY;
-            byte e = 0;
-            while (true)
-            {
-                int curX = startX;
-                int curY = startY;
-                for (int blockY = startBlockY; blockY < endBlockY; blockY++)
-                {
-                    for (int blockX = startBlockX; blockX < endBlockX; blockX++)
-                    {
-                        Layout.Block block = cameraMap.GetBlock(blockX, blockY, out _);
-                        if (block != null)
-                        {
-                            Blockset.Block b = block.BlocksetBlock;
-                            void Draw(Blockset.Block.Tile[] subLayers, int tx, int ty)
-                            {
-                                int numSubLayers = subLayers.Length;
-                                for (int t = 0; t < numSubLayers; t++)
-                                {
-                                    Blockset.Block.Tile tile = subLayers[t];
-                                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: tile.XFlip, yFlip: tile.YFlip);
-                                }
-                            }
-                            for (int ly = 0; ly < Overworld.Block_NumTilesY; ly++)
-                            {
-                                Dictionary<byte, Blockset.Block.Tile[]>[] arrY = b.Tiles[ly];
-                                int py = ly * Overworld.Tile_NumPixelsY;
-                                for (int lx = 0; lx < Overworld.Block_NumTilesX; lx++)
-                                {
-                                    Draw(arrY[lx][e], curX + (lx * Overworld.Tile_NumPixelsX), curY + py);
-                                }
-                            }
-                        }
-                        curX += Overworld.Block_NumPixelsX;
-                    }
-                    curX = startX;
-                    curY += Overworld.Block_NumPixelsY;
-                }
-                // TODO: They will overlap each other regardless of y coordinate because of the order of the list
-                // TODO: Objs from other maps
-                List<Obj> objs = cameraMap.Objs;
-                int numObjs = objs.Count;
-                for (int i = 0; i < numObjs; i++)
-                {
-                    Obj o = objs[i];
-                    Obj.Position oPos = o.Pos;
-                    if (oPos.Elevation != e)
-                    {
-                        continue;
-                    }
-                    if (o is VisualObj v)
-                    {
-                        int objX = ((oPos.X - startBlockX) * Overworld.Block_NumPixelsX) + v.ProgressX + startX;
-                        int objY = ((oPos.Y - startBlockY) * Overworld.Block_NumPixelsY) + v.ProgressY + startY;
-                        int objW = v.SpriteWidth;
-                        int objH = v.SpriteHeight;
-                        objX -= (objW - Overworld.Block_NumPixelsX) / 2;
-                        objY -= objH - Overworld.Block_NumPixelsY;
-                        if (objX < bmpWidth && objX + objW > 0 && objY < bmpHeight && objY + objH > 0)
-                        {
-                            v.Draw(bmpAddress, bmpWidth, bmpHeight, objX, objY);
-                        }
-                    }
-                }
-                if (e == byte.MaxValue)
-                {
-                    break;
-                }
-                e++;
-            }
         }
 
         public void LoadObjEvents()

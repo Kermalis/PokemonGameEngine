@@ -76,7 +76,7 @@
         "Y": 13,
         "Elevation": 0,
         "Id": 0,
-        "Sprite": "TestNPC.png",
+        "Sprite": "Player",
         "MovementType": "FaceWest",
         "MovementX": 0,
         "MovementY": 0,

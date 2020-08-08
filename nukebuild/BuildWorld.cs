@@ -5,6 +5,7 @@ using Kermalis.PokemonGameEngine.World;
 using Newtonsoft.Json.Linq;
 using Nuke.Common.IO;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 internal static class WorldBuilderHelper
@@ -375,13 +376,47 @@ public sealed partial class Build
         }
     }
 
+    private sealed class SpriteSheet
+    {
+        private readonly string Sprites;
+        private readonly int Width;
+        private readonly int Height;
+
+        public SpriteSheet(JToken j)
+        {
+            Sprites = j[nameof(Sprites)].Value<string>();
+            Width = j[nameof(Width)].Value<int>();
+            Height = j[nameof(Height)].Value<int>();
+        }
+
+        private static readonly AbsolutePath SheetsPath = AssetPath / "ObjSprites";
+        public static readonly AbsolutePath SheetsInputPath = SheetsPath / "ObjSprites.json";
+        public static readonly AbsolutePath SheetsOutputPath = SheetsPath / "ObjSprites.bin";
+
+        public void Write(EndianBinaryWriter w)
+        {
+            w.Write(Sprites, true);
+            w.Write(Width);
+            w.Write(Height);
+        }
+    }
+
     private void CleanWorld()
     {
         // Clean all assets even if they're no longer in the id lists
+
+        // Encounter tables
         foreach (AbsolutePath file in EncounterTable.EncounterTablePath.GlobFiles("*" + EncounterTable.EncounterTableExtension))
         {
             File.Delete(file);
         }
+        // Obj sprites
+        string p = SpriteSheet.SheetsOutputPath;
+        if (File.Exists(p))
+        {
+            File.Delete(p);
+        }
+        // Maps
         foreach (AbsolutePath file in Map.MapPath.GlobFiles("*" + Map.MapExtension))
         {
             File.Delete(file);
@@ -389,10 +424,43 @@ public sealed partial class Build
     }
     private void BuildWorld()
     {
+        // Encounter tables
         foreach (string name in EncounterTable.Ids)
         {
             new EncounterTable(name).Save();
         }
+        // Obj sprites
+        using (var ms = new MemoryStream())
+        using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+        {
+            var json = JObject.Parse(File.ReadAllText(SpriteSheet.SheetsInputPath));
+            var labels = new Dictionary<string, long>(json.Count);
+            foreach (KeyValuePair<string, JToken> kvp in json)
+            {
+                long ofs = ms.Position;
+                new SpriteSheet(kvp.Value).Write(w);
+                labels.Add(kvp.Key, ofs);
+            }
+            using (var fw = new EndianBinaryWriter(File.Create(SpriteSheet.SheetsOutputPath), encoding: EncodingType.UTF16))
+            {
+                fw.Write(labels.Count);
+                // Compute start offset of sheet data
+                uint dataStart = sizeof(int); // Total count needs to be accounted for in offset calc
+                foreach (string label in labels.Keys)
+                {
+                    dataStart += (uint)((label.Length * 2) + 2 + sizeof(uint)); // 2 bytes per char, 2 bytes for nullTermination, sizeof for the pointer
+                }
+                // Write label table
+                foreach (KeyValuePair<string, long> kvp in labels)
+                {
+                    fw.Write(kvp.Key, true);
+                    fw.Write((uint)(kvp.Value + dataStart));
+                }
+                ms.Position = 0;
+                ms.CopyTo(fw.BaseStream);
+            }
+        }
+        // Maps
         foreach (string name in Map.Ids)
         {
             new Map(name).Save();

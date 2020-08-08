@@ -3,18 +3,19 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Transition;
-using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Script;
+using Kermalis.PokemonGameEngine.World;
+using Kermalis.PokemonGameEngine.World.Objs;
 using System.Collections.Generic;
 using System.Threading;
-using Kermalis.PokemonGameEngine.World.Objs;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Game
     {
         private const int NumTicksPerSecond = 20;
+        private readonly object _threadLockObj = new object();
 
         public static Game Instance { get; private set; }
         public Save Save { get; }
@@ -104,45 +105,52 @@ namespace Kermalis.PokemonGameEngine.Core
 
         private void LogicTick()
         {
-            if (_battleTransition != null || _fadeFromTransition != null || _fadeToTransition != null)
+            lock (_threadLockObj)
             {
-                return;
+                if (_battleTransition != null || _fadeFromTransition != null || _fadeToTransition != null)
+                {
+                    return;
+                }
+                if (_battleGUI != null)
+                {
+                    _battleGUI.LogicTick();
+                    return;
+                }
+                _overworldGUI.LogicTick();
             }
-            if (_battleGUI != null)
-            {
-                _battleGUI.LogicTick();
-                return;
-            }
-            _overworldGUI.LogicTick();
         }
 
-        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight, int? fps)
         {
-            if (_battleTransition != null)
+            lock (_threadLockObj)
             {
-                _battleTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                return;
+                if (_battleTransition != null)
+                {
+                    _battleTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    goto bottom;
+                }
+                if (_battleGUI != null)
+                {
+                    _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    goto bottom;
+                }
+                _overworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                if (_fadeFromTransition != null)
+                {
+                    _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    goto bottom;
+                }
+                if (_fadeToTransition != null)
+                {
+                    _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    goto bottom;
+                }
+            bottom:
+                if (fps.HasValue)
+                {
+                    Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, fps.Value.ToString(), Font.DefaultFemale);
+                }
             }
-            if (_battleGUI != null)
-            {
-                _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                return;
-            }
-            _overworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            if (_fadeFromTransition != null)
-            {
-                _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                return;
-            }
-            if (_fadeToTransition != null)
-            {
-                _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                return;
-            }
-        }
-        public unsafe void RenderFPS(uint* bmpAddress, int bmpWidth, int bmpHeight, int fps)
-        {
-            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, fps.ToString(), Font.DefaultFemale);
         }
     }
 }

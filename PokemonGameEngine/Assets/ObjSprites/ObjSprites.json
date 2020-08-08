@@ -1,0 +1,12 @@
+{
+  "Player": {
+    "Sprites": "TestPlayer.png",
+    "Width": 32,
+    "Height": 32
+  },
+  "Item": {
+    "Sprites": "TestItem.png",
+    "Width": 16,
+    "Height": 16
+  }
+}

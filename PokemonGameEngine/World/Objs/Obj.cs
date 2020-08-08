@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Scripts;
+﻿using Kermalis.PokemonGameEngine.Scripts;
 using System;
 using System.Collections.Generic;
 
@@ -26,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
         }
 
-        public static readonly List<Obj> LoadedObjs = new List<Obj>();
+        public static readonly List<Obj> LoadedObjs = new List<Obj>(); // Only used by GetObj()
 
         public readonly ushort Id;
 
@@ -38,14 +37,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public bool CanMove = true; // Not too thought-out, so I'll probably end up removing it when scripting/waterfall/currents/spin tiles etc are implemented
         protected float _movementTimer = 1;
         protected float _movementSpeed;
+        protected int _progressX;
+        protected int _progressY;
         protected const float FaceMovementSpeed = 1 / 3f;
         protected const float NormalMovementSpeed = 1 / 6f;
         protected const float RunningMovementSpeed = 1 / 4f;
         protected const float DiagonalMovementSpeedModifier = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
         protected const float BlockedMovementSpeedModifier = 0.8f;
         protected const int StairYOffset = 6; // Any offset will work
-        public int ProgressX;
-        public int ProgressY;
 
         protected Obj(ushort id)
         {
@@ -413,8 +412,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 // Scale from previous value to new value based on % of transition
                 return (int)(prevVisualOfs + (t * visualOfsScale));
             }
-            ProgressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, Overworld.Block_NumPixelsX);
-            ProgressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, Overworld.Block_NumPixelsY);
+            _progressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, Overworld.Block_NumPixelsX);
+            _progressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, Overworld.Block_NumPixelsY);
         }
         public void UpdateMovementTimer()
         {
@@ -446,8 +445,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             _movementSpeed = other._movementSpeed;
             Pos = other.Pos;
             PrevPos = other.PrevPos;
-            ProgressX = other.ProgressX;
-            ProgressY = other.ProgressY;
+            _progressX = other._progressX;
+            _progressY = other._progressY;
             UpdateMap(other.Map);
         }
         protected virtual void UpdateMap(Map newMap)

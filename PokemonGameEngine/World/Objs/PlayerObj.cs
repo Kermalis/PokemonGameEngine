@@ -5,7 +5,7 @@
         public static readonly PlayerObj Player = new PlayerObj();
 
         private PlayerObj()
-            : base(Overworld.PlayerId, "TestNPC.png", 32, 32)
+            : base(Overworld.PlayerId, "Player")
         {
         }
     }
