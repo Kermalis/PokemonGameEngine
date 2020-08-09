@@ -35,12 +35,16 @@
                       <ComboBox.ItemTemplate>
                         <DataTemplate>
                           <StackPanel Spacing="5" Orientation="Horizontal">
-                            <TextBlock Text="X: "/>
-                            <TextBlock Text="{Binding X}"/>
-                            <TextBlock Text="  Y: "/>
-                            <TextBlock Text="{Binding Y}"/>
-                            <TextBlock Text="  Elevation: "/>
-                            <TextBlock Text="{Binding Elevation}"/>
+                            <TextBlock>
+                              <TextBlock.Text>
+                                <MultiBinding StringFormat="{}[X: {0}] [Y: {1}] [Elevation: {2}] [Dest. Map: {3}]">
+                                  <Binding Path="X"/>
+                                  <Binding Path="Y"/>
+                                  <Binding Path="Elevation"/>
+                                  <Binding Path="DestMap"/>
+                                </MultiBinding>
+                              </TextBlock.Text>
+                            </TextBlock>
                           </StackPanel>
                         </DataTemplate>
                       </ComboBox.ItemTemplate>
@@ -89,12 +93,17 @@
                       <ComboBox.ItemTemplate>
                         <DataTemplate>
                           <StackPanel Spacing="5" Orientation="Horizontal">
-                            <TextBlock Text="X: "/>
-                            <TextBlock Text="{Binding X}"/>
-                            <TextBlock Text="  Y: "/>
-                            <TextBlock Text="{Binding Y}"/>
-                            <TextBlock Text="  Elevation: "/>
-                            <TextBlock Text="{Binding Elevation}"/>
+                            <TextBlock>
+                              <TextBlock.Text>
+                                <MultiBinding StringFormat="{}[X: {0}] [Y: {1}] [Elevation: {2}] [Id: {3}] [Sprite: {4}]">
+                                  <Binding Path="X"/>
+                                  <Binding Path="Y"/>
+                                  <Binding Path="Elevation"/>
+                                  <Binding Path="Id"/>
+                                  <Binding Path="Sprite"/>
+                                </MultiBinding>
+                              </TextBlock.Text>
+                            </TextBlock>
                           </StackPanel>
                         </DataTemplate>
                       </ComboBox.ItemTemplate>
@@ -131,10 +140,10 @@
                     <NumericUpDown Value="{Binding SelectedObject.TrainerSight}" />
                   </StackPanel>
                   <StackPanel Spacing="5" Orientation="Horizontal">
-                    <TextBlock Text="Script: " VerticalAlignment="Center" />
-                    <TextBox Text="{Binding SelectedObject.Script}" />
-                    <TextBlock Text="  Flag: " VerticalAlignment="Center" />
+                    <TextBlock Text="Flag: " VerticalAlignment="Center" />
                     <ComboBox Items="{Binding SelectedObject.SelectableFlags}" SelectedItem="{Binding SelectedObject.Flag}" />
+                    <TextBlock Text="  Script: " VerticalAlignment="Center" />
+                    <TextBox Text="{Binding SelectedObject.Script}" />
                   </StackPanel>
                 </StackPanel>
               </Border>
