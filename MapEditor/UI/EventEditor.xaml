@@ -123,7 +123,7 @@
                   </StackPanel>
                   <StackPanel Spacing="5" Orientation="Horizontal">
                     <TextBlock Text="Sprite: " VerticalAlignment="Center" />
-                    <TextBox Text="{Binding SelectedObject.Sprite}" />
+                    <ComboBox Items="{x:Static core:SpriteSheet.SheetsNames}" SelectedItem="{Binding SelectedObject.Sprite}" />
                   </StackPanel>
                   <StackPanel Spacing="5" Orientation="Horizontal">
                     <TextBlock Text="Movement Type: " VerticalAlignment="Center" />
