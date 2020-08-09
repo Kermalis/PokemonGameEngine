@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:core="clr-namespace:Kermalis.MapEditor.Core;assembly=MapEditor"
         xmlns:ui="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
+        xmlns:uimodels="clr-namespace:Kermalis.MapEditor.UI.Models;assembly=MapEditor"
         x:Class="Kermalis.MapEditor.UI.EventEditor" Padding="2">
   <Grid>
     <Grid.ColumnDefinitions>
@@ -127,7 +128,7 @@
                   </StackPanel>
                   <StackPanel Spacing="5" Orientation="Horizontal">
                     <TextBlock Text="Movement Type: " VerticalAlignment="Center" />
-                    <ComboBox Items="{Binding SelectedObject.SelectableMovementTypes}" SelectedItem="{Binding SelectedObject.MovementType}" />
+                    <ComboBox Items="{x:Static uimodels:ObjectEventModel.SelectableMovementTypes}" SelectedItem="{Binding SelectedObject.MovementType}" />
                     <TextBlock Text="  Movement X: " VerticalAlignment="Center" />
                     <NumericUpDown Value="{Binding SelectedObject.MovementX}" />
                     <TextBlock Text="  Movement Y: " VerticalAlignment="Center" />
@@ -135,13 +136,13 @@
                   </StackPanel>
                   <StackPanel Spacing="5" Orientation="Horizontal">
                     <TextBlock Text="Trainer Type: " VerticalAlignment="Center" />
-                    <ComboBox Items="{Binding SelectedObject.SelectableTrainerTypes}" SelectedItem="{Binding SelectedObject.TrainerType}" />
+                    <ComboBox Items="{x:Static uimodels:ObjectEventModel.SelectableTrainerTypes}" SelectedItem="{Binding SelectedObject.TrainerType}" />
                     <TextBlock Text="  Trainer Sight: " VerticalAlignment="Center" />
                     <NumericUpDown Value="{Binding SelectedObject.TrainerSight}" />
                   </StackPanel>
                   <StackPanel Spacing="5" Orientation="Horizontal">
                     <TextBlock Text="Flag: " VerticalAlignment="Center" />
-                    <ComboBox Items="{Binding SelectedObject.SelectableFlags}" SelectedItem="{Binding SelectedObject.Flag}" />
+                    <ComboBox Items="{x:Static uimodels:ObjectEventModel.SelectableFlags}" SelectedItem="{Binding SelectedObject.Flag}" />
                     <TextBlock Text="  Script: " VerticalAlignment="Center" />
                     <TextBox Text="{Binding SelectedObject.Script}" />
                   </StackPanel>
