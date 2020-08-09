@@ -84,12 +84,10 @@ namespace Kermalis.MapEditor.UI
             get => _selectedGroup;
             set
             {
-                if (value != _selectedGroup)
-                {
-                    _selectedGroup = value;
-                    OnPropertyChanged(nameof(SelectedGroup));
-                    LoadEncounterTable(value == -1 ? null : _grp.Groups[value].Table);
-                }
+                // #34, do not check for != because then we do not load the new table when _grp changes
+                _selectedGroup = value;
+                OnPropertyChanged(nameof(SelectedGroup));
+                LoadEncounterTable(value == -1 ? null : _grp.Groups[value].Table);
             }
         }
         private int _selectedTable = -1;
