@@ -107,20 +107,21 @@ namespace Kermalis.MapEditor.Core
         }
         private static EncounterTable LoadOrGet(string name, int id)
         {
-            EncounterTable w;
+            EncounterTable e;
             if (!_loadedEncounterTables.ContainsKey(id))
             {
-                w = new EncounterTable(name, id);
-                _loadedEncounterTables.Add(id, new WeakReference<EncounterTable>(w));
-                return w;
+                e = new EncounterTable(name, id);
+                _loadedEncounterTables.Add(id, new WeakReference<EncounterTable>(e));
+                return e;
             }
-            if (_loadedEncounterTables[id].TryGetTarget(out w))
+            WeakReference<EncounterTable> w = _loadedEncounterTables[id];
+            if (w.TryGetTarget(out e))
             {
-                return w;
+                return e;
             }
-            w = new EncounterTable(name, id);
-            _loadedEncounterTables[id].SetTarget(w);
-            return w;
+            e = new EncounterTable(name, id);
+            w.SetTarget(e);
+            return e;
         }
 
         internal float GetChanceOfPhenomenon()

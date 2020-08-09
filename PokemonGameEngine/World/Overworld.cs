@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 
 namespace Kermalis.PokemonGameEngine.World
@@ -25,7 +26,7 @@ namespace Kermalis.PokemonGameEngine.World
         // TODO: Biking lowers the rate by 20% according to gen 3, running does not affect (according to gen 3, maybe it does after)
         public static bool CheckForWildBattle(bool ignoreAbilityOrItem)
         {
-            Obj player = Obj.Player;
+            PlayerObj player = PlayerObj.Player;
             Map.Layout.Block block = player.GetBlock(out Map map);
             EncounterType t;
             switch (block.BlocksetBlock.Behavior)
@@ -88,7 +89,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         public static bool ShouldRenderDayTint()
         {
-            return Obj.Camera.Map.MapDetails.Flags.HasFlag(MapFlags.DayTint);
+            return CameraObj.Camera.Map.MapDetails.Flags.HasFlag(MapFlags.DayTint);
         }
         public static PBEWeather GetPBEWeatherFromMap(Map map)
         {

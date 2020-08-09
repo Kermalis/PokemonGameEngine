@@ -1,5 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
 using Kermalis.PokemonGameEngine.Util;
+using System;
+using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
@@ -9,7 +11,7 @@ namespace Kermalis.PokemonGameEngine.Render
         public int Width { get; }
         public int Height { get; }
 
-        public Sprite(string resource)
+        private Sprite(string resource)
         {
             using (var wb = RenderUtils.ToWriteableBitmap(new Bitmap(Utils.GetResourceStream(resource))))
             {
@@ -24,11 +26,32 @@ namespace Kermalis.PokemonGameEngine.Render
             Width = width;
             Height = height;
         }
-        public Sprite(uint[] vs, int spriteWidth, int spriteHeight)
+        public Sprite(uint[] bitmap, int spriteWidth, int spriteHeight)
         {
-            Bitmap = vs;
+            Bitmap = bitmap;
             Width = spriteWidth;
             Height = spriteHeight;
+        }
+
+
+        private static readonly Dictionary<string, WeakReference<Sprite>> _loadedSprites = new Dictionary<string, WeakReference<Sprite>>();
+        public static Sprite LoadOrGet(string resource)
+        {
+            Sprite s;
+            if (!_loadedSprites.ContainsKey(resource))
+            {
+                s = new Sprite(resource);
+                _loadedSprites.Add(resource, new WeakReference<Sprite>(s));
+                return s;
+            }
+            WeakReference<Sprite> w = _loadedSprites[resource];
+            if (w.TryGetTarget(out s))
+            {
+                return s;
+            }
+            s = new Sprite(resource);
+            w.SetTarget(s);
+            return s;
         }
 
         public unsafe delegate void DrawMethod(uint* bmpAddress, int bmpWidth, int bmpHeight);

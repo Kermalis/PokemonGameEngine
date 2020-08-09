@@ -271,12 +271,13 @@ namespace Kermalis.MapEditor.Core
                 _loadedBlocksets.Add(id, new WeakReference<Blockset>(b));
                 return b;
             }
-            if (_loadedBlocksets[id].TryGetTarget(out b))
+            WeakReference<Blockset> w = _loadedBlocksets[id];
+            if (w.TryGetTarget(out b))
             {
                 return b;
             }
             b = new Blockset(name, id);
-            _loadedBlocksets[id].SetTarget(b);
+            w.SetTarget(b);
             return b;
         }
 

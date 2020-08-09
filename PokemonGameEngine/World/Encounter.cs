@@ -54,20 +54,21 @@ namespace Kermalis.PokemonGameEngine.World
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
-            EncounterTable w;
+            EncounterTable e;
             if (!_loadedEncounterTables.ContainsKey(id))
             {
-                w = new EncounterTable(name);
-                _loadedEncounterTables.Add(id, new WeakReference<EncounterTable>(w));
-                return w;
+                e = new EncounterTable(name);
+                _loadedEncounterTables.Add(id, new WeakReference<EncounterTable>(e));
+                return e;
             }
-            if (_loadedEncounterTables[id].TryGetTarget(out w))
+            WeakReference<EncounterTable> w = _loadedEncounterTables[id];
+            if (w.TryGetTarget(out e))
             {
-                return w;
+                return e;
             }
-            w = new EncounterTable(name);
-            _loadedEncounterTables[id].SetTarget(w);
-            return w;
+            e = new EncounterTable(name);
+            w.SetTarget(e);
+            return e;
         }
 
         public ushort GetCombinedChance()

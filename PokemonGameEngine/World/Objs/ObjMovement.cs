@@ -1,99 +1,60 @@
-﻿using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Scripts;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
-namespace Kermalis.PokemonGameEngine.World
+namespace Kermalis.PokemonGameEngine.World.Objs
 {
-    // Script movements handled in Script/ScriptMovements.cs
-    internal sealed partial class Obj
+    internal abstract partial class Obj
     {
-        public struct Position
+        private bool ElevationCheck(BlocksetBlockBehavior curBehavior, BlocksetBlockBehavior targetBehavior, byte curElevation, byte targetElevation)
         {
-            public int X;
-            public int Y;
-            public byte Elevation;
-            public int XOffset;
-            public int YOffset;
+            if (curElevation == targetElevation)
+            {
+                return true;
+            }
+            return Overworld.AllowsElevationChange(curBehavior) || Overworld.AllowsElevationChange(targetBehavior);
         }
-
-        public static readonly List<Obj> LoadedObjs = new List<Obj>(); // TODO: Unload ones that are too far (right now they stay forever and hold references to their map)
-
-        public const ushort PlayerId = ushort.MaxValue;
-        public const ushort CameraId = PlayerId - 1;
-
-        public static readonly Obj Player = new Obj(PlayerId, "TestNPC.png", 32, 32);
-        public static readonly Obj Camera = new Obj(CameraId);
-        public static int CameraOfsX;
-        public static int CameraOfsY;
-        public static Obj CameraAttachedTo = Player;
-
-        public readonly ushort Id;
-
-        public FacingDirection Facing;
-        public Position Pos;
-        public Position PrevPos;
-        public Map Map;
-
-        public bool CanMove = true; // Not too thought-out, so I'll probably end up removing it when scripting/waterfall/currents/spin tiles etc are implemented
-        private float _movementTimer = 1;
-        private float _movementSpeed;
-        private const float FaceMovementSpeed = 1 / 3f;
-        private const float NormalMovementSpeed = 1 / 6f;
-        private const float RunningMovementSpeed = 1 / 4f;
-        private const float DiagonalMovementSpeedModifier = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
-        private const float BlockedMovementSpeedModifier = 0.8f;
-        private const int StairYOffset = 6; // Any offset will work
-        private bool _leg;
-        public int ProgressX;
-        public int ProgressY;
-
-        public readonly int SpriteWidth;
-        public readonly int SpriteHeight;
-        private readonly Sprite[] _tempSpriteSheet;
-
-        private Obj(ushort id)
+        private bool CanMoveTo_Cardinal__CanOccupy(int targetX, int targetY,
+            BlocksetBlockBehavior curBehavior, BlocksetBlockBehavior blockedTarget, bool checkElevation, byte curElevation)
         {
-            Id = id;
-            Pos = new Position();
-            PrevPos = new Position();
-            LoadedObjs.Add(this);
+            // Get the x/y/map of the target block
+            Map.GetXYMap(targetX, targetY, out int outX, out int outY, out Map outMap);
+            Map.Layout.Block targetBlock = outMap.GetBlock_InBounds(outX, outY);
+            // Check occupancy permission
+            if ((targetBlock.Passage & LayoutBlockPassage.AllowOccupancy) == 0)
+            {
+                return false;
+            }
+            // Check block behaviors
+            BlocksetBlockBehavior targetBehavior = targetBlock.BlocksetBlock.Behavior;
+            if (targetBehavior == BlocksetBlockBehavior.Surf || targetBehavior == blockedTarget)
+            {
+                return false;
+            }
+            // Check elevation
+            byte targetElevation = targetBlock.Elevation;
+            if (checkElevation && !ElevationCheck(curBehavior, targetBehavior, curElevation, targetElevation))
+            {
+                return false;
+            }
+            // Check if we can pass through objs at the position
+            if (CollidesWithAny_InBounds(outMap, outX, outY, targetElevation))
+            {
+                return false;
+            }
+            return true;
         }
-        public Obj(ushort id, string resource, int spriteWidth, int spriteHeight)
-        {
-            _tempSpriteSheet = RenderUtils.LoadSpriteSheet(resource, spriteWidth, spriteHeight);
-            Id = id;
-            Pos = new Position();
-            PrevPos = new Position();
-            SpriteWidth = spriteWidth;
-            SpriteHeight = spriteHeight;
-            LoadedObjs.Add(this);
-        }
-
         // South/North
         private bool CanMoveTo_Cardinal(int targetX, int targetY, BlocksetBlockBehavior blockedCurrent, BlocksetBlockBehavior blockedTarget)
         {
             // Current block - return false if we are blocked
             Position p = Pos;
-            Map.Layout.Block curBlock = Map.GetBlock(p.X, p.Y);
+            Map.Layout.Block curBlock = Map.GetBlock_CrossMap(p.X, p.Y);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrent)
             {
                 return false;
             }
             // Target block - return false if we are blocked
-            Map.Layout.Block targetBlock = Map.GetBlock(targetX, targetY);
-            if ((targetBlock.Passage & LayoutBlockPassage.AllowOccupancy) == 0)
-            {
-                return false;
-            }
-            BlocksetBlockBehavior targetBehavior = targetBlock.BlocksetBlock.Behavior;
-            if (targetBehavior == BlocksetBlockBehavior.Surf || targetBehavior == blockedTarget)
-            {
-                return false;
-            }
-            bool canChangeElevation = Overworld.AllowsElevationChange(curBehavior) || Overworld.AllowsElevationChange(targetBehavior);
-            if (!canChangeElevation && targetBlock.Elevation != p.Elevation)
+            if (!CanMoveTo_Cardinal__CanOccupy(targetX, targetY, curBehavior, blockedTarget, true, p.Elevation))
             {
                 return false;
             }
@@ -105,19 +66,25 @@ namespace Kermalis.PokemonGameEngine.World
         {
             // Current block - return false if we are blocked
             Position p = Pos;
-            Map.Layout.Block curBlock = Map.GetBlock(p.X, p.Y);
+            Map.Layout.Block curBlock = Map.GetBlock_CrossMap(p.X, p.Y);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrent)
             {
                 return false;
             }
-            // Stairs - return true if we can go up a stair that's above our target
-            Map.Layout.Block upStairBlock = Map.GetBlock(targetX, targetY - 1);
+            // Stairs - check if we can go up a stair that's above our target
+            Map.GetXYMap(targetX, targetY - 1, out int upStairX, out int upStairY, out Map upStairMap);
+            Map.Layout.Block upStairBlock = upStairMap.GetBlock_InBounds(upStairX, upStairY);
             if ((upStairBlock.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
             {
                 BlocksetBlockBehavior upStairBehavior = upStairBlock.BlocksetBlock.Behavior;
                 if (upStairBehavior == upBehavior)
                 {
+                    // Check if we can pass through objs on the position
+                    if (CollidesWithAny_InBounds(upStairMap, upStairX, upStairY, upStairBlock.Elevation))
+                    {
+                        return false;
+                    }
                     return true;
                 }
             }
@@ -133,23 +100,9 @@ namespace Kermalis.PokemonGameEngine.World
                 canChangeElevation = true;
             }
             // Target block - return false if we are blocked
-            Map.Layout.Block targetBlock = Map.GetBlock(targetX, targetY);
-            if ((targetBlock.Passage & LayoutBlockPassage.AllowOccupancy) == 0)
+            if (!CanMoveTo_Cardinal__CanOccupy(targetX, targetY, curBehavior, blockedTarget, !canChangeElevation, p.Elevation))
             {
                 return false;
-            }
-            BlocksetBlockBehavior targetBehavior = targetBlock.BlocksetBlock.Behavior;
-            if (targetBehavior == BlocksetBlockBehavior.Surf || targetBehavior == blockedTarget)
-            {
-                return false;
-            }
-            if (!canChangeElevation)
-            {
-                canChangeElevation = Overworld.AllowsElevationChange(curBehavior) || Overworld.AllowsElevationChange(targetBehavior);
-                if (!canChangeElevation && targetBlock.Elevation != p.Elevation)
-                {
-                    return false;
-                }
             }
             return true;
         }
@@ -161,54 +114,72 @@ namespace Kermalis.PokemonGameEngine.World
         {
             // Current block - return false if we are blocked
             Position p = Pos;
-            Map.Layout.Block curBlock = Map.GetBlock(p.X, p.Y);
+            Map.Layout.Block curBlock = Map.GetBlock_CrossMap(p.X, p.Y);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrentCardinal1 || curBehavior == blockedCurrentCardinal2 || curBehavior == blockedCurrentDiagonal)
             {
                 return false;
             }
             // Target block - return false if we are blocked
-            Map.Layout.Block targetBlock = Map.GetBlock(targetX, targetY);
+            Map.GetXYMap(targetX, targetY, out int targetOutX, out int targetOutY, out Map targetOutMap);
+            Map.Layout.Block targetBlock = targetOutMap.GetBlock_InBounds(targetOutX, targetOutY);
             if ((targetBlock.Passage & LayoutBlockPassage.AllowOccupancy) == 0)
             {
                 return false;
             }
+            // Check block behaviors
             BlocksetBlockBehavior targetBehavior = targetBlock.BlocksetBlock.Behavior;
             if (targetBehavior == BlocksetBlockBehavior.Surf || targetBehavior == blockedTargetCardinal1 || targetBehavior == blockedTargetCardinal2 || targetBehavior == blockedTargetDiagonal)
             {
                 return false;
             }
-            // Target's neighbors - return false if we cannot pass diagonally through them
-            if (!CanPassThroughDiagonally(neighbor1X, neighbor1Y, neighbor1Passage, blockedTargetCardinal2, blockedTargetCardinal1, blockedNeighbor1)
-                || !CanPassThroughDiagonally(neighbor2X, neighbor2Y, neighbor2Passage, blockedTargetCardinal1, blockedTargetCardinal2, blockedNeighbor2))
+            // Check elevation
+            byte curElevation = p.Elevation;
+            byte targetElevation = targetBlock.Elevation;
+            if (!ElevationCheck(curBehavior, targetBehavior, curElevation, targetElevation))
             {
                 return false;
             }
-            bool canChangeElevation = Overworld.AllowsElevationChange(curBehavior) || Overworld.AllowsElevationChange(targetBehavior);
-            if (!canChangeElevation && targetBlock.Elevation != p.Elevation)
+            // Check if we can pass through objs at the position
+            if (CollidesWithAny_InBounds(targetOutMap, targetOutX, targetOutY, targetElevation))
+            {
+                return false;
+            }
+            // Target's neighbors - check if we can pass through them diagonally
+            if (!CanPassThroughDiagonally(neighbor1X, neighbor1Y, curElevation, neighbor1Passage, blockedTargetCardinal2, blockedTargetCardinal1, blockedNeighbor1)
+                || !CanPassThroughDiagonally(neighbor2X, neighbor2Y, curElevation, neighbor2Passage, blockedTargetCardinal1, blockedTargetCardinal2, blockedNeighbor2))
             {
                 return false;
             }
             return true;
         }
 
-        private bool CanPassThroughDiagonally(int x, int y, LayoutBlockPassage diagonalPassage,
+        private bool CanPassThroughDiagonally(int x, int y, byte elevation, LayoutBlockPassage diagonalPassage,
             BlocksetBlockBehavior blockedCardinal1, BlocksetBlockBehavior blockedCardinal2, BlocksetBlockBehavior blockedDiagonal)
         {
-            Map.Layout.Block block = Map.GetBlock(x, y);
+            // Get the x/y/map of the block
+            Map.GetXYMap(x, y, out int outX, out int outY, out Map outMap);
+            Map.Layout.Block block = outMap.GetBlock_InBounds(outX, outY);
+            // Check occupancy permission
             if ((block.Passage & diagonalPassage) == 0)
             {
                 return false;
             }
+            // Check block behaviors
             BlocksetBlockBehavior blockBehavior = block.BlocksetBlock.Behavior;
             if (blockBehavior == blockedCardinal1 || blockBehavior == blockedCardinal2 || blockBehavior == blockedDiagonal)
             {
                 return false;
             }
+            // Check if we can pass through objs at the position (only checks current elevation, not the target elevation or any other elevations)
+            if (CollidesWithAny_InBounds(outMap, outX, outY, elevation))
+            {
+                return false;
+            }
             return true;
         }
 
-        private bool IsMovementLegal(FacingDirection facing)
+        protected bool IsMovementLegal(FacingDirection facing)
         {
             Position p = Pos;
             int x = p.X;
@@ -267,7 +238,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         private void ApplyStairMovement(Position curPos, BlocksetBlockBehavior upBehavior, BlocksetBlockBehavior downBehavior)
         {
-            Map.Layout.Block curBlock = Map.GetBlock(curPos.X, curPos.Y);
+            Map.Layout.Block curBlock = Map.GetBlock_InBounds(curPos.X, curPos.Y);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == downBehavior)
             {
@@ -276,7 +247,7 @@ namespace Kermalis.PokemonGameEngine.World
             Position newPos = Pos;
             int newX = newPos.X;
             int newY = newPos.Y;
-            Map.Layout.Block upStairBlock = Map.GetBlock(newX, newY - 1);
+            Map.Layout.Block upStairBlock = Map.GetBlock_CrossMap(newX, newY - 1);
             BlocksetBlockBehavior upStairBehavior = upStairBlock.BlocksetBlock.Behavior;
             if (upStairBehavior == upBehavior)
             {
@@ -284,7 +255,7 @@ namespace Kermalis.PokemonGameEngine.World
                 Pos.YOffset = StairYOffset;
                 return;
             }
-            Map.Layout.Block newBlock = Map.GetBlock(newX, newY);
+            Map.Layout.Block newBlock = Map.GetBlock_CrossMap(newX, newY);
             BlocksetBlockBehavior newBehavior = newBlock.BlocksetBlock.Behavior;
             if (newBehavior == downBehavior)
             {
@@ -373,12 +344,11 @@ namespace Kermalis.PokemonGameEngine.World
         }
 
         // TODO: Ledges, waterfall, etc
-        public bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
+        public virtual bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
         {
             CanMove = false;
             _movementTimer = 0;
             _movementSpeed = run ? RunningMovementSpeed : NormalMovementSpeed;
-            _leg = !_leg;
             Facing = facing;
             PrevPos = Pos;
             bool success = ignoreLegalCheck || IsMovementLegal(facing);
@@ -386,9 +356,9 @@ namespace Kermalis.PokemonGameEngine.World
             {
                 ApplyMovement(facing);
                 UpdateXYProgress();
-                if (CameraAttachedTo == this)
+                if (CameraObj.CameraAttachedTo == this)
                 {
-                    CameraCopyMovement();
+                    CameraObj.CameraCopyMovement();
                 }
             }
             else
@@ -398,12 +368,11 @@ namespace Kermalis.PokemonGameEngine.World
             return success;
         }
 
-        public void Face(FacingDirection facing)
+        public virtual void Face(FacingDirection facing)
         {
             CanMove = false;
             _movementTimer = 0;
             _movementSpeed = FaceMovementSpeed;
-            _leg = !_leg;
             Facing = facing;
             PrevPos = Pos;
             UpdateXYProgress();
@@ -424,8 +393,8 @@ namespace Kermalis.PokemonGameEngine.World
                 // Scale from previous value to new value based on % of transition
                 return (int)(prevVisualOfs + (t * visualOfsScale));
             }
-            ProgressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, Overworld.Block_NumPixelsX);
-            ProgressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, Overworld.Block_NumPixelsY);
+            _progressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, Overworld.Block_NumPixelsX);
+            _progressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, Overworld.Block_NumPixelsY);
         }
         public void UpdateMovementTimer()
         {
@@ -450,103 +419,16 @@ namespace Kermalis.PokemonGameEngine.World
             }
             UpdateXYProgress();
         }
-        public static void CameraCopyMovement()
-        {
-            Obj c = Camera;
-            Obj other = CameraAttachedTo;
-            c.CopyMovement(other);
-        }
-        public void CopyMovement(Obj other)
+        public virtual void CopyMovement(Obj other)
         {
             CanMove = other.CanMove;
             _movementTimer = other._movementTimer;
             _movementSpeed = other._movementSpeed;
-            _leg = other._leg;
             Pos = other.Pos;
             PrevPos = other.PrevPos;
-            ProgressX = other.ProgressX;
-            ProgressY = other.ProgressY;
+            _progressX = other._progressX;
+            _progressY = other._progressY;
             UpdateMap(other.Map);
-        }
-        private void UpdateMap(Map newMap)
-        {
-            Map curMap = Map;
-            if (curMap != newMap)
-            {
-                curMap.Objs.Remove(this);
-                newMap.Objs.Add(this);
-                Map = newMap;
-            }
-        }
-
-        public static Obj GetObj(ushort id)
-        {
-            foreach (Obj o in LoadedObjs)
-            {
-                if (o.Id == id)
-                {
-                    return o;
-                }
-            }
-            return null;
-        }
-
-        public Map.Layout.Block GetBlock()
-        {
-            return GetBlock(out _);
-        }
-        public Map.Layout.Block GetBlock(out Map map)
-        {
-            Position p = Pos;
-            return Map.GetBlock(p.X, p.Y, out map);
-        }
-
-        public void Warp(IWarp warp)
-        {
-            var map = Map.LoadOrGet(warp.DestMapId);
-            int x = warp.DestX;
-            int y = warp.DestY;
-            byte e = warp.DestElevation;
-            Map.Layout.Block block = map.GetBlock(x, y, out map); // Out map in case our warp is actually in a connection for some reason
-            // Facing is of the original direction unless the block behavior says otherwise
-            // All QueuedScriptMovements will be run after the warp is complete
-            switch (block.BlocksetBlock.Behavior)
-            {
-                case BlocksetBlockBehavior.Warp_WalkSouthOnExit:
-                {
-                    Facing = FacingDirection.South;
-                    QueuedScriptMovements.Enqueue(ScriptMovement.Walk_S);
-                    break;
-                }
-                case BlocksetBlockBehavior.Warp_NoOccupancy_S:
-                {
-                    Facing = FacingDirection.North;
-                    y--;
-                    break;
-                }
-            }
-            UpdateMap(map);
-            Pos.X = x;
-            Pos.Y = y;
-            Pos.Elevation = e;
-            PrevPos = Pos;
-            if (CameraAttachedTo == this)
-            {
-                CameraCopyMovement();
-            }
-        }
-
-        // TODO: Shadows, reflections
-        public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
-        {
-            bool ShowLegs()
-            {
-                float t = _movementTimer;
-                return t != 1 && t >= 0.6f;
-            }
-            byte f = (byte)Facing;
-            int spriteNum = ShowLegs() ? (_leg ? f + 8 : f + 16) : f; // TODO: Fall-back to specific sprites if the target sprite doesn't exist
-            _tempSpriteSheet[spriteNum].DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y);
         }
     }
 }

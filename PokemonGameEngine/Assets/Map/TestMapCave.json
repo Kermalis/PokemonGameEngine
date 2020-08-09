@@ -31,6 +31,22 @@
         "DestY": 8,
         "DestElevation": 0
       }
+    ],
+    "Objs": [
+      {
+        "X": 14,
+        "Y": 7,
+        "Elevation": 0,
+        "Id": 0,
+        "Sprite": "Player",
+        "MovementType": "Face_South",
+        "MovementX": 0,
+        "MovementY": 0,
+        "TrainerType": "None",
+        "TrainerSight": 0,
+        "Script": "",
+        "Flag": "Test0"
+      }
     ]
   }
 }

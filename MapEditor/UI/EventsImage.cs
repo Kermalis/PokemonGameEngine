@@ -75,6 +75,17 @@ namespace Kermalis.MapEditor.UI
                     context.DrawRectangle(_pen, r2);
                     context.DrawText(Brushes.White, new Point(ex, ey), _text);
                 }
+                _brush.Color = Color.FromUInt32(0x80808000);
+                _text.Text = "O";
+                foreach (Map.Events.ObjEvent obj in events.Objs)
+                {
+                    int ex = obj.X * Overworld.Block_NumPixelsX;
+                    int ey = obj.Y * Overworld.Block_NumPixelsY;
+                    var r2 = new Rect(ex, ey, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
+                    context.FillRectangle(_brush, r2);
+                    context.DrawRectangle(_pen, r2);
+                    context.DrawText(Brushes.White, new Point(ex, ey), _text);
+                }
             }
         }
         protected override Size MeasureOverride(Size availableSize)

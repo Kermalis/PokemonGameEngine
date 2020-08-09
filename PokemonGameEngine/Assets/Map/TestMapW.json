@@ -32,6 +32,22 @@
         "DestY": 27,
         "DestElevation": 0
       }
+    ],
+    "Objs": [
+      {
+        "X": 13,
+        "Y": 11,
+        "Elevation": 0,
+        "Id": 1,
+        "Sprite": "Item",
+        "MovementType": "Face_South",
+        "MovementX": 0,
+        "MovementY": 0,
+        "TrainerType": "None",
+        "TrainerSight": 0,
+        "Script": "TestScript",
+        "Flag": "MAX"
+      }
     ]
   }
 }

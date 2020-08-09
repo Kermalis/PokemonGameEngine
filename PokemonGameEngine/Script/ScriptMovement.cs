@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace Kermalis.PokemonGameEngine.World
+namespace Kermalis.PokemonGameEngine.World.Objs
 {
-    internal sealed partial class Obj
+    internal abstract partial class Obj
     {
         public readonly Queue<ScriptMovement> QueuedScriptMovements = new Queue<ScriptMovement>();
 

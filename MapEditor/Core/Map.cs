@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.EndianBinaryIO;
 using Kermalis.MapEditor.Util;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.World;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -124,12 +125,82 @@ namespace Kermalis.MapEditor.Core
                     w.WriteEndObject();
                 }
             }
+            public sealed class ObjEvent
+            {
+                public int X;
+                public int Y;
+                public byte Elevation;
+
+                public ushort Id;
+                public string Sprite;
+                public ObjMovementType MovementType;
+                public int MovementX;
+                public int MovementY;
+                public TrainerType TrainerType;
+                public byte TrainerSight;
+                public string Script;
+                public Flag Flag;
+
+                public ObjEvent()
+                {
+                    Script = string.Empty;
+                }
+                public ObjEvent(JToken j)
+                {
+                    X = j[nameof(X)].Value<int>();
+                    Y = j[nameof(Y)].Value<int>();
+                    Elevation = j[nameof(Elevation)].Value<byte>();
+
+                    Id = j[nameof(Id)].Value<ushort>();
+                    Sprite = j[nameof(Sprite)].Value<string>();
+                    MovementType = j[nameof(MovementType)].EnumValue<ObjMovementType>();
+                    MovementX = j[nameof(MovementX)].Value<int>();
+                    MovementY = j[nameof(MovementY)].Value<int>();
+                    TrainerType = j[nameof(TrainerType)].EnumValue<TrainerType>();
+                    TrainerSight = j[nameof(TrainerSight)].Value<byte>();
+                    Script = j[nameof(Script)].Value<string>();
+                    Flag = j[nameof(Flag)].EnumValue<Flag>();
+                }
+
+                public void Write(JsonTextWriter w)
+                {
+                    w.WriteStartObject();
+                    w.WritePropertyName(nameof(X));
+                    w.WriteValue(X);
+                    w.WritePropertyName(nameof(Y));
+                    w.WriteValue(Y);
+                    w.WritePropertyName(nameof(Elevation));
+                    w.WriteValue(Elevation);
+
+                    w.WritePropertyName(nameof(Id));
+                    w.WriteValue(Id);
+                    w.WritePropertyName(nameof(Sprite));
+                    w.WriteValue(Sprite);
+                    w.WritePropertyName(nameof(MovementType));
+                    w.WriteEnum(MovementType);
+                    w.WritePropertyName(nameof(MovementX));
+                    w.WriteValue(MovementX);
+                    w.WritePropertyName(nameof(MovementY));
+                    w.WriteValue(MovementY);
+                    w.WritePropertyName(nameof(TrainerType));
+                    w.WriteEnum(TrainerType);
+                    w.WritePropertyName(nameof(TrainerSight));
+                    w.WriteValue(TrainerSight);
+                    w.WritePropertyName(nameof(Script));
+                    w.WriteValue(Script);
+                    w.WritePropertyName(nameof(Flag));
+                    w.WriteEnum(Flag);
+                    w.WriteEndObject();
+                }
+            }
 
             public readonly List<WarpEvent> Warps;
+            public readonly List<ObjEvent> Objs;
 
             public Events()
             {
                 Warps = new List<WarpEvent>();
+                Objs = new List<ObjEvent>();
             }
             public Events(JToken j)
             {
@@ -139,6 +210,13 @@ namespace Kermalis.MapEditor.Core
                 for (int i = 0; i < count; i++)
                 {
                     Warps.Add(new WarpEvent(arr[i]));
+                }
+                arr = (JArray)j[nameof(Objs)];
+                count = arr.Count;
+                Objs = new List<ObjEvent>(count);
+                for (int i = 0; i < count; i++)
+                {
+                    Objs.Add(new ObjEvent(arr[i]));
                 }
             }
 
@@ -150,6 +228,13 @@ namespace Kermalis.MapEditor.Core
                 foreach (WarpEvent warp in Warps)
                 {
                     warp.Write(w);
+                }
+                w.WriteEndArray();
+                w.WritePropertyName(nameof(Objs));
+                w.WriteStartArray();
+                foreach (ObjEvent obj in Objs)
+                {
+                    obj.Write(w);
                 }
                 w.WriteEndArray();
                 w.WriteEndObject();
@@ -293,12 +378,13 @@ namespace Kermalis.MapEditor.Core
                     _loadedLayouts.Add(id, new WeakReference<Layout>(l));
                     return l;
                 }
-                if (_loadedLayouts[id].TryGetTarget(out l))
+                WeakReference<Layout> w = _loadedLayouts[id];
+                if (w.TryGetTarget(out l))
                 {
                     return l;
                 }
                 l = new Layout(name, id);
-                _loadedLayouts[id].SetTarget(l);
+                w.SetTarget(l);
                 return l;
             }
 
@@ -553,12 +639,13 @@ namespace Kermalis.MapEditor.Core
                 _loadedMaps.Add(id, new WeakReference<Map>(m));
                 return m;
             }
-            if (_loadedMaps[id].TryGetTarget(out m))
+            WeakReference<Map> w = _loadedMaps[id];
+            if (w.TryGetTarget(out m))
             {
                 return m;
             }
             m = new Map(name, id);
-            _loadedMaps[id].SetTarget(m);
+            w.SetTarget(m);
             return m;
         }
 

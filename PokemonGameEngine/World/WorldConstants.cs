@@ -16,6 +16,10 @@ namespace Kermalis.PokemonGameEngine.World
         public const int Block_NumTilesY = 2;
         public const int Block_NumPixelsX = Block_NumTilesX * Tile_NumPixelsX;
         public const int Block_NumPixelsY = Block_NumTilesY * Tile_NumPixelsY;
+
+        // Objs
+        public const ushort PlayerId = ushort.MaxValue;
+        public const ushort CameraId = PlayerId - 1;
     }
 
     public enum FacingDirection : byte
@@ -93,6 +97,33 @@ namespace Kermalis.PokemonGameEngine.World
         RareSuperRod, // Rippling Water
         HeadbuttTree,
         HoneyTree
+    }
+
+    public enum TrainerType : byte
+    {
+        None,
+        Normal,
+        SeeAllDirections
+    }
+
+    // To add the code that handles these, go to World/Objs/EventObj.cs
+    // It is very simple to add movements, and they can be as complex as you like
+    public enum ObjMovementType : byte
+    {
+        Face_South,
+        Face_Southwest,
+        Face_Southeast,
+        Face_North,
+        Face_Northwest,
+        Face_Northeast,
+        Face_West,
+        Face_East,
+        Face_Randomly,
+        Wander_Randomly,
+        Wander_SouthAndNorth,
+        Wander_WestAndEast,
+        Walk_WestThenReturn,
+        Walk_EastThenReturn
     }
 
     // These are the sections that define the map name and map location on the world map

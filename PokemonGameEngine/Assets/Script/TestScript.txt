@@ -9,13 +9,11 @@ GoTo TestJump // We will go to TestJump and not come back
 #TestCall
 GivePokemonFormItem Species.Arceus Form.Arceus_Psychic 50 Item.MindPlate // We are using prefixes to denote that we should refer to a specific enum to parse these arguments
 MoveObj 0xFFFF TestMovements // 0xFFFF is the player's ID, but I will have some defines for this later
-MoveObj 0xFFFF-2 TestMovements
-MoveObj 0xFFFF-3 TestMovements
+MoveObj 4 TestMovements
 AwaitObjMovement 0xFFFF
-MoveObj 0xFFFF-4 TestMovements
-MoveObj 0xFFFF-5 TestMovements
-MoveObj 0xFFFF-6 TestMovements
-AwaitObjMovement 0xFFFF-6
+MoveObj 2 TestMovements
+MoveObj 3 TestMovements
+AwaitObjMovement 3
 Return // Go back to where we came from
 
 #TestJump

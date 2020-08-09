@@ -31,8 +31,8 @@ namespace Kermalis.PokemonGameEngine.Util
             Add("Pkmn.FemaleMinispriteLookup.txt", _femaleMinispriteLookup);
             Add("Pkmn.FemaleSpriteLookup.txt", _femaleSpriteLookup);
 
-            _substituteFrontSprite = new Sprite("Pkmn.STATUS2_Substitute_F.gif");
-            _substituteBackSprite = new Sprite("Pkmn.STATUS2_Substitute_B.gif");
+            _substituteFrontSprite = Sprite.LoadOrGet("Pkmn.STATUS2_Substitute_F.gif");
+            _substituteBackSprite = Sprite.LoadOrGet("Pkmn.STATUS2_Substitute_B.gif");
         }
 
         private static readonly object _femaleSpriteLookupLockObj = new object();
@@ -49,7 +49,7 @@ namespace Kermalis.PokemonGameEngine.Util
         {
             string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
             string genderStr = gender == PBEGender.Female && HasFemaleSprite(species, true) ? "_F" : string.Empty;
-            return new Sprite("Pkmn.PKMN_" + speciesStr + (shiny ? "_S" : string.Empty) + genderStr + ".png");
+            return Sprite.LoadOrGet("Pkmn.PKMN_" + speciesStr + (shiny ? "_S" : string.Empty) + genderStr + ".png");
         }
         public static Sprite GetPokemonSprite(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool backSprite, bool behindSubstitute)
         {
@@ -62,7 +62,7 @@ namespace Kermalis.PokemonGameEngine.Util
                 string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
                 string orientation = backSprite ? "_B" : "_F";
                 string genderStr = gender == PBEGender.Female && HasFemaleSprite(species, false) ? "_F" : string.Empty;
-                return new Sprite("Pkmn.PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif");
+                return Sprite.LoadOrGet("Pkmn.PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif");
             }
         }
     }

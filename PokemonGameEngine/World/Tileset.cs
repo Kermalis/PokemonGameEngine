@@ -48,12 +48,13 @@ namespace Kermalis.PokemonGameEngine.World
                 _loadedTilesets.Add(id, new WeakReference<Tileset>(t));
                 return t;
             }
-            if (_loadedTilesets[id].TryGetTarget(out t))
+            WeakReference<Tileset> w = _loadedTilesets[id];
+            if (w.TryGetTarget(out t))
             {
                 return t;
             }
             t = new Tileset(name);
-            _loadedTilesets[id].SetTarget(t);
+            w.SetTarget(t);
             return t;
         }
     }

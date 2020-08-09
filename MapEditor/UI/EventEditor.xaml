@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:core="clr-namespace:Kermalis.MapEditor.Core;assembly=MapEditor"
         xmlns:ui="clr-namespace:Kermalis.MapEditor.UI;assembly=MapEditor"
+        xmlns:uimodels="clr-namespace:Kermalis.MapEditor.UI.Models;assembly=MapEditor"
         x:Class="Kermalis.MapEditor.UI.EventEditor" Padding="2">
   <Grid>
     <Grid.ColumnDefinitions>
@@ -35,12 +36,16 @@
                       <ComboBox.ItemTemplate>
                         <DataTemplate>
                           <StackPanel Spacing="5" Orientation="Horizontal">
-                            <TextBlock Text="X: "/>
-                            <TextBlock Text="{Binding X}"/>
-                            <TextBlock Text="  Y: "/>
-                            <TextBlock Text="{Binding Y}"/>
-                            <TextBlock Text="  Elevation: "/>
-                            <TextBlock Text="{Binding Elevation}"/>
+                            <TextBlock>
+                              <TextBlock.Text>
+                                <MultiBinding StringFormat="{}[X: {0}] [Y: {1}] [Elevation: {2}] [Dest. Map: {3}]">
+                                  <Binding Path="X"/>
+                                  <Binding Path="Y"/>
+                                  <Binding Path="Elevation"/>
+                                  <Binding Path="DestMap"/>
+                                </MultiBinding>
+                              </TextBlock.Text>
+                            </TextBlock>
                           </StackPanel>
                         </DataTemplate>
                       </ComboBox.ItemTemplate>
@@ -65,6 +70,81 @@
                     <NumericUpDown Value="{Binding SelectedWarp.DestY}" />
                     <TextBlock Text="  Dest. Elevation: " VerticalAlignment="Center" />
                     <NumericUpDown Value="{Binding SelectedWarp.DestElevation}" />
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+            </DockPanel>
+          </Border>
+        </TabItem>
+        <TabItem Header="Objects">
+          <Border Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+            <DockPanel>
+              <Border DockPanel.Dock="Top" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                  <Button Content="Add Object" Command="{Binding AddObject}" IsEnabled="{Binding AddObjectEnabled}" />
+                  <Button Content="Remove Selected Object" Command="{Binding RemoveObject}" IsEnabled="{Binding SelectedObject, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                  <TextBlock Text="{Binding NumObjectsText}" VerticalAlignment="Center" />
+                </StackPanel>
+              </Border>
+              <Border IsVisible="{Binding SelectedObject, Converter={x:Static ObjectConverters.IsNotNull}}" Margin="0,2,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+                <StackPanel Spacing="5" Orientation="Vertical">
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Selected Object: " VerticalAlignment="Center" />
+                    <ComboBox Items="{Binding Objects}" SelectedItem="{Binding SelectedObject}">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <StackPanel Spacing="5" Orientation="Horizontal">
+                            <TextBlock>
+                              <TextBlock.Text>
+                                <MultiBinding StringFormat="{}[X: {0}] [Y: {1}] [Elevation: {2}] [Id: {3}] [Sprite: {4}]">
+                                  <Binding Path="X"/>
+                                  <Binding Path="Y"/>
+                                  <Binding Path="Elevation"/>
+                                  <Binding Path="Id"/>
+                                  <Binding Path="Sprite"/>
+                                </MultiBinding>
+                              </TextBlock.Text>
+                            </TextBlock>
+                          </StackPanel>
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="X: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedObject.X}" />
+                    <TextBlock Text="  Y: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedObject.Y}" />
+                    <TextBlock Text="  Elevation: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedObject.Elevation}" />
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Id: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedObject.Id}" />
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Sprite: " VerticalAlignment="Center" />
+                    <ComboBox Items="{x:Static core:SpriteSheet.SheetsNames}" SelectedItem="{Binding SelectedObject.Sprite}" />
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Movement Type: " VerticalAlignment="Center" />
+                    <ComboBox Items="{x:Static uimodels:ObjectEventModel.SelectableMovementTypes}" SelectedItem="{Binding SelectedObject.MovementType}" />
+                    <TextBlock Text="  Movement X: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedObject.MovementX}" />
+                    <TextBlock Text="  Movement Y: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedObject.MovementY}" />
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Trainer Type: " VerticalAlignment="Center" />
+                    <ComboBox Items="{x:Static uimodels:ObjectEventModel.SelectableTrainerTypes}" SelectedItem="{Binding SelectedObject.TrainerType}" />
+                    <TextBlock Text="  Trainer Sight: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedObject.TrainerSight}" />
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Flag: " VerticalAlignment="Center" />
+                    <ComboBox Items="{x:Static uimodels:ObjectEventModel.SelectableFlags}" SelectedItem="{Binding SelectedObject.Flag}" />
+                    <TextBlock Text="  Script: " VerticalAlignment="Center" />
+                    <TextBox Text="{Binding SelectedObject.Script}" />
                   </StackPanel>
                 </StackPanel>
               </Border>

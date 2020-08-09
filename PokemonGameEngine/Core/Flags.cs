@@ -8,8 +8,24 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public bool this[Flag flag]
         {
-            get => _bits[(int)flag];
-            set => _bits[(int)flag] = value;
+            get
+            {
+                if (flag == Flag.MAX)
+                {
+                    return false;
+                }
+                else
+                {
+                    return _bits[(int)flag];
+                }
+            }
+            set
+            {
+                if (flag != Flag.MAX)
+                {
+                    _bits[(int)flag] = value;
+                }
+            }
         }
 
         public Flags()

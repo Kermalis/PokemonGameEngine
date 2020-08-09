@@ -83,9 +83,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
-        private static readonly Sprite _background = new Sprite("GUI.PartyMenu.Background.png");
-        private static readonly Sprite _slot = new Sprite("GUI.PartyMenu.Slot.png");
-        private static readonly Sprite _hpText = new Sprite("GUI.PartyMenu.HP.png");
+        private static readonly Sprite _background = Sprite.LoadOrGet("GUI.PartyMenu.Background.png");
+        private static readonly Sprite _slot = Sprite.LoadOrGet("GUI.PartyMenu.Slot.png");
+        private static readonly Sprite _hpText = Sprite.LoadOrGet("GUI.PartyMenu.HP.png");
 
         private FadeFromColorTransition _fadeFromTransition;
         private FadeToColorTransition _fadeToTransition;

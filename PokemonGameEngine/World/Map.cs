@@ -1,6 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,14 +63,49 @@ namespace Kermalis.PokemonGameEngine.World
                     X = r.ReadInt32();
                     Y = r.ReadInt32();
                     Elevation = r.ReadByte();
+
                     DestMapId = r.ReadInt32();
                     DestX = r.ReadInt32();
                     DestY = r.ReadInt32();
                     DestElevation = r.ReadByte();
                 }
             }
+            public sealed class ObjEvent
+            {
+                public readonly int X;
+                public readonly int Y;
+                public readonly byte Elevation;
+
+                public readonly ushort Id;
+                public readonly string Sprite;
+                public readonly ObjMovementType MovementType;
+                public readonly int MovementX;
+                public readonly int MovementY;
+                public readonly TrainerType TrainerType;
+                public readonly byte TrainerSight;
+                public readonly string Script;
+                public readonly Flag Flag;
+
+                public ObjEvent(EndianBinaryReader r)
+                {
+                    X = r.ReadInt32();
+                    Y = r.ReadInt32();
+                    Elevation = r.ReadByte();
+
+                    Id = r.ReadUInt16();
+                    Sprite = r.ReadStringNullTerminated();
+                    MovementType = r.ReadEnum<ObjMovementType>();
+                    MovementX = r.ReadInt32();
+                    MovementY = r.ReadInt32();
+                    TrainerType = r.ReadEnum<TrainerType>();
+                    TrainerSight = r.ReadByte();
+                    Script = r.ReadStringNullTerminated();
+                    Flag = r.ReadEnum<Flag>();
+                }
+            }
 
             public readonly WarpEvent[] Warps;
+            public readonly ObjEvent[] Objs;
 
             public Events(EndianBinaryReader r)
             {
@@ -78,6 +114,12 @@ namespace Kermalis.PokemonGameEngine.World
                 for (int i = 0; i < count; i++)
                 {
                     Warps[i] = new WarpEvent(r);
+                }
+                count = r.ReadUInt16();
+                Objs = new ObjEvent[count];
+                for (int i = 0; i < count; i++)
+                {
+                    Objs[i] = new ObjEvent(r);
                 }
             }
         }
@@ -161,7 +203,7 @@ namespace Kermalis.PokemonGameEngine.World
             private const string LayoutExtension = ".pgelayout";
             private const string LayoutPath = "Layout.";
             private static readonly IdList _ids = new IdList(LayoutPath + "LayoutIds.txt");
-            private static readonly Dictionary<int, WeakReference<Layout>> loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
+            private static readonly Dictionary<int, WeakReference<Layout>> _loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
             public static Layout LoadOrGet(int id)
             {
                 string name = _ids[id];
@@ -170,18 +212,19 @@ namespace Kermalis.PokemonGameEngine.World
                     throw new ArgumentOutOfRangeException(nameof(id));
                 }
                 Layout l;
-                if (!loadedLayouts.ContainsKey(id))
+                if (!_loadedLayouts.ContainsKey(id))
                 {
                     l = new Layout(name);
-                    loadedLayouts.Add(id, new WeakReference<Layout>(l));
+                    _loadedLayouts.Add(id, new WeakReference<Layout>(l));
                     return l;
                 }
-                if (loadedLayouts[id].TryGetTarget(out l))
+                WeakReference<Layout> w = _loadedLayouts[id];
+                if (w.TryGetTarget(out l))
                 {
                     return l;
                 }
                 l = new Layout(name);
-                loadedLayouts[id].SetTarget(l);
+                w.SetTarget(l);
                 return l;
             }
         }
@@ -214,7 +257,7 @@ namespace Kermalis.PokemonGameEngine.World
         private const string MapExtension = ".pgemap";
         private const string MapPath = "Map.";
         private static readonly IdList _ids = new IdList(MapPath + "MapIds.txt");
-        private static readonly Dictionary<int, WeakReference<Map>> loadedMaps = new Dictionary<int, WeakReference<Map>>();
+        private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new Dictionary<int, WeakReference<Map>>();
         public static Map LoadOrGet(int id)
         {
             string name = _ids[id];
@@ -223,207 +266,189 @@ namespace Kermalis.PokemonGameEngine.World
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
             Map m;
-            if (!loadedMaps.ContainsKey(id))
+            if (!_loadedMaps.ContainsKey(id))
             {
                 m = new Map(name);
-                loadedMaps.Add(id, new WeakReference<Map>(m));
+                _loadedMaps.Add(id, new WeakReference<Map>(m));
                 return m;
             }
-            if (loadedMaps[id].TryGetTarget(out m))
+            WeakReference<Map> w = _loadedMaps[id];
+            if (w.TryGetTarget(out m))
             {
                 return m;
             }
             m = new Map(name);
-            loadedMaps[id].SetTarget(m);
+            w.SetTarget(m);
             return m;
         }
 
-        public Layout.Block GetBlock(int x, int y, out Map map)
+        public void GetXYMap(int x, int y, out int outX, out int outY, out Map outMap)
         {
             Layout ml = MapLayout;
             bool north = y < 0;
             bool south = y >= ml.BlocksHeight;
             bool west = x < 0;
             bool east = x >= ml.BlocksWidth;
-            if (!north && !south && !west && !east)
+            // If we're out of bounds, try to branch into a connection. If we don't find one, we meet at the bottom
+            if (north || south || west || east)
             {
-                map = this;
-                return ml.Blocks[y][x];
-            }
-            // TODO: How should connections retain map references? Answer: Visible maps/objs list
-            Connection[] connections = Connections;
-            int numConnections = connections.Length;
-            for (int i = 0; i < numConnections; i++)
-            {
-                Connection c = connections[i];
-                switch (c.Dir)
+                // TODO: How should connections retain map references? Answer: Visible maps/objs list
+                Connection[] connections = Connections;
+                int numConnections = connections.Length;
+                for (int i = 0; i < numConnections; i++)
                 {
-                    case Connection.Direction.South:
+                    Connection c = connections[i];
+                    switch (c.Dir)
                     {
-                        if (south)
+                        case Connection.Direction.South:
                         {
-                            Map m = LoadOrGet(c.MapId);
-                            Layout l = m.MapLayout;
-                            if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                            if (south)
                             {
-                                return m.GetBlock(x - c.Offset, y - ml.BlocksHeight, out map);
+                                Map m = LoadOrGet(c.MapId);
+                                Layout l = m.MapLayout;
+                                if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                                {
+                                    m.GetXYMap(x - c.Offset, y - ml.BlocksHeight, out outX, out outY, out outMap);
+                                    return;
+                                }
                             }
+                            break;
                         }
-                        break;
-                    }
-                    case Connection.Direction.North:
-                    {
-                        if (north)
+                        case Connection.Direction.North:
                         {
-                            Map m = LoadOrGet(c.MapId);
-                            Layout l = m.MapLayout;
-                            if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                            if (north)
                             {
-                                return m.GetBlock(x - c.Offset, l.BlocksHeight + y, out map);
+                                Map m = LoadOrGet(c.MapId);
+                                Layout l = m.MapLayout;
+                                if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                                {
+                                    m.GetXYMap(x - c.Offset, l.BlocksHeight + y, out outX, out outY, out outMap);
+                                    return;
+                                }
                             }
+                            break;
                         }
-                        break;
-                    }
-                    case Connection.Direction.West:
-                    {
-                        if (west)
+                        case Connection.Direction.West:
                         {
-                            Map m = LoadOrGet(c.MapId);
-                            Layout l = m.MapLayout;
-                            if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                            if (west)
                             {
-                                return m.GetBlock(l.BlocksWidth + x, y - c.Offset, out map);
+                                Map m = LoadOrGet(c.MapId);
+                                Layout l = m.MapLayout;
+                                if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                                {
+                                    m.GetXYMap(l.BlocksWidth + x, y - c.Offset, out outX, out outY, out outMap);
+                                    return;
+                                }
                             }
+                            break;
                         }
-                        break;
-                    }
-                    case Connection.Direction.East:
-                    {
-                        if (east)
+                        case Connection.Direction.East:
                         {
-                            Map m = LoadOrGet(c.MapId);
-                            Layout l = m.MapLayout;
-                            if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                            if (east)
                             {
-                                return m.GetBlock(x - ml.BlocksWidth, y - c.Offset, out map);
+                                Map m = LoadOrGet(c.MapId);
+                                Layout l = m.MapLayout;
+                                if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                                {
+                                    m.GetXYMap(x - ml.BlocksWidth, y - c.Offset, out outX, out outY, out outMap);
+                                    return;
+                                }
                             }
+                            break;
                         }
-                        break;
                     }
                 }
+
             }
-            // Border blocks should count as the calling map
-            map = this;
+            // If we are in bounds, return the current map
+            // If we didn't find a connection, we are at the border, which counts as the current map
+            outX = x;
+            outY = y;
+            outMap = this;
+        }
+        public Layout.Block GetBlock_CrossMap(int x, int y, out Map outMap)
+        {
+            GetXYMap(x, y, out int outX, out int outY, out outMap);
+            return outMap.GetBlock_InBounds(outX, outY);
+        }
+        public Layout.Block GetBlock_CrossMap(int x, int y)
+        {
+            return GetBlock_CrossMap(x, y, out _);
+        }
+        public Layout.Block GetBlock_InBounds(int x, int y)
+        {
+            Layout ml = MapLayout;
+            bool north = y < 0;
+            bool south = y >= ml.BlocksHeight;
+            bool west = x < 0;
+            bool east = x >= ml.BlocksWidth;
+            // In bounds
+            if (!north && !south && !west && !east)
+            {
+                return ml.Blocks[y][x];
+            }
+            // Border blocks
+            byte bw = ml.BorderWidth;
+            byte bh = ml.BorderHeight;
             // No border should render pure black
-            if (ml.BorderWidth == 0 || ml.BorderHeight == 0)
+            if (bw == 0 || bh == 0)
             {
                 return null;
             }
             // Has a border
-            x %= ml.BorderWidth;
+            x %= bw;
             if (west)
             {
                 x *= -1;
             }
-            y %= ml.BorderHeight;
+            y %= bh;
             if (north)
             {
                 y *= -1;
             }
             return ml.BorderBlocks[y][x];
         }
-        public Layout.Block GetBlock(int x, int y)
+
+        public void LoadObjEvents()
         {
-            return GetBlock(x, y, out _);
+            Flags flags = Game.Instance.Save.Flags;
+            foreach (Events.ObjEvent oe in MapEvents.Objs)
+            {
+                if (!flags[oe.Flag])
+                {
+                    new EventObj(oe, this);
+                }
+            }
+        }
+        public void UnloadObjEvents()
+        {
+            foreach (Obj o in Objs)
+            {
+                if (o.Id != Overworld.CameraId && o != CameraObj.CameraAttachedTo)
+                {
+                    Obj.LoadedObjs.Remove(o);
+                }
+            }
+            Objs.Clear();
         }
 
-        public static unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        // "exceptThisOne" is used so objs aren't checking if they collide with themselves
+        // The camera is not hardcoded here because we can have some objs disable collisions, plus someone might want to get the camera from this
+        public List<Obj> GetObjs_InBounds(int x, int y, byte elevation, Obj exceptThisOne)
         {
-            Obj camera = Obj.Camera;
-            Obj.Position cameraPos = camera.Pos;
-            int cameraX = (cameraPos.X * Overworld.Block_NumPixelsX) - (bmpWidth / 2) + (Overworld.Block_NumPixelsX / 2) + camera.ProgressX + Obj.CameraOfsX;
-            int cameraY = (cameraPos.Y * Overworld.Block_NumPixelsY) - (bmpHeight / 2) + (Overworld.Block_NumPixelsY / 2) + camera.ProgressY + Obj.CameraOfsY;
-            Map cameraMap = camera.Map;
-            int xpBX = cameraX % Overworld.Block_NumPixelsX;
-            int ypBY = cameraY % Overworld.Block_NumPixelsY;
-            int startBlockX = (cameraX / Overworld.Block_NumPixelsX) - (xpBX >= 0 ? 0 : 1);
-            int startBlockY = (cameraY / Overworld.Block_NumPixelsY) - (ypBY >= 0 ? 0 : 1);
-            int numBlocksX = (bmpWidth / Overworld.Block_NumPixelsX) + (bmpWidth % Overworld.Block_NumPixelsX == 0 ? 0 : 1);
-            int numBlocksY = (bmpHeight / Overworld.Block_NumPixelsY) + (bmpHeight % Overworld.Block_NumPixelsY == 0 ? 0 : 1);
-            int endBlockX = startBlockX + numBlocksX + (xpBX == 0 ? 0 : 1);
-            int endBlockY = startBlockY + numBlocksY + (ypBY == 0 ? 0 : 1);
-            int startX = xpBX >= 0 ? -xpBX : -xpBX - Overworld.Block_NumPixelsX;
-            int startY = ypBY >= 0 ? -ypBY : -ypBY - Overworld.Block_NumPixelsY;
-            byte e = 0;
-            while (true)
+            var list = new List<Obj>();
+            foreach (Obj o in Objs)
             {
-                int curX = startX;
-                int curY = startY;
-                for (int blockY = startBlockY; blockY < endBlockY; blockY++)
+                if (o != exceptThisOne)
                 {
-                    for (int blockX = startBlockX; blockX < endBlockX; blockX++)
+                    Obj.Position pos = o.Pos;
+                    if (pos.X == x && pos.Y == y && pos.Elevation == elevation)
                     {
-                        Layout.Block block = cameraMap.GetBlock(blockX, blockY, out _);
-                        if (block != null)
-                        {
-                            Blockset.Block b = block.BlocksetBlock;
-                            void Draw(Blockset.Block.Tile[] subLayers, int tx, int ty)
-                            {
-                                int numSubLayers = subLayers.Length;
-                                for (int t = 0; t < numSubLayers; t++)
-                                {
-                                    Blockset.Block.Tile tile = subLayers[t];
-                                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: tile.XFlip, yFlip: tile.YFlip);
-                                }
-                            }
-                            for (int ly = 0; ly < Overworld.Block_NumTilesY; ly++)
-                            {
-                                Dictionary<byte, Blockset.Block.Tile[]>[] arrY = b.Tiles[ly];
-                                int py = ly * Overworld.Tile_NumPixelsY;
-                                for (int lx = 0; lx < Overworld.Block_NumTilesX; lx++)
-                                {
-                                    Draw(arrY[lx][e], curX + (lx * Overworld.Tile_NumPixelsX), curY + py);
-                                }
-                            }
-                        }
-                        curX += Overworld.Block_NumPixelsX;
-                    }
-                    curX = startX;
-                    curY += Overworld.Block_NumPixelsY;
-                }
-                // TODO: They will overlap each other regardless of y coordinate because of the order of the list
-                // TODO: Objs from other maps
-                List<Obj> objs = cameraMap.Objs;
-                int numObjs = objs.Count;
-                for (int i = 0; i < numObjs; i++)
-                {
-                    Obj c = objs[i];
-                    if (c == camera)
-                    {
-                        continue;
-                    }
-                    Obj.Position cPos = c.Pos;
-                    if (cPos.Elevation != e)
-                    {
-                        continue;
-                    }
-                    int objX = ((cPos.X - startBlockX) * Overworld.Block_NumPixelsX) + c.ProgressX + startX;
-                    int objY = ((cPos.Y - startBlockY) * Overworld.Block_NumPixelsY) + c.ProgressY + startY;
-                    int objW = c.SpriteWidth;
-                    int objH = c.SpriteHeight;
-                    objX -= (objW - Overworld.Block_NumPixelsX) / 2;
-                    objY -= objH - Overworld.Block_NumPixelsY;
-                    if (objX < bmpWidth && objX + objW > 0 && objY < bmpHeight && objY + objH > 0)
-                    {
-                        c.Draw(bmpAddress, bmpWidth, bmpHeight, objX, objY);
+                        list.Add(o);
                     }
                 }
-                if (e == byte.MaxValue)
-                {
-                    break;
-                }
-                e++;
             }
+            return list;
         }
     }
 }
