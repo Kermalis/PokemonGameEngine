@@ -144,6 +144,38 @@ public sealed partial class Build
             }
         }
     }
+    private void WriteString(string str)
+    {
+        int i = 0;
+        while (i < str.Length)
+        {
+            char c = str[i];
+            if (c == '\r')
+            {
+                i++;
+                continue; // Ignore carriage return
+            }
+            bool foundReplacement = false;
+            for (int m = 0; m < ScriptBuilderHelper.TextReplacements.Length; m++)
+            {
+                (string oldChars, string newChars) = ScriptBuilderHelper.TextReplacements[m];
+                int ol = oldChars.Length;
+                if (i + ol <= str.Length && str.Substring(i, ol) == oldChars)
+                {
+                    i += ol;
+                    foundReplacement = true;
+                    _writer.Write(newChars, false); // Write replacement without null terminator
+                    break;
+                }
+            }
+            if (!foundReplacement)
+            {
+                i++;
+                _writer.Write(c); // Write single char
+            }
+        }
+        _writer.Write('\0'); // Write null terminator
+    }
 
     private void ParseFile(string path)
     {
@@ -242,7 +274,7 @@ public sealed partial class Build
             if (str.EndsWith(TextChars) && str.Length - 2 != '\\') // If we hit the end of the string and it's not a \" literal
             {
                 str = str.Substring(0, str.Length - 1);
-                _writer.Write(str, true);
+                WriteString(str);
                 readingText = false;
                 str = string.Empty;
             }

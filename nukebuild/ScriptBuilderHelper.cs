@@ -19,6 +19,10 @@ internal static class ScriptBuilderHelper
     {
         { "Map.", new IdList(Build.AssetPath / "Map" / "MapIds.txt") }
     };
+    public static readonly (string OldChars, string NewChars)[] TextReplacements = new (string OldChars, string NewChars)[]
+    {
+        ("\\n", "\n")
+    };
 
     public static readonly Array Commands = Enum.GetValues(typeof(ScriptCommand));
     public static readonly Dictionary<ScriptCommand, Type[]> CommandArgs = new Dictionary<ScriptCommand, Type[]>

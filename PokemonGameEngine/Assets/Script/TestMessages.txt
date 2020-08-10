@@ -4,4 +4,4 @@ AwaitMessage
 End
 
 #TestText
-"Hello world!"
+"Hello world!\nBleem blam bloom"
