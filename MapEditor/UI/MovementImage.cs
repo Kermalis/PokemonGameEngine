@@ -22,6 +22,9 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly ElevationConverter _elevationConverter = new ElevationConverter();
+        private readonly PassageConverter _passageConverter = new PassageConverter();
+
         private bool _passageShown = true;
         public bool PassageShown
         {
@@ -36,16 +39,17 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
-        public byte _selectedElevation;
-        public byte SelectedElevation
+        public byte _elevations;
+        public byte Elevations
         {
-            get => _selectedElevation;
+            get => _elevations;
             set
             {
-                if (value != _selectedElevation)
+                if (value != _elevations)
                 {
-                    _selectedElevation = value;
-                    OnPropertyChanged(nameof(SelectedElevation));
+                    _elevations = value;
+                    _elevationConverter.Elevations = value;
+                    OnPropertyChanged(nameof(Elevations));
                 }
             }
         }
@@ -58,6 +62,7 @@ namespace Kermalis.MapEditor.UI
                 if (value != _passage)
                 {
                     _passage = value;
+                    _passageConverter.Flags = value;
                     OnPropertyChanged(nameof(Passage));
                 }
             }
@@ -85,16 +90,16 @@ namespace Kermalis.MapEditor.UI
         private readonly Pen _pen;
         private readonly FormattedText _text;
 
-        private static readonly Dictionary<byte, uint> _elevationColors;
+        private static readonly Dictionary<byte, uint> _elevationsColors;
         private static readonly Dictionary<LayoutBlockPassage, Geometry> _passageGeometries;
         static MovementImage()
         {
             var r = new Random(1114);
-            _elevationColors = new Dictionary<byte, uint>(256);
+            _elevationsColors = new Dictionary<byte, uint>(byte.MaxValue + 1);
             byte b = 0;
             while (true)
             {
-                _elevationColors.Add(b, (uint)(0x80000000 + r.Next(0, 0x1000000)));
+                _elevationsColors.Add(b, (uint)(0x80000000 + r.Next(0, 0x1000000)));
                 if (b == byte.MaxValue)
                 {
                     break;
@@ -194,9 +199,9 @@ namespace Kermalis.MapEditor.UI
                         }
                         else
                         {
-                            byte ele = b.Elevation;
-                            _text.Text = ele.ToString("X2");
-                            _brush.Color = Color.FromUInt32(_elevationColors[ele]);
+                            byte ele = b.Elevations;
+                            _text.Text = ele.ToString("X2"); // TODO: Better way to show the elevations?
+                            _brush.Color = Color.FromUInt32(_elevationsColors[ele]);
                             context.FillRectangle(_brush, r2);
                             context.DrawRectangle(_pen, r2);
                             context.DrawText(Brushes.Black, new Point(bx, by), _text);
@@ -235,9 +240,9 @@ namespace Kermalis.MapEditor.UI
             }
             else
             {
-                if (b.Elevation != _selectedElevation)
+                if (b.Elevations != _elevations)
                 {
-                    b.Elevation = _selectedElevation;
+                    b.Elevations = _elevations;
                     InvalidateVisual();
                 }
             }
@@ -298,9 +303,9 @@ namespace Kermalis.MapEditor.UI
                             }
                             else
                             {
-                                byte oldElevation = outArr[destY][destX].Elevation;
-                                byte newElevation = _selectedElevation;
-                                if (oldElevation != newElevation)
+                                byte oldElevations = outArr[destY][destX].Elevations;
+                                byte newElevations = _elevations;
+                                if (oldElevations != newElevations)
                                 {
                                     int width = _layout.Width;
                                     int height = _layout.Height;
@@ -309,9 +314,9 @@ namespace Kermalis.MapEditor.UI
                                         if (x >= 0 && x < width && y >= 0 && y < height)
                                         {
                                             Map.Layout.Block b = outArr[y][x];
-                                            if (b.Elevation == oldElevation)
+                                            if (b.Elevations == oldElevations)
                                             {
-                                                b.Elevation = newElevation;
+                                                b.Elevations = newElevations;
                                                 Fill(x, y + 1);
                                                 Fill(x, y - 1);
                                                 Fill(x + 1, y);
@@ -339,7 +344,7 @@ namespace Kermalis.MapEditor.UI
                             }
                             else
                             {
-                                SelectedElevation = b.Elevation;
+                                Elevations = b.Elevations;
                             }
                             e.Handled = true;
                         }
@@ -390,36 +395,31 @@ namespace Kermalis.MapEditor.UI
             RemoveLayoutEvents();
         }
 
-        // This is the same as "FlagsConverter<LayoutBlockPassage>"
-        private LayoutBlockPassage GetFlag(object parameter)
-        {
-            switch (parameter)
-            {
-                case "O": return LayoutBlockPassage.AllowOccupancy;
-                case "SW": return LayoutBlockPassage.SouthwestPassage;
-                case "SE": return LayoutBlockPassage.SoutheastPassage;
-                case "NW": return LayoutBlockPassage.NorthwestPassage;
-                case "NE": return LayoutBlockPassage.NortheastPassage;
-                default: throw new ArgumentOutOfRangeException(nameof(parameter));
-            }
-        }
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return _passage.HasFlag(GetFlag(parameter));
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            bool b = (bool)value;
-            LayoutBlockPassage flag = GetFlag(parameter);
-            if (b)
+            IValueConverter c;
+            if (value is LayoutBlockPassage)
             {
-                _passage |= flag;
+                c = _passageConverter;
             }
             else
             {
-                _passage &= ~flag;
+                c = _elevationConverter;
             }
-            return _passage;
+            return c.Convert(value, targetType, parameter, culture);
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            IValueConverter c;
+            if (targetType == typeof(LayoutBlockPassage))
+            {
+                c = _passageConverter;
+            }
+            else
+            {
+                c = _elevationConverter;
+            }
+            return c.ConvertBack(value, targetType, parameter, culture);
         }
     }
 }

@@ -26,16 +26,15 @@ namespace Kermalis.PokemonGameEngine.World
 
             public readonly Blockset Parent;
             public readonly BlocksetBlockBehavior Behavior;
-            public readonly Dictionary<byte, Tile[]>[][] Tiles;
+            public readonly Tile[][][][] Tiles; // Y,X,Elevation,Sublayers
 
             public Block(Blockset parent, EndianBinaryReader r)
             {
                 Behavior = r.ReadEnum<BlocksetBlockBehavior>();
-                Dictionary<byte, Tile[]> Read()
+                Tile[][] Read()
                 {
-                    var eLayers = new Dictionary<byte, Tile[]>(byte.MaxValue + 1);
-                    byte e = 0;
-                    while (true)
+                    var eLayers = new Tile[Overworld.NumElevations][];
+                    for (byte e = 0; e < Overworld.NumElevations; e++)
                     {
                         byte count = r.ReadByte();
                         Tile[] subLayers;
@@ -51,19 +50,14 @@ namespace Kermalis.PokemonGameEngine.World
                                 subLayers[i] = new Tile(r);
                             }
                         }
-                        eLayers.Add(e, subLayers);
-                        if (e == byte.MaxValue)
-                        {
-                            break;
-                        }
-                        e++;
+                        eLayers[e] = subLayers;
                     }
                     return eLayers;
                 }
-                Tiles = new Dictionary<byte, Tile[]>[Overworld.Block_NumTilesY][];
+                Tiles = new Tile[Overworld.Block_NumTilesY][][][];
                 for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                 {
-                    var arrY = new Dictionary<byte, Tile[]>[Overworld.Block_NumTilesX];
+                    var arrY = new Tile[Overworld.Block_NumTilesX][][];
                     for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
                         arrY[x] = Read();

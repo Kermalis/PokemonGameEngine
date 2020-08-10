@@ -35,4 +35,7 @@ namespace Kermalis.MapEditor.UI
     public sealed class MapFlagsConverter : FlagsConverter<MapFlags>
     {
     }
+    public sealed class PassageConverter : FlagsConverter<LayoutBlockPassage>
+    {
+    }
 }

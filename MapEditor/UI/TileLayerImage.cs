@@ -74,7 +74,7 @@ namespace Kermalis.MapEditor.UI
         private void SetTiles(int startX, int startY)
         {
             bool changed = false;
-            void Set(Dictionary<byte, List<Blockset.Block.Tile>> dict, Blockset.Block.Tile st)
+            void Set(List<Blockset.Block.Tile>[] dict, Blockset.Block.Tile st)
             {
                 List<Blockset.Block.Tile> subLayers = dict[_eLayerNum];
                 if (subLayers.Count <= _subLayerNum)

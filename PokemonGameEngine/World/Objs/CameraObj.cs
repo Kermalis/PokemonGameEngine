@@ -59,8 +59,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             int startPixelX = xpBX >= 0 ? -xpBX : -xpBX - Overworld.Block_NumPixelsX;
             int startPixelY = ypBY >= 0 ? -ypBY : -ypBY - Overworld.Block_NumPixelsY;
             // Loop each elevation
-            byte e = 0;
-            while (true)
+            for (byte e = 0; e < Overworld.NumElevations; e++)
             {
                 // Draw blocks
                 int curPixelX = startPixelX;
@@ -84,7 +83,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                             }
                             for (int by = 0; by < Overworld.Block_NumTilesY; by++)
                             {
-                                Dictionary<byte, Blockset.Block.Tile[]>[] arrY = b.Tiles[by];
+                                Blockset.Block.Tile[][][] arrY = b.Tiles[by];
                                 int ty = curPixelY + (by * Overworld.Tile_NumPixelsY);
                                 for (int bx = 0; bx < Overworld.Block_NumTilesX; bx++)
                                 {
@@ -109,11 +108,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                         v.Draw(bmpAddress, bmpWidth, bmpHeight, startBlockX, startBlockY, startPixelX, startPixelY);
                     }
                 }
-                if (e == byte.MaxValue)
-                {
-                    break;
-                }
-                e++;
             }
         }
     }

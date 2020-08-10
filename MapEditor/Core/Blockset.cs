@@ -58,16 +58,15 @@ namespace Kermalis.MapEditor.Core
             public int Id;
 
             public BlocksetBlockBehavior Behavior;
-            public readonly Dictionary<byte, List<Tile>>[][] Tiles;
+            public readonly List<Tile>[][][] Tiles;
 
             public Block(Blockset parent, int id, EndianBinaryReader r)
             {
                 Behavior = r.ReadEnum<BlocksetBlockBehavior>();
-                Dictionary<byte, List<Tile>> Read()
+                List<Tile>[] Read()
                 {
-                    var eLayers = new Dictionary<byte, List<Tile>>(byte.MaxValue + 1);
-                    byte e = 0;
-                    while (true)
+                    var eLayers = new List<Tile>[Overworld.NumElevations];
+                    for (byte e = 0; e < Overworld.NumElevations; e++)
                     {
                         byte count = r.ReadByte();
                         var subLayers = new List<Tile>(count);
@@ -75,19 +74,14 @@ namespace Kermalis.MapEditor.Core
                         {
                             subLayers.Add(new Tile(r));
                         }
-                        eLayers.Add(e, subLayers);
-                        if (e == byte.MaxValue)
-                        {
-                            break;
-                        }
-                        e++;
+                        eLayers[e] = subLayers;
                     }
                     return eLayers;
                 }
-                Tiles = new Dictionary<byte, List<Tile>>[Overworld.Block_NumTilesY][];
+                Tiles = new List<Tile>[Overworld.Block_NumTilesY][][];
                 for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                 {
-                    var arrY = new Dictionary<byte, List<Tile>>[Overworld.Block_NumTilesX];
+                    var arrY = new List<Tile>[Overworld.Block_NumTilesX][];
                     for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
                         arrY[x] = Read();
@@ -101,25 +95,19 @@ namespace Kermalis.MapEditor.Core
             {
                 Parent = parent;
                 Id = id;
-                Dictionary<byte, List<Tile>> Create()
+                List<Tile>[] Create()
                 {
-                    var d = new Dictionary<byte, List<Tile>>(byte.MaxValue + 1);
-                    byte e = 0;
-                    while (true)
+                    var d = new List<Tile>[Overworld.NumElevations];
+                    for (byte e = 0; e < Overworld.NumElevations; e++)
                     {
-                        d.Add(e, new List<Tile>());
-                        if (e == byte.MaxValue)
-                        {
-                            break;
-                        }
-                        e++;
+                        d[e] = new List<Tile>();
                     }
                     return d;
                 }
-                Tiles = new Dictionary<byte, List<Tile>>[Overworld.Block_NumTilesY][];
+                Tiles = new List<Tile>[Overworld.Block_NumTilesY][][];
                 for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                 {
-                    var arrY = new Dictionary<byte, List<Tile>>[Overworld.Block_NumTilesX];
+                    var arrY = new List<Tile>[Overworld.Block_NumTilesX][];
                     for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
                         arrY[x] = Create();
@@ -130,15 +118,9 @@ namespace Kermalis.MapEditor.Core
 
             public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
             {
-                byte e = 0;
-                while (true)
+                for (byte e = 0; e < Overworld.NumElevations; e++)
                 {
                     Draw(bmpAddress, bmpWidth, bmpHeight, x, y, e);
-                    if (e == byte.MaxValue)
-                    {
-                        break;
-                    }
-                    e++;
                 }
             }
             public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, byte e)
@@ -152,7 +134,7 @@ namespace Kermalis.MapEditor.Core
                 }
                 for (int ly = 0; ly < Overworld.Block_NumTilesY; ly++)
                 {
-                    Dictionary<byte, List<Tile>>[] arrY = Tiles[ly];
+                    List<Tile>[][] arrY = Tiles[ly];
                     int py = ly * Overworld.Tile_NumPixelsY;
                     for (int lx = 0; lx < Overworld.Block_NumTilesX; lx++)
                     {
@@ -164,10 +146,9 @@ namespace Kermalis.MapEditor.Core
             public void Write(EndianBinaryWriter w)
             {
                 w.Write(Behavior);
-                void Write(Dictionary<byte, List<Tile>> eLayers)
+                void Write(List<Tile>[] eLayers)
                 {
-                    byte e = 0;
-                    while (true)
+                    for (byte e = 0; e < Overworld.NumElevations; e++)
                     {
                         List<Tile> subLayers = eLayers[e];
                         byte count = (byte)subLayers.Count;
@@ -176,16 +157,11 @@ namespace Kermalis.MapEditor.Core
                         {
                             subLayers[i].Write(w);
                         }
-                        if (e == byte.MaxValue)
-                        {
-                            break;
-                        }
-                        e++;
                     }
                 }
                 for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                 {
-                    Dictionary<byte, List<Tile>>[] arrY = Tiles[y];
+                    List<Tile>[][] arrY = Tiles[y];
                     for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
                         Write(arrY[x]);
@@ -299,19 +275,13 @@ namespace Kermalis.MapEditor.Core
         {
             for (int y = 0; y < Overworld.Block_NumTilesY; y++)
             {
-                Dictionary<byte, List<Block.Tile>>[] arrY = block.Tiles[y];
+                List<Block.Tile>[][] arrY = block.Tiles[y];
                 for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                 {
-                    Dictionary<byte, List<Block.Tile>> arrX = arrY[x];
-                    byte e = 0;
-                    while (true)
+                    List<Block.Tile>[] arrX = arrY[x];
+                    for (byte e = 0; e < Overworld.NumElevations; e++)
                     {
                         arrX[e].Clear();
-                        if (e == byte.MaxValue)
-                        {
-                            break;
-                        }
-                        e++;
                     }
                 }
             }

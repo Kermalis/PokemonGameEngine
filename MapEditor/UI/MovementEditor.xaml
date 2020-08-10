@@ -16,18 +16,29 @@
     </Border>
     <GridSplitter Grid.Column="1" />
     <Border Grid.Column="2" Margin="2,0,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
-      <StackPanel Orientation="Vertical" Spacing="5">
-        <StackPanel Orientation="Horizontal" Spacing="5">
-          <RadioButton Content="Passage" IsChecked="{Binding #MovementImage.PassageShown}" />
-          <RadioButton Content="Elevation" IsChecked="{Binding !#MovementImage.PassageShown}" />
-        </StackPanel>
-        <CheckBox Content="Allow Occupancy" IsChecked="{Binding #MovementImage.Passage, Converter={StaticResource MovementImage}, ConverterParameter=O}" IsVisible="{Binding #MovementImage.PassageShown}" />
-        <CheckBox Content="Southwest Passage" IsChecked="{Binding #MovementImage.Passage, Converter={StaticResource MovementImage}, ConverterParameter=SW}" IsVisible="{Binding #MovementImage.PassageShown}" />
-        <CheckBox Content="Southeast Passage" IsChecked="{Binding #MovementImage.Passage, Converter={StaticResource MovementImage}, ConverterParameter=SE}" IsVisible="{Binding #MovementImage.PassageShown}" />
-        <CheckBox Content="Northwest Passage" IsChecked="{Binding #MovementImage.Passage, Converter={StaticResource MovementImage}, ConverterParameter=NW}" IsVisible="{Binding #MovementImage.PassageShown}" />
-        <CheckBox Content="Northeast Passage" IsChecked="{Binding #MovementImage.Passage, Converter={StaticResource MovementImage}, ConverterParameter=NE}" IsVisible="{Binding #MovementImage.PassageShown}" />
-        <NumericUpDown Minimum="0" Maximum="255" ClipValueToMinMax="True" Value="{Binding #MovementImage.SelectedElevation}" IsVisible="{Binding !#MovementImage.PassageShown}" />
-      </StackPanel>
+      <TabControl>
+        <TabItem Header="Passage" IsSelected="{Binding #MovementImage.PassageShown, Mode=TwoWay}">
+          <StackPanel Orientation="Vertical" Spacing="5">
+            <CheckBox Content="Allow Occupancy" IsChecked="{Binding #MovementImage.Passage, Converter={StaticResource MovementImage}, ConverterParameter=AllowOccupancy}" />
+            <CheckBox Content="Southwest Passage" IsChecked="{Binding #MovementImage.Passage, Converter={StaticResource MovementImage}, ConverterParameter=SouthwestPassage}" />
+            <CheckBox Content="Southeast Passage" IsChecked="{Binding #MovementImage.Passage, Converter={StaticResource MovementImage}, ConverterParameter=SoutheastPassage}" />
+            <CheckBox Content="Northwest Passage" IsChecked="{Binding #MovementImage.Passage, Converter={StaticResource MovementImage}, ConverterParameter=NorthwestPassage}" />
+            <CheckBox Content="Northeast Passage" IsChecked="{Binding #MovementImage.Passage, Converter={StaticResource MovementImage}, ConverterParameter=NortheastPassage}" />
+          </StackPanel>
+        </TabItem>
+        <TabItem Header="Elevation" IsSelected="{Binding !#MovementImage.PassageShown, Mode=TwoWay}">
+          <StackPanel Orientation="Vertical" Spacing="5">
+            <CheckBox Content="Elevation 0" IsChecked="{Binding #MovementImage.Elevations, Converter={StaticResource MovementImage}, ConverterParameter=0}" />
+            <CheckBox Content="Elevation 1" IsChecked="{Binding #MovementImage.Elevations, Converter={StaticResource MovementImage}, ConverterParameter=1}" />
+            <CheckBox Content="Elevation 2" IsChecked="{Binding #MovementImage.Elevations, Converter={StaticResource MovementImage}, ConverterParameter=2}" />
+            <CheckBox Content="Elevation 3" IsChecked="{Binding #MovementImage.Elevations, Converter={StaticResource MovementImage}, ConverterParameter=3}" />
+            <CheckBox Content="Elevation 4" IsChecked="{Binding #MovementImage.Elevations, Converter={StaticResource MovementImage}, ConverterParameter=4}" />
+            <CheckBox Content="Elevation 5" IsChecked="{Binding #MovementImage.Elevations, Converter={StaticResource MovementImage}, ConverterParameter=5}" />
+            <CheckBox Content="Elevation 6" IsChecked="{Binding #MovementImage.Elevations, Converter={StaticResource MovementImage}, ConverterParameter=6}" />
+            <CheckBox Content="Elevation 7" IsChecked="{Binding #MovementImage.Elevations, Converter={StaticResource MovementImage}, ConverterParameter=7}" />
+          </StackPanel>
+        </TabItem>
+      </TabControl>
     </Border>
   </Grid>
 </UserControl>

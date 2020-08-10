@@ -4,13 +4,21 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal abstract partial class Obj
     {
-        private bool ElevationCheck(BlocksetBlockBehavior curBehavior, BlocksetBlockBehavior targetBehavior, byte curElevation, byte targetElevation)
+        private static bool ElevationCheck(BlocksetBlockBehavior curBehavior, BlocksetBlockBehavior targetBehavior, byte curElevation, byte targetElevations)
         {
-            if (curElevation == targetElevation)
+            if (targetElevations.HasElevation(curElevation))
             {
                 return true;
             }
             return Overworld.AllowsElevationChange(curBehavior) || Overworld.AllowsElevationChange(targetBehavior);
+        }
+        private static byte GetElevationIfMovedTo(byte curElevation, byte targetElevations)
+        {
+            if (!targetElevations.HasElevation(curElevation))
+            {
+                return targetElevations.GetLowestElevation();
+            }
+            return curElevation;
         }
         private bool CanMoveTo_Cardinal__CanOccupy(int targetX, int targetY,
             BlocksetBlockBehavior curBehavior, BlocksetBlockBehavior blockedTarget, bool checkElevation, byte curElevation)
@@ -30,13 +38,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return false;
             }
             // Check elevation
-            byte targetElevation = targetBlock.Elevation;
-            if (checkElevation && !ElevationCheck(curBehavior, targetBehavior, curElevation, targetElevation))
+            byte targetElevations = targetBlock.Elevations;
+            if (checkElevation && !ElevationCheck(curBehavior, targetBehavior, curElevation, targetElevations))
             {
                 return false;
             }
+            byte newElevation = GetElevationIfMovedTo(curElevation, targetElevations);
             // Check if we can pass through objs at the position
-            if (CollidesWithAny_InBounds(outMap, outX, outY, targetElevation))
+            if (CollidesWithAny_InBounds(outMap, outX, outY, newElevation))
             {
                 return false;
             }
@@ -81,7 +90,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 if (upStairBehavior == upBehavior)
                 {
                     // Check if we can pass through objs on the position
-                    if (CollidesWithAny_InBounds(upStairMap, upStairX, upStairY, upStairBlock.Elevation))
+                    byte newElevation = GetElevationIfMovedTo(p.Elevation, upStairBlock.Elevations);
+                    if (CollidesWithAny_InBounds(upStairMap, upStairX, upStairY, newElevation))
                     {
                         return false;
                     }
@@ -135,13 +145,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             // Check elevation
             byte curElevation = p.Elevation;
-            byte targetElevation = targetBlock.Elevation;
-            if (!ElevationCheck(curBehavior, targetBehavior, curElevation, targetElevation))
+            byte targetElevations = targetBlock.Elevations;
+            if (!ElevationCheck(curBehavior, targetBehavior, curElevation, targetElevations))
             {
                 return false;
             }
+            byte newElevation = GetElevationIfMovedTo(curElevation, targetElevations);
             // Check if we can pass through objs at the position
-            if (CollidesWithAny_InBounds(targetOutMap, targetOutX, targetOutY, targetElevation))
+            if (CollidesWithAny_InBounds(targetOutMap, targetOutX, targetOutY, newElevation))
             {
                 return false;
             }
@@ -324,7 +335,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
             }
             Map.Layout.Block block = GetBlock(out Map map);
-            Pos.Elevation = block.Elevation;
+            Pos.Elevation = GetElevationIfMovedTo(Pos.Elevation, block.Elevations);
             Map curMap = Map;
             if (map == curMap)
             {

@@ -247,7 +247,7 @@ namespace Kermalis.MapEditor.Core
                 public readonly int X;
                 public readonly int Y;
 
-                public byte Elevation;
+                public byte Elevations;
                 public LayoutBlockPassage Passage;
                 public Blockset.Block BlocksetBlock;
 
@@ -255,7 +255,7 @@ namespace Kermalis.MapEditor.Core
                 {
                     X = x;
                     Y = y;
-                    Elevation = r.ReadByte();
+                    Elevations = r.ReadByte();
                     Passage = r.ReadEnum<LayoutBlockPassage>();
                     BlocksetBlock = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
                 }
@@ -263,12 +263,13 @@ namespace Kermalis.MapEditor.Core
                 {
                     X = x;
                     Y = y;
+                    Elevations = 1 << 0; // Include elevation 0
                     BlocksetBlock = defaultBlock;
                 }
 
                 public void Write(EndianBinaryWriter w)
                 {
-                    w.Write(Elevation);
+                    w.Write(Elevations);
                     w.Write(Passage);
                     w.Write(BlocksetBlock.Parent.Id);
                     w.Write(BlocksetBlock.Id);

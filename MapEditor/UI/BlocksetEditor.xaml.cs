@@ -157,18 +157,12 @@ namespace Kermalis.MapEditor.UI
         {
             _clipboardBitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Bgra8888);
 
-            SubLayers = new ObservableCollection<SubLayerModel>(new List<SubLayerModel>(byte.MaxValue + 1));
+            SubLayers = new ObservableCollection<SubLayerModel>(new List<SubLayerModel>(Overworld.MaxSubLayers));
 
-            ELayers = new ELayerModel[byte.MaxValue + 1];
-            byte e = 0;
-            while (true)
+            ELayers = new ELayerModel[Overworld.NumElevations];
+            for (byte e = 0; e < Overworld.NumElevations; e++)
             {
                 ELayers[e] = new ELayerModel(e);
-                if (e == byte.MaxValue)
-                {
-                    break;
-                }
-                e++;
             }
 
             DataContext = this;
@@ -444,13 +438,13 @@ namespace Kermalis.MapEditor.UI
             byte e = (byte)_selectedELayerIndex;
             for (int y = 0; y < Overworld.Block_NumTilesY; y++)
             {
-                Dictionary<byte, List<Blockset.Block.Tile>>[] arrY = _selectedBlock.Tiles[y];
+                List<Blockset.Block.Tile>[][] arrY = _selectedBlock.Tiles[y];
                 for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                 {
                     Count(arrY[x][e]);
                 }
             }
-            if (num < byte.MaxValue + 1)
+            if (num < Overworld.MaxSubLayers)
             {
                 num++;
             }

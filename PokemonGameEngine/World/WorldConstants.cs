@@ -17,6 +17,11 @@ namespace Kermalis.PokemonGameEngine.World
         public const int Block_NumPixelsX = Block_NumTilesX * Tile_NumPixelsX;
         public const int Block_NumPixelsY = Block_NumTilesY * Tile_NumPixelsY;
 
+        // The amount of elevations. Changing this above 8 will require more work because elevations work in bits and are stored in bytes. Should not be 0
+        public const int NumElevations = 8;
+        // The maximum amount of sub-layers per tile. Changing this above 256 will require more work because sub-layer counts are in bytes. Should not be 0
+        public const int MaxSubLayers = byte.MaxValue + 1;
+
         // Objs
         public const ushort PlayerId = ushort.MaxValue;
         public const ushort CameraId = PlayerId - 1;

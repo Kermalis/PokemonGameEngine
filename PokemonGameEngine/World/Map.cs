@@ -131,7 +131,7 @@ namespace Kermalis.PokemonGameEngine.World
                 public readonly int X;
                 public readonly int Y;
 
-                public readonly byte Elevation;
+                public readonly byte Elevations;
                 public readonly LayoutBlockPassage Passage;
                 public readonly Blockset.Block BlocksetBlock;
 
@@ -141,7 +141,7 @@ namespace Kermalis.PokemonGameEngine.World
                     X = x;
                     Y = y;
 
-                    Elevation = r.ReadByte();
+                    Elevations = r.ReadByte();
                     Passage = r.ReadEnum<LayoutBlockPassage>();
                     BlocksetBlock = Blockset.LoadOrGet(r.ReadInt32()).Blocks[r.ReadInt32()];
                 }
