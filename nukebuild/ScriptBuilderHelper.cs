@@ -39,6 +39,8 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.SetFlag, new[] { typeof(Flag) } },
         { ScriptCommand.ClearFlag, new[] { typeof(Flag) } },
         { ScriptCommand.Warp, new[] { typeof(string), typeof(int), typeof(int), typeof(byte) } },
+        { ScriptCommand.Message, new[] { typeof(void*) } },
+        { ScriptCommand.AwaitMessage, Array.Empty<Type>() },
     };
 
     static ScriptBuilderHelper()

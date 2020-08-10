@@ -26,6 +26,7 @@ public sealed partial class Build
     private const string LocalLabelChars = "#";
     private const string GlobalLabelChars = "@";
     private const string MovementPrefix = "M.";
+    private const string TextChars = "\"";
 
     private readonly Dictionary<string, Pair> _labels = new Dictionary<string, Pair>();
     private readonly List<Pointer> _pointers = new List<Pointer>();
@@ -144,21 +145,109 @@ public sealed partial class Build
         }
     }
 
-    private void ParseLine(string line)
+    private void ParseFile(string path)
     {
-        if (string.IsNullOrWhiteSpace(line))
-        {
-            return; // Skip empty lines
-        }
-
+        string[] lines = File.ReadAllLines(path);
         bool readingLabel = false;
         bool globalLabel = false;
         bool readingArg = false;
         bool readingCmd = false;
+        bool readingText = false; // Text can span multiple lines and can include whitespace
         int curArg = -1;
         Type[] cmdArgTypes = null;
         string str = string.Empty;
-        void WriteThing()
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i];
+            if (!readingText && string.IsNullOrWhiteSpace(line))
+            {
+                continue; // Skip empty lines if they're not text
+            }
+            for (int ic = 0; ic < line.Length; ic++)
+            {
+                char c = line[ic];
+                if (!readingText && char.IsWhiteSpace(c))
+                {
+                    OnWhiteSpaceOrEndOfFile();
+                    continue;
+                }
+                str += c;
+                if (readingText)
+                {
+                    TryFindEndOfString();
+                    continue;
+                }
+                if (str.EndsWith(CommentChars))
+                {
+                    str = str.Substring(0, str.Length - CommentChars.Length);
+                    readingCmd = false;
+                    readingArg = false;
+                    curArg = -1;
+                    break; // Stop reading from here
+                }
+                if (readingCmd || readingArg || readingLabel || readingText)
+                {
+                    continue;
+                }
+                // Create a local label like "#Label"
+                if (str.StartsWith(LocalLabelChars))
+                {
+                    readingLabel = true;
+                    globalLabel = false;
+                    str = string.Empty;
+                    continue;
+                }
+                // Create a global label like "@Label"
+                if (str.StartsWith(GlobalLabelChars))
+                {
+                    readingLabel = true;
+                    globalLabel = true;
+                    str = string.Empty;
+                    continue;
+                }
+                if (str.StartsWith(TextChars))
+                {
+                    readingText = true;
+                    str = string.Empty;
+                    continue;
+                }
+                if (curArg == -1)
+                {
+                    readingCmd = true;
+                }
+                else
+                {
+                    readingArg = true;
+                }
+            }
+            if (!readingText)
+            {
+                if (str != string.Empty)
+                {
+                    OnWhiteSpaceOrEndOfFile();
+                }
+                if (curArg != -1 && curArg < cmdArgTypes.Length)
+                {
+                    throw new Exception("Too few arguments");
+                }
+            }
+        }
+        if (readingText)
+        {
+            throw new Exception("Did not find end of string");
+        }
+
+        void TryFindEndOfString()
+        {
+            if (str.EndsWith(TextChars) && str.Length - 2 != '\\') // If we hit the end of the string and it's not a \" literal
+            {
+                str = str.Substring(0, str.Length - 1);
+                _writer.Write(str, true);
+                readingText = false;
+                str = string.Empty;
+            }
+        }
+        void OnWhiteSpaceOrEndOfFile()
         {
             if (readingCmd)
             {
@@ -166,6 +255,8 @@ public sealed partial class Build
                 {
                     str = str.Substring(MovementPrefix.Length);
                     _writer.Write((ScriptMovement)Enum.Parse(typeof(ScriptMovement), str));
+                    readingCmd = false;
+                    str = string.Empty;
                     return;
                 }
                 foreach (ScriptCommand cmd in ScriptBuilderHelper.Commands)
@@ -174,7 +265,7 @@ public sealed partial class Build
                     {
                         _writer.Write(cmd);
                         cmdArgTypes = ScriptBuilderHelper.CommandArgs[cmd];
-                        curArg = 0;
+                        curArg = cmdArgTypes.Length == 0 ? -1 : 0;
                         readingCmd = false;
                         str = string.Empty;
                         return;
@@ -195,68 +286,13 @@ public sealed partial class Build
                     throw new Exception("Too many arguments");
                 }
                 WriteArg(cmdArgTypes[curArg++], str);
+                if (curArg >= cmdArgTypes.Length)
+                {
+                    curArg = -1;
+                }
                 readingArg = false;
                 str = string.Empty;
             }
-        }
-        for (int i = 0; i < line.Length; i++)
-        {
-            char c = line[i];
-            if (char.IsWhiteSpace(c))
-            {
-                WriteThing();
-                continue;
-            }
-            str += c;
-            if (str.EndsWith(CommentChars))
-            {
-                str = str.Substring(0, str.Length - CommentChars.Length);
-                break; // Stop reading from here
-            }
-            if (readingCmd || readingArg || readingLabel)
-            {
-                continue;
-            }
-            // Create a local label like "#Label"
-            if (str.StartsWith(LocalLabelChars))
-            {
-                readingLabel = true;
-                globalLabel = false;
-                str = string.Empty;
-                continue;
-            }
-            // Create a global label like "@Label"
-            if (str.StartsWith(GlobalLabelChars))
-            {
-                readingLabel = true;
-                globalLabel = true;
-                str = string.Empty;
-                continue;
-            }
-            if (curArg == -1)
-            {
-                readingCmd = true;
-            }
-            else
-            {
-                readingArg = true;
-            }
-        }
-        if (str != string.Empty)
-        {
-            WriteThing();
-        }
-        if (curArg != -1 && curArg < cmdArgTypes.Length)
-        {
-            throw new Exception("Too few arguments");
-        }
-    }
-    private void ParseFile(string path)
-    {
-        string[] lines = File.ReadAllLines(path);
-        for (int i = 0; i < lines.Length; i++)
-        {
-            ParseLine(lines[i]);
         }
     }
 

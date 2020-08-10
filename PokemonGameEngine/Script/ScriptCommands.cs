@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
@@ -31,6 +32,8 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.SetFlag: SetFlagCommand(); break;
                 case ScriptCommand.ClearFlag: ClearFlagCommand(); break;
                 case ScriptCommand.Warp: WarpCommand(); break;
+                case ScriptCommand.Message: MessageCommand(); break;
+                case ScriptCommand.AwaitMessage: AwaitMessageCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -95,7 +98,7 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             ushort id = _reader.ReadUInt16();
             uint offset = _reader.ReadUInt32();
-            _callStack.Push(_reader.BaseStream.Position);
+            long returnOffset = _reader.BaseStream.Position;
             _reader.BaseStream.Position = offset;
             var obj = Obj.GetObj(id);
             while (true)
@@ -107,7 +110,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 }
                 obj.QueuedScriptMovements.Enqueue(m);
             }
-            _reader.BaseStream.Position = _callStack.Pop();
+            _reader.BaseStream.Position = returnOffset;
             obj.RunNextScriptMovement();
         }
 
@@ -156,6 +159,20 @@ namespace Kermalis.PokemonGameEngine.Script
             int y = _reader.ReadInt32();
             byte elevation = _reader.ReadByte();
             Game.Instance.TempWarp(new Warp(mapId, x, y, elevation));
+        }
+
+        private void MessageCommand()
+        {
+            uint textOffset = _reader.ReadUInt32();
+            long returnOffset = _reader.BaseStream.Position;
+            string text = _reader.ReadStringNullTerminated(textOffset);
+            _reader.BaseStream.Position = returnOffset;
+            Game.Instance.MessageBoxes.Add(new MessageBox(text));
+        }
+
+        private void AwaitMessageCommand()
+        {
+            _waitMessageBox = Game.Instance.MessageBoxes[Game.Instance.MessageBoxes.Count - 1];
         }
     }
 }

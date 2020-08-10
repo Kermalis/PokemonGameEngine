@@ -47,5 +47,7 @@
         SetFlag,
         ClearFlag,
         Warp,
+        Message,
+        AwaitMessage,
     }
 }

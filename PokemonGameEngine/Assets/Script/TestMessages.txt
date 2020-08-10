@@ -1,0 +1,7 @@
+@TestMessage
+Message TestText
+AwaitMessage
+End
+
+#TestText
+"Hello world!"

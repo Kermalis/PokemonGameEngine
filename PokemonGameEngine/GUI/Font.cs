@@ -2,7 +2,6 @@
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Kermalis.PokemonGameEngine.GUI
 {
@@ -140,38 +139,81 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
-        public unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, string str, uint[] fontColors)
+        // A single glyph
+        public unsafe void DrawGlyph(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, Glyph glyph, uint[] fontColors)
         {
-            int index = 0;
-            int nextXOffset = 0;
-            int nextYOffset = 0;
-            while (index < str.Length)
+            int curBit = 0;
+            int curByte = 0;
+            for (int py = y; py < y + FontHeight; py++)
             {
-                int xOffset = x + nextXOffset;
-                int yOffset = y + nextYOffset;
-                Glyph glyph = GetGlyph(str, ref index, ref nextXOffset, ref nextYOffset);
-                if (glyph == null)
+                for (int px = x; px < x + glyph.CharWidth; px++)
                 {
-                    continue;
-                }
-                int curBit = 0;
-                int curByte = 0;
-                for (int py = yOffset; py < yOffset + FontHeight; py++)
-                {
-                    for (int px = xOffset; px < xOffset + glyph.CharWidth; px++)
+                    if (py >= 0 && py < bmpHeight && px >= 0 && px < bmpWidth)
                     {
-                        if (py >= 0 && py < bmpHeight && px >= 0 && px < bmpWidth)
-                        {
-                            RenderUtils.DrawUnchecked(bmpAddress + px + (py * bmpWidth), fontColors[(glyph.Bitmap[curByte] >> (8 - BitsPerPixel - curBit)) % (1 << BitsPerPixel)]);
-                        }
-                        curBit = (curBit + BitsPerPixel) % 8;
-                        if (curBit == 0)
-                        {
-                            curByte++;
-                        }
+                        RenderUtils.DrawUnchecked(bmpAddress + px + (py * bmpWidth), fontColors[(glyph.Bitmap[curByte] >> (8 - BitsPerPixel - curBit)) % (1 << BitsPerPixel)]);
+                    }
+                    curBit = (curBit + BitsPerPixel) % 8;
+                    if (curBit == 0)
+                    {
+                        curByte++;
                     }
                 }
             }
+        }
+        // Full string
+        public unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, string str, uint[] fontColors)
+        {
+            int nextXOffset = 0;
+            int nextYOffset = 0;
+            int index = 0;
+            while (index < str.Length)
+            {
+                int curX = x + nextXOffset;
+                int curY = y + nextYOffset;
+                Glyph glyph = GetGlyph(str, ref index, ref nextXOffset, ref nextYOffset);
+                if (glyph != null)
+                {
+                    DrawGlyph(bmpAddress, bmpWidth, bmpHeight, curX, curY, glyph, fontColors);
+                }
+            }
+        }
+    }
+
+    internal sealed class StringPrinter
+    {
+        private readonly string _str;
+        private readonly Font _font;
+        private readonly uint[] _fontColors;
+        private readonly int _startX;
+        private readonly int _startY;
+        private int _nextXOffset;
+        private int _nextYOffset;
+        private int _index;
+
+        public StringPrinter(string str, int x, int y, Font font, uint[] fontColors)
+        {
+            _str = str;
+            _startX = x;
+            _startY = y;
+            _font = font;
+            _fontColors = fontColors;
+        }
+
+        public unsafe bool DrawNext(uint* bmpAddress, int bmpWidth, int bmpHeight, int count)
+        {
+            int i = 0;
+            while (i < count && _index < _str.Length)
+            {
+                int curX = _startX + _nextXOffset;
+                int curY = _startY + _nextYOffset;
+                Font.Glyph glyph = _font.GetGlyph(_str, ref _index, ref _nextXOffset, ref _nextYOffset);
+                if (glyph != null)
+                {
+                    _font.DrawGlyph(bmpAddress, bmpWidth, bmpHeight, curX, curY, glyph, _fontColors);
+                    i++;
+                }
+            }
+            return _index >= _str.Length;
         }
     }
 }

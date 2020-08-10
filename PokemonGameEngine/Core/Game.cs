@@ -21,6 +21,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public Save Save { get; }
 
         public readonly List<ScriptContext> Scripts = new List<ScriptContext>();
+        public readonly List<MessageBox> MessageBoxes = new List<MessageBox>();
 
         private readonly OverworldGUI _overworldGUI;
         private FadeFromColorTransition _fadeFromTransition;
@@ -111,6 +112,10 @@ namespace Kermalis.PokemonGameEngine.Core
                 {
                     ctx.LogicTick();
                 }
+                foreach (MessageBox mb in MessageBoxes.ToArray())
+                {
+                    mb.LogicTick();
+                }
                 if (_battleTransition != null || _fadeFromTransition != null || _fadeToTransition != null)
                 {
                     return;
@@ -150,6 +155,10 @@ namespace Kermalis.PokemonGameEngine.Core
                     goto bottom;
                 }
             bottom:
+                foreach (MessageBox mb in MessageBoxes.ToArray())
+                {
+                    mb.Render(bmpAddress, bmpWidth, bmpHeight);
+                }
                 if (fps.HasValue)
                 {
                     Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, fps.Value.ToString(), Font.DefaultFemale);

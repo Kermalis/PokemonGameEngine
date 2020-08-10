@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private bool _isDisposed;
         private ushort _delay;
         private Obj _waitMovementObj;
+        private MessageBox _waitMessageBox;
 
         public ScriptContext(EndianBinaryReader r)
         {
@@ -42,6 +44,17 @@ namespace Kermalis.PokemonGameEngine.Script
                 if (update)
                 {
                     _waitMovementObj = null;
+                }
+            }
+            if (_waitMessageBox != null)
+            {
+                if (Game.Instance.MessageBoxes.Contains(_waitMessageBox))
+                {
+                    return true;
+                }
+                if (update)
+                {
+                    _waitMessageBox = null;
                 }
             }
             return false;
