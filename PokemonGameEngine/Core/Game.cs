@@ -116,6 +116,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 {
                     mb.LogicTick();
                 }
+                Tileset.AnimationTick(); // TODO: Don't run in battles like we are now
                 if (_battleTransition != null || _fadeFromTransition != null || _fadeToTransition != null)
                 {
                     return;

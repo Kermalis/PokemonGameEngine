@@ -29,6 +29,7 @@ internal sealed class IdList : IEnumerable<string>
         }
     }
 
+    public int Count => _entries.Count;
     public int this[string key]
     {
         get

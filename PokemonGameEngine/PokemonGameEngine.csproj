@@ -26,6 +26,7 @@
     <EmbeddedResource Remove="Assets\Map\**\*.json" />
     <EmbeddedResource Remove="Assets\ObjSprites\ObjSprites.json" />
     <EmbeddedResource Remove="Assets\Script\**\*.txt" />
+    <EmbeddedResource Remove="Assets\Tileset\Animation\**\*.json" />
     <EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
       <Link>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</Link>
     </EmbeddedResource>

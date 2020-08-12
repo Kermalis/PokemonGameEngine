@@ -108,6 +108,11 @@ public sealed partial class Build
         public static readonly AbsolutePath LayoutPath = AssetPath / "Layout";
         public static IdList Ids { get; } = new IdList(LayoutPath / "LayoutIds.txt");
     }
+    private sealed class Tileset
+    {
+        public static readonly AbsolutePath TilesetPath = AssetPath / "Tileset";
+        public static IdList Ids { get; } = new IdList(TilesetPath / "TilesetIds.txt");
+    }
     private sealed class EncounterGroups
     {
         private sealed class EncounterGroup
@@ -401,26 +406,114 @@ public sealed partial class Build
         }
     }
 
+    private sealed class TileAnimation
+    {
+        private sealed class Frame
+        {
+            private sealed class Stop
+            {
+                private readonly int SheetTile;
+                private readonly int Time;
+
+                public Stop(JToken j)
+                {
+                    SheetTile = j[nameof(SheetTile)].Value<int>();
+                    Time = j[nameof(Time)].Value<int>();
+                }
+
+                public void Write(EndianBinaryWriter w)
+                {
+                    w.Write(SheetTile);
+                    w.Write(Time);
+                }
+            }
+            private readonly int TilesetTile;
+            private readonly Stop[] Stops;
+
+            public Frame(JToken j)
+            {
+                TilesetTile = j[nameof(TilesetTile)].Value<int>();
+                var stops = (JArray)j[nameof(Stops)];
+                int numStops = stops.Count;
+                Stops = new Stop[numStops];
+                for (int i = 0; i < numStops; i++)
+                {
+                    Stops[i] = new Stop(stops[i]);
+                }
+            }
+
+            public void Write(EndianBinaryWriter w)
+            {
+                w.Write(TilesetTile);
+                byte numStops = (byte)Stops.Length;
+                w.Write(numStops);
+                for (int i = 0; i < numStops; i++)
+                {
+                    Stops[i].Write(w);
+                }
+            }
+        }
+        public readonly string Tileset; // Not written
+        private readonly string Sheet;
+        private readonly int Duration;
+        private readonly Frame[] Frames;
+
+        public TileAnimation(JToken j)
+        {
+            Tileset = j[nameof(Tileset)].Value<string>();
+            Sheet = j[nameof(Sheet)].Value<string>();
+            Duration = j[nameof(Duration)].Value<int>();
+            var frames = (JArray)j[nameof(Frames)];
+            int numFrames = frames.Count;
+            Frames = new Frame[numFrames];
+            for (int i = 0; i < numFrames; i++)
+            {
+                Frames[i] = new Frame(frames[i]);
+            }
+        }
+
+        public static readonly AbsolutePath AnimationsPath = AssetPath / "Tileset" / "Animation";
+        public static readonly AbsolutePath AnimationsOutputPath = AnimationsPath / "Animations.bin";
+
+        public void Write(EndianBinaryWriter w)
+        {
+            w.Write(Sheet, true);
+            w.Write(Duration);
+            byte numFrames = (byte)Frames.Length;
+            w.Write(numFrames);
+            for (int i = 0; i < numFrames; i++)
+            {
+                Frames[i].Write(w);
+            }
+        }
+    }
+
     private void CleanWorld()
     {
         // Clean all assets even if they're no longer in the id lists
+        static void DeleteFiles(AbsolutePath path, string extension)
+        {
+            foreach (string file in path.GlobFiles("*" + extension))
+            {
+                File.Delete(file);
+            }
+        }
+        static void DeleteFile(string file)
+        {
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+            }
+        }
 
         // Encounter tables
-        foreach (AbsolutePath file in EncounterTable.EncounterTablePath.GlobFiles("*" + EncounterTable.EncounterTableExtension))
-        {
-            File.Delete(file);
-        }
+        DeleteFiles(EncounterTable.EncounterTablePath, EncounterTable.EncounterTableExtension);
         // Obj sprites
-        string p = SpriteSheet.SheetsOutputPath;
-        if (File.Exists(p))
-        {
-            File.Delete(p);
-        }
+        DeleteFile(SpriteSheet.SheetsOutputPath);
         // Maps
-        foreach (AbsolutePath file in Map.MapPath.GlobFiles("*" + Map.MapExtension))
-        {
-            File.Delete(file);
-        }
+        DeleteFiles(Map.MapPath, Map.MapExtension);
+        // Tile animations
+        DeleteFile(TileAnimation.AnimationsOutputPath);
     }
     private void BuildWorld()
     {
@@ -464,6 +557,50 @@ public sealed partial class Build
         foreach (string name in Map.Ids)
         {
             new Map(name).Save();
+        }
+        // Tile animations
+        using (var ms = new MemoryStream())
+        using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+        {
+            var tilesetTracker = new Dictionary<int, List<long>>(Tileset.Ids.Count);
+            foreach (string file in TileAnimation.AnimationsPath.GlobFiles("*.json"))
+            {
+                var json = JObject.Parse(File.ReadAllText(file));
+                var anim = new TileAnimation(json);
+                int tilesetId = Tileset.Ids[anim.Tileset];
+                if (!tilesetTracker.TryGetValue(tilesetId, out List<long> list))
+                {
+                    list = new List<long>(1);
+                    tilesetTracker.Add(tilesetId, list);
+                }
+                list.Add(ms.Position);
+                anim.Write(w);
+            }
+            using (var fw = new EndianBinaryWriter(File.Create(TileAnimation.AnimationsOutputPath)))
+            {
+                fw.Write(tilesetTracker.Count);
+                // Compute start offset of anim data
+                uint dataStart = sizeof(int); // Total count needs to be accounted for in offset calc
+                foreach (KeyValuePair<int, List<long>> kvp in tilesetTracker)
+                {
+                    List<long> list = kvp.Value;
+                    dataStart += (uint)(sizeof(int) + sizeof(int) + (list.Count * sizeof(uint))); // sizeof for tilesetId, sizeof for anim count, num anims * sizeof anim pointer
+                }
+                // Write table
+                foreach (KeyValuePair<int, List<long>> kvp in tilesetTracker)
+                {
+                    int tilesetId = kvp.Key;
+                    List<long> list = kvp.Value;
+                    fw.Write(tilesetId);
+                    fw.Write(list.Count);
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        fw.Write((uint)(list[i] + dataStart));
+                    }
+                }
+                ms.Position = 0;
+                ms.CopyTo(fw.BaseStream);
+            }
         }
     }
 }

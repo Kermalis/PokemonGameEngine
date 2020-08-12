@@ -78,7 +78,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                                 for (int t = 0; t < numSubLayers; t++)
                                 {
                                     Blockset.Block.Tile tile = subLayers[t];
-                                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, tx, ty, tile.TilesetTile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: tile.XFlip, yFlip: tile.YFlip);
+                                    Tileset.Tile ttile = tile.TilesetTile;
+                                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, tx, ty, ttile.AnimBitmap ?? ttile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: tile.XFlip, yFlip: tile.YFlip);
                                 }
                             }
                             for (int by = 0; by < Overworld.Block_NumTilesY; by++)

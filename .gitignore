@@ -6,6 +6,7 @@ PokemonGameEngine/Assets/Encounter/**/*.pgeenctbl
 PokemonGameEngine/Assets/Map/**/*.pgemap
 PokemonGameEngine/Assets/ObjSprites/ObjSprites.bin
 PokemonGameEngine/Assets/Script/Scripts.bin
+PokemonGameEngine/Assets/Tileset/Animation/Animations.bin
 
 # User-specific files
 *.suo

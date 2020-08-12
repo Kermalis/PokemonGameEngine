@@ -19,12 +19,12 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * Wild encounters
 * Very non-limiting mapping (elevations, layers, no color limits, transparency, etc)
 * [Day & Night Cycle](https://gfycat.com/TightTediousEuropeanpolecat)
+* Tile animations
 
 ----
 ## To Do:
 * Proper documentation/installation guide
 * Changable tiles based on day/night
-* Tile animations
 * Saving
 * Flags/vars
 * Events on the maps
