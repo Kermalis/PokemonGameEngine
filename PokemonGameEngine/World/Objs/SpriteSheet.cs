@@ -10,9 +10,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
     {
         private static readonly Dictionary<string, uint> _sheetOffsets;
 
-        private const string _sheetsExtension = ".bin";
-        private const string _sheetsPath = "ObjSprites.";
-        private const string _sheetsFile = _sheetsPath + "ObjSprites" + _sheetsExtension;
+        private const string SheetsExtension = ".bin";
+        private const string SheetsPath = "ObjSprites.";
+        private const string SheetsFile = SheetsPath + "ObjSprites" + SheetsExtension;
         static SpriteSheet()
         {
             using (EndianBinaryReader r = GetReader())
@@ -28,7 +28,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         private static EndianBinaryReader GetReader()
         {
-            return new EndianBinaryReader(Utils.GetResourceStream(_sheetsFile), encoding: EncodingType.UTF16);
+            return new EndianBinaryReader(Utils.GetResourceStream(SheetsFile), encoding: EncodingType.UTF16);
         }
 
         public readonly Sprite[] Sprites;
@@ -40,7 +40,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             using (EndianBinaryReader r = GetReader())
             {
                 r.BaseStream.Position = _sheetOffsets[id];
-                Sprites = RenderUtils.LoadSpriteSheet(_sheetsPath + r.ReadStringNullTerminated(), SpriteWidth = r.ReadInt32(), SpriteHeight = r.ReadInt32());
+                Sprites = RenderUtils.LoadSpriteSheet(SheetsPath + r.ReadStringNullTerminated(), SpriteWidth = r.ReadInt32(), SpriteHeight = r.ReadInt32());
             }
         }
 
