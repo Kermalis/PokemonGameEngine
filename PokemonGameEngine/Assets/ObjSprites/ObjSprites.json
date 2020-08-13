@@ -2,56 +2,100 @@
   "Player": {
     "Sprites": "TestPlayer.png",
     "Width": 32,
-    "Height": 32
+    "Height": 32,
+    "ShadowX": -2,
+    "ShadowY": -5,
+    "ShadowW": 21,
+    "ShadowH": 7
   },
   "Starly": {
     "Sprites": "TestNPC1.png",
     "Width": 32,
-    "Height": 32
+    "Height": 32,
+    "ShadowX": 2,
+    "ShadowY": -4,
+    "ShadowW": 13,
+    "ShadowH": 5
   },
   "Groudon": {
     "Sprites": "TestNPC2.png",
     "Width": 40,
-    "Height": 40
+    "Height": 40,
+    "ShadowX": -10,
+    "ShadowY": -11,
+    "ShadowW": 36,
+    "ShadowH": 15
   },
   "Skitty": {
     "Sprites": "TestNPC3.png",
     "Width": 32,
-    "Height": 32
+    "Height": 32,
+    "ShadowX": -2,
+    "ShadowY": -5,
+    "ShadowW": 21,
+    "ShadowH": 7
   },
   "Froslass": {
     "Sprites": "TestNPC4.png",
     "Width": 32,
-    "Height": 32
+    "Height": 32,
+    "ShadowX": 4,
+    "ShadowY": 0,
+    "ShadowW": 9,
+    "ShadowH": 3
   },
   "Plusle": {
     "Sprites": "TestNPC5.png",
     "Width": 32,
-    "Height": 32
+    "Height": 32,
+    "ShadowX": 4,
+    "ShadowY": -6,
+    "ShadowW": 9,
+    "ShadowH": 5
   },
   "Minun": {
     "Sprites": "TestNPC6.png",
     "Width": 32,
-    "Height": 32
+    "Height": 32,
+    "ShadowX": 4,
+    "ShadowY": -6,
+    "ShadowW": 9,
+    "ShadowH": 5
   },
   "Shaymin": {
     "Sprites": "TestNPC7.png",
     "Width": 32,
-    "Height": 32
+    "Height": 32,
+    "ShadowX": -1,
+    "ShadowY": -6,
+    "ShadowW": 17,
+    "ShadowH": 7
   },
   "Piplup": {
     "Sprites": "TestNPC8.png",
     "Width": 18,
-    "Height": 20
+    "Height": 20,
+    "ShadowX": 2,
+    "ShadowY": -4,
+    "ShadowW": 11,
+    "ShadowH": 5
   },
   "Vulpix": {
     "Sprites": "TestNPC9.png",
     "Width": 21,
-    "Height": 25
+    "Height": 25,
+    "ShadowX": 2,
+    "ShadowY": -5,
+    "ShadowW": 13,
+    "ShadowH": 5
   },
   "Item": {
     "Sprites": "TestItem.png",
-    "Width": 16,
-    "Height": 16
+    "Width": 10,
+    "Height": 10,
+    "ShadowX": 3,
+    "ShadowY": -4,
+    "ShadowW": 10,
+    "ShadowH": 5
   }
 }

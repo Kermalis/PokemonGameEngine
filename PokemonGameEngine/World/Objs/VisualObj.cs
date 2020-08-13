@@ -1,20 +1,22 @@
-﻿namespace Kermalis.PokemonGameEngine.World.Objs
+﻿using Kermalis.PokemonGameEngine.Render;
+
+namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal abstract class VisualObj : Obj
     {
         private bool _leg;
 
-        public readonly SpriteSheet Sprite;
+        private readonly SpriteSheet _sprite;
 
         protected VisualObj(ushort id, string sprite)
             : base(id)
         {
-            Sprite = SpriteSheet.LoadOrGet(sprite);
+            _sprite = SpriteSheet.LoadOrGet(sprite);
         }
         protected VisualObj(ushort id, string sprite, Position pos)
             : base(id, pos)
         {
-            Sprite = SpriteSheet.LoadOrGet(sprite);
+            _sprite = SpriteSheet.LoadOrGet(sprite);
         }
 
         public override bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
@@ -36,20 +38,34 @@
             base.CopyMovement(other);
         }
 
-        // TODO: Shadows, reflections
+        // TODO: Water reflections, priority
         public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int startBlockX, int startBlockY, int startPixelX, int startPixelY)
         {
             Position pos = Pos;
-            int x = ((pos.X - startBlockX) * Overworld.Block_NumPixelsX) + _progressX + startPixelX;
-            int y = ((pos.Y - startBlockY) * Overworld.Block_NumPixelsY) + _progressY + startPixelY;
-            int w = Sprite.SpriteWidth;
-            int h = Sprite.SpriteHeight;
-            x -= (w - Overworld.Block_NumPixelsX) / 2; // Center align
-            y -= h - Overworld.Block_NumPixelsY; // Bottom align
-            if (x >= bmpWidth || x + w <= 0 || y >= bmpHeight || y + h <= 0)
+            int baseX = ((pos.X - startBlockX) * Overworld.Block_NumPixelsX) + _progressX + startPixelX;
+            int baseY = ((pos.Y - startBlockY) * Overworld.Block_NumPixelsY) + _progressY + startPixelY;
+            // Calc sprite coords
+            SpriteSheet ss = _sprite;
+            int w = ss.SpriteWidth;
+            int h = ss.SpriteHeight;
+            int x = baseX - ((w - Overworld.Block_NumPixelsX) / 2); // Center align
+            int y = baseY - (h - Overworld.Block_NumPixelsY); // Bottom align
+            // Calc shadow coords
+            Sprite shadow = ss.ShadowSprite;
+            int sw = shadow.Width;
+            int sh = shadow.Height;
+            int sx = baseX + ss.ShadowXOffset; // Left align
+            int sy = baseY + Overworld.Block_NumPixelsY + ss.ShadowYOffset; // Bottom align (starts in block under)
+
+            if (!RenderUtils.IsInsideBitmap(bmpWidth, bmpHeight, x, y, w, h)
+                && !RenderUtils.IsInsideBitmap(bmpWidth, bmpHeight, sx, sy, sw, sh))
             {
                 return; // Return if no pixel is inside of the bitmap
             }
+
+            // Draw shadow sprite
+            shadow.DrawOn(bmpAddress, bmpWidth, bmpHeight, sx, sy);
+            // Draw obj sprite
             bool ShowLegs()
             {
                 float t = _movementTimer;
@@ -57,7 +73,7 @@
             }
             byte f = (byte)Facing;
             int spriteNum = ShowLegs() ? (_leg ? f + 8 : f + 16) : f; // TODO: Fall-back to specific sprites if the target sprite doesn't exist
-            Sprite.Sprites[spriteNum].DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y);
+            ss.Sprites[spriteNum].DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y);
         }
     }
 }

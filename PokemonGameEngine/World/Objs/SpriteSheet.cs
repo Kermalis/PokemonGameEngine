@@ -34,13 +34,23 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public readonly Sprite[] Sprites;
         public readonly int SpriteWidth;
         public readonly int SpriteHeight;
+        public readonly Sprite ShadowSprite;
+        public readonly int ShadowXOffset;
+        public readonly int ShadowYOffset;
 
-        private SpriteSheet(string id)
+        private unsafe SpriteSheet(string id)
         {
             using (EndianBinaryReader r = GetReader())
             {
                 r.BaseStream.Position = _sheetOffsets[id];
                 Sprites = RenderUtils.LoadSpriteSheet(SheetsPath + r.ReadStringNullTerminated(), SpriteWidth = r.ReadInt32(), SpriteHeight = r.ReadInt32());
+                ShadowXOffset = r.ReadInt32();
+                ShadowYOffset = r.ReadInt32();
+                ShadowSprite = new Sprite(r.ReadInt32(), r.ReadInt32());
+                ShadowSprite.Draw((uint* bmpAddress, int bmpWidth, int bmpHeight) =>
+                {
+                    RenderUtils.DrawEllipse_XY(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth - 1, bmpHeight - 1, true, 0xA0000000);
+                });
             }
         }
 

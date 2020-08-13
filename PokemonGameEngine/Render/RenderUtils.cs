@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.PokemonGameEngine.Util;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
@@ -88,12 +89,29 @@ namespace Kermalis.PokemonGameEngine.Render
             return arr;
         }
 
+        /// <summary>Returns true if any pixel is inside of the target bitmap.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInsideBitmap(int bmpWidth, int bmpHeight, int x, int y, int w, int h)
+        {
+            return x < bmpWidth && x + w > 0 && y < bmpHeight && y + h > 0;
+        }
+
         public static unsafe void FillColor(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
         {
             FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
         }
         public static unsafe void FillColor(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
         {
+            if (height == 1)
+            {
+                DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, x, y, width, color);
+                return;
+            }
+            if (width == 1)
+            {
+                DrawVerticalLine(bmpAddress, bmpWidth, bmpHeight, x, y, height, color);
+                return;
+            }
             for (int py = y; py < y + height; py++)
             {
                 if (py >= 0 && py < bmpHeight)
@@ -320,6 +338,211 @@ namespace Kermalis.PokemonGameEngine.Render
                     DrawLineHigh(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, y2, color);
                 }
             }
+        }
+
+        // http://enchantia.com/graphapp/doc/tech/ellipses.html
+        /// <summary>Works based on a center point and with radii. Even radii do not work properly.</summary>
+        public static unsafe void FillEllipse_Center(uint* bmpAddress, int bmpWidth, int bmpHeight, int xCenter, int yCenter, int xRadius, int yRadius, uint color)
+        {
+            int x = 0,
+                y = yRadius;
+            int rx = x,
+                ry = y;
+            int width = 1;
+            int height = 1;
+            long a2 = Math.BigMul(xRadius, xRadius),
+                b2 = Math.BigMul(yRadius, yRadius);
+            long crit1 = -((a2 / 4) + (xRadius % 2) + b2);
+            long crit2 = -((b2 / 4) + (yRadius % 2) + a2);
+            long crit3 = -((b2 / 4) + (yRadius % 2));
+            long t = -a2 * y;
+            long dxt = 2 * b2 * x,
+                dyt = -2 * a2 * y;
+            long d2xt = 2 * b2,
+                d2yt = 2 * a2;
+
+            if (yRadius == 0)
+            {
+                FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - xRadius, yCenter, (2 * xRadius) + 1, 1, color);
+                return;
+            }
+
+            void incx()
+            {
+                x++;
+                dxt += d2xt;
+                t += dxt;
+            }
+            void incy()
+            {
+                y--;
+                dyt += d2yt;
+                t += dyt;
+            }
+
+            while (y >= 0 && x <= xRadius)
+            {
+                if (t + (b2 * x) <= crit1 || t + (a2 * y) <= crit3)
+                {
+                    if (height == 1)
+                    {
+                        // Draw nothing
+                    }
+                    else if ((ry * 2) + 1 > (height - 1) * 2)
+                    {
+                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, height - 1, color);
+                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter + ry + 1, width, 1 - height, color);
+                        ry -= height - 1;
+                        height = 1;
+                    }
+                    else
+                    {
+                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, (ry * 2) + 1, color);
+                        ry -= ry;
+                        height = 1;
+                    }
+                    incx();
+                    rx++;
+                    width += 2;
+                }
+                else if (t - (a2 * y) > crit2)
+                {
+                    incy();
+                    height++;
+                }
+                else
+                {
+                    if ((ry * 2) + 1 > height * 2)
+                    {
+                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, height, color);
+                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter + ry + 1 - height, width, height, color);
+                    }
+                    else
+                    {
+                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, (ry * 2) + 1, color);
+                    }
+                    incx();
+                    incy();
+                    rx++;
+                    width += 2;
+                    ry -= height;
+                    height = 1;
+                }
+            }
+
+            if (ry > height)
+            {
+                FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, height, color);
+                FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter + ry + 1 - height, width, height, color);
+            }
+            else
+            {
+                FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, (ry * 2) + 1, color);
+            }
+        }
+        // https://stackoverflow.com/questions/2914807/plot-ellipse-from-rectangle
+        /// <summary>Works based on a top-left point and with width and height. Even widths and heights work properly.</summary>
+        public static unsafe void DrawEllipse_XY(uint* bmpAddress, int bmpWidth, int bmpHeight, int x0, int y0, int x1, int y1, bool fill, uint color)
+        {
+            void DrawPoint(int px, int py)
+            {
+                if (px >= 0 && px < bmpWidth && py >= 0 && py < bmpHeight)
+                {
+                    DrawUnchecked(bmpAddress + px + (py * bmpWidth), color);
+                }
+            }
+            void DrawRow(int xLeft, int xRight, int py)
+            {
+                DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, xLeft, py, xRight - xLeft + 1, color);
+            }
+            int xb, yb, xc, yc;
+
+            // Calculate height
+            yb = yc = (y0 + y1) / 2;
+            int qb = (y0 < y1) ? (y1 - y0) : (y0 - y1);
+            int qy = qb;
+            int dy = qb / 2;
+            if (qb % 2 != 0)
+            {
+                // Bounding box has even pixel height
+                yc++;
+            }
+
+            // Calculate width
+            xb = xc = (x0 + x1) / 2;
+            int qa = (x0 < x1) ? (x1 - x0) : (x0 - x1);
+            int qx = qa % 2;
+            int dx = 0;
+            long qt = (long)qa*qa + (long)qb*qb -2L*qa*qa*qb;
+            if (qx != 0)
+            {
+                // Bounding box has even pixel width
+                xc++;
+                qt += 3L * qb * qb;
+            }
+
+            // Start at (dx, dy) = (0, b) and iterate until (a, 0) is reached
+            while (qy >= 0 && qx <= qa)
+            {
+                // Draw the new points
+                if (!fill)
+                {
+                    DrawPoint(xb - dx, yb - dy);
+                    if (dx != 0 || xb != xc)
+                    {
+                        DrawPoint(xc + dx, yb - dy);
+                        if (dy != 0 || yb != yc)
+                        {
+                            DrawPoint(xc + dx, yc + dy);
+                        }
+                    }
+                    if (dy != 0 || yb != yc)
+                    {
+                        DrawPoint(xb - dx, yc + dy);
+                    }
+                }
+
+                // If a (+1, 0) step stays inside the ellipse, do it
+                if (qt + 2L * qb * qb * qx + 3L * qb * qb <= 0L ||
+                    qt + 2L * qa * qa * qy - (long)qa * qa <= 0L)
+                {
+                    qt += 8L * qb * qb + 4L * qb * qb * qx;
+                    dx++;
+                    qx += 2;
+                    // If a (0, -1) step stays outside the ellipse, do it
+                }
+                else if (qt - 2L * qa * qa * qy + 3L * qa * qa > 0L)
+                {
+                    if (fill)
+                    {
+                        DrawRow(xb - dx, xc + dx, yc + dy);
+                        if (dy != 0 || yb != yc)
+                        {
+                            DrawRow(xb - dx, xc + dx, yb - dy);
+                        }
+                    }
+                    qt += 8L * qa * qa - 4L * qa * qa * qy;
+                    dy--;
+                    qy -= 2;
+                    // Else step (+1, -1)
+                }
+                else
+                {
+                    if (fill)
+                    {
+                        DrawRow(xb - dx, xc + dx, yc + dy);
+                        if (dy != 0 || yb != yc)
+                        {
+                            DrawRow(xb - dx, xc + dx, yb - dy);
+                        }
+                    }
+                    qt += 8L * qb * qb + 4L * qb * qb * qx + 8L * qa * qa - 4L * qa * qa * qy;
+                    dx++;
+                    qx += 2;
+                    dy--;
+                    qy -= 2;
+                }
+            }   // End of while loop
         }
 
         public static unsafe void ModulateUnchecked(uint* pixelAddress, float aMod, float rMod, float gMod, float bMod)

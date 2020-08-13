@@ -386,12 +386,20 @@ public sealed partial class Build
         private readonly string Sprites;
         private readonly int Width;
         private readonly int Height;
+        private readonly int ShadowX;
+        private readonly int ShadowY;
+        private readonly int ShadowW;
+        private readonly int ShadowH;
 
         public SpriteSheet(JToken j)
         {
             Sprites = j[nameof(Sprites)].Value<string>();
             Width = j[nameof(Width)].Value<int>();
             Height = j[nameof(Height)].Value<int>();
+            ShadowX = j[nameof(ShadowX)].Value<int>();
+            ShadowY = j[nameof(ShadowY)].Value<int>();
+            ShadowW = j[nameof(ShadowW)].Value<int>();
+            ShadowH = j[nameof(ShadowH)].Value<int>();
         }
 
         private static readonly AbsolutePath SheetsPath = AssetPath / "ObjSprites";
@@ -403,6 +411,10 @@ public sealed partial class Build
             w.Write(Sprites, true);
             w.Write(Width);
             w.Write(Height);
+            w.Write(ShadowX);
+            w.Write(ShadowY);
+            w.Write(ShadowW);
+            w.Write(ShadowH);
         }
     }
 
