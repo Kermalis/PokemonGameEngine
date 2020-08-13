@@ -36,9 +36,9 @@
       {
         "X": 14,
         "Y": 7,
-        "Elevation": 0,
+        "Elevation": 2,
         "Id": 0,
-        "Sprite": "Player",
+        "Sprite": "Groudon",
         "MovementType": "Face_South",
         "MovementX": 0,
         "MovementY": 0,
@@ -46,6 +46,34 @@
         "TrainerSight": 0,
         "Script": "",
         "Flag": "Test0"
+      },
+      {
+        "X": 12,
+        "Y": 16,
+        "Elevation": 2,
+        "Id": 1,
+        "Sprite": "Vulpix",
+        "MovementType": "Face_South",
+        "MovementX": 0,
+        "MovementY": 0,
+        "TrainerType": "Normal",
+        "TrainerSight": 6,
+        "Script": "TestMessage",
+        "Flag": "MAX"
+      },
+      {
+        "X": 13,
+        "Y": 16,
+        "Elevation": 2,
+        "Id": 2,
+        "Sprite": "Piplup",
+        "MovementType": "Face_South",
+        "MovementX": 0,
+        "MovementY": 0,
+        "TrainerType": "Normal",
+        "TrainerSight": 6,
+        "Script": "TestMessage",
+        "Flag": "MAX"
       }
     ]
   }

@@ -4,6 +4,51 @@
     "Width": 32,
     "Height": 32
   },
+  "Starly": {
+    "Sprites": "TestNPC1.png",
+    "Width": 32,
+    "Height": 32
+  },
+  "Groudon": {
+    "Sprites": "TestNPC2.png",
+    "Width": 40,
+    "Height": 40
+  },
+  "Skitty": {
+    "Sprites": "TestNPC3.png",
+    "Width": 32,
+    "Height": 32
+  },
+  "Froslass": {
+    "Sprites": "TestNPC4.png",
+    "Width": 32,
+    "Height": 32
+  },
+  "Plusle": {
+    "Sprites": "TestNPC5.png",
+    "Width": 32,
+    "Height": 32
+  },
+  "Minun": {
+    "Sprites": "TestNPC6.png",
+    "Width": 32,
+    "Height": 32
+  },
+  "Shaymin": {
+    "Sprites": "TestNPC7.png",
+    "Width": 32,
+    "Height": 32
+  },
+  "Piplup": {
+    "Sprites": "TestNPC8.png",
+    "Width": 18,
+    "Height": 20
+  },
+  "Vulpix": {
+    "Sprites": "TestNPC9.png",
+    "Width": 21,
+    "Height": 25
+  },
   "Item": {
     "Sprites": "TestItem.png",
     "Width": 16,

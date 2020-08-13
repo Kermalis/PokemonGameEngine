@@ -2,16 +2,14 @@
 
 // Below we have "@TestScript" which is a global label, meaning it can be referenced by the engine itself (like the Surf and Headbutt Tree scripts) rather than just from scripts.
 @TestScript
-GivePokemon Species.Piplup 5
+GivePokemon Species.Shaymin 5
 GoTo TestJump // We will go to TestJump and not come back
 
 // Below we have "#TestCall" which is a local label, meaning it can only be referenced by scripts, although it can be referenced by other scripts too.
 #TestCall
 GivePokemonFormItem Species.Arceus Form.Arceus_Psychic 50 Item.MindPlate // We are using prefixes to denote that we should refer to a specific enum to parse these arguments
 MoveObj 0xFFFF TestMovements // 0xFFFF is the player's ID, but I will have some defines for this later
-MoveObj 4 TestMovements
 AwaitObjMovement 0xFFFF
-MoveObj 2 TestMovements
 MoveObj 3 TestMovements
 AwaitObjMovement 3
 Return // Go back to where we came from

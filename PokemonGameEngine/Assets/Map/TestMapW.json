@@ -46,6 +46,20 @@
         "TrainerType": "None",
         "TrainerSight": 0,
         "Script": "TestMessage",
+        "Flag": "Test1"
+      },
+      {
+        "X": 3,
+        "Y": 10,
+        "Elevation": 0,
+        "Id": 6,
+        "Sprite": "Froslass",
+        "MovementType": "Wander_Randomly",
+        "MovementX": 8,
+        "MovementY": 16,
+        "TrainerType": "SeeAllDirections",
+        "TrainerSight": 2,
+        "Script": "TestMessage",
         "Flag": "MAX"
       }
     ]

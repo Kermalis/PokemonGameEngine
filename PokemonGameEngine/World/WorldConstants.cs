@@ -124,6 +124,7 @@ namespace Kermalis.PokemonGameEngine.World
         Face_West,
         Face_East,
         Face_Randomly,
+        Sleep,
         Wander_Randomly,
         Wander_SouthAndNorth,
         Wander_WestAndEast,

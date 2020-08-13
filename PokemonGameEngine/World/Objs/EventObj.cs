@@ -177,6 +177,20 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
             }
         }
+        private void SleepMovement()
+        {
+            if (false.Equals(_movementTypeArg))
+            {
+                Facing = FacingDirection.North;
+                _movementTypeArg = true;
+            }
+            else
+            {
+                Facing = FacingDirection.South;
+                _movementTypeArg = false;
+            }
+            _movementTypeTimer = 25;
+        }
 
         public override void LogicTick()
         {
@@ -204,6 +218,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 case ObjMovementType.Wander_SouthAndNorth: WanderSomewhere(_southNorthDirections); break;
                 case ObjMovementType.Wander_WestAndEast: WanderSomewhere(_westEastDirections); break;
                 // Movements without random timers
+                case ObjMovementType.Sleep: SleepMovement(); return;
                 case ObjMovementType.Walk_WestThenReturn: WalkWestThenReturn(); return;
                 case ObjMovementType.Walk_EastThenReturn: WalkEastThenReturn(); return;
             }
