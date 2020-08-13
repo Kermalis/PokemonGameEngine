@@ -99,19 +99,16 @@ namespace Kermalis.PokemonGameEngine.World
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
             Blockset b;
-            if (!_loadedBlocksets.ContainsKey(id))
+            if (!_loadedBlocksets.TryGetValue(id, out WeakReference<Blockset> w))
             {
                 b = new Blockset(name);
                 _loadedBlocksets.Add(id, new WeakReference<Blockset>(b));
-                return b;
             }
-            WeakReference<Blockset> w = _loadedBlocksets[id];
-            if (w.TryGetTarget(out b))
+            else if (!w.TryGetTarget(out b))
             {
-                return b;
+                b = new Blockset(name);
+                w.SetTarget(b);
             }
-            b = new Blockset(name);
-            w.SetTarget(b);
             return b;
         }
     }

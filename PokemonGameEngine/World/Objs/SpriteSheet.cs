@@ -58,19 +58,16 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public static SpriteSheet LoadOrGet(string id)
         {
             SpriteSheet s;
-            if (!_loadedSheets.ContainsKey(id))
+            if (!_loadedSheets.TryGetValue(id, out WeakReference<SpriteSheet> w))
             {
                 s = new SpriteSheet(id);
                 _loadedSheets.Add(id, new WeakReference<SpriteSheet>(s));
-                return s;
             }
-            WeakReference<SpriteSheet> w = _loadedSheets[id];
-            if (w.TryGetTarget(out s))
+            else if (!w.TryGetTarget(out s))
             {
-                return s;
+                s = new SpriteSheet(id);
+                w.SetTarget(s);
             }
-            s = new SpriteSheet(id);
-            w.SetTarget(s);
             return s;
         }
     }

@@ -57,19 +57,16 @@ namespace Kermalis.PokemonGameEngine.World
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
             Tileset t;
-            if (!_loadedTilesets.ContainsKey(id))
+            if (!_loadedTilesets.TryGetValue(id, out WeakReference<Tileset> w))
             {
                 t = new Tileset(name, id);
                 _loadedTilesets.Add(id, new WeakReference<Tileset>(t));
-                return t;
             }
-            WeakReference<Tileset> w = _loadedTilesets[id];
-            if (w.TryGetTarget(out t))
+            else if (!w.TryGetTarget(out t))
             {
-                return t;
+                t = new Tileset(name, id);
+                w.SetTarget(t);
             }
-            t = new Tileset(name, id);
-            w.SetTarget(t);
             return t;
         }
 

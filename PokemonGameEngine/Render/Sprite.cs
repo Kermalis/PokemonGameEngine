@@ -38,19 +38,16 @@ namespace Kermalis.PokemonGameEngine.Render
         public static Sprite LoadOrGet(string resource)
         {
             Sprite s;
-            if (!_loadedSprites.ContainsKey(resource))
+            if (!_loadedSprites.TryGetValue(resource, out WeakReference<Sprite> w))
             {
                 s = new Sprite(resource);
                 _loadedSprites.Add(resource, new WeakReference<Sprite>(s));
-                return s;
             }
-            WeakReference<Sprite> w = _loadedSprites[resource];
-            if (w.TryGetTarget(out s))
+            else if (!w.TryGetTarget(out s))
             {
-                return s;
+                s = new Sprite(resource);
+                w.SetTarget(s);
             }
-            s = new Sprite(resource);
-            w.SetTarget(s);
             return s;
         }
 

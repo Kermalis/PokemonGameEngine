@@ -212,19 +212,16 @@ namespace Kermalis.PokemonGameEngine.World
                     throw new ArgumentOutOfRangeException(nameof(id));
                 }
                 Layout l;
-                if (!_loadedLayouts.ContainsKey(id))
+                if (!_loadedLayouts.TryGetValue(id, out WeakReference<Layout> w))
                 {
                     l = new Layout(name);
                     _loadedLayouts.Add(id, new WeakReference<Layout>(l));
-                    return l;
                 }
-                WeakReference<Layout> w = _loadedLayouts[id];
-                if (w.TryGetTarget(out l))
+                else if (!w.TryGetTarget(out l))
                 {
-                    return l;
+                    l = new Layout(name);
+                    w.SetTarget(l);
                 }
-                l = new Layout(name);
-                w.SetTarget(l);
                 return l;
             }
         }
@@ -266,19 +263,16 @@ namespace Kermalis.PokemonGameEngine.World
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
             Map m;
-            if (!_loadedMaps.ContainsKey(id))
+            if (!_loadedMaps.TryGetValue(id, out WeakReference<Map> w))
             {
                 m = new Map(name);
                 _loadedMaps.Add(id, new WeakReference<Map>(m));
-                return m;
             }
-            WeakReference<Map> w = _loadedMaps[id];
-            if (w.TryGetTarget(out m))
+            else if (!w.TryGetTarget(out m))
             {
-                return m;
+                m = new Map(name);
+                w.SetTarget(m);
             }
-            m = new Map(name);
-            w.SetTarget(m);
             return m;
         }
 

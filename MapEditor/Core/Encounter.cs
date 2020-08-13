@@ -108,19 +108,16 @@ namespace Kermalis.MapEditor.Core
         private static EncounterTable LoadOrGet(string name, int id)
         {
             EncounterTable e;
-            if (!_loadedEncounterTables.ContainsKey(id))
+            if (!_loadedEncounterTables.TryGetValue(id, out WeakReference<EncounterTable> w))
             {
                 e = new EncounterTable(name, id);
                 _loadedEncounterTables.Add(id, new WeakReference<EncounterTable>(e));
-                return e;
             }
-            WeakReference<EncounterTable> w = _loadedEncounterTables[id];
-            if (w.TryGetTarget(out e))
+            else if (!w.TryGetTarget(out e))
             {
-                return e;
+                e = new EncounterTable(name, id);
+                w.SetTarget(e);
             }
-            e = new EncounterTable(name, id);
-            w.SetTarget(e);
             return e;
         }
 
