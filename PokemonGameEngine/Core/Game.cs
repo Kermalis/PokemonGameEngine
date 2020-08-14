@@ -35,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.Core
             Save = new Save(); // Load/initialize Save
             var map = Map.LoadOrGet(0);
             const int x = 2;
-            const int y = 12;
+            const int y = 29;
             PlayerObj.Player.Pos.X = x;
             PlayerObj.Player.Pos.Y = y;
             PlayerObj.Player.Map = map;

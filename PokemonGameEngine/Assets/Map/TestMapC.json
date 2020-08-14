@@ -17,7 +17,7 @@
     {
       "Direction": "West",
       "Map": "TestMapW",
-      "Offset": 8
+      "Offset": 20
     }
   ],
   "Encounters": [
@@ -62,7 +62,7 @@
     "Warps": [
       {
         "X": 2,
-        "Y": 11,
+        "Y": 28,
         "Elevation": 0,
         "DestMap": "TestMapW",
         "DestX": 7,
@@ -72,13 +72,13 @@
     ],
     "Objs": [
       {
-        "X": 8,
-        "Y": 14,
+        "X": 9,
+        "Y": 31,
         "Elevation": 0,
         "Id": 0,
         "Sprite": "Plusle",
         "MovementType": "Walk_EastThenReturn",
-        "MovementX": 22,
+        "MovementX": 21,
         "MovementY": 0,
         "TrainerType": "None",
         "TrainerSight": 0,
@@ -86,8 +86,8 @@
         "Flag": "MAX"
       },
       {
-        "X": 28,
-        "Y": 18,
+        "X": 8,
+        "Y": 28,
         "Elevation": 0,
         "Id": 2,
         "Sprite": "Skitty",
@@ -101,7 +101,7 @@
       },
       {
         "X": 14,
-        "Y": 9,
+        "Y": 26,
         "Elevation": 0,
         "Id": 3,
         "Sprite": "Shaymin",
@@ -115,7 +115,7 @@
       },
       {
         "X": 2,
-        "Y": 8,
+        "Y": 25,
         "Elevation": 2,
         "Id": 4,
         "Sprite": "Starly",
@@ -129,17 +129,31 @@
       },
       {
         "X": 30,
-        "Y": 12,
+        "Y": 29,
         "Elevation": 0,
         "Id": 5,
         "Sprite": "Minun",
         "MovementType": "Walk_WestThenReturn",
-        "MovementX": 22,
+        "MovementX": 21,
         "MovementY": 0,
         "TrainerType": "None",
         "TrainerSight": 0,
         "Script": "TestMessage",
         "Flag": "MAX"
+      },
+      {
+        "X": 12,
+        "Y": 10,
+        "Elevation": 5,
+        "Id": 7,
+        "Sprite": "Item",
+        "MovementType": "Face_South",
+        "MovementX": 0,
+        "MovementY": 0,
+        "TrainerType": "None",
+        "TrainerSight": 0,
+        "Script": "TestMessage",
+        "Flag": "Test2"
       }
     ]
   }

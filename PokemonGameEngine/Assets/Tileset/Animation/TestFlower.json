@@ -4,71 +4,71 @@
   "Duration": 40,
   "Frames": [
     {
-      "TilesetTile": 226,
+      "TilesetTile": 322,
       "Stops": [
         {
           "SheetTile": 0,
           "Time": 10
         },
         {
-          "SheetTile": 2,
+          "SheetTile": 4,
           "Time": 20
         },
         {
-          "SheetTile": 4,
+          "SheetTile": 8,
           "Time": 30
-        },
+        }
       ]
     },
     {
-      "TilesetTile": 227,
+      "TilesetTile": 323,
       "Stops": [
         {
           "SheetTile": 1,
           "Time": 10
         },
         {
-          "SheetTile": 3,
+          "SheetTile": 5,
           "Time": 20
         },
         {
-          "SheetTile": 5,
+          "SheetTile": 9,
           "Time": 30
-        },
+        }
       ]
     },
     {
-      "TilesetTile": 242,
+      "TilesetTile": 338,
       "Stops": [
         {
-          "SheetTile": 6,
+          "SheetTile": 2,
           "Time": 10
         },
         {
-          "SheetTile": 8,
+          "SheetTile": 6,
           "Time": 20
         },
         {
           "SheetTile": 10,
           "Time": 30
-        },
+        }
       ]
     },
     {
-      "TilesetTile": 243,
+      "TilesetTile": 339,
       "Stops": [
         {
-          "SheetTile": 7,
+          "SheetTile": 3,
           "Time": 10
         },
         {
-          "SheetTile": 9,
+          "SheetTile": 7,
           "Time": 20
         },
         {
           "SheetTile": 11,
           "Time": 30
-        },
+        }
       ]
     }
   ]

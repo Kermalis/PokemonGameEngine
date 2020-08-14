@@ -1,0 +1,1327 @@
+{
+  "Tileset": "TestTilesO",
+  "Sheet": "TestWater",
+  "Duration": 40,
+  "Frames": [
+    {
+      "TilesetTile": 103,
+      "Stops": [
+        {
+          "SheetTile": 0,
+          "Time": 5
+        },
+        {
+          "SheetTile": 40,
+          "Time": 10
+        },
+        {
+          "SheetTile": 80,
+          "Time": 15
+        },
+        {
+          "SheetTile": 120,
+          "Time": 20
+        },
+        {
+          "SheetTile": 160,
+          "Time": 25
+        },
+        {
+          "SheetTile": 200,
+          "Time": 30
+        },
+        {
+          "SheetTile": 240,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 104,
+      "Stops": [
+        {
+          "SheetTile": 1,
+          "Time": 5
+        },
+        {
+          "SheetTile": 41,
+          "Time": 10
+        },
+        {
+          "SheetTile": 81,
+          "Time": 15
+        },
+        {
+          "SheetTile": 121,
+          "Time": 20
+        },
+        {
+          "SheetTile": 161,
+          "Time": 25
+        },
+        {
+          "SheetTile": 201,
+          "Time": 30
+        },
+        {
+          "SheetTile": 241,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 105,
+      "Stops": [
+        {
+          "SheetTile": 2,
+          "Time": 5
+        },
+        {
+          "SheetTile": 42,
+          "Time": 10
+        },
+        {
+          "SheetTile": 82,
+          "Time": 15
+        },
+        {
+          "SheetTile": 122,
+          "Time": 20
+        },
+        {
+          "SheetTile": 162,
+          "Time": 25
+        },
+        {
+          "SheetTile": 202,
+          "Time": 30
+        },
+        {
+          "SheetTile": 242,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 106,
+      "Stops": [
+        {
+          "SheetTile": 3,
+          "Time": 5
+        },
+        {
+          "SheetTile": 43,
+          "Time": 10
+        },
+        {
+          "SheetTile": 83,
+          "Time": 15
+        },
+        {
+          "SheetTile": 123,
+          "Time": 20
+        },
+        {
+          "SheetTile": 163,
+          "Time": 25
+        },
+        {
+          "SheetTile": 203,
+          "Time": 30
+        },
+        {
+          "SheetTile": 243,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 130,
+      "Stops": [
+        {
+          "SheetTile": 4,
+          "Time": 5
+        },
+        {
+          "SheetTile": 44,
+          "Time": 10
+        },
+        {
+          "SheetTile": 84,
+          "Time": 15
+        },
+        {
+          "SheetTile": 124,
+          "Time": 20
+        },
+        {
+          "SheetTile": 164,
+          "Time": 25
+        },
+        {
+          "SheetTile": 204,
+          "Time": 30
+        },
+        {
+          "SheetTile": 244,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 131,
+      "Stops": [
+        {
+          "SheetTile": 5,
+          "Time": 5
+        },
+        {
+          "SheetTile": 45,
+          "Time": 10
+        },
+        {
+          "SheetTile": 85,
+          "Time": 15
+        },
+        {
+          "SheetTile": 125,
+          "Time": 20
+        },
+        {
+          "SheetTile": 165,
+          "Time": 25
+        },
+        {
+          "SheetTile": 205,
+          "Time": 30
+        },
+        {
+          "SheetTile": 245,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 132,
+      "Stops": [
+        {
+          "SheetTile": 6,
+          "Time": 5
+        },
+        {
+          "SheetTile": 46,
+          "Time": 10
+        },
+        {
+          "SheetTile": 86,
+          "Time": 15
+        },
+        {
+          "SheetTile": 126,
+          "Time": 20
+        },
+        {
+          "SheetTile": 166,
+          "Time": 25
+        },
+        {
+          "SheetTile": 206,
+          "Time": 30
+        },
+        {
+          "SheetTile": 246,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 133,
+      "Stops": [
+        {
+          "SheetTile": 7,
+          "Time": 5
+        },
+        {
+          "SheetTile": 47,
+          "Time": 10
+        },
+        {
+          "SheetTile": 87,
+          "Time": 15
+        },
+        {
+          "SheetTile": 127,
+          "Time": 20
+        },
+        {
+          "SheetTile": 167,
+          "Time": 25
+        },
+        {
+          "SheetTile": 207,
+          "Time": 30
+        },
+        {
+          "SheetTile": 247,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 119,
+      "Stops": [
+        {
+          "SheetTile": 8,
+          "Time": 5
+        },
+        {
+          "SheetTile": 48,
+          "Time": 10
+        },
+        {
+          "SheetTile": 88,
+          "Time": 15
+        },
+        {
+          "SheetTile": 128,
+          "Time": 20
+        },
+        {
+          "SheetTile": 168,
+          "Time": 25
+        },
+        {
+          "SheetTile": 208,
+          "Time": 30
+        },
+        {
+          "SheetTile": 248,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 120,
+      "Stops": [
+        {
+          "SheetTile": 9,
+          "Time": 5
+        },
+        {
+          "SheetTile": 49,
+          "Time": 10
+        },
+        {
+          "SheetTile": 89,
+          "Time": 15
+        },
+        {
+          "SheetTile": 129,
+          "Time": 20
+        },
+        {
+          "SheetTile": 169,
+          "Time": 25
+        },
+        {
+          "SheetTile": 209,
+          "Time": 30
+        },
+        {
+          "SheetTile": 249,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 121,
+      "Stops": [
+        {
+          "SheetTile": 10,
+          "Time": 5
+        },
+        {
+          "SheetTile": 50,
+          "Time": 10
+        },
+        {
+          "SheetTile": 90,
+          "Time": 15
+        },
+        {
+          "SheetTile": 130,
+          "Time": 20
+        },
+        {
+          "SheetTile": 170,
+          "Time": 25
+        },
+        {
+          "SheetTile": 210,
+          "Time": 30
+        },
+        {
+          "SheetTile": 250,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 122,
+      "Stops": [
+        {
+          "SheetTile": 11,
+          "Time": 5
+        },
+        {
+          "SheetTile": 51,
+          "Time": 10
+        },
+        {
+          "SheetTile": 91,
+          "Time": 15
+        },
+        {
+          "SheetTile": 131,
+          "Time": 20
+        },
+        {
+          "SheetTile": 171,
+          "Time": 25
+        },
+        {
+          "SheetTile": 211,
+          "Time": 30
+        },
+        {
+          "SheetTile": 251,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 146,
+      "Stops": [
+        {
+          "SheetTile": 12,
+          "Time": 5
+        },
+        {
+          "SheetTile": 52,
+          "Time": 10
+        },
+        {
+          "SheetTile": 92,
+          "Time": 15
+        },
+        {
+          "SheetTile": 132,
+          "Time": 20
+        },
+        {
+          "SheetTile": 172,
+          "Time": 25
+        },
+        {
+          "SheetTile": 212,
+          "Time": 30
+        },
+        {
+          "SheetTile": 252,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 147,
+      "Stops": [
+        {
+          "SheetTile": 13,
+          "Time": 5
+        },
+        {
+          "SheetTile": 53,
+          "Time": 10
+        },
+        {
+          "SheetTile": 93,
+          "Time": 15
+        },
+        {
+          "SheetTile": 133,
+          "Time": 20
+        },
+        {
+          "SheetTile": 173,
+          "Time": 25
+        },
+        {
+          "SheetTile": 213,
+          "Time": 30
+        },
+        {
+          "SheetTile": 253,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 148,
+      "Stops": [
+        {
+          "SheetTile": 14,
+          "Time": 5
+        },
+        {
+          "SheetTile": 54,
+          "Time": 10
+        },
+        {
+          "SheetTile": 94,
+          "Time": 15
+        },
+        {
+          "SheetTile": 134,
+          "Time": 20
+        },
+        {
+          "SheetTile": 174,
+          "Time": 25
+        },
+        {
+          "SheetTile": 214,
+          "Time": 30
+        },
+        {
+          "SheetTile": 254,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 149,
+      "Stops": [
+        {
+          "SheetTile": 15,
+          "Time": 5
+        },
+        {
+          "SheetTile": 55,
+          "Time": 10
+        },
+        {
+          "SheetTile": 95,
+          "Time": 15
+        },
+        {
+          "SheetTile": 135,
+          "Time": 20
+        },
+        {
+          "SheetTile": 175,
+          "Time": 25
+        },
+        {
+          "SheetTile": 215,
+          "Time": 30
+        },
+        {
+          "SheetTile": 255,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 135,
+      "Stops": [
+        {
+          "SheetTile": 16,
+          "Time": 5
+        },
+        {
+          "SheetTile": 56,
+          "Time": 10
+        },
+        {
+          "SheetTile": 96,
+          "Time": 15
+        },
+        {
+          "SheetTile": 136,
+          "Time": 20
+        },
+        {
+          "SheetTile": 176,
+          "Time": 25
+        },
+        {
+          "SheetTile": 216,
+          "Time": 30
+        },
+        {
+          "SheetTile": 256,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 136,
+      "Stops": [
+        {
+          "SheetTile": 17,
+          "Time": 5
+        },
+        {
+          "SheetTile": 57,
+          "Time": 10
+        },
+        {
+          "SheetTile": 97,
+          "Time": 15
+        },
+        {
+          "SheetTile": 137,
+          "Time": 20
+        },
+        {
+          "SheetTile": 177,
+          "Time": 25
+        },
+        {
+          "SheetTile": 217,
+          "Time": 30
+        },
+        {
+          "SheetTile": 257,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 137,
+      "Stops": [
+        {
+          "SheetTile": 18,
+          "Time": 5
+        },
+        {
+          "SheetTile": 58,
+          "Time": 10
+        },
+        {
+          "SheetTile": 98,
+          "Time": 15
+        },
+        {
+          "SheetTile": 138,
+          "Time": 20
+        },
+        {
+          "SheetTile": 178,
+          "Time": 25
+        },
+        {
+          "SheetTile": 218,
+          "Time": 30
+        },
+        {
+          "SheetTile": 258,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 138,
+      "Stops": [
+        {
+          "SheetTile": 19,
+          "Time": 5
+        },
+        {
+          "SheetTile": 59,
+          "Time": 10
+        },
+        {
+          "SheetTile": 99,
+          "Time": 15
+        },
+        {
+          "SheetTile": 139,
+          "Time": 20
+        },
+        {
+          "SheetTile": 179,
+          "Time": 25
+        },
+        {
+          "SheetTile": 219,
+          "Time": 30
+        },
+        {
+          "SheetTile": 259,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 162,
+      "Stops": [
+        {
+          "SheetTile": 20,
+          "Time": 5
+        },
+        {
+          "SheetTile": 60,
+          "Time": 10
+        },
+        {
+          "SheetTile": 100,
+          "Time": 15
+        },
+        {
+          "SheetTile": 140,
+          "Time": 20
+        },
+        {
+          "SheetTile": 180,
+          "Time": 25
+        },
+        {
+          "SheetTile": 220,
+          "Time": 30
+        },
+        {
+          "SheetTile": 260,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 163,
+      "Stops": [
+        {
+          "SheetTile": 21,
+          "Time": 5
+        },
+        {
+          "SheetTile": 61,
+          "Time": 10
+        },
+        {
+          "SheetTile": 101,
+          "Time": 15
+        },
+        {
+          "SheetTile": 141,
+          "Time": 20
+        },
+        {
+          "SheetTile": 181,
+          "Time": 25
+        },
+        {
+          "SheetTile": 221,
+          "Time": 30
+        },
+        {
+          "SheetTile": 261,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 164,
+      "Stops": [
+        {
+          "SheetTile": 22,
+          "Time": 5
+        },
+        {
+          "SheetTile": 62,
+          "Time": 10
+        },
+        {
+          "SheetTile": 102,
+          "Time": 15
+        },
+        {
+          "SheetTile": 142,
+          "Time": 20
+        },
+        {
+          "SheetTile": 182,
+          "Time": 25
+        },
+        {
+          "SheetTile": 222,
+          "Time": 30
+        },
+        {
+          "SheetTile": 262,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 165,
+      "Stops": [
+        {
+          "SheetTile": 23,
+          "Time": 5
+        },
+        {
+          "SheetTile": 63,
+          "Time": 10
+        },
+        {
+          "SheetTile": 103,
+          "Time": 15
+        },
+        {
+          "SheetTile": 143,
+          "Time": 20
+        },
+        {
+          "SheetTile": 183,
+          "Time": 25
+        },
+        {
+          "SheetTile": 223,
+          "Time": 30
+        },
+        {
+          "SheetTile": 263,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 151,
+      "Stops": [
+        {
+          "SheetTile": 24,
+          "Time": 5
+        },
+        {
+          "SheetTile": 64,
+          "Time": 10
+        },
+        {
+          "SheetTile": 104,
+          "Time": 15
+        },
+        {
+          "SheetTile": 144,
+          "Time": 20
+        },
+        {
+          "SheetTile": 184,
+          "Time": 25
+        },
+        {
+          "SheetTile": 224,
+          "Time": 30
+        },
+        {
+          "SheetTile": 264,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 152,
+      "Stops": [
+        {
+          "SheetTile": 25,
+          "Time": 5
+        },
+        {
+          "SheetTile": 65,
+          "Time": 10
+        },
+        {
+          "SheetTile": 105,
+          "Time": 15
+        },
+        {
+          "SheetTile": 145,
+          "Time": 20
+        },
+        {
+          "SheetTile": 185,
+          "Time": 25
+        },
+        {
+          "SheetTile": 225,
+          "Time": 30
+        },
+        {
+          "SheetTile": 265,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 153,
+      "Stops": [
+        {
+          "SheetTile": 26,
+          "Time": 5
+        },
+        {
+          "SheetTile": 66,
+          "Time": 10
+        },
+        {
+          "SheetTile": 106,
+          "Time": 15
+        },
+        {
+          "SheetTile": 146,
+          "Time": 20
+        },
+        {
+          "SheetTile": 186,
+          "Time": 25
+        },
+        {
+          "SheetTile": 226,
+          "Time": 30
+        },
+        {
+          "SheetTile": 266,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 154,
+      "Stops": [
+        {
+          "SheetTile": 27,
+          "Time": 5
+        },
+        {
+          "SheetTile": 67,
+          "Time": 10
+        },
+        {
+          "SheetTile": 107,
+          "Time": 15
+        },
+        {
+          "SheetTile": 147,
+          "Time": 20
+        },
+        {
+          "SheetTile": 187,
+          "Time": 25
+        },
+        {
+          "SheetTile": 227,
+          "Time": 30
+        },
+        {
+          "SheetTile": 267,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 178,
+      "Stops": [
+        {
+          "SheetTile": 28,
+          "Time": 5
+        },
+        {
+          "SheetTile": 68,
+          "Time": 10
+        },
+        {
+          "SheetTile": 108,
+          "Time": 15
+        },
+        {
+          "SheetTile": 148,
+          "Time": 20
+        },
+        {
+          "SheetTile": 188,
+          "Time": 25
+        },
+        {
+          "SheetTile": 228,
+          "Time": 30
+        },
+        {
+          "SheetTile": 268,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 179,
+      "Stops": [
+        {
+          "SheetTile": 29,
+          "Time": 5
+        },
+        {
+          "SheetTile": 69,
+          "Time": 10
+        },
+        {
+          "SheetTile": 109,
+          "Time": 15
+        },
+        {
+          "SheetTile": 149,
+          "Time": 20
+        },
+        {
+          "SheetTile": 189,
+          "Time": 25
+        },
+        {
+          "SheetTile": 229,
+          "Time": 30
+        },
+        {
+          "SheetTile": 269,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 180,
+      "Stops": [
+        {
+          "SheetTile": 30,
+          "Time": 5
+        },
+        {
+          "SheetTile": 70,
+          "Time": 10
+        },
+        {
+          "SheetTile": 110,
+          "Time": 15
+        },
+        {
+          "SheetTile": 150,
+          "Time": 20
+        },
+        {
+          "SheetTile": 190,
+          "Time": 25
+        },
+        {
+          "SheetTile": 230,
+          "Time": 30
+        },
+        {
+          "SheetTile": 270,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 181,
+      "Stops": [
+        {
+          "SheetTile": 31,
+          "Time": 5
+        },
+        {
+          "SheetTile": 71,
+          "Time": 10
+        },
+        {
+          "SheetTile": 111,
+          "Time": 15
+        },
+        {
+          "SheetTile": 151,
+          "Time": 20
+        },
+        {
+          "SheetTile": 191,
+          "Time": 25
+        },
+        {
+          "SheetTile": 231,
+          "Time": 30
+        },
+        {
+          "SheetTile": 271,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 167,
+      "Stops": [
+        {
+          "SheetTile": 32,
+          "Time": 5
+        },
+        {
+          "SheetTile": 72,
+          "Time": 10
+        },
+        {
+          "SheetTile": 112,
+          "Time": 15
+        },
+        {
+          "SheetTile": 152,
+          "Time": 20
+        },
+        {
+          "SheetTile": 192,
+          "Time": 25
+        },
+        {
+          "SheetTile": 232,
+          "Time": 30
+        },
+        {
+          "SheetTile": 272,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 168,
+      "Stops": [
+        {
+          "SheetTile": 33,
+          "Time": 5
+        },
+        {
+          "SheetTile": 73,
+          "Time": 10
+        },
+        {
+          "SheetTile": 113,
+          "Time": 15
+        },
+        {
+          "SheetTile": 153,
+          "Time": 20
+        },
+        {
+          "SheetTile": 193,
+          "Time": 25
+        },
+        {
+          "SheetTile": 233,
+          "Time": 30
+        },
+        {
+          "SheetTile": 273,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 169,
+      "Stops": [
+        {
+          "SheetTile": 34,
+          "Time": 5
+        },
+        {
+          "SheetTile": 74,
+          "Time": 10
+        },
+        {
+          "SheetTile": 114,
+          "Time": 15
+        },
+        {
+          "SheetTile": 154,
+          "Time": 20
+        },
+        {
+          "SheetTile": 194,
+          "Time": 25
+        },
+        {
+          "SheetTile": 234,
+          "Time": 30
+        },
+        {
+          "SheetTile": 274,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 170,
+      "Stops": [
+        {
+          "SheetTile": 35,
+          "Time": 5
+        },
+        {
+          "SheetTile": 75,
+          "Time": 10
+        },
+        {
+          "SheetTile": 115,
+          "Time": 15
+        },
+        {
+          "SheetTile": 155,
+          "Time": 20
+        },
+        {
+          "SheetTile": 195,
+          "Time": 25
+        },
+        {
+          "SheetTile": 235,
+          "Time": 30
+        },
+        {
+          "SheetTile": 275,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 196,
+      "Stops": [
+        {
+          "SheetTile": 36,
+          "Time": 5
+        },
+        {
+          "SheetTile": 76,
+          "Time": 10
+        },
+        {
+          "SheetTile": 116,
+          "Time": 15
+        },
+        {
+          "SheetTile": 156,
+          "Time": 20
+        },
+        {
+          "SheetTile": 196,
+          "Time": 25
+        },
+        {
+          "SheetTile": 236,
+          "Time": 30
+        },
+        {
+          "SheetTile": 276,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 197,
+      "Stops": [
+        {
+          "SheetTile": 37,
+          "Time": 5
+        },
+        {
+          "SheetTile": 77,
+          "Time": 10
+        },
+        {
+          "SheetTile": 117,
+          "Time": 15
+        },
+        {
+          "SheetTile": 157,
+          "Time": 20
+        },
+        {
+          "SheetTile": 197,
+          "Time": 25
+        },
+        {
+          "SheetTile": 237,
+          "Time": 30
+        },
+        {
+          "SheetTile": 277,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 212,
+      "Stops": [
+        {
+          "SheetTile": 38,
+          "Time": 5
+        },
+        {
+          "SheetTile": 78,
+          "Time": 10
+        },
+        {
+          "SheetTile": 118,
+          "Time": 15
+        },
+        {
+          "SheetTile": 158,
+          "Time": 20
+        },
+        {
+          "SheetTile": 198,
+          "Time": 25
+        },
+        {
+          "SheetTile": 238,
+          "Time": 30
+        },
+        {
+          "SheetTile": 278,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 213,
+      "Stops": [
+        {
+          "SheetTile": 39,
+          "Time": 5
+        },
+        {
+          "SheetTile": 79,
+          "Time": 10
+        },
+        {
+          "SheetTile": 119,
+          "Time": 15
+        },
+        {
+          "SheetTile": 159,
+          "Time": 20
+        },
+        {
+          "SheetTile": 199,
+          "Time": 25
+        },
+        {
+          "SheetTile": 239,
+          "Time": 30
+        },
+        {
+          "SheetTile": 279,
+          "Time": 35
+        }
+      ]
+    }
+  ]
+}
