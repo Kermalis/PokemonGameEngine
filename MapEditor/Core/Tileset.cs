@@ -46,7 +46,7 @@ namespace Kermalis.MapEditor.Core
             Name = name;
             Id = id;
             // Draw
-            Bitmap = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Bgra8888);
+            Bitmap = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Rgba8888);
             using (ILockedFramebuffer l = Bitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();
@@ -64,7 +64,7 @@ namespace Kermalis.MapEditor.Core
                 }
                 for (; x < BitmapNumTilesX; x++)
                 {
-                    RenderUtils.DrawCross(bmpAddress, bmpWidth, bmpHeight, x * Overworld.Tile_NumPixelsX, y * Overworld.Tile_NumPixelsY, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, 0xFFFF0000);
+                    RenderUtils.DrawCross(bmpAddress, bmpWidth, bmpHeight, x * Overworld.Tile_NumPixelsX, y * Overworld.Tile_NumPixelsY, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, 0xFF0000FF);
                 }
             }
         }

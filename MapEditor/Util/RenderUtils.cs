@@ -9,7 +9,7 @@ namespace Kermalis.MapEditor.Util
     {
         public static WriteableBitmap ToWriteableBitmap(Bitmap bmp)
         {
-            var wb =  new WriteableBitmap(bmp.PixelSize, bmp.Dpi, PixelFormat.Bgra8888);
+            var wb =  new WriteableBitmap(bmp.PixelSize, bmp.Dpi, PixelFormat.Rgba8888);
             using (IRenderTarget rtb = Utils.RenderInterface.CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
             using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
             {
@@ -43,7 +43,6 @@ namespace Kermalis.MapEditor.Util
                 return sprites;
             }
         }
-
         public static unsafe uint[] GetBitmapUnchecked(uint* bmpAddress, int bmpWidth, int x, int y, int width, int height)
         {
             uint[] arr = new uint[width * height];
@@ -274,32 +273,33 @@ namespace Kermalis.MapEditor.Util
                 }
             }
         }
+        // Colors must be RGBA8888 (0xAABBCCDD - AA is A, BB is B, CC is G, DD is R)
         public static unsafe void DrawUnchecked(uint* pixelAddress, uint color)
         {
-            if (color == 0x00000000)
-            {
-                return;
-            }
             uint aA = color >> 24;
-            if (aA == 0xFF)
+            if (aA == 0)
             {
-                *pixelAddress = color;
+                return; // Fully transparent
+            }
+            else if (aA == 0xFF)
+            {
+                *pixelAddress = color; // Fully opaque
             }
             else
             {
-                uint rA = (color >> 16) & 0xFF;
+                uint bA = (color >> 16) & 0xFF;
                 uint gA = (color >> 8) & 0xFF;
-                uint bA = color & 0xFF;
+                uint rA = color & 0xFF;
                 uint current = *pixelAddress;
                 uint aB = current >> 24;
-                uint rB = (current >> 16) & 0xFF;
+                uint bB = (current >> 16) & 0xFF;
                 uint gB = (current >> 8) & 0xFF;
-                uint bB = current & 0xFF;
+                uint rB = current & 0xFF;
                 uint a = aA + (aB * (0xFF - aA) / 0xFF);
                 uint r = (rA * aA / 0xFF) + (rB * aB * (0xFF - aA) / (0xFF * 0xFF));
                 uint g = (gA * aA / 0xFF) + (gB * aB * (0xFF - aA) / (0xFF * 0xFF));
                 uint b = (bA * aA / 0xFF) + (bB * aB * (0xFF - aA) / (0xFF * 0xFF));
-                *pixelAddress = (a << 24) | (r << 16) | (g << 8) | b;
+                *pixelAddress = (a << 24) | (b << 16) | (g << 8) | r;
             }
         }
     }

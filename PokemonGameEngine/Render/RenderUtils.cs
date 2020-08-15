@@ -96,7 +96,6 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
-
         public static unsafe uint[] GetBitmapUnchecked(uint* bmpAddress, int bmpWidth, int x, int y, int width, int height)
         {
             uint[] arr = new uint[width * height];

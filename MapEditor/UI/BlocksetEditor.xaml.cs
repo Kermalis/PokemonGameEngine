@@ -155,7 +155,7 @@ namespace Kermalis.MapEditor.UI
 
         public BlocksetEditor()
         {
-            _clipboardBitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Bgra8888);
+            _clipboardBitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Rgba8888);
 
             SubLayers = new ObservableCollection<SubLayerModel>(new List<SubLayerModel>(Overworld.MaxSubLayers));
 
