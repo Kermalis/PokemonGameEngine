@@ -1,7 +1,7 @@
-﻿using Avalonia.Media.Imaging;
-using Kermalis.PokemonGameEngine.Util;
+﻿using Kermalis.PokemonGameEngine.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
@@ -13,11 +13,12 @@ namespace Kermalis.PokemonGameEngine.Render
 
         private Sprite(string resource)
         {
-            using (var wb = RenderUtils.ToWriteableBitmap(new Bitmap(Utils.GetResourceStream(resource))))
+            using (Stream stream = Utils.GetResourceStream(resource))
             {
-                Bitmap = RenderUtils.ToBitmap(wb, out int w, out int h);
-                Width = w;
-                Height = h;
+                RenderUtils.GetTextureData(stream, out int width, out int height, out uint[] bitmap);
+                Bitmap = bitmap;
+                Width = width;
+                Height = height;
             }
         }
         public Sprite(int width, int height)

@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.UI;
 using System;
 using System.Collections.Generic;
 
@@ -77,7 +78,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
         private int GetRandomTimer()
         {
-            return PBEUtils.GlobalRandom.RandomInt(1 * Game.NumTicksPerSecond, 10 * Game.NumTicksPerSecond);
+            return PBEUtils.GlobalRandom.RandomInt(1 * Program.NumTicksPerSecond, 10 * Program.NumTicksPerSecond);
         }
 
         private void WanderSomewhere(FacingDirection[] allowed)

@@ -8,15 +8,11 @@ using Kermalis.PokemonGameEngine.Script;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Game
     {
-        public const int NumTicksPerSecond = 20;
-        private readonly object _threadLockObj = new object();
-
         public static Game Instance { get; private set; }
         public Save Save { get; }
 
@@ -45,16 +41,6 @@ namespace Kermalis.PokemonGameEngine.Core
             map.Objs.Add(CameraObj.Camera);
             map.LoadObjEvents();
             _overworldGUI = new OverworldGUI();
-            new Thread(LogicThreadMainLoop) { Name = "Logic Thread" }.Start();
-        }
-
-        private void LogicThreadMainLoop()
-        {
-            while (true)
-            {
-                LogicTick();
-                Thread.Sleep(1000 / NumTicksPerSecond);
-            }
         }
 
         public void TempWarp(IWarp warp)
@@ -104,66 +90,60 @@ namespace Kermalis.PokemonGameEngine.Core
             _battleTransition = new SpiralTransition(OnBattleTransitionEnded);
         }
 
-        private void LogicTick()
+        public void LogicTick()
         {
-            lock (_threadLockObj)
+            foreach (ScriptContext ctx in Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
             {
-                foreach (ScriptContext ctx in Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
-                {
-                    ctx.LogicTick();
-                }
-                foreach (MessageBox mb in MessageBoxes.ToArray())
-                {
-                    mb.LogicTick();
-                }
-                Tileset.AnimationTick(); // TODO: Don't run in battles like we are now
-                if (_battleTransition != null || _fadeFromTransition != null || _fadeToTransition != null)
-                {
-                    return;
-                }
-                if (_battleGUI != null)
-                {
-                    _battleGUI.LogicTick();
-                    return;
-                }
-                _overworldGUI.LogicTick();
+                ctx.LogicTick();
             }
+            foreach (MessageBox mb in MessageBoxes.ToArray())
+            {
+                mb.LogicTick();
+            }
+            Tileset.AnimationTick(); // TODO: Don't run in battles like we are now
+            if (_battleTransition != null || _fadeFromTransition != null || _fadeToTransition != null)
+            {
+                return;
+            }
+            if (_battleGUI != null)
+            {
+                _battleGUI.LogicTick();
+                return;
+            }
+            _overworldGUI.LogicTick();
         }
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight, int? fps)
         {
-            lock (_threadLockObj)
+            if (_battleTransition != null)
             {
-                if (_battleTransition != null)
-                {
-                    _battleTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    goto bottom;
-                }
-                if (_battleGUI != null)
-                {
-                    _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    goto bottom;
-                }
-                _overworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                if (_fadeFromTransition != null)
-                {
-                    _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    goto bottom;
-                }
-                if (_fadeToTransition != null)
-                {
-                    _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    goto bottom;
-                }
-            bottom:
-                foreach (MessageBox mb in MessageBoxes.ToArray())
-                {
-                    mb.Render(bmpAddress, bmpWidth, bmpHeight);
-                }
-                if (fps.HasValue)
-                {
-                    Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, fps.Value.ToString(), Font.DefaultFemale);
-                }
+                _battleTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                goto bottom;
+            }
+            if (_battleGUI != null)
+            {
+                _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                goto bottom;
+            }
+            _overworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            if (_fadeFromTransition != null)
+            {
+                _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                goto bottom;
+            }
+            if (_fadeToTransition != null)
+            {
+                _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                goto bottom;
+            }
+        bottom:
+            foreach (MessageBox mb in MessageBoxes.ToArray())
+            {
+                mb.Render(bmpAddress, bmpWidth, bmpHeight);
+            }
+            if (fps.HasValue)
+            {
+                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, fps.Value.ToString(), Font.DefaultFemale);
             }
         }
     }

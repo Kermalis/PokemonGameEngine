@@ -32,11 +32,11 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public static Font Default { get; }
         public static uint[] DefaultWhite { get; } = new uint[] { 0x00000000, 0xFFEFEFEF, 0xFF848484 };
-        public static uint[] DefaultSelected { get; } = new uint[] { 0x00000000, 0xFFFFE016, 0xFFBCA510 };
-        public static uint[] DefaultDisabled { get; } = new uint[] { 0x00000000, 0xFF85858D, 0xFF3A3232 };
-        public static uint[] DefaultDark { get; } = new uint[] { 0x00000000, 0xFF5A5252, 0xFFA5A5AD };
-        public static uint[] DefaultMale { get; } = new uint[] { 0x00000000, 0xFF7394FF, 0xFF0000D6 };
-        public static uint[] DefaultFemale { get; } = new uint[] { 0x00000000, 0xFFFF7373, 0xFFC60000 };
+        public static uint[] DefaultSelected { get; } = new uint[] { 0x00000000, 0xFF16E0FF, 0xFF10A5BC };
+        public static uint[] DefaultDisabled { get; } = new uint[] { 0x00000000, 0xFF8D8585, 0xFF32323A };
+        public static uint[] DefaultDark { get; } = new uint[] { 0x00000000, 0xFF52525A, 0xFFADA5A5 };
+        public static uint[] DefaultMale { get; } = new uint[] { 0x00000000, 0xFFFF9473, 0xFFD60000 };
+        public static uint[] DefaultFemale { get; } = new uint[] { 0x00000000, 0xFF7373FF, 0xFF0000C6 };
         public static Font PartyNumbers { get; }
 
         static Font()

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;netcoreapp2.2</TargetFrameworks>
+    <TargetFrameworks>net48;netcoreapp3.1</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <RootNamespace>Kermalis.PokemonGameEngine</RootNamespace>
     <Authors>Kermalis</Authors>
@@ -11,16 +11,10 @@
     <NoWarn />
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors>NU1605</WarningsAsErrors>
-    <StartupObject>Kermalis.PokemonGameEngine.Program</StartupObject>
+    <StartupObject>Kermalis.PokemonGameEngine.UI.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <AvaloniaResource Include="**\*.xaml">
-      <SubType>Designer</SubType>
-    </AvaloniaResource>
     <EmbeddedResource Include="Assets\**" />
     <EmbeddedResource Remove="Assets\Encounter\**\*.json" />
     <EmbeddedResource Remove="Assets\Map\**\*.json" />
@@ -33,12 +27,10 @@
     <EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\BG\**\*.*">
       <Link>Assets\GUI\Battle\Background\%(RecursiveDir)%(FileName)%(Extension)</Link>
     </EmbeddedResource>
-    <Content Include="..\Shared Dependencies\PokemonBattleEngine.db">
-      <Link>PokemonBattleEngine.db</Link>
+    <ContentWithTargetPath Include="..\Shared Dependencies\PokemonBattleEngine.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <PackageReference Include="Avalonia" Version="0.10.0-preview2" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-preview2" />
+      <TargetPath>PokemonBattleEngine.db</TargetPath>
+    </ContentWithTargetPath>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.3" />
@@ -47,6 +39,25 @@
     </Reference>
     <Reference Include="PokemonBattleEngine">
       <HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
+    </Reference>
+    <ContentWithTargetPath Include="Dependencies\SDL2.dll"> <!--64-bit windows dll for now-->
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>SDL2.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="Dependencies\SDL_Image\SDL2_image.dll"> <!--64-bit windows dll for now-->
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>SDL2_image.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="Dependencies\SDL_Image\libpng16-16.dll"> <!--64-bit windows dll for now-->
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>libpng16-16.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="Dependencies\SDL_Image\zlib1.dll"> <!--64-bit windows dll for now-->
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>zlib1.dll</TargetPath>
+    </ContentWithTargetPath>
+    <Reference Include="SDL2-CS">
+      <HintPath>Dependencies\SDL2-CS.dll</HintPath>
     </Reference>
   </ItemGroup>
   

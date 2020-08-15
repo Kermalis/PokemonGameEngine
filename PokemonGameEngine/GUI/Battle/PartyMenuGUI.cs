@@ -69,7 +69,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     theW = 1;
                 }
                 RenderUtils.DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, lineStartX, lineStartY, theW, 0xFF63FF63);
-                RenderUtils.DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, lineStartX, lineStartY + 1, theW, 0xFF18C621);
+                RenderUtils.DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, lineStartX, lineStartY + 1, theW, 0xFF21C618);
                 _hpText.DrawOn(bmpAddress, bmpWidth, bmpHeight, 47, 23);
             }
 

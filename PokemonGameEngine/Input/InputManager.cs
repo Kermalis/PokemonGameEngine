@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SDL2;
+using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Input
@@ -20,23 +21,23 @@ namespace Kermalis.PokemonGameEngine.Input
             }
         }
 
-        public static void OnKeyDown(Avalonia.Input.KeyEventArgs e, bool down)
+        public static void OnKeyDown(SDL.SDL_Event e, bool down)
         {
             Key key;
-            switch (e.Key)
+            switch (e.key.keysym.sym)
             {
-                case Avalonia.Input.Key.Q: key = Key.L; break;
-                case Avalonia.Input.Key.W: key = Key.R; break;
-                case Avalonia.Input.Key.A: key = Key.X; break;
-                case Avalonia.Input.Key.S: key = Key.Y; break;
-                case Avalonia.Input.Key.Z: key = Key.B; break;
-                case Avalonia.Input.Key.X: key = Key.A; break;
-                case Avalonia.Input.Key.Left: key = Key.Left; break;
-                case Avalonia.Input.Key.Right: key = Key.Right; break;
-                case Avalonia.Input.Key.Down: key = Key.Down; break;
-                case Avalonia.Input.Key.Up: key = Key.Up; break;
-                case Avalonia.Input.Key.Enter: key = Key.Start; break;
-                case Avalonia.Input.Key.RightShift: key = Key.Select; break;
+                case SDL.SDL_Keycode.SDLK_q: key = Key.L; break;
+                case SDL.SDL_Keycode.SDLK_w: key = Key.R; break;
+                case SDL.SDL_Keycode.SDLK_a: key = Key.X; break;
+                case SDL.SDL_Keycode.SDLK_s: key = Key.Y; break;
+                case SDL.SDL_Keycode.SDLK_z: key = Key.B; break;
+                case SDL.SDL_Keycode.SDLK_x: key = Key.A; break;
+                case SDL.SDL_Keycode.SDLK_LEFT: key = Key.Left; break;
+                case SDL.SDL_Keycode.SDLK_RIGHT: key = Key.Right; break;
+                case SDL.SDL_Keycode.SDLK_DOWN: key = Key.Down; break;
+                case SDL.SDL_Keycode.SDLK_UP: key = Key.Up; break;
+                case SDL.SDL_Keycode.SDLK_RETURN: key = Key.Start; break;
+                case SDL.SDL_Keycode.SDLK_RSHIFT: key = Key.Select; break;
                 default: return;
             }
             KeyDownData p = _pressed[key];
@@ -49,7 +50,6 @@ namespace Kermalis.PokemonGameEngine.Input
                 p.PressChecked = false;
                 p.PressTime = 0;
             }
-            e.Handled = true;
         }
 
         public static bool IsPressed(Key key)

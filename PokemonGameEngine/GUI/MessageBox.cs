@@ -36,8 +36,8 @@ namespace Kermalis.PokemonGameEngine.GUI
             Width = 1.00f;
             Height = 0.16f;
 
-            _printer = new StringPrinter(text, (int)(MainView.RenderWidth * XOffset), (int)(MainView.RenderHeight * YOffset), Font, FontColors);
-            _sprite = new Sprite((int)(MainView.RenderWidth * Width), (int)(MainView.RenderHeight * Height));
+            _printer = new StringPrinter(text, (int)(Program.RenderWidth * XOffset), (int)(Program.RenderHeight * YOffset), Font, FontColors);
+            _sprite = new Sprite((int)(Program.RenderWidth * Width), (int)(Program.RenderHeight * Height));
             _sprite.Draw(DrawBackground);
         }
         private unsafe void DrawBackground(uint* bmpAddress, int bmpWidth, int bmpHeight)

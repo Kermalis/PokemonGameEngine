@@ -1,44 +1,66 @@
-﻿using Avalonia;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
-using Kermalis.PokemonGameEngine.Util;
+﻿using Kermalis.PokemonGameEngine.Util;
+using SDL2;
 using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
     internal sealed class RenderUtils
     {
-        public static WriteableBitmap ToWriteableBitmap(Bitmap bmp)
+        private static unsafe IntPtr ConvertSurfaceFormat(IntPtr surface)
         {
-            var wb =  new WriteableBitmap(bmp.PixelSize, bmp.Dpi, PixelFormat.Bgra8888);
-            using (IRenderTarget rtb = Utils.RenderInterface.CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
-            using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
+            IntPtr result = surface;
+            var surPtr = (SDL.SDL_Surface*)surface;
+            var pixelFormatPtr = (SDL.SDL_PixelFormat*)surPtr->format;
+            if (pixelFormatPtr->format != SDL.SDL_PIXELFORMAT_ABGR8888)
             {
-                var rect = new Rect(bmp.Size);
-                ctx.DrawBitmap(bmp.PlatformImpl, 1, rect, rect);
+                result = SDL.SDL_ConvertSurfaceFormat(surface, SDL.SDL_PIXELFORMAT_ABGR8888, 0);
+                SDL.SDL_FreeSurface(surface);
             }
-            bmp.Dispose();
-            return wb;
+            return result;
         }
-        public static unsafe uint[] ToBitmap(WriteableBitmap wb, out int width, out int height)
+        private static unsafe IntPtr GetSurfacePixels(IntPtr surface)
         {
-            using (ILockedFramebuffer l = wb.Lock())
+            return ((SDL.SDL_Surface*)surface)->pixels;
+        }
+        private static unsafe int GetSurfaceWidth(IntPtr surface)
+        {
+            return ((SDL.SDL_Surface*)surface)->w;
+        }
+        private static unsafe int GetSurfaceHeight(IntPtr surface)
+        {
+            return ((SDL.SDL_Surface*)surface)->h;
+        }
+        private static unsafe IntPtr StreamToRWops(Stream stream)
+        {
+            byte[] bytes = new byte[stream.Length];
+            stream.Read(bytes, 0, bytes.Length);
+            fixed (byte* b = bytes)
             {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
-                PixelSize ps = wb.PixelSize;
-                height = ps.Height;
-                width = ps.Width;
-                uint[] arr = new uint[height * width];
-                for (int py = 0; py < height; py++)
-                {
-                    for (int px = 0; px < width; px++)
-                    {
-                        int i = px + (py * width);
-                        arr[i] = *(bmpAddress + i);
-                    }
-                }
-                return arr;
+                return SDL.SDL_RWFromMem(new IntPtr(b), bytes.Length);
+            }
+        }
+        public static unsafe void GetTextureData(Stream stream, out int width, out int height, out uint[] bitmap)
+        {
+            IntPtr rwops = StreamToRWops(stream);
+            IntPtr surface = SDL_image.IMG_Load_RW(rwops, 1);
+            surface = ConvertSurfaceFormat(surface);
+            width = GetSurfaceWidth(surface);
+            height = GetSurfaceHeight(surface);
+            bitmap = new uint[width * height];
+            fixed (uint* b = bitmap)
+            {
+                int num = width * height * sizeof(uint);
+                Buffer.MemoryCopy(GetSurfacePixels(surface).ToPointer(), b, num, num);
+            }
+        }
+        // Currently unused
+        public static unsafe IntPtr LoadTexture_PNG(IntPtr renderer, string resource)
+        {
+            using (Stream stream = Utils.GetResourceStream(resource))
+            {
+                return SDL_image.IMG_LoadTextureTyped_RW(renderer, StreamToRWops(stream), 1, "PNG");
             }
         }
 
@@ -54,25 +76,24 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public static unsafe uint[][] LoadBitmapSheet(string resource, int spriteWidth, int spriteHeight)
         {
-            using (WriteableBitmap wb = ToWriteableBitmap(new Bitmap(Utils.GetResourceStream(resource))))
-            using (ILockedFramebuffer l = wb.Lock())
+            using (Stream stream = Utils.GetResourceStream(resource))
             {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
-                PixelSize ps = wb.PixelSize;
-                int sheetWidth = ps.Width;
-                int sheetHeight = ps.Height;
-                int numSpritesX = sheetWidth / spriteWidth;
-                int numSpritesY = sheetHeight / spriteHeight;
-                uint[][] sprites = new uint[numSpritesX * numSpritesY][];
-                int sprite = 0;
-                for (int sy = 0; sy < numSpritesY; sy++)
+                GetTextureData(stream, out int sheetWidth, out int sheetHeight, out uint[] pixels);
+                fixed (uint* bmpAddress = pixels)
                 {
-                    for (int sx = 0; sx < numSpritesX; sx++)
+                    int numSpritesX = sheetWidth / spriteWidth;
+                    int numSpritesY = sheetHeight / spriteHeight;
+                    uint[][] sprites = new uint[numSpritesX * numSpritesY][];
+                    int sprite = 0;
+                    for (int sy = 0; sy < numSpritesY; sy++)
                     {
-                        sprites[sprite++] = GetBitmapUnchecked(bmpAddress, sheetWidth, sx * spriteWidth, sy * spriteHeight, spriteWidth, spriteHeight);
+                        for (int sx = 0; sx < numSpritesX; sx++)
+                        {
+                            sprites[sprite++] = GetBitmapUnchecked(bmpAddress, sheetWidth, sx * spriteWidth, sy * spriteHeight, spriteWidth, spriteHeight);
+                        }
                     }
+                    return sprites;
                 }
-                return sprites;
             }
         }
 
@@ -545,45 +566,46 @@ namespace Kermalis.PokemonGameEngine.Render
             }   // End of while loop
         }
 
+        // Colors must be RGBA8888 (0xAABBCCDD - AA is A, BB is B, CC is G, DD is R)
         public static unsafe void ModulateUnchecked(uint* pixelAddress, float aMod, float rMod, float gMod, float bMod)
         {
             uint current = *pixelAddress;
             uint a = current >> 24;
-            uint r = (current >> 16) & 0xFF;
+            uint b = (current >> 16) & 0xFF;
             uint g = (current >> 8) & 0xFF;
-            uint b = current & 0xFF;
+            uint r = current & 0xFF;
             a = (byte)(a * aMod);
             r = (byte)(r * rMod);
             g = (byte)(g * gMod);
             b = (byte)(b * bMod);
-            *pixelAddress = (a << 24) | (r << 16) | (g << 8) | b;
+            *pixelAddress = (a << 24) | (b << 16) | (g << 8) | r;
         }
         public static unsafe void DrawUnchecked(uint* pixelAddress, uint color)
         {
-            if (color == 0x00000000)
-            {
-                return;
-            }
             uint aA = color >> 24;
-            if (aA == 0xFF)
+            if (aA == 0)
             {
-                *pixelAddress = color;
+                return; // Fully transparent
+            }
+            else if (aA == 0xFF)
+            {
+                *pixelAddress = color; // Fully opaque
             }
             else
             {
-                uint rA = (color >> 16) & 0xFF;
+                uint bA = (color >> 16) & 0xFF;
                 uint gA = (color >> 8) & 0xFF;
-                uint bA = color & 0xFF;
+                uint rA = color & 0xFF;
                 uint current = *pixelAddress;
                 uint aB = current >> 24;
-                uint rB = (current >> 16) & 0xFF;
+                uint bB = (current >> 16) & 0xFF;
                 uint gB = (current >> 8) & 0xFF;
-                uint bB = current & 0xFF;
+                uint rB = current & 0xFF;
                 uint a = aA + (aB * (0xFF - aA) / 0xFF);
                 uint r = (rA * aA / 0xFF) + (rB * aB * (0xFF - aA) / (0xFF * 0xFF));
                 uint g = (gA * aA / 0xFF) + (gB * aB * (0xFF - aA) / (0xFF * 0xFF));
                 uint b = (bA * aA / 0xFF) + (bB * aB * (0xFF - aA) / (0xFF * 0xFF));
-                *pixelAddress = (a << 24) | (r << 16) | (g << 8) | b;
+                *pixelAddress = (a << 24) | (b << 16) | (g << 8) | r;
             }
         }
     }

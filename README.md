@@ -37,13 +37,20 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 
 ----
 ## PokemonGameEngine Uses:
-* [Avalonia](https://github.com/AvaloniaUI/Avalonia)
 * [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)
 * [Microsoft.Data.Sqlite](https://docs.microsoft.com/en-us/ef/core)
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 * [NUKE](https://github.com/nuke-build/nuke)
 * [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine)
+* [SDL2](https://www.libsdl.org/)
+* [SDL2#](https://github.com/flibitijibibo/SDL2-CS)
 * [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)
+
+## MapEditor Uses:
+* [Avalonia](https://github.com/AvaloniaUI/Avalonia)
+* [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)
+* [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+* [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine)
 
 ## Test tiles taken from... (I did modify them a bit)
 * https://www.deviantart.com/phyromatical/art/Taragonia-BW-Mix-434036293
