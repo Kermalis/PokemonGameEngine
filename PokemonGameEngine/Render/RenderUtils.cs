@@ -51,8 +51,9 @@ namespace Kermalis.PokemonGameEngine.Render
             bitmap = new uint[width * height];
             fixed (uint* b = bitmap)
             {
-                int num = width * height * sizeof(uint);
-                Buffer.MemoryCopy(GetSurfacePixels(surface).ToPointer(), b, num, num);
+                int len = width * height * sizeof(uint);
+                //Buffer.MemoryCopy(GetSurfacePixels(surface).ToPointer(), b, len, len);
+                SDL.SDL_memcpy(new IntPtr(b), GetSurfacePixels(surface), new IntPtr(len));
             }
         }
         // Currently unused
