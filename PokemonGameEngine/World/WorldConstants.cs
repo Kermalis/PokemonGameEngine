@@ -2,11 +2,10 @@
 
 namespace Kermalis.PokemonGameEngine.World
 {
+    // WIKI - https://github.com/Kermalis/PokemonGameEngine/wiki/World-Constants
+
     internal static partial class Overworld
     {
-        // If you want to change a tile or block's size, you will need to delete all of your assets and remake them
-        // It's in your own best interest to keep the tile pixels divisible by 2
-
         // A tile is 8x8 pixels
         public const int Tile_NumPixelsX = 8;
         public const int Tile_NumPixelsY = 8;
@@ -17,9 +16,7 @@ namespace Kermalis.PokemonGameEngine.World
         public const int Block_NumPixelsX = Block_NumTilesX * Tile_NumPixelsX;
         public const int Block_NumPixelsY = Block_NumTilesY * Tile_NumPixelsY;
 
-        // The amount of elevations. Changing this above 8 will require more work because elevations work in bits and are stored in bytes. Should not be 0
         public const int NumElevations = 8;
-        // The maximum amount of sub-layers per tile. Changing this above 256 will require more work because sub-layer counts are in bytes. Should not be 0
         public const int MaxSubLayers = byte.MaxValue + 1;
 
         // Objs

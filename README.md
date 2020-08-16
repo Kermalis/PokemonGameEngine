@@ -2,14 +2,13 @@
 
 Pokémon Game Engine is a C# game engine that is similar to the 2d Pokémon games.
 It uses [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine) for the battles.
-It can run on any platform, even phones!
+It can run on any platform, even phones! (With some work, contact me)
 
 ![GamePreview](GamePreview.png)
 ![MapEditorPreview](MapEditorPreview.png)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.
-You will need an extension in your IDE to support NUKE build, (for Visual Studio, it's called `NUKE Support`), and will need to attach it to the build process (for Visual Studio, you use the Task Runner Explorer).
-If you do not want to do that, you will need to run the `_build` project every time you want to build assets.
+[Check the wiki](https://github.com/Kermalis/PokemonGameEngine/wiki) if you're interested.
 If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX).
 
 ## Features:
@@ -24,7 +23,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 
 ----
 ## To Do:
-* Proper documentation/installation guide
+* Update the wiki as the engine grows
 * Changable tiles based on day/night
 * Saving
 * Flags/vars
