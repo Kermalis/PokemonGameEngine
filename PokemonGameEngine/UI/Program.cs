@@ -31,8 +31,8 @@ namespace Kermalis.PokemonGameEngine.UI
 
         private readonly object _threadLockObj = new object();
         private readonly IntPtr _window;
-        private readonly IntPtr _renderer;
-        private readonly IntPtr _screen;
+        private IntPtr _renderer;
+        private IntPtr _screen;
         private bool _quit;
         private IntPtr _controller;
         private int _controllerId;
@@ -44,9 +44,8 @@ namespace Kermalis.PokemonGameEngine.UI
             SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_GAMECONTROLLER);
             SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG);
 
-            _window = SDL.SDL_CreateWindow("Pokémon Game Engine", SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED, RenderWidth, RenderHeight, 0); // Resizable or fullscreen break when resized/minimized/maximized
-            _renderer = SDL.SDL_CreateRenderer(_window, -1, SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
-            _screen = SDL.SDL_CreateTexture(_renderer, SDL.SDL_PIXELFORMAT_ABGR8888, (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING, RenderWidth, RenderHeight);
+            _window = SDL.SDL_CreateWindow("Pokémon Game Engine", SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED, RenderWidth, RenderHeight, SDL.SDL_WindowFlags.SDL_WINDOW_RESIZABLE);
+            CreateRendererAndScreen();
 
             AttachFirstController();
 
@@ -55,6 +54,12 @@ namespace Kermalis.PokemonGameEngine.UI
             new Thread(RenderTick) { Name = "Render Thread" }.Start();
         }
 
+        private void CreateRendererAndScreen()
+        {
+            IntPtr r = SDL.SDL_CreateRenderer(_window, -1, SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED | SDL.SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC);
+            _renderer = r;
+            _screen = SDL.SDL_CreateTexture(r, SDL.SDL_PIXELFORMAT_ABGR8888, (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING, RenderWidth, RenderHeight);
+        }
         private void AttachFirstController()
         {
             int num = SDL.SDL_NumJoysticks();
@@ -83,6 +88,19 @@ namespace Kermalis.PokemonGameEngine.UI
                         case SDL.SDL_EventType.SDL_QUIT:
                         {
                             _quit = true;
+                            break;
+                        }
+                        case SDL.SDL_EventType.SDL_WINDOWEVENT:
+                        {
+                            if (e.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED)
+                            {
+                                lock (_threadLockObj)
+                                {
+                                    SDL.SDL_DestroyTexture(_screen);
+                                    SDL.SDL_DestroyRenderer(_renderer);
+                                    CreateRendererAndScreen();
+                                }
+                            }
                             break;
                         }
                         case SDL.SDL_EventType.SDL_CONTROLLERDEVICEREMOVED:
@@ -170,15 +188,17 @@ namespace Kermalis.PokemonGameEngine.UI
             while (!_quit)
             {
                 DateTime now = DateTime.Now;
-                SDL.SDL_LockTexture(_screen, IntPtr.Zero, out IntPtr pixels, out _);
                 lock (_threadLockObj)
                 {
+                    IntPtr s = _screen;
+                    IntPtr r = _renderer;
+                    SDL.SDL_LockTexture(s, IntPtr.Zero, out IntPtr pixels, out _);
                     Game.Instance.RenderTick((uint*)pixels.ToPointer(), RenderWidth, RenderHeight, _showFPS ? ((int)Math.Round(1_000 / now.Subtract(lastRenderTime).TotalMilliseconds)).ToString() : null);
+                    SDL.SDL_UnlockTexture(s);
+                    SDL.SDL_RenderClear(r);
+                    SDL.SDL_RenderCopy(r, s, IntPtr.Zero, IntPtr.Zero);
+                    SDL.SDL_RenderPresent(r);
                 }
-                SDL.SDL_UnlockTexture(_screen);
-                SDL.SDL_RenderClear(_renderer);
-                SDL.SDL_RenderCopy(_renderer, _screen, IntPtr.Zero, IntPtr.Zero);
-                SDL.SDL_RenderPresent(_renderer);
                 lastRenderTime = now;
                 time.Wait();
             }
