@@ -107,7 +107,7 @@ namespace Kermalis.PokemonGameEngine.UI
                 SDL.SDL_LockTexture(_screen, IntPtr.Zero, out IntPtr pixels, out _);
                 lock (_threadLockObj)
                 {
-                    Game.Instance.RenderTick((uint*)pixels.ToPointer(), RenderWidth, RenderHeight, _showFPS ? (int)Math.Round(1_000 / now.Subtract(lastRenderTime).TotalMilliseconds) : (int?)null);
+                    Game.Instance.RenderTick((uint*)pixels.ToPointer(), RenderWidth, RenderHeight, _showFPS ? ((int)Math.Round(1_000 / now.Subtract(lastRenderTime).TotalMilliseconds)).ToString() : null);
                 }
                 SDL.SDL_UnlockTexture(_screen);
                 SDL.SDL_RenderClear(_renderer);

@@ -113,7 +113,7 @@ namespace Kermalis.PokemonGameEngine.Core
             _overworldGUI.LogicTick();
         }
 
-        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight, int? fps)
+        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight, string topLeftMessage)
         {
             if (_battleTransition != null)
             {
@@ -141,9 +141,9 @@ namespace Kermalis.PokemonGameEngine.Core
             {
                 mb.Render(bmpAddress, bmpWidth, bmpHeight);
             }
-            if (fps.HasValue)
+            if (topLeftMessage != null)
             {
-                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, fps.Value.ToString(), Font.DefaultFemale);
+                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, topLeftMessage, Font.DefaultFemale);
             }
         }
     }
