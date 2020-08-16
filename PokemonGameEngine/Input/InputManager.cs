@@ -6,10 +6,12 @@ namespace Kermalis.PokemonGameEngine.Input
 {
     internal static class InputManager
     {
-        public sealed class KeyDownData
+        private sealed class KeyDownData
         {
-            public bool PressChecked { get; set; }
-            public ulong PressTime { get; set; }
+            public bool PressChecked;
+            public ulong PressTime;
+            public bool StickPressed;
+            public bool NonStickPressed;
         }
 
         private static readonly Dictionary<Key, KeyDownData> _pressed = new Dictionary<Key, KeyDownData>();
@@ -21,6 +23,56 @@ namespace Kermalis.PokemonGameEngine.Input
             }
         }
 
+        public static void OnAxis(SDL.SDL_Event e)
+        {
+            const ushort Deadzone = ushort.MaxValue / 4;
+            void Do(Key less, Key more)
+            {
+                short val = e.caxis.axisValue;
+                if (val < -Deadzone)
+                {
+                    DoTheDown(more, false, true);
+                    DoTheDown(less, true, true);
+                }
+                else if (val > Deadzone)
+                {
+                    DoTheDown(less, false, true);
+                    DoTheDown(more, true, true);
+                }
+                else
+                {
+                    DoTheDown(less, false, true);
+                    DoTheDown(more, false, true);
+                }
+            }
+            switch ((SDL.SDL_GameControllerAxis)e.caxis.axis)
+            {
+                case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX: Do(Key.Left, Key.Right); break;
+                case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY: Do(Key.Up, Key.Down); break;
+                default: break;
+            }
+        }
+        public static void OnButtonDown(SDL.SDL_Event e, bool down)
+        {
+            Key key;
+            switch ((SDL.SDL_GameControllerButton)e.cbutton.button)
+            {
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER: key = Key.L; break;
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: key = Key.R; break;
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_Y: key = Key.X; break;
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_X: key = Key.Y; break;
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A: key = Key.B; break;
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_B: key = Key.A; break;
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_LEFT: key = Key.Left; break;
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_RIGHT: key = Key.Right; break;
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_DOWN: key = Key.Down; break;
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_UP: key = Key.Up; break;
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_START: key = Key.Start; break;
+                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK: key = Key.Select; break;
+                default: return;
+            }
+            DoTheDown(key, down, false);
+        }
         public static void OnKeyDown(SDL.SDL_Event e, bool down)
         {
             Key key;
@@ -40,15 +92,41 @@ namespace Kermalis.PokemonGameEngine.Input
                 case SDL.SDL_Keycode.SDLK_RSHIFT: key = Key.Select; break;
                 default: return;
             }
+            DoTheDown(key, down, false);
+        }
+        private static void DoTheDown(Key key, bool down, bool stick)
+        {
             KeyDownData p = _pressed[key];
             if (down)
             {
+                if (stick)
+                {
+                    p.StickPressed = true;
+                }
+                else
+                {
+                    p.NonStickPressed = true;
+                }
                 p.PressTime++;
             }
             else
             {
-                p.PressChecked = false;
-                p.PressTime = 0;
+                bool other;
+                if (stick)
+                {
+                    p.StickPressed = false;
+                    other = p.NonStickPressed;
+                }
+                else
+                {
+                    p.NonStickPressed = false;
+                    other = p.StickPressed;
+                }
+                if (!other)
+                {
+                    p.PressChecked = false;
+                    p.PressTime = 0;
+                }
             }
         }
 

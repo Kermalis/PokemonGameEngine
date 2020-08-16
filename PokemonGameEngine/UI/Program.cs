@@ -34,20 +34,42 @@ namespace Kermalis.PokemonGameEngine.UI
         private readonly IntPtr _renderer;
         private readonly IntPtr _screen;
         private bool _quit;
+        private IntPtr _controller;
+        private int _controllerId;
 
         private Program()
         {
             Utils.SetWorkingDirectory(string.Empty);
 
-            SDL.SDL_Init(SDL.SDL_INIT_VIDEO);
+            SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_GAMECONTROLLER);
+            SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG);
 
             _window = SDL.SDL_CreateWindow("Pokémon Game Engine", SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED, RenderWidth, RenderHeight, 0); // Resizable or fullscreen break when resized/minimized/maximized
             _renderer = SDL.SDL_CreateRenderer(_window, -1, SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
             _screen = SDL.SDL_CreateTexture(_renderer, SDL.SDL_PIXELFORMAT_ABGR8888, (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING, RenderWidth, RenderHeight);
 
+            AttachFirstController();
+
             new Game(); // Init game
             new Thread(LogicTick) { Name = "Logic Thread" }.Start();
             new Thread(RenderTick) { Name = "Render Thread" }.Start();
+        }
+
+        private void AttachFirstController()
+        {
+            int num = SDL.SDL_NumJoysticks();
+            for (int i = 0; i < num; i++)
+            {
+                if (SDL.SDL_IsGameController(i) == SDL.SDL_bool.SDL_TRUE)
+                {
+                    _controller = SDL.SDL_GameControllerOpen(i);
+                    if (_controller != IntPtr.Zero)
+                    {
+                        _controllerId = SDL.SDL_JoystickInstanceID(SDL.SDL_GameControllerGetJoystick(_controller));
+                        break;
+                    }
+                }
+            }
         }
 
         private void MainLoop()
@@ -61,6 +83,48 @@ namespace Kermalis.PokemonGameEngine.UI
                         case SDL.SDL_EventType.SDL_QUIT:
                         {
                             _quit = true;
+                            break;
+                        }
+                        case SDL.SDL_EventType.SDL_CONTROLLERDEVICEREMOVED:
+                        {
+                            if (e.cdevice.which == _controllerId)
+                            {
+                                SDL.SDL_GameControllerClose(_controller);
+                                _controller = IntPtr.Zero;
+                                _controllerId = -1;
+                            }
+                            break;
+                        }
+                        case SDL.SDL_EventType.SDL_CONTROLLERDEVICEADDED:
+                        {
+                            if (_controller == IntPtr.Zero)
+                            {
+                                AttachFirstController();
+                            }
+                            break;
+                        }
+                        case SDL.SDL_EventType.SDL_CONTROLLERAXISMOTION:
+                        {
+                            if (e.caxis.which == _controllerId)
+                            {
+                                InputManager.OnAxis(e);
+                            }
+                            break;
+                        }
+                        case SDL.SDL_EventType.SDL_CONTROLLERBUTTONDOWN:
+                        {
+                            if (e.cbutton.which == _controllerId)
+                            {
+                                InputManager.OnButtonDown(e, true);
+                            }
+                            break;
+                        }
+                        case SDL.SDL_EventType.SDL_CONTROLLERBUTTONUP:
+                        {
+                            if (e.cbutton.which == _controllerId)
+                            {
+                                InputManager.OnButtonDown(e, false);
+                            }
                             break;
                         }
                         case SDL.SDL_EventType.SDL_KEYDOWN:
@@ -80,6 +144,8 @@ namespace Kermalis.PokemonGameEngine.UI
             SDL.SDL_DestroyTexture(_screen);
             SDL.SDL_DestroyRenderer(_renderer);
             SDL.SDL_DestroyWindow(_window);
+            SDL.SDL_GameControllerClose(_controller);
+            SDL_image.IMG_Quit();
             SDL.SDL_Quit();
         }
 
