@@ -359,12 +359,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             CanMove = false;
             _movementTimer = 0;
-            _movementSpeed = run ? RunningMovementSpeed : NormalMovementSpeed;
             Facing = facing;
             PrevPos = Pos;
             bool success = ignoreLegalCheck || IsMovementLegal(facing);
             if (success)
             {
+                _movementSpeed = run ? RunningMovementSpeed : NormalMovementSpeed;
                 ApplyMovement(facing);
                 UpdateXYProgress();
                 if (CameraObj.CameraAttachedTo == this)
@@ -374,7 +374,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             else
             {
-                _movementSpeed *= BlockedMovementSpeedModifier;
+                _movementSpeed = NormalMovementSpeed * BlockedMovementSpeedModifier;
             }
             return success;
         }
