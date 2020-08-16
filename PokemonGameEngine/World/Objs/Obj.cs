@@ -35,6 +35,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public Map Map;
 
         public bool CanMove = true; // Not too thought-out, so I'll probably end up removing it when scripting/waterfall/currents/spin tiles etc are implemented
+        public bool IsMoving = false;
         protected float _movementTimer = 1;
         protected float _movementSpeed;
         protected int _progressX;
@@ -135,7 +136,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             if (CollidesWithOthers())
             {
-                foreach (Obj o in map.GetObjs_InBounds(x, y, elevation, this))
+                foreach (Obj o in map.GetObjs_InBounds(x, y, elevation, this, true))
                 {
                     if (o.CollidesWithOthers())
                     {

@@ -63,7 +63,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
                 Map.GetXYMap(x, y, out x, out y, out Map map);
                 //BlocksetBlockBehavior beh = map.GetBlock_InBounds(x, y).BlocksetBlock.Behavior;
-                foreach (EventObj o in map.GetObjs_InBounds(x, y, p.Elevation, this))
+                foreach (EventObj o in map.GetObjs_InBounds(x, y, p.Elevation, this, false))
                 {
                     string script = o.Script;
                     if (script != string.Empty)

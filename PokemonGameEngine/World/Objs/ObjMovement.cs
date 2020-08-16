@@ -358,6 +358,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public virtual bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
         {
             CanMove = false;
+            IsMoving = true;
             _movementTimer = 0;
             Facing = facing;
             PrevPos = Pos;
@@ -382,6 +383,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public virtual void Face(FacingDirection facing)
         {
             CanMove = false;
+            IsMoving = true;
             _movementTimer = 0;
             _movementSpeed = FaceMovementSpeed;
             Facing = facing;
@@ -426,6 +428,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
                 // TODO: Check if we should keep going for currents/waterfall/spin tiles
                 CanMove = true;
+                IsMoving = false;
                 return;
             }
             UpdateXYProgress();
@@ -433,6 +436,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public virtual void CopyMovement(Obj other)
         {
             CanMove = other.CanMove;
+            IsMoving = other.IsMoving;
             _movementTimer = other._movementTimer;
             _movementSpeed = other._movementSpeed;
             Pos = other.Pos;
