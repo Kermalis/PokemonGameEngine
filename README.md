@@ -20,6 +20,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * Very non-limiting mapping (elevations, layers, no color limits, transparency, etc)
 * [Day & Night Cycle](https://gfycat.com/TightTediousEuropeanpolecat)
 * Tile animations
+* Controller support
 
 ----
 ## To Do:
