@@ -157,8 +157,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return false;
             }
             // Target's neighbors - check if we can pass through them diagonally
-            if (!CanPassThroughDiagonally(neighbor1X, neighbor1Y, curElevation, neighbor1Passage, blockedTargetCardinal2, blockedTargetCardinal1, blockedNeighbor1)
-                || !CanPassThroughDiagonally(neighbor2X, neighbor2Y, curElevation, neighbor2Passage, blockedTargetCardinal1, blockedTargetCardinal2, blockedNeighbor2))
+            if (!CanPassThroughDiagonally(neighbor1X, neighbor1Y, curElevation, neighbor1Passage, blockedCurrentCardinal1, blockedTargetCardinal2, blockedNeighbor1)
+                || !CanPassThroughDiagonally(neighbor2X, neighbor2Y, curElevation, neighbor2Passage, blockedTargetCardinal1, blockedCurrentCardinal2, blockedNeighbor2))
             {
                 return false;
             }
