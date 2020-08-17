@@ -45,6 +45,10 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.Warp, new[] { typeof(string), typeof(int), typeof(int), typeof(byte) } },
         { ScriptCommand.Message, new[] { typeof(void*) } },
         { ScriptCommand.AwaitMessage, Array.Empty<Type>() },
+        { ScriptCommand.LockObj, new[] { typeof(ushort) } },
+        { ScriptCommand.UnlockObj, new[] { typeof(ushort) } },
+        { ScriptCommand.LockAllObjs, Array.Empty<Type>() },
+        { ScriptCommand.UnlockAllObjs, Array.Empty<Type>() },
     };
 
     static ScriptBuilderHelper()

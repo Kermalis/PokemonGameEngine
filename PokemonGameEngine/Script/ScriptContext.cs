@@ -37,7 +37,7 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             if (_waitMovementObj != null)
             {
-                if (!_waitMovementObj.IsMoving)
+                if (_waitMovementObj.IsScriptMoving)
                 {
                     return true;
                 }

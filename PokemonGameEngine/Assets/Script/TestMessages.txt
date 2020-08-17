@@ -1,6 +1,8 @@
 @TestMessage
+LockAllObjs
 Message TestText
 AwaitMessage
+UnlockAllObjs
 End
 
 #TestText

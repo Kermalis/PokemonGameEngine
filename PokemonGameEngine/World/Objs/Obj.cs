@@ -34,12 +34,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public Position PrevPos;
         public Map Map;
 
-        public bool CanMove = true; // Not too thought-out, so I'll probably end up removing it when scripting/waterfall/currents/spin tiles etc are implemented
+        public bool CanMoveWillingly => !IsLocked && !IsMoving;
+        public bool IsLocked = false;
         public bool IsMoving = false;
-        protected float _movementTimer = 1;
-        protected float _movementSpeed;
-        protected int _progressX;
-        protected int _progressY;
+        public bool IsScriptMoving = false;
+        public float MovementTimer = 1;
+        public float MovementSpeed;
+        public int ProgressX;
+        public int ProgressY;
         protected const float FaceMovementSpeed = 1 / 3f;
         protected const float NormalMovementSpeed = 1 / 6f;
         protected const float RunningMovementSpeed = 1 / 4f;

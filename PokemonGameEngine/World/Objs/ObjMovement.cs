@@ -309,28 +309,28 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 {
                     Pos.X--;
                     Pos.Y++;
-                    _movementSpeed *= DiagonalMovementSpeedModifier;
+                    MovementSpeed *= DiagonalMovementSpeedModifier;
                     break;
                 }
                 case FacingDirection.Southeast:
                 {
                     Pos.X++;
                     Pos.Y++;
-                    _movementSpeed *= DiagonalMovementSpeedModifier;
+                    MovementSpeed *= DiagonalMovementSpeedModifier;
                     break;
                 }
                 case FacingDirection.Northwest:
                 {
                     Pos.X--;
                     Pos.Y--;
-                    _movementSpeed *= DiagonalMovementSpeedModifier;
+                    MovementSpeed *= DiagonalMovementSpeedModifier;
                     break;
                 }
                 case FacingDirection.Northeast:
                 {
                     Pos.X++;
                     Pos.Y--;
-                    _movementSpeed *= DiagonalMovementSpeedModifier;
+                    MovementSpeed *= DiagonalMovementSpeedModifier;
                     break;
                 }
             }
@@ -357,15 +357,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         // TODO: Ledges, waterfall, etc
         public virtual bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
         {
-            CanMove = false;
             IsMoving = true;
-            _movementTimer = 0;
+            MovementTimer = 0;
             Facing = facing;
             PrevPos = Pos;
             bool success = ignoreLegalCheck || IsMovementLegal(facing);
             if (success)
             {
-                _movementSpeed = run ? RunningMovementSpeed : NormalMovementSpeed;
+                MovementSpeed = run ? RunningMovementSpeed : NormalMovementSpeed;
                 ApplyMovement(facing);
                 UpdateXYProgress();
                 if (CameraObj.CameraAttachedTo == this)
@@ -375,17 +374,16 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             else
             {
-                _movementSpeed = NormalMovementSpeed * BlockedMovementSpeedModifier;
+                MovementSpeed = NormalMovementSpeed * BlockedMovementSpeedModifier;
             }
             return success;
         }
 
         public virtual void Face(FacingDirection facing)
         {
-            CanMove = false;
             IsMoving = true;
-            _movementTimer = 0;
-            _movementSpeed = FaceMovementSpeed;
+            MovementTimer = 0;
+            MovementSpeed = FaceMovementSpeed;
             Facing = facing;
             PrevPos = Pos;
             UpdateXYProgress();
@@ -395,7 +393,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             Position prevPos = PrevPos;
             Position pos = Pos;
-            float t = _movementTimer; // Goes from 0% to 100%
+            float t = MovementTimer; // Goes from 0% to 100%
             int DoTheMath(int cur, int prev, int curOfs, int prevOfs, int numPixelsInBlock)
             {
                 int blockDiff = (prev - cur) * numPixelsInBlock;
@@ -406,44 +404,31 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 // Scale from previous value to new value based on % of transition
                 return (int)(prevVisualOfs + (t * visualOfsScale));
             }
-            _progressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, Overworld.Block_NumPixelsX);
-            _progressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, Overworld.Block_NumPixelsY);
+            ProgressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, Overworld.Block_NumPixelsX);
+            ProgressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, Overworld.Block_NumPixelsY);
         }
-        public void UpdateMovementTimer()
+        public void UpdateMovement()
         {
-            if (_movementTimer >= 1)
+            if (MovementTimer < 1)
             {
-                return;
-            }
-            _movementTimer += _movementSpeed;
-            if (_movementTimer >= 1)
-            {
-                _movementTimer = 1;
-                UpdateXYProgress();
-                // Check if we have queued movements
-                if (QueuedScriptMovements.Count > 0)
+                MovementTimer += MovementSpeed;
+                if (MovementTimer < 1)
                 {
-                    RunNextScriptMovement();
+                    UpdateXYProgress();
                     return;
                 }
-                // TODO: Check if we should keep going for currents/waterfall/spin tiles
-                CanMove = true;
-                IsMoving = false;
+                MovementTimer = 1;
+                UpdateXYProgress();
+            }
+
+            if (QueuedScriptMovements.Count > 0)
+            {
+                RunNextScriptMovement();
                 return;
             }
-            UpdateXYProgress();
-        }
-        public virtual void CopyMovement(Obj other)
-        {
-            CanMove = other.CanMove;
-            IsMoving = other.IsMoving;
-            _movementTimer = other._movementTimer;
-            _movementSpeed = other._movementSpeed;
-            Pos = other.Pos;
-            PrevPos = other.PrevPos;
-            _progressX = other._progressX;
-            _progressY = other._progressY;
-            UpdateMap(other.Map);
+            // TODO: Check if we should keep going for currents/waterfall/spin tiles
+            IsMoving = false;
+            IsScriptMoving = QueuedScriptMovements.Count != 0;
         }
     }
 }

@@ -59,8 +59,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 case ObjMovementType.Wander_Randomly: Facing = GetRandomDirection(); _movementTypeTimer = GetRandomTimer(); break;
                 case ObjMovementType.Wander_SouthAndNorth: Facing = GetRandomDirection(FacingDirection.South, FacingDirection.North); _movementTypeTimer = GetRandomTimer(); break;
                 case ObjMovementType.Wander_WestAndEast: Facing = GetRandomDirection(FacingDirection.West, FacingDirection.East); _movementTypeTimer = GetRandomTimer(); break;
-                case ObjMovementType.Walk_WestThenReturn: Facing = FacingDirection.West; _movementTimer = 0; _movementTypeArg = false; break;
-                case ObjMovementType.Walk_EastThenReturn: Facing = FacingDirection.East; _movementTimer = 0; _movementTypeArg = false; break;
+                case ObjMovementType.Walk_WestThenReturn: Facing = FacingDirection.West; MovementTimer = 0; _movementTypeArg = false; break;
+                case ObjMovementType.Walk_EastThenReturn: Facing = FacingDirection.East; MovementTimer = 0; _movementTypeArg = false; break;
             }
         }
 
@@ -196,8 +196,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public override void LogicTick()
         {
             // Do not run tick if timer is -1 or we cannot move
+            if (!CanMoveWillingly)
+            {
+                return;
+            }
             int curTimer = _movementTypeTimer;
-            if (curTimer == -1 || !CanMove)
+            if (curTimer == -1)
             {
                 return;
             }

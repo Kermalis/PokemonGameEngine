@@ -29,21 +29,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             _leg = !_leg;
             base.Face(facing);
         }
-        public override void CopyMovement(Obj other)
-        {
-            if (other is VisualObj v)
-            {
-                _leg = v._leg;
-            }
-            base.CopyMovement(other);
-        }
 
         // TODO: Water reflections, priority
         public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int startBlockX, int startBlockY, int startPixelX, int startPixelY)
         {
             Position pos = Pos;
-            int baseX = ((pos.X - startBlockX) * Overworld.Block_NumPixelsX) + _progressX + startPixelX;
-            int baseY = ((pos.Y - startBlockY) * Overworld.Block_NumPixelsY) + _progressY + startPixelY;
+            int baseX = ((pos.X - startBlockX) * Overworld.Block_NumPixelsX) + ProgressX + startPixelX;
+            int baseY = ((pos.Y - startBlockY) * Overworld.Block_NumPixelsY) + ProgressY + startPixelY;
             // Calc sprite coords
             SpriteSheet ss = _sprite;
             int w = ss.SpriteWidth;
@@ -68,7 +60,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             // Draw obj sprite
             bool ShowLegs()
             {
-                float t = _movementTimer;
+                float t = MovementTimer;
                 return t != 1 && t >= 0.6f;
             }
             byte f = (byte)Facing;

@@ -17,9 +17,17 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public static void CameraCopyMovement()
         {
-            Obj c = Camera;
+            CameraObj c = Camera;
             Obj other = CameraAttachedTo;
-            c.CopyMovement(other);
+            c.IsMoving = other.IsMoving;
+            c.IsScriptMoving = other.IsScriptMoving;
+            c.MovementTimer = other.MovementTimer;
+            c.MovementSpeed = other.MovementSpeed;
+            c.Pos = other.Pos;
+            c.PrevPos = other.PrevPos;
+            c.ProgressX = other.ProgressX;
+            c.ProgressY = other.ProgressY;
+            c.UpdateMap(other.Map);
         }
 
         protected override void UpdateMap(Map newMap)
@@ -43,8 +51,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             // Gather variables we need to draw everything at the right coordinates
             CameraObj camera = Camera;
             Position cameraPos = camera.Pos;
-            int cameraPixelX = (cameraPos.X * Overworld.Block_NumPixelsX) - (bmpWidth / 2) + (Overworld.Block_NumPixelsX / 2) + camera._progressX + CameraOfsX;
-            int cameraPixelY = (cameraPos.Y * Overworld.Block_NumPixelsY) - (bmpHeight / 2) + (Overworld.Block_NumPixelsY / 2) + camera._progressY + CameraOfsY;
+            int cameraPixelX = (cameraPos.X * Overworld.Block_NumPixelsX) - (bmpWidth / 2) + (Overworld.Block_NumPixelsX / 2) + camera.ProgressX + CameraOfsX;
+            int cameraPixelY = (cameraPos.Y * Overworld.Block_NumPixelsY) - (bmpHeight / 2) + (Overworld.Block_NumPixelsY / 2) + camera.ProgressY + CameraOfsY;
             Map cameraMap = camera.Map;
             List<Obj> objs = cameraMap.Objs;
             int numObjs = objs.Count;

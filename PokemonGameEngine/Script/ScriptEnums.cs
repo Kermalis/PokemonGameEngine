@@ -49,5 +49,9 @@
         Warp,
         Message,
         AwaitMessage,
+        LockObj,
+        UnlockObj,
+        LockAllObjs,
+        UnlockAllObjs,
     }
 }

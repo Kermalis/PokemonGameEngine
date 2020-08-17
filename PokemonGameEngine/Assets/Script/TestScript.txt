@@ -2,6 +2,7 @@
 
 // Below we have "@TestScript" which is a global label, meaning it can be referenced by the engine itself (like the Surf and Headbutt Tree scripts) rather than just from scripts.
 @TestScript
+LockAllObjs
 GivePokemon Species.Shaymin 5
 GoTo TestJump // We will go to TestJump and not come back
 
@@ -17,6 +18,7 @@ Return // Go back to where we came from
 #TestJump
 Call TestCall // We will go to TestCall and come back
 HealParty
+UnlockAllObjs
 End // Stop reading script data
 
 // Below are some movements

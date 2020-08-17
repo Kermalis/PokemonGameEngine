@@ -13,7 +13,12 @@ namespace Kermalis.PokemonGameEngine.GUI
             int count = list.Count;
             for (int i = 0; i < count; i++)
             {
-                list[i].UpdateMovementTimer();
+                Obj o = list[i];
+                // Do not move locked Objs unless they're being moved by scripts
+                if (!o.IsLocked || o.IsScriptMoving)
+                {
+                    list[i].UpdateMovement();
+                }
             }
             for (int i = 0; i < count; i++)
             {

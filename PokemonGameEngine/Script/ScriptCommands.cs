@@ -34,6 +34,10 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.Warp: WarpCommand(); break;
                 case ScriptCommand.Message: MessageCommand(); break;
                 case ScriptCommand.AwaitMessage: AwaitMessageCommand(); break;
+                case ScriptCommand.LockObj: LockObjCommand(); break;
+                case ScriptCommand.LockAllObjs: LockAllObjsCommand(); break;
+                case ScriptCommand.UnlockObj: UnlockObjCommand(); break;
+                case ScriptCommand.UnlockAllObjs: UnlockAllObjsCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -48,14 +52,12 @@ namespace Kermalis.PokemonGameEngine.Script
             uint offset = _reader.ReadUInt32();
             _reader.BaseStream.Position = offset;
         }
-
         private void CallCommand()
         {
             uint offset = _reader.ReadUInt32();
             _callStack.Push(_reader.BaseStream.Position);
             _reader.BaseStream.Position = offset;
         }
-
         private void ReturnCommand()
         {
             _reader.BaseStream.Position = _callStack.Pop();
@@ -73,7 +75,6 @@ namespace Kermalis.PokemonGameEngine.Script
             var pkmn = PartyPokemon.GetTestPokemon(species, 0, level);
             Game.Instance.Save.GivePokemon(pkmn);
         }
-
         private void GivePokemonFormCommand()
         {
             PBESpecies species = _reader.ReadEnum<PBESpecies>();
@@ -82,7 +83,6 @@ namespace Kermalis.PokemonGameEngine.Script
             var pkmn = PartyPokemon.GetTestPokemon(species, form, level);
             Game.Instance.Save.GivePokemon(pkmn);
         }
-
         private void GivePokemonFormItemCommand()
         {
             PBESpecies species = _reader.ReadEnum<PBESpecies>();
@@ -111,9 +111,8 @@ namespace Kermalis.PokemonGameEngine.Script
                 obj.QueuedScriptMovements.Enqueue(m);
             }
             _reader.BaseStream.Position = returnOffset;
-            obj.RunNextScriptMovement();
+            obj.IsScriptMoving = true;
         }
-
         private void AwaitObjMovementCommand()
         {
             ushort id = _reader.ReadUInt16();
@@ -124,8 +123,11 @@ namespace Kermalis.PokemonGameEngine.Script
         private void DetachCameraCommand()
         {
             CameraObj.CameraAttachedTo = null;
+            // Camera should probably have properties that get its attachment or its own properties
+            // Instead of using CameraCopyMovement()
+            // Map changing will be tougher though
+            //CameraObj.Camera.IsScriptMoving = false;
         }
-
         private void AttachCameraCommand()
         {
             ushort id = _reader.ReadUInt16();
@@ -145,7 +147,6 @@ namespace Kermalis.PokemonGameEngine.Script
             Flag flag = _reader.ReadEnum<Flag>();
             Game.Instance.Save.Flags[flag] = true;
         }
-
         private void ClearFlagCommand()
         {
             Flag flag = _reader.ReadEnum<Flag>();
@@ -169,10 +170,40 @@ namespace Kermalis.PokemonGameEngine.Script
             _reader.BaseStream.Position = returnOffset;
             Game.Instance.MessageBoxes.Add(new MessageBox(text));
         }
-
         private void AwaitMessageCommand()
         {
             _waitMessageBox = Game.Instance.MessageBoxes[Game.Instance.MessageBoxes.Count - 1];
+        }
+
+        private void SetLock(bool locked)
+        {
+            ushort id = _reader.ReadUInt16();
+            var obj = Obj.GetObj(id);
+            obj.IsLocked = locked;
+        }
+        private void LockObjCommand()
+        {
+            SetLock(true);
+        }
+        private void UnlockObjCommand()
+        {
+            SetLock(false);
+        }
+
+        private void SetAllLock(bool locked)
+        {
+            foreach (Obj o in Obj.LoadedObjs)
+            {
+                o.IsLocked = locked;
+            }
+        }
+        private void LockAllObjsCommand()
+        {
+            SetAllLock(true);
+        }
+        private void UnlockAllObjsCommand()
+        {
+            SetAllLock(false);
         }
     }
 }

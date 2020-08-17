@@ -17,7 +17,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public override void LogicTick()
         {
-            if (!CanMove)
+            if (!CanMoveWillingly)
             {
                 return;
             }
