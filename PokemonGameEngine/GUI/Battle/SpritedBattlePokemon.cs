@@ -9,15 +9,24 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
     {
         public PBEBattlePokemon Pkmn { get; }
         public Sprite Minisprite { get; }
-        public Sprite FrontSprite { get; }
-        public Sprite BackSprite { get; }
+        public AnimatedSprite FrontSprite { get; } // These are being animated even if unused in the battle
+        public AnimatedSprite BackSprite { get; }
 
         public SpritedBattlePokemon(PBEBattlePokemon pkmn)
         {
             Pkmn = pkmn;
             Minisprite = SpriteUtils.GetMinisprite(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny);
-            FrontSprite = SpriteUtils.GetPokemonSprite(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny, false, false);
-            BackSprite = SpriteUtils.GetPokemonSprite(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny, true, false);
+            FrontSprite = new AnimatedSprite(SpriteUtils.GetPokemonSpriteResource(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny, false, false));
+            BackSprite = new AnimatedSprite(SpriteUtils.GetPokemonSpriteResource(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny, true, false));
+
+            UpdateAnimationSpeed();
+        }
+
+        public void UpdateAnimationSpeed()
+        {
+            double speed = Pkmn.Status1 == PBEStatus1.Paralyzed || Pkmn.HPPercentage <= 0.25 ? 2d : 1d;
+            BackSprite.SpeedModifier = speed;
+            FrontSprite.SpeedModifier = speed;
         }
     }
 

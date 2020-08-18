@@ -5,9 +5,9 @@ using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
-    internal sealed class Sprite
+    internal sealed class Sprite : ISprite
     {
-        public uint[] Bitmap { get; }
+        public uint[] Bitmap { get; set; }
         public int Width { get; }
         public int Height { get; }
 
@@ -34,7 +34,6 @@ namespace Kermalis.PokemonGameEngine.Render
             Height = spriteHeight;
         }
 
-
         private static readonly Dictionary<string, WeakReference<Sprite>> _loadedSprites = new Dictionary<string, WeakReference<Sprite>>();
         public static Sprite LoadOrGet(string resource)
         {
@@ -50,44 +49,6 @@ namespace Kermalis.PokemonGameEngine.Render
                 w.SetTarget(s);
             }
             return s;
-        }
-
-        public unsafe delegate void DrawMethod(uint* bmpAddress, int bmpWidth, int bmpHeight);
-        public unsafe void Draw(DrawMethod drawMethod)
-        {
-            fixed (uint* bmpAddress = Bitmap)
-            {
-                drawMethod(bmpAddress, Width, Height);
-            }
-        }
-
-        public unsafe void DrawOn(Sprite otherSprite, int x, int y)
-        {
-            fixed (uint* otherBmpAddress = otherSprite.Bitmap)
-            {
-                DrawOn(otherBmpAddress, otherSprite.Width, otherSprite.Height, x, y);
-            }
-        }
-        public unsafe void DrawOn(uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, int x, int y)
-        {
-            fixed (uint* bmpAddress = Bitmap)
-            {
-                RenderUtils.DrawBitmap(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, bmpAddress, Width, Height);
-            }
-        }
-        public unsafe void DrawOn(Sprite otherSprite, int x, int y, int width, int height)
-        {
-            fixed (uint* otherBmpAddress = otherSprite.Bitmap)
-            {
-                DrawOn(otherBmpAddress, otherSprite.Width, otherSprite.Height, x, y, width, height);
-            }
-        }
-        public unsafe void DrawOn(uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, int x, int y, int width, int height)
-        {
-            fixed (uint* bmpAddress = Bitmap)
-            {
-                RenderUtils.DrawBitmap(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, width, height, bmpAddress, Width, Height);
-            }
         }
     }
 }

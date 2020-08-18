@@ -46,6 +46,8 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * [SDL2#](https://github.com/flibitijibibo/SDL2-CS)
 * [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)
 
+* Animated GIF support made possible by [XamlAnimatedGif](https://github.com/XamlAnimatedGif/XamlAnimatedGif) and [What's in a GIF](http://www.matthewflickinger.com/lab/whatsinagif/index.html)
+
 ## MapEditor Uses:
 * [Avalonia](https://github.com/AvaloniaUI/Avalonia)
 * [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)

@@ -118,6 +118,29 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void FillColor_Overwrite(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
+        {
+            FillColor_Overwrite(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
+        }
+        public static unsafe void FillColor_Overwrite(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
+        {
+            // No line overwriting yet
+            for (int py = y; py < y + height; py++)
+            {
+                if (py >= 0 && py < bmpHeight)
+                {
+                    for (int px = x; px < x + width; px++)
+                    {
+                        if (px >= 0 && px < bmpWidth)
+                        {
+                            *GetPixelAddress(bmpAddress, bmpWidth, px, py) = color;
+                        }
+                    }
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void FillColor(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
         {
             FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
@@ -574,7 +597,7 @@ namespace Kermalis.PokemonGameEngine.Render
             r = (byte)(r * rMod);
             g = (byte)(g * gMod);
             b = (byte)(b * bMod);
-            *pixelAddress = (a << 24) | (b << 16) | (g << 8) | r;
+            *pixelAddress = ToRGBA8888(r, g, b, a);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DrawUnchecked(uint* bmpAddress, int bmpWidth, int x, int y, uint color)
@@ -606,7 +629,7 @@ namespace Kermalis.PokemonGameEngine.Render
                 uint r = (rA * aA / 0xFF) + (rB * aB * (0xFF - aA) / (0xFF * 0xFF));
                 uint g = (gA * aA / 0xFF) + (gB * aB * (0xFF - aA) / (0xFF * 0xFF));
                 uint b = (bA * aA / 0xFF) + (bB * aB * (0xFF - aA) / (0xFF * 0xFF));
-                *pixelAddress = (a << 24) | (b << 16) | (g << 8) | r;
+                *pixelAddress = ToRGBA8888(r, g, b, a);
             }
         }
 
@@ -617,6 +640,12 @@ namespace Kermalis.PokemonGameEngine.Render
             {
                 DrawUnchecked(bmpAddress, bmpWidth, x, y, color);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ToRGBA8888(uint r, uint g, uint b, uint a)
+        {
+            return (a << 24) | (b << 16) | (g << 8) | r;
         }
     }
 }

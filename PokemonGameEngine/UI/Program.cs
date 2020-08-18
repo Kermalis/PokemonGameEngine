@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Input;
+using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
 using SDL2;
 using System;
@@ -188,12 +189,14 @@ namespace Kermalis.PokemonGameEngine.UI
             while (!_quit)
             {
                 DateTime now = DateTime.Now;
+                TimeSpan timePassed = now.Subtract(lastRenderTime);
+                AnimatedSprite.UpdateCurrentFrameForAll(timePassed);
                 lock (_threadLockObj)
                 {
                     IntPtr s = _screen;
                     IntPtr r = _renderer;
                     SDL.SDL_LockTexture(s, IntPtr.Zero, out IntPtr pixels, out _);
-                    Game.Instance.RenderTick((uint*)pixels.ToPointer(), RenderWidth, RenderHeight, _showFPS ? ((int)Math.Round(1_000 / now.Subtract(lastRenderTime).TotalMilliseconds)).ToString() : null);
+                    Game.Instance.RenderTick((uint*)pixels.ToPointer(), RenderWidth, RenderHeight, _showFPS ? ((int)Math.Round(1_000 / timePassed.TotalMilliseconds)).ToString() : null);
                     SDL.SDL_UnlockTexture(s);
                     SDL.SDL_RenderClear(r);
                     SDL.SDL_RenderCopy(r, s, IntPtr.Zero, IntPtr.Zero);
