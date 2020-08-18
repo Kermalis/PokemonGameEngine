@@ -117,6 +117,7 @@ namespace Kermalis.PokemonGameEngine.Render
             return x < bmpWidth && x + w > 0 && y < bmpHeight && y + h > 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void FillColor(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
         {
             FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
@@ -141,7 +142,7 @@ namespace Kermalis.PokemonGameEngine.Render
                     {
                         if (px >= 0 && px < bmpWidth)
                         {
-                            DrawUnchecked(bmpAddress + px + (py * bmpWidth), color);
+                            DrawUnchecked(bmpAddress, bmpWidth, px, py, color);
                         }
                     }
                 }
@@ -153,11 +154,12 @@ namespace Kermalis.PokemonGameEngine.Render
             {
                 for (int x = 0; x < bmpWidth; x++)
                 {
-                    ModulateUnchecked(bmpAddress + x + (y * bmpWidth), aMod, rMod, gMod, bMod);
+                    ModulateUnchecked(GetPixelAddress(bmpAddress, bmpWidth, x, y), aMod, rMod, gMod, bMod);
                 }
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
             fixed (uint* otherBmpAddress = otherBmp)
@@ -177,13 +179,14 @@ namespace Kermalis.PokemonGameEngine.Render
                         int px = xFlip ? (x + (otherBmpWidth - 1 - cx)) : (x + cx);
                         if (px >= 0 && px < bmpWidth)
                         {
-                            DrawUnchecked(bmpAddress + px + (py * bmpWidth), *(otherBmpAddress + cx + (cy * otherBmpWidth)));
+                            DrawUnchecked(bmpAddress, bmpWidth, px, py, *GetPixelAddress(otherBmpAddress, otherBmpWidth, cx, cy));
                         }
                     }
                 }
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
             fixed (uint* otherBmpAddress = otherBmp)
@@ -213,7 +216,7 @@ namespace Kermalis.PokemonGameEngine.Render
                         if (px >= 0 && px < bmpWidth)
                         {
                             int tx = (int)(cx / wScale);
-                            DrawUnchecked(bmpAddress + px + (py * bmpWidth), *(otherBmpAddress + tx + (ty * otherBmpWidth)));
+                            DrawUnchecked(bmpAddress, bmpWidth, px, py, *GetPixelAddress(otherBmpAddress, otherBmpWidth, tx, ty));
                         }
                     }
                 }
@@ -231,7 +234,7 @@ namespace Kermalis.PokemonGameEngine.Render
             {
                 if (px >= 0 && px < bmpWidth)
                 {
-                    DrawUnchecked(bmpAddress + px + (y * bmpWidth), color);
+                    DrawUnchecked(bmpAddress, bmpWidth, px, y, color);
                 }
             }
         }
@@ -246,7 +249,7 @@ namespace Kermalis.PokemonGameEngine.Render
             {
                 if (py >= 0 && py < bmpHeight)
                 {
-                    DrawUnchecked(bmpAddress + x + (py * bmpWidth), color);
+                    DrawUnchecked(bmpAddress, bmpWidth, x, py, color);
                 }
             }
         }
@@ -265,10 +268,7 @@ namespace Kermalis.PokemonGameEngine.Render
             int py = y1;
             for (int px = x1; px <= x2; px++)
             {
-                if (px >= 0 && px < bmpWidth && py >= 0 && py < bmpHeight)
-                {
-                    DrawUnchecked(bmpAddress + px + (py * bmpWidth), color);
-                }
+                DrawChecked(bmpAddress, bmpWidth, bmpHeight, px, py, color);
                 if (d > 0)
                 {
                     py += yi;
@@ -291,10 +291,7 @@ namespace Kermalis.PokemonGameEngine.Render
             int px = x1;
             for (int py = y1; py <= y2; py++)
             {
-                if (px >= 0 && px < bmpWidth && py >= 0 && py < bmpHeight)
-                {
-                    DrawUnchecked(bmpAddress + px + (py * bmpWidth), color);
-                }
+                DrawChecked(bmpAddress, bmpWidth, bmpHeight, px, py, color);
                 if (d > 0)
                 {
                     px += xi;
@@ -465,13 +462,6 @@ namespace Kermalis.PokemonGameEngine.Render
         /// <summary>Works based on a top-left point and with width and height. Even widths and heights work properly.</summary>
         public static unsafe void DrawEllipse_XY(uint* bmpAddress, int bmpWidth, int bmpHeight, int x0, int y0, int x1, int y1, bool fill, uint color)
         {
-            void DrawPoint(int px, int py)
-            {
-                if (px >= 0 && px < bmpWidth && py >= 0 && py < bmpHeight)
-                {
-                    DrawUnchecked(bmpAddress + px + (py * bmpWidth), color);
-                }
-            }
             void DrawRow(int xLeft, int xRight, int py)
             {
                 DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, xLeft, py, xRight - xLeft + 1, color);
@@ -508,18 +498,18 @@ namespace Kermalis.PokemonGameEngine.Render
                 // Draw the new points
                 if (!fill)
                 {
-                    DrawPoint(xb - dx, yb - dy);
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, xb - dx, yb - dy, color);
                     if (dx != 0 || xb != xc)
                     {
-                        DrawPoint(xc + dx, yb - dy);
+                        DrawChecked(bmpAddress, bmpWidth, bmpHeight, xc + dx, yb - dy, color);
                         if (dy != 0 || yb != yc)
                         {
-                            DrawPoint(xc + dx, yc + dy);
+                            DrawChecked(bmpAddress, bmpWidth, bmpHeight, xc + dx, yc + dy, color);
                         }
                     }
                     if (dy != 0 || yb != yc)
                     {
-                        DrawPoint(xb - dx, yc + dy);
+                        DrawChecked(bmpAddress, bmpWidth, bmpHeight, xb - dx, yc + dy, color);
                     }
                 }
 
@@ -566,6 +556,12 @@ namespace Kermalis.PokemonGameEngine.Render
             }   // End of while loop
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe uint* GetPixelAddress(uint* bmpAddress, int bmpWidth, int x, int y)
+        {
+            return bmpAddress + x + (y * bmpWidth);
+        }
+
         // Colors must be RGBA8888 (0xAABBCCDD - AA is A, BB is B, CC is G, DD is R)
         public static unsafe void ModulateUnchecked(uint* pixelAddress, float aMod, float rMod, float gMod, float bMod)
         {
@@ -579,6 +575,11 @@ namespace Kermalis.PokemonGameEngine.Render
             g = (byte)(g * gMod);
             b = (byte)(b * bMod);
             *pixelAddress = (a << 24) | (b << 16) | (g << 8) | r;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawUnchecked(uint* bmpAddress, int bmpWidth, int x, int y, uint color)
+        {
+            DrawUnchecked(GetPixelAddress(bmpAddress, bmpWidth, x, y), color);
         }
         public static unsafe void DrawUnchecked(uint* pixelAddress, uint color)
         {
@@ -606,6 +607,15 @@ namespace Kermalis.PokemonGameEngine.Render
                 uint g = (gA * aA / 0xFF) + (gB * aB * (0xFF - aA) / (0xFF * 0xFF));
                 uint b = (bA * aA / 0xFF) + (bB * aB * (0xFF - aA) / (0xFF * 0xFF));
                 *pixelAddress = (a << 24) | (b << 16) | (g << 8) | r;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawChecked(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint color)
+        {
+            if (y >= 0 && y < bmpHeight && x >= 0 && x < bmpWidth)
+            {
+                DrawUnchecked(bmpAddress, bmpWidth, x, y, color);
             }
         }
     }

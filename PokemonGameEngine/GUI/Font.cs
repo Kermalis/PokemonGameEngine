@@ -148,10 +148,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 for (int px = x; px < x + glyph.CharWidth; px++)
                 {
-                    if (py >= 0 && py < bmpHeight && px >= 0 && px < bmpWidth)
-                    {
-                        RenderUtils.DrawUnchecked(bmpAddress + px + (py * bmpWidth), fontColors[(glyph.Bitmap[curByte] >> (8 - BitsPerPixel - curBit)) % (1 << BitsPerPixel)]);
-                    }
+                    RenderUtils.DrawChecked(bmpAddress, bmpWidth, bmpHeight, px, py, fontColors[(glyph.Bitmap[curByte] >> (8 - BitsPerPixel - curBit)) % (1 << BitsPerPixel)]);
                     curBit = (curBit + BitsPerPixel) % 8;
                     if (curBit == 0)
                     {

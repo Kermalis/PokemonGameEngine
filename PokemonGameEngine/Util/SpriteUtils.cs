@@ -60,8 +60,8 @@ namespace Kermalis.PokemonGameEngine.Util
             else
             {
                 string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
-                string orientation = backSprite ? "_B" : "_F";
                 string genderStr = gender == PBEGender.Female && HasFemaleSprite(species, false) ? "_F" : string.Empty;
+                string orientation = backSprite ? "_B" : "_F";
                 return Sprite.LoadOrGet("Pkmn.PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif");
             }
         }
