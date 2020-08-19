@@ -96,7 +96,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private unsafe void RenderPkmn(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, bool ally, SpritedBattlePokemon sPkmn)
         {
-            Sprite sprite = ally ? sPkmn.BackSprite : sPkmn.FrontSprite; // TODO: Substitute
+            AnimatedSprite sprite = ally ? sPkmn.BackSprite : sPkmn.FrontSprite; // TODO: Substitute
             int width = sprite.Width;
             int height = sprite.Height;
             if (ally)
@@ -264,6 +264,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         new Thread(() => PBEBattle.SelectSwitchesIfValid(t, PBEAI.CreateSwitches(t))) { Name = ThreadName }.Start();
                     }
                     return true;
+                }
+                case PBEPkmnHPChangedPacket phcp:
+                {
+                    PBEBattlePokemon pokemon = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
+                    SpritedBattlePokemon sPkmn = _spritedParties[pokemon.Trainer.Id].SpritedParty[pokemon.Id];
+                    sPkmn.UpdateAnimationSpeed();
+                    break;
+                }
+                case PBEStatus1Packet s1p:
+                {
+                    PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTrainer.TryGetPokemon(s1p.Status1Receiver);
+                    SpritedBattlePokemon sPkmn = _spritedParties[status1Receiver.Trainer.Id].SpritedParty[status1Receiver.Id];
+                    sPkmn.UpdateAnimationSpeed();
+                    break;
                 }
                 /*case PBEPkmnFaintedPacket pfp:
                 {

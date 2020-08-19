@@ -86,7 +86,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             var pData = PBEPokemonData.GetData(species, form);
             var p = new PartyPokemon
             {
-                Status1 = PBEStatus1.Paralyzed,
+                Status1 = PBEStatus1.None,
                 Moveset = new Moveset(),
                 Species = species,
                 Form = form,

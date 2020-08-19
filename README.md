@@ -5,6 +5,7 @@ It uses [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine) f
 It can run on any platform, even phones! (With some work, contact me)
 
 ![GamePreview](GamePreview.png)
+![BattlePreview](BattlePreview.png)
 ![MapEditorPreview](MapEditorPreview.png)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.
@@ -20,6 +21,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * [Day & Night Cycle](https://gfycat.com/TightTediousEuropeanpolecat)
 * Tile animations
 * Controller support
+* Animated sprites
 
 ----
 ## To Do:
@@ -44,6 +46,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine)
 * [SDL2](https://www.libsdl.org/)
 * [SDL2#](https://github.com/flibitijibibo/SDL2-CS)
+* [SimpleGIF](https://github.com/Kermalis/SimpleGIF)
 * [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)
 
 ## MapEditor Uses:
