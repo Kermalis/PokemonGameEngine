@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render.Gif;
+﻿using Kermalis.PokemonGameEngine.Util;
 using Kermalis.SimpleGIF;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ namespace Kermalis.PokemonGameEngine.Render
 {
     internal sealed class AnimatedSprite : ISprite
     {
-        public sealed class Frame
+        private sealed class Frame
         {
             public uint[] Bitmap { get; }
             /// <summary>Delay in milliseconds</summary>
@@ -19,14 +19,15 @@ namespace Kermalis.PokemonGameEngine.Render
                 Delay = frame.Delay;
             }
         }
-        public sealed class Sprite
+        private sealed class Sprite
         {
             public Frame[] Frames { get; }
             public int Width { get; }
             public int Height { get; }
 
-            public Sprite(DecodedGIF gif)
+            private Sprite(string resource)
             {
+                DecodedGIF gif = GIFRenderer.DecodeAllFrames(Utils.GetResourceStream(resource), SimpleGIF.Decoding.ColorFormat.RGBA);
                 Frames = new Frame[gif.Frames.Count];
                 for (int i = 0; i < gif.Frames.Count; i++)
                 {
@@ -34,6 +35,23 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
                 Width = gif.Width;
                 Height = gif.Height;
+            }
+
+            private static readonly Dictionary<string, WeakReference<Sprite>> _loadedSprites = new Dictionary<string, WeakReference<Sprite>>();
+            public static Sprite LoadOrGet(string resource)
+            {
+                Sprite s;
+                if (!_loadedSprites.TryGetValue(resource, out WeakReference<Sprite> w))
+                {
+                    s = new Sprite(resource);
+                    _loadedSprites.Add(resource, new WeakReference<Sprite>(s));
+                }
+                else if (!w.TryGetTarget(out s))
+                {
+                    s = new Sprite(resource);
+                    w.SetTarget(s);
+                }
+                return s;
             }
         }
 
@@ -48,7 +66,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public AnimatedSprite(string resource)
         {
-            _sprite = LoadOrGet(resource);
+            _sprite = Sprite.LoadOrGet(resource);
             int frameDelay = _sprite.Frames[0].Delay;
             if (frameDelay != -1)
             {
@@ -68,22 +86,6 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         private static readonly List<WeakReference<AnimatedSprite>> _loadedAnimSprites = new List<WeakReference<AnimatedSprite>>();
-        private static readonly Dictionary<string, WeakReference<Sprite>> _loadedSprites = new Dictionary<string, WeakReference<Sprite>>();
-        private static Sprite LoadOrGet(string resource)
-        {
-            Sprite s;
-            if (!_loadedSprites.TryGetValue(resource, out WeakReference<Sprite> w))
-            {
-                s = Test.TestIt(resource);
-                _loadedSprites.Add(resource, new WeakReference<Sprite>(s));
-            }
-            else if (!w.TryGetTarget(out s))
-            {
-                s = Test.TestIt(resource);
-                w.SetTarget(s);
-            }
-            return s;
-        }
 
         private void UpdateCurrentFrame(TimeSpan timePassed)
         {
