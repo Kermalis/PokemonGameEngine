@@ -59,6 +59,9 @@
     <Reference Include="SDL2-CS">
       <HintPath>Dependencies\SDL2-CS.dll</HintPath>
     </Reference>
+    <Reference Include="SimpleGIF">
+      <HintPath>Dependencies\SimpleGIF.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
 </Project>

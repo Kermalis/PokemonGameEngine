@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Render.Gif;
+using Kermalis.SimpleGIF;
 using System;
 using System.Collections.Generic;
 
@@ -12,18 +13,10 @@ namespace Kermalis.PokemonGameEngine.Render
             /// <summary>Delay in milliseconds</summary>
             public int Delay { get; }
 
-            public Frame(uint[] toClone, int? delay)
+            public Frame(DecodedGIF.Frame frame)
             {
-                Bitmap = (uint[])toClone.Clone();
-                if (delay.HasValue)
-                {
-                    int d = delay.Value;
-                    Delay = d == 0 ? -1 : d;
-                }
-                else
-                {
-                    Delay = 100;
-                }
+                Bitmap = (uint[])frame.Bitmap.Clone();
+                Delay = frame.Delay;
             }
         }
         public sealed class Sprite
@@ -32,11 +25,15 @@ namespace Kermalis.PokemonGameEngine.Render
             public int Width { get; }
             public int Height { get; }
 
-            public Sprite(Frame[] frames, int width, int height)
+            public Sprite(DecodedGIF gif)
             {
-                Frames = frames;
-                Width = width;
-                Height = height;
+                Frames = new Frame[gif.Frames.Count];
+                for (int i = 0; i < gif.Frames.Count; i++)
+                {
+                    Frames[i] = new Frame(gif.Frames[i]);
+                }
+                Width = gif.Width;
+                Height = gif.Height;
             }
         }
 
