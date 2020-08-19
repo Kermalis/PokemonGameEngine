@@ -5,6 +5,7 @@ It uses [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine) f
 It can run on any platform, even phones! (With some work, contact me)
 
 ![GamePreview](GamePreview.png)
+![BattlePreview](BattlePreview.png)
 ![MapEditorPreview](MapEditorPreview.png)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.
