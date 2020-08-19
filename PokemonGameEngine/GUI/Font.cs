@@ -31,12 +31,12 @@ namespace Kermalis.PokemonGameEngine.GUI
         private readonly (string OldKey, ushort NewKey)[] _overrides;
 
         public static Font Default { get; }
-        public static uint[] DefaultWhite { get; } = new uint[] { 0x00000000, 0xFFEFEFEF, 0xFF848484 };
-        public static uint[] DefaultSelected { get; } = new uint[] { 0x00000000, 0xFF16E0FF, 0xFF10A5BC };
-        public static uint[] DefaultDisabled { get; } = new uint[] { 0x00000000, 0xFF8D8585, 0xFF32323A };
-        public static uint[] DefaultDark { get; } = new uint[] { 0x00000000, 0xFF52525A, 0xFFADA5A5 };
-        public static uint[] DefaultMale { get; } = new uint[] { 0x00000000, 0xFFFF9473, 0xFFD60000 };
-        public static uint[] DefaultFemale { get; } = new uint[] { 0x00000000, 0xFF7373FF, 0xFF0000C6 };
+        public static uint[] DefaultWhite { get; } = new uint[] { RenderUtils.ToRGBA8888(0x00, 0x00, 0x00, 0x00), RenderUtils.ToRGBA8888(0xEF, 0xEF, 0xEF, 0xFF), RenderUtils.ToRGBA8888(0x84, 0x84, 0x84, 0xFF) };
+        public static uint[] DefaultSelected { get; } = new uint[] { RenderUtils.ToRGBA8888(0x00, 0x00, 0x00, 0x00), RenderUtils.ToRGBA8888(0xFF, 0xE0, 0x16, 0xFF), RenderUtils.ToRGBA8888(0xBC, 0xA5, 0x10, 0xFF) };
+        public static uint[] DefaultDisabled { get; } = new uint[] { RenderUtils.ToRGBA8888(0x00, 0x00, 0x00, 0x00), RenderUtils.ToRGBA8888(0x85, 0x85, 0x8D, 0xFF), RenderUtils.ToRGBA8888(0x3A, 0x32, 0x32, 0xFF) };
+        public static uint[] DefaultDark { get; } = new uint[] { RenderUtils.ToRGBA8888(0x00, 0x00, 0x00, 0x00), RenderUtils.ToRGBA8888(0x5A, 0x52, 0x52, 0xFF), RenderUtils.ToRGBA8888(0xA5, 0xA5, 0xAD, 0xFF) };
+        public static uint[] DefaultMale { get; } = new uint[] { RenderUtils.ToRGBA8888(0x00, 0x00, 0x00, 0x00), RenderUtils.ToRGBA8888(0x73, 0x94, 0xFF, 0xFF), RenderUtils.ToRGBA8888(0x00, 0x00, 0xD6, 0xFF) };
+        public static uint[] DefaultFemale { get; } = new uint[] { RenderUtils.ToRGBA8888(0x00, 0x00, 0x00, 0x00), RenderUtils.ToRGBA8888(0xFF, 0x73, 0x73, 0xFF), RenderUtils.ToRGBA8888(0xC6, 0x00, 0x00, 0xFF) };
         public static Font PartyNumbers { get; }
 
         static Font()

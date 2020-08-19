@@ -33,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0xFF000000);
+            RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, RenderUtils.ToRGBA8888(0x00, 0x00, 0x00, 0xFF));
             CameraObj.Render(bmpAddress, bmpWidth, bmpHeight);
             if (Overworld.ShouldRenderDayTint())
             {
