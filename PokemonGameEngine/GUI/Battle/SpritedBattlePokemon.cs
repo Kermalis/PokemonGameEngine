@@ -16,17 +16,29 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             Pkmn = pkmn;
             Minisprite = SpriteUtils.GetMinisprite(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny);
-            FrontSprite = new AnimatedSprite(SpriteUtils.GetPokemonSpriteResource(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny, false, false));
-            BackSprite = new AnimatedSprite(SpriteUtils.GetPokemonSpriteResource(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny, true, false));
+            FrontSprite = SpriteUtils.GetPokemonSprite(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny, false, false);
+            BackSprite = SpriteUtils.GetPokemonSprite(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny, true, false);
 
             UpdateAnimationSpeed();
         }
 
         public void UpdateAnimationSpeed()
         {
-            double speed = Pkmn.Status1 == PBEStatus1.Paralyzed || Pkmn.HPPercentage <= 0.25 ? 2d : 1d;
-            BackSprite.SpeedModifier = speed;
-            FrontSprite.SpeedModifier = speed;
+            PBEBattlePokemon pkmn = Pkmn;
+            PBEStatus1 s = pkmn.Status1;
+            if (s == PBEStatus1.Frozen)
+            {
+                BackSprite.IsPaused = true;
+                FrontSprite.IsPaused = true;
+            }
+            else
+            {
+                double speed = s == PBEStatus1.Paralyzed || pkmn.HPPercentage <= 0.25 ? 2d : 1d;
+                BackSprite.SpeedModifier = speed;
+                FrontSprite.SpeedModifier = speed;
+                BackSprite.IsPaused = false;
+                FrontSprite.IsPaused = false;
+            }
         }
     }
 

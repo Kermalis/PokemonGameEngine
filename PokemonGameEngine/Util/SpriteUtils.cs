@@ -52,9 +52,9 @@ namespace Kermalis.PokemonGameEngine.Util
             string genderStr = gender == PBEGender.Female && HasFemaleSprite(species, true) ? "_F" : string.Empty;
             return "Pkmn.PKMN_" + speciesStr + (shiny ? "_S" : string.Empty) + genderStr + ".png";
         }
-        public static Sprite GetPokemonSprite(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool backSprite, bool behindSubstitute)
+        public static AnimatedSprite GetPokemonSprite(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool backSprite, bool behindSubstitute)
         {
-            return Sprite.LoadOrGet(GetPokemonSpriteResource(species, form, gender, shiny, backSprite, behindSubstitute));
+            return new AnimatedSprite(GetPokemonSpriteResource(species, form, gender, shiny, backSprite, behindSubstitute));
         }
         public static string GetPokemonSpriteResource(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool backSprite, bool behindSubstitute)
         {

@@ -10,7 +10,6 @@ namespace Kermalis.PokemonGameEngine.Render
         private sealed class Frame
         {
             public uint[] Bitmap { get; }
-            /// <summary>Delay in milliseconds</summary>
             public int Delay { get; }
 
             public Frame(DecodedGIF.Frame frame)
@@ -24,6 +23,7 @@ namespace Kermalis.PokemonGameEngine.Render
             public Frame[] Frames { get; }
             public int Width { get; }
             public int Height { get; }
+            public ushort RepeatCount { get; } // 0 means forever
 
             private Sprite(string resource)
             {
@@ -35,6 +35,7 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
                 Width = gif.Width;
                 Height = gif.Height;
+                RepeatCount = gif.RepeatCount;
             }
 
             private static readonly Dictionary<string, WeakReference<Sprite>> _loadedSprites = new Dictionary<string, WeakReference<Sprite>>();
@@ -56,22 +57,32 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         private readonly Sprite _sprite;
-        public double SpeedModifier { get; set; } = 1d;
+        private readonly int _repeatCount; // Will be paused after _repeatCount is achieved, and unpausing will do nothing but cause it to pause again (in that situation)
+        public double SpeedModifier;
+        public bool IsPaused;
 
         public uint[] Bitmap => _sprite.Frames[_curFrameIndex].Bitmap;
         public int Width => _sprite.Width;
         public int Height => _sprite.Height;
+        private int _numRepeats;
         private int _curFrameIndex;
         private TimeSpan _nextFrameTime;
 
-        public AnimatedSprite(string resource)
+        public AnimatedSprite(string resource, bool isPaused = false, double speedModifier = 1, int? repeatCount = null)
         {
             _sprite = Sprite.LoadOrGet(resource);
             int frameDelay = _sprite.Frames[0].Delay;
-            if (frameDelay != -1)
+            if (frameDelay == -1)
+            {
+                IsPaused = true;
+            }
+            else
             {
                 _nextFrameTime = TimeSpan.FromMilliseconds(frameDelay);
+                IsPaused = isPaused;
             }
+            SpeedModifier = speedModifier;
+            _repeatCount = repeatCount ?? _sprite.RepeatCount;
 
             for (int i = 0; i < _loadedAnimSprites.Count; i++)
             {
@@ -93,19 +104,31 @@ namespace Kermalis.PokemonGameEngine.Render
             int curFrameDelay = _sprite.Frames[curFrameIndex].Delay;
             if (curFrameDelay == -1)
             {
-                return;
+                IsPaused = true;
+                return; // This would only be reached if IsPaused is set to false manually
             }
             TimeSpan timeRequired = _nextFrameTime.Subtract(timePassed);
             long ms;
             for (ms = (long)timeRequired.TotalMilliseconds; ms <= 0; ms += (long)(curFrameDelay * SpeedModifier))
             {
-                if (++curFrameIndex >= _sprite.Frames.Length)
+                if (curFrameIndex + 1 >= _sprite.Frames.Length)
                 {
+                    if (_repeatCount != 0 && ++_numRepeats >= _repeatCount)
+                    {
+                        IsPaused = true;
+                        _curFrameIndex = curFrameIndex;
+                        return;
+                    }
                     curFrameIndex = 0;
+                }
+                else
+                {
+                    curFrameIndex++;
                 }
                 curFrameDelay = _sprite.Frames[curFrameIndex].Delay;
                 if (curFrameDelay == -1)
                 {
+                    IsPaused = true;
                     _curFrameIndex = curFrameIndex;
                     return;
                 }
@@ -121,7 +144,10 @@ namespace Kermalis.PokemonGameEngine.Render
                 {
                     continue;
                 }
-                s.UpdateCurrentFrame(timePassed);
+                if (!s.IsPaused)
+                {
+                    s.UpdateCurrentFrame(timePassed);
+                }
             }
         }
     }
