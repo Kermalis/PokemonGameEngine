@@ -21,6 +21,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * [Day & Night Cycle](https://gfycat.com/TightTediousEuropeanpolecat)
 * Tile animations
 * Controller support
+* Animated sprites
 
 ----
 ## To Do:
@@ -45,9 +46,8 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine)
 * [SDL2](https://www.libsdl.org/)
 * [SDL2#](https://github.com/flibitijibibo/SDL2-CS)
+* [SimpleGIF](https://github.com/Kermalis/SimpleGIF)
 * [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)
-
-* Animated GIF support made possible by [XamlAnimatedGif](https://github.com/XamlAnimatedGif/XamlAnimatedGif) and [What's in a GIF](http://www.matthewflickinger.com/lab/whatsinagif/index.html)
 
 ## MapEditor Uses:
 * [Avalonia](https://github.com/AvaloniaUI/Avalonia)
