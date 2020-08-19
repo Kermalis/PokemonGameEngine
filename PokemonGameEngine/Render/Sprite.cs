@@ -7,7 +7,7 @@ namespace Kermalis.PokemonGameEngine.Render
 {
     internal sealed class Sprite : ISprite
     {
-        public uint[] Bitmap { get; set; }
+        public uint[] Bitmap { get; }
         public int Width { get; }
         public int Height { get; }
 
