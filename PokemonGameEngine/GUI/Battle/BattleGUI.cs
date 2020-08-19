@@ -160,7 +160,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             string msg = _message;
             if (msg != null)
             {
-                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, (int)(bmpHeight * 0.79f), bmpWidth, (int)(bmpHeight * 0.16f), RenderUtils.ToRGBA8888(0x31, 0x31, 0x31, 0x80));
+                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, (int)(bmpHeight * 0.79f), bmpWidth, (int)(bmpHeight * 0.16f), RenderUtils.Color(0x31, 0x31, 0x31, 0x80));
                 fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.10f), (int)(bmpHeight * 0.80f), msg, defaultWhite);
             }
 

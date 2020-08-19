@@ -98,7 +98,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 _tintMinute = nextTintMinute;
             }
-            RenderUtils.Modulate(bmpAddress, bmpWidth, bmpHeight, 1, rMod, gMod, bMod);
+            RenderUtils.Modulate(bmpAddress, bmpWidth, bmpHeight, rMod, gMod, bMod, 1);
         }
     }
 }

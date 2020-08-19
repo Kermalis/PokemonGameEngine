@@ -171,13 +171,13 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
-        public static unsafe void Modulate(uint* bmpAddress, int bmpWidth, int bmpHeight, float aMod, float rMod, float gMod, float bMod)
+        public static unsafe void Modulate(uint* bmpAddress, int bmpWidth, int bmpHeight, float rMod, float gMod, float bMod, float aMod)
         {
             for (int y = 0; y < bmpHeight; y++)
             {
                 for (int x = 0; x < bmpWidth; x++)
                 {
-                    ModulateUnchecked(GetPixelAddress(bmpAddress, bmpWidth, x, y), aMod, rMod, gMod, bMod);
+                    ModulateUnchecked(GetPixelAddress(bmpAddress, bmpWidth, x, y), rMod, gMod, bMod, aMod);
                 }
             }
         }
@@ -586,18 +586,18 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         // Colors must be RGBA8888 (0xAABBCCDD - AA is A, BB is B, CC is G, DD is R)
-        public static unsafe void ModulateUnchecked(uint* pixelAddress, float aMod, float rMod, float gMod, float bMod)
+        public static unsafe void ModulateUnchecked(uint* pixelAddress, float rMod, float gMod, float bMod, float aMod)
         {
             uint current = *pixelAddress;
-            uint a = current >> 24;
-            uint b = (current >> 16) & 0xFF;
-            uint g = (current >> 8) & 0xFF;
-            uint r = current & 0xFF;
-            a = (byte)(a * aMod);
+            uint r = GetR(current);
+            uint g = GetG(current);
+            uint b = GetB(current);
+            uint a = GetA(current);
             r = (byte)(r * rMod);
             g = (byte)(g * gMod);
             b = (byte)(b * bMod);
-            *pixelAddress = ToRGBA8888(r, g, b, a);
+            a = (byte)(a * aMod);
+            *pixelAddress = Color(r, g, b, a);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DrawUnchecked(uint* bmpAddress, int bmpWidth, int x, int y, uint color)
@@ -606,30 +606,30 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public static unsafe void DrawUnchecked(uint* pixelAddress, uint color)
         {
-            uint aA = color >> 24;
-            if (aA == 0)
+            uint aIn = GetA(color);
+            if (aIn == 0)
             {
                 return; // Fully transparent
             }
-            else if (aA == 0xFF)
+            else if (aIn == 0xFF)
             {
                 *pixelAddress = color; // Fully opaque
             }
             else
             {
-                uint bA = (color >> 16) & 0xFF;
-                uint gA = (color >> 8) & 0xFF;
-                uint rA = color & 0xFF;
+                uint rIn = GetR(color);
+                uint gIn = GetG(color);
+                uint bIn = GetB(color);
                 uint current = *pixelAddress;
-                uint aB = current >> 24;
-                uint bB = (current >> 16) & 0xFF;
-                uint gB = (current >> 8) & 0xFF;
-                uint rB = current & 0xFF;
-                uint a = aA + (aB * (0xFF - aA) / 0xFF);
-                uint r = (rA * aA / 0xFF) + (rB * aB * (0xFF - aA) / (0xFF * 0xFF));
-                uint g = (gA * aA / 0xFF) + (gB * aB * (0xFF - aA) / (0xFF * 0xFF));
-                uint b = (bA * aA / 0xFF) + (bB * aB * (0xFF - aA) / (0xFF * 0xFF));
-                *pixelAddress = ToRGBA8888(r, g, b, a);
+                uint rOld = GetR(current);
+                uint gOld = GetG(current);
+                uint bOld = GetB(current);
+                uint aOld = GetA(current);
+                uint r = (rIn * aIn / 0xFF) + (rOld * aOld * (0xFF - aIn) / (0xFF * 0xFF));
+                uint g = (gIn * aIn / 0xFF) + (gOld * aOld * (0xFF - aIn) / (0xFF * 0xFF));
+                uint b = (bIn * aIn / 0xFF) + (bOld * aOld * (0xFF - aIn) / (0xFF * 0xFF));
+                uint a = aIn + (aOld * (0xFF - aIn) / 0xFF);
+                *pixelAddress = Color(r, g, b, a);
             }
         }
 
@@ -643,9 +643,61 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint ToRGBA8888(uint r, uint g, uint b, uint a)
+        public static uint Color(uint r, uint g, uint b, uint a)
         {
             return (a << 24) | (b << 16) | (g << 8) | r;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint GetR(uint color)
+        {
+            return color & 0xFF;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint GetG(uint color)
+        {
+            return (color >> 8) & 0xFF;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint GetB(uint color)
+        {
+            return (color >> 16) & 0xFF;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint GetA(uint color)
+        {
+            return color >> 24;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint SetR(uint color, uint newR)
+        {
+            uint g = GetG(color);
+            uint b = GetB(color);
+            uint a = GetA(color);
+            return Color(newR, g, b, a);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint SetG(uint color, uint newG)
+        {
+            uint r = GetR(color);
+            uint b = GetB(color);
+            uint a = GetA(color);
+            return Color(r, newG, b, a);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint SetB(uint color, uint newB)
+        {
+            uint r = GetR(color);
+            uint g = GetG(color);
+            uint a = GetA(color);
+            return Color(r, g, newB, a);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint SetA(uint color, uint newA)
+        {
+            uint r = GetR(color);
+            uint g = GetG(color);
+            uint b = GetB(color);
+            return Color(r, g, b, newA);
         }
     }
 }

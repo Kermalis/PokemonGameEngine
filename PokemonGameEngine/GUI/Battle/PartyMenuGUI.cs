@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _slot.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0);
                 if (SPkmn is null) // Effectively the same as IsDisabled
                 {
-                    RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, RenderUtils.ToRGBA8888(0x31, 0x31, 0x31, 0x80)); // Looks bad because it also affects the transparent bits
+                    RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(0x31, 0x31, 0x31, 0x80)); // Looks bad because it also affects the transparent bits
                     return;
                 }
 
@@ -60,16 +60,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 const int lineStartX = 64;
                 const int lineStartY = 27;
                 const int lineW = 48;
-                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, lineStartX - 1, lineStartY - 1, lineW + 2, 4, RenderUtils.ToRGBA8888(0x31, 0x31, 0x31, 0xFF));
-                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, lineStartX, lineStartY, lineW, 2, RenderUtils.ToRGBA8888(0x21, 0x21, 0x21, 0xFF));
+                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, lineStartX - 1, lineStartY - 1, lineW + 2, 4, RenderUtils.Color(0x31, 0x31, 0x31, 0xFF));
+                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, lineStartX, lineStartY, lineW, 2, RenderUtils.Color(0x21, 0x21, 0x21, 0xFF));
                 double hpp = pkmn.HPPercentage;
                 int theW = (int)(lineW * hpp);
                 if (theW == 0 && hpp > 0)
                 {
                     theW = 1;
                 }
-                RenderUtils.DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, lineStartX, lineStartY, theW, RenderUtils.ToRGBA8888(0x63, 0xFF, 0x63, 0xFF));
-                RenderUtils.DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, lineStartX, lineStartY + 1, theW, RenderUtils.ToRGBA8888(0x18, 0xC6, 0x21, 0xFF));
+                RenderUtils.DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, lineStartX, lineStartY, theW, RenderUtils.Color(0x63, 0xFF, 0x63, 0xFF));
+                RenderUtils.DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, lineStartX, lineStartY + 1, theW, RenderUtils.Color(0x18, 0xC6, 0x21, 0xFF));
                 _hpText.DrawOn(bmpAddress, bmpWidth, bmpHeight, 47, 23);
             }
 
