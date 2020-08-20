@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using System;
+using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
@@ -29,7 +30,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _pkmn = sPkmn;
 
             _fightChoices = new GUIChoices(0.8f, 0.7f, 0.06f,
-                font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors : Font.DefaultDisabled)
+                font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled)
             {
                 new GUIChoice("Fight", FightChoice)
             };
@@ -37,6 +38,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             bool enabled = pkmn.CanSwitchOut();
             Action command = enabled ? PokemonChoice : (Action)null;
             _fightChoices.Add(new GUIChoice("Pokémon", command, isEnabled: enabled));
+            enabled = pkmn.Trainer.ActiveBattlersOrdered.First() == pkmn && PBEBattle.IsFleeValid(pkmn.Trainer); // Only first Pokémon can "select" run
+            command = enabled ? RunChoice : (Action)null;
+            _fightChoices.Add(new GUIChoice("Run", command, isEnabled: enabled));
         }
 
         private void FightChoice()
@@ -98,6 +102,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _partyMenuGUI = new PartyMenuGUI(_party, OnPartyMenuGUIClosed);
             }
             _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
+        }
+        private void RunChoice()
+        {
+            _parent.Flee();
         }
 
         private void SelectMoveForTurn(PBEMove move)

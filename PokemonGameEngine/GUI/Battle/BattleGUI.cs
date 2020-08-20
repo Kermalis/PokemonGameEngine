@@ -198,6 +198,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _actionsGUI = new ActionsGUI(this, party, party.SpritedParty[i]);
             }
         }
+        public void Flee()
+        {
+            _actionsGUI.Dispose();
+            _actionsGUI = null;
+            new Thread(() => PBEBattle.SelectFleeIfValid(_trainer)) { Name = ThreadName }.Start();
+        }
 
         public List<PBESwitchIn> Switches { get; } = new List<PBESwitchIn>(3);
         private byte _switchesRequired;

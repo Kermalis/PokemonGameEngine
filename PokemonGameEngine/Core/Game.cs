@@ -69,7 +69,7 @@ namespace Kermalis.PokemonGameEngine.Core
             Save sav = Save;
             var me = new PBETrainerInfo(sav.PlayerParty, sav.PlayerName);
             var wildPkmn = PartyPokemon.GetTestWildPokemon(encounter);
-            var wild = new PBETrainerInfo(new Party { wildPkmn }, "Wild " + PBELocalizedString.GetSpeciesName(wildPkmn.Species).English);
+            var wild = new PBEWildInfo(new Party { wildPkmn });
             void OnBattleEnded()
             {
                 void FadeFromTransitionEnded()
