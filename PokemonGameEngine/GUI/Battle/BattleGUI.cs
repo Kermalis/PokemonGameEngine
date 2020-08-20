@@ -271,6 +271,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     }
                     return true;
                 }
+                case PBEFleeFailedPacket ffp:
+                {
+                    PBETrainer t = ffp.PokemonTrainer;
+                    if (t == _trainer)
+                    {
+                        AddMessage("Couldn't get away!");
+                        return false;
+                    }
+                    break; // Use default message otherwise
+                }
                 case PBEPkmnHPChangedPacket phcp:
                 {
                     PBEBattlePokemon pokemon = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
