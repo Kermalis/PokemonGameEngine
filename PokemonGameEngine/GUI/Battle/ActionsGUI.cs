@@ -35,9 +35,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 new GUIChoice("Fight", FightChoice)
             };
             PBEBattlePokemon pkmn = _pkmn.Pkmn;
-            bool enabled = pkmn.CanSwitchOut();
+            bool enabled = pkmn.CanSwitchOut(); // Cannot switch out or use item if TempLockedMove exists
             Action command = enabled ? PokemonChoice : (Action)null;
             _fightChoices.Add(new GUIChoice("Pokémon", command, isEnabled: enabled));
+            command = enabled ? BagChoice : (Action)null;
+            _fightChoices.Add(new GUIChoice("Bag", command, isEnabled: enabled));
             enabled = pkmn.Trainer.ActiveBattlersOrdered.First() == pkmn && PBEBattle.IsFleeValid(pkmn.Trainer); // Only first Pokémon can "select" run
             command = enabled ? RunChoice : (Action)null;
             _fightChoices.Add(new GUIChoice("Run", command, isEnabled: enabled));
@@ -102,6 +104,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _partyMenuGUI = new PartyMenuGUI(_party, OnPartyMenuGUIClosed);
             }
             _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
+        }
+        private void BagChoice()
+        {
+            // Temporarily auto select PokeDoll
+            PBEBattlePokemon pkmn = _pkmn.Pkmn;
+            pkmn.TurnAction = new PBETurnAction(pkmn, PBEItem.PokeDoll);
+            _parent.ActionsLoop(false);
         }
         private void RunChoice()
         {

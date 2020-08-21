@@ -67,7 +67,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public void TempCreateWildBattle(Map map, Map.Layout.Block block, EncounterTable.Encounter encounter)
         {
             Save sav = Save;
-            var me = new PBETrainerInfo(sav.PlayerParty, sav.PlayerName);
+            var me = new PBETrainerInfo(sav.PlayerParty, sav.PlayerName, inventory: sav.PlayerInventory.ToPBEInventory());
             var wildPkmn = PartyPokemon.GetTestWildPokemon(encounter);
             var wild = new PBEWildInfo(new Party { wildPkmn });
             void OnBattleEnded()

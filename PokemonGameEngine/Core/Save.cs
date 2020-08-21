@@ -18,7 +18,9 @@ namespace Kermalis.PokemonGameEngine.Core
             PlayerName = "Dawn";
             PlayerIsFemale = true;
             PlayerParty = new Party() { PartyPokemon.GetTestPokemon(PBESpecies.Skitty, 0, PBESettings.DefaultMaxLevel) };
+            PlayerParty[0].Moveset[0].Move = PBEMove.Dig;
             PlayerInventory = new PlayerInventory();
+            PlayerInventory.Add(PBEItem.PokeDoll, 995);
         }
 
         // TODO: If party is full, send to a box, if boxes are full, error

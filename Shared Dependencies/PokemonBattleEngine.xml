@@ -252,6 +252,9 @@
         <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnDecision.Fight">
             <summary>The Pokémon has chosen to use a move.</summary>
         </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnDecision.Item">
+            <summary>The Pokémon has chosen to use an item.</summary>
+        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnDecision.SwitchOut">
             <summary>The Pokémon has chosen to switch out for another Pokémon.</summary>
         </member>

@@ -119,6 +119,26 @@ namespace Kermalis.PokemonGameEngine.Item
         {
             return _pouches.GetEnumerator();
         }
+
+        public List<(PBEItem, uint)> ToPBEInventory()
+        {
+            var list = new List<(PBEItem, uint)>();
+            foreach (InventoryPouch<T> pouch in _pouches.Values)
+            {
+                if (pouch.PouchType == ItemPouchType.FreeSpace
+                    || pouch.PouchType == ItemPouchType.KeyItems
+                    || pouch.PouchType == ItemPouchType.Mail
+                    || pouch.PouchType == ItemPouchType.TMHMs)
+                {
+                    continue;
+                }
+                foreach (T slot in pouch)
+                {
+                    list.Add((slot.Item, slot.Quantity));
+                }
+            }
+            return list;
+        }
     }
 
     internal sealed class Inventory : Inventory<InventorySlot>
