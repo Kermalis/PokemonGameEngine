@@ -4,6 +4,7 @@ using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.World;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.Pkmn
 {
@@ -64,7 +65,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             HealMoves();
         }
 
-        public void RandomizeMoves()
+        private void RandomizeMoves()
         {
             var moves = new List<PBEMove>(PBELegalityChecker.GetLegalMoves(Species, Form, Level, PBESettings.DefaultSettings));
             for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
@@ -81,8 +82,25 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 slot.SetMaxPP();
             }
         }
+        private void SetWildMoves()
+        {
+            // Get last 4 moves that can be learned by level up, with no repeats (such as Sketch)
+            PBEMove[] moves = PBEPokemonData.GetData(Species, Form).LevelUpMoves.Where(t => t.Level <= Level && PBEMoveData.IsMoveUsable(t.Move))
+                .Select(t => t.Move).Distinct().Reverse().Take(PBESettings.DefaultNumMoves).ToArray();
+            for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
+            {
+                Moveset[i].Clear();
+            }
+            for (int i = 0; i < moves.Length; i++)
+            {
+                Moveset.MovesetSlot slot = Moveset[i];
+                slot.Move = moves[i];
+                slot.PPUps = 0;
+                slot.SetMaxPP();
+            }
+        }
 
-        private static PartyPokemon GetTest(PBESpecies species, PBEForm form, byte level)
+        private static PartyPokemon GetTest(PBESpecies species, PBEForm form, byte level, bool wild)
         {
             var pData = PBEPokemonData.GetData(species, form);
             var p = new PartyPokemon
@@ -102,16 +120,23 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 IndividualValues = new IVs()
             };
             p.SetMaxHP(pData);
-            p.RandomizeMoves();
+            if (wild)
+            {
+                p.SetWildMoves();
+            }
+            else
+            {
+                p.RandomizeMoves();
+            }
             return p;
         }
         public static PartyPokemon GetTestPokemon(PBESpecies species, PBEForm form, byte level)
         {
-            return GetTest(species, form, level);
+            return GetTest(species, form, level, false);
         }
         public static PartyPokemon GetTestWildPokemon(EncounterTable.Encounter encounter)
         {
-            return GetTest(encounter.Species, encounter.Form, (byte)PBEUtils.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel));
+            return GetTest(encounter.Species, encounter.Form, (byte)PBEUtils.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel), true);
         }
     }
 }
