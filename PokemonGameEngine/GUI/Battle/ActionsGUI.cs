@@ -40,7 +40,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _fightChoices.Add(new GUIChoice("Pokémon", command, isEnabled: enabled));
             command = enabled ? BagChoice : (Action)null;
             _fightChoices.Add(new GUIChoice("Bag", command, isEnabled: enabled));
-            enabled = pkmn.Trainer.ActiveBattlersOrdered.First() == pkmn && PBEBattle.IsFleeValid(pkmn.Trainer); // Only first Pokémon can "select" run
+            enabled = pkmn.Trainer.ActiveBattlersOrdered.First() == pkmn && pkmn.Trainer.IsFleeValid() is null; // Only first Pokémon can "select" run
             command = enabled ? RunChoice : (Action)null;
             _fightChoices.Add(new GUIChoice("Run", command, isEnabled: enabled));
         }

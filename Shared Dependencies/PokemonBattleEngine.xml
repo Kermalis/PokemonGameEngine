@@ -7,13 +7,13 @@
         <member name="T:Kermalis.PokemonBattleEngine.AI.PBEAI">
             <summary>Creates valid decisions for a team in a battle. Decisions may not be valid for custom settings and/or move changes.</summary>
         </member>
-        <member name="M:Kermalis.PokemonBattleEngine.AI.PBEAI.CreateActions(Kermalis.PokemonBattleEngine.Battle.PBETrainer)">
+        <member name="M:Kermalis.PokemonBattleEngine.AI.PBEAI.CreateAIActions(Kermalis.PokemonBattleEngine.Battle.PBETrainer)">
             <summary>Creates valid actions for a battle turn for a specific team.</summary>
             <param name="trainer">The trainer to create actions for.</param>
             <exception cref="T:System.InvalidOperationException">Thrown when <paramref name="trainer"/> has no active battlers or <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForActions"/>.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown when a Pokémon has no moves, the AI tries to use a move with invalid targets, or <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleFormat"/> is invalid.</exception>
         </member>
-        <member name="M:Kermalis.PokemonBattleEngine.AI.PBEAI.CreateSwitches(Kermalis.PokemonBattleEngine.Battle.PBETrainer)">
+        <member name="M:Kermalis.PokemonBattleEngine.AI.PBEAI.CreateAISwitches(Kermalis.PokemonBattleEngine.Battle.PBETrainer)">
             <summary>Creates valid switches for a battle for a specific team.</summary>
             <param name="trainer">The trainer to create switches for.</param>
             <exception cref="T:System.InvalidOperationException">Thrown when <paramref name="trainer"/> does not require switch-ins or <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForActions"/>.</exception>
@@ -32,34 +32,6 @@
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.SetEnded">
             <summary>Sets <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> to <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.Ended"/> and clears <see cref="E:Kermalis.PokemonBattleEngine.Battle.PBEBattle.OnNewEvent"/> and <see cref="E:Kermalis.PokemonBattleEngine.Battle.PBEBattle.OnStateChanged"/>. Does not touch <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleResult"/>.</summary>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.AreActionsValid(Kermalis.PokemonBattleEngine.Battle.PBETrainer,System.Collections.Generic.IReadOnlyList{Kermalis.PokemonBattleEngine.Battle.PBETurnAction})">
-            <summary>Determines whether chosen actions are valid.</summary>
-            <param name="trainer">The trainer the inputted actions belong to.</param>
-            <param name="actions">The actions the team wishes to execute.</param>
-            <returns>False if the team already chose actions or the actions are illegal, True otherwise.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForActions"/>.</exception>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.SelectActionsIfValid(Kermalis.PokemonBattleEngine.Battle.PBETrainer,System.Collections.Generic.IReadOnlyList{Kermalis.PokemonBattleEngine.Battle.PBETurnAction})">
-            <summary>Selects actions if they are valid. Changes the battle state if both teams have selected valid actions.</summary>
-            <param name="trainer">The trainer the inputted actions belong to.</param>
-            <param name="actions">The actions the team wishes to execute.</param>
-            <returns>True if the actions are valid and were selected.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForActions"/>.</exception>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.AreSwitchesValid(Kermalis.PokemonBattleEngine.Battle.PBETrainer,System.Collections.Generic.IReadOnlyList{Kermalis.PokemonBattleEngine.Battle.PBESwitchIn})">
-            <summary>Determines whether chosen switches are valid.</summary>
-            <param name="trainer">The trainer the inputted switches belong to.</param>
-            <param name="switches">The switches the team wishes to execute.</param>
-            <returns>False if the team already chose switches or the switches are illegal, True otherwise.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForSwitchIns"/>.</exception>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.SelectSwitchesIfValid(Kermalis.PokemonBattleEngine.Battle.PBETrainer,System.Collections.Generic.IReadOnlyList{Kermalis.PokemonBattleEngine.Battle.PBESwitchIn})">
-            <summary>Selects switches if they are valid. Changes the battle state if both teams have selected valid switches.</summary>
-            <param name="trainer">The trainer the inputted switches belong to.</param>
-            <param name="switches">The switches the team wishes to execute.</param>
-            <returns>True if the switches are valid and were selected.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForSwitchIns"/>.</exception>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.GetStatChangeModifier(System.SByte,System.Boolean)">
             <summary>Gets the influence a stat change has on a stat.</summary>

@@ -189,7 +189,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 _actionsGUI.Dispose();
                 _actionsGUI = null;
-                new Thread(() => PBEBattle.SelectActionsIfValid(_trainer, _actions.Select(p => p.TurnAction).ToArray())) { Name = ThreadName }.Start();
+                new Thread(() => _trainer.SelectActionsIfValid(_actions.Select(p => p.TurnAction).ToArray())) { Name = ThreadName }.Start();
             }
             else
             {
@@ -202,7 +202,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             _actionsGUI.Dispose();
             _actionsGUI = null;
-            new Thread(() => PBEBattle.SelectFleeIfValid(_trainer)) { Name = ThreadName }.Start();
+            new Thread(() => _trainer.SelectFleeIfValid()) { Name = ThreadName }.Start();
         }
 
         public List<PBESwitchIn> Switches { get; } = new List<PBESwitchIn>(3);
@@ -223,7 +223,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             if (_switchesRequired == 0)
             {
-                new Thread(() => PBEBattle.SelectSwitchesIfValid(_trainer, Switches)) { Name = ThreadName }.Start();
+                new Thread(() => _trainer.SelectSwitchesIfValid(Switches)) { Name = ThreadName }.Start();
             }
             else
             {
@@ -253,7 +253,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     }
                     else
                     {
-                        new Thread(() => PBEBattle.SelectActionsIfValid(t, PBEAI.CreateActions(t))) { Name = ThreadName }.Start();
+                        new Thread(t.CreateAIActions) { Name = ThreadName }.Start();
                     }
                     return true;
                 }
@@ -267,7 +267,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     }
                     else
                     {
-                        new Thread(() => PBEBattle.SelectSwitchesIfValid(t, PBEAI.CreateSwitches(t))) { Name = ThreadName }.Start();
+                        new Thread(t.CreateAISwitches) { Name = ThreadName }.Start();
                     }
                     return true;
                 }
