@@ -107,9 +107,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void BagChoice()
         {
-            // Temporarily auto select PokeDoll
+            // Temporarily auto select
             PBEBattlePokemon pkmn = _pkmn.Pkmn;
-            pkmn.TurnAction = new PBETurnAction(pkmn, PBEItem.PokeDoll);
+            pkmn.TurnAction = new PBETurnAction(pkmn, PBEItem.PokeBall);
             _parent.ActionsLoop(false);
         }
         private void RunChoice()

@@ -230,6 +230,9 @@
         <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnDecision.SwitchOut">
             <summary>The Pokémon has chosen to switch out for another Pokémon.</summary>
         </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnDecision.WildFlee">
+            <summary>The wild Pokémon has chosen to use flee.</summary>
+        </member>
         <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus1">
             <summary>Represents a specific Pokémon's non-volatile status.</summary>
         </member>
@@ -542,10 +545,10 @@
             <summary>The ability the Pokémon is known to have.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.OriginalAbility">
-            <summary>The ability the Pokémon had upon entering battle. </summary>
+            <summary>The ability the Pokémon had upon entering battle.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.RevertAbility">
-            <summary>The ability the Pokémon will regain upon switching out, fainting, or the battle ending. </summary>
+            <summary>The ability the Pokémon will regain upon switching out, fainting, or the battle ending.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.Gender">
             <summary>The Pokémon's gender.</summary>
@@ -561,6 +564,15 @@
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.OriginalItem">
             <summary>The item the Pokémon had upon entering battle.</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.CaughtBall">
+            <summary>The Pokémon's current ball (affected by catching).</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.KnownCaughtBall">
+            <summary>The ball the Pokémon is known to be in (affected by disguising).</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.OriginalCaughtBall">
+            <summary>The ball the Pokémon was in upon entering battle.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.Moves">
             <summary>The moves the Pokémon currently has.</summary>
@@ -1052,9 +1064,6 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Casteliacone">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.CherishBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ClawFossil">
             <summary>No effect.</summary>
         </member>
@@ -1079,22 +1088,13 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DireHit">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DiveBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DomeFossil">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DragonScale">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DreamBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DubiousDisc">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DuskBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DuskStone">
@@ -1124,9 +1124,6 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ExpShare">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FastBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FavoredMail">
             <summary>No effect.</summary>
         </member>
@@ -1139,9 +1136,6 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FreshWater">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FriendBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FullHeal">
             <summary>No effect.</summary>
         </member>
@@ -1152,9 +1146,6 @@
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.GooeyMulch">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.GreatBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.GreenScarf">
@@ -1175,9 +1166,6 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.GuardSpec">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HealBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HealPowder">
             <summary>No effect.</summary>
         </member>
@@ -1185,9 +1173,6 @@
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HeartScale">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HeavyBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HelixFossil">
@@ -1220,13 +1205,7 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Lemonade">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LevelBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LikeMail">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LoveBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LuckIncense">
@@ -1235,16 +1214,7 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LuckyEgg">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LureBall">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LuxuryBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Magmarizer">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MasterBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MaxElixir">
@@ -1265,19 +1235,10 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MoomooMilk">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MoonBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MoonStone">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MuscleWing">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.NestBall">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.NetBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Nugget">
@@ -1298,9 +1259,6 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ParalyzHeal">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ParkBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PassOrb">
             <summary>No effect.</summary>
         </member>
@@ -1319,9 +1277,6 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PnkApricorn">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PokeBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Potion">
             <summary>No effect.</summary>
         </member>
@@ -1329,9 +1284,6 @@
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PPUp">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PremierBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PrettyWing">
@@ -1347,9 +1299,6 @@
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PureIncense">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.QuickBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.RageCandyBar">
@@ -1397,9 +1346,6 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.RelicVase">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.RepeatBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Repel">
             <summary>No effect.</summary>
         </member>
@@ -1424,9 +1370,6 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SacredAsh">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SafariBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ShinyStone">
             <summary>No effect.</summary>
         </member>
@@ -1443,9 +1386,6 @@
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SootheBell">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SportBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.StableMulch">
@@ -1478,17 +1418,11 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Thunderstone">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.TimerBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.TinyMushroom">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ToxicOrb">
             <summary>The Pokémon contracts <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.BadlyPoisoned"/> at the end of each turn if it has no other <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus1"/> and it does not have <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Poison"/> or <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Steel"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.UltraBall">
-            <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.WaterStone">
             <summary>No effect.</summary>

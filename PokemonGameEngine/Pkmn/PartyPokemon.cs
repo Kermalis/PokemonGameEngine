@@ -27,6 +27,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public bool Shiny { get; set; }
         public byte Level { get; set; }
         public byte Friendship { get; set; }
+        public PBEItem CaughtBall { get; set; }
 
         public PBEItem Item { get; set; }
         public PBEAbility Ability { get; set; }
@@ -127,6 +128,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             else
             {
                 p.RandomizeMoves();
+                p.CaughtBall = PBEItem.LoveBall;
+                p.Friendship = byte.MaxValue;
             }
             return p;
         }
