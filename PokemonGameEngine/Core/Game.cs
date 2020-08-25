@@ -7,6 +7,7 @@ using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Script;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
+using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Core
@@ -23,7 +24,7 @@ namespace Kermalis.PokemonGameEngine.Core
         private FadeFromColorTransition _fadeFromTransition;
         private FadeToColorTransition _fadeToTransition;
         private SpiralTransition _battleTransition;
-        private BattleGUI _battleGUI;
+        public BattleGUI BattleGUI { get; private set; }
 
         public Game()
         {
@@ -77,12 +78,19 @@ namespace Kermalis.PokemonGameEngine.Core
                     _fadeFromTransition = null;
                 }
                 _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
-                _battleGUI = null;
+                BattleGUI = null;
             }
-            _battleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, me, wild,
-                battleTerrain: Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock),
+
+            PBEBattleTerrain terrain = Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock);
+            BattleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, me, wild,
+                battleTerrain: terrain,
                 weather: Overworld.GetPBEWeatherFromMap(map)),
-                OnBattleEnded);
+                OnBattleEnded,
+                isCave: terrain == PBEBattleTerrain.Cave,
+                isDarkGrass: block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Grass_SpecialEncounter,
+                isFishing: false,
+                isSurfing: block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Surf,
+                isUnderwater: false);
             void OnBattleTransitionEnded()
             {
                 _battleTransition = null;
@@ -92,6 +100,7 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public void LogicTick()
         {
+            DateTime time = DateTime.Now;
             foreach (ScriptContext ctx in Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
             {
                 ctx.LogicTick();
@@ -101,13 +110,14 @@ namespace Kermalis.PokemonGameEngine.Core
                 mb.LogicTick();
             }
             Tileset.AnimationTick(); // TODO: Don't run in battles like we are now
+            DayTint.LogicTick(time); // TODO: Don't run in locations where there's no day tint (and then set the tint automatically upon exit so there's no transition)
             if (_battleTransition != null || _fadeFromTransition != null || _fadeToTransition != null)
             {
                 return;
             }
-            if (_battleGUI != null)
+            if (BattleGUI != null)
             {
-                _battleGUI.LogicTick();
+                BattleGUI.LogicTick();
                 return;
             }
             _overworldGUI.LogicTick();
@@ -120,9 +130,9 @@ namespace Kermalis.PokemonGameEngine.Core
                 _battleTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                 goto bottom;
             }
-            if (_battleGUI != null)
+            if (BattleGUI != null)
             {
-                _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                BattleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                 goto bottom;
             }
             _overworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);

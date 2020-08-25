@@ -32,8 +32,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private string _message;
         private ActionsGUI _actionsGUI;
 
-        public BattleGUI(PBEBattle battle, Action onClosed)
+        public readonly bool IsDarkGrass;
+        public readonly bool IsCave;
+        public readonly bool IsFishing;
+        public readonly bool IsSurfing;
+        public readonly bool IsUnderwater;
+
+        public BattleGUI(PBEBattle battle, Action onClosed,
+            bool isCave, bool isDarkGrass, bool isFishing, bool isSurfing, bool isUnderwater)
         {
+            IsCave = isCave;
+            IsDarkGrass = isDarkGrass;
+            IsFishing = isFishing;
+            IsSurfing = isSurfing;
+            IsUnderwater = isUnderwater;
             _battle = battle;
             _trainer = battle.Trainers[0];
             _battleBackground = Sprite.LoadOrGet($"GUI.Battle.Background.BG_{battle.BattleTerrain}_{battle.BattleFormat}.png");

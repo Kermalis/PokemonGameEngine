@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Utils;
+﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Core;
 using System.IO;
 using System.Reflection;
 
@@ -16,7 +17,7 @@ namespace Kermalis.PokemonGameEngine.Util
         public static string WorkingDirectory { get; private set; }
         public static void SetWorkingDirectory(string workingDirectory)
         {
-            PBEUtils.InitEngine(workingDirectory);
+            PBEDataProvider.InitEngine(workingDirectory, dataProvider: new BattleEngineDataProvider());
             WorkingDirectory = workingDirectory;
         }
     }

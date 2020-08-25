@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using System;
 using System.Linq;
@@ -77,7 +78,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[i];
                     PBEMove m = slot.Move;
-                    string text = PBELocalizedString.GetMoveName(m).English;
+                    string text = BattleEngineDataProvider.Instance.GetMoveName(m).English;
                     bool enabled = Array.IndexOf(usableMoves, m) != -1;
                     Action command = enabled ? () => SelectMoveForTurn(m) : (Action)null;
                     _moveChoices.Add(new GUIChoice(text, command, isEnabled: enabled));

@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Utils;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.UI;
 using System;
@@ -66,25 +66,25 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         private FacingDirection GetRandomDirection()
         {
-            return (FacingDirection)PBEUtils.GlobalRandom.RandomInt(0, 7); // 8 directions
+            return (FacingDirection)PBEDataProvider.GlobalRandom.RandomInt(0, 7); // 8 directions
         }
         private FacingDirection GetRandomDirection(IReadOnlyList<FacingDirection> dirs)
         {
-            return PBEUtils.GlobalRandom.RandomElement(dirs);
+            return PBEDataProvider.GlobalRandom.RandomElement(dirs);
         }
         private FacingDirection GetRandomDirection(FacingDirection a, FacingDirection b)
         {
-            return PBEUtils.GlobalRandom.RandomBool() ? a : b;
+            return PBEDataProvider.GlobalRandom.RandomBool() ? a : b;
         }
         private int GetRandomTimer()
         {
-            return PBEUtils.GlobalRandom.RandomInt(1 * Program.NumTicksPerSecond, 10 * Program.NumTicksPerSecond);
+            return PBEDataProvider.GlobalRandom.RandomInt(1 * Program.NumTicksPerSecond, 10 * Program.NumTicksPerSecond);
         }
 
         private void WanderSomewhere(FacingDirection[] allowed)
         {
             // 1/4 chance to face a direction without moving
-            if (PBEUtils.GlobalRandom.RandomBool(1, 4))
+            if (PBEDataProvider.GlobalRandom.RandomBool(1, 4))
             {
                 goto justFace;
             }

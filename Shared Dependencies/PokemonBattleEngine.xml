@@ -713,11 +713,11 @@
             <summary>Gets a specific active <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon"/> by its <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.FieldPosition"/>.</summary>
             <param name="pos">The <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEFieldPosition"/> of the <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon"/>.</param>
         </member>
-        <member name="P:Kermalis.PokemonBattleEngine.Data.PBEBerryData.NaturalGiftPower">
-            <summary>The power <see cref="!:PBEMoveEffect.NaturalGift"/> has when the user is holding this item.</summary>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETypeEffectiveness._table">
+            <summary>The type effectiveness table. The first key is the attacking type and the second key is the defending type.</summary>
         </member>
-        <member name="P:Kermalis.PokemonBattleEngine.Data.PBEBerryData.NaturalGiftType">
-            <summary>The type <see cref="!:PBEMoveEffect.NaturalGift"/> becomes when the user is holding this item.</summary>
+        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBETypeEffectiveness.ThunderWaveTypeCheck(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Data.PBEMove,System.Boolean)">
+            <summary>Checks if <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.ThunderWave"/>'s type affects the target, taking into account <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Normalize"/>.</summary>
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Data.PBEGender">
             <summary>Represents a specific Pokémon's gender.</summary>
@@ -1649,6 +1649,36 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMove.MAX">
             <summary>Invalid move.</summary>
         </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataProvider.GetCatchRateModifier(Kermalis.PokemonBattleEngine.Battle.PBEBattle)">
+            <summary>This is the boost to the catch rate. In generation 5, Capture Powers boost the catch rate.</summary>
+        </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataUtils.IsMoveUsable(Kermalis.PokemonBattleEngine.Data.PBEMove)">
+            <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
+        </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataUtils.IsMoveUsable(Kermalis.PokemonBattleEngine.Data.PBEMoveEffect)">
+            <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.PBEPokemonData.Weight">
+            <summary>Weight in Kilograms</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEItemData.FlingPower">
+            <summary>The power <see cref="!:PBEMoveEffect.Fling"/> has when the user is holding this item. 0 will cause the move to fail.</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEBerryData.NaturalGiftPower">
+            <summary>The power <see cref="!:PBEMoveEffect.NaturalGift"/> has when the user is holding this item.</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEBerryData.NaturalGiftType">
+            <summary>The type <see cref="!:PBEMoveEffect.NaturalGift"/> becomes when the user is holding this item.</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEMoveData.PPTier">
+            <summary>0 PPTier will become 1 PP (unaffected by pp ups)</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEMoveData.Power">
+            <summary>0 power or accuracy will show up as --</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemonData.Weight">
+            <summary>Weight in Kilograms</summary>
+        </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemonTypes.Type1">
             <summary>The Pokémon's first type.</summary>
         </member>
@@ -1660,9 +1690,6 @@
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemonKnownTypes.KnownType2">
             <summary>The second type everyone believes the Pokémon has.</summary>
-        </member>
-        <member name="P:Kermalis.PokemonBattleEngine.Data.PBEItemData.FlingPower">
-            <summary>The power <see cref="!:PBEMoveEffect.Fling"/> has when the user is holding this item. 0 will cause the move to fail.</summary>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Data.Legality.PBELegalMoveset.#ctor(Kermalis.PokemonBattleEngine.Data.PBESpecies,Kermalis.PokemonBattleEngine.Data.PBEForm,System.Byte,Kermalis.PokemonBattleEngine.Data.PBESettings,System.Boolean)">
             <summary>Creates a new <see cref="T:Kermalis.PokemonBattleEngine.Data.Legality.PBELegalMoveset"/> object with the specified traits.</summary>
@@ -1677,9 +1704,6 @@
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Data.Legality.PBELegalMoveset.Randomize">
             <summary>Randomizes the move and PP-Ups in each slot without creating duplicate moves.</summary>
-        </member>
-        <member name="P:Kermalis.PokemonBattleEngine.Data.PBEPokemonData.Weight">
-            <summary>Weight in Kilograms</summary>
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Data.PBESettings">
             <summary>The various engine settings.</summary>
@@ -1966,12 +1990,6 @@
         <member name="M:Kermalis.PokemonBattleEngine.Data.PBESettings.ToString">
             <summary>Converts this <see cref="T:Kermalis.PokemonBattleEngine.Data.PBESettings"/> object into a unique code <see cref="T:System.String"/>.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETypeEffectiveness._table">
-            <summary>The type effectiveness table. The first key is the attacking type and the second key is the defending type.</summary>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Data.PBETypeEffectiveness.ThunderWaveTypeCheck(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Data.PBEMove,System.Boolean)">
-            <summary>Checks if <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.ThunderWave"/>'s type affects the target, taking into account <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Normalize"/>.</summary>
-        </member>
         <member name="P:Kermalis.PokemonBattleEngine.Utils.PBERandom.Seed">
             <summary>Gets or sets the seed of this <see cref="T:Kermalis.PokemonBattleEngine.Utils.PBERandom"/>. The chain will be reset even if the seed is the same as the previous seed.</summary>
         </member>
@@ -2007,12 +2025,6 @@
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Utils.PBEUtils">
             <summary>A static class that provides utilities that are used throughout the battle engine.</summary>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Utils.PBEUtils.InitEngine(System.String,System.Nullable{System.Int32})">
-            <summary>Creates a connection to PokemonBattleEngine.db. This must be called only once; before the database is used.</summary>
-            <param name="databasePath">The path of the folder containing PokemonBattleEngine.db.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="databasePath"/> == null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown when a database connection has already been created.</exception>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Utils.PBEUtils.Andify``1(System.Collections.Generic.IReadOnlyList{``0})">
             <summary>Returns a <see cref="T:System.String"/> that combines <paramref name="source"/>'s elements' string representations using "and" with commas.</summary>

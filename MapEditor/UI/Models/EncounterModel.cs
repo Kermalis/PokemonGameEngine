@@ -108,7 +108,7 @@ namespace Kermalis.MapEditor.UI.Models
             }
             else
             {
-                SelectableForms = forms.Select(f => PBELocalizedString.GetFormName(Encounter.Species, f).ToString()).ToArray();
+                SelectableForms = forms.Select(f => PBEDataProvider.Instance.GetFormName(Encounter.Species, f).FromPBECultureInfo()).ToArray();
                 FormsEnabled = true;
             }
             OnPropertyChanged(nameof(SelectableForms));
