@@ -41,6 +41,7 @@ namespace Kermalis.PokemonGameEngine.World
                 default: throw new ArgumentOutOfRangeException(nameof(month));
             }
         }
+        // Evolutions only check for "Night", so day evolutions occur in Morning, Day, and Evening
         public static TimeOfDay GetTimeOfDay(Season season, int hour)
         {
             switch (season)
