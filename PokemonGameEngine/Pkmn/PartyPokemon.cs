@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonGameEngine.World;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -100,6 +101,21 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             }
         }
 
+        public void UpdateSeasonalForm(Season season)
+        {
+            if (Species == PBESpecies.Deerling || Species == PBESpecies.Sawsbuck)
+            {
+                Form = season.ToDeerlingSawsbuckForm(); // TODO: Update stats/ability
+            }
+        }
+        public void UpdateShayminForm(TimeOfDay tod)
+        {
+            if (tod == TimeOfDay.Night && Species == PBESpecies.Shaymin && Form == PBEForm.Shaymin_Sky)
+            {
+                Form = PBEForm.Shaymin; // TODO: Update stats/ability
+            }
+        }
+
         private static PartyPokemon GetTest(PBESpecies species, PBEForm form, byte level, bool wild)
         {
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
@@ -119,6 +135,14 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 EffortValues = new EVs(),
                 IndividualValues = new IVs()
             };
+            // TODO: Burmy/Wormadam areas. (Giratina would work similarly if you wanted, with an additional || for the orb)
+            DateTime time = DateTime.Now;
+            Month month = OverworldTime.GetMonth((Month)time.Month);
+            Season season = OverworldTime.GetSeason(month);
+            int hour = OverworldTime.GetHour(time.Hour);
+            TimeOfDay tod = OverworldTime.GetTimeOfDay(season, hour);
+            p.UpdateSeasonalForm(season);
+            p.UpdateShayminForm(tod);
             p.SetMaxHP(pData);
             if (wild)
             {

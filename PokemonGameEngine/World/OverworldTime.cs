@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.PokemonBattleEngine.Data;
+using System;
 
 namespace Kermalis.PokemonGameEngine.World
 {
@@ -112,6 +113,11 @@ namespace Kermalis.PokemonGameEngine.World
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(season));
             }
+        }
+
+        public static PBEForm ToDeerlingSawsbuckForm(this Season season)
+        {
+            return (PBEForm)season;
         }
     }
 }

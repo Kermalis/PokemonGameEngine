@@ -9,28 +9,28 @@
       "Form": 0
     },
     {
-      "Chance": 15,
+      "Chance": 25,
       "MinLevel": 3,
       "MaxLevel": 4,
       "Species": "Pidove",
       "Form": 0
     },
     {
-      "Chance": 5,
+      "Chance": 15,
       "MinLevel": 5,
       "MaxLevel": 7,
       "Species": "Deerling",
-      "Form": 3
+      "Form": 0
     },
     {
-      "Chance": 10,
+      "Chance": 5,
       "MinLevel": 4,
       "MaxLevel": 6,
       "Species": "Joltik",
       "Form": 0
     },
     {
-      "Chance": 30,
+      "Chance": 25,
       "MinLevel": 3,
       "MaxLevel": 5,
       "Species": "Purrloin",
