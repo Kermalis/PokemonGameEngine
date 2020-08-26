@@ -33,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.World
     }
     public enum Month : byte
     {
-        January,
+        January = 1,
         February,
         March,
         April,
