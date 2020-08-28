@@ -72,7 +72,7 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             PBESpecies species = _reader.ReadEnum<PBESpecies>();
             byte level = _reader.ReadByte();
-            var pkmn = PartyPokemon.GetTestPokemon(species, 0, level);
+            var pkmn = new PartyPokemon(species, 0, level);
             Game.Instance.Save.GivePokemon(pkmn);
         }
         private void GivePokemonFormCommand()
@@ -80,7 +80,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = _reader.ReadEnum<PBESpecies>();
             PBEForm form = _reader.ReadEnum<PBEForm>();
             byte level = _reader.ReadByte();
-            var pkmn = PartyPokemon.GetTestPokemon(species, form, level);
+            var pkmn = new PartyPokemon(species, form, level);
             Game.Instance.Save.GivePokemon(pkmn);
         }
         private void GivePokemonFormItemCommand()
@@ -89,7 +89,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBEForm form = _reader.ReadEnum<PBEForm>();
             byte level = _reader.ReadByte();
             PBEItem item = _reader.ReadEnum<PBEItem>();
-            var pkmn = PartyPokemon.GetTestPokemon(species, form, level);
+            var pkmn = new PartyPokemon(species, form, level);
             pkmn.Item = item;
             Game.Instance.Save.GivePokemon(pkmn);
         }

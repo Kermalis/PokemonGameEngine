@@ -20,7 +20,10 @@ namespace Kermalis.PokemonGameEngine.Core
                 return true;
             }
             DateTime time = DateTime.Now;
-            return OverworldTime.GetTimeOfDay(OverworldTime.GetSeason(OverworldTime.GetMonth((Month)time.Month)), OverworldTime.GetHour(time.Hour)) == TimeOfDay.Night;
+            Month month = OverworldTime.GetMonth((Month)time.Month);
+            Season season = OverworldTime.GetSeason(month);
+            int hour = OverworldTime.GetHour(time.Hour);
+            return OverworldTime.GetTimeOfDay(season, hour) == TimeOfDay.Night;
         }
         public override bool IsFishing(PBEBattle battle)
         {

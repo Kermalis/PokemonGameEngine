@@ -69,8 +69,9 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             Save sav = Save;
             var me = new PBETrainerInfo(sav.PlayerParty, sav.PlayerName, inventory: sav.PlayerInventory.ToPBEInventory());
-            var wildPkmn = PartyPokemon.GetTestWildPokemon(encounter);
-            var wild = new PBEWildInfo(new Party { wildPkmn });
+            var wildParty = new Party { new PartyPokemon(encounter) };
+            var trainerParties = new Party[] { sav.PlayerParty, wildParty };
+            var wild = new PBEWildInfo(wildParty);
             void OnBattleEnded()
             {
                 void FadeFromTransitionEnded()
@@ -86,6 +87,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 battleTerrain: terrain,
                 weather: Overworld.GetPBEWeatherFromMap(map)),
                 OnBattleEnded,
+                trainerParties,
                 isCave: terrain == PBEBattleTerrain.Cave,
                 isDarkGrass: block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Grass_SpecialEncounter,
                 isFishing: false,

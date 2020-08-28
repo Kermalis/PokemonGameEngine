@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
@@ -9,13 +8,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
     internal sealed class SpritedBattlePokemon
     {
+        public PartyPokemon PartyPkmn { get; }
         public PBEBattlePokemon Pkmn { get; }
         public Sprite Minisprite { get; }
         public AnimatedSprite FrontSprite { get; } // These are being animated even if unused in the battle
         public AnimatedSprite BackSprite { get; }
 
-        public SpritedBattlePokemon(PBEBattlePokemon pkmn)
+        public SpritedBattlePokemon(PBEBattlePokemon pkmn, PartyPokemon pPkmn)
         {
+            PartyPkmn = pPkmn;
             Pkmn = pkmn;
             Minisprite = SpriteUtils.GetMinisprite(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny);
             FrontSprite = SpriteUtils.GetPokemonSprite(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny, false, false);
@@ -46,25 +47,26 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
     internal sealed class SpritedBattlePokemonParty
     {
-        public PBEList<PBEBattlePokemon> OriginalParty { get; }
-        public SpritedBattlePokemon[] SpritedParty { get; } // Preserves original order which is important for restoring
+        public Party Party { get; }
+        public SpritedBattlePokemon[] SpritedParty { get; }
+        public PBEList<PBEBattlePokemon> BattleParty { get; }
 
-        public SpritedBattlePokemonParty(PBEList<PBEBattlePokemon> party)
+        public SpritedBattlePokemonParty(PBEList<PBEBattlePokemon> pBattle, Party p)
         {
-            OriginalParty = party;
-            SpritedParty = new SpritedBattlePokemon[party.Count];
-            for (int i = 0; i < party.Count; i++)
+            Party = p;
+            BattleParty = pBattle;
+            SpritedParty = new SpritedBattlePokemon[pBattle.Count];
+            for (int i = 0; i < pBattle.Count; i++)
             {
-                SpritedParty[i] = new SpritedBattlePokemon(party[i]);
+                SpritedParty[i] = new SpritedBattlePokemon(pBattle[i], p[i]);
             }
         }
 
-        public void UpdateToPlayerParty()
+        public void UpdateToParty()
         {
-            Party party = Game.Instance.Save.PlayerParty;
-            for (int i = 0; i < party.Count; i++)
+            for (int i = 0; i < Party.Count; i++)
             {
-                party[i].UpdateFromBattle(SpritedParty[i].Pkmn);
+                Party[i].UpdateFromBattle(SpritedParty[i].Pkmn);
             }
         }
     }

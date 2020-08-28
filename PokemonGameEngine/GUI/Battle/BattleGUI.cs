@@ -3,7 +3,9 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Transition;
+using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.World;
 using System;
@@ -38,7 +40,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public readonly bool IsSurfing;
         public readonly bool IsUnderwater;
 
-        public BattleGUI(PBEBattle battle, Action onClosed,
+        public BattleGUI(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties,
             bool isCave, bool isDarkGrass, bool isFishing, bool isSurfing, bool isUnderwater)
         {
             IsCave = isCave;
@@ -52,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _spritedParties = new SpritedBattlePokemonParty[battle.Trainers.Count];
             for (int i = 0; i < battle.Trainers.Count; i++)
             {
-                _spritedParties[i] = new SpritedBattlePokemonParty(battle.Trainers[i].Party);
+                _spritedParties[i] = new SpritedBattlePokemonParty(battle.Trainers[i].Party, trainerParties[i]);
             }
             _transitionCounter = TransitionDuration;
             _onClosed = onClosed;
@@ -84,7 +86,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         _onClosed.Invoke();
                         _onClosed = null;
                     }
-                    _spritedParties[_trainer.Id].UpdateToPlayerParty(); // Copy our Pokémon back from battle
+                    foreach (SpritedBattlePokemonParty p in _spritedParties)
+                    {
+                        p.UpdateToParty(); // Copy our Pokémon back from battle, update teammates, update wild Pokémon
+                    }
+                    if (_battle.BattleResult == PBEBattleResult.WildCapture)
+                    {
+                        PBETrainer wildTrainer = _battle.Teams[1].Trainers[0];
+                        SpritedBattlePokemonParty sp = _spritedParties[wildTrainer.Id];
+                        PBEBattlePokemon wildPkmn = wildTrainer.ActiveBattlers.Single();
+                        PartyPokemon pkmn = sp.Party[wildPkmn.Id];
+                        pkmn.UpdateFromBattle_Caught(wildPkmn);
+                        Game.Instance.Save.GivePokemon(pkmn);
+                    }
                     _battleEndedTransition = new FadeToColorTransition(20, 0, OnBattleEndedTransitionEnded);
                     break;
                 }

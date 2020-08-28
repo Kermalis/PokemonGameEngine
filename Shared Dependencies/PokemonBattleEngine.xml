@@ -670,8 +670,14 @@
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SpeedBoost_AbleToSpeedBoostThisTurn">
             <summary>True if the Pokémon was present at the start of the turn, which would allow <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.SpeedBoost"/> to activate.</summary>
         </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.ApplyNaturalCure">
+            <summary>Applies effects that occur on switching out or escaping such as <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.NaturalCure"/>.</summary>
+        </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.ClearForSwitch">
             <summary>Sets and clears all information required for switching out.</summary>
+        </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.ClearForFaint">
+            <summary>Sets and clears all information required for fainting.</summary>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.Transform(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon)">
             <summary>Copies the <paramref name="target"/>, does not set <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Transformed"/>.</summary>

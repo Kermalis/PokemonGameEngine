@@ -10,15 +10,6 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 {
     internal sealed class PartyPokemon : IPBEPartyPokemon
     {
-        public ushort HP { get; set; }
-
-        public PBEStatus1 Status1 { get; set; }
-        public byte SleepTurns { get; set; }
-
-        public Moveset Moveset { get; set; }
-        IPBEMoveset IPBEPokemon.Moveset => Moveset;
-        IPBEPartyMoveset IPBEPartyPokemon.Moveset => Moveset;
-
         public PBESpecies Species { get; set; }
         public PBEForm Form { get; set; }
         public PBEGender Gender { get; set; }
@@ -33,10 +24,56 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public PBEAbility Ability { get; set; }
         public PBENature Nature { get; set; }
 
+        public ushort HP { get; set; }
+        public PBEStatus1 Status1 { get; set; }
+        public byte SleepTurns { get; set; }
+
+        public Moveset Moveset { get; set; }
+        IPBEMoveset IPBEPokemon.Moveset => Moveset;
+        IPBEPartyMoveset IPBEPartyPokemon.Moveset => Moveset;
+
         public EVs EffortValues { get; set; }
         IPBEStatCollection IPBEPokemon.EffortValues => EffortValues;
         public IVs IndividualValues { get; set; }
         IPBEReadOnlyStatCollection IPBEPokemon.IndividualValues => IndividualValues;
+
+        public PartyPokemon(PBESpecies species, PBEForm form, byte level)
+        {
+            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
+            Species = species;
+            Form = form;
+            Nickname = PBELocalizedString.GetSpeciesName(species).English;
+            Shiny = PBEDataProvider.GlobalRandom.RandomShiny();
+            Level = level;
+            Ability = PBEDataProvider.GlobalRandom.RandomElement(pData.Abilities);
+            Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
+            Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
+            Moveset = new Moveset();
+            EffortValues = new EVs();
+            IndividualValues = new IVs();
+            RandomizeMoves();
+            SetMaxHP(pData);
+            UpdateTimeBasedForms(DateTime.Now);
+            CaughtBall = PBEItem.PokeBall;
+            Friendship = byte.MaxValue; // TODO: Default friendship
+        }
+        public PartyPokemon(EncounterTable.Encounter encounter)
+        {
+            Species = encounter.Species;
+            Form = encounter.Form;
+            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(this);
+            Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
+            Nickname = PBELocalizedString.GetSpeciesName(Species).English;
+            Shiny = PBEDataProvider.GlobalRandom.RandomShiny();
+            Level = (byte)PBEDataProvider.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel);
+            Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
+            Moveset = new Moveset();
+            EffortValues = new EVs();
+            IndividualValues = new IVs();
+            SetWildMoves();
+            SetMaxHP(pData);
+            UpdateTimeBasedForms(DateTime.Now);
+        }
 
         private void SetMaxHP(IPBEPokemonData pData)
         {
@@ -66,6 +103,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             HealMoves();
         }
 
+        // Temp function to get completely random moves
         private void RandomizeMoves()
         {
             var moves = new List<PBEMove>(PBELegalityChecker.GetLegalMoves(Species, Form, Level, PBESettings.DefaultSettings));
@@ -101,6 +139,16 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             }
         }
 
+        // TODO: Burmy/Wormadam areas. (Giratina would work similarly if you wanted, with an additional || for the orb)
+        public void UpdateTimeBasedForms(DateTime time)
+        {
+            Month month = OverworldTime.GetMonth((Month)time.Month);
+            Season season = OverworldTime.GetSeason(month);
+            int hour = OverworldTime.GetHour(time.Hour);
+            TimeOfDay tod = OverworldTime.GetTimeOfDay(season, hour);
+            UpdateSeasonalForm(season);
+            UpdateShayminForm(tod);
+        }
         public void UpdateSeasonalForm(Season season)
         {
             if (Species == PBESpecies.Deerling || Species == PBESpecies.Sawsbuck)
@@ -128,54 +176,23 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Ability = pkmn.RevertAbility;
             EffortValues.CopyFrom(pkmn.EffortValues);
         }
-
-        private static PartyPokemon GetTest(PBESpecies species, PBEForm form, byte level, bool wild)
+        public void UpdateFromBattle_Caught(PBEBattlePokemon pkmn)
         {
-            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
-            var p = new PartyPokemon
+            // TODO: Default friendship (not applied if caught in a friend ball)
+            CaughtBall = pkmn.CaughtBall;
+            switch (CaughtBall)
             {
-                Status1 = PBEStatus1.None,
-                Moveset = new Moveset(),
-                Species = species,
-                Form = form,
-                Nickname = PBELocalizedString.GetSpeciesName(species).English,
-                Shiny = PBEDataProvider.GlobalRandom.RandomShiny(),
-                Level = level,
-                Item = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.GetValidItems(species, form)),
-                Ability = PBEDataProvider.GlobalRandom.RandomElement(pData.Abilities),
-                Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio),
-                Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures),
-                EffortValues = new EVs(),
-                IndividualValues = new IVs()
-            };
-            // TODO: Burmy/Wormadam areas. (Giratina would work similarly if you wanted, with an additional || for the orb)
-            DateTime time = DateTime.Now;
-            Month month = OverworldTime.GetMonth((Month)time.Month);
-            Season season = OverworldTime.GetSeason(month);
-            int hour = OverworldTime.GetHour(time.Hour);
-            TimeOfDay tod = OverworldTime.GetTimeOfDay(season, hour);
-            p.UpdateSeasonalForm(season);
-            p.UpdateShayminForm(tod);
-            p.SetMaxHP(pData);
-            if (wild)
-            {
-                p.SetWildMoves();
+                case PBEItem.FriendBall:
+                {
+                    Friendship = 200;
+                    break;
+                }
+                case PBEItem.HealBall:
+                {
+                    HealFully();
+                    break;
+                }
             }
-            else
-            {
-                p.RandomizeMoves();
-                p.CaughtBall = PBEItem.LoveBall;
-                p.Friendship = byte.MaxValue;
-            }
-            return p;
-        }
-        public static PartyPokemon GetTestPokemon(PBESpecies species, PBEForm form, byte level)
-        {
-            return GetTest(species, form, level, false);
-        }
-        public static PartyPokemon GetTestWildPokemon(EncounterTable.Encounter encounter)
-        {
-            return GetTest(encounter.Species, encounter.Form, (byte)PBEDataProvider.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel), true);
         }
     }
 }
