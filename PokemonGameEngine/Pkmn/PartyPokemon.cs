@@ -116,6 +116,19 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             }
         }
 
+        public void UpdateFromBattle(PBEBattlePokemon pkmn)
+        {
+            HP = pkmn.HP;
+            Status1 = pkmn.Status1;
+            SleepTurns = pkmn.SleepTurns;
+            Moveset.UpdateFromBattle(pkmn.Moves);
+            Form = pkmn.RevertForm;
+            Friendship = pkmn.Friendship;
+            Item = pkmn.Item;
+            Ability = pkmn.RevertAbility;
+            EffortValues.CopyFrom(pkmn.EffortValues);
+        }
+
         private static PartyPokemon GetTest(PBESpecies species, PBEForm form, byte level, bool wild)
         {
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);

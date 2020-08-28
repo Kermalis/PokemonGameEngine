@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -23,6 +24,12 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             {
                 PP = PBEDataUtils.CalcMaxPP(Move, PPUps, PBESettings.DefaultSettings);
             }
+
+            public void UpdateFromBattle(PBEBattleMoveset.PBEBattleMovesetSlot slot)
+            {
+                Move = slot.Move;
+                PP = slot.PP;
+            }
         }
 
         private readonly MovesetSlot[] _slots;
@@ -38,6 +45,14 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             for (int i = 0; i < _slots.Length; i++)
             {
                 _slots[i] = new MovesetSlot();
+            }
+        }
+
+        public void UpdateFromBattle(PBEBattleMoveset moves)
+        {
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                _slots[i].UpdateFromBattle(moves[i]);
             }
         }
 

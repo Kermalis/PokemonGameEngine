@@ -1,5 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
 
@@ -45,7 +47,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
     internal sealed class SpritedBattlePokemonParty
     {
         public PBEList<PBEBattlePokemon> OriginalParty { get; }
-        public SpritedBattlePokemon[] SpritedParty { get; }
+        public SpritedBattlePokemon[] SpritedParty { get; } // Preserves original order which is important for restoring
 
         public SpritedBattlePokemonParty(PBEList<PBEBattlePokemon> party)
         {
@@ -54,6 +56,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             for (int i = 0; i < party.Count; i++)
             {
                 SpritedParty[i] = new SpritedBattlePokemon(party[i]);
+            }
+        }
+
+        public void UpdateToPlayerParty()
+        {
+            Party party = Game.Instance.Save.PlayerParty;
+            for (int i = 0; i < party.Count; i++)
+            {
+                party[i].UpdateFromBattle(SpritedParty[i].Pkmn);
             }
         }
     }

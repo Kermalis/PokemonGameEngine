@@ -10,6 +10,16 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public byte SpAttack { get; set; }
         public byte SpDefense { get; set; }
         public byte Speed { get; set; }
+
+        public void CopyFrom(IPBEReadOnlyStatCollection other)
+        {
+            HP = other.HP;
+            Attack = other.Attack;
+            Defense = other.Defense;
+            SpAttack = other.SpAttack;
+            SpDefense = other.SpDefense;
+            Speed = other.Speed;
+        }
     }
 
     internal sealed class IVs : IPBEReadOnlyStatCollection

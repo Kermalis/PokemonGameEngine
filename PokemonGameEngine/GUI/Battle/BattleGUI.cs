@@ -84,6 +84,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         _onClosed.Invoke();
                         _onClosed = null;
                     }
+                    _spritedParties[_trainer.Id].UpdateToPlayerParty(); // Copy our Pokémon back from battle
                     _battleEndedTransition = new FadeToColorTransition(20, 0, OnBattleEndedTransitionEnded);
                     break;
                 }
