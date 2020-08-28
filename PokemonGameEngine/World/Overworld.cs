@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
@@ -11,7 +12,7 @@ namespace Kermalis.PokemonGameEngine.World
     {
         private static EncounterTable.Encounter RollEncounter(EncounterTable tbl, ushort combinedChance)
         {
-            int r = PBEUtils.GlobalRandom.RandomInt(1, combinedChance);
+            int r = PBEDataProvider.GlobalRandom.RandomInt(1, combinedChance);
             int sum = 0;
             foreach (EncounterTable.Encounter encounter in tbl.Encounters)
             {
@@ -73,7 +74,7 @@ namespace Kermalis.PokemonGameEngine.World
                     case PBEItem.CleanseTag: chance = chance * 2 / 3; break; // Reduce by 1/3
                 }
             }
-            if (!PBEUtils.GlobalRandom.RandomBool(chance, byte.MaxValue))
+            if (!PBEDataProvider.GlobalRandom.RandomBool(chance, byte.MaxValue))
             {
                 return false;
             }

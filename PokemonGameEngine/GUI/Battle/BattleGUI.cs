@@ -32,8 +32,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private string _message;
         private ActionsGUI _actionsGUI;
 
-        public BattleGUI(PBEBattle battle, Action onClosed)
+        public readonly bool IsDarkGrass;
+        public readonly bool IsCave;
+        public readonly bool IsFishing;
+        public readonly bool IsSurfing;
+        public readonly bool IsUnderwater;
+
+        public BattleGUI(PBEBattle battle, Action onClosed,
+            bool isCave, bool isDarkGrass, bool isFishing, bool isSurfing, bool isUnderwater)
         {
+            IsCave = isCave;
+            IsDarkGrass = isDarkGrass;
+            IsFishing = isFishing;
+            IsSurfing = isSurfing;
+            IsUnderwater = isUnderwater;
             _battle = battle;
             _trainer = battle.Trainers[0];
             _battleBackground = Sprite.LoadOrGet($"GUI.Battle.Background.BG_{battle.BattleTerrain}_{battle.BattleFormat}.png");
@@ -189,7 +201,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 _actionsGUI.Dispose();
                 _actionsGUI = null;
-                new Thread(() => PBEBattle.SelectActionsIfValid(_trainer, _actions.Select(p => p.TurnAction).ToArray())) { Name = ThreadName }.Start();
+                new Thread(() => _trainer.SelectActionsIfValid(_actions.Select(p => p.TurnAction).ToArray())) { Name = ThreadName }.Start();
             }
             else
             {
@@ -197,6 +209,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 SpritedBattlePokemonParty party = _spritedParties[_trainer.Id];
                 _actionsGUI = new ActionsGUI(this, party, party.SpritedParty[i]);
             }
+        }
+        public void Flee()
+        {
+            _actionsGUI.Dispose();
+            _actionsGUI = null;
+            new Thread(() => _trainer.SelectFleeIfValid()) { Name = ThreadName }.Start();
         }
 
         public List<PBESwitchIn> Switches { get; } = new List<PBESwitchIn>(3);
@@ -217,7 +235,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             if (_switchesRequired == 0)
             {
-                new Thread(() => PBEBattle.SelectSwitchesIfValid(_trainer, Switches)) { Name = ThreadName }.Start();
+                new Thread(() => _trainer.SelectSwitchesIfValid(Switches)) { Name = ThreadName }.Start();
             }
             else
             {
@@ -247,7 +265,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     }
                     else
                     {
-                        new Thread(() => PBEBattle.SelectActionsIfValid(t, PBEAI.CreateActions(t))) { Name = ThreadName }.Start();
+                        new Thread(t.CreateAIActions) { Name = ThreadName }.Start();
                     }
                     return true;
                 }
@@ -261,9 +279,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     }
                     else
                     {
-                        new Thread(() => PBEBattle.SelectSwitchesIfValid(t, PBEAI.CreateSwitches(t))) { Name = ThreadName }.Start();
+                        new Thread(t.CreateAISwitches) { Name = ThreadName }.Start();
                     }
                     return true;
+                }
+                case PBEFleeFailedPacket ffp:
+                {
+                    PBETrainer t = ffp.PokemonTrainer;
+                    if (t == _trainer)
+                    {
+                        AddMessage("Couldn't get away!");
+                        return false;
+                    }
+                    break; // Use default message otherwise
                 }
                 case PBEPkmnHPChangedPacket phcp:
                 {

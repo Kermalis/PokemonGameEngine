@@ -7,62 +7,31 @@
         <member name="T:Kermalis.PokemonBattleEngine.AI.PBEAI">
             <summary>Creates valid decisions for a team in a battle. Decisions may not be valid for custom settings and/or move changes.</summary>
         </member>
-        <member name="M:Kermalis.PokemonBattleEngine.AI.PBEAI.CreateActions(Kermalis.PokemonBattleEngine.Battle.PBETrainer)">
+        <member name="M:Kermalis.PokemonBattleEngine.AI.PBEAI.CreateAIActions(Kermalis.PokemonBattleEngine.Battle.PBETrainer)">
             <summary>Creates valid actions for a battle turn for a specific team.</summary>
             <param name="trainer">The trainer to create actions for.</param>
-            <exception cref="T:System.InvalidOperationException">Thrown when <paramref name="trainer"/> has no active battlers or <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.WaitingForActions"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when <paramref name="trainer"/> has no active battlers or <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForActions"/>.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown when a Pokémon has no moves, the AI tries to use a move with invalid targets, or <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleFormat"/> is invalid.</exception>
         </member>
-        <member name="M:Kermalis.PokemonBattleEngine.AI.PBEAI.CreateSwitches(Kermalis.PokemonBattleEngine.Battle.PBETrainer)">
+        <member name="M:Kermalis.PokemonBattleEngine.AI.PBEAI.CreateAISwitches(Kermalis.PokemonBattleEngine.Battle.PBETrainer)">
             <summary>Creates valid switches for a battle for a specific team.</summary>
             <param name="trainer">The trainer to create switches for.</param>
-            <exception cref="T:System.InvalidOperationException">Thrown when <paramref name="trainer"/> does not require switch-ins or <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.WaitingForActions"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when <paramref name="trainer"/> does not require switch-ins or <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForActions"/>.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown when <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleFormat"/> is invalid.</exception>
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEBattle">
             <summary>Represents a specific Pokémon battle.</summary>
         </member>
-        <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.Winner">
-            <summary>The winner of the battle. null if <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.Ended"/>.</summary>
-        </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.Begin">
             <summary>Begins the battle.</summary>
-            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.ReadyToBegin"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.ReadyToBegin"/>.</exception>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.RunTurn">
             <summary>Runs a turn.</summary>
-            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.ReadyToRunTurn"/>.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.ReadyToRunTurn"/>.</exception>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.SetEnded">
-            <summary>Sets <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> to <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.Ended"/> and clears <see cref="E:Kermalis.PokemonBattleEngine.Battle.PBEBattle.OnNewEvent"/> and <see cref="E:Kermalis.PokemonBattleEngine.Battle.PBEBattle.OnStateChanged"/>. Does not touch <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.Winner"/>.</summary>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.AreActionsValid(Kermalis.PokemonBattleEngine.Battle.PBETrainer,System.Collections.Generic.IReadOnlyList{Kermalis.PokemonBattleEngine.Battle.PBETurnAction})">
-            <summary>Determines whether chosen actions are valid.</summary>
-            <param name="trainer">The trainer the inputted actions belong to.</param>
-            <param name="actions">The actions the team wishes to execute.</param>
-            <returns>False if the team already chose actions or the actions are illegal, True otherwise.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.WaitingForActions"/>.</exception>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.SelectActionsIfValid(Kermalis.PokemonBattleEngine.Battle.PBETrainer,System.Collections.Generic.IReadOnlyList{Kermalis.PokemonBattleEngine.Battle.PBETurnAction})">
-            <summary>Selects actions if they are valid. Changes the battle state if both teams have selected valid actions.</summary>
-            <param name="trainer">The trainer the inputted actions belong to.</param>
-            <param name="actions">The actions the team wishes to execute.</param>
-            <returns>True if the actions are valid and were selected.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.WaitingForActions"/>.</exception>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.AreSwitchesValid(Kermalis.PokemonBattleEngine.Battle.PBETrainer,System.Collections.Generic.IReadOnlyList{Kermalis.PokemonBattleEngine.Battle.PBESwitchIn})">
-            <summary>Determines whether chosen switches are valid.</summary>
-            <param name="trainer">The trainer the inputted switches belong to.</param>
-            <param name="switches">The switches the team wishes to execute.</param>
-            <returns>False if the team already chose switches or the switches are illegal, True otherwise.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.WaitingForSwitchIns"/>.</exception>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.SelectSwitchesIfValid(Kermalis.PokemonBattleEngine.Battle.PBETrainer,System.Collections.Generic.IReadOnlyList{Kermalis.PokemonBattleEngine.Battle.PBESwitchIn})">
-            <summary>Selects switches if they are valid. Changes the battle state if both teams have selected valid switches.</summary>
-            <param name="trainer">The trainer the inputted switches belong to.</param>
-            <param name="switches">The switches the team wishes to execute.</param>
-            <returns>True if the switches are valid and were selected.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.WaitingForSwitchIns"/>.</exception>
+            <summary>Sets <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> to <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.Ended"/> and clears <see cref="E:Kermalis.PokemonBattleEngine.Battle.PBEBattle.OnNewEvent"/> and <see cref="E:Kermalis.PokemonBattleEngine.Battle.PBEBattle.OnStateChanged"/>. Does not touch <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleResult"/>.</summary>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.GetStatChangeModifier(System.SByte,System.Boolean)">
             <summary>Gets the influence a stat change has on a stat.</summary>
@@ -81,7 +50,7 @@
             <param name="packet">The battle event packet.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="battle"/> or <paramref name="packet"/> are null.</exception>
         </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.GetPositionAcross(Kermalis.PokemonBattleEngine.Data.PBEBattleFormat,Kermalis.PokemonBattleEngine.Data.PBEFieldPosition)">
+        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.GetPositionAcross(Kermalis.PokemonBattleEngine.Battle.PBEBattleFormat,Kermalis.PokemonBattleEngine.Battle.PBEFieldPosition)">
             <summary>Gets the position across from the inputted position for a specific battle format.</summary>
             <param name="battleFormat">The battle format.</param>
             <param name="position">The position.</param>
@@ -94,13 +63,13 @@
             <param name="includeFoes">True if foes should be included, False otherwise.</param>
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown when <paramref name="pkmn"/>'s <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleFormat"/> is invalid or <paramref name="pkmn"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.FieldPosition"/> is invalid for <paramref name="pkmn"/>'s <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleFormat"/>.</exception>
         </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.GetRuntimeTargets(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Data.PBETurnTarget,System.Boolean,Kermalis.PokemonBattleEngine.Utils.PBERandom)">
+        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.GetRuntimeTargets(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Battle.PBETurnTarget,System.Boolean,Kermalis.PokemonBattleEngine.Utils.PBERandom)">
             <summary>Gets all Pokémon that will be hit.</summary>
             <param name="user">The Pokémon that will act.</param>
             <param name="requestedTargets">The targets the Pokémon wishes to hit.</param>
             <param name="canHitFarCorners">Whether the move can hit far Pokémon in a triple battle.</param>
         </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.AreTargetsValid(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Data.PBEMove,Kermalis.PokemonBattleEngine.Data.PBETurnTarget)">
+        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.AreTargetsValid(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Data.PBEMove,Kermalis.PokemonBattleEngine.Battle.PBETurnTarget)">
             <summary>Determines whether chosen targets are valid for a given move.</summary>
             <param name="pkmn">The Pokémon that will act.</param>
             <param name="move">The move the Pokémon wishes to use.</param>
@@ -112,6 +81,423 @@
             <param name="pkmn">The Pokémon using <paramref name="calledMove"/>.</param>
             <param name="calledMove">The move being called.</param>
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown when <paramref name="calledMove"/>, <paramref name="pkmn"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.FieldPosition"/>, or <paramref name="pkmn"/>'s <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleFormat"/> is invalid.</exception>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEBattleTerrain">
+            <summary>Represents the battle's terrain.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleTerrain.Plain">
+            <summary>Used for bridges, buildings, and link battles.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEBattleFormat">
+            <summary>Represents the format of a specific battle.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleFormat.Single">
+            <summary>A 1v1 battle. Each Pokémon is able to use moves or switch out for another Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleFormat.Double">
+            <summary>A 2v2 battle where all Pokémon are able to use moves or switch out for another Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleFormat.Triple">
+            <summary>A 3v3 battle where all Pokémon are able to use moves, shift positions with a teammate, or switch out for another Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleFormat.Rotation">
+            <summary>A 3v3 battle where only the front Pokémon are able to force a team rotation, use a move, or switch out for another Pokémon.</summary>
+            <remarks>Team rotation does not take up a turn and can be done once per turn.</remarks>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleFormat.MAX">
+            <summary>Invalid battle format.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEBattleState">
+            <summary>Represents the current state of a specific battle.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForPlayers">
+            <summary>The battle is waiting for teams.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.ReadyToBegin">
+            <summary>The battle is ready to begin.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForActions">
+            <summary>The battle is waiting for players to send actions.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.ReadyToRunTurn">
+            <summary>The battle is ready to run a turn.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.Processing">
+            <summary>The battle is processing.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForSwitchIns">
+            <summary>The battle is waiting for players to send switch-ins.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.ReadyToRunSwitches">
+            <summary>The battle is ready to run switches.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.Ended">
+            <summary>The battle ended.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEBattleResult">
+            <summary>Represents the result of an ended battle.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleResult.Team0Forfeit">
+            <summary>Team 0 forfeited.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleResult.Team0Win">
+            <summary>Team 0 defeated Team 1.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleResult.Team1Forfeit">
+            <summary>Team 1 forfeited.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleResult.Team1Win">
+            <summary>Team 1 defeated Team 0.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleResult.WildCapture">
+            <summary>A wild Pokémon was captured.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleResult.WildEscape">
+            <summary>The trainer(s) escaped from the wild Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleResult.WildFlee">
+            <summary>A wild Pokémon escaped from the trainer(s).</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEWeather">
+            <summary>Represents the weather in a specific battle.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.None">
+            <summary>There is no weather.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.Hailstorm">
+            <summary>It is hailing.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.HarshSunlight">
+            <summary>The sunlight is harsh.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.Rain">
+            <summary>It is raining.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.Sandstorm">
+            <summary>A sandstorm is brewing.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEFieldPosition">
+            <summary>Represents a position on the battle field.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEFieldPosition.None">
+            <summary>A Pokémon is not on the field.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEFieldPosition.Left">
+            <summary>The Pokémon to a player's left in a Double, Triple, or Rotation battle.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEFieldPosition.Center">
+            <summary>The Pokémon in the center of the field in a Single, Triple, or Rotation battle.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEFieldPosition.Right">
+            <summary>The Pokémon to a player's right in a Double, Triple, or Rotation battle.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBETurnTarget">
+            <summary>Represents a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEMove"/>'s targets.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnTarget.None">
+            <summary>The Pokémon has not chosen any targets.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnTarget.AllyLeft">
+            <summary>The move is targetting the player's left Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnTarget.AllyCenter">
+            <summary>The move is targetting the player's center Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnTarget.AllyRight">
+            <summary>The move is targetting the player's right Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnTarget.FoeLeft">
+            <summary>The move is targetting the opponent's left Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnTarget.FoeCenter">
+            <summary>The move is targetting the opponent's center Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnTarget.FoeRight">
+            <summary>The move is targetting the opponent's right Pokémon.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBETurnDecision">
+            <summary>Represents a Pokémon's decision for a turn.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnDecision.None">
+            <summary>The Pokémon has not made a decision.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnDecision.Fight">
+            <summary>The Pokémon has chosen to use a move.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnDecision.Item">
+            <summary>The Pokémon has chosen to use an item.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnDecision.SwitchOut">
+            <summary>The Pokémon has chosen to switch out for another Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETurnDecision.WildFlee">
+            <summary>The wild Pokémon has chosen to use flee.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus1">
+            <summary>Represents a specific Pokémon's non-volatile status.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.None">
+            <summary>The Pokémon has no status.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Asleep">
+            <summary>The Pokémon is asleep.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.BadlyPoisoned">
+            <summary>The Pokémon is badly poisoned.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Burned">
+            <summary>The Pokémon is burned.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Frozen">
+            <summary>The Pokémon is frozen.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Paralyzed">
+            <summary>The Pokémon is paralyzed.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Poisoned">
+            <summary>The Pokémon is poisoned.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus2">
+            <summary>Represents a specific Pokémon's volatile status.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.None">
+            <summary>The Pokémon has no status.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Airborne">
+            <summary>The Pokémon is high up in the air. A move will miss against the Pokémon unless it has <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveFlag.HitsAirborne"/> or either Pokémon has <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.NoGuard"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Confused">
+            <summary>The Pokémon is confused and may hurt itself instead of execute its chosen move.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Cursed">
+            <summary>The Pokémon is cursed and will take damage at the end of each turn.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Disguised">
+            <summary>The Pokémon is disguised with <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Illusion"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Flinching">
+            <summary>The Pokémon is flinching and will be unable to move this turn.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.HelpingHand">
+            <summary>The Pokémon will gain a power boost due to <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.HelpingHand"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Infatuated">
+            <summary>The Pokémon is infatuated with <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.InfatuatedWithPokemon"/> and may be unable to move this turn.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.LeechSeed">
+            <summary>The Pokémon is seeded and HP will be stolen at the end of each turn.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.PowerTrick">
+            <summary>The Pokémon's <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStat.Attack"/> and <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStat.Defense"/> are switched.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Protected">
+            <summary>The Pokémon is protected from moves this turn.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Pumped">
+            <summary>The Pokémon is under the effect of <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.FocusEnergy"/> or <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Substitute">
+            <summary>The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Transformed">
+            <summary>The Pokémon is transformed into another Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Underground">
+            <summary>The Pokémon is underground. A move will miss against the Pokémon unless it has <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.NoGuard"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Underwater">
+            <summary>The Pokémon is underwater. A move will miss against the Pokémon unless it has <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.NoGuard"/>.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBERoostTypes">
+            <summary>Keeps track of which types <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Roost"/> changes to/from <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Flying"/>.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEBattleStatus">
+            <summary>Represents a specific <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattle"/>'s status.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleStatus.None">
+            <summary>The battle has no status.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleStatus.TrickRoom">
+            <summary>The acting order of Pokémon in this battle is reversed.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus">
+            <summary>Represents a specific <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBETeam"/>'s status.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.None">
+            <summary>The team has no status.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.LightScreen">
+            <summary>The team will take less damage from <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveCategory.Special"/> moves.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.LuckyChant">
+            <summary>The team is shielded from critical hits.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.Reflect">
+            <summary>The team will take less damage from <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveCategory.Physical"/> moves.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.Spikes">
+            <summary>Grounded Pokémon that switch in will take damage. The amount of damage is based on <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETeam.SpikeCount"/>. </summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.StealthRock">
+            <summary>Pokémon that switch in will take damage. The amount of damage is based on the effectiveness of <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Rock"/> on the Pokémon. </summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.ToxicSpikes">
+            <summary>Grounded Pokémon that switch in will be <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Poisoned"/> if <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETeam.ToxicSpikeCount"/> is 1 or <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.BadlyPoisoned"/> if it is 2.
+            Grounded <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Poison"/> Pokémon will remove toxic spikes.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.WideGuard">
+            <summary>The team is protected from spread moves for a turn.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEAbilityAction">
+            <summary>Represents an action regarding a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEAbility"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEAbilityAction.Announced">
+            <summary>The ability is first announced.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEAbilityAction.ChangedAppearance">
+            <summary>The ability caused a Pokémon to change its appearance.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEAbilityAction.ChangedStatus">
+            <summary>The ability changed a Pokémon's <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus1"/> or <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus2"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEAbilityAction.Damage">
+            <summary>The ability was involved with damage.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEAbilityAction.PreventedStatus">
+            <summary>The ability prevented a Pokémon from being inflicted with a <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus1"/> or <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus2"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEAbilityAction.RestoredHP">
+            <summary>The ability restored a Pokémon's HP.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEAbilityAction.SlowStart_Ended">
+            <summary><see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.SlowStart"/> ended.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEAbilityAction.Stats">
+            <summary>The ability was involved with stats.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEAbilityAction.Weather">
+            <summary>The ability was involved with weather.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEItemAction">
+            <summary>Represents an action regarding a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEItem"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEItemAction.Announced">
+            <summary>The item initiated its main effect.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEItemAction.Consumed">
+            <summary>The item was consumed by a Pokémon.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEItemAction.Damage">
+            <summary>The item was involved with damage.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEItemAction.RestoredHP">
+            <summary>The item restored HP to a Pokémon.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEStatusAction">
+            <summary>Represents an action regarding a <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus1"/> or <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus2"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatusAction.Added">
+            <summary>The status was added to a Pokémon.</summary>
+            <example>The Pokémon became <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Paralyzed"/>.</example>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatusAction.Announced">
+            <summary>The status activated its main effect.</summary>
+            <example><see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Infatuated"/> states the Pokémon is in love.</example>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatusAction.CausedImmobility">
+            <summary>The status caused a Pokémon to be immobile.</summary>
+            <example><see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Flinching"/> prevented movement.</example>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatusAction.Cleared">
+            <summary>The status was cured from a Pokémon.</summary>
+            <example><see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Limber"/> cured a Pokémon of <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Paralyzed"/>.</example>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatusAction.Damage">
+            <summary>The status was involved with damage.</summary>
+            <example>A Pokémon's <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Substitute"/> took damage.</example>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEStatusAction.Ended">
+            <summary>The status has ended naturally.</summary>
+            <example>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Confused"/> regained its senses.</example>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBETeamStatusAction">
+            <summary>Represents an action regarding a <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatusAction.Added">
+            <summary>The status was added to a team.</summary>
+            <example>A team set up <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.LightScreen"/>.</example>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatusAction.Cleared">
+            <summary>The status was forcefully removed from a team.</summary>
+            <example>A Pokémon used <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.BrickBreak"/> and destroyed <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.Reflect"/>.</example>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatusAction.Damage">
+            <summary>The status caused a Pokémon to take damage.</summary>
+            <example>A Pokémon switched in and took damage from <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.StealthRock"/>.</example>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatusAction.Ended">
+            <summary>The status ended naturally.</summary>
+            <example><see cref="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.LightScreen"/> wore off.</example>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEResult">
+            <summary>Represents the result of an intention.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.Success">
+            <summary>No failure.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.Ineffective_Ability">
+            <summary>Failure due to a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEAbility"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.Ineffective_Gender">
+            <summary>Failure due to a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEGender"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.Ineffective_Level">
+            <summary>Failure due to a Pokémon's level.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.Ineffective_MagnetRise">
+            <summary>Failure due to <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.MagnetRise"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.Ineffective_Safeguard">
+            <summary>Failure due to <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.Safeguard"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.Ineffective_Stat">
+            <summary>Failure due to a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStat"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.Ineffective_Status">
+            <summary>Failure due to a <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus1"/>, <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus2"/>, <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus"/>, <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattleStatus"/>, or <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEWeather"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.Ineffective_Substitute">
+            <summary>Failure due to <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Substitute"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.Ineffective_Type">
+            <summary>Failure due to a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEType"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.InvalidConditions">
+            <summary>Failure due to the intention's unmet special conditions.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.Missed">
+            <summary>Failure due to accuracy and/or evasion.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.NoTarget">
+            <summary>Failure due to having no available targets.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.NotVeryEffective_Type">
+            <summary>Limited success due to a Pokémon's <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEType"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEResult.SuperEffective_Type">
+            <summary>Great success due to a Pokémon's <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEType"/>.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEWeatherAction">
+            <summary>Represents an action regarding a <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEWeather"/>.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEWeatherAction.Added">
+            <summary>The weather was added to the battle.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEWeatherAction.CausedDamage">
+            <summary>The weather caused a Pokémon to take damage.</summary>
+        </member>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEWeatherAction.Ended">
+            <summary>The weather was removed from the battle.</summary>
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon">
             <summary>Represents a specific Pokémon during a battle.</summary>
@@ -159,10 +545,10 @@
             <summary>The ability the Pokémon is known to have.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.OriginalAbility">
-            <summary>The ability the Pokémon had upon entering battle. </summary>
+            <summary>The ability the Pokémon had upon entering battle.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.RevertAbility">
-            <summary>The ability the Pokémon will regain upon switching out, fainting, or the battle ending. </summary>
+            <summary>The ability the Pokémon will regain upon switching out, fainting, or the battle ending.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.Gender">
             <summary>The Pokémon's gender.</summary>
@@ -178,6 +564,15 @@
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.OriginalItem">
             <summary>The item the Pokémon had upon entering battle.</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.CaughtBall">
+            <summary>The Pokémon's current ball (affected by catching).</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.KnownCaughtBall">
+            <summary>The ball the Pokémon is known to be in (affected by disguising).</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.OriginalCaughtBall">
+            <summary>The ball the Pokémon was in upon entering battle.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.Moves">
             <summary>The moves the Pokémon currently has.</summary>
@@ -219,40 +614,37 @@
             <summary>The second type everyone believes the Pokémon has.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.Status1Counter">
-            <summary>The counter used for <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.BadlyPoisoned"/> and <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Asleep"/>.</summary>
+            <summary>The counter used for <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.BadlyPoisoned"/> and <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Asleep"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SleepTurns">
             <summary>The amount of turns the Pokémon will sleep for before waking.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.ConfusionCounter">
-            <summary>The counter used for <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Confused"/>.</summary>
+            <summary>The counter used for <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Confused"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.ConfusionTurns">
             <summary>The amount of turns the Pokémon will be confused for before snapping out of it.</summary>
         </member>
-        <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.DisguisedAsPokemon">
-            <summary>The Pokémon that <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Disguised"/> is disguised as.</summary>
-        </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.InfatuatedWithPokemon">
-            <summary>The Pokémon that <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Infatuated"/> is bound to.</summary>
+            <summary>The Pokémon that <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Infatuated"/> is bound to.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.MagnetRiseTurns">
-            <summary>The amount of turns until <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.MagnetRise"/> ends.</summary>
+            <summary>The amount of turns until <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.MagnetRise"/> ends.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.LockOnPokemon">
-            <summary>The Pokémon that <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.LockOn"/> is bound to.</summary>
+            <summary>The Pokémon that <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.LockOn"/> is bound to.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.Protection_Counter">
             <summary>The amount of times the Pokémon has successfully used <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.Protect"/>, <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.QuickGuard"/>, and/or <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.WideGuard"/> consecutively.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SeededPosition">
-            <summary>The position to return <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.LeechSeed"/> HP to on <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SeededTeam"/>.</summary>
+            <summary>The position to return <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.LeechSeed"/> HP to on <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SeededTeam"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SeededTeam">
-            <summary>The team responsible for <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.LeechSeed"/>.</summary>
+            <summary>The team responsible for <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.LeechSeed"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SubstituteHP">
-            <summary>The amount of HP the Pokémon's <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Substitute"/> has left.</summary>
+            <summary>The amount of HP the Pokémon's <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Substitute"/> has left.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.HasUsedMoveThisTurn">
             <summary>True if the Pokémon has successfully executed a move this turn.</summary>
@@ -282,7 +674,7 @@
             <summary>Sets and clears all information required for switching out.</summary>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.Transform(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon)">
-            <summary>Copies the <paramref name="target"/>, does not set <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Transformed"/>.</summary>
+            <summary>Copies the <paramref name="target"/>, does not set <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Transformed"/>.</summary>
             <param name="target">The Pokémon to transform into.</param>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.UpdateHPPercentage">
@@ -314,15 +706,15 @@
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBETeam.Battle">
             <summary>The battle this team and its party belongs to.</summary>
         </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBETeam.TryGetPokemon(Kermalis.PokemonBattleEngine.Data.PBEFieldPosition)">
+        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBETeam.TryGetPokemon(Kermalis.PokemonBattleEngine.Battle.PBEFieldPosition)">
             <summary>Gets a specific active <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon"/> by its <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.FieldPosition"/>.</summary>
-            <param name="pos">The <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEFieldPosition"/> of the <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon"/>.</param>
+            <param name="pos">The <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEFieldPosition"/> of the <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon"/>.</param>
         </member>
-        <member name="P:Kermalis.PokemonBattleEngine.Data.PBEBerryData.NaturalGiftPower">
-            <summary>The power <see cref="!:PBEMoveEffect.NaturalGift"/> has when the user is holding this item.</summary>
+        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETypeEffectiveness._table">
+            <summary>The type effectiveness table. The first key is the attacking type and the second key is the defending type.</summary>
         </member>
-        <member name="P:Kermalis.PokemonBattleEngine.Data.PBEBerryData.NaturalGiftType">
-            <summary>The type <see cref="!:PBEMoveEffect.NaturalGift"/> becomes when the user is holding this item.</summary>
+        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBETypeEffectiveness.ThunderWaveTypeCheck(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Data.PBEMove,System.Boolean)">
+            <summary>Checks if <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.ThunderWave"/>'s type affects the target, taking into account <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Normalize"/>.</summary>
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Data.PBEGender">
             <summary>Represents a specific Pokémon's gender.</summary>
@@ -389,127 +781,6 @@
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStat.Evasion">
             <summary>Evasion.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEBattleTerrain">
-            <summary>Represents the battle's terrain.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleTerrain.Plain">
-            <summary>Used for bridges, buildings, and link battles.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEBattleFormat">
-            <summary>Represents the format of a specific battle.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleFormat.Single">
-            <summary>A 1v1 battle. Each Pokémon is able to use moves or switch out for another Pokémon.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleFormat.Double">
-            <summary>A 2v2 battle where all Pokémon are able to use moves or switch out for another Pokémon.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleFormat.Triple">
-            <summary>A 3v3 battle where all Pokémon are able to use moves, shift positions with a teammate, or switch out for another Pokémon.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleFormat.Rotation">
-            <summary>A 3v3 battle where only the front Pokémon are able to force a team rotation, use a move, or switch out for another Pokémon.</summary>
-            <remarks>Team rotation does not take up a turn and can be done once per turn.</remarks>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleFormat.MAX">
-            <summary>Invalid battle format.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEBattleState">
-            <summary>Represents the current state of a specific battle.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.WaitingForPlayers">
-            <summary>The battle is waiting for teams.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.ReadyToBegin">
-            <summary>The battle is ready to begin.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.WaitingForActions">
-            <summary>The battle is waiting for players to send actions.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.ReadyToRunTurn">
-            <summary>The battle is ready to run a turn.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.Processing">
-            <summary>The battle is processing.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.WaitingForSwitchIns">
-            <summary>The battle is waiting for players to send switch-ins.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.ReadyToRunSwitches">
-            <summary>The battle is ready to run switches.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleState.Ended">
-            <summary>The battle ended.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEWeather">
-            <summary>Represents the weather in a specific battle.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.None">
-            <summary>There is no weather.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.Hailstorm">
-            <summary>It is hailing.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.HarshSunlight">
-            <summary>The sunlight is harsh.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.Rain">
-            <summary>It is raining.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.Sandstorm">
-            <summary>A sandstorm is brewing.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEFieldPosition">
-            <summary>Represents a position on the battle field.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEFieldPosition.None">
-            <summary>A Pokémon is not on the field.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEFieldPosition.Left">
-            <summary>The Pokémon to a player's left in a Double, Triple, or Rotation battle.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEFieldPosition.Center">
-            <summary>The Pokémon in the center of the field in a Single, Triple, or Rotation battle.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEFieldPosition.Right">
-            <summary>The Pokémon to a player's right in a Double, Triple, or Rotation battle.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBETurnTarget">
-            <summary>Represents a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEMove"/>'s targets.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETurnTarget.None">
-            <summary>The Pokémon has not chosen any targets.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETurnTarget.AllyLeft">
-            <summary>The move is targetting the player's left Pokémon.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETurnTarget.AllyCenter">
-            <summary>The move is targetting the player's center Pokémon.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETurnTarget.AllyRight">
-            <summary>The move is targetting the player's right Pokémon.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETurnTarget.FoeLeft">
-            <summary>The move is targetting the opponent's left Pokémon.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETurnTarget.FoeCenter">
-            <summary>The move is targetting the opponent's center Pokémon.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETurnTarget.FoeRight">
-            <summary>The move is targetting the opponent's right Pokémon.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBETurnDecision">
-            <summary>Represents a Pokémon's decision for a turn.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETurnDecision.None">
-            <summary>The Pokémon has not made a decision.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETurnDecision.Fight">
-            <summary>The Pokémon has chosen to use a move.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETurnDecision.SwitchOut">
-            <summary>The Pokémon has chosen to switch out for another Pokémon.</summary>
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Data.PBEMoveCategory">
             <summary>Represents a specific <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEMove"/>'s category.</summary>
@@ -634,268 +905,6 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.Form">
             <summary>The move is learned by a Pokémon when changing forms. The move cannot be used by other forms if this is the only flag or if the species cannot change forms.</summary>
         </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEStatus1">
-            <summary>Represents a specific Pokémon's non-volatile status.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.None">
-            <summary>The Pokémon has no status.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Asleep">
-            <summary>The Pokémon is asleep.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.BadlyPoisoned">
-            <summary>The Pokémon is badly poisoned.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Burned">
-            <summary>The Pokémon is burned.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Frozen">
-            <summary>The Pokémon is frozen.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Paralyzed">
-            <summary>The Pokémon is paralyzed.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Poisoned">
-            <summary>The Pokémon is poisoned.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEStatus2">
-            <summary>Represents a specific Pokémon's volatile status.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.None">
-            <summary>The Pokémon has no status.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Airborne">
-            <summary>The Pokémon is high up in the air. A move will miss against the Pokémon unless it has <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveFlag.HitsAirborne"/> or either Pokémon has <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.NoGuard"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Confused">
-            <summary>The Pokémon is confused and may hurt itself instead of execute its chosen move.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Cursed">
-            <summary>The Pokémon is cursed and will take damage at the end of each turn.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Disguised">
-            <summary>The Pokémon is disguised as <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.DisguisedAsPokemon"/> with <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Illusion"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Flinching">
-            <summary>The Pokémon is flinching and will be unable to move this turn.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.HelpingHand">
-            <summary>The Pokémon will gain a power boost due to <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.HelpingHand"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Infatuated">
-            <summary>The Pokémon is infatuated with <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.InfatuatedWithPokemon"/> and may be unable to move this turn.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.LeechSeed">
-            <summary>The Pokémon is seeded and HP will be stolen at the end of each turn.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.PowerTrick">
-            <summary>The Pokémon's <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStat.Attack"/> and <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStat.Defense"/> are switched.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Protected">
-            <summary>The Pokémon is protected from moves this turn.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Pumped">
-            <summary>The Pokémon is under the effect of <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.FocusEnergy"/> or <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Substitute">
-            <summary>The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Transformed">
-            <summary>The Pokémon is transformed into another Pokémon.</summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Underground" -->
-        <!-- Badly formed XML comment ignored for member "F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Underwater" -->
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBERoostTypes">
-            <summary>Keeps track of which types <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Roost"/> changes to/from <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Flying"/>.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEBattleStatus">
-            <summary>Represents a specific <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattle"/>'s status.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleStatus.None">
-            <summary>The battle has no status.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEBattleStatus.TrickRoom">
-            <summary>The acting order of Pokémon in this battle is reversed.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBETeamStatus">
-            <summary>Represents a specific <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBETeam"/>'s status.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.None">
-            <summary>The team has no status.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.LightScreen">
-            <summary>The team will take less damage from <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveCategory.Special"/> moves.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.LuckyChant">
-            <summary>The team is shielded from critical hits.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.Reflect">
-            <summary>The team will take less damage from <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveCategory.Physical"/> moves.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.Spikes">
-            <summary>Grounded Pokémon that switch in will take damage. The amount of damage is based on <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETeam.SpikeCount"/>. </summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.StealthRock">
-            <summary>Pokémon that switch in will take damage. The amount of damage is based on the effectiveness of <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Rock"/> on the Pokémon. </summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.ToxicSpikes">
-            <summary>Grounded Pokémon that switch in will be <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Poisoned"/> if <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETeam.ToxicSpikeCount"/> is 1 or <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.BadlyPoisoned"/> if it is 2.
-            Grounded <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Poison"/> Pokémon will remove toxic spikes.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.WideGuard">
-            <summary>The team is protected from spread moves for a turn.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEAbilityAction">
-            <summary>Represents an action regarding a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEAbility"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbilityAction.Announced">
-            <summary>The ability is first announced.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbilityAction.ChangedAppearance">
-            <summary>The ability caused a Pokémon to change its appearance.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbilityAction.ChangedStatus">
-            <summary>The ability changed a Pokémon's <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus1"/> or <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus2"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbilityAction.Damage">
-            <summary>The ability was involved with damage.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbilityAction.PreventedStatus">
-            <summary>The ability prevented a Pokémon from being inflicted with a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus1"/> or <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus2"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbilityAction.RestoredHP">
-            <summary>The ability restored a Pokémon's HP.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbilityAction.SlowStart_Ended">
-            <summary><see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.SlowStart"/> ended.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbilityAction.Stats">
-            <summary>The ability was involved with stats.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbilityAction.Weather">
-            <summary>The ability was involved with weather.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEItemAction">
-            <summary>Represents an action regarding a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEItem"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItemAction.ChangedStatus">
-            <summary>The item caused a Pokémon's <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus1"/> or <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus2"/> to change.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItemAction.Consumed">
-            <summary>The item was consumed by a Pokémon.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItemAction.Damage">
-            <summary>The item was involved with damage.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItemAction.RestoredHP">
-            <summary>The item restored HP to a Pokémon.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEStatusAction">
-            <summary>Represents an action regarding a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus1"/> or <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus2"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatusAction.Added">
-            <summary>The status was added to a Pokémon.</summary>
-            <example>The Pokémon became <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Paralyzed"/>.</example>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatusAction.Announced">
-            <summary>The status activated its main effect.</summary>
-            <example><see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Infatuated"/> states the Pokémon is in love.</example>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatusAction.CausedImmobility">
-            <summary>The status caused a Pokémon to be immobile.</summary>
-            <example><see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Flinching"/> prevented movement.</example>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatusAction.Cleared">
-            <summary>The status was cured from a Pokémon.</summary>
-            <example><see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Limber"/> cured a Pokémon of <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Paralyzed"/>.</example>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatusAction.Damage">
-            <summary>The status was involved with damage.</summary>
-            <example>A Pokémon's <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Substitute"/> took damage.</example>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEStatusAction.Ended">
-            <summary>The status has ended naturally.</summary>
-            <example>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Confused"/> regained its senses.</example>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBETeamStatusAction">
-            <summary>Represents an action regarding a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBETeamStatus"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatusAction.Added">
-            <summary>The status was added to a team.</summary>
-            <example>A team set up <see cref="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.LightScreen"/>.</example>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatusAction.Cleared">
-            <summary>The status was forcefully removed from a team.</summary>
-            <example>A Pokémon used <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.BrickBreak"/> and destroyed <see cref="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.Reflect"/>.</example>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatusAction.Damage">
-            <summary>The status caused a Pokémon to take damage.</summary>
-            <example>A Pokémon switched in and took damage from <see cref="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.StealthRock"/>.</example>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatusAction.Ended">
-            <summary>The status ended naturally.</summary>
-            <example><see cref="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.LightScreen"/> wore off.</example>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEResult">
-            <summary>Represents the result of an intention.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.Success">
-            <summary>No failure.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.Ineffective_Ability">
-            <summary>Failure due to a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEAbility"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.Ineffective_Gender">
-            <summary>Failure due to a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEGender"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.Ineffective_Level">
-            <summary>Failure due to a Pokémon's level.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.Ineffective_MagnetRise">
-            <summary>Failure due to <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.MagnetRise"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.Ineffective_Safeguard">
-            <summary>Failure due to <see cref="F:Kermalis.PokemonBattleEngine.Data.PBETeamStatus.Safeguard"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.Ineffective_Stat">
-            <summary>Failure due to a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStat"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.Ineffective_Status">
-            <summary>Failure due to a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus1"/>, <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus2"/>, <see cref="T:Kermalis.PokemonBattleEngine.Data.PBETeamStatus"/>, <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEBattleStatus"/>, or <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEWeather"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.Ineffective_Substitute">
-            <summary>Failure due to <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Substitute"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.Ineffective_Type">
-            <summary>Failure due to a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEType"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.InvalidConditions">
-            <summary>Failure due to the intention's unmet special conditions.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.Missed">
-            <summary>Failure due to accuracy and/or evasion.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.NoTarget">
-            <summary>Failure due to having no available targets.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.NotVeryEffective_Type">
-            <summary>Limited success due to a Pokémon's <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEType"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEResult.SuperEffective_Type">
-            <summary>Great success due to a Pokémon's <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEType"/>.</summary>
-        </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEWeatherAction">
-            <summary>Represents an action regarding a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEWeather"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEWeatherAction.Added">
-            <summary>The weather was added to the battle.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEWeatherAction.CausedDamage">
-            <summary>The weather caused a Pokémon to take damage.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEWeatherAction.Ended">
-            <summary>The weather was removed from the battle.</summary>
-        </member>
         <member name="T:Kermalis.PokemonBattleEngine.Data.PBENature">
             <summary>Represents a specific Pokémon's nature.</summary>
         </member>
@@ -986,13 +995,7 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.AmuletCoin">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Antidote">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ArmorFossil">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Awakening">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.BalmMushroom">
@@ -1040,19 +1043,10 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.BridgeMailV">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.BurnHeal">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Calcium">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Carbos">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Casteliacone">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.CherishBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ClawFossil">
@@ -1076,25 +1070,13 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DawnStone">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DireHit">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DiveBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DomeFossil">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DragonScale">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DreamBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DubiousDisc">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DuskBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.DuskStone">
@@ -1103,28 +1085,13 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Electirizer">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Elixir">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.EnergyPowder">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.EnergyRoot">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.EscapeRope">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Ether">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Everstone">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ExpShare">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FastBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FavoredMail">
@@ -1134,30 +1101,12 @@
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FlameOrb">
-            <summary>The Pokémon contracts <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Burned"/> at the end of each turn if it has no other <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus1"/> and it does not have <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Fire"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FluffyTail">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FreshWater">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FriendBall">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FullHeal">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FullRestore">
-            <summary>No effect.</summary>
+            <summary>The Pokémon contracts <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Burned"/> at the end of each turn if it has no other <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus1"/> and it does not have <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Fire"/>.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.GeniusWing">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.GooeyMulch">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.GreatBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.GreenScarf">
@@ -1175,22 +1124,10 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.GrowthMulch">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.GuardSpec">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HealBall">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HealPowder">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HealthWing">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HeartScale">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HeavyBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HelixFossil">
@@ -1202,34 +1139,16 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HPUp">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.HyperPotion">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.IceHeal">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.InquiryMail">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Iron">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LavaCookie">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LeafStone">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Lemonade">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LevelBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LikeMail">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LoveBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LuckIncense">
@@ -1238,49 +1157,16 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LuckyEgg">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LureBall">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LuxuryBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Magmarizer">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MasterBall">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MaxElixir">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MaxEther">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MaxPotion">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MaxRepel">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MaxRevive">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MoomooMilk">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MoonBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MoonStone">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.MuscleWing">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.NestBall">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.NetBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Nugget">
@@ -1292,16 +1178,7 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.OldAmber">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.OldGateau">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.OvalStone">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ParalyzHeal">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ParkBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PassOrb">
@@ -1322,25 +1199,10 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PnkApricorn">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PokeBall">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PokeDoll">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PokeToy">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Potion">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PPMax">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PPUp">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PremierBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PrettyWing">
@@ -1356,12 +1218,6 @@
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.PureIncense">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.QuickBall">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.RageCandyBar">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.RareBone">
@@ -1406,9 +1262,6 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.RelicVase">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.RepeatBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Repel">
             <summary>No effect.</summary>
         </member>
@@ -1418,22 +1271,10 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ResistWing">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.RevivalHerb">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Revive">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.RootFossil">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.RSVPMail">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SacredAsh">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SafariBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ShinyStone">
@@ -1448,16 +1289,7 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SkullFossil">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SmokeBall">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SodaPop">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SootheBell">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SportBall">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.StableMulch">
@@ -1472,13 +1304,7 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SunStone">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SuperPotion">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SuperRepel">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SweetHeart">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.SwiftWing">
@@ -1490,17 +1316,11 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Thunderstone">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.TimerBall">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.TinyMushroom">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ToxicOrb">
-            <summary>The Pokémon contracts <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.BadlyPoisoned"/> at the end of each turn if it has no other <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus1"/> and it does not have <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Poison"/> or <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Steel"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.UltraBall">
-            <summary>No effect.</summary>
+            <summary>The Pokémon contracts <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.BadlyPoisoned"/> at the end of each turn if it has no other <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus1"/> and it does not have <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Poison"/> or <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEType.Steel"/>.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.WaterStone">
             <summary>No effect.</summary>
@@ -1509,24 +1329,6 @@
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.WhtApricorn">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.XAccuracy">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.XAttack">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.XDefend">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.XSpecial">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.XSpDef">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.XSpeed">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.YellowFlute">
@@ -1575,7 +1377,7 @@
             <summary>The Pokémon takes less damage from incoming super-effective moves.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Guts">
-            <summary>The Pokémon's attack is boosted when it is afflicted with a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus1"/> and the damage reduction from <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Burned"/> is not applied.</summary>
+            <summary>The Pokémon's attack is boosted when it is afflicted with a <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus1"/> and the damage reduction from <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Burned"/> is not applied.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Heatproof">
             <summary>The Pokémon takes less damage from Fire-type moves and from a burn.</summary>
@@ -1608,7 +1410,7 @@
             <summary>The Pokémon cannot be paralyzed.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.MarvelScale">
-            <summary>The Pokémon's defense is boosted when it is afflicted with a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEStatus1"/>.</summary>
+            <summary>The Pokémon's defense is boosted when it is afflicted with a <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEStatus1"/>.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Multitype">
             <summary>No effect in battle.</summary>
@@ -1627,9 +1429,6 @@
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.RainDish">
             <summary>In rain, the Pokémon restores HP at the end of each turn.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.RunAway">
-            <summary>No effect in battle.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.SandForce">
             <summary>In a sandstorm, the Pokémon takes no damage from the sandstorm and its Rock-, Ground-, and Steel-type moves get a power boost.</summary>
@@ -1710,25 +1509,55 @@
             <summary>The move always lands a critical hit.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveFlag.DefrostsUser">
-            <summary>The move removes <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Frozen"/> from the user.</summary>
+            <summary>The move removes <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Frozen"/> from the user.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveFlag.HighCritChance">
             <summary>The move has a higher chance of landing a critical hit.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveFlag.HitsAirborne">
-            <summary>The move can hit <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Airborne"/> targets.</summary>
+            <summary>The move can hit <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Airborne"/> targets.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveFlag.HitsUnderground">
-            <summary>The move can hit <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Underground"/> targets.</summary>
+            <summary>The move can hit <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Underground"/> targets.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveFlag.HitsUnderwater">
-            <summary>The move can hit <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Underwater"/> targets.</summary>
+            <summary>The move can hit <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Underwater"/> targets.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveFlag.MakesContact">
             <summary>The user makes contact with the target, causing it to take damage from the target's <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.IronBarbs"/>, <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.RoughSkin"/>, and <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEItem.RockyHelmet"/>.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMove.MAX">
             <summary>Invalid move.</summary>
+        </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataProvider.GetCatchRateModifier(Kermalis.PokemonBattleEngine.Battle.PBEBattle)">
+            <summary>This is the boost to the catch rate. In generation 5, Capture Powers boost the catch rate.</summary>
+        </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataUtils.IsMoveUsable(Kermalis.PokemonBattleEngine.Data.PBEMove)">
+            <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
+        </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataUtils.IsMoveUsable(Kermalis.PokemonBattleEngine.Data.PBEMoveEffect)">
+            <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.PBEPokemonData.Weight">
+            <summary>Weight in Kilograms</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEItemData.FlingPower">
+            <summary>The power <see cref="!:PBEMoveEffect.Fling"/> has when the user is holding this item. 0 will cause the move to fail.</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEBerryData.NaturalGiftPower">
+            <summary>The power <see cref="!:PBEMoveEffect.NaturalGift"/> has when the user is holding this item.</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEBerryData.NaturalGiftType">
+            <summary>The type <see cref="!:PBEMoveEffect.NaturalGift"/> becomes when the user is holding this item.</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEMoveData.PPTier">
+            <summary>0 PPTier will become 1 PP (unaffected by pp ups)</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEMoveData.Power">
+            <summary>0 power or accuracy will show up as --</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemonData.Weight">
+            <summary>Weight in Kilograms</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemonTypes.Type1">
             <summary>The Pokémon's first type.</summary>
@@ -1741,9 +1570,6 @@
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemonKnownTypes.KnownType2">
             <summary>The second type everyone believes the Pokémon has.</summary>
-        </member>
-        <member name="P:Kermalis.PokemonBattleEngine.Data.PBEItemData.FlingPower">
-            <summary>The power <see cref="!:PBEMoveEffect.Fling"/> has when the user is holding this item. 0 will cause the move to fail.</summary>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Data.Legality.PBELegalMoveset.#ctor(Kermalis.PokemonBattleEngine.Data.PBESpecies,Kermalis.PokemonBattleEngine.Data.PBEForm,System.Byte,Kermalis.PokemonBattleEngine.Data.PBESettings,System.Boolean)">
             <summary>Creates a new <see cref="T:Kermalis.PokemonBattleEngine.Data.Legality.PBELegalMoveset"/> object with the specified traits.</summary>
@@ -1758,9 +1584,6 @@
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Data.Legality.PBELegalMoveset.Randomize">
             <summary>Randomizes the move and PP-Ups in each slot without creating duplicate moves.</summary>
-        </member>
-        <member name="P:Kermalis.PokemonBattleEngine.Data.PBEPokemonData.Weight">
-            <summary>Weight in Kilograms</summary>
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Data.PBESettings">
             <summary>The various engine settings.</summary>
@@ -1856,55 +1679,55 @@
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.ConfusionMaxTurns"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.ConfusionMaxTurns">
-            <summary>The maximum amount of turns a Pokémon can be <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Confused"/>.</summary>
+            <summary>The maximum amount of turns a Pokémon can be <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Confused"/>.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultConfusionMinTurns">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.ConfusionMinTurns"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.ConfusionMinTurns">
-            <summary>The minimum amount of turns a Pokémon can be <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Confused"/>.</summary>
+            <summary>The minimum amount of turns a Pokémon can be <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Confused"/>.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultSleepMaxTurns">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SleepMaxTurns"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SleepMaxTurns">
-            <summary>The maximum amount of turns a Pokémon can be <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Asleep"/>. <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.Rest"/> will always sleep for <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SleepMaxTurns"/> turns.</summary>
+            <summary>The maximum amount of turns a Pokémon can be <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Asleep"/>. <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.Rest"/> will always sleep for <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SleepMaxTurns"/> turns.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultSleepMinTurns">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SleepMinTurns"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SleepMinTurns">
-            <summary>The minimum amount of turns a Pokémon can be <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Asleep"/>. <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.Rest"/> will ignore this value and always sleep for <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SleepMaxTurns"/> turns.</summary>
+            <summary>The minimum amount of turns a Pokémon can be <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Asleep"/>. <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.Rest"/> will ignore this value and always sleep for <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SleepMaxTurns"/> turns.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultBurnDamageDenominator">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.BurnDamageDenominator"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.BurnDamageDenominator">
-            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Burned"/> loses (1/this) of its HP at the end of every turn.</summary>
+            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Burned"/> loses (1/this) of its HP at the end of every turn.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultPoisonDamageDenominator">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.PoisonDamageDenominator"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.PoisonDamageDenominator">
-            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.Poisoned"/> loses (1/this) of its HP at the end of every turn.</summary>
+            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.Poisoned"/> loses (1/this) of its HP at the end of every turn.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultToxicDamageDenominator">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.ToxicDamageDenominator"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.ToxicDamageDenominator">
-            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus1.BadlyPoisoned"/> loses (<see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.Status1Counter"/>/this) of its HP at the end of every turn.</summary>
+            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus1.BadlyPoisoned"/> loses (<see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.Status1Counter"/>/this) of its HP at the end of every turn.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultLeechSeedDenominator">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.LeechSeedDenominator"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.LeechSeedDenominator">
-            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.LeechSeed"/> loses (1/this) of its HP at the end of every turn and the Pokémon at <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SeededPosition"/> on <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SeededTeam"/> restores the lost HP.</summary>
+            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.LeechSeed"/> loses (1/this) of its HP at the end of every turn and the Pokémon at <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SeededPosition"/> on <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SeededTeam"/> restores the lost HP.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultCurseDenominator">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.CurseDenominator"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.CurseDenominator">
-            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEStatus2.Cursed"/> loses (1/this) of its HP at the end of every turn.</summary>
+            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Cursed"/> loses (1/this) of its HP at the end of every turn.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultLeftoversHealDenominator">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.LeftoversHealDenominator"/>.</summary>
@@ -1946,13 +1769,13 @@
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.HailTurns"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.HailTurns">
-            <summary>The amount of turns <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.Hailstorm"/> lasts. For infinite turns, set <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.IcyRockTurnExtension"/> to 0 first, then this to 0.</summary>
+            <summary>The amount of turns <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.Hailstorm"/> lasts. For infinite turns, set <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.IcyRockTurnExtension"/> to 0 first, then this to 0.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultHailDamageDenominator">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.HailDamageDenominator"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.HailDamageDenominator">
-            <summary>A Pokémon in <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.Hailstorm"/> loses (1/this) of its HP at the end of every turn.</summary>
+            <summary>A Pokémon in <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.Hailstorm"/> loses (1/this) of its HP at the end of every turn.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultIcyRockTurnExtension">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.IcyRockTurnExtension"/>.</summary>
@@ -1964,13 +1787,13 @@
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.IceBodyHealDenominator"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.IceBodyHealDenominator">
-            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.IceBody"/> in <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.Hailstorm"/> restores (1/this) of its HP at the end of every turn.</summary>
+            <summary>A Pokémon with <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.IceBody"/> in <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.Hailstorm"/> restores (1/this) of its HP at the end of every turn.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultRainTurns">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.RainTurns"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.RainTurns">
-            <summary>The amount of turns <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.Rain"/> lasts. For infinite turns, set <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.DampRockTurnExtension"/> to 0 first, then this to 0.</summary>
+            <summary>The amount of turns <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.Rain"/> lasts. For infinite turns, set <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.DampRockTurnExtension"/> to 0 first, then this to 0.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultDampRockTurnExtension">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.DampRockTurnExtension"/>.</summary>
@@ -1982,13 +1805,13 @@
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SandstormTurns"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SandstormTurns">
-            <summary>The amount of turns <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.Sandstorm"/> lasts. For infinite turns, set <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SmoothRockTurnExtension"/> to 0 first, then this to 0.</summary>
+            <summary>The amount of turns <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.Sandstorm"/> lasts. For infinite turns, set <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SmoothRockTurnExtension"/> to 0 first, then this to 0.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultSandstormDamageDenominator">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SandstormDamageDenominator"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SandstormDamageDenominator">
-            <summary>A Pokémon in <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.Sandstorm"/> loses (1/this) of its HP at the end of every turn.</summary>
+            <summary>A Pokémon in <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.Sandstorm"/> loses (1/this) of its HP at the end of every turn.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultSmoothRockTurnExtension">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SmoothRockTurnExtension"/>.</summary>
@@ -2000,7 +1823,7 @@
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SunTurns"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.PBESettings.SunTurns">
-            <summary>The amount of turns <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEWeather.HarshSunlight"/> lasts. For infinite turns, set <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.HeatRockTurnExtension"/> to 0 first, then this to 0.</summary>
+            <summary>The amount of turns <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEWeather.HarshSunlight"/> lasts. For infinite turns, set <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.HeatRockTurnExtension"/> to 0 first, then this to 0.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultHeatRockTurnExtension">
             <summary>The default value of <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.HeatRockTurnExtension"/>.</summary>
@@ -2047,12 +1870,6 @@
         <member name="M:Kermalis.PokemonBattleEngine.Data.PBESettings.ToString">
             <summary>Converts this <see cref="T:Kermalis.PokemonBattleEngine.Data.PBESettings"/> object into a unique code <see cref="T:System.String"/>.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBETypeEffectiveness._table">
-            <summary>The type effectiveness table. The first key is the attacking type and the second key is the defending type.</summary>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Data.PBETypeEffectiveness.ThunderWaveTypeCheck(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Data.PBEMove,System.Boolean)">
-            <summary>Checks if <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.ThunderWave"/>'s type affects the target, taking into account <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Normalize"/>.</summary>
-        </member>
         <member name="P:Kermalis.PokemonBattleEngine.Utils.PBERandom.Seed">
             <summary>Gets or sets the seed of this <see cref="T:Kermalis.PokemonBattleEngine.Utils.PBERandom"/>. The chain will be reset even if the seed is the same as the previous seed.</summary>
         </member>
@@ -2088,12 +1905,6 @@
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Utils.PBEUtils">
             <summary>A static class that provides utilities that are used throughout the battle engine.</summary>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Utils.PBEUtils.InitEngine(System.String,System.Nullable{System.Int32})">
-            <summary>Creates a connection to PokemonBattleEngine.db. This must be called only once; before the database is used.</summary>
-            <param name="databasePath">The path of the folder containing PokemonBattleEngine.db.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="databasePath"/> == null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown when a database connection has already been created.</exception>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Utils.PBEUtils.Andify``1(System.Collections.Generic.IReadOnlyList{``0})">
             <summary>Returns a <see cref="T:System.String"/> that combines <paramref name="source"/>'s elements' string representations using "and" with commas.</summary>

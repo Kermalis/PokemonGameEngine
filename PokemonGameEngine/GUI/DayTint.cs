@@ -1,20 +1,24 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.World;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI
 {
     internal static class DayTint
     {
-        public static int? OverrideHour { get; set; }
-        public static int? OverrideMinute { get; set; }
         private static int _tintHour;
         private static int _tintMinute;
+        private static float _rMod;
+        private static float _gMod;
+        private static float _bMod;
 
         static DayTint()
         {
             SetTintTime();
         }
 
+        // TODO: Colors by season
+        // TODO: Generate lookup tables from colors to render faster?
         private static readonly float[][] _colors = new float[24][]
         {
             new float[3] { 0.160f, 0.180f, 0.330f }, // 00
@@ -46,16 +50,8 @@ namespace Kermalis.PokemonGameEngine.GUI
         private static void SetTintTime()
         {
             DateTime time = DateTime.Now;
-            _tintHour = GetCurHour(time);
-            _tintMinute = GetCurMinute(time);
-        }
-        private static int GetCurHour(DateTime time)
-        {
-            return OverrideHour ?? time.Hour;
-        }
-        private static int GetCurMinute(DateTime time)
-        {
-            return OverrideMinute ?? time.Minute;
+            _tintHour = OverworldTime.GetHour(time.Hour);
+            _tintMinute = OverworldTime.GetMinute(time.Minute);
         }
 
         private static void GetHourTint(int hour, out float rMod, out float gMod, out float bMod)
@@ -65,18 +61,15 @@ namespace Kermalis.PokemonGameEngine.GUI
             gMod = hourColors[1];
             bMod = hourColors[2];
         }
-
-        public static unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public static void LogicTick(DateTime time)
         {
-            // We can probably update the day tint in a LogicTick() assuming it will be called at the appropriate times
             int tintHour = _tintHour;
             GetHourTint(tintHour, out float rMod, out float gMod, out float bMod);
             // Do minute transition
             int tintMinute = _tintMinute;
             float minuteMod = tintMinute / 60f;
             int nextTintMinute = tintMinute;
-            DateTime time = DateTime.Now;
-            if (tintMinute != GetCurMinute(time) || tintHour != GetCurHour(time))
+            if (tintMinute != OverworldTime.GetMinute(time.Minute) || tintHour != OverworldTime.GetHour(time.Hour))
             {
                 nextTintMinute++;
             }
@@ -98,7 +91,14 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 _tintMinute = nextTintMinute;
             }
-            RenderUtils.Modulate(bmpAddress, bmpWidth, bmpHeight, rMod, gMod, bMod, 1);
+            _rMod = rMod;
+            _gMod = gMod;
+            _bMod = bMod;
+        }
+
+        public static unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            RenderUtils.Modulate(bmpAddress, bmpWidth, bmpHeight, _rMod, _gMod, _bMod, 1);
         }
     }
 }

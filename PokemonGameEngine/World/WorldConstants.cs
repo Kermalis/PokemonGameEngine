@@ -24,6 +24,36 @@ namespace Kermalis.PokemonGameEngine.World
         public const ushort CameraId = PlayerId - 1;
     }
 
+    public enum Season : byte
+    {
+        Spring,
+        Summer,
+        Autumn,
+        Winter
+    }
+    public enum Month : byte
+    {
+        January = 1,
+        February,
+        March,
+        April,
+        May,
+        June,
+        July,
+        August,
+        September,
+        October,
+        November,
+        December
+    }
+    public enum TimeOfDay : byte
+    {
+        Morning,
+        Day,
+        Evening,
+        Night
+    }
+
     public enum FacingDirection : byte
     {
         South,
