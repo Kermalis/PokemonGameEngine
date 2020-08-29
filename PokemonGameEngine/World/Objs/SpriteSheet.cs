@@ -49,7 +49,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 ShadowSprite = new Sprite(r.ReadInt32(), r.ReadInt32());
                 ShadowSprite.Draw((uint* bmpAddress, int bmpWidth, int bmpHeight) =>
                 {
-                    RenderUtils.DrawEllipse_XY(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth - 1, bmpHeight - 1, true, RenderUtils.Color(0x00, 0x00, 0x00, 0xA0));
+                    RenderUtils.FillEllipse_Points(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth - 1, bmpHeight - 1, RenderUtils.Color(0x00, 0x00, 0x00, 0xA0));
                 });
             }
         }

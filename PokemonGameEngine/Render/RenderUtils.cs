@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
+    // https://stackoverflow.com/questions/24771828/algorithm-for-creating-rounded-corners-in-a-polygon
+    // ^^ This could be cool, not sure if we'd need it yet though
     internal sealed class RenderUtils
     {
         private static unsafe IntPtr ConvertSurfaceFormat(IntPtr surface)
@@ -110,19 +112,12 @@ namespace Kermalis.PokemonGameEngine.Render
             return arr;
         }
 
-        /// <summary>Returns true if any pixel is inside of the target bitmap.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsInsideBitmap(int bmpWidth, int bmpHeight, int x, int y, int w, int h)
+        public static unsafe void OverwriteRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
         {
-            return x < bmpWidth && x + w > 0 && y < bmpHeight && y + h > 0;
+            OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void FillColor_Overwrite(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
-        {
-            FillColor_Overwrite(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
-        }
-        public static unsafe void FillColor_Overwrite(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
+        public static unsafe void OverwriteRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
         {
             // No line overwriting yet
             for (int py = y; py < y + height; py++)
@@ -141,20 +136,25 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void FillColor(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
+        public static unsafe void FillRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
         {
-            FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
+            FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
         }
-        public static unsafe void FillColor(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
+        public static unsafe void FillRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
         {
             if (height == 1)
             {
-                DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, x, y, width, color);
+                if (width == 1)
+                {
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, x, y, color);
+                    return;
+                }
+                DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x, y, width, color);
                 return;
             }
             if (width == 1)
             {
-                DrawVerticalLine(bmpAddress, bmpWidth, bmpHeight, x, y, height, color);
+                DrawVerticalLine_Height(bmpAddress, bmpWidth, bmpHeight, x, y, height, color);
                 return;
             }
             for (int py = y; py < y + height; py++)
@@ -171,7 +171,38 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
-        public static unsafe void Modulate(uint* bmpAddress, int bmpWidth, int bmpHeight, float rMod, float gMod, float bMod, float aMod)
+        public static unsafe void FillRectangle_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, uint color)
+        {
+            if (x1 == x2)
+            {
+                if (y1 == y2)
+                {
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, x1, y1, color);
+                    return;
+                }
+                DrawVerticalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1, y1, y2, color);
+                return;
+            }
+            if (y1 == y2)
+            {
+                DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, color);
+                return;
+            }
+            for (int py = y1; py <= y2; py++)
+            {
+                if (py >= 0 && py < bmpHeight)
+                {
+                    for (int px = x1; px <= x2; px++)
+                    {
+                        if (px >= 0 && px < bmpWidth)
+                        {
+                            DrawUnchecked(bmpAddress, bmpWidth, px, py, color);
+                        }
+                    }
+                }
+            }
+        }
+        public static unsafe void ModulateRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, float rMod, float gMod, float bMod, float aMod)
         {
             for (int y = 0; y < bmpHeight; y++)
             {
@@ -246,7 +277,7 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
 
-        public static unsafe void DrawHorizontalLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, uint color)
+        public static unsafe void DrawHorizontalLine_Width(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, uint color)
         {
             if (y < 0 || y >= bmpHeight)
             {
@@ -261,7 +292,22 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
-        public static unsafe void DrawVerticalLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int height, uint color)
+        // Includes x1 and x2
+        public static unsafe void DrawHorizontalLine_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y, int x2, uint color)
+        {
+            if (y < 0 || y >= bmpHeight)
+            {
+                return;
+            }
+            for (int px = x1; px <= x2; px++)
+            {
+                if (px >= 0 && px < bmpWidth)
+                {
+                    DrawUnchecked(bmpAddress, bmpWidth, px, y, color);
+                }
+            }
+        }
+        public static unsafe void DrawVerticalLine_Height(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int height, uint color)
         {
             if (x < 0 || x >= bmpWidth)
             {
@@ -269,6 +315,21 @@ namespace Kermalis.PokemonGameEngine.Render
             }
             int target = y + height;
             for (int py = y; py < target; py++)
+            {
+                if (py >= 0 && py < bmpHeight)
+                {
+                    DrawUnchecked(bmpAddress, bmpWidth, x, py, color);
+                }
+            }
+        }
+        // Includes y1 and y2
+        public static unsafe void DrawVerticalLine_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y1, int y2, uint color)
+        {
+            if (x < 0 || x >= bmpWidth)
+            {
+                return;
+            }
+            for (int py = y1; py <= y2; py++)
             {
                 if (py >= 0 && py < bmpHeight)
                 {
@@ -327,37 +388,32 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             if (x1 == x2)
             {
-                int y;
-                int height;
-                if (y1 < y2)
+                if (y1 == y2)
                 {
-                    y = y1;
-                    height = y2 - y1;
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, x1, y1, color);
+                    return;
                 }
-                else
+                if (y1 > y2)
                 {
-                    y = y2;
-                    height = y1 - y2;
+                    int bak = y1;
+                    y1 = y2;
+                    y2 = bak;
                 }
-                DrawVerticalLine(bmpAddress, bmpWidth, bmpHeight, x1, y, height, color);
+                DrawVerticalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1, y1, y2, color);
+                return;
             }
-            else if (y1 == y2)
+            if (y1 == y2)
             {
-                int x;
-                int width;
-                if (x1 < x2)
+                if (x1 > x2)
                 {
-                    x = x1;
-                    width = x2 - x1;
+                    int bak = x1;
+                    x1 = x2;
+                    x2 = bak;
                 }
-                else
-                {
-                    x = x2;
-                    width = x1 - x2;
-                }
-                DrawVerticalLine(bmpAddress, bmpWidth, bmpHeight, x, y1, width, color);
+                DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, color);
+                return;
             }
-            else if (Math.Abs(y2 - y1) < Math.Abs(x2 - x1))
+            if (Math.Abs(y2 - y1) < Math.Abs(x2 - x1))
             {
                 if (x1 > x2)
                 {
@@ -404,7 +460,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
             if (yRadius == 0)
             {
-                FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - xRadius, yCenter, (2 * xRadius) + 1, 1, color);
+                FillRectangle(bmpAddress, bmpWidth, bmpHeight, xCenter - xRadius, yCenter, (2 * xRadius) + 1, 1, color);
                 return;
             }
 
@@ -431,14 +487,14 @@ namespace Kermalis.PokemonGameEngine.Render
                     }
                     else if ((ry * 2) + 1 > (height - 1) * 2)
                     {
-                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, height - 1, color);
-                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter + ry + 1, width, 1 - height, color);
+                        FillRectangle(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, height - 1, color);
+                        FillRectangle(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter + ry + 1, width, 1 - height, color);
                         ry -= height - 1;
                         height = 1;
                     }
                     else
                     {
-                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, (ry * 2) + 1, color);
+                        FillRectangle(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, (ry * 2) + 1, color);
                         ry -= ry;
                         height = 1;
                     }
@@ -455,12 +511,12 @@ namespace Kermalis.PokemonGameEngine.Render
                 {
                     if ((ry * 2) + 1 > height * 2)
                     {
-                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, height, color);
-                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter + ry + 1 - height, width, height, color);
+                        FillRectangle(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, height, color);
+                        FillRectangle(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter + ry + 1 - height, width, height, color);
                     }
                     else
                     {
-                        FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, (ry * 2) + 1, color);
+                        FillRectangle(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, (ry * 2) + 1, color);
                     }
                     incx();
                     incy();
@@ -473,27 +529,23 @@ namespace Kermalis.PokemonGameEngine.Render
 
             if (ry > height)
             {
-                FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, height, color);
-                FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter + ry + 1 - height, width, height, color);
+                FillRectangle(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, height, color);
+                FillRectangle(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter + ry + 1 - height, width, height, color);
             }
             else
             {
-                FillColor(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, (ry * 2) + 1, color);
+                FillRectangle(bmpAddress, bmpWidth, bmpHeight, xCenter - rx, yCenter - ry, width, (ry * 2) + 1, color);
             }
         }
         // https://stackoverflow.com/questions/2914807/plot-ellipse-from-rectangle
         /// <summary>Works based on a top-left point and with width and height. Even widths and heights work properly.</summary>
-        public static unsafe void DrawEllipse_XY(uint* bmpAddress, int bmpWidth, int bmpHeight, int x0, int y0, int x1, int y1, bool fill, uint color)
+        public static unsafe void DrawEllipse_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, uint color)
         {
-            void DrawRow(int xLeft, int xRight, int py)
-            {
-                DrawHorizontalLine(bmpAddress, bmpWidth, bmpHeight, xLeft, py, xRight - xLeft + 1, color);
-            }
             int xb, yb, xc, yc;
 
             // Calculate height
-            yb = yc = (y0 + y1) / 2;
-            int qb = (y0 < y1) ? (y1 - y0) : (y0 - y1);
+            yb = yc = (y1 + y2) / 2;
+            int qb = (y1 < y2) ? (y2 - y1) : (y1 - y2);
             int qy = qb;
             int dy = qb / 2;
             if (qb % 2 != 0)
@@ -503,8 +555,8 @@ namespace Kermalis.PokemonGameEngine.Render
             }
 
             // Calculate width
-            xb = xc = (x0 + x1) / 2;
-            int qa = (x0 < x1) ? (x1 - x0) : (x0 - x1);
+            xb = xc = (x1 + x2) / 2;
+            int qa = (x1 < x2) ? (x2 - x1) : (x1 - x2);
             int qx = qa % 2;
             int dx = 0;
             long qt = (long)qa*qa + (long)qb*qb -2L*qa*qa*qb;
@@ -519,21 +571,18 @@ namespace Kermalis.PokemonGameEngine.Render
             while (qy >= 0 && qx <= qa)
             {
                 // Draw the new points
-                if (!fill)
+                DrawChecked(bmpAddress, bmpWidth, bmpHeight, xb - dx, yb - dy, color);
+                if (dx != 0 || xb != xc)
                 {
-                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, xb - dx, yb - dy, color);
-                    if (dx != 0 || xb != xc)
-                    {
-                        DrawChecked(bmpAddress, bmpWidth, bmpHeight, xc + dx, yb - dy, color);
-                        if (dy != 0 || yb != yc)
-                        {
-                            DrawChecked(bmpAddress, bmpWidth, bmpHeight, xc + dx, yc + dy, color);
-                        }
-                    }
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, xc + dx, yb - dy, color);
                     if (dy != 0 || yb != yc)
                     {
-                        DrawChecked(bmpAddress, bmpWidth, bmpHeight, xb - dx, yc + dy, color);
+                        DrawChecked(bmpAddress, bmpWidth, bmpHeight, xc + dx, yc + dy, color);
                     }
+                }
+                if (dy != 0 || yb != yc)
+                {
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, xb - dx, yc + dy, color);
                 }
 
                 // If a (+1, 0) step stays inside the ellipse, do it
@@ -547,13 +596,69 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
                 else if (qt - 2L * qa * qa * qy + 3L * qa * qa > 0L)
                 {
-                    if (fill)
+                    qt += 8L * qa * qa - 4L * qa * qa * qy;
+                    dy--;
+                    qy -= 2;
+                    // Else step (+1, -1)
+                }
+                else
+                {
+                    qt += 8L * qb * qb + 4L * qb * qb * qx + 8L * qa * qa - 4L * qa * qa * qy;
+                    dx++;
+                    qx += 2;
+                    dy--;
+                    qy -= 2;
+                }
+            }
+        }
+        // https://stackoverflow.com/questions/2914807/plot-ellipse-from-rectangle
+        /// <summary>Works based on a top-left point and with width and height. Even widths and heights work properly.</summary>
+        public static unsafe void FillEllipse_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, uint color)
+        {
+            int xb, yb, xc, yc;
+
+            // Calculate height
+            yb = yc = (y1 + y2) / 2;
+            int qb = (y1 < y2) ? (y2 - y1) : (y1 - y2);
+            int qy = qb;
+            int dy = qb / 2;
+            if (qb % 2 != 0)
+            {
+                // Bounding box has even pixel height
+                yc++;
+            }
+
+            // Calculate width
+            xb = xc = (x1 + x2) / 2;
+            int qa = (x1 < x2) ? (x2 - x1) : (x1 - x2);
+            int qx = qa % 2;
+            int dx = 0;
+            long qt = (long)qa*qa + (long)qb*qb -2L*qa*qa*qb;
+            if (qx != 0)
+            {
+                // Bounding box has even pixel width
+                xc++;
+                qt += 3L * qb * qb;
+            }
+
+            // Start at (dx, dy) = (0, b) and iterate until (a, 0) is reached
+            while (qy >= 0 && qx <= qa)
+            {
+                // If a (+1, 0) step stays inside the ellipse, do it
+                if (qt + 2L * qb * qb * qx + 3L * qb * qb <= 0L ||
+                    qt + 2L * qa * qa * qy - (long)qa * qa <= 0L)
+                {
+                    qt += 8L * qb * qb + 4L * qb * qb * qx;
+                    dx++;
+                    qx += 2;
+                    // If a (0, -1) step stays outside the ellipse, do it
+                }
+                else if (qt - 2L * qa * qa * qy + 3L * qa * qa > 0L)
+                {
+                    DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, xb - dx, yc + dy, xc + dx, color);
+                    if (dy != 0 || yb != yc)
                     {
-                        DrawRow(xb - dx, xc + dx, yc + dy);
-                        if (dy != 0 || yb != yc)
-                        {
-                            DrawRow(xb - dx, xc + dx, yb - dy);
-                        }
+                        DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, xb - dx, yb - dy, xc + dx, color);
                     }
                     qt += 8L * qa * qa - 4L * qa * qa * qy;
                     dy--;
@@ -562,13 +667,10 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
                 else
                 {
-                    if (fill)
+                    DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, xb - dx, yc + dy, xc + dx, color);
+                    if (dy != 0 || yb != yc)
                     {
-                        DrawRow(xb - dx, xc + dx, yc + dy);
-                        if (dy != 0 || yb != yc)
-                        {
-                            DrawRow(xb - dx, xc + dx, yb - dy);
-                        }
+                        DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, xb - dx, yb - dy, xc + dx, color);
                     }
                     qt += 8L * qb * qb + 4L * qb * qb * qx + 8L * qa * qa - 4L * qa * qa * qy;
                     dx++;
@@ -576,13 +678,127 @@ namespace Kermalis.PokemonGameEngine.Render
                     dy--;
                     qy -= 2;
                 }
-            }   // End of while loop
+            }
+        }
+
+        // https://www.freebasic.net/forum/viewtopic.php?t=19874
+        public static unsafe void DrawRoundedRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, int radius, uint color)
+        {
+            int f = 1 - radius;
+            int ddF_x = 1;
+            int ddF_y = -2 * radius;
+            int xx = 0;
+            int yy = radius;
+            while (xx < yy)
+            {
+                if (f >= 0)
+                {
+                    yy -= 1;
+                    ddF_y += 2;
+                    f += ddF_y;
+                }
+                xx += 1;
+                ddF_x += 2;
+                f += ddF_x;
+                int t1 = y1 - yy + radius;
+                int t2 = y1 - xx + radius;
+                int l1 = x1 - xx + radius;
+                int l2 = x1 - yy + radius;
+                int b1 = y2 + yy - radius;
+                int b2 = y2 + xx - radius;
+                int r1 = x2 + xx - radius;
+                int r2 = x2 + yy - radius;
+                DrawChecked(bmpAddress, bmpWidth, bmpHeight, l1, t1, color);
+                DrawChecked(bmpAddress, bmpWidth, bmpHeight, r1, t1, color);
+                if (t1 != t2)
+                {
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, l2, t2, color);
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, r2, t2, color);
+                }
+                DrawChecked(bmpAddress, bmpWidth, bmpHeight, l1, b1, color);
+                DrawChecked(bmpAddress, bmpWidth, bmpHeight, r1, b1, color);
+                if (b1 != b2)
+                {
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, l2, b2, color);
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, r2, b2, color);
+                }
+            }
+            DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1 + radius, y1, x2 - radius, color); // Top
+            DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1 + radius, y2, x2 - radius, color); // Bottom
+            DrawVerticalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1, y1 + radius, y2 - radius, color); // Left
+            DrawVerticalLine_Points(bmpAddress, bmpWidth, bmpHeight, x2, y1 + radius, y2 - radius, color); // Right
+        }
+        // https://www.freebasic.net/forum/viewtopic.php?t=19874
+        public static unsafe void FillRoundedRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, int radius, uint color)
+        {
+            int f = 1 - radius;
+            int ddF_x = 1;
+            int ddF_y = -2 * radius;
+            int xx = 0;
+            int yy = radius;
+            int prevT1 = -1;
+            int prevB1 = -1;
+            while (xx < yy)
+            {
+                if (f >= 0)
+                {
+                    yy -= 1;
+                    ddF_y += 2;
+                    f += ddF_y;
+                }
+                xx += 1;
+                ddF_x += 2;
+                f += ddF_x;
+                int r1 = x2 + xx - radius;
+                int r2 = x2 + yy - radius;
+                int l1 = x1 - xx + radius;
+                int l2 = x1 - yy + radius;
+                int b1 = y2 + yy - radius;
+                int b2 = y2 + xx - radius;
+                int t1 = y1 - yy + radius;
+                int t2 = y1 - xx + radius;
+                if (t1 == prevT1)
+                {
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, l1, t1, color);
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, r1, t1, color);
+                }
+                else
+                {
+                    DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, l1, t1, r1, color);
+                    prevT1 = t1;
+                }
+                if (t1 != t2)
+                {
+                    DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, l2, t2, r2, color);
+                }
+                if (b1 == prevB1)
+                {
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, l1, b1, color);
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, r1, b1, color);
+                }
+                else
+                {
+                    DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, l1, b1, r1, color);
+                    prevB1 = b1;
+                }
+                if (b1 != b2)
+                {
+                    DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, l2, b2, r2, color);
+                }
+            }
+            FillRectangle_Points(bmpAddress, bmpWidth, bmpHeight, x1, y1 + radius, x2, y2 - radius, color); // Middle
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe uint* GetPixelAddress(uint* bmpAddress, int bmpWidth, int x, int y)
         {
             return bmpAddress + x + (y * bmpWidth);
+        }
+        /// <summary>Returns true if any pixel is inside of the target bitmap.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInsideBitmap(int bmpWidth, int bmpHeight, int x, int y, int w, int h)
+        {
+            return x < bmpWidth && x + w > 0 && y < bmpHeight && y + h > 0;
         }
 
         // Colors must be RGBA8888 (0xAABBCCDD - AA is A, BB is B, CC is G, DD is R)

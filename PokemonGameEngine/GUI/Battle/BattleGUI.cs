@@ -172,7 +172,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 float t = _transitionCounter / TransitionDurationF;
                 //float t1 = t + 1;
                 //_battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, (int)(bmpWidth * t1), (int)(bmpHeight * t1));
-                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, (uint)(t * 0xFF) << 24);
+                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, (uint)(t * 0xFF) << 24);
                 if (--_transitionCounter <= 0)
                 {
                     _transitionDone = true;
@@ -187,7 +187,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             string msg = _message;
             if (msg != null)
             {
-                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, (int)(bmpHeight * 0.79f), bmpWidth, (int)(bmpHeight * 0.16f), RenderUtils.Color(0x31, 0x31, 0x31, 0x80));
+                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0, (int)(bmpHeight * 0.79f), bmpWidth, (int)(bmpHeight * 0.16f), RenderUtils.Color(0x31, 0x31, 0x31, 0x80));
                 fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.10f), (int)(bmpHeight * 0.80f), msg, defaultWhite);
             }
 
