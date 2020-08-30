@@ -42,7 +42,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private unsafe void DrawBackground(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(0x31, 0x31, 0x31, 0x80));
+            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(49, 49, 49, 128));
         }
         private unsafe void AdvanceAndDrawString(int speed)
         {

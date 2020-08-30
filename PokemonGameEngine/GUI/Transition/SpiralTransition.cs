@@ -29,7 +29,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             // Draw current spiral
             int boxWidth = bmpWidth / NumBoxes;
             int boxHeight = bmpHeight / NumBoxes;
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, _counterX * boxWidth, _counterY * boxHeight, boxWidth, boxHeight, RenderUtils.Color(0x00, 0x00, 0x00, 0xFF));
+            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, _counterX * boxWidth, _counterY * boxHeight, boxWidth, boxHeight, RenderUtils.Color(0, 0, 0, 255));
 
             // If it is done (we want to draw the final box before we say this is done)
             if (doX

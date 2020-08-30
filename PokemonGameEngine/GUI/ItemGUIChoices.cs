@@ -28,7 +28,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             if (isSelected)
             {
-                RenderUtils.FillRectangle_Points(bmpAddress, bmpWidth, bmpHeight, x1, y, x2, y + height - 1, RenderUtils.Color(255, 0, 0, 0x80));
+                RenderUtils.FillRectangle_Points(bmpAddress, bmpWidth, bmpHeight, x1, y, x2, y + height - 1, RenderUtils.Color(255, 0, 0, 128));
             }
             x1 += xOfs;
             x2 -= xOfs;
