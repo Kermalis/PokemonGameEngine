@@ -25,6 +25,7 @@ namespace Kermalis.PokemonGameEngine.Core
         private FadeToColorTransition _fadeToTransition;
         private SpiralTransition _battleTransition;
         public BattleGUI BattleGUI { get; private set; }
+        private BagGUI _bagGUI;
 
         public Game()
         {
@@ -100,6 +101,21 @@ namespace Kermalis.PokemonGameEngine.Core
             _battleTransition = new SpiralTransition(OnBattleTransitionEnded);
         }
 
+        public void OpenStartMenu()
+        {
+            void FadeToTransitionEnded()
+            {
+                void FadeFromTransitionEnded()
+                {
+                    _fadeFromTransition = null;
+                }
+                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
+                _bagGUI = new BagGUI(Save.PlayerInventory);
+                _fadeToTransition = null;
+            }
+            _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
+        }
+
         public void LogicTick()
         {
             DateTime time = DateTime.Now;
@@ -117,6 +133,11 @@ namespace Kermalis.PokemonGameEngine.Core
             {
                 return;
             }
+            if (_bagGUI != null)
+            {
+                _bagGUI.LogicTick();
+                return;
+            }
             if (BattleGUI != null)
             {
                 BattleGUI.LogicTick();
@@ -127,6 +148,11 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight, string topLeftMessage)
         {
+            if (_bagGUI != null)
+            {
+                _bagGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                goto transitions;
+            }
             if (_battleTransition != null)
             {
                 _battleTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
@@ -138,6 +164,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 goto bottom;
             }
             _overworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+        transitions:
             if (_fadeFromTransition != null)
             {
                 _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);

@@ -31,6 +31,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         private readonly (string OldKey, ushort NewKey)[] _overrides;
 
         public static Font Default { get; }
+        public static Font DefaultSmall { get; }
         public static uint[] DefaultWhite { get; } = new uint[] { RenderUtils.Color(0x00, 0x00, 0x00, 0x00), RenderUtils.Color(0xEF, 0xEF, 0xEF, 0xFF), RenderUtils.Color(0x84, 0x84, 0x84, 0xFF) };
         public static uint[] DefaultSelected { get; } = new uint[] { RenderUtils.Color(0x00, 0x00, 0x00, 0x00), RenderUtils.Color(0xFF, 0xE0, 0x16, 0xFF), RenderUtils.Color(0xBC, 0xA5, 0x10, 0xFF) };
         public static uint[] DefaultDisabled { get; } = new uint[] { RenderUtils.Color(0x00, 0x00, 0x00, 0x00), RenderUtils.Color(0x85, 0x85, 0x8D, 0xFF), RenderUtils.Color(0x3A, 0x32, 0x32, 0xFF) };
@@ -48,6 +49,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 ("[PK]", 0x2486),
                 ("[MN]", 0x2487)
             });
+            DefaultSmall = new Font("Fonts.DefaultSmall.kermfont", Default._overrides);
             PartyNumbers = new Font("Fonts.PartyNumbers.kermfont", new (string, ushort)[]
             {
                 ("[ID]", 0x0049),

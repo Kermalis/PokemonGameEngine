@@ -42,6 +42,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
             }
 
+            if (InputManager.IsPressed(Key.Start))
+            {
+                Game.Instance.OpenStartMenu();
+                return;
+            }
             if (InputManager.IsPressed(Key.A))
             {
                 // TODO: This does not consider sideways stairs or countertops when fetching the target block

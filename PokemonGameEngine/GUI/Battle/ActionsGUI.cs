@@ -21,8 +21,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private FadeFromColorTransition _fadeFromTransition;
         private FadeToColorTransition _fadeToTransition;
         private PartyMenuGUI _partyMenuGUI;
-        private readonly GUIChoices _fightChoices;
-        private GUIChoices _moveChoices;
+        private readonly TextGUIChoices _fightChoices;
+        private TextGUIChoices _moveChoices;
 
         public ActionsGUI(BattleGUI parent, SpritedBattlePokemonParty party, SpritedBattlePokemon sPkmn)
         {
@@ -30,20 +30,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _party = party;
             _pkmn = sPkmn;
 
-            _fightChoices = new GUIChoices(0.8f, 0.7f, 0.06f,
+            _fightChoices = new TextGUIChoices(0.8f, 0.7f, 0.06f,
                 font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled)
             {
-                new GUIChoice("Fight", FightChoice)
+                new TextGUIChoice("Fight", FightChoice)
             };
             PBEBattlePokemon pkmn = _pkmn.Pkmn;
             bool enabled = pkmn.CanSwitchOut(); // Cannot switch out or use item if TempLockedMove exists
             Action command = enabled ? PokemonChoice : (Action)null;
-            _fightChoices.Add(new GUIChoice("Pokémon", command, isEnabled: enabled));
+            _fightChoices.Add(new TextGUIChoice("Pokémon", command, isEnabled: enabled));
             command = enabled ? BagChoice : (Action)null;
-            _fightChoices.Add(new GUIChoice("Bag", command, isEnabled: enabled));
+            _fightChoices.Add(new TextGUIChoice("Bag", command, isEnabled: enabled));
             enabled = pkmn.Trainer.ActiveBattlersOrdered.First() == pkmn && pkmn.Trainer.IsFleeValid() is null; // Only first Pokémon can "select" run
             command = enabled ? RunChoice : (Action)null;
-            _fightChoices.Add(new GUIChoice("Run", command, isEnabled: enabled));
+            _fightChoices.Add(new TextGUIChoice("Run", command, isEnabled: enabled));
         }
 
         private void FightChoice()
@@ -72,7 +72,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 PBEBattleMoveset moves = pkmn.Moves;
                 PBEMove[] usableMoves = pkmn.GetUsableMoves();
-                _moveChoices = new GUIChoices(0.8f, 0.7f, 0.06f, backCommand: () => _isShowingMoves = false,
+                _moveChoices = new TextGUIChoices(0.8f, 0.7f, 0.06f, backCommand: () => _isShowingMoves = false,
                     font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled);
                 for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
                 {
@@ -81,7 +81,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     string text = BattleEngineDataProvider.Instance.GetMoveName(m).English;
                     bool enabled = Array.IndexOf(usableMoves, m) != -1;
                     Action command = enabled ? () => SelectMoveForTurn(m) : (Action)null;
-                    _moveChoices.Add(new GUIChoice(text, command, isEnabled: enabled));
+                    _moveChoices.Add(new TextGUIChoice(text, command, isEnabled: enabled));
                 }
             }
 

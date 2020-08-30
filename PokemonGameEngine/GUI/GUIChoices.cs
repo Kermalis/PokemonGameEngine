@@ -5,59 +5,37 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.GUI
 {
-    internal class GUIChoice
+    internal abstract class GUIChoice
     {
-        public string Text;
         public Action Command;
         public bool IsEnabled;
 
-        public Font Font;
-        public uint[] FontColors;
-        public uint[] SelectedColors;
-        public uint[] DisabledColors;
-
-        public GUIChoice(string text, Action command, bool isEnabled = true,
-            Font font = null, uint[] fontColors = null, uint[] selectedColors = null, uint[] disabledColors = null)
+        public GUIChoice(Action command, bool isEnabled = true)
         {
-            Text = text;
             Command = command;
             IsEnabled = isEnabled;
-
-            Font = font;
-            FontColors = fontColors;
-            SelectedColors = selectedColors;
-            DisabledColors = disabledColors;
         }
     }
 
-    internal class GUIChoices : IEnumerable<GUIChoice>, IDisposable
+    internal abstract class GUIChoices<T> : IEnumerable<T>, IDisposable where T : GUIChoice
     {
-        private readonly List<GUIChoice> _choices = new List<GUIChoice>();
+        protected readonly List<T> _choices = new List<T>();
 
         public float X;
         public float Y;
         public float Spacing;
 
         public Action BackCommand;
-        public Font Font;
-        public uint[] FontColors;
-        public uint[] SelectedColors;
-        public uint[] DisabledColors;
 
         public int Selected = 0;
 
-        public GUIChoices(float x, float y, float spacing, Action backCommand = null,
-            Font font = null, uint[] fontColors = null, uint[] selectedColors = null, uint[] disabledColors = null)
+        public GUIChoices(float x, float y, float spacing, Action backCommand = null)
         {
             X = x;
             Y = y;
             Spacing = spacing;
 
             BackCommand = backCommand;
-            Font = font;
-            FontColors = fontColors;
-            SelectedColors = selectedColors;
-            DisabledColors = disabledColors;
         }
 
         public void HandleInputs()
@@ -92,7 +70,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
             if (a)
             {
-                GUIChoice c = _choices[curSelected];
+                T c = _choices[curSelected];
                 if (c.IsEnabled)
                 {
                     c.Command.Invoke();
@@ -100,43 +78,14 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
-        public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
-        {
-            bool drawUpwards = true;
-            int count = _choices.Count;
-            for (int i = 0; i < count; i++)
-            {
-                GUIChoice c = _choices[i];
-                Font font = c.Font ?? Font;
-                bool isSelected = Selected == i;
-                uint[] colors;
-                if (c.IsEnabled)
-                {
-                    colors = isSelected
-                        ? c.SelectedColors ?? SelectedColors
-                        : c.FontColors ?? FontColors;
-                }
-                else
-                {
-                    colors = c.DisabledColors ?? DisabledColors;
-                }
-                int placementY = drawUpwards ? count - 1 - i : i;
-                int y = (int)((bmpHeight * Y) - (bmpHeight * (placementY * Spacing)));
-                font.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * X), y, c.Text, colors);
-                // Draw selection arrow
-                if (isSelected)
-                {
-                    font.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * (X - 0.05f)), y, "→", colors);
-                }
-            }
-        }
+        public abstract unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight);
 
-        public void Add(GUIChoice button)
+        public void Add(T button)
         {
             _choices.Add(button);
         }
 
-        public IEnumerator<GUIChoice> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return _choices.GetEnumerator();
         }
@@ -145,9 +94,9 @@ namespace Kermalis.PokemonGameEngine.GUI
             return _choices.GetEnumerator();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
-            foreach (GUIChoice c in _choices)
+            foreach (T c in _choices)
             {
                 c.Command = null;
             }
