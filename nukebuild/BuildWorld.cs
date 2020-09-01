@@ -85,13 +85,12 @@ public sealed partial class Build
             _name = name;
         }
 
-        public const string EncounterTableExtension = ".pgeenctbl";
         public static readonly AbsolutePath EncounterTablePath = AssetPath / "Encounter";
         public static IdList Ids { get; } = new IdList(EncounterTablePath / "EncounterTableIds.txt");
 
         public void Save()
         {
-            using (var w = new EndianBinaryWriter(File.Create(EncounterTablePath / (_name + EncounterTableExtension))))
+            using (var w = new EndianBinaryWriter(File.Create(EncounterTablePath / (_name + ".bin"))))
             {
                 w.Write(ChanceOfPhenomenon);
                 byte count = (byte)Encounters.Length;
@@ -359,13 +358,12 @@ public sealed partial class Build
             _name = name;
         }
 
-        public const string MapExtension = ".pgemap";
         public static readonly AbsolutePath MapPath = AssetPath / "Map";
         public static IdList Ids { get; } = new IdList(MapPath / "MapIds.txt");
 
         public void Save()
         {
-            using (var w = new EndianBinaryWriter(File.Create(MapPath / (_name + MapExtension))))
+            using (var w = new EndianBinaryWriter(File.Create(MapPath / (_name + ".bin"))))
             {
                 w.Write(Build.Layout.Ids[Layout]);
                 Details.Write(w);
@@ -503,9 +501,9 @@ public sealed partial class Build
     private void CleanWorld()
     {
         // Clean all assets even if they're no longer in the id lists
-        static void DeleteFiles(AbsolutePath path, string extension)
+        static void DeleteFiles(AbsolutePath path)
         {
-            foreach (string file in path.GlobFiles("*" + extension))
+            foreach (string file in path.GlobFiles("*.bin"))
             {
                 File.Delete(file);
             }
@@ -519,11 +517,11 @@ public sealed partial class Build
         }
 
         // Encounter tables
-        DeleteFiles(EncounterTable.EncounterTablePath, EncounterTable.EncounterTableExtension);
+        DeleteFiles(EncounterTable.EncounterTablePath);
         // Obj sprites
         DeleteFile(SpriteSheet.SheetsOutputPath);
         // Maps
-        DeleteFiles(Map.MapPath, Map.MapExtension);
+        DeleteFiles(Map.MapPath);
         // Tile animations
         DeleteFile(TileAnimation.AnimationsOutputPath);
     }

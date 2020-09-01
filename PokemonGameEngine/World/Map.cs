@@ -236,7 +236,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         private Map(string name)
         {
-            using (var r = new EndianBinaryReader(Utils.GetResourceStream(MapPath + name + MapExtension)))
+            using (var r = new EndianBinaryReader(Utils.GetResourceStream(MapPath + name + ".bin")))
             {
                 MapLayout = Layout.LoadOrGet(r.ReadInt32());
                 MapDetails = new Details(r);
@@ -251,7 +251,6 @@ namespace Kermalis.PokemonGameEngine.World
             }
         }
 
-        private const string MapExtension = ".pgemap";
         private const string MapPath = "Map.";
         private static readonly IdList _ids = new IdList(MapPath + "MapIds.txt");
         private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new Dictionary<int, WeakReference<Map>>();

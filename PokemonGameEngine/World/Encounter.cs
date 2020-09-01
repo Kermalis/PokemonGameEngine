@@ -31,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         private EncounterTable(string name)
         {
-            using (var r = new EndianBinaryReader(Utils.GetResourceStream(EncounterTablePath + name + EncounterTableExtension)))
+            using (var r = new EndianBinaryReader(Utils.GetResourceStream(EncounterTablePath + name + ".bin")))
             {
                 ChanceOfPhenomenon = r.ReadByte();
                 byte count = r.ReadByte();
@@ -43,7 +43,6 @@ namespace Kermalis.PokemonGameEngine.World
             }
         }
 
-        private const string EncounterTableExtension = ".pgeenctbl";
         private const string EncounterTablePath = "Encounter.";
         private static readonly IdList _ids = new IdList(EncounterTablePath + "EncounterTableIds.txt");
         private static readonly Dictionary<int, WeakReference<EncounterTable>> _loadedEncounterTables = new Dictionary<int, WeakReference<EncounterTable>>();
