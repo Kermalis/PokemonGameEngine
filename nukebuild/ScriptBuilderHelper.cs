@@ -28,25 +28,25 @@ internal static class ScriptBuilderHelper
     public static readonly Dictionary<ScriptCommand, Type[]> CommandArgs = new Dictionary<ScriptCommand, Type[]>
     {
         { ScriptCommand.End, Array.Empty<Type>() },
-        { ScriptCommand.GoTo, new[] { typeof(void*) } },
-        { ScriptCommand.Call, new[] { typeof(void*) } },
+        { ScriptCommand.GoTo, new[] { typeof(void*) } }, // Offset to go to
+        { ScriptCommand.Call, new[] { typeof(void*) } }, // Offset to jump to
         { ScriptCommand.Return, Array.Empty<Type>() },
         { ScriptCommand.HealParty, Array.Empty<Type>() },
-        { ScriptCommand.GivePokemon, new[] { typeof(PBESpecies), typeof(byte) } },
-        { ScriptCommand.GivePokemonForm, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte) } },
-        { ScriptCommand.GivePokemonFormItem, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte), typeof(PBEItem) } },
-        { ScriptCommand.MoveObj, new[] { typeof(ushort), typeof(void*) } },
-        { ScriptCommand.AwaitObjMovement, new[] { typeof(ushort) } },
+        { ScriptCommand.GivePokemon, new[] { typeof(PBESpecies), typeof(byte) } }, // Species, level
+        { ScriptCommand.GivePokemonForm, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte) } }, // Species, form, level
+        { ScriptCommand.GivePokemonFormItem, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte), typeof(PBEItem) } }, // Species, form, level, item
+        { ScriptCommand.MoveObj, new[] { typeof(ushort), typeof(void*) } }, // Id, movement data offset
+        { ScriptCommand.AwaitObjMovement, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.DetachCamera, Array.Empty<Type>() },
-        { ScriptCommand.AttachCamera, new[] { typeof(ushort) } },
-        { ScriptCommand.Delay, new[] { typeof(ushort) } },
-        { ScriptCommand.SetFlag, new[] { typeof(Flag) } },
-        { ScriptCommand.ClearFlag, new[] { typeof(Flag) } },
-        { ScriptCommand.Warp, new[] { typeof(string), typeof(int), typeof(int), typeof(byte) } },
-        { ScriptCommand.Message, new[] { typeof(void*) } },
+        { ScriptCommand.AttachCamera, new[] { typeof(ushort) } }, // Id
+        { ScriptCommand.Delay, new[] { typeof(ushort) } }, // Delay
+        { ScriptCommand.SetFlag, new[] { typeof(Flag) } }, // Flag
+        { ScriptCommand.ClearFlag, new[] { typeof(Flag) } }, // Flag
+        { ScriptCommand.Warp, new[] { typeof(string), typeof(int), typeof(int), typeof(byte) } }, // Map id, x, y, elevation
+        { ScriptCommand.Message, new[] { typeof(void*) } }, // String data offset
         { ScriptCommand.AwaitMessage, Array.Empty<Type>() },
-        { ScriptCommand.LockObj, new[] { typeof(ushort) } },
-        { ScriptCommand.UnlockObj, new[] { typeof(ushort) } },
+        { ScriptCommand.LockObj, new[] { typeof(ushort) } }, // Id
+        { ScriptCommand.UnlockObj, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.LockAllObjs, Array.Empty<Type>() },
         { ScriptCommand.UnlockAllObjs, Array.Empty<Type>() },
     };
