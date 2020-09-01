@@ -51,17 +51,17 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.UnlockObj, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.LockAllObjs, Array.Empty<Type>() },
         { ScriptCommand.UnlockAllObjs, Array.Empty<Type>() },
-        { ScriptCommand.SetVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
-        { ScriptCommand.AddVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
-        { ScriptCommand.SubVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
-        { ScriptCommand.MulVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
-        { ScriptCommand.DivVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
-        { ScriptCommand.RshftVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
-        { ScriptCommand.LshiftVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
-        { ScriptCommand.AndVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
-        { ScriptCommand.OrVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
-        { ScriptCommand.XorVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
-        { ScriptCommand.RandomizeVar, new[] { typeof(Var), typeof(ushort), typeof(ushort) } }, // Var, minValue, maxValue
+        { ScriptCommand.SetVar, new[] { typeof(Var), typeof(short) } }, // Var, value
+        { ScriptCommand.AddVar, new[] { typeof(Var), typeof(short) } }, // Var, value
+        { ScriptCommand.SubVar, new[] { typeof(Var), typeof(short) } }, // Var, value
+        { ScriptCommand.MulVar, new[] { typeof(Var), typeof(short) } }, // Var, value
+        { ScriptCommand.DivVar, new[] { typeof(Var), typeof(short) } }, // Var, value
+        { ScriptCommand.RshftVar, new[] { typeof(Var), typeof(short) } }, // Var, value
+        { ScriptCommand.LshiftVar, new[] { typeof(Var), typeof(short) } }, // Var, value
+        { ScriptCommand.AndVar, new[] { typeof(Var), typeof(short) } }, // Var, value
+        { ScriptCommand.OrVar, new[] { typeof(Var), typeof(short) } }, // Var, value
+        { ScriptCommand.XorVar, new[] { typeof(Var), typeof(short) } }, // Var, value
+        { ScriptCommand.RandomizeVar, new[] { typeof(Var), typeof(short), typeof(short) } }, // Var, minValue, maxValue
     };
 
     static ScriptBuilderHelper()
