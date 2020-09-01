@@ -527,12 +527,13 @@ public sealed partial class Build
     }
     private void BuildWorld()
     {
-        // Encounter tables
+        #region Encounter tables
         foreach (string name in EncounterTable.Ids)
         {
             new EncounterTable(name).Save();
         }
-        // Obj sprites
+        #endregion
+        #region Obj sprites
         using (var ms = new MemoryStream())
         using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
         {
@@ -563,12 +564,14 @@ public sealed partial class Build
                 ms.CopyTo(fw.BaseStream);
             }
         }
-        // Maps
+        #endregion
+        #region Maps
         foreach (string name in Map.Ids)
         {
             new Map(name).Save();
         }
-        // Tile animations
+        #endregion
+        #region Tile animations
         using (var ms = new MemoryStream())
         using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
         {
@@ -612,6 +615,7 @@ public sealed partial class Build
                 ms.CopyTo(fw.BaseStream);
             }
         }
+        #endregion
     }
 }
 
