@@ -82,7 +82,7 @@
         "MovementY": 0,
         "TrainerType": "None",
         "TrainerSight": 0,
-        "Script": "TestMessage",
+        "Script": "TestScript",
         "Flag": "MAX"
       },
       {
@@ -96,7 +96,7 @@
         "MovementY": 0,
         "TrainerType": "None",
         "TrainerSight": 0,
-        "Script": "TestScript",
+        "Script": "TestMessage",
         "Flag": "MAX"
       },
       {
@@ -138,7 +138,7 @@
         "MovementY": 0,
         "TrainerType": "None",
         "TrainerSight": 0,
-        "Script": "TestMessage",
+        "Script": "TestScript",
         "Flag": "MAX"
       },
       {

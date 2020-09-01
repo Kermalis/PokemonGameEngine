@@ -3,9 +3,9 @@
 // Below we have "@TestScript" which is a global label, meaning it can be referenced by the engine itself (like the Surf and Headbutt Tree scripts) rather than just from scripts.
 @TestScript
 LockAllObjs
-RandomizeVar Var.Test0 1 649 // Set a random value in var "Test0" that's between 1 and 649 inclusive
-RandomizeVar Var.Test1 1 100 // Set a random value in var "Test1" that's between 1 and 100 inclusive
-GivePokemon Var.Test0 Var.Test1 // Give a random species with a random level. The species is taken from Var.Test0 and the level is taken from Var.Test1
+RandomizeVar Var.Test1 1 649 // Set a random value in var "Test1" that's between 1 and 649 inclusive
+RandomizeVar Var.Test2 1 100 // Set a random value in var "Test2" that's between 1 and 100 inclusive
+GivePokemon Var.Test1 Var.Test2 // Give a random species with a random level. The species is taken from Var.Test1 and the level is taken from Var.Test2
 GoTo TestJump // We will go to TestJump and not come back
 
 // Below we have "#TestCall" which is a local label, meaning it can only be referenced by scripts, although it can be referenced by other scripts too.
@@ -13,8 +13,8 @@ GoTo TestJump // We will go to TestJump and not come back
 GivePokemonFormItem Species.Arceus Form.Arceus_Psychic 50 Item.MindPlate // We are using prefixes to denote that we should refer to a specific enum to parse these arguments
 MoveObj 0xFFFF TestMovements // 0xFFFF is the player's ID, but I will have some defines for this later
 AwaitObjMovement 0xFFFF
-MoveObj 3 TestMovements
-AwaitObjMovement 3
+MoveObj Var.LastTalked TestMovements // Move the last obj we talked to
+AwaitObjMovement Var.LastTalked
 Return // Go back to where we came from
 
 #TestJump

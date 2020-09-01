@@ -27,7 +27,8 @@
 
     public enum Var : byte
     {
-        Test0,
+        /// <summary>Automatically set to the last EventObj the player interacted with</summary>
+        LastTalked,
         Test1,
         Test2,
         Test3,

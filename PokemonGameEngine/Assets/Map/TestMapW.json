@@ -59,7 +59,7 @@
         "MovementY": 16,
         "TrainerType": "SeeAllDirections",
         "TrainerSight": 2,
-        "Script": "TestMessage",
+        "Script": "TestScript",
         "Flag": "MAX"
       }
     ]

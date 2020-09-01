@@ -73,7 +73,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                     string script = o.Script;
                     if (script != string.Empty)
                     {
-                        ScriptLoader.LoadScript(script);
+                        Game.Instance.Save.Vars[Var.LastTalked] = (short)o.Id; // Special var for the last person we talked to
+                        ScriptLoader.LoadScript(script); // Load script after LastTalked is set
                         return;
                     }
                 }
