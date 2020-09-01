@@ -5,6 +5,7 @@ using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
+using System;
 using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Script
@@ -53,6 +54,20 @@ namespace Kermalis.PokemonGameEngine.Script
             }
         }
 
+        // Regular "Var" enum is not handled here, use _reader.ReadEnum<Var>() instead
+        private TEnum ReadVarOrEnum<TEnum>() where TEnum : struct, Enum
+        {
+            Type enumType = typeof(TEnum);
+            Type underlyingType = Enum.GetUnderlyingType(enumType);
+            switch (underlyingType.FullName)
+            {
+                case "System.Byte":
+                case "System.SByte":
+                case "System.Int16":
+                case "System.UInt16": return (TEnum)Enum.ToObject(enumType, ReadVarOrValue());
+                default: return _reader.ReadEnum<TEnum>();
+            }
+        }
         private short ReadVarOrValue()
         {
             return Game.Instance.Save.Vars.GetVarOrValue(_reader.ReadUInt32());
@@ -86,25 +101,25 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private void GivePokemonCommand()
         {
-            PBESpecies species = _reader.ReadEnum<PBESpecies>();
+            PBESpecies species = ReadVarOrEnum<PBESpecies>();
             byte level = (byte)ReadVarOrValue();
             var pkmn = new PartyPokemon(species, 0, level);
             Game.Instance.Save.GivePokemon(pkmn);
         }
         private void GivePokemonFormCommand()
         {
-            PBESpecies species = _reader.ReadEnum<PBESpecies>();
-            PBEForm form = _reader.ReadEnum<PBEForm>();
+            PBESpecies species = ReadVarOrEnum<PBESpecies>();
+            PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
             var pkmn = new PartyPokemon(species, form, level);
             Game.Instance.Save.GivePokemon(pkmn);
         }
         private void GivePokemonFormItemCommand()
         {
-            PBESpecies species = _reader.ReadEnum<PBESpecies>();
-            PBEForm form = _reader.ReadEnum<PBEForm>();
+            PBESpecies species = ReadVarOrEnum<PBESpecies>();
+            PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
-            PBEItem item = _reader.ReadEnum<PBEItem>();
+            PBEItem item = ReadVarOrEnum<PBEItem>();
             var pkmn = new PartyPokemon(species, form, level);
             pkmn.Item = item;
             Game.Instance.Save.GivePokemon(pkmn);
@@ -160,12 +175,12 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private void SetFlagCommand()
         {
-            Flag flag = _reader.ReadEnum<Flag>();
+            Flag flag = ReadVarOrEnum<Flag>();
             Game.Instance.Save.Flags[flag] = true;
         }
         private void ClearFlagCommand()
         {
-            Flag flag = _reader.ReadEnum<Flag>();
+            Flag flag = ReadVarOrEnum<Flag>();
             Game.Instance.Save.Flags[flag] = false;
         }
 

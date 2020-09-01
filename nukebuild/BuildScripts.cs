@@ -87,6 +87,17 @@ public sealed partial class Build
         }
     }
 
+    private bool WriteVarIfVar(string str)
+    {
+        if (str.StartsWith(ScriptBuilderHelper.VarPrefix))
+        {
+            str = str.Substring(ScriptBuilderHelper.VarPrefix.Length);
+            uint value = ushort.MaxValue + 1 + Convert.ToUInt32(Enum.Parse(typeof(Var), str));
+            _writer.Write(value);
+            return true;
+        }
+        return false;
+    }
     private void WriteArg(Type argType, string str)
     {
         switch (argType.FullName)
@@ -97,11 +108,8 @@ public sealed partial class Build
             case "System.Int16":
             case "System.UInt16":
             {
-                if (str.StartsWith(ScriptBuilderHelper.VarPrefix))
+                if (WriteVarIfVar(str))
                 {
-                    str = str.Substring(ScriptBuilderHelper.VarPrefix.Length);
-                    uint value = ushort.MaxValue + 1 + Convert.ToUInt32(Enum.Parse(typeof(Var), str));
-                    _writer.Write(value);
                     break;
                 }
                 else
@@ -146,17 +154,46 @@ public sealed partial class Build
                 _writer.Write(index);
                 break;
             }
-            // Write an enum like "Species.Bulbasaur"
+            // Write an enum like "Species.Bulbasaur" (can use var instead if the enum type is byte or short)
             default:
             {
                 if (!ScriptBuilderHelper.EnumDefines.TryGetValue(argType, out string prefix))
                 {
                     throw new ArgumentOutOfRangeException(nameof(argType));
                 }
+                bool shouldWriteAsVarable;
+                if (argType.IsEquivalentTo(typeof(Var)))
+                {
+                    shouldWriteAsVarable = false;
+                }
+                else
+                {
+                    Type underlyingType = Enum.GetUnderlyingType(argType);
+                    switch (underlyingType.FullName)
+                    {
+                        case "System.Byte":
+                        case "System.SByte":
+                        case "System.Int16":
+                        case "System.UInt16": shouldWriteAsVarable = true; break;
+                        default: shouldWriteAsVarable = false; break;
+                    }
+                }
                 if (str.StartsWith(prefix))
                 {
                     str = str.Substring(prefix.Length);
-                    _writer.Write((Enum)Enum.Parse(argType, str));
+                    object parsed = Enum.Parse(argType, str);
+                    if (shouldWriteAsVarable)
+                    {
+                        _writer.Write(Convert.ToUInt32(parsed)); // If the type is varable, write as a uint
+                    }
+                    else
+                    {
+                        _writer.Write((Enum)parsed);
+                    }
+                    break;
+                }
+                if (shouldWriteAsVarable && WriteVarIfVar(str)) // If type is varable, we must write a var
+                {
                     break;
                 }
                 throw new Exception($"Failed to parse enum of type \"{argType}\"");
