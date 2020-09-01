@@ -28,7 +28,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * Update the wiki as the engine grows
 * Changable tiles based on day/night
 * Saving
-* Flags/vars
+* Script conditionals (goto if, etc)
 * Events on the maps
 * Trainers
 * Capturing Pokémon

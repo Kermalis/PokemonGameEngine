@@ -21,7 +21,7 @@
     <AvaloniaResource Include="**\*.xaml">
       <SubType>Designer</SubType>
     </AvaloniaResource>
-    <Compile Include="..\PokemonGameEngine\Core\FlagEnum.cs" Link="FlagEnum.cs" />
+    <Compile Include="..\PokemonGameEngine\Core\FlagVarConstants.cs" Link="Core\FlagVarConstants.cs" />
     <Compile Include="..\PokemonGameEngine\World\WorldConstants.cs" Link="Core\WorldConstants.cs" />
     <Content Include="..\Shared Dependencies\PokemonBattleEngine.db">
       <Link>PokemonBattleEngine.db</Link>

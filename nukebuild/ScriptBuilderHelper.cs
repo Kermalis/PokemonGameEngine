@@ -8,9 +8,11 @@ using System.Collections.Generic;
 // A command with a variable amount of arguments would need extra work, so that's your problem lmao [or just make it into multiple commands like I did with GivePokemon :)]
 internal static class ScriptBuilderHelper
 {
+    public const string VarPrefix = "Var.";
     public static readonly Dictionary<Type, string> EnumDefines = new Dictionary<Type, string>()
     {
         { typeof(Flag), "Flag." },
+        { typeof(Var), VarPrefix },
         { typeof(PBEForm), "Form." },
         { typeof(PBEItem), "Item." },
         { typeof(PBESpecies), "Species." }
@@ -49,6 +51,17 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.UnlockObj, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.LockAllObjs, Array.Empty<Type>() },
         { ScriptCommand.UnlockAllObjs, Array.Empty<Type>() },
+        { ScriptCommand.SetVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
+        { ScriptCommand.AddVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
+        { ScriptCommand.SubVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
+        { ScriptCommand.MulVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
+        { ScriptCommand.DivVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
+        { ScriptCommand.RshftVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
+        { ScriptCommand.LshiftVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
+        { ScriptCommand.AndVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
+        { ScriptCommand.OrVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
+        { ScriptCommand.XorVar, new[] { typeof(Var), typeof(ushort) } }, // Var, value
+        { ScriptCommand.RandomizeVar, new[] { typeof(Var), typeof(ushort), typeof(ushort) } }, // Var, minValue, maxValue
     };
 
     static ScriptBuilderHelper()

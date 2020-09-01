@@ -7,6 +7,7 @@ namespace Kermalis.PokemonGameEngine.Core
     internal sealed class Save
     {
         public Flags Flags { get; }
+        public Vars Vars { get; }
         public string PlayerName { get; }
         public bool PlayerIsFemale { get; }
         public Party PlayerParty { get; }
@@ -16,6 +17,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public Save()
         {
             Flags = new Flags();
+            Vars = new Vars();
             PlayerName = "Dawn";
             PlayerIsFemale = true;
             PlayerParty = new Party() { new PartyPokemon(PBESpecies.Skitty, 0, PBESettings.DefaultMaxLevel) };

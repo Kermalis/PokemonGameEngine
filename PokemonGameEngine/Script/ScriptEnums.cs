@@ -53,5 +53,16 @@
         UnlockObj,
         LockAllObjs,
         UnlockAllObjs,
+        SetVar,
+        AddVar,
+        SubVar,
+        MulVar,
+        DivVar,
+        RshftVar,
+        LshiftVar,
+        AndVar,
+        OrVar,
+        XorVar,
+        RandomizeVar,
     }
 }

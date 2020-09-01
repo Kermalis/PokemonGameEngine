@@ -3,7 +3,8 @@
 // Below we have "@TestScript" which is a global label, meaning it can be referenced by the engine itself (like the Surf and Headbutt Tree scripts) rather than just from scripts.
 @TestScript
 LockAllObjs
-GivePokemon Species.Shaymin 5
+RandomizeVar Var.Test0 1 100 // Set a random value in var "Test0" that's between 1 and 100 inclusive
+GivePokemon Species.Shaymin Var.Test0 // Give a Shaymin that has that random value we put in var "Test0"
 GoTo TestJump // We will go to TestJump and not come back
 
 // Below we have "#TestCall" which is a local label, meaning it can only be referenced by scripts, although it can be referenced by other scripts too.

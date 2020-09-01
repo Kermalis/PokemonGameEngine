@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Scripts;
 using Nuke.Common.IO;
 using System;
@@ -90,21 +91,38 @@ public sealed partial class Build
     {
         switch (argType.FullName)
         {
-            case "System.Byte": _writer.Write((byte)ParseInt(str)); break;
-            case "System.SByte": _writer.Write((sbyte)ParseInt(str)); break;
-            case "System.Int16": _writer.Write((short)ParseInt(str)); break;
-            case "System.UInt16": _writer.Write((ushort)ParseInt(str)); break;
-            case "System.Int32": _writer.Write((int)ParseInt(str)); break;
-            case "System.UInt32": _writer.Write((uint)ParseInt(str)); break;
-            case "System.Int64": _writer.Write(ParseInt(str)); break;
-            case "System.UInt64": _writer.Write((ulong)ParseInt(str)); break;
+            // Byte and Short can use Vars as their arguments
+            case "System.Byte":
+            case "System.SByte":
+            case "System.Int16":
+            case "System.UInt16":
+            {
+                if (str.StartsWith(ScriptBuilderHelper.VarPrefix))
+                {
+                    str = str.Substring(ScriptBuilderHelper.VarPrefix.Length);
+                    uint value = ushort.MaxValue + 1 + Convert.ToUInt32(Enum.Parse(typeof(Var), str));
+                    _writer.Write(value);
+                    break;
+                }
+                else
+                {
+                    goto case "System.Int32";
+                }
+            }
+            // Write raw values
+            case "System.Int32":
+            case "System.UInt32": _writer.Write((int)ParseInt(str)); break;
+            case "System.Int64":
+            case "System.UInt64": _writer.Write(ParseInt(str)); break;
+            // Pointers
             case "System.Void*":
             {
                 _pointers.Add(new Pointer { Label = str, Offset = _writer.BaseStream.Position });
                 _writer.Write(0u); // Write a nullptr which we will update later
                 break;
             }
-            case "System.String": // Write an ID like "Map.TestMapC" or "0"
+            // Write an ID like "Map.TestMapC" or "0"
+            case "System.String":
             {
                 int index = str.IndexOf('.');
                 if (index == -1)
@@ -128,7 +146,8 @@ public sealed partial class Build
                 _writer.Write(index);
                 break;
             }
-            default: // Write an enum like "Species.Bulbasaur"
+            // Write an enum like "Species.Bulbasaur"
+            default:
             {
                 if (!ScriptBuilderHelper.EnumDefines.TryGetValue(argType, out string prefix))
                 {
@@ -393,7 +412,7 @@ public sealed partial class Build
             DoOp(); // Handle last
             return ret;
         }
-        throw new ArgumentOutOfRangeException(nameof(value));
+        throw new FormatException(value);
     }
 }
 
