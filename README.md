@@ -29,7 +29,6 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * Changable tiles based on day/night
 * Saving
 * Trainers
-* Capturing Pokémon
 * Default menus
 * Sound/music
 * Bike/surf
