@@ -74,19 +74,6 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             return Game.Instance.Save.Vars.GetVarOrValue(_reader.ReadUInt32());
         }
-        private bool ConditionalMet(long value1, ScriptConditional cond, long value2)
-        {
-            switch (cond)
-            {
-                case ScriptConditional.Equal: return value1 == value2;
-                case ScriptConditional.GreaterEqual: return value1 >= value2;
-                case ScriptConditional.LessEqual: return value1 <= value2;
-                case ScriptConditional.NotEqual: return value1 != value2;
-                case ScriptConditional.Greater: return value1 > value2;
-                case ScriptConditional.Less: return value1 < value2;
-                default: throw new InvalidDataException();
-            }
-        }
 
         private void EndCommand()
         {
@@ -114,7 +101,7 @@ namespace Kermalis.PokemonGameEngine.Script
             short value1 = ReadVarOrValue();
             ScriptConditional cond = ReadVarOrEnum<ScriptConditional>();
             short value2 = ReadVarOrValue();
-            if (ConditionalMet(value1, cond, value2))
+            if (cond.Match(value1, value2))
             {
                 _reader.BaseStream.Position = offset;
             }
