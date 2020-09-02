@@ -124,8 +124,7 @@ namespace Kermalis.PokemonGameEngine.Script
             uint offset = _reader.ReadUInt32();
             Flag flag = ReadVarOrEnum<Flag>();
             byte value = (byte)ReadVarOrValue();
-            bool flagSet = Game.Instance.Save.Flags[flag];
-            if ((flagSet && value != 0) || (!flagSet && value == 0))
+            if (Game.Instance.Save.Flags[flag] ? value != 0 : value == 0)
             {
                 _reader.BaseStream.Position = offset;
             }
