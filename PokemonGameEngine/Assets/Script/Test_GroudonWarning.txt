@@ -1,0 +1,15 @@
+@Test_GroudonWarning
+LockAllObjs
+GoToIfFlag Test_GroudonWarningMessage Flag.Test_GroudonVisible 0
+
+Message TestText_GroudonGone
+GoTo AwaitMessageUnlockAllEnd
+
+#Test_GroudonWarningMessage
+Message TestText_GroudonWarning
+GoTo AwaitMessageUnlockAllEnd
+
+#TestText_GroudonWarning
+"Legend has it that a vicious beast lives\ndeep at the heart of this cave."
+#TestText_GroudonGone
+"The legends of this cave were true!"

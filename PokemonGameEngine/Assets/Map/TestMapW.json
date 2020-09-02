@@ -59,7 +59,7 @@
         "MovementY": 16,
         "TrainerType": "SeeAllDirections",
         "TrainerSight": 2,
-        "Script": "TestScript",
+        "Script": "Test_GroudonWarning",
         "Flag": "MAX"
       }
     ]

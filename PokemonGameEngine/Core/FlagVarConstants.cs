@@ -2,7 +2,7 @@
 {
     public enum Flag : byte
     {
-        Test0,
+        Test_GroudonVisible,
         Test1,
         Test2,
         Test3,

@@ -1,5 +1,15 @@
 ﻿namespace Kermalis.PokemonGameEngine.Scripts
 {
+    public enum ScriptConditional : byte
+    {
+        Equal,
+        GreaterEqual,
+        LessEqual,
+        NotEqual,
+        Less,
+        Greater
+    }
+
     public enum ScriptMovement : byte
     {
         End,
@@ -64,5 +74,7 @@
         OrVar,
         XorVar,
         RandomizeVar,
+        GoToIf,
+        GoToIfFlag,
     }
 }

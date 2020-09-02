@@ -12,6 +12,7 @@ internal static class ScriptBuilderHelper
     public static readonly Dictionary<Type, string> EnumDefines = new Dictionary<Type, string>()
     {
         { typeof(Flag), "Flag." },
+        { typeof(ScriptConditional), "C." },
         { typeof(Var), VarPrefix },
         { typeof(PBEForm), "Form." },
         { typeof(PBEItem), "Item." },
@@ -62,6 +63,8 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.OrVar, new[] { typeof(Var), typeof(short) } }, // Var, value
         { ScriptCommand.XorVar, new[] { typeof(Var), typeof(short) } }, // Var, value
         { ScriptCommand.RandomizeVar, new[] { typeof(Var), typeof(short), typeof(short) } }, // Var, minValue, maxValue
+        { ScriptCommand.GoToIf, new[] { typeof(void*), typeof(short), typeof(ScriptConditional), typeof(short) } }, // Offset to go to, value1, condition, value2
+        { ScriptCommand.GoToIfFlag, new[] { typeof(void*), typeof(Flag), typeof(byte) } }, // Offset to go to, flag, value
     };
 
     static ScriptBuilderHelper()

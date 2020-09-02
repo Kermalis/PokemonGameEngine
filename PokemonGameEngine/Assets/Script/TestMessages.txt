@@ -1,9 +1,23 @@
 @TestMessage
 LockAllObjs
-Message TestText
+RandomizeVar Var.Test1 0 1
+GoToIf Test_SetGroudonGone Var.Test1 C.Equal 0
+
+ClearFlag Flag.Test_GroudonVisible
+Message TestText_GroudonActive
+GoTo AwaitMessageUnlockAllEnd
+
+#Test_SetGroudonGone
+SetFlag Flag.Test_GroudonVisible
+Message TestText_GroudonHidden
+GoTo AwaitMessageUnlockAllEnd
+
+#AwaitMessageUnlockAllEnd
 AwaitMessage
 UnlockAllObjs
 End
 
-#TestText
-"Hello world!\nBleem blam bloom"
+#TestText_GroudonHidden
+"Groudon hidden."
+#TestText_GroudonActive
+"Groudon active."

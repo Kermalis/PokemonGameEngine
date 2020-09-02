@@ -50,6 +50,8 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.OrVar: OrVarCommand(); break;
                 case ScriptCommand.XorVar: XorVarCommand(); break;
                 case ScriptCommand.RandomizeVar: RandomizeVarCommand(); break;
+                case ScriptCommand.GoToIf: GoToIfCommand(); break;
+                case ScriptCommand.GoToIfFlag: GoToIfFlagCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -72,6 +74,19 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             return Game.Instance.Save.Vars.GetVarOrValue(_reader.ReadUInt32());
         }
+        private bool ConditionalMet(long value1, ScriptConditional cond, long value2)
+        {
+            switch (cond)
+            {
+                case ScriptConditional.Equal: return value1 == value2;
+                case ScriptConditional.GreaterEqual: return value1 >= value2;
+                case ScriptConditional.LessEqual: return value1 <= value2;
+                case ScriptConditional.NotEqual: return value1 != value2;
+                case ScriptConditional.Greater: return value1 > value2;
+                case ScriptConditional.Less: return value1 < value2;
+                default: throw new InvalidDataException();
+            }
+        }
 
         private void EndCommand()
         {
@@ -92,6 +107,28 @@ namespace Kermalis.PokemonGameEngine.Script
         private void ReturnCommand()
         {
             _reader.BaseStream.Position = _callStack.Pop();
+        }
+        private void GoToIfCommand()
+        {
+            uint offset = _reader.ReadUInt32();
+            short value1 = ReadVarOrValue();
+            ScriptConditional cond = ReadVarOrEnum<ScriptConditional>();
+            short value2 = ReadVarOrValue();
+            if (ConditionalMet(value1, cond, value2))
+            {
+                _reader.BaseStream.Position = offset;
+            }
+        }
+        private void GoToIfFlagCommand()
+        {
+            uint offset = _reader.ReadUInt32();
+            Flag flag = ReadVarOrEnum<Flag>();
+            byte value = (byte)ReadVarOrValue();
+            bool flagSet = Game.Instance.Save.Flags[flag];
+            if ((flagSet && value != 0) || (!flagSet && value == 0))
+            {
+                _reader.BaseStream.Position = offset;
+            }
         }
 
         private void HealPartyCommand()
