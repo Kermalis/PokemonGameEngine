@@ -66,10 +66,10 @@ namespace Kermalis.MapEditor.UI
                 Map.Events events = _map.MapEvents;
                 _brush.Color = Color.FromUInt32(0x80800080);
                 _text.Text = "W";
-                foreach (Map.Events.WarpEvent warp in events.Warps)
+                foreach (Map.Events.WarpEvent e in events.Warps)
                 {
-                    int ex = warp.X * Overworld.Block_NumPixelsX;
-                    int ey = warp.Y * Overworld.Block_NumPixelsY;
+                    int ex = e.X * Overworld.Block_NumPixelsX;
+                    int ey = e.Y * Overworld.Block_NumPixelsY;
                     var r2 = new Rect(ex, ey, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
                     context.FillRectangle(_brush, r2);
                     context.DrawRectangle(_pen, r2);
@@ -77,10 +77,21 @@ namespace Kermalis.MapEditor.UI
                 }
                 _brush.Color = Color.FromUInt32(0x80808000);
                 _text.Text = "O";
-                foreach (Map.Events.ObjEvent obj in events.Objs)
+                foreach (Map.Events.ObjEvent e in events.Objs)
                 {
-                    int ex = obj.X * Overworld.Block_NumPixelsX;
-                    int ey = obj.Y * Overworld.Block_NumPixelsY;
+                    int ex = e.X * Overworld.Block_NumPixelsX;
+                    int ey = e.Y * Overworld.Block_NumPixelsY;
+                    var r2 = new Rect(ex, ey, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
+                    context.FillRectangle(_brush, r2);
+                    context.DrawRectangle(_pen, r2);
+                    context.DrawText(Brushes.White, new Point(ex, ey), _text);
+                }
+                _brush.Color = Color.FromUInt32(0x80008000);
+                _text.Text = "S";
+                foreach (Map.Events.ScriptEvent e in events.ScriptTiles)
+                {
+                    int ex = e.X * Overworld.Block_NumPixelsX;
+                    int ey = e.Y * Overworld.Block_NumPixelsY;
                     var r2 = new Rect(ex, ey, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
                     context.FillRectangle(_brush, r2);
                     context.DrawRectangle(_pen, r2);

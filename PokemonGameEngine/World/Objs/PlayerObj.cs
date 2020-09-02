@@ -26,10 +26,23 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 _shouldRunTriggers = false; // #12 - Do not return before setting FinishedMoving to false
                 Position playerPos = Pos;
+                // ScriptTile
+                foreach (Map.Events.ScriptEvent se in Map.MapEvents.ScriptTiles)
+                {
+                    if (playerPos.IsSamePosition(se) && se.VarConditional.Match(Game.Instance.Save.Vars[se.Var], se.VarValue))
+                    {
+                        string script = se.Script;
+                        if (script != string.Empty)
+                        {
+                            ScriptLoader.LoadScript(script);
+                            return;
+                        }
+                    }
+                }
                 // Warp
                 foreach (Map.Events.WarpEvent warp in Map.MapEvents.Warps)
                 {
-                    if (playerPos.X == warp.X && playerPos.Y == warp.Y && playerPos.Elevation == warp.Elevation)
+                    if (playerPos.IsSamePosition(warp))
                     {
                         Game.Instance.TempWarp(warp);
                         return;

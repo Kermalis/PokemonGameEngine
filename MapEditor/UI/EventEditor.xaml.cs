@@ -99,6 +99,47 @@ namespace Kermalis.MapEditor.UI
             }
         }
 
+        public ObservableCollection<ScriptEventModel> ScriptTiles { get; } = new ObservableCollection<ScriptEventModel>();
+        private ScriptEventModel _selectedScriptTile;
+        public ScriptEventModel SelectedScriptTile
+        {
+            get => _selectedScriptTile;
+            set
+            {
+                if (value != _selectedScriptTile)
+                {
+                    _selectedScriptTile = value;
+                    OnPropertyChanged(nameof(SelectedScriptTile));
+                }
+            }
+        }
+        private bool _addScriptTileEnabled;
+        public bool AddScriptTileEnabled
+        {
+            get => _addScriptTileEnabled;
+            set
+            {
+                if (value != _addScriptTileEnabled)
+                {
+                    _addScriptTileEnabled = value;
+                    OnPropertyChanged(nameof(AddScriptTileEnabled));
+                }
+            }
+        }
+        private string _numScriptTilesText;
+        public string NumScriptTilesText
+        {
+            get => _numScriptTilesText;
+            private set
+            {
+                if (value != _numScriptTilesText)
+                {
+                    _numScriptTilesText = value;
+                    OnPropertyChanged(nameof(NumScriptTilesText));
+                }
+            }
+        }
+
         private readonly EventsImage _eventsImage;
 
         public EventEditor()
@@ -130,6 +171,14 @@ namespace Kermalis.MapEditor.UI
             }
             SelectedObject = Objects.FirstOrDefault();
             UpdateNumObjects();
+            foreach (Map.Events.ScriptEvent se in events.ScriptTiles)
+            {
+                var sem = new ScriptEventModel(se);
+                sem.PropertyChanged += ScriptTile_PropertyChanged;
+                ScriptTiles.Add(sem);
+            }
+            SelectedScriptTile = ScriptTiles.FirstOrDefault();
+            UpdateNumScriptTiles();
             _eventsImage.InvalidateVisual();
         }
 
@@ -207,18 +256,60 @@ namespace Kermalis.MapEditor.UI
             NumObjectsText = $"{count}/{ushort.MaxValue} Objects";
         }
 
+        private void ScriptTile_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Update visual
+            switch (e.PropertyName)
+            {
+                case nameof(ObjectEventModel.X):
+                case nameof(ObjectEventModel.Y): _eventsImage.InvalidateVisual(); break;
+            }
+        }
+        public void AddScriptTile()
+        {
+            var se = new Map.Events.ScriptEvent();
+            _eventsImage.Map.MapEvents.ScriptTiles.Add(se);
+            var sem = new ScriptEventModel(se);
+            sem.PropertyChanged += ScriptTile_PropertyChanged;
+            ScriptTiles.Add(sem);
+            SelectedScriptTile = sem;
+            UpdateNumScriptTiles();
+            _eventsImage.InvalidateVisual();
+        }
+        public void RemoveScriptTile()
+        {
+            ScriptEventModel sem = _selectedScriptTile;
+            ScriptTiles.Remove(sem);
+            _eventsImage.Map.MapEvents.ScriptTiles.Remove(sem.Ev);
+            sem.Dispose();
+            SelectedScriptTile = ScriptTiles.FirstOrDefault();
+            UpdateNumScriptTiles();
+            _eventsImage.InvalidateVisual();
+        }
+        private void UpdateNumScriptTiles()
+        {
+            int count = _eventsImage.Map.MapEvents.ScriptTiles.Count;
+            AddScriptTileEnabled = count < ushort.MaxValue;
+            NumScriptTilesText = $"{count}/{ushort.MaxValue} Script Tiles";
+        }
+
         private void DisposeModels()
         {
-            foreach (WarpModel warp in Warps)
+            foreach (WarpModel e in Warps)
             {
-                warp.Dispose();
+                e.Dispose();
             }
             Warps.Clear();
-            foreach (ObjectEventModel obj in Objects)
+            foreach (ObjectEventModel e in Objects)
             {
-                obj.Dispose();
+                e.Dispose();
             }
             Objects.Clear();
+            foreach (ScriptEventModel e in ScriptTiles)
+            {
+                e.Dispose();
+            }
+            ScriptTiles.Clear();
             _eventsImage.InvalidateVisual();
         }
 

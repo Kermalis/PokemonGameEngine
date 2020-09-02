@@ -151,6 +151,64 @@
             </DockPanel>
           </Border>
         </TabItem>
+        <TabItem Header="Script Tiles">
+          <Border Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+            <DockPanel>
+              <Border DockPanel.Dock="Top" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                  <Button Content="Add Script Tile" Command="{Binding AddScriptTile}" IsEnabled="{Binding AddScriptTileEnabled}" />
+                  <Button Content="Remove Selected Script Tile" Command="{Binding RemoveScriptTile}" IsEnabled="{Binding SelectedScriptTile, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                  <TextBlock Text="{Binding NumScriptTilesText}" VerticalAlignment="Center" />
+                </StackPanel>
+              </Border>
+              <Border IsVisible="{Binding SelectedScriptTile, Converter={x:Static ObjectConverters.IsNotNull}}" Margin="0,2,0,0" Padding="2" Background="{DynamicResource ThemeBorderLowColor}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="{DynamicResource ThemeBorderThickness}">
+                <StackPanel Spacing="5" Orientation="Vertical">
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Selected Script Tile: " VerticalAlignment="Center" />
+                    <ComboBox Items="{Binding ScriptTiles}" SelectedItem="{Binding SelectedScriptTile}">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <StackPanel Spacing="5" Orientation="Horizontal">
+                            <TextBlock>
+                              <TextBlock.Text>
+                                <MultiBinding StringFormat="{}[X: {0}] [Y: {1}] [Elevation: {2}] [Var: {3}]">
+                                  <Binding Path="X"/>
+                                  <Binding Path="Y"/>
+                                  <Binding Path="Elevation"/>
+                                  <Binding Path="Var"/>
+                                </MultiBinding>
+                              </TextBlock.Text>
+                            </TextBlock>
+                          </StackPanel>
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="X: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedScriptTile.X}" />
+                    <TextBlock Text="  Y: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedScriptTile.Y}" />
+                    <TextBlock Text="  Elevation: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedScriptTile.Elevation}" />
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Var: " VerticalAlignment="Center" />
+                    <ComboBox Items="{x:Static uimodels:ScriptEventModel.SelectableVars}" SelectedItem="{Binding SelectedScriptTile.Var}" />
+                    <TextBlock Text="  Var Value: " VerticalAlignment="Center" />
+                    <NumericUpDown Value="{Binding SelectedScriptTile.VarValue}" />
+                    <TextBlock Text="  Var Condition: " VerticalAlignment="Center" />
+                    <ComboBox Items="{x:Static uimodels:ScriptEventModel.SelectableConditionals}" SelectedItem="{Binding SelectedScriptTile.VarConditional}" />
+                  </StackPanel>
+                  <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Script: " VerticalAlignment="Center" />
+                    <TextBox Text="{Binding SelectedScriptTile.Script}" />
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+            </DockPanel>
+          </Border>
+        </TabItem>
       </TabControl>
     </Border>
   </Grid>

@@ -62,6 +62,7 @@
         "Script": "Test_GroudonWarning",
         "Flag": "MAX"
       }
-    ]
+    ],
+    "ScriptTiles": []
   }
 }

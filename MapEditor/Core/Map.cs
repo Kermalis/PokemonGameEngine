@@ -4,6 +4,7 @@ using Avalonia.Platform;
 using Kermalis.EndianBinaryIO;
 using Kermalis.MapEditor.Util;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -144,6 +145,7 @@ namespace Kermalis.MapEditor.Core
                 public ObjEvent()
                 {
                     Script = string.Empty;
+                    Flag = Flag.MAX;
                 }
                 public ObjEvent(JToken j)
                 {
@@ -193,14 +195,64 @@ namespace Kermalis.MapEditor.Core
                     w.WriteEndObject();
                 }
             }
+            public sealed class ScriptEvent
+            {
+                public int X;
+                public int Y;
+                public byte Elevation;
+
+                public Var Var;
+                public short VarValue;
+                public ScriptConditional VarConditional;
+                public string Script;
+
+                public ScriptEvent()
+                {
+                    Script = string.Empty;
+                }
+                public ScriptEvent(JToken j)
+                {
+                    X = j[nameof(X)].Value<int>();
+                    Y = j[nameof(Y)].Value<int>();
+                    Elevation = j[nameof(Elevation)].Value<byte>();
+
+                    Var = j[nameof(Var)].EnumValue<Var>();
+                    VarValue = j[nameof(VarValue)].Value<short>();
+                    VarConditional = j[nameof(VarConditional)].EnumValue<ScriptConditional>();
+                    Script = j[nameof(Script)].Value<string>();
+                }
+
+                public void Write(JsonTextWriter w)
+                {
+                    w.WriteStartObject();
+                    w.WritePropertyName(nameof(X));
+                    w.WriteValue(X);
+                    w.WritePropertyName(nameof(Y));
+                    w.WriteValue(Y);
+                    w.WritePropertyName(nameof(Elevation));
+                    w.WriteValue(Elevation);
+
+                    w.WritePropertyName(nameof(Var));
+                    w.WriteEnum(Var);
+                    w.WritePropertyName(nameof(VarValue));
+                    w.WriteValue(VarValue);
+                    w.WritePropertyName(nameof(VarConditional));
+                    w.WriteEnum(VarConditional);
+                    w.WritePropertyName(nameof(Script));
+                    w.WriteValue(Script);
+                    w.WriteEndObject();
+                }
+            }
 
             public readonly List<WarpEvent> Warps;
             public readonly List<ObjEvent> Objs;
+            public readonly List<ScriptEvent> ScriptTiles;
 
             public Events()
             {
                 Warps = new List<WarpEvent>();
                 Objs = new List<ObjEvent>();
+                ScriptTiles = new List<ScriptEvent>();
             }
             public Events(JToken j)
             {
@@ -218,6 +270,13 @@ namespace Kermalis.MapEditor.Core
                 {
                     Objs.Add(new ObjEvent(arr[i]));
                 }
+                arr = (JArray)j[nameof(ScriptTiles)];
+                count = arr.Count;
+                ScriptTiles = new List<ScriptEvent>(count);
+                for (int i = 0; i < count; i++)
+                {
+                    ScriptTiles.Add(new ScriptEvent(arr[i]));
+                }
             }
 
             public void Write(JsonTextWriter w)
@@ -225,16 +284,23 @@ namespace Kermalis.MapEditor.Core
                 w.WriteStartObject();
                 w.WritePropertyName(nameof(Warps));
                 w.WriteStartArray();
-                foreach (WarpEvent warp in Warps)
+                foreach (WarpEvent e in Warps)
                 {
-                    warp.Write(w);
+                    e.Write(w);
                 }
                 w.WriteEndArray();
                 w.WritePropertyName(nameof(Objs));
                 w.WriteStartArray();
-                foreach (ObjEvent obj in Objs)
+                foreach (ObjEvent e in Objs)
                 {
-                    obj.Write(w);
+                    e.Write(w);
+                }
+                w.WriteEndArray();
+                w.WritePropertyName(nameof(ScriptTiles));
+                w.WriteStartArray();
+                foreach (ScriptEvent e in ScriptTiles)
+                {
+                    e.Write(w);
                 }
                 w.WriteEndArray();
                 w.WriteEndObject();

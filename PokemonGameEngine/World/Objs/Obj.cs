@@ -7,13 +7,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
     // Script movements handled in Script/ScriptMovement.cs
     internal abstract partial class Obj
     {
-        public struct Position
+        public struct Position : IXYElevation
         {
-            public int X;
-            public int Y;
-            public byte Elevation;
-            public int XOffset;
-            public int YOffset;
+            public int X { get; set; }
+            public int Y { get; set; }
+            public byte Elevation { get; set; }
+            public int XOffset { get; set; }
+            public int YOffset { get; set; }
 
             public Position(Map.Events.ObjEvent e)
             {

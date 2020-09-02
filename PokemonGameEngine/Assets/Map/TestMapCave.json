@@ -75,6 +75,7 @@
         "Script": "TestMessage",
         "Flag": "MAX"
       }
-    ]
+    ],
+    "ScriptTiles": []
   }
 }

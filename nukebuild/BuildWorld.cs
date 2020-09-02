@@ -1,6 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
 using Newtonsoft.Json.Linq;
 using Nuke.Common.IO;
@@ -292,9 +293,45 @@ public sealed partial class Build
                 w.Write(Flag);
             }
         }
+        private sealed class ScriptEvent
+        {
+            private readonly int X;
+            private readonly int Y;
+            private readonly byte Elevation;
+
+            private readonly Var Var;
+            private readonly short VarValue;
+            private readonly ScriptConditional VarConditional;
+            private readonly string Script;
+
+            public ScriptEvent(JToken j)
+            {
+                X = j[nameof(X)].Value<int>();
+                Y = j[nameof(Y)].Value<int>();
+                Elevation = j[nameof(Elevation)].Value<byte>();
+
+                Var = j[nameof(Var)].EnumValue<Var>();
+                VarValue = j[nameof(VarValue)].Value<short>();
+                VarConditional = j[nameof(VarConditional)].EnumValue<ScriptConditional>();
+                Script = j[nameof(Script)].Value<string>();
+            }
+
+            public void Write(EndianBinaryWriter w)
+            {
+                w.Write(X);
+                w.Write(Y);
+                w.Write(Elevation);
+
+                w.Write(Var);
+                w.Write(VarValue);
+                w.Write(VarConditional);
+                w.Write(Script, true);
+            }
+        }
 
         private readonly WarpEvent[] Warps;
         private readonly ObjEvent[] Objs;
+        private readonly ScriptEvent[] ScriptTiles;
 
         public Events(JToken j)
         {
@@ -312,6 +349,13 @@ public sealed partial class Build
             {
                 Objs[i] = new ObjEvent(arr[i]);
             }
+            arr = (JArray)j[nameof(ScriptTiles)];
+            count = arr.Count;
+            ScriptTiles = new ScriptEvent[count];
+            for (int i = 0; i < count; i++)
+            {
+                ScriptTiles[i] = new ScriptEvent(arr[i]);
+            }
         }
 
         public void Write(EndianBinaryWriter w)
@@ -327,6 +371,12 @@ public sealed partial class Build
             for (int i = 0; i < count; i++)
             {
                 Objs[i].Write(w);
+            }
+            count = (ushort)ScriptTiles.Length;
+            w.Write(count);
+            for (int i = 0; i < count; i++)
+            {
+                ScriptTiles[i].Write(w);
             }
         }
     }

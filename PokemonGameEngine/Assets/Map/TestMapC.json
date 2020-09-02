@@ -155,6 +155,17 @@
         "Script": "TestMessage",
         "Flag": "Test2"
       }
+    ],
+    "ScriptTiles": [
+      {
+        "X": 16,
+        "Y": 23,
+        "Elevation": 0,
+        "Var": "Test1",
+        "VarValue": 387,
+        "VarConditional": "GreaterEqual",
+        "Script": "TestMessage"
+      }
     ]
   }
 }

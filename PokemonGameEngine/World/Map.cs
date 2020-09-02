@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.Util;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
@@ -47,7 +48,7 @@ namespace Kermalis.PokemonGameEngine.World
         }
         public sealed class Events
         {
-            public sealed class WarpEvent : IWarp
+            public sealed class WarpEvent : IWarp, IXYElevation
             {
                 public int X { get; }
                 public int Y { get; }
@@ -70,11 +71,11 @@ namespace Kermalis.PokemonGameEngine.World
                     DestElevation = r.ReadByte();
                 }
             }
-            public sealed class ObjEvent
+            public sealed class ObjEvent : IXYElevation
             {
-                public readonly int X;
-                public readonly int Y;
-                public readonly byte Elevation;
+                public int X { get; }
+                public int Y { get; }
+                public byte Elevation { get; }
 
                 public readonly ushort Id;
                 public readonly string Sprite;
@@ -103,9 +104,33 @@ namespace Kermalis.PokemonGameEngine.World
                     Flag = r.ReadEnum<Flag>();
                 }
             }
+            public sealed class ScriptEvent : IXYElevation
+            {
+                public int X { get; }
+                public int Y { get; }
+                public byte Elevation { get; }
+
+                public readonly Var Var;
+                public readonly short VarValue;
+                public readonly ScriptConditional VarConditional;
+                public readonly string Script;
+
+                public ScriptEvent(EndianBinaryReader r)
+                {
+                    X = r.ReadInt32();
+                    Y = r.ReadInt32();
+                    Elevation = r.ReadByte();
+
+                    Var = r.ReadEnum<Var>();
+                    VarValue = r.ReadInt16();
+                    VarConditional = r.ReadEnum<ScriptConditional>();
+                    Script = r.ReadStringNullTerminated();
+                }
+            }
 
             public readonly WarpEvent[] Warps;
             public readonly ObjEvent[] Objs;
+            public readonly ScriptEvent[] ScriptTiles;
 
             public Events(EndianBinaryReader r)
             {
@@ -120,6 +145,12 @@ namespace Kermalis.PokemonGameEngine.World
                 for (int i = 0; i < count; i++)
                 {
                     Objs[i] = new ObjEvent(r);
+                }
+                count = r.ReadUInt16();
+                ScriptTiles = new ScriptEvent[count];
+                for (int i = 0; i < count; i++)
+                {
+                    ScriptTiles[i] = new ScriptEvent(r);
                 }
             }
         }
