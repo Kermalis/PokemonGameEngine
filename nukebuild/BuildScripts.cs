@@ -349,7 +349,7 @@ public sealed partial class Build
                 }
                 foreach (ScriptCommand cmd in ScriptBuilderHelper.Commands)
                 {
-                    if (str == cmd.ToString())
+                    if (str.Equals(cmd.ToString(), StringComparison.OrdinalIgnoreCase))
                     {
                         _writer.Write(cmd);
                         cmdArgTypes = ScriptBuilderHelper.CommandArgs[cmd];
