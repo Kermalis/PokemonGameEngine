@@ -52,6 +52,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.RandomizeVar: RandomizeVarCommand(); break;
                 case ScriptCommand.GoToIf: GoToIfCommand(); break;
                 case ScriptCommand.GoToIfFlag: GoToIfFlagCommand(); break;
+                case ScriptCommand.BufferSpeciesName: BufferSpeciesNameCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -222,7 +223,7 @@ namespace Kermalis.PokemonGameEngine.Script
             long returnOffset = _reader.BaseStream.Position;
             string text = _reader.ReadStringNullTerminated(textOffset);
             _reader.BaseStream.Position = returnOffset;
-            Game.Instance.MessageBoxes.Add(new MessageBox(text));
+            Game.Instance.MessageBoxes.Add(new MessageBox(Game.Instance.StringBuffers.ApplyBuffers(text)));
         }
         private void AwaitMessageCommand()
         {
@@ -327,6 +328,13 @@ namespace Kermalis.PokemonGameEngine.Script
             short max = ReadVarOrValue();
             short value = (short)PBEDataProvider.GlobalRandom.RandomInt(min, max);
             Game.Instance.Save.Vars[var] = value;
+        }
+
+        private void BufferSpeciesNameCommand()
+        {
+            byte buffer = (byte)ReadVarOrValue();
+            PBESpecies species = ReadVarOrEnum<PBESpecies>();
+            Game.Instance.StringBuffers.Buffers[buffer] = PBEDataProvider.Instance.GetSpeciesName(species).English;
         }
     }
 }

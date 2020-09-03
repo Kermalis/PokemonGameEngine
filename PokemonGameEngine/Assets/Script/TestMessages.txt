@@ -18,6 +18,6 @@ UnlockAllObjs
 End
 
 #TestText_GroudonHidden
-"Groudon hidden."
+"Groudon hidden.\nAlso, nice {BUF 0} you have there."
 #TestText_GroudonActive
-"Groudon active."
+"Groudon active.\nAlso, nice {BUF 0} you have there."

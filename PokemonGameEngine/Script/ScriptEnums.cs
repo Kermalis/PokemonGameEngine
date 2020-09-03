@@ -76,5 +76,6 @@
         RandomizeVar,
         GoToIf,
         GoToIfFlag,
+        BufferSpeciesName,
     }
 }

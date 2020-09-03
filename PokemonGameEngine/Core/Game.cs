@@ -15,7 +15,9 @@ namespace Kermalis.PokemonGameEngine.Core
     internal sealed class Game
     {
         public static Game Instance { get; private set; }
+
         public Save Save { get; }
+        public StringBuffers StringBuffers { get; }
 
         public readonly List<ScriptContext> Scripts = new List<ScriptContext>();
         public readonly List<MessageBox> MessageBoxes = new List<MessageBox>();
@@ -31,6 +33,7 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             Instance = this;
             Save = new Save(); // Load/initialize Save
+            StringBuffers = new StringBuffers();
             var map = Map.LoadOrGet(0);
             const int x = 2;
             const int y = 29;
