@@ -10,6 +10,7 @@ namespace Kermalis.PokemonGameEngine.Render
     // ^^ This could be cool, not sure if we'd need it yet though
     internal sealed class RenderUtils
     {
+        #region SDL
         private static unsafe IntPtr ConvertSurfaceFormat(IntPtr surface)
         {
             IntPtr result = surface;
@@ -66,7 +67,9 @@ namespace Kermalis.PokemonGameEngine.Render
                 return SDL_image.IMG_LoadTextureTyped_RW(renderer, StreamToRWops(stream), 1, "PNG");
             }
         }
+        #endregion
 
+        #region Sheets
         public static unsafe Sprite[] LoadSpriteSheet(string resource, int spriteWidth, int spriteHeight)
         {
             uint[][] bitmaps = LoadBitmapSheet(resource, spriteWidth, spriteHeight);
@@ -111,7 +114,9 @@ namespace Kermalis.PokemonGameEngine.Render
             }
             return arr;
         }
+        #endregion
 
+        #region Rectangles
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void OverwriteRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
         {
@@ -212,7 +217,9 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
+        #endregion
 
+        #region Bitmaps
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
@@ -276,7 +283,9 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
+        #endregion
 
+        #region Lines
         public static unsafe void DrawHorizontalLine_Width(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, uint color)
         {
             if (y < 0 || y >= bmpHeight)
@@ -436,7 +445,9 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
+        #endregion
 
+        #region Ellipses
         // http://enchantia.com/graphapp/doc/tech/ellipses.html
         /// <summary>Works based on a center point and with radii. Even radii do not work properly.</summary>
         public static unsafe void FillEllipse_Center(uint* bmpAddress, int bmpWidth, int bmpHeight, int xCenter, int yCenter, int xRadius, int yRadius, uint color)
@@ -680,7 +691,9 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
+        #endregion
 
+        #region Rounded Rectangles
         // https://www.freebasic.net/forum/viewtopic.php?t=19874
         public static unsafe void DrawRoundedRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, int radius, uint color)
         {
@@ -788,7 +801,9 @@ namespace Kermalis.PokemonGameEngine.Render
             }
             FillRectangle_Points(bmpAddress, bmpWidth, bmpHeight, x1, y1 + radius, x2, y2 - radius, color); // Middle
         }
+        #endregion
 
+        #region Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe uint* GetPixelAddress(uint* bmpAddress, int bmpWidth, int x, int y)
         {
@@ -800,7 +815,9 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return x < bmpWidth && x + w > 0 && y < bmpHeight && y + h > 0;
         }
+        #endregion
 
+        #region Raw Drawing
         // Colors must be RGBA8888 (0xAABBCCDD - AA is A, BB is B, CC is G, DD is R)
         public static unsafe void ModulateUnchecked(uint* pixelAddress, float rMod, float gMod, float bMod, float aMod)
         {
@@ -857,7 +874,9 @@ namespace Kermalis.PokemonGameEngine.Render
                 DrawUnchecked(bmpAddress, bmpWidth, x, y, color);
             }
         }
+        #endregion
 
+        #region Colors
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Color(uint r, uint g, uint b, uint a)
         {
@@ -915,5 +934,6 @@ namespace Kermalis.PokemonGameEngine.Render
             uint b = GetB(color);
             return Color(r, g, b, newA);
         }
+        #endregion
     }
 }
