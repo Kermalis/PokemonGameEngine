@@ -36,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             else
             {
-                double speed = s == PBEStatus1.Paralyzed || pkmn.HPPercentage <= 0.25 ? 2d : 1d;
+                double speed = s == PBEStatus1.Paralyzed || s == PBEStatus1.Asleep || pkmn.HPPercentage <= 0.25 ? 2d : 1d;
                 BackSprite.SpeedModifier = speed;
                 FrontSprite.SpeedModifier = speed;
                 BackSprite.IsPaused = false;
