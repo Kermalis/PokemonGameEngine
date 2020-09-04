@@ -181,7 +181,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 return;
             }
 
-            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, 0.50f, 0.05f, false, foe);
+            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, 0.35f, 0.05f, false, foe);
             RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, 0.05f, 0.45f, true, ally);
 
             string msg = _message;
