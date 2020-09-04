@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.GUI
 {
@@ -142,6 +143,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
 
         // A single glyph
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void DrawGlyph(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, Glyph glyph, uint[] fontColors)
         {
             int ix = (int)(x * bmpWidth);
@@ -166,6 +168,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
         // Full string
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, string str, uint[] fontColors)
         {
             int ix = (int)(x * bmpWidth);
