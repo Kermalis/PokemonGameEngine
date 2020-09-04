@@ -167,6 +167,42 @@ namespace Kermalis.PokemonGameEngine.GUI
                 }
             }
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void DrawGlyph(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, int scale, Glyph glyph, uint[] fontColors)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            DrawGlyph(bmpAddress, bmpWidth, bmpHeight, ix, iy, scale, glyph, fontColors);
+        }
+        public unsafe void DrawGlyph(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int scale, Glyph glyph, uint[] fontColors)
+        {
+            if (scale <= 1)
+            {
+                DrawGlyph(bmpAddress, bmpWidth, bmpHeight, x, y, glyph, fontColors);
+                return;
+            }
+            int curBit = 0;
+            int curByte = 0;
+            for (int py = y; py < y + (FontHeight * scale); py += scale)
+            {
+                for (int px = x; px < x + (glyph.CharWidth * scale); px += scale)
+                {
+                    uint color = fontColors[(glyph.Bitmap[curByte] >> (8 - BitsPerPixel - curBit)) % (1 << BitsPerPixel)];
+                    for (int ys = 0; ys < scale; ys++)
+                    {
+                        for (int xs = 0; xs < scale; xs++)
+                        {
+                            RenderUtils.DrawChecked(bmpAddress, bmpWidth, bmpHeight, px + xs, py + ys, color);
+                        }
+                    }
+                    curBit = (curBit + BitsPerPixel) % 8;
+                    if (curBit == 0)
+                    {
+                        curByte++;
+                    }
+                }
+            }
+        }
         // Full string
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, string str, uint[] fontColors)
@@ -191,8 +227,37 @@ namespace Kermalis.PokemonGameEngine.GUI
                 }
             }
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, int scale, string str, uint[] fontColors)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            DrawString(bmpAddress, bmpWidth, bmpHeight, ix, iy, scale, str, fontColors);
+        }
+        public unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int scale, string str, uint[] fontColors)
+        {
+            if (scale <= 1)
+            {
+                DrawString(bmpAddress, bmpWidth, bmpHeight, x, y, str, fontColors);
+                return;
+            }
+            int nextXOffset = 0;
+            int nextYOffset = 0;
+            int index = 0;
+            while (index < str.Length)
+            {
+                int curX = (x + nextXOffset) * scale;
+                int curY = (y + nextYOffset) * scale;
+                Glyph glyph = GetGlyph(str, ref index, ref nextXOffset, ref nextYOffset);
+                if (glyph != null)
+                {
+                    DrawGlyph(bmpAddress, bmpWidth, bmpHeight, curX, curY, scale, glyph, fontColors);
+                }
+            }
+        }
     }
 
+    // 1x scale only for now
     internal sealed class StringPrinter
     {
         private readonly string _str;
