@@ -108,12 +108,16 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             void FadeToTransitionEnded()
             {
-                void FadeFromTransitionEnded()
+                void OnBagMenuGUIClosed()
                 {
-                    _fadeFromTransition = null;
+                    void FadeFromTransitionEnded()
+                    {
+                        _fadeFromTransition = null;
+                    }
+                    _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
+                    _bagGUI = null;
                 }
-                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
-                _bagGUI = new BagGUI(Save.PlayerInventory);
+                _bagGUI = new BagGUI(Save.PlayerInventory, Save.PlayerParty, OnBagMenuGUIClosed);
                 _fadeToTransition = null;
             }
             _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);

@@ -20,8 +20,12 @@ namespace Kermalis.PokemonGameEngine.Core
             Vars = new Vars();
             PlayerName = "Dawn";
             PlayerIsFemale = true;
-            PlayerParty = new Party() { new PartyPokemon(PBESpecies.Skitty, 0, PBESettings.DefaultMaxLevel) };
+            PlayerParty = new Party() { new PartyPokemon(PBESpecies.Pachirisu, 0, PBESettings.DefaultMaxLevel) };
             PlayerParty[0].Moveset[0].Move = PBEMove.Dig;
+            for (int i = 0; i < PBESettings.DefaultMaxPartySize - 1; i++)
+            {
+                Test_GiveRandomPokemon();
+            }
             PlayerInventory = new PlayerInventory();
             PlayerInventory.Add(PBEItem.PokeBall, 995);
             PlayerInventory.Add(PBEItem.RockyHelmet, 42);
@@ -35,6 +39,12 @@ namespace Kermalis.PokemonGameEngine.Core
             PlayerInventory.Add(PBEItem.DarkGem, 69);
             PlayerInventory.Add(PBEItem.FluffyTail, 888);
             Money = 473_123;
+        }
+
+        private void Test_GiveRandomPokemon()
+        {
+            (PBESpecies species, PBEForm form) = PBEDataProvider.GlobalRandom.RandomSpecies(true);
+            PlayerParty.Add(new PartyPokemon(species, form, (byte)PBEDataProvider.GlobalRandom.RandomInt(PBESettings.DefaultMinLevel, PBESettings.DefaultMaxLevel)));
         }
 
         // TODO: If party is full, send to a box, if boxes are full, error

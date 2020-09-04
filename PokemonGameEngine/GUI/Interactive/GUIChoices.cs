@@ -3,12 +3,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Kermalis.PokemonGameEngine.GUI
+namespace Kermalis.PokemonGameEngine.GUI.Interactive
 {
     internal abstract class GUIChoice
     {
         public Action Command;
         public bool IsEnabled;
+        public virtual bool IsSelected { get; set; }
 
         public GUIChoice(Action command, bool isEnabled = true)
         {
@@ -62,11 +63,15 @@ namespace Kermalis.PokemonGameEngine.GUI
             int curSelected = Selected;
             if (down && curSelected < _choices.Count - 1)
             {
+                _choices[curSelected].IsSelected = false;
                 Selected = curSelected + 1;
+                _choices[Selected].IsSelected = true;
             }
             if (up && curSelected > 0)
             {
+                _choices[curSelected].IsSelected = false;
                 Selected = curSelected - 1;
+                _choices[Selected].IsSelected = true;
             }
             if (a)
             {
@@ -80,9 +85,13 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public abstract unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight);
 
-        public void Add(T button)
+        public virtual void Add(T c)
         {
-            _choices.Add(button);
+            _choices.Add(c);
+            if (_choices.Count - 1 == Selected)
+            {
+                c.IsSelected = true;
+            }
         }
 
         public IEnumerator<T> GetEnumerator()

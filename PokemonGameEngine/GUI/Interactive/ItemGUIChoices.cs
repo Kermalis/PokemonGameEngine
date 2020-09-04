@@ -2,14 +2,10 @@
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Render;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Kermalis.PokemonGameEngine.GUI
+namespace Kermalis.PokemonGameEngine.GUI.Interactive
 {
-    internal class ItemGUIChoice : GUIChoice
+    internal sealed class ItemGUIChoice : GUIChoice
     {
         private readonly string _itemName;
         private readonly string _quantityStr;
@@ -37,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
     }
 
-    internal class ItemGUIChoices : GUIChoices<ItemGUIChoice>
+    internal sealed class ItemGUIChoices : GUIChoices<ItemGUIChoice>
     {
         public float X2;
         public float Y2;

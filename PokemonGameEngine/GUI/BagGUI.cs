@@ -1,12 +1,11 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Core;
+﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.GUI.Interactive;
+using Kermalis.PokemonGameEngine.GUI.Transition;
+using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Item;
+using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kermalis.PokemonGameEngine.GUI
 {
@@ -14,18 +13,38 @@ namespace Kermalis.PokemonGameEngine.GUI
     {
         private readonly PlayerInventory _inv;
 
+        private FadeFromColorTransition _fadeFromTransition;
+        private FadeToColorTransition _fadeToTransition;
+        private Action _onClosed;
+
+        private bool _isOnParty = false;
+
         private string _curPouchName;
         private InventoryPouch<InventorySlotNew> _curPouch;
+        private readonly PartyPkmnGUIChoices _partyChoices;
         private ItemGUIChoices _pouchChoices;
         private string _cashMoney;
         private int _cashMoneyWidth;
 
-        public BagGUI(PlayerInventory inv)
+        public BagGUI(PlayerInventory inv, Party party, Action onClosed)
         {
             _inv = inv;
 
+            _partyChoices = new PartyPkmnGUIChoices(0.03f, 0.18f, 0.47f, 0.97f, 0.004f);
+            foreach (PartyPokemon pkmn in party)
+            {
+                _partyChoices.Add(new PartyPkmnGUIChoice(pkmn, null));
+            }
+
             LoadPouch(ItemPouchType.Items);
             LoadCashMoney();
+
+            _onClosed = onClosed;
+            void FadeFromTransitionEnded()
+            {
+                _fadeFromTransition = null;
+            }
+            _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
         }
 
         private void LoadCashMoney()
@@ -47,15 +66,55 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
+        private void CloseMenu()
+        {
+            void FadeToTransitionEnded()
+            {
+                _fadeToTransition = null;
+                _onClosed.Invoke();
+                _onClosed = null;
+            }
+            _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
+        }
+
         public void LogicTick()
         {
-            _pouchChoices.HandleInputs();
+            if (_fadeToTransition != null || _fadeFromTransition != null)
+            {
+                return;
+            }
+
+            if (InputManager.IsPressed(Key.B))
+            {
+                CloseMenu();
+                return;
+            }
+            if (_isOnParty)
+            {
+                if (InputManager.IsPressed(Key.Right))
+                {
+                    _isOnParty = false;
+                    return;
+                }
+                _partyChoices.HandleInputs();
+            }
+            else
+            {
+                if (InputManager.IsPressed(Key.Left))
+                {
+                    _isOnParty = true;
+                    return;
+                }
+                _pouchChoices.HandleInputs();
+            }
         }
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             // Background
             RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(215, 231, 230, 255));
+
+            _partyChoices.Render(bmpAddress, bmpWidth, bmpHeight);
 
             // Draw pouch tabs background
             int x1 = (int)(0.60f * bmpWidth);
@@ -74,6 +133,9 @@ namespace Kermalis.PokemonGameEngine.GUI
 
             // Draw item list
             _pouchChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+
+            _fadeFromTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            _fadeToTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
         }
     }
 }

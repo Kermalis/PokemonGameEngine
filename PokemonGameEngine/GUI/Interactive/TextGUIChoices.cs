@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Kermalis.PokemonGameEngine.GUI
+namespace Kermalis.PokemonGameEngine.GUI.Interactive
 {
-    internal class TextGUIChoice : GUIChoice
+    internal sealed class TextGUIChoice : GUIChoice
     {
         public string Text;
 
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
     }
 
-    internal class TextGUIChoices : GUIChoices<TextGUIChoice>
+    internal sealed class TextGUIChoices : GUIChoices<TextGUIChoice>
     {
         public Font Font;
         public uint[] FontColors;
