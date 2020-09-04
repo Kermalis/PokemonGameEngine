@@ -142,6 +142,12 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
 
         // A single glyph
+        public unsafe void DrawGlyph(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, Glyph glyph, uint[] fontColors)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            DrawGlyph(bmpAddress, bmpWidth, bmpHeight, ix, iy, glyph, fontColors);
+        }
         public unsafe void DrawGlyph(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, Glyph glyph, uint[] fontColors)
         {
             int curBit = 0;
@@ -160,6 +166,12 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
         // Full string
+        public unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, string str, uint[] fontColors)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            DrawString(bmpAddress, bmpWidth, bmpHeight, ix, iy, str, fontColors);
+        }
         public unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, string str, uint[] fontColors)
         {
             int nextXOffset = 0;

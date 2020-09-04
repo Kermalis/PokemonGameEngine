@@ -145,6 +145,15 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void FillRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint color)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            int iw = (int)(width * bmpWidth);
+            int ih = (int)(height * bmpHeight);
+            FillRectangle(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, color);
+        }
         public static unsafe void FillRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
         {
             if (height == 1)
@@ -175,6 +184,15 @@ namespace Kermalis.PokemonGameEngine.Render
                     }
                 }
             }
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void FillRectangle_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, float x1, float y1, float x2, float y2, uint color)
+        {
+            int ix1 = (int)(x1 * bmpWidth);
+            int iy1 = (int)(y1 * bmpHeight);
+            int ix2 = (int)(x2 * bmpWidth);
+            int iy2 = (int)(y2 * bmpHeight);
+            FillRectangle_Points(bmpAddress, bmpWidth, bmpHeight, ix1, iy1, ix2, iy2, color);
         }
         public static unsafe void FillRectangle_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, uint color)
         {
@@ -221,6 +239,23 @@ namespace Kermalis.PokemonGameEngine.Render
 
         #region Bitmaps
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            fixed (uint* otherBmpAddress = otherBmp)
+            {
+                DrawBitmap(bmpAddress, bmpWidth, bmpHeight, ix, iy, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+            }
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            DrawBitmap(bmpAddress, bmpWidth, bmpHeight, ix, iy, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
             fixed (uint* otherBmpAddress = otherBmp)
@@ -247,6 +282,27 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            int iw = (int)(width * bmpWidth);
+            int ih = (int)(height * bmpHeight);
+            fixed (uint* otherBmpAddress = otherBmp)
+            {
+                DrawBitmap(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+            }
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            int iw = (int)(width * bmpWidth);
+            int ih = (int)(height * bmpHeight);
+            DrawBitmap(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+        }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
@@ -695,6 +751,16 @@ namespace Kermalis.PokemonGameEngine.Render
 
         #region Rounded Rectangles
         // https://www.freebasic.net/forum/viewtopic.php?t=19874
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawRoundedRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, float x1, float y1, float x2, float y2, int radius, uint color)
+        {
+            int ix1 = (int)(x1 * bmpWidth);
+            int iy1 = (int)(y1 * bmpHeight);
+            int ix2 = (int)(x2 * bmpWidth);
+            int iy2 = (int)(y2 * bmpHeight);
+            DrawRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, ix1, iy1, ix2, iy2, radius, color);
+        }
         public static unsafe void DrawRoundedRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, int radius, uint color)
         {
             int f = 1 - radius;
@@ -741,7 +807,15 @@ namespace Kermalis.PokemonGameEngine.Render
             DrawVerticalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1, y1 + radius, y2 - radius, color); // Left
             DrawVerticalLine_Points(bmpAddress, bmpWidth, bmpHeight, x2, y1 + radius, y2 - radius, color); // Right
         }
-        // https://www.freebasic.net/forum/viewtopic.php?t=19874
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void FillRoundedRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, float x1, float y1, float x2, float y2, int radius, uint color)
+        {
+            int ix1 = (int)(x1 * bmpWidth);
+            int iy1 = (int)(y1 * bmpHeight);
+            int ix2 = (int)(x2 * bmpWidth);
+            int iy2 = (int)(y2 * bmpHeight);
+            FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, ix1, iy1, ix2, iy2, radius, color);
+        }
         public static unsafe void FillRoundedRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, int radius, uint color)
         {
             int f = 1 - radius;
