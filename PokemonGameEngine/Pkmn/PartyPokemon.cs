@@ -142,7 +142,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         private void SetWildMoves()
         {
             // Get last 4 moves that can be learned by level up, with no repeats (such as Sketch)
-            PBEMove[] moves = PBEDataProvider.Instance.GetPokemonData(this).LevelUpMoves.Where(t => t.Level <= Level && PBEDataUtils.IsMoveUsable(t.Move))
+            PBEMove[] moves = PBEDataProvider.Instance.GetPokemonData(this).LevelUpMoves.Where(t => t.Level <= Level && t.ObtainMethod.HasFlag(PBEMoveObtainMethod.LevelUp_B2W2) && PBEDataUtils.IsMoveUsable(t.Move))
                 .Select(t => t.Move).Distinct().Reverse().Take(PBESettings.DefaultNumMoves).ToArray();
             for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
             {
