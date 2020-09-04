@@ -76,6 +76,16 @@
         "Flag": "MAX"
       }
     ],
-    "ScriptTiles": []
+    "ScriptTiles": [
+      {
+        "X": 14,
+        "Y": 11,
+        "Elevation": 2,
+        "Var": "Test_GroudonState",
+        "VarValue": 1,
+        "VarConditional": "Equal",
+        "Script": "Test_GroudonBattle"
+      }
+    ]
   }
 }

@@ -77,5 +77,10 @@
         GoToIf,
         GoToIfFlag,
         BufferSpeciesName,
+        WildBattle,
+        AwaitBattle,
+        MessageNoClose,
+        SetMessageCanClose,
+        UnloadObj,
     }
 }

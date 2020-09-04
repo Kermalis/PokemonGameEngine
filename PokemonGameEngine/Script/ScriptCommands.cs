@@ -53,6 +53,11 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.GoToIf: GoToIfCommand(); break;
                 case ScriptCommand.GoToIfFlag: GoToIfFlagCommand(); break;
                 case ScriptCommand.BufferSpeciesName: BufferSpeciesNameCommand(); break;
+                case ScriptCommand.WildBattle: WildBattleCommand(); break;
+                case ScriptCommand.AwaitBattle: AwaitBattleCommand(); break;
+                case ScriptCommand.MessageNoClose: MessageNoCloseCommand(); break;
+                case ScriptCommand.SetMessageCanClose: SetMessageCanCloseCommand(); break;
+                case ScriptCommand.UnloadObj: UnloadObjCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -168,6 +173,13 @@ namespace Kermalis.PokemonGameEngine.Script
             _reader.BaseStream.Position = returnOffset;
             obj.IsScriptMoving = true;
         }
+        private void UnloadObjCommand()
+        {
+            ushort id = (ushort)ReadVarOrValue();
+            var obj = Obj.GetObj(id);
+            Obj.LoadedObjs.Remove(obj);
+            obj.Map.Objs.Remove(obj);
+        }
         private void AwaitObjMovementCommand()
         {
             ushort id = (ushort)ReadVarOrValue();
@@ -223,11 +235,33 @@ namespace Kermalis.PokemonGameEngine.Script
             long returnOffset = _reader.BaseStream.Position;
             string text = _reader.ReadStringNullTerminated(textOffset);
             _reader.BaseStream.Position = returnOffset;
-            Game.Instance.MessageBoxes.Add(new MessageBox(Game.Instance.StringBuffers.ApplyBuffers(text)));
+            var msgBox = new MessageBox(Game.Instance.StringBuffers.ApplyBuffers(text));
+            _lastMessageBox = msgBox;
+            Game.Instance.MessageBoxes.Add(msgBox);
+        }
+        private void MessageNoCloseCommand()
+        {
+            uint textOffset = _reader.ReadUInt32();
+            long returnOffset = _reader.BaseStream.Position;
+            string text = _reader.ReadStringNullTerminated(textOffset);
+            _reader.BaseStream.Position = returnOffset;
+            var msgBox = new MessageBox(Game.Instance.StringBuffers.ApplyBuffers(text)) { CanClose = false };
+            _lastMessageBox = msgBox;
+            Game.Instance.MessageBoxes.Add(msgBox);
         }
         private void AwaitMessageCommand()
         {
-            _waitMessageBox = Game.Instance.MessageBoxes[Game.Instance.MessageBoxes.Count - 1];
+            if (!_lastMessageBox.IsClosed)
+            {
+                _waitMessageBox = _lastMessageBox;
+            }
+        }
+        private void SetMessageCanCloseCommand()
+        {
+            if (!_lastMessageBox.IsClosed)
+            {
+                _lastMessageBox.CanClose = true;
+            }
         }
 
         private void SetLock(bool locked)
@@ -335,6 +369,19 @@ namespace Kermalis.PokemonGameEngine.Script
             byte buffer = (byte)ReadVarOrValue();
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             Game.Instance.StringBuffers.Buffers[buffer] = PBEDataProvider.Instance.GetSpeciesName(species).English;
+        }
+
+        private void WildBattleCommand()
+        {
+            PBESpecies species = ReadVarOrEnum<PBESpecies>();
+            PBEForm form = ReadVarOrEnum<PBEForm>();
+            byte level = (byte)ReadVarOrValue();
+            var pkmn = new PartyPokemon(species, form, level);
+            Game.Instance.TempCreateWildBattle(pkmn);
+        }
+        private void AwaitBattleCommand()
+        {
+            _waitBattle = true;
         }
     }
 }

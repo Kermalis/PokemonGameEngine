@@ -58,8 +58,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Moveset = new Moveset();
             EffortValues = new EVs();
             IndividualValues = new IVs();
-            RandomizeMoves();
             UpdateTimeBasedForms(DateTime.Now);
+            SetWildMoves();
             CaughtBall = PBEItem.PokeBall;
             Friendship = byte.MaxValue; // TODO: Default friendship
             CalcStats(pData);
@@ -78,8 +78,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Moveset = new Moveset();
             EffortValues = new EVs();
             IndividualValues = new IVs();
-            SetWildMoves();
             UpdateTimeBasedForms(DateTime.Now);
+            SetWildMoves();
             CalcStats(pData);
             SetMaxHP();
         }
@@ -122,7 +122,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
 
         // Temp function to get completely random moves
-        private void RandomizeMoves()
+        public void RandomizeMoves()
         {
             var moves = new List<PBEMove>(PBELegalityChecker.GetLegalMoves(Species, Form, Level, PBESettings.DefaultSettings));
             for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
@@ -139,10 +139,10 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 slot.SetMaxPP();
             }
         }
-        private void SetWildMoves()
+        private void SetWildMoves(IPBEPokemonData pData)
         {
             // Get last 4 moves that can be learned by level up, with no repeats (such as Sketch)
-            PBEMove[] moves = PBEDataProvider.Instance.GetPokemonData(this).LevelUpMoves.Where(t => t.Level <= Level && t.ObtainMethod.HasFlag(PBEMoveObtainMethod.LevelUp_B2W2) && PBEDataUtils.IsMoveUsable(t.Move))
+            PBEMove[] moves = pData.LevelUpMoves.Where(t => t.Level <= Level && t.ObtainMethod.HasFlag(PBEMoveObtainMethod.LevelUp_B2W2) && PBEDataUtils.IsMoveUsable(t.Move))
                 .Select(t => t.Move).Distinct().Reverse().Take(PBESettings.DefaultNumMoves).ToArray();
             for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
             {
@@ -155,6 +155,10 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 slot.PPUps = 0;
                 slot.SetMaxPP();
             }
+        }
+        private void SetWildMoves()
+        {
+            SetWildMoves(PBEDataProvider.Instance.GetPokemonData(this));
         }
 
         // TODO: Burmy areas. (Giratina would work similarly if you wanted, with an additional || for the orb)

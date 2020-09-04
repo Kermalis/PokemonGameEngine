@@ -18,6 +18,9 @@ namespace Kermalis.PokemonGameEngine.GUI
         public float Width;
         public float Height;
 
+        public bool CanClose = true;
+        public bool IsClosed;
+
         private readonly Sprite _sprite;
         private readonly StringPrinter _printer;
         private bool _done;
@@ -59,7 +62,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 // TODO: Paragraphs
                 // Close
-                if (InputManager.IsPressed(Key.A) || InputManager.IsPressed(Key.B))
+                if (CanClose && (InputManager.IsPressed(Key.A) || InputManager.IsPressed(Key.B)))
                 {
                     Close();
                     return;
@@ -80,6 +83,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public void Close()
         {
+            IsClosed = true;
             Game.Instance.MessageBoxes.Remove(this);
         }
     }

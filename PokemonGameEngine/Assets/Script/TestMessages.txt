@@ -4,11 +4,13 @@ RandomizeVar Var.Test1 0 1
 GoToIf Test_SetGroudonGone Var.Test1 C.Equal 0
 
 ClearFlag Flag.Test_GroudonVisible
+SetVar Var.Test_GroudonState 1
 Message TestText_GroudonActive
 GoTo AwaitMessageUnlockAllEnd
 
 #Test_SetGroudonGone
 SetFlag Flag.Test_GroudonVisible
+SetVar Var.Test_GroudonState 0
 Message TestText_GroudonHidden
 GoTo AwaitMessageUnlockAllEnd
 

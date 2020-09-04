@@ -111,7 +111,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             // Temporarily auto select
             PBEBattlePokemon pkmn = _pkmn.Pkmn;
-            pkmn.TurnAction = new PBETurnAction(pkmn, PBEItem.PokeBall);
+            pkmn.TurnAction = new PBETurnAction(pkmn, PBEItem.DuskBall);
             _parent.ActionsLoop(false);
         }
         private void RunChoice()

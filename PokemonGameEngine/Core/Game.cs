@@ -103,6 +103,42 @@ namespace Kermalis.PokemonGameEngine.Core
             }
             _battleTransition = new SpiralTransition(OnBattleTransitionEnded);
         }
+        public void TempCreateWildBattle(PartyPokemon wildPkmn)
+        {
+            PlayerObj player = PlayerObj.Player;
+            Map.Layout.Block block = player.GetBlock(out Map map);
+            Save sav = Save;
+            var me = new PBETrainerInfo(sav.PlayerParty, sav.PlayerName, inventory: sav.PlayerInventory.ToPBEInventory());
+            var wildParty = new Party { wildPkmn };
+            var trainerParties = new Party[] { sav.PlayerParty, wildParty };
+            var wild = new PBEWildInfo(wildParty);
+            void OnBattleEnded()
+            {
+                void FadeFromTransitionEnded()
+                {
+                    _fadeFromTransition = null;
+                }
+                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
+                BattleGUI = null;
+            }
+
+            PBEBattleTerrain terrain = Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock);
+            BattleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, me, wild,
+                battleTerrain: terrain,
+                weather: Overworld.GetPBEWeatherFromMap(map)),
+                OnBattleEnded,
+                trainerParties,
+                isCave: terrain == PBEBattleTerrain.Cave,
+                isDarkGrass: block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Grass_SpecialEncounter,
+                isFishing: false,
+                isSurfing: block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Surf,
+                isUnderwater: false);
+            void OnBattleTransitionEnded()
+            {
+                _battleTransition = null;
+            }
+            _battleTransition = new SpiralTransition(OnBattleTransitionEnded);
+        }
 
         public void OpenStartMenu()
         {

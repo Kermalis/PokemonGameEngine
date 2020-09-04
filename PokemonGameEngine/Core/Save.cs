@@ -20,14 +20,19 @@ namespace Kermalis.PokemonGameEngine.Core
             Vars = new Vars();
             PlayerName = "Dawn";
             PlayerIsFemale = true;
-            PlayerParty = new Party() { new PartyPokemon(PBESpecies.Pachirisu, 0, PBESettings.DefaultMaxLevel) };
-            PlayerParty[0].Moveset[0].Move = PBEMove.Dig;
+            PlayerParty = new Party() { new PartyPokemon(PBESpecies.Victini, 0, 67) };
+            PlayerParty[0].Ability = PBEAbility.Compoundeyes;
+            PlayerParty[0].Item = PBEItem.Leftovers;
+            PlayerParty[0].Moveset[0].Move = PBEMove.Bounce;
+            PlayerParty[0].Moveset[1].Move = PBEMove.ZenHeadbutt;
+            PlayerParty[0].Moveset[2].Move = PBEMove.StunSpore;
+            PlayerParty[0].Moveset[3].Move = PBEMove.VCreate;
             for (int i = 0; i < PBESettings.DefaultMaxPartySize - 1; i++)
             {
                 Test_GiveRandomPokemon();
             }
             PlayerInventory = new PlayerInventory();
-            PlayerInventory.Add(PBEItem.PokeBall, 995);
+            PlayerInventory.Add(PBEItem.DuskBall, 995);
             PlayerInventory.Add(PBEItem.RockyHelmet, 42);
             PlayerInventory.Add(PBEItem.Leftovers, 473);
             PlayerInventory.Add(PBEItem.Potion, 123);
@@ -44,7 +49,9 @@ namespace Kermalis.PokemonGameEngine.Core
         private void Test_GiveRandomPokemon()
         {
             (PBESpecies species, PBEForm form) = PBEDataProvider.GlobalRandom.RandomSpecies(true);
-            PlayerParty.Add(new PartyPokemon(species, form, (byte)PBEDataProvider.GlobalRandom.RandomInt(PBESettings.DefaultMinLevel, PBESettings.DefaultMaxLevel)));
+            var pkmn = new PartyPokemon(species, form, (byte)PBEDataProvider.GlobalRandom.RandomInt(PBESettings.DefaultMinLevel, PBESettings.DefaultMaxLevel));
+            pkmn.RandomizeMoves();
+            PlayerParty.Add(pkmn);
         }
 
         // TODO: If party is full, send to a box, if boxes are full, error

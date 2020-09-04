@@ -6,6 +6,7 @@ It can run on any platform, even phones! (With some work, contact me)
 
 ![GamePreview](GamePreview.png)
 ![BattlePreview](BattlePreview.gif)
+![GroudonPreview](GroudonPreview.gif)
 ![MapEditorPreview](MapEditorPreview.png)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.

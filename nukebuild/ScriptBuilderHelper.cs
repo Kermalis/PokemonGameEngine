@@ -66,6 +66,11 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.GoToIf, new[] { typeof(void*), typeof(short), typeof(ScriptConditional), typeof(short) } }, // Offset to go to, value1, condition, value2
         { ScriptCommand.GoToIfFlag, new[] { typeof(void*), typeof(Flag), typeof(byte) } }, // Offset to go to, flag, value
         { ScriptCommand.BufferSpeciesName, new[] { typeof(byte), typeof(PBESpecies) } }, // Buffer number, species
+        { ScriptCommand.WildBattle, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte) } }, // Species, form, level
+        { ScriptCommand.AwaitBattle, Array.Empty<Type>() },
+        { ScriptCommand.MessageNoClose, new[] { typeof(void*) } }, // String data offset
+        { ScriptCommand.SetMessageCanClose, Array.Empty<Type>() },
+        { ScriptCommand.UnloadObj, new[] { typeof(ushort) } }, // Id
     };
 
     static ScriptBuilderHelper()

@@ -15,6 +15,9 @@ namespace Kermalis.PokemonGameEngine.Script
         private ushort _delay;
         private Obj _waitMovementObj;
         private MessageBox _waitMessageBox;
+        private bool _waitBattle;
+
+        private MessageBox _lastMessageBox;
 
         public ScriptContext(EndianBinaryReader r)
         {
@@ -48,13 +51,24 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             if (_waitMessageBox != null)
             {
-                if (Game.Instance.MessageBoxes.Contains(_waitMessageBox))
+                if (!_waitMessageBox.IsClosed)
                 {
                     return true;
                 }
                 if (update)
                 {
                     _waitMessageBox = null;
+                }
+            }
+            if (_waitBattle)
+            {
+                if (Game.Instance.BattleGUI != null)
+                {
+                    return true;
+                }
+                if (update)
+                {
+                    _waitBattle = false;
                 }
             }
             return false;
