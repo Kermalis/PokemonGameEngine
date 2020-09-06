@@ -8,6 +8,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
     {
         public static readonly PlayerObj Player = new PlayerObj();
 
+        public bool IsWaitingForObjToStartScript;
+        public override bool CanMoveWillingly => !IsWaitingForObjToStartScript && base.CanMoveWillingly;
+
         private bool _shouldRunTriggers;
 
         private PlayerObj()
@@ -86,8 +89,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                     string script = o.Script;
                     if (script != string.Empty)
                     {
-                        Game.Instance.Save.Vars[Var.LastTalked] = (short)o.Id; // Special var for the last person we talked to
-                        ScriptLoader.LoadScript(script); // Load script after LastTalked is set
+                        Game.Instance.OverworldGUI.SetInteractiveScript(o, script);
                         return;
                     }
                 }

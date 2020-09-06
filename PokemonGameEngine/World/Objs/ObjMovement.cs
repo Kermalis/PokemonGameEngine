@@ -357,7 +357,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         // TODO: Ledges, waterfall, etc
         public virtual bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
         {
-            IsMoving = true;
+            IsMovingSelf = true;
             MovementTimer = 0;
             Facing = facing;
             PrevPos = Pos;
@@ -381,7 +381,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public virtual void Face(FacingDirection facing)
         {
-            IsMoving = true;
+            IsMovingSelf = true;
             MovementTimer = 0;
             MovementSpeed = FaceMovementSpeed;
             Facing = facing;
@@ -427,7 +427,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return;
             }
             // TODO: Check if we should keep going for currents/waterfall/spin tiles
-            IsMoving = false;
+            IsMovingSelf = false;
             IsScriptMoving = QueuedScriptMovements.Count != 0;
         }
     }

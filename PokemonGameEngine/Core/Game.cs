@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public readonly List<ScriptContext> Scripts = new List<ScriptContext>();
         public readonly List<MessageBox> MessageBoxes = new List<MessageBox>();
 
-        private readonly OverworldGUI _overworldGUI;
+        public OverworldGUI OverworldGUI { get; }
         private FadeFromColorTransition _fadeFromTransition;
         private FadeToColorTransition _fadeToTransition;
         private SpiralTransition _battleTransition;
@@ -45,7 +45,7 @@ namespace Kermalis.PokemonGameEngine.Core
             CameraObj.Camera.Map = map;
             map.Objs.Add(CameraObj.Camera);
             map.LoadObjEvents();
-            _overworldGUI = new OverworldGUI();
+            OverworldGUI = new OverworldGUI();
         }
 
         public void TempWarp(IWarp warp)
@@ -186,7 +186,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 BattleGUI.LogicTick();
                 return;
             }
-            _overworldGUI.LogicTick();
+            OverworldGUI.LogicTick();
         }
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight, string topLeftMessage)
@@ -206,7 +206,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 BattleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                 goto bottom;
             }
-            _overworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            OverworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
         transitions:
             if (_fadeFromTransition != null)
             {

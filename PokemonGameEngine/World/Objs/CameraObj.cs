@@ -19,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             CameraObj c = Camera;
             Obj other = CameraAttachedTo;
-            c.IsMoving = other.IsMoving;
+            c.IsMovingSelf = other.IsMovingSelf;
             c.IsScriptMoving = other.IsScriptMoving;
             c.MovementTimer = other.MovementTimer;
             c.MovementSpeed = other.MovementSpeed;

@@ -34,9 +34,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public Position PrevPos;
         public Map Map;
 
-        public bool CanMoveWillingly => !IsLocked && !IsMoving;
+        public virtual bool CanMoveWillingly => !IsLocked && !IsMoving;
+        // Do not move locked Objs unless they're being moved by scripts
+        public virtual bool ShouldUpdateMovement => !IsLocked || IsScriptMoving;
+        public bool IsMoving => IsScriptMoving || IsMovingSelf;
         public bool IsLocked = false;
-        public bool IsMoving = false;
+        public bool IsMovingSelf = false;
         public bool IsScriptMoving = false;
         public float MovementTimer = 1;
         public float MovementSpeed;

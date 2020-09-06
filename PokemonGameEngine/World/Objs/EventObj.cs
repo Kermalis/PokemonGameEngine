@@ -19,6 +19,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public string Script;
         public Flag Flag;
 
+        public bool TalkedTo;
+        public override bool CanMoveWillingly => !TalkedTo && base.CanMoveWillingly;
+        public override bool ShouldUpdateMovement => TalkedTo || base.ShouldUpdateMovement;
+
         private int _movementTypeTimer; // -1 means never run the tick, 0 means run the tick, >=1 means wait that many ticks
         private object _movementTypeArg;
 
