@@ -71,6 +71,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.MessageNoClose, new[] { typeof(void*) } }, // String data offset
         { ScriptCommand.SetMessageCanClose, Array.Empty<Type>() },
         { ScriptCommand.UnloadObj, new[] { typeof(ushort) } }, // Id
+        { ScriptCommand.LookTowardsObj, new[] { typeof(ushort), typeof(ushort) } }, // Id of looker, id of obj to look at
     };
 
     static ScriptBuilderHelper()

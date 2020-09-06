@@ -3,6 +3,7 @@
 // Below we have "@TestScript" which is a global label, meaning it can be referenced by the engine itself (like the Surf and Headbutt Tree scripts) rather than just from scripts.
 @TestScript
 LockAllObjs
+LookTowardsObj Var.LastTalked 0xFFFF
 RandomizeVar Var.Test1 1 649 // Set a random value in var "Test1" that's between 1 and 649 inclusive
 RandomizeVar Var.Test2 1 100 // Set a random value in var "Test2" that's between 1 and 100 inclusive
 GivePokemon Var.Test1 Var.Test2 // Give a random species with a random level. The species is taken from Var.Test1 and the level is taken from Var.Test2

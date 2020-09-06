@@ -1,5 +1,6 @@
 @Test_GroudonWarning
 LockAllObjs
+LookTowardsObj Var.LastTalked 0xFFFF
 GoToIfFlag Test_GroudonWarningMessage Flag.Test_GroudonVisible 0
 
 Message TestText_GroudonGone

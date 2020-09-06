@@ -389,6 +389,56 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             UpdateXYProgress();
         }
 
+        private static FacingDirection GetDirectionToLook(Position myPos, Position otherPos)
+        {
+            if (otherPos.X == myPos.X)
+            {
+                if (otherPos.Y < myPos.Y)
+                {
+                    return FacingDirection.North;
+                }
+                return FacingDirection.South; // Default case if x and y are equal
+            }
+            else if (otherPos.Y == myPos.Y)
+            {
+                if (otherPos.X < myPos.X)
+                {
+                    return FacingDirection.West;
+                }
+                return FacingDirection.East;
+            }
+            else if (otherPos.X < myPos.X)
+            {
+                if (otherPos.Y < myPos.Y)
+                {
+                    return FacingDirection.Northwest;
+                }
+                return FacingDirection.Southwest;
+            }
+            else
+            {
+                if (otherPos.Y < myPos.Y)
+                {
+                    return FacingDirection.Northeast;
+                }
+                return FacingDirection.Southeast;
+            }
+        }
+
+        public void LookTowards(Obj other)
+        {
+            LookTowards(other.Pos);
+        }
+        public void LookTowards(Position oPos)
+        {
+            Position pos = Pos;
+            if (oPos.X == pos.X && oPos.Y == pos.Y)
+            {
+                return; // Same position, do nothing
+            }
+            Facing = GetDirectionToLook(pos, oPos);
+        }
+
         private void UpdateXYProgress()
         {
             Position prevPos = PrevPos;

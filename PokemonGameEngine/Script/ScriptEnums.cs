@@ -82,5 +82,6 @@
         MessageNoClose,
         SetMessageCanClose,
         UnloadObj,
+        LookTowardsObj,
     }
 }

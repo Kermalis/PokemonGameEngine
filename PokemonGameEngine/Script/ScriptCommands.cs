@@ -58,6 +58,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.MessageNoClose: MessageNoCloseCommand(); break;
                 case ScriptCommand.SetMessageCanClose: SetMessageCanCloseCommand(); break;
                 case ScriptCommand.UnloadObj: UnloadObjCommand(); break;
+                case ScriptCommand.LookTowardsObj: LookTowardsObjCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -185,6 +186,14 @@ namespace Kermalis.PokemonGameEngine.Script
             ushort id = (ushort)ReadVarOrValue();
             var obj = Obj.GetObj(id);
             _waitMovementObj = obj;
+        }
+        private void LookTowardsObjCommand()
+        {
+            ushort id1 = (ushort)ReadVarOrValue();
+            ushort id2 = (ushort)ReadVarOrValue();
+            var looker = Obj.GetObj(id1);
+            var target = Obj.GetObj(id2);
+            looker.LookTowards(target);
         }
 
         private void DetachCameraCommand()
