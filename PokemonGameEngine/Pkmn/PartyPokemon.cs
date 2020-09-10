@@ -44,6 +44,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public ushort SpDefense { get; private set; }
         public ushort Speed { get; private set; }
 
+        public uint PID { get; } = (uint)PBEDataProvider.GlobalRandom.RandomInt(); // Currently only used for Spinda spots; has no other effect
+
         public PartyPokemon(PBESpecies species, PBEForm form, byte level)
         {
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);

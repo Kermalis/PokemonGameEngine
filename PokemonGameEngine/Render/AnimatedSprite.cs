@@ -39,18 +39,25 @@ namespace Kermalis.PokemonGameEngine.Render
             }
 
             private static readonly Dictionary<string, WeakReference<Sprite>> _loadedSprites = new Dictionary<string, WeakReference<Sprite>>();
-            public static Sprite LoadOrGet(string resource)
+            public static Sprite LoadOrGet(string resource, bool useCache)
             {
                 Sprite s;
-                if (!_loadedSprites.TryGetValue(resource, out WeakReference<Sprite> w))
+                if (useCache)
                 {
-                    s = new Sprite(resource);
-                    _loadedSprites.Add(resource, new WeakReference<Sprite>(s));
+                    if (!_loadedSprites.TryGetValue(resource, out WeakReference<Sprite> w))
+                    {
+                        s = new Sprite(resource);
+                        _loadedSprites.Add(resource, new WeakReference<Sprite>(s));
+                    }
+                    else if (!w.TryGetTarget(out s))
+                    {
+                        s = new Sprite(resource);
+                        w.SetTarget(s);
+                    }
                 }
-                else if (!w.TryGetTarget(out s))
+                else
                 {
                     s = new Sprite(resource);
-                    w.SetTarget(s);
                 }
                 return s;
             }
@@ -64,13 +71,14 @@ namespace Kermalis.PokemonGameEngine.Render
         public uint[] Bitmap => _sprite.Frames[_curFrameIndex].Bitmap;
         public int Width => _sprite.Width;
         public int Height => _sprite.Height;
+        public int NumFrames => _sprite.Frames.Length;
         private int _numRepeats;
         private int _curFrameIndex;
         private TimeSpan _nextFrameTime;
 
-        public AnimatedSprite(string resource, bool isPaused = false, double speedModifier = 1, int? repeatCount = null)
+        public AnimatedSprite(string resource, bool useCache, bool isPaused = false, double speedModifier = 1, int? repeatCount = null)
         {
-            _sprite = Sprite.LoadOrGet(resource);
+            _sprite = Sprite.LoadOrGet(resource, useCache);
             int frameDelay = _sprite.Frames[0].Delay;
             if (frameDelay == -1)
             {
@@ -149,6 +157,11 @@ namespace Kermalis.PokemonGameEngine.Render
                     s.UpdateCurrentFrame(timePassed);
                 }
             }
+        }
+
+        public uint[] GetFrameBitmap(int frame)
+        {
+            return _sprite.Frames[frame].Bitmap;
         }
     }
 }

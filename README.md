@@ -24,6 +24,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * Tile animations
 * Controller support
 * Animated sprites
+* Spinda spots ![Spindas](Spindas.gif)
 
 ----
 ## To Do:

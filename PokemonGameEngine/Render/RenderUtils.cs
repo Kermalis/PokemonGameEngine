@@ -8,7 +8,7 @@ namespace Kermalis.PokemonGameEngine.Render
 {
     // https://stackoverflow.com/questions/24771828/algorithm-for-creating-rounded-corners-in-a-polygon
     // ^^ This could be cool, not sure if we'd need it yet though
-    internal sealed class RenderUtils
+    internal static partial class RenderUtils
     {
         #region SDL
         private static unsafe IntPtr ConvertSurfaceFormat(IntPtr surface)
