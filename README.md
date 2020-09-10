@@ -7,6 +7,7 @@ It can run on any platform, even phones! (With some work, contact me)
 ![GamePreview](GamePreview.png)
 ![BattlePreview](BattlePreview.gif)
 ![GroudonPreview](GroudonPreview.gif)
+![DayNightPreview](DayNightPreview.gif)
 ![MapEditorPreview](MapEditorPreview.png)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.
@@ -19,7 +20,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * Scripting
 * Wild encounters
 * Very non-limiting mapping (elevations, layers, no color limits, transparency, etc)
-* [Day & Night Cycle](https://gfycat.com/TightTediousEuropeanpolecat)
+* Day & Night Cycle
 * Tile animations
 * Controller support
 * Animated sprites
