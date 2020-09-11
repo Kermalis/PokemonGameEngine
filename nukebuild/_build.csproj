@@ -12,7 +12,7 @@
     <Compile Include="..\PokemonGameEngine\Core\FlagVarConstants.cs" Link="FlagVarConstants.cs" />
     <Compile Include="..\PokemonGameEngine\Script\ScriptEnums.cs" Link="ScriptEnums.cs" />
     <Compile Include="..\PokemonGameEngine\World\WorldConstants.cs" Link="WorldConstants.cs" />
-    <PackageReference Include="EndianBinaryIO" Version="1.0.1" />
+    <PackageReference Include="EndianBinaryIO" Version="1.1.1" />
     <PackageReference Include="Nuke.Common" Version="0.24.11" />
     <Reference Include="PokemonBattleEngine">
       <HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
