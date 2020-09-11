@@ -190,9 +190,9 @@ namespace Kermalis.PokemonGameEngine.UI
             {
                 DateTime now = DateTime.Now;
                 TimeSpan timePassed = now.Subtract(lastRenderTime);
-                AnimatedSprite.UpdateCurrentFrameForAll(timePassed);
                 lock (_threadLockObj)
                 {
+                    AnimatedSprite.UpdateCurrentFrameForAll(timePassed); // #48 - Prevent crash by placing inside of the lock
                     IntPtr s = _screen;
                     IntPtr r = _renderer;
                     SDL.SDL_LockTexture(s, IntPtr.Zero, out IntPtr pixels, out _);
