@@ -35,6 +35,7 @@ namespace Kermalis.PokemonGameEngine.UI
         private IntPtr _renderer;
         private IntPtr _screen;
         private bool _quit;
+        private bool _tickQuit1, _tickQuit2;
         private IntPtr _controller;
         private int _controllerId;
 
@@ -159,6 +160,10 @@ namespace Kermalis.PokemonGameEngine.UI
                     }
                 }
             }
+            while (!_tickQuit1 && !_tickQuit2)
+            {
+                ; // Wait for ticks to quit
+            }
 
             SDL.SDL_DestroyTexture(_screen);
             SDL.SDL_DestroyRenderer(_renderer);
@@ -174,10 +179,16 @@ namespace Kermalis.PokemonGameEngine.UI
             {
                 lock (_threadLockObj)
                 {
+                    if (_quit)
+                    {
+                        goto bottom;
+                    }
                     Game.Instance.LogicTick();
                 }
                 Thread.Sleep(1_000 / NumTicksPerSecond);
             }
+        bottom:
+            _tickQuit1 = true;
         }
 
         private unsafe void RenderTick()
@@ -192,6 +203,10 @@ namespace Kermalis.PokemonGameEngine.UI
                 TimeSpan timePassed = now.Subtract(lastRenderTime);
                 lock (_threadLockObj)
                 {
+                    if (_quit)
+                    {
+                        goto bottom;
+                    }
                     AnimatedSprite.UpdateCurrentFrameForAll(timePassed); // #48 - Prevent crash by placing inside of the lock
                     IntPtr s = _screen;
                     IntPtr r = _renderer;
@@ -205,7 +220,9 @@ namespace Kermalis.PokemonGameEngine.UI
                 lastRenderTime = now;
                 time.Wait();
             }
+        bottom:
             time.Stop();
+            _tickQuit2 = true;
         }
     }
 }
