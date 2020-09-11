@@ -239,7 +239,8 @@ namespace Kermalis.MapEditor.UI
 
         private void UpdateGroupNames()
         {
-            GroupNames = _grp.Groups.Select(t => t.Type).OrderBy(e => e.ToString());
+            // Do not OrderBy because then we select the wrong group index
+            GroupNames = _grp.Groups.Select(t => t.Type);//.OrderBy(e => e.ToString());
             OnPropertyChanged(nameof(GroupNames));
         }
         private void UpdateGroups()
