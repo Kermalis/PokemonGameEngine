@@ -1,5 +1,7 @@
 # PokemonGameEngine
 
+[![Join on Discord](https://discordapp.com/api/guilds/717575608393138187/widget.png?style=shield)][Discord]
+
 Pokémon Game Engine is a C# game engine that is similar to the 2D Pokémon games.
 It uses [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine) for the battles.
 It can run on any platform, even phones! (With some work, contact me)
@@ -12,7 +14,7 @@ It can run on any platform, even phones! (With some work, contact me)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.
 [Check the wiki](https://github.com/Kermalis/PokemonGameEngine/wiki) if you're interested.
-If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](https://discord.gg/Z4Mn9qX).
+If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][Discord].
 
 ## Features:
 * Map/encounter editor (Only runs on Windows, Mac, and Linux)
@@ -61,3 +63,5 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server](
 * https://www.deviantart.com/chaoticcherrycake/art/Pokemon-Tileset-From-Public-Tiles-358379026
 * https://www.deviantart.com/peekychew/art/Lava-and-Cave-Tileset-836741864
 * https://www.deviantart.com/magiscarf/art/Tileset-ver-3-Free-690477146
+
+[Discord]: https://discord.gg/Z4Mn9qX
