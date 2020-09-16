@@ -59,7 +59,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
             _pouchChoices?.Dispose();
             _pouchChoices = new ItemGUIChoices(0.60f, 0.18f, 0.97f, 0.97f, 0.07f,
-                RenderUtils.Color(242, 182, 32, 255), RenderUtils.Color(231, 163, 0, 255));
+                RenderUtils.Color(245, 200, 37, 255), RenderUtils.Color(231, 163, 0, 255));
             foreach (InventorySlot s in _curPouch)
             {
                 _pouchChoices.Add(new ItemGUIChoice(s, null));
@@ -112,7 +112,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             // Background
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(215, 231, 230, 255));
+            RenderUtils.ThreeColorBackground(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(215, 231, 230, 255), RenderUtils.Color(231, 163, 0, 255), RenderUtils.Color(242, 182, 32, 255));
 
             // BAG
             Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.02f, 0.01f, 2, "BAG", Font.DefaultDark);
@@ -124,7 +124,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             int y1 = (int)(0.03f * bmpHeight);
             int x2 = (int)(0.97f * bmpWidth);
             int y2 = (int)(0.13f * bmpHeight);
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, y2, 10, RenderUtils.Color(242, 182, 32, 255));
+            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, y2, 10, RenderUtils.Color(245, 200, 37, 255));
             RenderUtils.DrawRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, y2, 10, RenderUtils.Color(231, 163, 0, 255));
 
             // Draw pouch name
