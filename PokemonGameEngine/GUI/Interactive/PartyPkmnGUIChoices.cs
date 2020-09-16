@@ -126,7 +126,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             int x1 = (int)(X * bmpWidth);
             float fy1 = Y * bmpHeight;
 
-            float fHeight = (_y2 - Y) / PBESettings.DefaultMaxPartySize * bmpHeight;
+            float fHeight = (_y2 - Y) / PkmnConstants.PartyCapacity * bmpHeight;
             if (_dirtySizes)
             {
                 _dirtySizes = false;

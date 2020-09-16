@@ -13,9 +13,14 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         IPBEPokemon IReadOnlyList<IPBEPokemon>.this[int index] => _slots[index];
         public int Count => _slots.Count;
 
-        public void Add(PartyPokemon pkmn)
+        public int Add(PartyPokemon pkmn)
         {
-            _slots.Add(pkmn);
+            if (_slots.Count < PkmnConstants.PartyCapacity)
+            {
+                _slots.Add(pkmn);
+                return _slots.Count - 1;
+            }
+            return -1;
         }
 
         public void HealFully()

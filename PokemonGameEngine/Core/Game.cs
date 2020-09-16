@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Transition;
@@ -87,7 +86,7 @@ namespace Kermalis.PokemonGameEngine.Core
             }
 
             PBEBattleTerrain terrain = Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock);
-            BattleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, me, wild,
+            BattleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PkmnConstants.PBESettings, me, wild,
                 battleTerrain: terrain,
                 weather: Overworld.GetPBEWeatherFromMap(map)),
                 OnBattleEnded,
@@ -123,7 +122,7 @@ namespace Kermalis.PokemonGameEngine.Core
             }
 
             PBEBattleTerrain terrain = Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock);
-            BattleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, me, wild,
+            BattleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PkmnConstants.PBESettings, me, wild,
                 battleTerrain: terrain,
                 weather: Overworld.GetPBEWeatherFromMap(map)),
                 OnBattleEnded,

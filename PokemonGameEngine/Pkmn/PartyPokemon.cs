@@ -85,6 +85,26 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             CalcStats(pData);
             SetMaxHP();
         }
+        public PartyPokemon(BoxPokemon other)
+        {
+            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(other);
+            Species = other.Species;
+            Form = other.Form;
+            Nickname = other.Nickname;
+            Shiny = other.Shiny;
+            Level = other.Level;
+            Ability = other.Ability;
+            Gender = other.Gender;
+            Nature = other.Nature;
+            Moveset = new Moveset(other.Moveset);
+            EffortValues = other.EffortValues;
+            IndividualValues = other.IndividualValues;
+            CaughtBall = other.CaughtBall;
+            Friendship = other.Friendship;
+            UpdateTimeBasedForms(DateTime.Now);
+            CalcStats(pData);
+            SetMaxHP();
+        }
 
         public void SetMaxHP()
         {
@@ -92,12 +112,12 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         private void CalcStats(IPBEPokemonData pData)
         {
-            MaxHP = PBEDataUtils.CalculateStat(pData, PBEStat.HP, Nature, EffortValues.HP, IndividualValues.HP, Level, PBESettings.DefaultSettings);
-            Attack = PBEDataUtils.CalculateStat(pData, PBEStat.Attack, Nature, EffortValues.Attack, IndividualValues.Attack, Level, PBESettings.DefaultSettings);
-            Defense = PBEDataUtils.CalculateStat(pData, PBEStat.Defense, Nature, EffortValues.Defense, IndividualValues.Defense, Level, PBESettings.DefaultSettings);
-            SpAttack = PBEDataUtils.CalculateStat(pData, PBEStat.SpAttack, Nature, EffortValues.SpAttack, IndividualValues.SpAttack, Level, PBESettings.DefaultSettings);
-            SpDefense = PBEDataUtils.CalculateStat(pData, PBEStat.SpDefense, Nature, EffortValues.SpDefense, IndividualValues.SpDefense, Level, PBESettings.DefaultSettings);
-            Speed = PBEDataUtils.CalculateStat(pData, PBEStat.Speed, Nature, EffortValues.Speed, IndividualValues.Speed, Level, PBESettings.DefaultSettings);
+            MaxHP = PBEDataUtils.CalculateStat(pData, PBEStat.HP, Nature, EffortValues.HP, IndividualValues.HP, Level, PkmnConstants.PBESettings);
+            Attack = PBEDataUtils.CalculateStat(pData, PBEStat.Attack, Nature, EffortValues.Attack, IndividualValues.Attack, Level, PkmnConstants.PBESettings);
+            Defense = PBEDataUtils.CalculateStat(pData, PBEStat.Defense, Nature, EffortValues.Defense, IndividualValues.Defense, Level, PkmnConstants.PBESettings);
+            SpAttack = PBEDataUtils.CalculateStat(pData, PBEStat.SpAttack, Nature, EffortValues.SpAttack, IndividualValues.SpAttack, Level, PkmnConstants.PBESettings);
+            SpDefense = PBEDataUtils.CalculateStat(pData, PBEStat.SpDefense, Nature, EffortValues.SpDefense, IndividualValues.SpDefense, Level, PkmnConstants.PBESettings);
+            Speed = PBEDataUtils.CalculateStat(pData, PBEStat.Speed, Nature, EffortValues.Speed, IndividualValues.Speed, Level, PkmnConstants.PBESettings);
         }
         public void CalcStats()
         {
@@ -111,7 +131,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void HealMoves()
         {
-            for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
+            for (int i = 0; i < PkmnConstants.NumMoves; i++)
             {
                 Moveset[i].SetMaxPP();
             }
@@ -126,12 +146,12 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         // Temp function to get completely random moves
         public void RandomizeMoves()
         {
-            var moves = new List<PBEMove>(PBELegalityChecker.GetLegalMoves(Species, Form, Level, PBESettings.DefaultSettings));
-            for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
+            var moves = new List<PBEMove>(PBELegalityChecker.GetLegalMoves(Species, Form, Level, PkmnConstants.PBESettings));
+            for (int i = 0; i < PkmnConstants.NumMoves; i++)
             {
                 Moveset[i].Clear();
             }
-            for (int i = 0; i < PBESettings.DefaultNumMoves && moves.Count > 0; i++)
+            for (int i = 0; i < PkmnConstants.NumMoves && moves.Count > 0; i++)
             {
                 Moveset.MovesetSlot slot = Moveset[i];
                 PBEMove move = PBEDataProvider.GlobalRandom.RandomElement(moves);
@@ -145,8 +165,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             // Get last 4 moves that can be learned by level up, with no repeats (such as Sketch)
             PBEMove[] moves = pData.LevelUpMoves.Where(t => t.Level <= Level && t.ObtainMethod.HasFlag(PBEMoveObtainMethod.LevelUp_B2W2) && PBEDataUtils.IsMoveUsable(t.Move))
-                .Select(t => t.Move).Distinct().Reverse().Take(PBESettings.DefaultNumMoves).ToArray();
-            for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
+                .Select(t => t.Move).Distinct().Reverse().Take(PkmnConstants.NumMoves).ToArray();
+            for (int i = 0; i < PkmnConstants.NumMoves; i++)
             {
                 Moveset[i].Clear();
             }

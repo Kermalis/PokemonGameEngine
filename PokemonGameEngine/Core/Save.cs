@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
+using System;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
@@ -11,6 +12,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public Vars Vars { get; }
         public string PlayerName { get; }
         public bool PlayerIsFemale { get; }
+        public PCBoxes PCBoxes { get; }
         public Party PlayerParty { get; }
         public PlayerInventory PlayerInventory { get; }
         public uint Money { get; private set; }
@@ -22,6 +24,7 @@ namespace Kermalis.PokemonGameEngine.Core
             Vars = new Vars();
             PlayerName = "Dawn";
             PlayerIsFemale = true;
+            PCBoxes = new PCBoxes();
             PlayerParty = new Party();
             {
                 var victini = new PartyPokemon(PBESpecies.Victini, 0, 67);
@@ -33,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 victini.Moveset[3].Move = PBEMove.VCreate;
                 GivePokemon(victini);
             }
-            for (int i = 0; i < PBESettings.DefaultMaxPartySize - 1; i++)
+            for (int i = 0; i < 19; i++)
             {
                 Test_GiveRandomPokemon();
             }
@@ -55,16 +58,19 @@ namespace Kermalis.PokemonGameEngine.Core
         private void Test_GiveRandomPokemon()
         {
             (PBESpecies species, PBEForm form) = PBEDataProvider.GlobalRandom.RandomSpecies(true);
-            var pkmn = new PartyPokemon(species, form, (byte)PBEDataProvider.GlobalRandom.RandomInt(PBESettings.DefaultMinLevel, PBESettings.DefaultMaxLevel));
+            var pkmn = new PartyPokemon(species, form, (byte)PBEDataProvider.GlobalRandom.RandomInt(PkmnConstants.MinLevel, PkmnConstants.MaxLevel));
             pkmn.RandomizeMoves();
             GivePokemon(pkmn);
         }
 
-        // TODO: If party is full, send to a box, if boxes are full, error
         public void GivePokemon(PartyPokemon pkmn)
         {
             Pokedex.SetCaught(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.PID);
-            PlayerParty.Add(pkmn);
+            // Try to add to party first, then pc boxes
+            if (PlayerParty.Add(pkmn) == -1 && PCBoxes.Add(pkmn) == -1)
+            {
+                throw new Exception();
+            }
         }
     }
 }

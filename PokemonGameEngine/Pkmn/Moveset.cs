@@ -13,6 +13,14 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             public int PP { get; set; }
             public byte PPUps { get; set; }
 
+            public MovesetSlot() { }
+            public MovesetSlot(BoxMoveset.BoxMovesetSlot other)
+            {
+                Move = other.Move;
+                PPUps = other.PPUps;
+                SetMaxPP();
+            }
+
             public void Clear()
             {
                 Move = PBEMove.None;
@@ -22,7 +30,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
             public void SetMaxPP()
             {
-                PP = PBEDataUtils.CalcMaxPP(Move, PPUps, PBESettings.DefaultSettings);
+                PP = PBEDataUtils.CalcMaxPP(Move, PPUps, PkmnConstants.PBESettings);
             }
 
             public void UpdateFromBattle(PBEBattleMoveset.PBEBattleMovesetSlot slot)
@@ -41,10 +49,18 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public Moveset()
         {
-            _slots = new MovesetSlot[PBESettings.DefaultNumMoves];
+            _slots = new MovesetSlot[PkmnConstants.NumMoves];
             for (int i = 0; i < _slots.Length; i++)
             {
                 _slots[i] = new MovesetSlot();
+            }
+        }
+        public Moveset(BoxMoveset other)
+        {
+            _slots = new MovesetSlot[PkmnConstants.NumMoves];
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                _slots[i] = new MovesetSlot(other[i]);
             }
         }
 

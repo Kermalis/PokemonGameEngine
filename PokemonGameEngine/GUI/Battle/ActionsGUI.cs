@@ -3,6 +3,7 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.GUI.Transition;
+using Kermalis.PokemonGameEngine.Pkmn;
 using System;
 using System.Linq;
 
@@ -75,7 +76,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 PBEMove[] usableMoves = pkmn.GetUsableMoves();
                 _moveChoices = new TextGUIChoices(0.8f, 0.7f, 0.06f, backCommand: () => _isShowingMoves = false,
                     font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled);
-                for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
+                for (int i = 0; i < PkmnConstants.NumMoves; i++)
                 {
                     PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[i];
                     PBEMove m = slot.Move;
