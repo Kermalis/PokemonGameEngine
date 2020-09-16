@@ -72,6 +72,8 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.SetMessageCanClose, Array.Empty<Type>() },
         { ScriptCommand.UnloadObj, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.LookTowardsObj, new[] { typeof(ushort), typeof(ushort) } }, // Id of looker, id of obj to look at
+        { ScriptCommand.BufferSeenCount, new[] { typeof(byte) } }, // Buffer number
+        { ScriptCommand.BufferCaughtCount, new[] { typeof(byte) } }, // Buffer number
     };
 
     static ScriptBuilderHelper()

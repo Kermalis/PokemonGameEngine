@@ -6,6 +6,7 @@ namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Save
     {
+        public Pokedex Pokedex { get; }
         public Flags Flags { get; }
         public Vars Vars { get; }
         public string PlayerName { get; }
@@ -16,17 +17,22 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public Save()
         {
+            Pokedex = new Pokedex();
             Flags = new Flags();
             Vars = new Vars();
             PlayerName = "Dawn";
             PlayerIsFemale = true;
-            PlayerParty = new Party() { new PartyPokemon(PBESpecies.Victini, 0, 67) };
-            PlayerParty[0].Ability = PBEAbility.Compoundeyes;
-            PlayerParty[0].Item = PBEItem.Leftovers;
-            PlayerParty[0].Moveset[0].Move = PBEMove.Bounce;
-            PlayerParty[0].Moveset[1].Move = PBEMove.ZenHeadbutt;
-            PlayerParty[0].Moveset[2].Move = PBEMove.StunSpore;
-            PlayerParty[0].Moveset[3].Move = PBEMove.VCreate;
+            PlayerParty = new Party();
+            {
+                var victini = new PartyPokemon(PBESpecies.Victini, 0, 67);
+                victini.Ability = PBEAbility.Compoundeyes;
+                victini.Item = PBEItem.Leftovers;
+                victini.Moveset[0].Move = PBEMove.Bounce;
+                victini.Moveset[1].Move = PBEMove.ZenHeadbutt;
+                victini.Moveset[2].Move = PBEMove.StunSpore;
+                victini.Moveset[3].Move = PBEMove.VCreate;
+                GivePokemon(victini);
+            }
             for (int i = 0; i < PBESettings.DefaultMaxPartySize - 1; i++)
             {
                 Test_GiveRandomPokemon();
@@ -51,12 +57,13 @@ namespace Kermalis.PokemonGameEngine.Core
             (PBESpecies species, PBEForm form) = PBEDataProvider.GlobalRandom.RandomSpecies(true);
             var pkmn = new PartyPokemon(species, form, (byte)PBEDataProvider.GlobalRandom.RandomInt(PBESettings.DefaultMinLevel, PBESettings.DefaultMaxLevel));
             pkmn.RandomizeMoves();
-            PlayerParty.Add(pkmn);
+            GivePokemon(pkmn);
         }
 
         // TODO: If party is full, send to a box, if boxes are full, error
         public void GivePokemon(PartyPokemon pkmn)
         {
+            Pokedex.SetCaught(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.PID);
             PlayerParty.Add(pkmn);
         }
     }

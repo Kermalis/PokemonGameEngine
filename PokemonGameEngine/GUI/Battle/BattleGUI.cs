@@ -138,15 +138,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             Font fontDefault = Font.Default;
 
             PBEBattlePokemon pkmn = sPkmn.Pkmn;
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.00f)), pkmn.KnownNickname, Font.DefaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.00f, pkmn.KnownNickname, Font.DefaultWhite);
             string prefix = ally ? pkmn.HP.ToString() + "/" + pkmn.MaxHP.ToString() + " - " : string.Empty;
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.06f)), prefix + pkmn.HPPercentage.ToString("P2"), Font.DefaultWhite);
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.12f)), "Level " + pkmn.Level.ToString(), Font.DefaultWhite);
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.18f)), "Status: " + pkmn.Status1.ToString(), Font.DefaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.06f, prefix + pkmn.HPPercentage.ToString("P2"), Font.DefaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.12f, "Level " + pkmn.Level.ToString(), Font.DefaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.18f, "Status: " + pkmn.Status1.ToString(), Font.DefaultWhite);
             PBEGender gender = pkmn.KnownGender;
             if (gender != PBEGender.Genderless)
             {
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x), (int)(bmpHeight * (y + 0.24f)), gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultMale : Font.DefaultFemale);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.24f, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultMale : Font.DefaultFemale);
+            }
+            if (!ally && pkmn.IsWild && Game.Instance.Save.Pokedex.IsCaught(pkmn.KnownSpecies))
+            {
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x + 0.02f, y + 0.24f, "Caught", Font.DefaultWhite);
             }
         }
 
@@ -193,6 +197,21 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
             _actionsGUI?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
             _battleEndedTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+        }
+
+        private void SetSeen(PBEBattlePokemon pkmn)
+        {
+            if (pkmn.Trainer == _trainer)
+            {
+                return;
+            }
+            PartyPokemon pPkmn = _spritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
+            Game.Instance.Save.Pokedex.SetSeen(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownGender, pPkmn.PID); // TODO: #49 (Spinda spots disguise)
+        }
+        private void UpdateAnimationSpeed(PBEBattlePokemon pkmn)
+        {
+            SpritedBattlePokemon sPkmn = _spritedParties[pkmn.Trainer.Id][pkmn];
+            sPkmn.UpdateAnimationSpeed();
         }
 
 
@@ -310,16 +329,55 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 case PBEPkmnHPChangedPacket phcp:
                 {
-                    PBEBattlePokemon pokemon = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
-                    SpritedBattlePokemon sPkmn = _spritedParties[pokemon.Trainer.Id].SpritedParty[pokemon.Id];
-                    sPkmn.UpdateAnimationSpeed();
+                    PBEBattlePokemon pkmn = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
+                    UpdateAnimationSpeed(pkmn);
                     break;
                 }
                 case PBEStatus1Packet s1p:
                 {
                     PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTrainer.TryGetPokemon(s1p.Status1Receiver);
-                    SpritedBattlePokemon sPkmn = _spritedParties[status1Receiver.Trainer.Id].SpritedParty[status1Receiver.Id];
-                    sPkmn.UpdateAnimationSpeed();
+                    UpdateAnimationSpeed(status1Receiver);
+                    break;
+                }
+                case PBEStatus2Packet s2p:
+                {
+                    PBEBattlePokemon status2Receiver = s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver);
+                    switch (s2p.Status2)
+                    {
+                        case PBEStatus2.Disguised:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Ended: SetSeen(status2Receiver); break;
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case PBEPkmnSwitchInPacket psip:
+                {
+                    foreach (PBEPkmnAppearedInfo info in psip.SwitchIns)
+                    {
+                        PBEBattlePokemon pkmn = psip.Trainer.TryGetPokemon(info.Pokemon);
+                        SetSeen(pkmn);
+                    }
+                    break;
+                }
+                case PBEWildPkmnAppearedPacket wpap:
+                {
+                    PBETrainer trainer = _battle.Teams[1].Trainers[0];
+                    foreach (PBEPkmnAppearedInfo info in wpap.Pokemon)
+                    {
+                        PBEBattlePokemon pkmn = trainer.TryGetPokemon(info.Pokemon);
+                        SetSeen(pkmn);
+                    }
+                    break;
+                }
+                case PBEPkmnFormChangedPacket pfcp:
+                {
+                    PBEBattlePokemon pkmn = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
+                    SetSeen(pkmn);
                     break;
                 }
                 /*case PBEPkmnFaintedPacket pfp:

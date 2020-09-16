@@ -59,6 +59,8 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.SetMessageCanClose: SetMessageCanCloseCommand(); break;
                 case ScriptCommand.UnloadObj: UnloadObjCommand(); break;
                 case ScriptCommand.LookTowardsObj: LookTowardsObjCommand(); break;
+                case ScriptCommand.BufferSeenCount: BufferSeenCountCommand(); break;
+                case ScriptCommand.BufferCaughtCount: BufferCaughtCountCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -378,6 +380,16 @@ namespace Kermalis.PokemonGameEngine.Script
             byte buffer = (byte)ReadVarOrValue();
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             Game.Instance.StringBuffers.Buffers[buffer] = PBEDataProvider.Instance.GetSpeciesName(species).English;
+        }
+        private void BufferSeenCountCommand()
+        {
+            byte buffer = (byte)ReadVarOrValue();
+            Game.Instance.StringBuffers.Buffers[buffer] = Game.Instance.Save.Pokedex.GetSpeciesSeen().ToString();
+        }
+        private void BufferCaughtCountCommand()
+        {
+            byte buffer = (byte)ReadVarOrValue();
+            Game.Instance.StringBuffers.Buffers[buffer] = Game.Instance.Save.Pokedex.GetSpeciesCaught().ToString();
         }
 
         private void WildBattleCommand()

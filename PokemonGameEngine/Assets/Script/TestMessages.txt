@@ -6,13 +6,23 @@ GoToIf Test_SetGroudonGone Var.Test1 C.Equal 0
 ClearFlag Flag.Test_GroudonVisible
 SetVar Var.Test_GroudonState 1
 Message TestText_GroudonActive
+AwaitMessage
+Call SeenCaughtMessage
 GoTo AwaitMessageUnlockAllEnd
 
 #Test_SetGroudonGone
 SetFlag Flag.Test_GroudonVisible
 SetVar Var.Test_GroudonState 0
 Message TestText_GroudonHidden
+AwaitMessage
+Call SeenCaughtMessage
 GoTo AwaitMessageUnlockAllEnd
+
+#SeenCaughtMessage
+BufferSeenCount 0
+BufferCaughtCount 1
+Message TestText_SeenCaught
+return
 
 #AwaitMessageUnlockAllEnd
 AwaitMessage
@@ -20,6 +30,10 @@ UnlockAllObjs
 End
 
 #TestText_GroudonHidden
-"Groudon hidden.\nAlso, nice {BUF 0} you have there."
+"Groudon hidden."
 #TestText_GroudonActive
-"Groudon active.\nAlso, nice {BUF 0} you have there."
+"Groudon active."
+
+#TestText_SeenCaught
+"You have seen {BUF 0} Pokémon.\n
+You have caught {BUF 1} Pokémon."

@@ -51,6 +51,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public SpritedBattlePokemon[] SpritedParty { get; }
         public PBEList<PBEBattlePokemon> BattleParty { get; }
 
+        public SpritedBattlePokemon this[PBEBattlePokemon pkmn] => SpritedParty[pkmn.Id];
+
         public SpritedBattlePokemonParty(PBEList<PBEBattlePokemon> pBattle, Party p)
         {
             Party = p;

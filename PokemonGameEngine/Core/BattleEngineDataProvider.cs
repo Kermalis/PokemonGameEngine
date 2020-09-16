@@ -7,7 +7,16 @@ namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class BattleEngineDataProvider : PBEDataProvider
     {
-        // TODO: Species caught, moon ball, repeat ball
+        // TODO: Moon ball
+
+        public override int GetSpeciesCaught()
+        {
+            return Game.Instance.Save.Pokedex.GetSpeciesCaught();
+        }
+        public override bool IsRepeatBallSpecies(PBESpecies species)
+        {
+            return Game.Instance.Save.Pokedex.IsCaught(species);
+        }
 
         public override bool IsDarkGrass(PBEBattle battle)
         {

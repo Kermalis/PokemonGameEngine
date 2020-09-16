@@ -83,5 +83,7 @@
         SetMessageCanClose,
         UnloadObj,
         LookTowardsObj,
+        BufferSeenCount,
+        BufferCaughtCount,
     }
 }

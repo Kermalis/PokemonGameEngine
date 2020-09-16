@@ -38,7 +38,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Sound/music
 * Bike/surf
 * Some movement behaviors (like ledges, spin tiles, waterfall, etc)
-* Pokédex
+* PC boxes
 
 ----
 ## PokemonGameEngine Uses:
