@@ -26,6 +26,7 @@ return
 
 #AwaitMessageUnlockAllEnd
 AwaitMessage
+CloseMessage
 UnlockAllObjs
 End
 
@@ -35,5 +36,6 @@ End
 "Groudon active."
 
 #TestText_SeenCaught
-"You have seen {BUF 0} Pokémon.\n
-You have caught {BUF 1} Pokémon."
+"You have seen {BUF 0} Pokémon.\v
+You have caught {BUF 1} Pokémon.\f
+Congratulations!"

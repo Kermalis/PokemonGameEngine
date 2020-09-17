@@ -7,7 +7,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 {
     internal sealed class MessageBox
     {
-        public readonly string Text;
+        public string Text { get; private set; }
         public readonly Font Font;
         public readonly uint[] FontColors;
 
@@ -18,17 +18,16 @@ namespace Kermalis.PokemonGameEngine.GUI
         public float Width;
         public float Height;
 
-        public bool CanClose = true;
-        public bool IsClosed;
+        public bool IsDone => _result == StringPrinterResult.Ended && _pressedDone;
+        public bool IsClosed { get; private set; }
 
         private readonly Sprite _sprite;
-        private readonly StringPrinter _printer;
-        private bool _done;
+        private StringPrinter _printer;
+        private StringPrinterResult _result;
+        private bool _pressedDone;
 
-        public unsafe MessageBox(string text)
+        public MessageBox()
         {
-            Text = text;
-
             Font = Font.Default;
             FontColors = Font.DefaultWhite;
 
@@ -39,50 +38,100 @@ namespace Kermalis.PokemonGameEngine.GUI
             Width = 1.00f;
             Height = 0.16f;
 
-            _printer = new StringPrinter(text, (int)(Program.RenderWidth * XOffset), (int)(Program.RenderHeight * YOffset), Font, FontColors);
             _sprite = new Sprite((int)(Program.RenderWidth * Width), (int)(Program.RenderHeight * Height));
+            IsClosed = true;
+        }
+
+        public unsafe void SetText(string text)
+        {
+            text = Game.Instance.StringBuffers.ApplyBuffers(text);
+            Text = text;
+            _printer = new StringPrinter(text, (int)(Program.RenderWidth * XOffset), (int)(Program.RenderHeight * YOffset), Font, FontColors);
+            _result = StringPrinterResult.EnoughChars;
+            _pressedDone = false;
             _sprite.Draw(DrawBackground);
         }
+        public void Open()
+        {
+            if (!IsClosed)
+            {
+                return;
+            }
+            IsClosed = false;
+            Game.Instance.MessageBoxes.Add(this);
+        }
+
         private unsafe void DrawBackground(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(49, 49, 49, 128));
+            RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(49, 49, 49, 128));
         }
         private unsafe void AdvanceAndDrawString(int speed)
         {
             unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight)
             {
-                _done = _printer.DrawNext(bmpAddress, bmpWidth, bmpHeight, speed);
+                _result = _printer.DrawNext(bmpAddress, bmpWidth, bmpHeight, speed);
             }
             _sprite.Draw(DrawString);
         }
 
-        public void LogicTick()
+        public unsafe void LogicTick()
         {
-            if (_done)
+            bool IsDown()
             {
-                // TODO: Paragraphs
-                // Close
-                if (CanClose && (InputManager.IsPressed(Key.A) || InputManager.IsPressed(Key.B)))
-                {
-                    Close();
-                    return;
-                }
+                return InputManager.IsDown(Key.A) || InputManager.IsDown(Key.B);
             }
-            else
+            bool IsPressed()
             {
-                // Advance text
-                int speed = InputManager.IsDown(Key.A) || InputManager.IsDown(Key.B) ? 3 : 1;
-                AdvanceAndDrawString(speed);
+                return InputManager.IsPressed(Key.A) || InputManager.IsPressed(Key.B);
+            }
+            switch (_result)
+            {
+                case StringPrinterResult.EnoughChars:
+                {
+                    int speed = IsDown() ? 3 : 1;
+                    AdvanceAndDrawString(speed);
+                    break;
+                }
+                case StringPrinterResult.FormFeed:
+                {
+                    if (IsPressed())
+                    {
+                        _sprite.Draw(DrawBackground);
+                        _result = StringPrinterResult.EnoughChars;
+                    }
+                    break;
+                }
+                case StringPrinterResult.VerticalTab:
+                {
+                    if (IsPressed())
+                    {
+                        _result = StringPrinterResult.EnoughChars;
+                    }
+                    break;
+                }
+                case StringPrinterResult.Ended:
+                {
+                    if (IsPressed())
+                    {
+                        _pressedDone = true;
+                        return;
+                    }
+                    break;
+                }
             }
         }
 
         public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            _sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * X), (int)(bmpHeight * Y));
+            _sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, X, Y);
         }
 
         public void Close()
         {
+            if (IsClosed)
+            {
+                return;
+            }
             IsClosed = true;
             Game.Instance.MessageBoxes.Remove(this);
         }

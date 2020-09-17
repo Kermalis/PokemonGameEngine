@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
@@ -55,8 +54,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.BufferSpeciesName: BufferSpeciesNameCommand(); break;
                 case ScriptCommand.WildBattle: WildBattleCommand(); break;
                 case ScriptCommand.AwaitBattle: AwaitBattleCommand(); break;
-                case ScriptCommand.MessageNoClose: MessageNoCloseCommand(); break;
-                case ScriptCommand.SetMessageCanClose: SetMessageCanCloseCommand(); break;
+                case ScriptCommand.CloseMessage: CloseMessageCommand(); break;
                 case ScriptCommand.UnloadObj: UnloadObjCommand(); break;
                 case ScriptCommand.LookTowardsObj: LookTowardsObjCommand(); break;
                 case ScriptCommand.BufferSeenCount: BufferSeenCountCommand(); break;
@@ -246,33 +244,19 @@ namespace Kermalis.PokemonGameEngine.Script
             long returnOffset = _reader.BaseStream.Position;
             string text = _reader.ReadStringNullTerminated(textOffset);
             _reader.BaseStream.Position = returnOffset;
-            var msgBox = new MessageBox(Game.Instance.StringBuffers.ApplyBuffers(text));
-            _lastMessageBox = msgBox;
-            Game.Instance.MessageBoxes.Add(msgBox);
-        }
-        private void MessageNoCloseCommand()
-        {
-            uint textOffset = _reader.ReadUInt32();
-            long returnOffset = _reader.BaseStream.Position;
-            string text = _reader.ReadStringNullTerminated(textOffset);
-            _reader.BaseStream.Position = returnOffset;
-            var msgBox = new MessageBox(Game.Instance.StringBuffers.ApplyBuffers(text)) { CanClose = false };
-            _lastMessageBox = msgBox;
-            Game.Instance.MessageBoxes.Add(msgBox);
+            _messageBox.SetText(text);
+            _messageBox.Open();
         }
         private void AwaitMessageCommand()
         {
-            if (!_lastMessageBox.IsClosed)
+            if (!_messageBox.IsClosed)
             {
-                _waitMessageBox = _lastMessageBox;
+                _waitMessageBox = true;
             }
         }
-        private void SetMessageCanCloseCommand()
+        private void CloseMessageCommand()
         {
-            if (!_lastMessageBox.IsClosed)
-            {
-                _lastMessageBox.CanClose = true;
-            }
+            _messageBox.Close();
         }
 
         private void SetLock(bool locked)

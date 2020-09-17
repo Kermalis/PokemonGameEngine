@@ -14,14 +14,15 @@ namespace Kermalis.PokemonGameEngine.Script
         private bool _isDisposed;
         private ushort _delay;
         private Obj _waitMovementObj;
-        private MessageBox _waitMessageBox;
+        private bool _waitMessageBox;
         private bool _waitBattle;
 
-        private MessageBox _lastMessageBox;
+        private readonly MessageBox _messageBox;
 
         public ScriptContext(EndianBinaryReader r)
         {
             _reader = r;
+            _messageBox = new MessageBox();
         }
 
         private bool ShouldLeaveLogicTick(bool update)
@@ -30,48 +31,49 @@ namespace Kermalis.PokemonGameEngine.Script
             {
                 return true;
             }
+            bool stopRunning = false;
             if (_delay != 0)
             {
                 if (update)
                 {
                     _delay--;
                 }
-                return true;
+                stopRunning = true;
             }
             if (_waitMovementObj != null)
             {
                 if (_waitMovementObj.IsMoving)
                 {
-                    return true;
+                    stopRunning = true;
                 }
-                if (update)
+                else if (update)
                 {
                     _waitMovementObj = null;
                 }
             }
-            if (_waitMessageBox != null)
+            if (_waitMessageBox)
             {
-                if (!_waitMessageBox.IsClosed)
+                if (!_messageBox.IsClosed && !_messageBox.IsDone)
                 {
-                    return true;
+                    stopRunning = true;
                 }
-                if (update)
+                else if (update)
                 {
-                    _waitMessageBox = null;
+                    _waitMessageBox = false;
                 }
             }
             if (_waitBattle)
             {
                 if (Game.Instance.BattleGUI != null)
                 {
-                    return true;
+                    stopRunning = true;
                 }
-                if (update)
+                else if (update)
                 {
                     _waitBattle = false;
                 }
             }
-            return false;
+            return stopRunning;
         }
         public void LogicTick()
         {

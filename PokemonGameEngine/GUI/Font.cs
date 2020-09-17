@@ -75,46 +75,54 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
-        public Glyph GetGlyph(string str, ref int index, ref int xOffset, ref int yOffset)
+        public Glyph GetGlyph(string str, ref int index, ref int xOffset, ref int yOffset, out string readStr)
         {
             char c = str[index];
             if (c == '\r') // Completely ignore CR
             {
                 index++;
+                readStr = null;
                 return null;
             }
-            else if (c == '\n')
+            if (c == '\n' || c == '\v')
             {
                 index++;
                 xOffset = 0;
                 yOffset += FontHeight + 1;
+                readStr = c.ToString();
                 return null;
             }
-            else
+            if (c == '\f')
             {
-                Glyph ret = null;
-                for (int i = 0; i < _overrides.Length; i++)
-                {
-                    (string oldKey, ushort newKey) = _overrides[i];
-                    int ol = oldKey.Length;
-                    if (index + ol <= str.Length && str.Substring(index, ol) == oldKey)
-                    {
-                        index += ol;
-                        ret = _glyphs[newKey];
-                        break;
-                    }
-                }
-                if (ret == null)
-                {
-                    index++;
-                    if (!_glyphs.TryGetValue(c, out ret))
-                    {
-                        ret = _glyphs['?']; // Will crash if there is no '?' in this font
-                    }
-                }
-                xOffset += ret.CharWidth + ret.CharSpace;
-                return ret;
+                index++;
+                xOffset = 0;
+                yOffset = 0;
+                readStr = "\f";
+                return null;
             }
+            Glyph ret;
+            for (int i = 0; i < _overrides.Length; i++)
+            {
+                (string oldKey, ushort newKey) = _overrides[i];
+                int ol = oldKey.Length;
+                if (index + ol <= str.Length && str.Substring(index, ol) == oldKey)
+                {
+                    index += ol;
+                    ret = _glyphs[newKey];
+                    readStr = oldKey;
+                    goto bottom;
+                }
+            }
+            // ret was not found in the loop
+            index++;
+            if (!_glyphs.TryGetValue(c, out ret))
+            {
+                ret = _glyphs['?']; // Will crash if there is no '?' in this font
+            }
+            readStr = c.ToString();
+        bottom:
+            xOffset += ret.CharWidth + ret.CharSpace;
+            return ret;
         }
 
         public void MeasureString(string str, out int width, out int height)
@@ -133,7 +141,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 int xOffset = 0;
                 while (index < str.Length)
                 {
-                    GetGlyph(str, ref index, ref xOffset, ref height);
+                    GetGlyph(str, ref index, ref xOffset, ref height, out _);
                     if (xOffset > width)
                     {
                         width = xOffset;
@@ -220,7 +228,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 int curX = x + nextXOffset;
                 int curY = y + nextYOffset;
-                Glyph glyph = GetGlyph(str, ref index, ref nextXOffset, ref nextYOffset);
+                Glyph glyph = GetGlyph(str, ref index, ref nextXOffset, ref nextYOffset, out _);
                 if (glyph != null)
                 {
                     DrawGlyph(bmpAddress, bmpWidth, bmpHeight, curX, curY, glyph, fontColors);
@@ -248,13 +256,21 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 int curX = (x + nextXOffset) * scale;
                 int curY = (y + nextYOffset) * scale;
-                Glyph glyph = GetGlyph(str, ref index, ref nextXOffset, ref nextYOffset);
+                Glyph glyph = GetGlyph(str, ref index, ref nextXOffset, ref nextYOffset, out _);
                 if (glyph != null)
                 {
                     DrawGlyph(bmpAddress, bmpWidth, bmpHeight, curX, curY, scale, glyph, fontColors);
                 }
             }
         }
+    }
+
+    internal enum StringPrinterResult : byte
+    {
+        EnoughChars,
+        FormFeed,
+        VerticalTab,
+        Ended,
     }
 
     // 1x scale only for now
@@ -278,21 +294,29 @@ namespace Kermalis.PokemonGameEngine.GUI
             _fontColors = fontColors;
         }
 
-        public unsafe bool DrawNext(uint* bmpAddress, int bmpWidth, int bmpHeight, int count)
+        public unsafe StringPrinterResult DrawNext(uint* bmpAddress, int bmpWidth, int bmpHeight, int count)
         {
             int i = 0;
             while (i < count && _index < _str.Length)
             {
                 int curX = _startX + _nextXOffset;
                 int curY = _startY + _nextYOffset;
-                Font.Glyph glyph = _font.GetGlyph(_str, ref _index, ref _nextXOffset, ref _nextYOffset);
+                Font.Glyph glyph = _font.GetGlyph(_str, ref _index, ref _nextXOffset, ref _nextYOffset, out string readStr);
+                if (readStr == "\f")
+                {
+                    return StringPrinterResult.FormFeed;
+                }
+                if (readStr == "\v")
+                {
+                    return StringPrinterResult.VerticalTab;
+                }
                 if (glyph != null)
                 {
                     _font.DrawGlyph(bmpAddress, bmpWidth, bmpHeight, curX, curY, glyph, _fontColors);
                     i++;
                 }
             }
-            return _index >= _str.Length;
+            return _index >= _str.Length ? StringPrinterResult.Ended : StringPrinterResult.EnoughChars;
         }
     }
 }

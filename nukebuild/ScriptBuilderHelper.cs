@@ -24,7 +24,9 @@ internal static class ScriptBuilderHelper
     };
     public static readonly (string OldChars, string NewChars)[] TextReplacements = new (string OldChars, string NewChars)[]
     {
-        ("\\n", "\n")
+        ("\\f", "\f"),
+        ("\\n", "\n"),
+        ("\\v", "\v"),
     };
 
     public static readonly Array Commands = Enum.GetValues(typeof(ScriptCommand));
@@ -68,8 +70,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.BufferSpeciesName, new[] { typeof(byte), typeof(PBESpecies) } }, // Buffer number, species
         { ScriptCommand.WildBattle, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte) } }, // Species, form, level
         { ScriptCommand.AwaitBattle, Array.Empty<Type>() },
-        { ScriptCommand.MessageNoClose, new[] { typeof(void*) } }, // String data offset
-        { ScriptCommand.SetMessageCanClose, Array.Empty<Type>() },
+        { ScriptCommand.CloseMessage, Array.Empty<Type>() },
         { ScriptCommand.UnloadObj, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.LookTowardsObj, new[] { typeof(ushort), typeof(ushort) } }, // Id of looker, id of obj to look at
         { ScriptCommand.BufferSeenCount, new[] { typeof(byte) } }, // Buffer number
