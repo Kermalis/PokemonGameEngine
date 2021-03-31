@@ -10,19 +10,55 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
     {
         public PartyPokemon PartyPkmn { get; }
         public PBEBattlePokemon Pkmn { get; }
-        public Sprite Minisprite { get; }
-        public AnimatedSprite FrontSprite { get; } // These are being animated even if unused in the battle
-        public AnimatedSprite BackSprite { get; }
+        public Sprite Minisprite { get; private set; }
+        public AnimatedSprite Sprite { get; private set; }
+        private readonly bool _backSprite;
+        private readonly bool _useKnownInfo;
 
-        public SpritedBattlePokemon(PBEBattlePokemon pkmn, PartyPokemon pPkmn)
+        public SpritedBattlePokemon(PBEBattlePokemon pkmn, PartyPokemon pPkmn, bool backSprite, bool useKnownInfo, PkmnPosition wildPos)
         {
             PartyPkmn = pPkmn;
             Pkmn = pkmn;
-            Minisprite = SpriteUtils.GetMinisprite(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny);
-            FrontSprite = SpriteUtils.GetPokemonSprite(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny, false, false, pPkmn.PID);
-            BackSprite = SpriteUtils.GetPokemonSprite(pkmn.OriginalSpecies, pkmn.RevertForm, pkmn.Gender, pkmn.Shiny, true, false, pPkmn.PID);
+            _backSprite = backSprite;
+            _useKnownInfo = useKnownInfo;
+            UpdateInfoBar();
+            UpdateSprites(wildPos);
+            UpdateAnimationSpeed(); // Ensure the proper speed is set upon entering battle
+            if (wildPos != null)
+            {
+                wildPos.InfoVisible = true;
+                wildPos.PkmnVisible = true;
+                wildPos.SPkmn = this;
+            }
+        }
 
-            UpdateAnimationSpeed();
+        public void UpdateSprites(PkmnPosition pos)
+        {
+            Minisprite = SpriteUtils.GetMinisprite(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny);
+            PBEStatus2 status2 = _useKnownInfo ? Pkmn.KnownStatus2 : Pkmn.Status2;
+            Sprite = SpriteUtils.GetPokemonSprite(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, _backSprite, status2.HasFlag(PBEStatus2.Substitute), PartyPkmn.PID);
+            if (pos is null)
+            {
+                return; // Only for updating visibility below
+            }
+            if (!status2.HasFlag(PBEStatus2.Substitute))
+            {
+                if (status2.HasFlag(PBEStatus2.Airborne)
+                    || status2.HasFlag(PBEStatus2.ShadowForce)
+                    || status2.HasFlag(PBEStatus2.Underground)
+                    || status2.HasFlag(PBEStatus2.Underwater))
+                {
+                    pos.PkmnVisible = false;
+                }
+                else
+                {
+                    pos.PkmnVisible = true;
+                }
+            }
+        }
+        public void UpdateInfoBar()
+        {
+            // update render hp and status etc
         }
 
         public void UpdateAnimationSpeed()
@@ -31,16 +67,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             PBEStatus1 s = pkmn.Status1;
             if (s == PBEStatus1.Frozen)
             {
-                BackSprite.IsPaused = true;
-                FrontSprite.IsPaused = true;
+                Sprite.IsPaused = true;
             }
             else
             {
-                double speed = s == PBEStatus1.Paralyzed || s == PBEStatus1.Asleep || pkmn.HPPercentage <= 0.25 ? 2d : 1d;
-                BackSprite.SpeedModifier = speed;
-                FrontSprite.SpeedModifier = speed;
-                BackSprite.IsPaused = false;
-                FrontSprite.IsPaused = false;
+                Sprite.SpeedModifier = s == PBEStatus1.Paralyzed || s == PBEStatus1.Asleep || pkmn.HPPercentage <= 0.25 ? 2d : 1d;
+                Sprite.IsPaused = false;
             }
         }
     }
@@ -53,14 +85,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public SpritedBattlePokemon this[PBEBattlePokemon pkmn] => SpritedParty[pkmn.Id];
 
-        public SpritedBattlePokemonParty(PBEList<PBEBattlePokemon> pBattle, Party p)
+        public SpritedBattlePokemonParty(PBEList<PBEBattlePokemon> pBattle, Party p, bool backSprite, bool useKnownInfo, BattleGUI battleGUI)
         {
             Party = p;
             BattleParty = pBattle;
             SpritedParty = new SpritedBattlePokemon[pBattle.Count];
             for (int i = 0; i < pBattle.Count; i++)
             {
-                SpritedParty[i] = new SpritedBattlePokemon(pBattle[i], p[i]);
+                PkmnPosition wildPos = null;
+                PBEBattlePokemon pPkmn = pBattle[i];
+                if (pPkmn.IsWild)
+                {
+                    wildPos = battleGUI.GetStuff(pPkmn, pPkmn.FieldPosition);
+                }
+                SpritedParty[i] = new SpritedBattlePokemon(pBattle[i], p[i], backSprite, useKnownInfo, wildPos);
             }
         }
 

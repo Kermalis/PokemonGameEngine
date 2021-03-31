@@ -15,7 +15,7 @@ using System.Threading;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
-    internal sealed class BattleGUI
+    internal sealed partial class BattleGUI
     {
         private const int WaitMilliseconds = 1750;
         private const string ThreadName = "Battle Thread"; // TODO: Put this on LogicTick somehow so it can be locked with render thread
@@ -29,7 +29,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private Action _onClosed;
 
         private readonly PBEBattle _battle;
-        private readonly SpritedBattlePokemonParty[] _spritedParties;
+        public readonly SpritedBattlePokemonParty[] _spritedParties;
         private readonly PBETrainer _trainer;
         private string _message;
         private ActionsGUI _actionsGUI;
@@ -42,6 +42,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public BattleGUI(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties,
             bool isCave, bool isDarkGrass, bool isFishing, bool isSurfing, bool isUnderwater)
+            : this(battle.BattleFormat) // Init field controller
         {
             IsCave = isCave;
             IsDarkGrass = isDarkGrass;
@@ -54,12 +55,29 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _spritedParties = new SpritedBattlePokemonParty[battle.Trainers.Count];
             for (int i = 0; i < battle.Trainers.Count; i++)
             {
-                _spritedParties[i] = new SpritedBattlePokemonParty(battle.Trainers[i].Party, trainerParties[i]);
+                PBETrainer trainer = battle.Trainers[i];
+                _spritedParties[i] = new SpritedBattlePokemonParty(trainer.Party, trainerParties[i], IsBackSprite(trainer.Team), ShouldUseKnownInfo(trainer), this);
             }
             _transitionCounter = TransitionDuration;
             _onClosed = onClosed;
             battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
             battle.OnStateChanged += SinglePlayerBattle_OnStateChanged;
+        }
+
+        private void TransitionOut()
+        {
+            void OnBattleEndedTransitionEnded()
+            {
+                _battleEndedTransition = null;
+                if (_actionsGUI != null)
+                {
+                    _actionsGUI.Dispose();
+                    _actionsGUI = null;
+                }
+                _onClosed.Invoke();
+                _onClosed = null;
+            }
+            _battleEndedTransition = new FadeToColorTransition(20, 0, OnBattleEndedTransitionEnded);
         }
 
         private void SinglePlayerBattle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
@@ -75,17 +93,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 case PBEBattleState.Ended:
                 {
-                    void OnBattleEndedTransitionEnded()
-                    {
-                        _battleEndedTransition = null;
-                        if (_actionsGUI != null)
-                        {
-                            _actionsGUI.Dispose();
-                            _actionsGUI = null;
-                        }
-                        _onClosed.Invoke();
-                        _onClosed = null;
-                    }
                     foreach (SpritedBattlePokemonParty p in _spritedParties)
                     {
                         p.UpdateToParty(); // Copy our Pokémon back from battle, update teammates, update wild Pokémon
@@ -95,11 +102,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         PBETrainer wildTrainer = _battle.Teams[1].Trainers[0];
                         SpritedBattlePokemonParty sp = _spritedParties[wildTrainer.Id];
                         PBEBattlePokemon wildPkmn = wildTrainer.ActiveBattlers.Single();
-                        PartyPokemon pkmn = sp.Party[wildPkmn.Id];
+                        PartyPokemon pkmn = sp[wildPkmn].PartyPkmn;
                         pkmn.UpdateFromBattle_Caught(wildPkmn);
                         Game.Instance.Save.GivePokemon(pkmn);
                     }
-                    _battleEndedTransition = new FadeToColorTransition(20, 0, OnBattleEndedTransitionEnded);
+                    TransitionOut();
                     break;
                 }
                 case PBEBattleState.ReadyToRunSwitches: new Thread(battle.RunSwitches) { Name = ThreadName }.Start(); break;
@@ -121,9 +128,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _actionsGUI?.LogicTick();
         }
 
-        private unsafe void RenderPkmn(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, bool ally, SpritedBattlePokemon sPkmn)
+        private unsafe void RenderPkmn(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos, bool ally)
         {
-            AnimatedSprite sprite = ally ? sPkmn.BackSprite : sPkmn.FrontSprite; // TODO: Substitute
+            SpritedBattlePokemon sPkmn = pos.SPkmn;
+            AnimatedSprite sprite = sPkmn.Sprite;
             int width = sprite.Width;
             int height = sprite.Height;
             if (ally)
@@ -131,26 +139,28 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 width *= 2;
                 height *= 2;
             }
-            sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * x) - (width / 2), (int)(bmpHeight * y) - height, width, height);
+            sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * pos.MonX) - (width / 2), (int)(bmpHeight * pos.MonY) - height, width, height);
         }
-        private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, bool ally, SpritedBattlePokemon sPkmn)
+        private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos, bool ally)
         {
-            Font fontDefault = Font.Default;
-
+            Font fontDefault = Font.DefaultSmall;
+            SpritedBattlePokemon sPkmn = pos.SPkmn;
+            float x = pos.BarX;
+            float y = pos.BarY;
             PBEBattlePokemon pkmn = sPkmn.Pkmn;
             fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.00f, pkmn.KnownNickname, Font.DefaultWhite);
             string prefix = ally ? pkmn.HP.ToString() + "/" + pkmn.MaxHP.ToString() + " - " : string.Empty;
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.06f, prefix + pkmn.HPPercentage.ToString("P2"), Font.DefaultWhite);
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.12f, "Level " + pkmn.Level.ToString(), Font.DefaultWhite);
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.18f, "Status: " + pkmn.Status1.ToString(), Font.DefaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.04f, prefix + pkmn.HPPercentage.ToString("P2"), Font.DefaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.08f, "Level " + pkmn.Level.ToString(), Font.DefaultWhite);
+            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.12f, "Status: " + pkmn.Status1.ToString(), Font.DefaultWhite);
             PBEGender gender = pkmn.KnownGender;
             if (gender != PBEGender.Genderless)
             {
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.24f, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultMale : Font.DefaultFemale);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.16f, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultMale : Font.DefaultFemale);
             }
             if (!ally && pkmn.IsWild && Game.Instance.Save.Pokedex.IsCaught(pkmn.KnownSpecies))
             {
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x + 0.02f, y + 0.24f, "Caught", Font.DefaultWhite);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, x + 0.02f, y + 0.16f, "Caught", Font.DefaultWhite);
             }
         }
 
@@ -161,10 +171,26 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             Font fontDefault = Font.Default;
             uint[] defaultWhite = Font.DefaultWhite;
             _battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
-            SpritedBattlePokemon foe = _spritedParties[1].SpritedParty[0];
-            SpritedBattlePokemon ally = _spritedParties[0].SpritedParty[0];
-            RenderPkmn(bmpAddress, bmpWidth, bmpHeight, 0.75f, 0.55f, false, foe);
-            RenderPkmn(bmpAddress, bmpWidth, bmpHeight, 0.35f, 0.95f, true, ally);
+            void DoTeam(int i, bool info)
+            {
+                foreach (PkmnPosition p in _positions[i])
+                {
+                    bool ally = i == 0;
+                    if (info)
+                    {
+                        if (p.InfoVisible)
+                        {
+                            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, p, ally);
+                        }
+                    }
+                    else if (p.PkmnVisible)
+                    {
+                        RenderPkmn(bmpAddress, bmpWidth, bmpHeight, p, ally);
+                    }
+                }
+            }
+            DoTeam(1, false);
+            DoTeam(0, false);
 
             if (Overworld.ShouldRenderDayTint())
             {
@@ -185,8 +211,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 return;
             }
 
-            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, 0.35f, 0.05f, false, foe);
-            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, 0.05f, 0.45f, true, ally);
+            DoTeam(1, true);
+            DoTeam(0, true);
 
             string msg = _message;
             if (msg != null)
@@ -241,7 +267,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 AddMessage($"What will {_actions[i].Nickname} do?");
                 SpritedBattlePokemonParty party = _spritedParties[_trainer.Id];
-                _actionsGUI = new ActionsGUI(this, party, party.SpritedParty[i]);
+                _actionsGUI?.Dispose();
+                _actionsGUI = new ActionsGUI(this, party, party.SpritedParty[i].Pkmn);
             }
         }
         public void Flee()
@@ -327,16 +354,39 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     }
                     break; // Use default message otherwise
                 }
+                case PBEAutoCenterPacket acp:
+                {
+                    PBEBattlePokemon pkmn0 = acp.Pokemon0Trainer.TryGetPokemon(acp.Pokemon0);
+                    PBEBattlePokemon pkmn1 = acp.Pokemon1Trainer.TryGetPokemon(acp.Pokemon1);
+                    MovePokemon(pkmn0, acp.Pokemon0OldPosition);
+                    MovePokemon(pkmn1, acp.Pokemon1OldPosition);
+                    break;
+                }
+                case PBEPkmnFaintedPacket pfp:
+                {
+                    PBEBattlePokemon pkmn = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
+                    HidePokemon(pkmn, pfp.OldPosition);
+                    break;
+                }
+                case PBEPkmnFormChangedPacket pfcp:
+                {
+                    PBEBattlePokemon pkmn = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
+                    SetSeen(pkmn);
+                    UpdatePokemon(pkmn, false, true);
+                    break;
+                }
                 case PBEPkmnHPChangedPacket phcp:
                 {
                     PBEBattlePokemon pkmn = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
                     UpdateAnimationSpeed(pkmn);
+                    UpdatePokemon(pkmn, true, false);
                     break;
                 }
                 case PBEStatus1Packet s1p:
                 {
                     PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTrainer.TryGetPokemon(s1p.Status1Receiver);
                     UpdateAnimationSpeed(status1Receiver);
+                    UpdatePokemon(status1Receiver, true, false);
                     break;
                 }
                 case PBEStatus2Packet s2p:
@@ -344,14 +394,40 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     PBEBattlePokemon status2Receiver = s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver);
                     switch (s2p.Status2)
                     {
+                        case PBEStatus2.Airborne: UpdatePokemon(status2Receiver, false, true); break;
                         case PBEStatus2.Disguised:
                         {
                             switch (s2p.StatusAction)
                             {
-                                case PBEStatusAction.Ended: SetSeen(status2Receiver); break;
+                                case PBEStatusAction.Ended:
+                                {
+                                    SetSeen(status2Receiver);
+                                    UpdatePokemon(status2Receiver, true, true);
+                                    break;
+                                }
                             }
                             break;
                         }
+                        case PBEStatus2.ShadowForce: UpdatePokemon(status2Receiver, false, true); break;
+                        case PBEStatus2.Substitute:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added:
+                                case PBEStatusAction.Ended: UpdatePokemon(status2Receiver, false, true); break;
+                            }
+                            break;
+                        }
+                        case PBEStatus2.Transformed:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: UpdatePokemon(status2Receiver, false, true); break;
+                            }
+                            break;
+                        }
+                        case PBEStatus2.Underground: UpdatePokemon(status2Receiver, false, true); break;
+                        case PBEStatus2.Underwater: UpdatePokemon(status2Receiver, false, true); break;
                     }
                     break;
                 }
@@ -361,7 +437,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         PBEBattlePokemon pkmn = psip.Trainer.TryGetPokemon(info.Pokemon);
                         SetSeen(pkmn);
+                        ShowPokemon(pkmn);
                     }
+                    break;
+                }
+                case PBEPkmnSwitchOutPacket psop:
+                {
+                    PBEBattlePokemon pkmn = psop.PokemonTrainer.TryGetPokemon(psop.Pokemon);
+                    HidePokemon(pkmn, psop.OldPosition);
                     break;
                 }
                 case PBEWildPkmnAppearedPacket wpap:
@@ -371,93 +454,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         PBEBattlePokemon pkmn = trainer.TryGetPokemon(info.Pokemon);
                         SetSeen(pkmn);
+                        //ShowPokemon(pkmn); // Took this out because it's set to visible in the SpritedBattlePokemon constructor for wilds
                     }
                     break;
                 }
-                case PBEPkmnFormChangedPacket pfcp:
-                {
-                    PBEBattlePokemon pkmn = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
-                    SetSeen(pkmn);
-                    break;
-                }
-                /*case PBEPkmnFaintedPacket pfp:
-                {
-                    PBEBattlePokemon pokemon = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
-                    BattleView.Field.HidePokemon(pokemon, pfp.OldPosition);
-                    break;
-                }
-                case PBEPkmnFormChangedPacket pfcp:
-                {
-                    PBEBattlePokemon pokemon = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
-                    BattleView.Field.UpdatePokemon(pokemon, false, true);
-                    break;
-                }
-                case PBEPkmnHPChangedPacket phcp:
-                {
-                    PBEBattlePokemon pokemon = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
-                    BattleView.Field.UpdatePokemon(pokemon, true, false);
-                    break;
-                }
-                case PBEPkmnSwitchInPacket psip:
-                {
-                    if (!psip.Forced)
-                    {
-                        foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
-                        {
-                            BattleView.Field.ShowPokemon(psip.Trainer.TryGetPokemon(info.Pokemon));
-                        }
-                    }
-                    break;
-                }
-                case PBEPkmnSwitchOutPacket psop:
-                {
-                    PBEBattlePokemon pokemon = psop.PokemonTrainer.TryGetPokemon(psop.Pokemon);
-                    BattleView.Field.HidePokemon(pokemon, psop.OldPosition);
-                    break;
-                }
-                case PBEStatus1Packet s1p:
-                {
-                    PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTrainer.TryGetPokemon(s1p.Status1Receiver);
-                    BattleView.Field.UpdatePokemon(status1Receiver, true, false);
-                    break;
-                }
-                case PBEStatus2Packet s2p:
-                {
-                    PBEBattlePokemon status2Receiver = s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver);
-                    switch (s2p.Status2)
-                    {
-                        case PBEStatus2.Airborne: BattleView.Field.UpdatePokemon(status2Receiver, false, true); break;
-                        case PBEStatus2.Disguised:
-                        {
-                            switch (s2p.StatusAction)
-                            {
-                                case PBEStatusAction.Ended: BattleView.Field.UpdatePokemon(status2Receiver, true, true); break;
-                            }
-                            break;
-                        }
-                        case PBEStatus2.ShadowForce: BattleView.Field.UpdatePokemon(status2Receiver, false, true); break;
-                        case PBEStatus2.Substitute:
-                        {
-                            switch (s2p.StatusAction)
-                            {
-                                case PBEStatusAction.Added:
-                                case PBEStatusAction.Ended: BattleView.Field.UpdatePokemon(status2Receiver, false, true); break;
-                            }
-                            break;
-                        }
-                        case PBEStatus2.Transformed:
-                        {
-                            switch (s2p.StatusAction)
-                            {
-                                case PBEStatusAction.Added: BattleView.Field.UpdatePokemon(status2Receiver, false, true); break;
-                            }
-                            break;
-                        }
-                        case PBEStatus2.Underground: BattleView.Field.UpdatePokemon(status2Receiver, false, true); break;
-                        case PBEStatus2.Underwater: BattleView.Field.UpdatePokemon(status2Receiver, false, true); break;
-                    }
-                    break;
-                }
+                /*
                 case PBEWeatherPacket wp:
                 {
                     switch (wp.WeatherAction)
@@ -466,14 +467,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         case PBEWeatherAction.Ended: BattleView.Field.UpdateWeather(); break;
                         case PBEWeatherAction.CausedDamage: break;
                     }
-                    break;
-                }
-                case PBEAutoCenterPacket acp:
-                {
-                    PBEBattlePokemon pokemon0 = acp.Pokemon0Trainer.TryGetPokemon(acp0.Pokemon0);
-                    PBEBattlePokemon pokemon1 = acp.Pokemon1Trainer.TryGetPokemon(acp1.Pokemon1);
-                    BattleView.Field.MovePokemon(pokemon0, acp.Pokemon0OldPosition);
-                    BattleView.Field.MovePokemon(pokemon1, acp.Pokemon1OldPosition);
                     break;
                 }*/
             }

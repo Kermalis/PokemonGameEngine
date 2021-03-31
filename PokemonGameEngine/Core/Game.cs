@@ -102,6 +102,7 @@ namespace Kermalis.PokemonGameEngine.Core
             }
             _battleTransition = new SpiralTransition(OnBattleTransitionEnded);
         }
+        // For scripted
         public void TempCreateWildBattle(PartyPokemon wildPkmn)
         {
             PlayerObj player = PlayerObj.Player;

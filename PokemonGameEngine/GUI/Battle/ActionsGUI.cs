@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
@@ -11,33 +10,41 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
     // TODO: Switches (party menu)
     // TODO: Switch-ins
-    // TODO: Non-single battles
-    // TODO: Targets
     internal sealed class ActionsGUI : IDisposable
     {
+        private enum ActionsState : byte
+        {
+            ShowAll, // Fight bag run etc
+            Moves, // Show move selection for _pkmn
+            Party, // Show party menu
+            Targets, // Show move targets selection
+            FadeToParty,
+            FadeFromParty,
+        }
+
         private readonly BattleGUI _parent;
         private readonly SpritedBattlePokemonParty _party;
-        private readonly SpritedBattlePokemon _pkmn;
+        private readonly PBEBattlePokemon _pkmn;
 
-        private bool _isShowingMoves = false;
+        private ActionsState _state;
         private FadeFromColorTransition _fadeFromTransition;
         private FadeToColorTransition _fadeToTransition;
         private PartyMenuGUI _partyMenuGUI;
+        private TargetsGUI _targetsGUI;
         private readonly TextGUIChoices _fightChoices;
         private TextGUIChoices _moveChoices;
 
-        public ActionsGUI(BattleGUI parent, SpritedBattlePokemonParty party, SpritedBattlePokemon sPkmn)
+        public ActionsGUI(BattleGUI parent, SpritedBattlePokemonParty party, PBEBattlePokemon pkmn)
         {
             _parent = parent;
             _party = party;
-            _pkmn = sPkmn;
+            _pkmn = pkmn;
 
             _fightChoices = new TextGUIChoices(0.8f, 0.7f, 0.06f,
                 font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled)
             {
                 new TextGUIChoice("Fight", FightChoice)
             };
-            PBEBattlePokemon pkmn = _pkmn.Pkmn;
             bool enabled = pkmn.CanSwitchOut(); // Cannot switch out or use item if TempLockedMove exists
             Action command = enabled ? PokemonChoice : (Action)null;
             _fightChoices.Add(new TextGUIChoice("Pokémon", command, isEnabled: enabled));
@@ -50,17 +57,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void FightChoice()
         {
-            PBEBattlePokemon pkmn = _pkmn.Pkmn;
             // Check if there's a move we must use
             bool auto = false;
-            if (pkmn.IsForcedToStruggle())
+            if (_pkmn.IsForcedToStruggle())
             {
-                pkmn.TurnAction = new PBETurnAction(pkmn, PBEMove.Struggle, PBEBattleUtils.GetPossibleTargets(pkmn, pkmn.GetMoveTargets(PBEMove.Struggle))[0]);
+                _pkmn.TurnAction = new PBETurnAction(_pkmn, PBEMove.Struggle, PBEBattleUtils.GetPossibleTargets(_pkmn, _pkmn.GetMoveTargets(PBEMove.Struggle))[0]);
                 auto = true;
             }
-            else if (pkmn.TempLockedMove != PBEMove.None)
+            else if (_pkmn.TempLockedMove != PBEMove.None)
             {
-                pkmn.TurnAction = new PBETurnAction(pkmn, pkmn.TempLockedMove, pkmn.TempLockedTargets);
+                _pkmn.TurnAction = new PBETurnAction(_pkmn, _pkmn.TempLockedMove, _pkmn.TempLockedTargets);
                 auto = true;
             }
             if (auto)
@@ -72,15 +78,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             // Create move choices if it's not already created
             if (_moveChoices is null)
             {
-                PBEBattleMoveset moves = pkmn.Moves;
-                PBEMove[] usableMoves = pkmn.GetUsableMoves();
-                _moveChoices = new TextGUIChoices(0.8f, 0.7f, 0.06f, backCommand: () => _isShowingMoves = false,
+                PBEBattleMoveset moves = _pkmn.Moves;
+                PBEMove[] usableMoves = _pkmn.GetUsableMoves();
+                _moveChoices = new TextGUIChoices(0.8f, 0.7f, 0.06f, backCommand: () => _state = ActionsState.ShowAll,
                     font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled);
                 for (int i = 0; i < PkmnConstants.NumMoves; i++)
                 {
                     PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[i];
                     PBEMove m = slot.Move;
-                    string text = BattleEngineDataProvider.Instance.GetMoveName(m).English;
+                    string text = PBEDataProvider.Instance.GetMoveName(m).English;
                     bool enabled = Array.IndexOf(usableMoves, m) != -1;
                     Action command = enabled ? () => SelectMoveForTurn(m) : (Action)null;
                     _moveChoices.Add(new TextGUIChoice(text, command, isEnabled: enabled));
@@ -88,7 +94,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
 
             // Show moves
-            _isShowingMoves = true;
+            _state = ActionsState.Moves;
         }
         private void PokemonChoice()
         {
@@ -100,19 +106,22 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     void FadeFromTransitionEnded()
                     {
                         _fadeFromTransition = null;
+                        _state = ActionsState.ShowAll;
                     }
                     _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
+                    _state = ActionsState.FadeFromParty;
                     _partyMenuGUI = null;
                 }
                 _partyMenuGUI = new PartyMenuGUI(_party, OnPartyMenuGUIClosed);
+                _state = ActionsState.Party;
             }
             _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
+            _state = ActionsState.FadeToParty;
         }
         private void BagChoice()
         {
             // Temporarily auto select
-            PBEBattlePokemon pkmn = _pkmn.Pkmn;
-            pkmn.TurnAction = new PBETurnAction(pkmn, PBEItem.DuskBall);
+            _pkmn.TurnAction = new PBETurnAction(_pkmn, PBEItem.DuskBall);
             _parent.ActionsLoop(false);
         }
         private void RunChoice()
@@ -122,67 +131,111 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void SelectMoveForTurn(PBEMove move)
         {
-            PBEBattlePokemon pkmn = _pkmn.Pkmn;
-            PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(move);
-            // Single battle only
-            PBETurnTarget targets;
-            switch (possibleTargets)
+            PBEMoveTarget possibleTargets = _pkmn.GetMoveTargets(move);
+            if (_pkmn.Battle.BattleFormat == PBEBattleFormat.Single || _pkmn.Battle.BattleFormat == PBEBattleFormat.Rotation)
             {
-                case PBEMoveTarget.All: targets = PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter; break;
-                case PBEMoveTarget.AllFoes:
-                case PBEMoveTarget.AllFoesSurrounding:
-                case PBEMoveTarget.AllSurrounding:
-                case PBEMoveTarget.RandomFoeSurrounding:
-                case PBEMoveTarget.SingleFoeSurrounding:
-                case PBEMoveTarget.SingleNotSelf:
-                case PBEMoveTarget.SingleSurrounding: targets = PBETurnTarget.FoeCenter; break;
-                case PBEMoveTarget.AllTeam:
-                case PBEMoveTarget.Self:
-                case PBEMoveTarget.SelfOrAllySurrounding:
-                case PBEMoveTarget.SingleAllySurrounding: targets = PBETurnTarget.AllyCenter; break;
-                default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                PBETurnTarget targets;
+                switch (possibleTargets)
+                {
+                    case PBEMoveTarget.All: targets = PBETurnTarget.AllyCenter | PBETurnTarget.FoeCenter; break;
+                    case PBEMoveTarget.AllFoes:
+                    case PBEMoveTarget.AllFoesSurrounding:
+                    case PBEMoveTarget.AllSurrounding:
+                    case PBEMoveTarget.RandomFoeSurrounding:
+                    case PBEMoveTarget.SingleFoeSurrounding:
+                    case PBEMoveTarget.SingleNotSelf:
+                    case PBEMoveTarget.SingleSurrounding: targets = PBETurnTarget.FoeCenter; break;
+                    case PBEMoveTarget.AllTeam:
+                    case PBEMoveTarget.Self:
+                    case PBEMoveTarget.SelfOrAllySurrounding:
+                    case PBEMoveTarget.SingleAllySurrounding: targets = PBETurnTarget.AllyCenter; break;
+                    default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                }
+                _pkmn.TurnAction = new PBETurnAction(_pkmn, move, targets);
+                _parent.ActionsLoop(false);
             }
-            pkmn.TurnAction = new PBETurnAction(pkmn, move, targets);
-            _parent.ActionsLoop(false);
+            else // Double / Triple
+            {
+                void TargetSelected()
+                {
+                    _parent.ActionsLoop(false);
+                    _targetsGUI = null;
+                    // no need to change state since this'll get disposed in actionsloop
+                }
+                void TargetCancelled()
+                {
+                    _state = ActionsState.Moves;
+                    _targetsGUI = null;
+                }
+                _targetsGUI = new TargetsGUI(_pkmn, possibleTargets, move, _parent._spritedParties, TargetSelected, TargetCancelled);
+                _state = ActionsState.Targets;
+            }
         }
 
         public void LogicTick()
         {
-            if (_fadeFromTransition != null || _fadeToTransition != null)
+            switch (_state)
             {
-                return;
+                case ActionsState.Party:
+                {
+                    _partyMenuGUI.LogicTick();
+                    return;
+                }
+                case ActionsState.Moves:
+                {
+                    _moveChoices.HandleInputs();
+                    return;
+                }
+                case ActionsState.ShowAll:
+                {
+                    _fightChoices.HandleInputs();
+                    return;
+                }
+                case ActionsState.Targets:
+                {
+                    _targetsGUI.LogicTick();
+                    return;
+                }
             }
-            if (_partyMenuGUI != null)
-            {
-                _partyMenuGUI.LogicTick();
-                return;
-            }
-            if (_isShowingMoves)
-            {
-                _moveChoices.HandleInputs();
-                return;
-            }
-            _fightChoices.HandleInputs();
         }
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            if (_partyMenuGUI != null)
+            switch (_state)
             {
-                _partyMenuGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                return;
+                case ActionsState.FadeToParty:
+                {
+                    _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+                    _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    return;
+                }
+                case ActionsState.Party:
+                {
+                    _partyMenuGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    return;
+                }
+                case ActionsState.FadeFromParty:
+                {
+                    _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+                    _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    return;
+                }
+                case ActionsState.ShowAll:
+                {
+                    _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+                    return;
+                }
+                case ActionsState.Moves:
+                {
+                    _moveChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+                    return;
+                }
+                case ActionsState.Targets:
+                {
+                    _targetsGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    return;
+                }
             }
-
-            if (!_isShowingMoves)
-            {
-                _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
-
-                _fadeFromTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                _fadeToTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                return;
-            }
-
-            _moveChoices.Render(bmpAddress, bmpWidth, bmpHeight);
         }
 
         public void Dispose()

@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 victini.Item = PBEItem.Leftovers;
                 victini.Moveset[0].Move = PBEMove.Bounce;
                 victini.Moveset[1].Move = PBEMove.ZenHeadbutt;
-                victini.Moveset[2].Move = PBEMove.StunSpore;
+                victini.Moveset[2].Move = PBEMove.Surf;
                 victini.Moveset[3].Move = PBEMove.VCreate;
                 GivePokemon(victini);
             }
