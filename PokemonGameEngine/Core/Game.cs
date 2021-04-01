@@ -13,6 +13,24 @@ namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Game
     {
+        private enum GameState : byte
+        {
+            Init, // Loading
+            Overworld, // Overworld
+            OverworldToBag, // Fading to black
+            Bag, // Bag
+            BagFromOverworld, // Fading from black
+            BagToOverworld, // Fading to black
+            OverworldFromBag, // Fading from black
+            OverworldToBattle, // Fading to black
+            Battle, // Battling
+            BattleFromOverworld, // Fading from black
+            BattleToOverworld, // Fading to black
+            OverworldFromBattle, // Fading from black
+            OverworldWarpOut, // Warp fade
+            OverworldWarpIn, // Warp return
+        }
+
         public static Game Instance { get; private set; }
 
         public Save Save { get; }
@@ -21,6 +39,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public readonly List<ScriptContext> Scripts = new List<ScriptContext>();
         public readonly List<MessageBox> MessageBoxes = new List<MessageBox>();
 
+        private GameState _state = GameState.Init;
         public OverworldGUI OverworldGUI { get; }
         private FadeFromColorTransition _fadeFromTransition;
         private FadeToColorTransition _fadeToTransition;
@@ -45,6 +64,7 @@ namespace Kermalis.PokemonGameEngine.Core
             map.Objs.Add(CameraObj.Camera);
             map.LoadObjEvents();
             OverworldGUI = new OverworldGUI();
+            _state = GameState.Overworld;
         }
 
         public void TempWarp(IWarp warp)
@@ -55,6 +75,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 player.Warp(warp);
                 void FadeFromTransitionEnded()
                 {
+                    _state = GameState.Overworld;
                     _fadeFromTransition = null;
                 }
                 _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
@@ -62,163 +83,243 @@ namespace Kermalis.PokemonGameEngine.Core
                 {
                     player.RunNextScriptMovement();
                 }
+                _state = GameState.OverworldWarpIn;
                 _fadeToTransition = null;
             }
             _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
+            _state = GameState.OverworldWarpOut;
         }
 
-        // Temp - start a test wild battle
-        public void TempCreateWildBattle(Map map, Map.Layout.Block block, EncounterTable.Encounter encounter)
+        private PBEBattleTerrain UpdateBattleSetting(Map.Layout.Block block)
         {
-            Save sav = Save;
-            var me = new PBETrainerInfo(sav.PlayerParty, sav.PlayerName, inventory: sav.PlayerInventory.ToPBEInventory());
-            var wildParty = new Party { new PartyPokemon(encounter) };
-            var trainerParties = new Party[] { sav.PlayerParty, wildParty };
-            var wild = new PBEWildInfo(wildParty);
-            void OnBattleEnded()
-            {
-                void FadeFromTransitionEnded()
-                {
-                    _fadeFromTransition = null;
-                }
-                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
-                BattleGUI = null;
-            }
-
             PBEBattleTerrain terrain = Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock);
-            BattleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PkmnConstants.PBESettings, me, wild,
-                battleTerrain: terrain,
-                weather: Overworld.GetPBEWeatherFromMap(map)),
-                OnBattleEnded,
-                trainerParties,
-                isCave: terrain == PBEBattleTerrain.Cave,
+            BattleEngineDataProvider.Instance.UpdateBattleSetting(isCave: terrain == PBEBattleTerrain.Cave,
                 isDarkGrass: block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Grass_SpecialEncounter,
                 isFishing: false,
                 isSurfing: block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Surf,
                 isUnderwater: false);
-            void OnBattleTransitionEnded()
+            return terrain;
+        }
+        private void CreateBattle(PBEBattle battle, IReadOnlyList<Party> trainerParties)
+        {
+            void FadeToBattleTransitionEnded()
             {
+                void OnBattleEnded()
+                {
+                    void FadeToOverworldTransitionEnded()
+                    {
+                        void FadeFromBagTransitionEnded()
+                        {
+                            _state = GameState.Overworld;
+                            _fadeFromTransition = null;
+                        }
+                        _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromBagTransitionEnded);
+                        _state = GameState.OverworldFromBattle;
+                        BattleGUI = null;
+                        _fadeToTransition = null;
+                    }
+                    _fadeToTransition = new FadeToColorTransition(20, 0, FadeToOverworldTransitionEnded);
+                    _state = GameState.BattleToOverworld;
+                }
+                void FadeFromOverworldTransitionEnded()
+                {
+                    _state = GameState.Battle;
+                    _fadeFromTransition = null;
+                }
+                BattleGUI = new BattleGUI(battle, OnBattleEnded, trainerParties);
+                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromOverworldTransitionEnded);
+                _state = GameState.BattleFromOverworld;
                 _battleTransition = null;
             }
-            _battleTransition = new SpiralTransition(OnBattleTransitionEnded);
+            _battleTransition = new SpiralTransition(FadeToBattleTransitionEnded);
+            _state = GameState.OverworldToBattle;
+        }
+        private void CreateWildBattle(Map map, Map.Layout.Block block, Party wildParty, PBEBattleFormat format)
+        {
+            Save sav = Save;
+            var me = new PBETrainerInfo(sav.PlayerParty, sav.PlayerName, inventory: sav.PlayerInventory.ToPBEInventory());
+            var trainerParties = new Party[] { sav.PlayerParty, wildParty };
+            var wild = new PBEWildInfo(wildParty);
+            PBEBattleTerrain terrain = UpdateBattleSetting(block);
+            var battle = new PBEBattle(format, PkmnConstants.PBESettings, me, wild, battleTerrain: terrain, weather: Overworld.GetPBEWeatherFromMap(map));
+            CreateBattle(battle, trainerParties);
+        }
+        // Temp - start a test wild battle
+        public void TempCreateWildBattle(Map map, Map.Layout.Block block, EncounterTable.Encounter encounter)
+        {
+            CreateWildBattle(map, block, new Party { new PartyPokemon(encounter) }, PBEBattleFormat.Single);
         }
         // For scripted
         public void TempCreateWildBattle(PartyPokemon wildPkmn)
         {
             PlayerObj player = PlayerObj.Player;
             Map.Layout.Block block = player.GetBlock(out Map map);
-            Save sav = Save;
-            var me = new PBETrainerInfo(sav.PlayerParty, sav.PlayerName, inventory: sav.PlayerInventory.ToPBEInventory());
-            var wildParty = new Party { wildPkmn };
-            var trainerParties = new Party[] { sav.PlayerParty, wildParty };
-            var wild = new PBEWildInfo(wildParty);
-            void OnBattleEnded()
-            {
-                void FadeFromTransitionEnded()
-                {
-                    _fadeFromTransition = null;
-                }
-                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
-                BattleGUI = null;
-            }
-
-            PBEBattleTerrain terrain = Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock);
-            BattleGUI = new BattleGUI(new PBEBattle(PBEBattleFormat.Single, PkmnConstants.PBESettings, me, wild,
-                battleTerrain: terrain,
-                weather: Overworld.GetPBEWeatherFromMap(map)),
-                OnBattleEnded,
-                trainerParties,
-                isCave: terrain == PBEBattleTerrain.Cave,
-                isDarkGrass: block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Grass_SpecialEncounter,
-                isFishing: false,
-                isSurfing: block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Surf,
-                isUnderwater: false);
-            void OnBattleTransitionEnded()
-            {
-                _battleTransition = null;
-            }
-            _battleTransition = new SpiralTransition(OnBattleTransitionEnded);
+            CreateWildBattle(map, block, new Party { wildPkmn }, PBEBattleFormat.Single);
         }
 
         public void OpenStartMenu()
         {
-            void FadeToTransitionEnded()
+            void FadeToBagTransitionEnded()
             {
                 void OnBagMenuGUIClosed()
                 {
-                    void FadeFromTransitionEnded()
+                    void FadeToOverworldTransitionEnded()
                     {
-                        _fadeFromTransition = null;
+                        void FadeFromBagTransitionEnded()
+                        {
+                            _state = GameState.Overworld;
+                            _fadeFromTransition = null;
+                        }
+                        _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromBagTransitionEnded);
+                        _state = GameState.OverworldFromBag;
+                        _bagGUI = null;
+                        _fadeToTransition = null;
                     }
-                    _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
-                    _bagGUI = null;
+                    _fadeToTransition = new FadeToColorTransition(20, 0, FadeToOverworldTransitionEnded);
+                    _state = GameState.BagToOverworld;
+                }
+                void FadeFromOverworldTransitionEnded()
+                {
+                    _state = GameState.Bag;
+                    _fadeFromTransition = null;
                 }
                 _bagGUI = new BagGUI(Save.PlayerInventory, Save.PlayerParty, OnBagMenuGUIClosed);
+                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromOverworldTransitionEnded);
+                _state = GameState.BagFromOverworld;
                 _fadeToTransition = null;
             }
-            _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
+            _fadeToTransition = new FadeToColorTransition(20, 0, FadeToBagTransitionEnded);
+            _state = GameState.OverworldToBag;
         }
 
-        public void LogicTick()
+        #region Logic Tick
+
+        private void ProcessScripts()
         {
-            DateTime time = DateTime.Now;
             foreach (ScriptContext ctx in Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
             {
                 ctx.LogicTick();
             }
+        }
+        private void ProcessMessageBoxes()
+        {
             foreach (MessageBox mb in MessageBoxes.ToArray())
             {
                 mb.LogicTick();
             }
-            Tileset.AnimationTick(); // TODO: Don't run in battles like we are now
-            DayTint.LogicTick(time); // TODO: Don't run in locations where there's no day tint (and then set the tint automatically upon exit so there's no transition)
-            if (_battleTransition != null || _fadeFromTransition != null || _fadeToTransition != null)
-            {
-                return;
-            }
-            if (_bagGUI != null)
-            {
-                _bagGUI.LogicTick();
-                return;
-            }
-            if (BattleGUI != null)
-            {
-                BattleGUI.LogicTick();
-                return;
-            }
-            OverworldGUI.LogicTick();
         }
+        private void ProcessDayTint(DateTime time)
+        {
+            DayTint.LogicTick(time); // TODO: Don't run in locations where there's no day tint (and then set the tint automatically upon exit so there's no transition)
+        }
+        public void LogicTick()
+        {
+            DateTime time = DateTime.Now;
+            switch (_state)
+            {
+                case GameState.Overworld:
+                {
+                    ProcessScripts();
+                    ProcessMessageBoxes();
+                    Tileset.AnimationTick();
+                    ProcessDayTint(time);
+                    OverworldGUI.LogicTick();
+                    return;
+                }
+                case GameState.OverworldToBag:
+                case GameState.OverworldFromBag:
+                case GameState.OverworldToBattle:
+                case GameState.OverworldFromBattle:
+                case GameState.OverworldWarpOut:
+                case GameState.OverworldWarpIn:
+                {
+                    Tileset.AnimationTick();
+                    return;
+                }
+                case GameState.Bag:
+                {
+                    _bagGUI.LogicTick();
+                    return;
+                }
+                case GameState.Battle:
+                {
+                    ProcessDayTint(time);
+                    BattleGUI.LogicTick();
+                    return;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Render Tick
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight, string topLeftMessage)
         {
-            if (_bagGUI != null)
+            switch (_state)
             {
-                _bagGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                goto transitions;
+                case GameState.Overworld:
+                {
+                    OverworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    break;
+                }
+                case GameState.OverworldToBag:
+                case GameState.OverworldWarpOut:
+                {
+                    OverworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    break;
+                }
+                case GameState.OverworldFromBattle:
+                case GameState.OverworldFromBag:
+                case GameState.OverworldWarpIn:
+                {
+                    OverworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    break;
+                }
+                case GameState.BagFromOverworld:
+                {
+                    _bagGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    break;
+                }
+                case GameState.Bag:
+                {
+                    _bagGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    break;
+                }
+                case GameState.BagToOverworld:
+                {
+                    _bagGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    break;
+                }
+                case GameState.OverworldToBattle:
+                {
+                    OverworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    _battleTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    break;
+                }
+                case GameState.BattleFromOverworld:
+                {
+                    BattleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    break;
+                }
+                case GameState.Battle:
+                {
+                    BattleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    break;
+                }
+                case GameState.BattleToOverworld:
+                {
+                    BattleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    break;
+                }
             }
-            if (_battleTransition != null)
-            {
-                _battleTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                goto bottom;
-            }
-            if (BattleGUI != null)
-            {
-                BattleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                goto bottom;
-            }
-            OverworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-        transitions:
-            if (_fadeFromTransition != null)
-            {
-                _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                goto bottom;
-            }
-            if (_fadeToTransition != null)
-            {
-                _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                goto bottom;
-            }
-        bottom:
+            // Render messagebox
             foreach (MessageBox mb in MessageBoxes.ToArray())
             {
                 mb.Render(bmpAddress, bmpWidth, bmpHeight);
@@ -228,5 +329,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, topLeftMessage, Font.DefaultFemale);
             }
         }
+
+        #endregion
     }
 }

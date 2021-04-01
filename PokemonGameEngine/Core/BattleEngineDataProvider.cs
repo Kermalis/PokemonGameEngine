@@ -7,7 +7,24 @@ namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class BattleEngineDataProvider : PBEDataProvider
     {
+        public static new BattleEngineDataProvider Instance => (BattleEngineDataProvider)PBEDataProvider.Instance;
+
+        private bool _isDarkGrass;
+        private bool _isCave;
+        private bool _isFishing;
+        private bool _isSurfing;
+        private bool _isUnderwater;
+
         // TODO: Moon ball
+
+        public void UpdateBattleSetting(bool isCave, bool isDarkGrass, bool isFishing, bool isSurfing, bool isUnderwater)
+        {
+            _isCave = isCave;
+            _isDarkGrass = isDarkGrass;
+            _isFishing = isFishing;
+            _isSurfing = isSurfing;
+            _isUnderwater = isUnderwater;
+        }
 
         public override int GetSpeciesCaught()
         {
@@ -20,11 +37,11 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public override bool IsDarkGrass(PBEBattle battle)
         {
-            return Game.Instance.BattleGUI.IsDarkGrass;
+            return _isDarkGrass;
         }
         public override bool IsDuskBallSetting(PBEBattle battle)
         {
-            if (Game.Instance.BattleGUI.IsCave)
+            if (_isCave)
             {
                 return true;
             }
@@ -36,15 +53,15 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         public override bool IsFishing(PBEBattle battle)
         {
-            return Game.Instance.BattleGUI.IsFishing;
+            return _isFishing;
         }
         public override bool IsSurfing(PBEBattle battle)
         {
-            return Game.Instance.BattleGUI.IsSurfing;
+            return _isSurfing;
         }
         public override bool IsUnderwater(PBEBattle battle)
         {
-            return Game.Instance.BattleGUI.IsUnderwater;
+            return _isUnderwater;
         }
     }
 }

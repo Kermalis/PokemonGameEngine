@@ -4,7 +4,6 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.World;
@@ -21,11 +20,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private const string ThreadName = "Battle Thread"; // TODO: Put this on LogicTick somehow so it can be locked with render thread
         private readonly Sprite _battleBackground;
 
-        private const int TransitionDuration = 40;
-        private const float TransitionDurationF = TransitionDuration;
-        private int _transitionCounter;
-        private bool _transitionDone;
-        private FadeToColorTransition _battleEndedTransition;
         private Action _onClosed;
 
         private readonly PBEBattle _battle;
@@ -34,21 +28,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private string _message;
         private ActionsGUI _actionsGUI;
 
-        public readonly bool IsDarkGrass;
-        public readonly bool IsCave;
-        public readonly bool IsFishing;
-        public readonly bool IsSurfing;
-        public readonly bool IsUnderwater;
-
-        public BattleGUI(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties,
-            bool isCave, bool isDarkGrass, bool isFishing, bool isSurfing, bool isUnderwater)
+        public BattleGUI(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties)
             : this(battle.BattleFormat) // Init field controller
         {
-            IsCave = isCave;
-            IsDarkGrass = isDarkGrass;
-            IsFishing = isFishing;
-            IsSurfing = isSurfing;
-            IsUnderwater = isUnderwater;
             _battle = battle;
             _trainer = battle.Trainers[0];
             _battleBackground = Sprite.LoadOrGet($"GUI.Battle.Background.BG_{battle.BattleTerrain}_{battle.BattleFormat}.png");
@@ -58,7 +40,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 PBETrainer trainer = battle.Trainers[i];
                 _spritedParties[i] = new SpritedBattlePokemonParty(trainer.Party, trainerParties[i], IsBackSprite(trainer.Team), ShouldUseKnownInfo(trainer), this);
             }
-            _transitionCounter = TransitionDuration;
             _onClosed = onClosed;
             battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
             battle.OnStateChanged += SinglePlayerBattle_OnStateChanged;
@@ -66,18 +47,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void TransitionOut()
         {
-            void OnBattleEndedTransitionEnded()
+            _onClosed.Invoke();
+            _onClosed = null;
+            if (_actionsGUI != null)
             {
-                _battleEndedTransition = null;
-                if (_actionsGUI != null)
-                {
-                    _actionsGUI.Dispose();
-                    _actionsGUI = null;
-                }
-                _onClosed.Invoke();
-                _onClosed = null;
+                _actionsGUI.Dispose();
+                _actionsGUI = null;
             }
-            _battleEndedTransition = new FadeToColorTransition(20, 0, OnBattleEndedTransitionEnded);
         }
 
         private void SinglePlayerBattle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
@@ -121,8 +97,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public void LogicTick()
         {
-            if (_battleEndedTransition != null)
+            if (_battle.BattleState == PBEBattleState.ReadyToBegin)
             {
+                new Thread(_battle.Begin) { Name = ThreadName }.Start();
                 return;
             }
             _actionsGUI?.LogicTick();
@@ -166,8 +143,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            PBEBattle battle = _battle;
-
             Font fontDefault = Font.Default;
             uint[] defaultWhite = Font.DefaultWhite;
             _battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
@@ -197,20 +172,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 DayTint.Render(bmpAddress, bmpWidth, bmpHeight);
             }
 
-            if (!_transitionDone)
-            {
-                float t = _transitionCounter / TransitionDurationF;
-                //float t1 = t + 1;
-                //_battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, (int)(bmpWidth * t1), (int)(bmpHeight * t1));
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, (uint)(t * 0xFF) << 24);
-                if (--_transitionCounter <= 0)
-                {
-                    _transitionDone = true;
-                    new Thread(battle.Begin) { Name = ThreadName }.Start();
-                }
-                return;
-            }
-
             DoTeam(1, true);
             DoTeam(0, true);
 
@@ -222,7 +183,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
 
             _actionsGUI?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _battleEndedTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
         }
 
         private void SetSeen(PBEBattlePokemon pkmn)

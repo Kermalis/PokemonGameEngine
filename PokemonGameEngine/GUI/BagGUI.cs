@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
-using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
@@ -13,8 +12,6 @@ namespace Kermalis.PokemonGameEngine.GUI
     {
         private readonly PlayerInventory _inv;
 
-        private FadeFromColorTransition _fadeFromTransition;
-        private FadeToColorTransition _fadeToTransition;
         private Action _onClosed;
 
         private bool _isOnParty = false;
@@ -40,11 +37,6 @@ namespace Kermalis.PokemonGameEngine.GUI
             LoadCashMoney();
 
             _onClosed = onClosed;
-            void FadeFromTransitionEnded()
-            {
-                _fadeFromTransition = null;
-            }
-            _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
         }
 
         private void LoadCashMoney()
@@ -68,22 +60,12 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private void CloseMenu()
         {
-            void FadeToTransitionEnded()
-            {
-                _fadeToTransition = null;
-                _onClosed.Invoke();
-                _onClosed = null;
-            }
-            _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
+            _onClosed.Invoke();
+            _onClosed = null;
         }
 
         public void LogicTick()
         {
-            if (_fadeToTransition != null || _fadeFromTransition != null)
-            {
-                return;
-            }
-
             if (InputManager.IsPressed(Key.B))
             {
                 CloseMenu();
@@ -136,9 +118,6 @@ namespace Kermalis.PokemonGameEngine.GUI
 
             // Draw item list
             _pouchChoices.Render(bmpAddress, bmpWidth, bmpHeight);
-
-            _fadeFromTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _fadeToTransition?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
         }
     }
 }
