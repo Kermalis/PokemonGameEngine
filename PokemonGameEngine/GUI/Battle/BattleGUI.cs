@@ -414,7 +414,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         PBEBattlePokemon pkmn = trainer.TryGetPokemon(info.Pokemon);
                         SetSeen(pkmn);
-                        ShowPokemon(pkmn); // This will set the info to visible
+                        ShowWildPokemon(pkmn);
                     }
                     break;
                 }

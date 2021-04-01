@@ -139,7 +139,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             if (sprite)
             {
-                sPkmn.UpdateSprites(pos);
+                sPkmn.UpdateSprites(pos, false);
             }
             pos.SPkmn = sPkmn;
         }
@@ -151,11 +151,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             pos.InfoVisible = true;
             pos.PkmnVisible = true;
         }
+        private void ShowWildPokemon(PBEBattlePokemon pkmn)
+        {
+            PkmnPosition pos = GetStuff(pkmn, pkmn.FieldPosition);
+            UpdatePokemon(pkmn, pos, true, false); // Only set the info to visible because the sprite is already loaded and visible
+            pos.InfoVisible = true;
+        }
         private void HidePokemon(PBEBattlePokemon pkmn, PBEFieldPosition oldPosition)
         {
             PkmnPosition pos = GetStuff(pkmn, oldPosition);
+            Render.AnimatedSprite sprite = pos.SPkmn.Sprite;
             pos.InfoVisible = false;
             pos.PkmnVisible = false;
+            sprite.IsPaused = true;
         }
         private void UpdatePokemon(PBEBattlePokemon pkmn, bool info, bool sprite)
         {

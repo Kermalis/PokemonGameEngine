@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _backSprite = backSprite;
             _useKnownInfo = useKnownInfo;
             UpdateInfoBar();
-            UpdateSprites(wildPos);
+            UpdateSprites(wildPos, wildPos is null);
             UpdateAnimationSpeed(); // Ensure the proper speed is set upon entering battle
             if (wildPos != null)
             {
@@ -32,11 +32,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
-        public void UpdateSprites(PkmnPosition pos)
+        // Will cause double load for some cases (like status2 updating)
+        // Because new animated sprite is created
+        public void UpdateSprites(PkmnPosition pos, bool paused)
         {
             Minisprite = SpriteUtils.GetMinisprite(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny);
             PBEStatus2 status2 = _useKnownInfo ? Pkmn.KnownStatus2 : Pkmn.Status2;
             Sprite = SpriteUtils.GetPokemonSprite(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, _backSprite, status2.HasFlag(PBEStatus2.Substitute), PartyPkmn.PID);
+            Sprite.IsPaused = paused;
             if (pos is null)
             {
                 return; // Only for updating visibility below
