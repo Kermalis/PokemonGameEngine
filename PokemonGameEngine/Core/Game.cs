@@ -13,7 +13,7 @@ namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Game
     {
-        private enum GameState : byte
+        public enum GameState : byte
         {
             Init, // Loading
             Overworld, // Overworld
@@ -39,12 +39,12 @@ namespace Kermalis.PokemonGameEngine.Core
         public readonly List<ScriptContext> Scripts = new List<ScriptContext>();
         public readonly List<MessageBox> MessageBoxes = new List<MessageBox>();
 
-        private GameState _state = GameState.Init;
+        public GameState State { get; private set; } = GameState.Init;
         public OverworldGUI OverworldGUI { get; }
         private FadeFromColorTransition _fadeFromTransition;
         private FadeToColorTransition _fadeToTransition;
         private SpiralTransition _battleTransition;
-        public BattleGUI BattleGUI { get; private set; }
+        private BattleGUI _battleGUI;
         private BagGUI _bagGUI;
 
         public Game()
@@ -64,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.Core
             map.Objs.Add(CameraObj.Camera);
             map.LoadObjEvents();
             OverworldGUI = new OverworldGUI();
-            _state = GameState.Overworld;
+            State = GameState.Overworld;
         }
 
         public void TempWarp(IWarp warp)
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 player.Warp(warp);
                 void FadeFromTransitionEnded()
                 {
-                    _state = GameState.Overworld;
+                    State = GameState.Overworld;
                     _fadeFromTransition = null;
                 }
                 _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
@@ -83,11 +83,11 @@ namespace Kermalis.PokemonGameEngine.Core
                 {
                     player.RunNextScriptMovement();
                 }
-                _state = GameState.OverworldWarpIn;
+                State = GameState.OverworldWarpIn;
                 _fadeToTransition = null;
             }
             _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
-            _state = GameState.OverworldWarpOut;
+            State = GameState.OverworldWarpOut;
         }
 
         private PBEBattleTerrain UpdateBattleSetting(Map.Layout.Block block)
@@ -110,29 +110,29 @@ namespace Kermalis.PokemonGameEngine.Core
                     {
                         void FadeFromBagTransitionEnded()
                         {
-                            _state = GameState.Overworld;
+                            State = GameState.Overworld;
                             _fadeFromTransition = null;
                         }
                         _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromBagTransitionEnded);
-                        _state = GameState.OverworldFromBattle;
-                        BattleGUI = null;
+                        State = GameState.OverworldFromBattle;
+                        _battleGUI = null;
                         _fadeToTransition = null;
                     }
                     _fadeToTransition = new FadeToColorTransition(20, 0, FadeToOverworldTransitionEnded);
-                    _state = GameState.BattleToOverworld;
+                    State = GameState.BattleToOverworld;
                 }
                 void FadeFromOverworldTransitionEnded()
                 {
-                    _state = GameState.Battle;
+                    State = GameState.Battle;
                     _fadeFromTransition = null;
                 }
-                BattleGUI = new BattleGUI(battle, OnBattleEnded, trainerParties);
+                _battleGUI = new BattleGUI(battle, OnBattleEnded, trainerParties);
                 _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromOverworldTransitionEnded);
-                _state = GameState.BattleFromOverworld;
+                State = GameState.BattleFromOverworld;
                 _battleTransition = null;
             }
             _battleTransition = new SpiralTransition(FadeToBattleTransitionEnded);
-            _state = GameState.OverworldToBattle;
+            State = GameState.OverworldToBattle;
         }
         private void CreateWildBattle(Map map, Map.Layout.Block block, Party wildParty, PBEBattleFormat format)
         {
@@ -167,29 +167,29 @@ namespace Kermalis.PokemonGameEngine.Core
                     {
                         void FadeFromBagTransitionEnded()
                         {
-                            _state = GameState.Overworld;
+                            State = GameState.Overworld;
                             _fadeFromTransition = null;
                         }
                         _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromBagTransitionEnded);
-                        _state = GameState.OverworldFromBag;
+                        State = GameState.OverworldFromBag;
                         _bagGUI = null;
                         _fadeToTransition = null;
                     }
                     _fadeToTransition = new FadeToColorTransition(20, 0, FadeToOverworldTransitionEnded);
-                    _state = GameState.BagToOverworld;
+                    State = GameState.BagToOverworld;
                 }
                 void FadeFromOverworldTransitionEnded()
                 {
-                    _state = GameState.Bag;
+                    State = GameState.Bag;
                     _fadeFromTransition = null;
                 }
                 _bagGUI = new BagGUI(Save.PlayerInventory, Save.PlayerParty, OnBagMenuGUIClosed);
                 _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromOverworldTransitionEnded);
-                _state = GameState.BagFromOverworld;
+                State = GameState.BagFromOverworld;
                 _fadeToTransition = null;
             }
             _fadeToTransition = new FadeToColorTransition(20, 0, FadeToBagTransitionEnded);
-            _state = GameState.OverworldToBag;
+            State = GameState.OverworldToBag;
         }
 
         #region Logic Tick
@@ -218,7 +218,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public void LogicTick()
         {
             DateTime time = DateTime.Now;
-            switch (_state)
+            switch (State)
             {
                 case GameState.Overworld:
                 {
@@ -253,7 +253,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 case GameState.Battle:
                 {
                     ProcessDayTint(time, false);
-                    BattleGUI.LogicTick();
+                    _battleGUI.LogicTick();
                     return;
                 }
             }
@@ -265,7 +265,7 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight, string topLeftMessage)
         {
-            switch (_state)
+            switch (State)
             {
                 case GameState.Overworld:
                 {
@@ -312,18 +312,18 @@ namespace Kermalis.PokemonGameEngine.Core
                 }
                 case GameState.BattleFromOverworld:
                 {
-                    BattleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                     _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                     break;
                 }
                 case GameState.Battle:
                 {
-                    BattleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                     break;
                 }
                 case GameState.BattleToOverworld:
                 {
-                    BattleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+                    _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                     _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                     break;
                 }

@@ -8,8 +8,8 @@ Delay 40
 AwaitMessage
 CloseMessage
 WildBattle Species.Groudon Form.Shaymin 70 // TODO: Allow "0" as the form argument. Using Form.Shaymin since it equates to 0
-UnloadObj 0
 AwaitBattle
+UnloadObj 0
 
 // Assume you defeat it for now.
 SetFlag Flag.Test_GroudonVisible
