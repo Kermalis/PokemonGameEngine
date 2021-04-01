@@ -26,7 +26,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             UpdateAnimationSpeed(); // Ensure the proper speed is set upon entering battle
             if (wildPos != null)
             {
-                wildPos.InfoVisible = true;
+                wildPos.InfoVisible = false;
                 wildPos.PkmnVisible = true;
                 wildPos.SPkmn = this;
             }
