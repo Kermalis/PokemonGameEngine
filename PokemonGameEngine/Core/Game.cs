@@ -208,9 +208,12 @@ namespace Kermalis.PokemonGameEngine.Core
                 mb.LogicTick();
             }
         }
-        private void ProcessDayTint(DateTime time)
+        private void ProcessDayTint(DateTime time, bool skipTransition)
         {
-            DayTint.LogicTick(time); // TODO: Don't run in locations where there's no day tint (and then set the tint automatically upon exit so there's no transition)
+            if (Overworld.ShouldRenderDayTint())
+            {
+                DayTint.LogicTick(time, skipTransition);
+            }
         }
         public void LogicTick()
         {
@@ -222,18 +225,24 @@ namespace Kermalis.PokemonGameEngine.Core
                     ProcessScripts();
                     ProcessMessageBoxes();
                     Tileset.AnimationTick();
-                    ProcessDayTint(time);
+                    ProcessDayTint(time, false);
                     OverworldGUI.LogicTick();
                     return;
                 }
                 case GameState.OverworldToBag:
-                case GameState.OverworldFromBag:
                 case GameState.OverworldToBattle:
                 case GameState.OverworldFromBattle:
                 case GameState.OverworldWarpOut:
+                {
+                    Tileset.AnimationTick();
+                    ProcessDayTint(time, false); // Don't want it to suddenly become dark when fading out the overworld
+                    return;
+                }
+                case GameState.OverworldFromBag:
                 case GameState.OverworldWarpIn:
                 {
                     Tileset.AnimationTick();
+                    ProcessDayTint(time, true); // Want the time to automatically be correct when we are on the overworld again (could've been in a cave for hours, or paused in the bag, etc)
                     return;
                 }
                 case GameState.Bag:
@@ -243,7 +252,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 }
                 case GameState.Battle:
                 {
-                    ProcessDayTint(time);
+                    ProcessDayTint(time, false);
                     BattleGUI.LogicTick();
                     return;
                 }

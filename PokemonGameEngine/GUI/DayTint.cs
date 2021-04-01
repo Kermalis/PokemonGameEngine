@@ -61,15 +61,33 @@ namespace Kermalis.PokemonGameEngine.GUI
             gMod = hourColors[1];
             bMod = hourColors[2];
         }
-        public static void LogicTick(DateTime time)
+        public static void LogicTick(DateTime time, bool skipTransition)
         {
-            int tintHour = _tintHour;
+            int realMinute = OverworldTime.GetMinute(time.Minute);
+            int realHour = OverworldTime.GetHour(time.Hour);
+            int tintHour;
+            if (skipTransition)
+            {
+                _tintHour = tintHour = realHour;
+            }
+            else
+            {
+                tintHour = _tintHour;
+            }
             GetHourTint(tintHour, out float rMod, out float gMod, out float bMod);
             // Do minute transition
-            int tintMinute = _tintMinute;
+            int tintMinute;
+            if (skipTransition)
+            {
+                _tintMinute = tintMinute = realMinute;
+            }
+            else
+            {
+                tintMinute = _tintMinute;
+            }
             float minuteMod = tintMinute / 60f;
             int nextTintMinute = tintMinute;
-            if (tintMinute != OverworldTime.GetMinute(time.Minute) || tintHour != OverworldTime.GetHour(time.Hour))
+            if (tintMinute != realMinute || tintHour != realHour)
             {
                 nextTintMinute++;
             }
