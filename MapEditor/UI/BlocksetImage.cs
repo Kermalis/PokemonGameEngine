@@ -65,7 +65,7 @@ namespace Kermalis.MapEditor.UI
                 Rect destRect = viewPort.CenterRect(new Rect(sourceSize * _scale)).Intersect(viewPort);
                 Rect sourceRect = new Rect(sourceSize).CenterRect(new Rect(destRect.Size / _scale));
 
-                context.DrawImage(source, 1, sourceRect, destRect);
+                context.DrawImage(source, sourceRect, destRect);
                 var r = new Rect(_selection.X * Overworld.Block_NumPixelsX * _scale, _selection.Y * Overworld.Block_NumPixelsY * _scale, _selection.Width * Overworld.Block_NumPixelsX * _scale, _selection.Height * Overworld.Block_NumPixelsY * _scale);
                 context.FillRectangle(_isSelecting ? Selection.SelectingBrush : Selection.SelectionBrush, r);
                 context.DrawRectangle(_isSelecting ? Selection.SelectingPen : Selection.SelectionPen, r);

@@ -44,7 +44,7 @@ namespace Kermalis.MapEditor.UI
             }
             _selection = new Selection(Overworld.Block_NumTilesX, Overworld.Block_NumTilesY);
             _selection.Changed += OnSelectionChanged;
-            _bitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Rgba8888);
+            _bitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Rgba8888, AlphaFormat.Premul);
             _bitmapSize = new Size(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
         }
 
@@ -54,7 +54,7 @@ namespace Kermalis.MapEditor.UI
             Rect destRect = viewPort.CenterRect(new Rect(_bitmapSize * _scale)).Intersect(viewPort);
             Rect sourceRect = new Rect(_bitmapSize).CenterRect(new Rect(destRect.Size / _scale));
 
-            context.DrawImage(_bitmap, 1, sourceRect, destRect);
+            context.DrawImage(_bitmap, sourceRect, destRect);
             if (_isSelecting)
             {
                 var r = new Rect(_selection.X * Overworld.Tile_NumPixelsX * _scale, _selection.Y * Overworld.Tile_NumPixelsY * _scale, _selection.Width * Overworld.Tile_NumPixelsX * _scale, _selection.Height * Overworld.Tile_NumPixelsY * _scale);

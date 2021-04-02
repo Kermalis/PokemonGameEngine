@@ -46,7 +46,7 @@ namespace Kermalis.MapEditor.Core
             Name = name;
             Id = id;
             // Draw
-            Bitmap = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Rgba8888);
+            Bitmap = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Rgba8888, AlphaFormat.Premul);
             using (ILockedFramebuffer l = Bitmap.Lock())
             {
                 uint* bmpAddress = (uint*)l.Address.ToPointer();

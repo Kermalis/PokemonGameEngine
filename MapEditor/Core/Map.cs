@@ -529,7 +529,7 @@ namespace Kermalis.MapEditor.Core
                 if (createNew)
                 {
                     bmp?.Dispose();
-                    bmp = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Rgba8888);
+                    bmp = new WriteableBitmap(new PixelSize(bmpWidth, bmpHeight), new Vector(96, 96), PixelFormat.Rgba8888, AlphaFormat.Premul);
                     if (borderBlocks)
                     {
                         BorderBlocksBitmap = bmp;

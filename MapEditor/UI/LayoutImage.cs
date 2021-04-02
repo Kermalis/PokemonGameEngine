@@ -76,7 +76,7 @@ namespace Kermalis.MapEditor.UI
             Rect destRect = viewPort.CenterRect(r).Intersect(viewPort);
             Rect sourceRect = r.CenterRect(new Rect(destRect.Size));
 
-            context.DrawImage(source, 1, sourceRect, destRect);
+            context.DrawImage(source, sourceRect, destRect);
 
             if (_showGrid)
             {

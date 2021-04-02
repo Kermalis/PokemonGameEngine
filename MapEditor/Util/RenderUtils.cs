@@ -9,12 +9,12 @@ namespace Kermalis.MapEditor.Util
     {
         public static WriteableBitmap ToWriteableBitmap(Bitmap bmp)
         {
-            var wb =  new WriteableBitmap(bmp.PixelSize, bmp.Dpi, PixelFormat.Rgba8888);
+            var wb =  new WriteableBitmap(bmp.PixelSize, bmp.Dpi, PixelFormat.Rgba8888, AlphaFormat.Premul);
             using (IRenderTarget rtb = Utils.RenderInterface.CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
             using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
             {
                 var rect = new Rect(bmp.Size);
-                ctx.DrawImage(bmp.PlatformImpl, 1, rect, rect);
+                ctx.DrawBitmap(bmp.PlatformImpl, 1, rect, rect);
             }
             bmp.Dispose();
             return wb;

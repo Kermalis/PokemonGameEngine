@@ -23,7 +23,7 @@ namespace Kermalis.MapEditor.UI.Models
             _eLayerNum = eLayerNum;
             _subLayerNum = subLayerNum;
             Text = $"Sub-Layer {_subLayerNum:X2}";
-            Bitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Rgba8888);
+            Bitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Rgba8888, AlphaFormat.Premul);
             UpdateBitmap();
         }
 

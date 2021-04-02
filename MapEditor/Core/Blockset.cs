@@ -325,7 +325,7 @@ namespace Kermalis.MapEditor.Core
             if (Bitmap == null || Bitmap.PixelSize.Height != bmpHeight)
             {
                 Bitmap?.Dispose();
-                Bitmap = new WriteableBitmap(new PixelSize(BitmapNumBlocksX * Overworld.Block_NumPixelsX, bmpHeight), new Vector(96, 96), PixelFormat.Rgba8888);
+                Bitmap = new WriteableBitmap(new PixelSize(BitmapNumBlocksX * Overworld.Block_NumPixelsX, bmpHeight), new Vector(96, 96), PixelFormat.Rgba8888, AlphaFormat.Premul);
                 return true;
             }
             return false;

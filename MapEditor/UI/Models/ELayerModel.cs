@@ -19,7 +19,7 @@ namespace Kermalis.MapEditor.UI.Models
         {
             _eLayerNum = eLayerNum;
             Text = $"E-Layer {_eLayerNum:X2}";
-            Bitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Rgba8888);
+            Bitmap = new WriteableBitmap(new PixelSize(Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY), new Vector(96, 96), PixelFormat.Rgba8888, AlphaFormat.Premul);
         }
 
         internal void SetBlock(Blockset.Block block)
