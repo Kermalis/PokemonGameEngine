@@ -39,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public void SetCallback(MainCallback callback)
         {
 #if DEBUG
-            System.Console.WriteLine("Main Callback\t{0} - {1}", callback.Method.DeclaringType.Name, callback.Method);
+            System.Console.WriteLine("  Main Callback\t\t{0} . {1}", callback.Method.DeclaringType.Name, callback.Method);
 #endif
             Callback = callback;
             CBState = 0;
@@ -47,7 +47,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public void SetRCallback(RenderCallback callback)
         {
 #if DEBUG
-            System.Console.WriteLine("Render Callback\t{0} - {1}", callback.Method.DeclaringType.Name, callback.Method);
+            System.Console.WriteLine("Render Callback\t\t{0} . {1}", callback.Method.DeclaringType.Name, callback.Method);
 #endif
             RCallback = callback;
         }
