@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 75,
+  "Defense": 85,
+  "SpAttack": 100,
+  "SpDefense": 85,
+  "Speed": 115,
+  "Type1": "Water",
+  "Type2": "Psychic",
+  "CatchRate": 60,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Water3",
+  "EggGroup2": "Water3",
+  "Ability1": "Illuminate",
+  "Ability2": "NaturalCure",
+  "AbilityH": "Analytic",
+  "FleeRate": 0,
+  "Weight": 80.0
+}

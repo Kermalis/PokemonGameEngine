@@ -1,0 +1,19 @@
+{
+  "HP": 55,
+  "Attack": 45,
+  "Defense": 50,
+  "SpAttack": 45,
+  "SpDefense": 65,
+  "Speed": 80,
+  "Type1": "Grass",
+  "Type2": "Flying",
+  "CatchRate": 120,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Fairy",
+  "EggGroup2": "Grass",
+  "Ability1": "Chlorophyll",
+  "Ability2": "LeafGuard",
+  "AbilityH": "Infiltrator",
+  "FleeRate": 90,
+  "Weight": 1.0
+}

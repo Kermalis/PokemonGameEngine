@@ -1,0 +1,19 @@
+{
+  "HP": 95,
+  "Attack": 110,
+  "Defense": 80,
+  "SpAttack": 70,
+  "SpDefense": 80,
+  "Speed": 50,
+  "Type1": "Ice",
+  "Type2": "None",
+  "CatchRate": 60,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "SnowCloak",
+  "Ability2": "None",
+  "AbilityH": "SwiftSwim",
+  "FleeRate": 0,
+  "Weight": 260.0
+}

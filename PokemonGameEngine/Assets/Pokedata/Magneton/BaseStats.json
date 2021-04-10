@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 60,
+  "Defense": 95,
+  "SpAttack": 120,
+  "SpDefense": 70,
+  "Speed": 70,
+  "Type1": "Electric",
+  "Type2": "Steel",
+  "CatchRate": 60,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "MagnetPull",
+  "Ability2": "Sturdy",
+  "AbilityH": "Analytic",
+  "FleeRate": 60,
+  "Weight": 60.0
+}

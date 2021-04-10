@@ -1,0 +1,19 @@
+{
+  "HP": 55,
+  "Attack": 85,
+  "Defense": 55,
+  "SpAttack": 50,
+  "SpDefense": 55,
+  "Speed": 60,
+  "Type1": "Bug",
+  "Type2": "Fire",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "FlameBody",
+  "Ability2": "None",
+  "AbilityH": "Swarm",
+  "FleeRate": 0,
+  "Weight": 28.8
+}

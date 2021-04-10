@@ -1,0 +1,19 @@
+{
+  "HP": 45,
+  "Attack": 63,
+  "Defense": 37,
+  "SpAttack": 65,
+  "SpDefense": 55,
+  "Speed": 95,
+  "Type1": "Electric",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M3_F1",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Static",
+  "Ability2": "None",
+  "AbilityH": "VitalSpirit",
+  "FleeRate": 0,
+  "Weight": 23.5
+}

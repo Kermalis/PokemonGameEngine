@@ -1,0 +1,19 @@
+{
+  "HP": 55,
+  "Attack": 35,
+  "Defense": 50,
+  "SpAttack": 55,
+  "SpDefense": 110,
+  "Speed": 85,
+  "Type1": "Bug",
+  "Type2": "Flying",
+  "CatchRate": 90,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "Swarm",
+  "Ability2": "EarlyBird",
+  "AbilityH": "IronFist",
+  "FleeRate": 0,
+  "Weight": 35.6
+}

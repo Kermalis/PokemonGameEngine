@@ -1,0 +1,19 @@
+{
+  "HP": 95,
+  "Attack": 75,
+  "Defense": 110,
+  "SpAttack": 100,
+  "SpDefense": 80,
+  "Speed": 30,
+  "Type1": "Water",
+  "Type2": "Psychic",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Water1",
+  "Ability1": "Oblivious",
+  "Ability2": "OwnTempo",
+  "AbilityH": "Regenerator",
+  "FleeRate": 60,
+  "Weight": 78.5
+}

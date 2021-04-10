@@ -1,0 +1,19 @@
+{
+  "HP": 52,
+  "Attack": 65,
+  "Defense": 55,
+  "SpAttack": 58,
+  "SpDefense": 62,
+  "Speed": 60,
+  "Type1": "Normal",
+  "Type2": "Flying",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Field",
+  "Ability1": "KeenEye",
+  "Ability2": "InnerFocus",
+  "AbilityH": "Defiant",
+  "FleeRate": 120,
+  "Weight": 15.0
+}

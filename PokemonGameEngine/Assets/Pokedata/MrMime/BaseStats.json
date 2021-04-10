@@ -1,0 +1,19 @@
+{
+  "HP": 40,
+  "Attack": 45,
+  "Defense": 65,
+  "SpAttack": 100,
+  "SpDefense": 120,
+  "Speed": 90,
+  "Type1": "Psychic",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Soundproof",
+  "Ability2": "Filter",
+  "AbilityH": "Technician",
+  "FleeRate": 90,
+  "Weight": 54.5
+}

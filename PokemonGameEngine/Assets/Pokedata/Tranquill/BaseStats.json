@@ -1,0 +1,19 @@
+{
+  "HP": 62,
+  "Attack": 77,
+  "Defense": 62,
+  "SpAttack": 50,
+  "SpDefense": 42,
+  "Speed": 65,
+  "Type1": "Normal",
+  "Type2": "Flying",
+  "CatchRate": 120,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Flying",
+  "Ability1": "BigPecks",
+  "Ability2": "SuperLuck",
+  "AbilityH": "Rivalry",
+  "FleeRate": 0,
+  "Weight": 15.0
+}

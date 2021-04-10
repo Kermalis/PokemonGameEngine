@@ -1,0 +1,19 @@
+{
+  "HP": 120,
+  "Attack": 100,
+  "Defense": 85,
+  "SpAttack": 30,
+  "SpDefense": 85,
+  "Speed": 45,
+  "Type1": "Fighting",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F0",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Guts",
+  "Ability2": "InnerFocus",
+  "AbilityH": "MoldBreaker",
+  "FleeRate": 0,
+  "Weight": 55.5
+}

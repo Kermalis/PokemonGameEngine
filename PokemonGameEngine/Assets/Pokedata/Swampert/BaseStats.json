@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 110,
+  "Defense": 90,
+  "SpAttack": 85,
+  "SpDefense": 90,
+  "Speed": 60,
+  "Type1": "Water",
+  "Type2": "Ground",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Water1",
+  "Ability1": "Torrent",
+  "Ability2": "None",
+  "AbilityH": "Damp",
+  "FleeRate": 0,
+  "Weight": 81.9
+}

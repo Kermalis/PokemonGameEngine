@@ -1,0 +1,19 @@
+{
+  "HP": 45,
+  "Attack": 75,
+  "Defense": 60,
+  "SpAttack": 40,
+  "SpDefense": 30,
+  "Speed": 50,
+  "Type1": "Dragon",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Dragon",
+  "EggGroup2": "Dragon",
+  "Ability1": "RockHead",
+  "Ability2": "None",
+  "AbilityH": "SheerForce",
+  "FleeRate": 90,
+  "Weight": 42.1
+}

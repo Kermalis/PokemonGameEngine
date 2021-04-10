@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 90,
+  "Defense": 110,
+  "SpAttack": 60,
+  "SpDefense": 75,
+  "Speed": 95,
+  "Type1": "Poison",
+  "Type2": "Dark",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Water3",
+  "Ability1": "BattleArmor",
+  "Ability2": "Sniper",
+  "AbilityH": "KeenEye",
+  "FleeRate": 60,
+  "Weight": 61.5
+}

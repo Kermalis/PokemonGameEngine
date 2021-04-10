@@ -1,0 +1,19 @@
+{
+  "HP": 110,
+  "Attack": 85,
+  "Defense": 95,
+  "SpAttack": 80,
+  "SpDefense": 95,
+  "Speed": 50,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 30,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Monster",
+  "Ability1": "OwnTempo",
+  "Ability2": "Oblivious",
+  "AbilityH": "CloudNine",
+  "FleeRate": 0,
+  "Weight": 140.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 125,
+  "Defense": 100,
+  "SpAttack": 55,
+  "SpDefense": 70,
+  "Speed": 85,
+  "Type1": "Bug",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "HyperCutter",
+  "Ability2": "MoldBreaker",
+  "AbilityH": "Moxie",
+  "FleeRate": 0,
+  "Weight": 55.0
+}

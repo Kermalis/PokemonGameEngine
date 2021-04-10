@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 60,
+  "Defense": 70,
+  "SpAttack": 85,
+  "SpDefense": 105,
+  "Speed": 60,
+  "Type1": "Water",
+  "Type2": "Ghost",
+  "CatchRate": 60,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Amorphous",
+  "EggGroup2": "Amorphous",
+  "Ability1": "WaterAbsorb",
+  "Ability2": "CursedBody",
+  "AbilityH": "Damp",
+  "FleeRate": 0,
+  "Weight": 135.0
+}

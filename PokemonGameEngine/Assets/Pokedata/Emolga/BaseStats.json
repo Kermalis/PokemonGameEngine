@@ -1,0 +1,19 @@
+{
+  "HP": 55,
+  "Attack": 75,
+  "Defense": 60,
+  "SpAttack": 75,
+  "SpDefense": 60,
+  "Speed": 103,
+  "Type1": "Electric",
+  "Type2": "Flying",
+  "CatchRate": 200,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Static",
+  "Ability2": "None",
+  "AbilityH": "MotorDrive",
+  "FleeRate": 0,
+  "Weight": 5.0
+}

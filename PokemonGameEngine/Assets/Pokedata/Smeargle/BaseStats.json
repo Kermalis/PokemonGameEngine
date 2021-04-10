@@ -1,0 +1,19 @@
+{
+  "HP": 55,
+  "Attack": 20,
+  "Defense": 35,
+  "SpAttack": 20,
+  "SpDefense": 45,
+  "Speed": 75,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "OwnTempo",
+  "Ability2": "Technician",
+  "AbilityH": "Moody",
+  "FleeRate": 60,
+  "Weight": 58.0
+}

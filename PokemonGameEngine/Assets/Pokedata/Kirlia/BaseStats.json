@@ -1,0 +1,19 @@
+{
+  "HP": 38,
+  "Attack": 35,
+  "Defense": 35,
+  "SpAttack": 65,
+  "SpDefense": 55,
+  "Speed": 50,
+  "Type1": "Psychic",
+  "Type2": "None",
+  "CatchRate": 120,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Amorphous",
+  "EggGroup2": "Amorphous",
+  "Ability1": "Synchronize",
+  "Ability2": "Trace",
+  "AbilityH": "Telepathy",
+  "FleeRate": 0,
+  "Weight": 20.2
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 120,
+  "Defense": 100,
+  "SpAttack": 150,
+  "SpDefense": 120,
+  "Speed": 90,
+  "Type1": "Dragon",
+  "Type2": "Fire",
+  "CatchRate": 45,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Turboblaze",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 330.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 80,
+  "Attack": 75,
+  "Defense": 150,
+  "SpAttack": 75,
+  "SpDefense": 150,
+  "Speed": 50,
+  "Type1": "Steel",
+  "Type2": "None",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "ClearBody",
+  "Ability2": "None",
+  "AbilityH": "LightMetal",
+  "FleeRate": 0,
+  "Weight": 205.0
+}

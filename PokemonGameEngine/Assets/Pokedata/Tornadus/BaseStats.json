@@ -1,0 +1,19 @@
+{
+  "HP": 79,
+  "Attack": 115,
+  "Defense": 70,
+  "SpAttack": 125,
+  "SpDefense": 80,
+  "Speed": 111,
+  "Type1": "Flying",
+  "Type2": "None",
+  "CatchRate": 3,
+  "GenderRatio": "M1_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Prankster",
+  "Ability2": "None",
+  "AbilityH": "Defiant",
+  "FleeRate": 0,
+  "Weight": 63.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 72,
+  "Attack": 58,
+  "Defense": 80,
+  "SpAttack": 103,
+  "SpDefense": 80,
+  "Speed": 97,
+  "Type1": "Psychic",
+  "Type2": "Flying",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Flying",
+  "Ability1": "WonderSkin",
+  "Ability2": "MagicGuard",
+  "AbilityH": "TintedLens",
+  "FleeRate": 0,
+  "Weight": 14.0
+}

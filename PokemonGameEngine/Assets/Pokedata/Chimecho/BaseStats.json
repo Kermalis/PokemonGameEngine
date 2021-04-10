@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 50,
+  "Defense": 70,
+  "SpAttack": 95,
+  "SpDefense": 80,
+  "Speed": 65,
+  "Type1": "Psychic",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Amorphous",
+  "EggGroup2": "Amorphous",
+  "Ability1": "Levitate",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 90,
+  "Weight": 1.0
+}

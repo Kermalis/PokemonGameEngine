@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 100,
+  "Defense": 66,
+  "SpAttack": 60,
+  "SpDefense": 66,
+  "Speed": 115,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Technician",
+  "Ability2": "Pickup",
+  "AbilityH": "SkillLink",
+  "FleeRate": 0,
+  "Weight": 20.3
+}

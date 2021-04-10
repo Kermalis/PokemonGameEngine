@@ -1,0 +1,19 @@
+{
+  "HP": 105,
+  "Attack": 130,
+  "Defense": 120,
+  "SpAttack": 45,
+  "SpDefense": 45,
+  "Speed": 40,
+  "Type1": "Ground",
+  "Type2": "Rock",
+  "CatchRate": 60,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Field",
+  "Ability1": "Lightningrod",
+  "Ability2": "RockHead",
+  "AbilityH": "Reckless",
+  "FleeRate": 60,
+  "Weight": 120.0
+}

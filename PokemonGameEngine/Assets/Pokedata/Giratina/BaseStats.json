@@ -1,0 +1,19 @@
+{
+  "HP": 150,
+  "Attack": 100,
+  "Defense": 120,
+  "SpAttack": 100,
+  "SpDefense": 120,
+  "Speed": 90,
+  "Type1": "Ghost",
+  "Type2": "Dragon",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Pressure",
+  "Ability2": "None",
+  "AbilityH": "Telepathy",
+  "FleeRate": 0,
+  "Weight": 750.0
+}

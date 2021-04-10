@@ -1,0 +1,19 @@
+{
+  "HP": 110,
+  "Attack": 135,
+  "Defense": 60,
+  "SpAttack": 50,
+  "SpDefense": 65,
+  "Speed": 88,
+  "Type1": "Ground",
+  "Type2": "Steel",
+  "CatchRate": 60,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "SandRush",
+  "Ability2": "SandForce",
+  "AbilityH": "MoldBreaker",
+  "FleeRate": 0,
+  "Weight": 40.4
+}

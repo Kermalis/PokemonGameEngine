@@ -1,0 +1,19 @@
+{
+  "HP": 90,
+  "Attack": 85,
+  "Defense": 95,
+  "SpAttack": 70,
+  "SpDefense": 90,
+  "Speed": 70,
+  "Type1": "Water",
+  "Type2": "Fighting",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Water1",
+  "Ability1": "WaterAbsorb",
+  "Ability2": "Damp",
+  "AbilityH": "SwiftSwim",
+  "FleeRate": 0,
+  "Weight": 54.0
+}

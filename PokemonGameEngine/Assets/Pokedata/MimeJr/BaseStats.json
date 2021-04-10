@@ -1,0 +1,19 @@
+{
+  "HP": 20,
+  "Attack": 25,
+  "Defense": 45,
+  "SpAttack": 70,
+  "SpDefense": 90,
+  "Speed": 60,
+  "Type1": "Psychic",
+  "Type2": "None",
+  "CatchRate": 145,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Soundproof",
+  "Ability2": "Filter",
+  "AbilityH": "Technician",
+  "FleeRate": 0,
+  "Weight": 13.0
+}

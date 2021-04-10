@@ -1,0 +1,19 @@
+{
+  "HP": 41,
+  "Attack": 64,
+  "Defense": 45,
+  "SpAttack": 50,
+  "SpDefense": 50,
+  "Speed": 50,
+  "Type1": "Dragon",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Dragon",
+  "Ability1": "ShedSkin",
+  "Ability2": "None",
+  "AbilityH": "MarvelScale",
+  "FleeRate": 120,
+  "Weight": 3.3
+}

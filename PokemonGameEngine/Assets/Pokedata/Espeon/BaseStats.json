@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 65,
+  "Defense": 60,
+  "SpAttack": 130,
+  "SpDefense": 95,
+  "Speed": 110,
+  "Type1": "Psychic",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Synchronize",
+  "Ability2": "Synchronize",
+  "AbilityH": "MagicBounce",
+  "FleeRate": 0,
+  "Weight": 26.5
+}

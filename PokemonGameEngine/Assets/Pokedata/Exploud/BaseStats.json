@@ -1,0 +1,19 @@
+{
+  "HP": 104,
+  "Attack": 91,
+  "Defense": 63,
+  "SpAttack": 91,
+  "SpDefense": 63,
+  "Speed": 68,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Field",
+  "Ability1": "Soundproof",
+  "Ability2": "None",
+  "AbilityH": "Scrappy",
+  "FleeRate": 0,
+  "Weight": 84.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 70,
+  "Defense": 60,
+  "SpAttack": 65,
+  "SpDefense": 65,
+  "Speed": 115,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 90,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Limber",
+  "Ability2": "Technician",
+  "AbilityH": "Unnerve",
+  "FleeRate": 0,
+  "Weight": 32.0
+}

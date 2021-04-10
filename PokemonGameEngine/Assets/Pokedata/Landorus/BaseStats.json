@@ -1,0 +1,19 @@
+{
+  "HP": 89,
+  "Attack": 125,
+  "Defense": 90,
+  "SpAttack": 115,
+  "SpDefense": 80,
+  "Speed": 101,
+  "Type1": "Ground",
+  "Type2": "Flying",
+  "CatchRate": 3,
+  "GenderRatio": "M1_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "SandForce",
+  "Ability2": "None",
+  "AbilityH": "SheerForce",
+  "FleeRate": 0,
+  "Weight": 68.0
+}

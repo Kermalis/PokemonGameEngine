@@ -1,0 +1,19 @@
+{
+  "HP": 55,
+  "Attack": 55,
+  "Defense": 50,
+  "SpAttack": 45,
+  "SpDefense": 65,
+  "Speed": 55,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "RunAway",
+  "Ability2": "Adaptability",
+  "AbilityH": "Anticipation",
+  "FleeRate": 0,
+  "Weight": 6.5
+}

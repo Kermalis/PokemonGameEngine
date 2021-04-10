@@ -1,0 +1,19 @@
+{
+  "HP": 80,
+  "Attack": 110,
+  "Defense": 130,
+  "SpAttack": 55,
+  "SpDefense": 65,
+  "Speed": 45,
+  "Type1": "Rock",
+  "Type2": "Ground",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "RockHead",
+  "Ability2": "Sturdy",
+  "AbilityH": "SandVeil",
+  "FleeRate": 0,
+  "Weight": 300.0
+}

@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Legality;
+using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
@@ -64,7 +65,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             SetWildMoves();
             CaughtBall = PBEItem.PokeBall;
             Friendship = byte.MaxValue; // TODO: Default friendship
-            CalcStats(pData);
+            CalcStats(pData.BaseStats);
             SetMaxHP();
         }
         public PartyPokemon(EncounterTable.Encounter encounter)
@@ -82,12 +83,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             IndividualValues = new IVs();
             UpdateTimeBasedForms(DateTime.Now);
             SetWildMoves();
-            CalcStats(pData);
+            CalcStats(pData.BaseStats);
             SetMaxHP();
         }
         public PartyPokemon(BoxPokemon other)
         {
-            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(other);
             Species = other.Species;
             Form = other.Form;
             Nickname = other.Nickname;
@@ -102,7 +102,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             CaughtBall = other.CaughtBall;
             Friendship = other.Friendship;
             UpdateTimeBasedForms(DateTime.Now);
-            CalcStats(pData);
+            CalcStats();
             SetMaxHP();
         }
 
@@ -110,19 +110,18 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             HP = MaxHP;
         }
-        private void CalcStats(IPBEPokemonData pData)
+        private void CalcStats(IPBEReadOnlyStatCollection baseStats)
         {
-            MaxHP = PBEDataUtils.CalculateStat(pData, PBEStat.HP, Nature, EffortValues.HP, IndividualValues.HP, Level, PkmnConstants.PBESettings);
-            Attack = PBEDataUtils.CalculateStat(pData, PBEStat.Attack, Nature, EffortValues.Attack, IndividualValues.Attack, Level, PkmnConstants.PBESettings);
-            Defense = PBEDataUtils.CalculateStat(pData, PBEStat.Defense, Nature, EffortValues.Defense, IndividualValues.Defense, Level, PkmnConstants.PBESettings);
-            SpAttack = PBEDataUtils.CalculateStat(pData, PBEStat.SpAttack, Nature, EffortValues.SpAttack, IndividualValues.SpAttack, Level, PkmnConstants.PBESettings);
-            SpDefense = PBEDataUtils.CalculateStat(pData, PBEStat.SpDefense, Nature, EffortValues.SpDefense, IndividualValues.SpDefense, Level, PkmnConstants.PBESettings);
-            Speed = PBEDataUtils.CalculateStat(pData, PBEStat.Speed, Nature, EffortValues.Speed, IndividualValues.Speed, Level, PkmnConstants.PBESettings);
+            MaxHP = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.HP, Nature, EffortValues.HP, IndividualValues.HP, Level, PkmnConstants.PBESettings);
+            Attack = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.Attack, Nature, EffortValues.Attack, IndividualValues.Attack, Level, PkmnConstants.PBESettings);
+            Defense = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.Defense, Nature, EffortValues.Defense, IndividualValues.Defense, Level, PkmnConstants.PBESettings);
+            SpAttack = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.SpAttack, Nature, EffortValues.SpAttack, IndividualValues.SpAttack, Level, PkmnConstants.PBESettings);
+            SpDefense = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.SpDefense, Nature, EffortValues.SpDefense, IndividualValues.SpDefense, Level, PkmnConstants.PBESettings);
+            Speed = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.Speed, Nature, EffortValues.Speed, IndividualValues.Speed, Level, PkmnConstants.PBESettings);
         }
         public void CalcStats()
         {
-            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(this);
-            CalcStats(pData);
+            CalcStats(new BaseStats(Species, Form).Stats);
         }
         public void HealStatus()
         {
@@ -161,7 +160,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 slot.SetMaxPP();
             }
         }
-        private void SetWildMoves(IPBEPokemonData pData)
+        private void SetWildMoves(IPBEPokemonDataExtended pData)
         {
             // Get last 4 moves that can be learned by level up, with no repeats (such as Sketch)
             PBEMove[] moves = pData.LevelUpMoves.Where(t => t.Level <= Level && t.ObtainMethod.HasFlag(PBEMoveObtainMethod.LevelUp_B2W2) && PBEDataUtils.IsMoveUsable(t.Move))
@@ -180,7 +179,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         private void SetWildMoves()
         {
-            SetWildMoves(PBEDataProvider.Instance.GetPokemonData(this));
+            SetWildMoves(PBEDataProvider.Instance.GetPokemonDataExtended(this));
         }
 
         // TODO: Burmy areas. (Giratina would work similarly if you wanted, with an additional || for the orb)

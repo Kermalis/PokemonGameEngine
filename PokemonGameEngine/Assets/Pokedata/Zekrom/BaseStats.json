@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 150,
+  "Defense": 120,
+  "SpAttack": 120,
+  "SpDefense": 100,
+  "Speed": 90,
+  "Type1": "Dragon",
+  "Type2": "Electric",
+  "CatchRate": 45,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Teravolt",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 345.0
+}

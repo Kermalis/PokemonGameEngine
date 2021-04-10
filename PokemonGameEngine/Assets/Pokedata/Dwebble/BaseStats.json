@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 65,
+  "Defense": 85,
+  "SpAttack": 35,
+  "SpDefense": 35,
+  "Speed": 55,
+  "Type1": "Bug",
+  "Type2": "Rock",
+  "CatchRate": 190,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Mineral",
+  "Ability1": "Sturdy",
+  "Ability2": "ShellArmor",
+  "AbilityH": "WeakArmor",
+  "FleeRate": 0,
+  "Weight": 14.5
+}

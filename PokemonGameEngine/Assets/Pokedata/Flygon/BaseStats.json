@@ -1,0 +1,19 @@
+{
+  "HP": 80,
+  "Attack": 100,
+  "Defense": 80,
+  "SpAttack": 80,
+  "SpDefense": 80,
+  "Speed": 100,
+  "Type1": "Ground",
+  "Type2": "Dragon",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "Levitate",
+  "Ability2": "Levitate",
+  "AbilityH": "Levitate",
+  "FleeRate": 0,
+  "Weight": 82.0
+}

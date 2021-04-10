@@ -1,0 +1,19 @@
+{
+  "HP": 46,
+  "Attack": 87,
+  "Defense": 60,
+  "SpAttack": 30,
+  "SpDefense": 40,
+  "Speed": 57,
+  "Type1": "Dragon",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Dragon",
+  "Ability1": "Rivalry",
+  "Ability2": "MoldBreaker",
+  "AbilityH": "Unnerve",
+  "FleeRate": 0,
+  "Weight": 18.0
+}

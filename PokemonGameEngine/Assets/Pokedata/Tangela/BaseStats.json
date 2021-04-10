@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 55,
+  "Defense": 115,
+  "SpAttack": 100,
+  "SpDefense": 40,
+  "Speed": 60,
+  "Type1": "Grass",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Grass",
+  "EggGroup2": "Grass",
+  "Ability1": "Chlorophyll",
+  "Ability2": "LeafGuard",
+  "AbilityH": "Regenerator",
+  "FleeRate": 90,
+  "Weight": 35.0
+}

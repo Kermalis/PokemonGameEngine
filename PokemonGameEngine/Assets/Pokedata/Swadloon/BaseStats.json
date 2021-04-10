@@ -1,0 +1,19 @@
+{
+  "HP": 55,
+  "Attack": 63,
+  "Defense": 90,
+  "SpAttack": 50,
+  "SpDefense": 80,
+  "Speed": 42,
+  "Type1": "Bug",
+  "Type2": "Grass",
+  "CatchRate": 120,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "LeafGuard",
+  "Ability2": "Chlorophyll",
+  "AbilityH": "Overcoat",
+  "FleeRate": 0,
+  "Weight": 7.3
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 120,
+  "Defense": 53,
+  "SpAttack": 35,
+  "SpDefense": 110,
+  "Speed": 87,
+  "Type1": "Fighting",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F0",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Limber",
+  "Ability2": "Reckless",
+  "AbilityH": "Unburden",
+  "FleeRate": 0,
+  "Weight": 49.8
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 134,
+  "Defense": 110,
+  "SpAttack": 95,
+  "SpDefense": 100,
+  "Speed": 61,
+  "Type1": "Rock",
+  "Type2": "Dark",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Monster",
+  "Ability1": "SandStream",
+  "Ability2": "None",
+  "AbilityH": "Unnerve",
+  "FleeRate": 0,
+  "Weight": 202.0
+}

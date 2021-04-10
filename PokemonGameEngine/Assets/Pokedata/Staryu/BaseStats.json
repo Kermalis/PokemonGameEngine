@@ -1,0 +1,19 @@
+{
+  "HP": 30,
+  "Attack": 45,
+  "Defense": 55,
+  "SpAttack": 70,
+  "SpDefense": 55,
+  "Speed": 85,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 225,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Water3",
+  "EggGroup2": "Water3",
+  "Ability1": "Illuminate",
+  "Ability2": "NaturalCure",
+  "AbilityH": "Analytic",
+  "FleeRate": 0,
+  "Weight": 34.5
+}

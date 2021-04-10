@@ -1,0 +1,19 @@
+{
+  "HP": 90,
+  "Attack": 93,
+  "Defense": 55,
+  "SpAttack": 70,
+  "SpDefense": 55,
+  "Speed": 55,
+  "Type1": "Fire",
+  "Type2": "Fighting",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Blaze",
+  "Ability2": "Blaze",
+  "AbilityH": "ThickFat",
+  "FleeRate": 0,
+  "Weight": 55.5
+}

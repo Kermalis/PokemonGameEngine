@@ -1,0 +1,19 @@
+{
+  "HP": 90,
+  "Attack": 90,
+  "Defense": 85,
+  "SpAttack": 125,
+  "SpDefense": 90,
+  "Speed": 100,
+  "Type1": "Electric",
+  "Type2": "Flying",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Pressure",
+  "Ability2": "None",
+  "AbilityH": "Lightningrod",
+  "FleeRate": 0,
+  "Weight": 52.6
+}

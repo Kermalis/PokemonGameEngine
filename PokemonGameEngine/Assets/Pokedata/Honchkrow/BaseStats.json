@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 125,
+  "Defense": 52,
+  "SpAttack": 105,
+  "SpDefense": 52,
+  "Speed": 71,
+  "Type1": "Dark",
+  "Type2": "Flying",
+  "CatchRate": 30,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Flying",
+  "Ability1": "Insomnia",
+  "Ability2": "SuperLuck",
+  "AbilityH": "Moxie",
+  "FleeRate": 0,
+  "Weight": 27.3
+}

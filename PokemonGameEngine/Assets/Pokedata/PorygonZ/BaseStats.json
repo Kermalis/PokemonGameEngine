@@ -1,0 +1,19 @@
+{
+  "HP": 85,
+  "Attack": 80,
+  "Defense": 70,
+  "SpAttack": 135,
+  "SpDefense": 75,
+  "Speed": 90,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 30,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "Adaptability",
+  "Ability2": "Download",
+  "AbilityH": "Analytic",
+  "FleeRate": 0,
+  "Weight": 34.0
+}

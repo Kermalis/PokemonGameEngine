@@ -1,0 +1,19 @@
+{
+  "HP": 40,
+  "Attack": 55,
+  "Defense": 70,
+  "SpAttack": 45,
+  "SpDefense": 60,
+  "Speed": 30,
+  "Type1": "Steel",
+  "Type2": "None",
+  "CatchRate": 130,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "Plus",
+  "Ability2": "Minus",
+  "AbilityH": "ClearBody",
+  "FleeRate": 0,
+  "Weight": 21.0
+}

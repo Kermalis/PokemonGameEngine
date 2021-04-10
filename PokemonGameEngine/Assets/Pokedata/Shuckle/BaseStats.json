@@ -1,0 +1,19 @@
+{
+  "HP": 20,
+  "Attack": 10,
+  "Defense": 230,
+  "SpAttack": 10,
+  "SpDefense": 230,
+  "Speed": 5,
+  "Type1": "Bug",
+  "Type2": "Rock",
+  "CatchRate": 190,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "Sturdy",
+  "Ability2": "Gluttony",
+  "AbilityH": "Contrary",
+  "FleeRate": 60,
+  "Weight": 20.5
+}

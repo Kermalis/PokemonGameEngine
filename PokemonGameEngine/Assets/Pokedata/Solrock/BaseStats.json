@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 95,
+  "Defense": 85,
+  "SpAttack": 55,
+  "SpDefense": 65,
+  "Speed": 70,
+  "Type1": "Rock",
+  "Type2": "Psychic",
+  "CatchRate": 45,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "Levitate",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 60,
+  "Weight": 154.0
+}

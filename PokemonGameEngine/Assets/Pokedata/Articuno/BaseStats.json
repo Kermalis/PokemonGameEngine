@@ -1,0 +1,19 @@
+{
+  "HP": 90,
+  "Attack": 85,
+  "Defense": 100,
+  "SpAttack": 95,
+  "SpDefense": 125,
+  "Speed": 85,
+  "Type1": "Ice",
+  "Type2": "Flying",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Pressure",
+  "Ability2": "None",
+  "AbilityH": "SnowCloak",
+  "FleeRate": 0,
+  "Weight": 55.4
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 110,
+  "Defense": 70,
+  "SpAttack": 60,
+  "SpDefense": 60,
+  "Speed": 100,
+  "Type1": "Normal",
+  "Type2": "Flying",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Flying",
+  "Ability1": "RunAway",
+  "Ability2": "EarlyBird",
+  "AbilityH": "TangledFeet",
+  "FleeRate": 60,
+  "Weight": 85.2
+}

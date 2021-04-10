@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 75,
+  "Defense": 95,
+  "SpAttack": 75,
+  "SpDefense": 95,
+  "Speed": 113,
+  "Type1": "Grass",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Grass",
+  "Ability1": "Overgrow",
+  "Ability2": "Overgrow",
+  "AbilityH": "Contrary",
+  "FleeRate": 0,
+  "Weight": 63.0
+}

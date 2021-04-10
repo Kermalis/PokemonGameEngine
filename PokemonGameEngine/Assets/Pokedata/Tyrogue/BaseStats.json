@@ -1,0 +1,19 @@
+{
+  "HP": 35,
+  "Attack": 35,
+  "Defense": 35,
+  "SpAttack": 35,
+  "SpDefense": 35,
+  "Speed": 35,
+  "Type1": "Fighting",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Guts",
+  "Ability2": "Steadfast",
+  "AbilityH": "VitalSpirit",
+  "FleeRate": 0,
+  "Weight": 21.0
+}

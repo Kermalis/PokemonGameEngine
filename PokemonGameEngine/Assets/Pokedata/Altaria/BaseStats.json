@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 70,
+  "Defense": 90,
+  "SpAttack": 70,
+  "SpDefense": 105,
+  "Speed": 80,
+  "Type1": "Dragon",
+  "Type2": "Flying",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Dragon",
+  "Ability1": "NaturalCure",
+  "Ability2": "None",
+  "AbilityH": "CloudNine",
+  "FleeRate": 0,
+  "Weight": 20.6
+}

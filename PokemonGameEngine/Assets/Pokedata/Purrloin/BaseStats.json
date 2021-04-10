@@ -1,0 +1,19 @@
+{
+  "HP": 41,
+  "Attack": 50,
+  "Defense": 37,
+  "SpAttack": 50,
+  "SpDefense": 37,
+  "Speed": 66,
+  "Type1": "Dark",
+  "Type2": "None",
+  "CatchRate": 255,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Limber",
+  "Ability2": "Unburden",
+  "AbilityH": "Prankster",
+  "FleeRate": 0,
+  "Weight": 10.1
+}

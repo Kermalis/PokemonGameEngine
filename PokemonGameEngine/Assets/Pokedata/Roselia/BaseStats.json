@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 60,
+  "Defense": 45,
+  "SpAttack": 100,
+  "SpDefense": 80,
+  "Speed": 65,
+  "Type1": "Grass",
+  "Type2": "Poison",
+  "CatchRate": 150,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Fairy",
+  "EggGroup2": "Grass",
+  "Ability1": "NaturalCure",
+  "Ability2": "PoisonPoint",
+  "AbilityH": "LeafGuard",
+  "FleeRate": 60,
+  "Weight": 2.0
+}

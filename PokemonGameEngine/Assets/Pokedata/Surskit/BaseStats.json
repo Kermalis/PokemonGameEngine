@@ -1,0 +1,19 @@
+{
+  "HP": 40,
+  "Attack": 30,
+  "Defense": 32,
+  "SpAttack": 50,
+  "SpDefense": 52,
+  "Speed": 65,
+  "Type1": "Bug",
+  "Type2": "Water",
+  "CatchRate": 200,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Bug",
+  "Ability1": "SwiftSwim",
+  "Ability2": "None",
+  "AbilityH": "RainDish",
+  "FleeRate": 120,
+  "Weight": 1.7
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 90,
+  "Defense": 45,
+  "SpAttack": 15,
+  "SpDefense": 45,
+  "Speed": 50,
+  "Type1": "Fire",
+  "Type2": "None",
+  "CatchRate": 120,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Hustle",
+  "Ability2": "None",
+  "AbilityH": "InnerFocus",
+  "FleeRate": 0,
+  "Weight": 37.5
+}

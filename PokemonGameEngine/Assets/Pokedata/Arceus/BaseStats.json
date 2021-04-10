@@ -1,0 +1,19 @@
+{
+  "HP": 120,
+  "Attack": 120,
+  "Defense": 120,
+  "SpAttack": 120,
+  "SpDefense": 120,
+  "Speed": 120,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Multitype",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 320.0
+}

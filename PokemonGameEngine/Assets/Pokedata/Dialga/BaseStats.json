@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 120,
+  "Defense": 120,
+  "SpAttack": 150,
+  "SpDefense": 100,
+  "Speed": 90,
+  "Type1": "Steel",
+  "Type2": "Dragon",
+  "CatchRate": 30,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Pressure",
+  "Ability2": "None",
+  "AbilityH": "Telepathy",
+  "FleeRate": 0,
+  "Weight": 683.0
+}

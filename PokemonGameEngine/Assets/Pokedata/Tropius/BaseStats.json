@@ -1,0 +1,19 @@
+{
+  "HP": 99,
+  "Attack": 68,
+  "Defense": 83,
+  "SpAttack": 72,
+  "SpDefense": 87,
+  "Speed": 51,
+  "Type1": "Grass",
+  "Type2": "Flying",
+  "CatchRate": 200,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Grass",
+  "Ability1": "Chlorophyll",
+  "Ability2": "SolarPower",
+  "AbilityH": "Harvest",
+  "FleeRate": 60,
+  "Weight": 100.0
+}

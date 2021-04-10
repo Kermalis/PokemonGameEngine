@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 80,
+  "Defense": 85,
+  "SpAttack": 90,
+  "SpDefense": 100,
+  "Speed": 50,
+  "Type1": "Grass",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Grass",
+  "EggGroup2": "Grass",
+  "Ability1": "Chlorophyll",
+  "Ability2": "None",
+  "AbilityH": "Healer",
+  "FleeRate": 0,
+  "Weight": 5.8
+}

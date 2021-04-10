@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 25,
+  "Defense": 35,
+  "SpAttack": 70,
+  "SpDefense": 80,
+  "Speed": 60,
+  "Type1": "Psychic",
+  "Type2": "None",
+  "CatchRate": 255,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "ThickFat",
+  "Ability2": "OwnTempo",
+  "AbilityH": "Gluttony",
+  "FleeRate": 0,
+  "Weight": 30.6
+}

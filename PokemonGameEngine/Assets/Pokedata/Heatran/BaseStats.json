@@ -1,0 +1,19 @@
+{
+  "HP": 91,
+  "Attack": 90,
+  "Defense": 106,
+  "SpAttack": 130,
+  "SpDefense": 106,
+  "Speed": 77,
+  "Type1": "Fire",
+  "Type2": "Steel",
+  "CatchRate": 3,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "FlashFire",
+  "Ability2": "None",
+  "AbilityH": "FlameBody",
+  "FleeRate": 0,
+  "Weight": 430.0
+}

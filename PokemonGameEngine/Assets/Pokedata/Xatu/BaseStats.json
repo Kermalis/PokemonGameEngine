@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 75,
+  "Defense": 70,
+  "SpAttack": 95,
+  "SpDefense": 70,
+  "Speed": 95,
+  "Type1": "Psychic",
+  "Type2": "Flying",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Flying",
+  "Ability1": "Synchronize",
+  "Ability2": "EarlyBird",
+  "AbilityH": "MagicBounce",
+  "FleeRate": 0,
+  "Weight": 15.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 90,
+  "Attack": 92,
+  "Defense": 75,
+  "SpAttack": 92,
+  "SpDefense": 85,
+  "Speed": 60,
+  "Type1": "Grass",
+  "Type2": "Ice",
+  "CatchRate": 60,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Grass",
+  "Ability1": "SnowWarning",
+  "Ability2": "None",
+  "AbilityH": "Soundproof",
+  "FleeRate": 0,
+  "Weight": 135.5
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 125,
+  "Defense": 100,
+  "SpAttack": 60,
+  "SpDefense": 70,
+  "Speed": 70,
+  "Type1": "Dark",
+  "Type2": "Steel",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Defiant",
+  "Ability2": "InnerFocus",
+  "AbilityH": "Pressure",
+  "FleeRate": 0,
+  "Weight": 70.0
+}

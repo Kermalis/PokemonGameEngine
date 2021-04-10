@@ -1,0 +1,19 @@
+{
+  "HP": 44,
+  "Attack": 50,
+  "Defense": 91,
+  "SpAttack": 24,
+  "SpDefense": 86,
+  "Speed": 10,
+  "Type1": "Grass",
+  "Type2": "Steel",
+  "CatchRate": 255,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Grass",
+  "EggGroup2": "Mineral",
+  "Ability1": "IronBarbs",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 18.8
+}

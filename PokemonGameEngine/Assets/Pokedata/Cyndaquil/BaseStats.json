@@ -1,0 +1,19 @@
+{
+  "HP": 39,
+  "Attack": 52,
+  "Defense": 43,
+  "SpAttack": 60,
+  "SpDefense": 50,
+  "Speed": 65,
+  "Type1": "Fire",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Blaze",
+  "Ability2": "None",
+  "AbilityH": "FlashFire",
+  "FleeRate": 0,
+  "Weight": 7.9
+}

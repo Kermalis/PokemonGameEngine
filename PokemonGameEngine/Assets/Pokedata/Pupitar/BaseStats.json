@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 84,
+  "Defense": 70,
+  "SpAttack": 65,
+  "SpDefense": 70,
+  "Speed": 51,
+  "Type1": "Rock",
+  "Type2": "Ground",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Monster",
+  "Ability1": "ShedSkin",
+  "Ability2": "None",
+  "AbilityH": "ShedSkin",
+  "FleeRate": 0,
+  "Weight": 152.0
+}

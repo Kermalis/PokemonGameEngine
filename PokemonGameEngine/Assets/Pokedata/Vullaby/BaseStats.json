@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 55,
+  "Defense": 75,
+  "SpAttack": 45,
+  "SpDefense": 65,
+  "Speed": 60,
+  "Type1": "Dark",
+  "Type2": "Flying",
+  "CatchRate": 190,
+  "GenderRatio": "M0_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Flying",
+  "Ability1": "BigPecks",
+  "Ability2": "Overcoat",
+  "AbilityH": "WeakArmor",
+  "FleeRate": 0,
+  "Weight": 9.0
+}

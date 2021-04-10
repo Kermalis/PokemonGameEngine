@@ -1,0 +1,19 @@
+{
+  "HP": 160,
+  "Attack": 110,
+  "Defense": 65,
+  "SpAttack": 65,
+  "SpDefense": 110,
+  "Speed": 30,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 25,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Monster",
+  "Ability1": "Immunity",
+  "Ability2": "ThickFat",
+  "AbilityH": "Gluttony",
+  "FleeRate": 0,
+  "Weight": 460.0
+}

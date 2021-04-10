@@ -1,0 +1,19 @@
+{
+  "HP": 85,
+  "Attack": 135,
+  "Defense": 130,
+  "SpAttack": 60,
+  "SpDefense": 70,
+  "Speed": 25,
+  "Type1": "Rock",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "Sturdy",
+  "Ability2": "None",
+  "AbilityH": "SandForce",
+  "FleeRate": 0,
+  "Weight": 260.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 75,
+  "Defense": 100,
+  "SpAttack": 55,
+  "SpDefense": 80,
+  "Speed": 50,
+  "Type1": "Steel",
+  "Type2": "Psychic",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "ClearBody",
+  "Ability2": "None",
+  "AbilityH": "LightMetal",
+  "FleeRate": 60,
+  "Weight": 202.5
+}

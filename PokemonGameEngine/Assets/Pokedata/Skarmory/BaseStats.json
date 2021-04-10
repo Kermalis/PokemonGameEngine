@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 80,
+  "Defense": 140,
+  "SpAttack": 40,
+  "SpDefense": 70,
+  "Speed": 70,
+  "Type1": "Steel",
+  "Type2": "Flying",
+  "CatchRate": 25,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Flying",
+  "Ability1": "KeenEye",
+  "Ability2": "Sturdy",
+  "AbilityH": "WeakArmor",
+  "FleeRate": 0,
+  "Weight": 50.5
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 75,
+  "Defense": 115,
+  "SpAttack": 90,
+  "SpDefense": 115,
+  "Speed": 85,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Pressure",
+  "Ability2": "None",
+  "AbilityH": "WaterAbsorb",
+  "FleeRate": 0,
+  "Weight": 187.0
+}

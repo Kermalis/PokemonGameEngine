@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 50,
+  "Defense": 35,
+  "SpAttack": 115,
+  "SpDefense": 95,
+  "Speed": 95,
+  "Type1": "Ice",
+  "Type2": "Psychic",
+  "CatchRate": 45,
+  "GenderRatio": "M0_F1",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Oblivious",
+  "Ability2": "Forewarn",
+  "AbilityH": "DrySkin",
+  "FleeRate": 0,
+  "Weight": 40.6
+}

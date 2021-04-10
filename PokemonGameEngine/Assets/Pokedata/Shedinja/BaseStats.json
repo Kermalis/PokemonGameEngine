@@ -1,0 +1,19 @@
+{
+  "HP": 1,
+  "Attack": 90,
+  "Defense": 45,
+  "SpAttack": 30,
+  "SpDefense": 30,
+  "Speed": 40,
+  "Type1": "Bug",
+  "Type2": "Ghost",
+  "CatchRate": 45,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "WonderGuard",
+  "Ability2": "None",
+  "AbilityH": "WonderGuard",
+  "FleeRate": 0,
+  "Weight": 1.2
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 75,
+  "Defense": 60,
+  "SpAttack": 105,
+  "SpDefense": 60,
+  "Speed": 105,
+  "Type1": "Electric",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Static",
+  "Ability2": "Lightningrod",
+  "AbilityH": "Minus",
+  "FleeRate": 90,
+  "Weight": 40.2
+}

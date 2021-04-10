@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 105,
+  "Defense": 79,
+  "SpAttack": 35,
+  "SpDefense": 110,
+  "Speed": 76,
+  "Type1": "Fighting",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F0",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "KeenEye",
+  "Ability2": "IronFist",
+  "AbilityH": "InnerFocus",
+  "FleeRate": 0,
+  "Weight": 50.2
+}

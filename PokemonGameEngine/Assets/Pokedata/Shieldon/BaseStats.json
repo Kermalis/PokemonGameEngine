@@ -1,0 +1,19 @@
+{
+  "HP": 30,
+  "Attack": 42,
+  "Defense": 118,
+  "SpAttack": 42,
+  "SpDefense": 88,
+  "Speed": 30,
+  "Type1": "Rock",
+  "Type2": "Steel",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Monster",
+  "Ability1": "Sturdy",
+  "Ability2": "None",
+  "AbilityH": "Soundproof",
+  "FleeRate": 0,
+  "Weight": 57.0
+}

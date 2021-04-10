@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 65,
+  "Defense": 60,
+  "SpAttack": 90,
+  "SpDefense": 75,
+  "Speed": 90,
+  "Type1": "Bug",
+  "Type2": "Poison",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "ShieldDust",
+  "Ability2": "TintedLens",
+  "AbilityH": "WonderSkin",
+  "FleeRate": 0,
+  "Weight": 12.5
+}

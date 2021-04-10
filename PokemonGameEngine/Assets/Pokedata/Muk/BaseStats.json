@@ -1,0 +1,19 @@
+{
+  "HP": 105,
+  "Attack": 105,
+  "Defense": 75,
+  "SpAttack": 65,
+  "SpDefense": 100,
+  "Speed": 50,
+  "Type1": "Poison",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Amorphous",
+  "EggGroup2": "Amorphous",
+  "Ability1": "Stench",
+  "Ability2": "StickyHold",
+  "AbilityH": "PoisonTouch",
+  "FleeRate": 60,
+  "Weight": 30.0
+}

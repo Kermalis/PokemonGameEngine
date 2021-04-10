@@ -1,0 +1,19 @@
+{
+  "HP": 95,
+  "Attack": 125,
+  "Defense": 79,
+  "SpAttack": 60,
+  "SpDefense": 100,
+  "Speed": 81,
+  "Type1": "Water",
+  "Type2": "Flying",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water2",
+  "EggGroup2": "Dragon",
+  "Ability1": "Intimidate",
+  "Ability2": "None",
+  "AbilityH": "Moxie",
+  "FleeRate": 60,
+  "Weight": 235.0
+}

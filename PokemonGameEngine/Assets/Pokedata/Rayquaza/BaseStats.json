@@ -1,0 +1,19 @@
+{
+  "HP": 105,
+  "Attack": 150,
+  "Defense": 90,
+  "SpAttack": 150,
+  "SpDefense": 90,
+  "Speed": 95,
+  "Type1": "Dragon",
+  "Type2": "Flying",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "AirLock",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 206.5
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 130,
+  "Attack": 65,
+  "Defense": 60,
+  "SpAttack": 110,
+  "SpDefense": 95,
+  "Speed": 65,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "WaterAbsorb",
+  "Ability2": "WaterAbsorb",
+  "AbilityH": "Hydration",
+  "FleeRate": 0,
+  "Weight": 29.0
+}

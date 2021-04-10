@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 70,
+  "Defense": 40,
+  "SpAttack": 60,
+  "SpDefense": 40,
+  "Speed": 60,
+  "Type1": "Grass",
+  "Type2": "Dark",
+  "CatchRate": 120,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Grass",
+  "Ability1": "Chlorophyll",
+  "Ability2": "EarlyBird",
+  "AbilityH": "Pickpocket",
+  "FleeRate": 60,
+  "Weight": 28.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 68,
+  "Attack": 72,
+  "Defense": 78,
+  "SpAttack": 38,
+  "SpDefense": 42,
+  "Speed": 32,
+  "Type1": "Ground",
+  "Type2": "None",
+  "CatchRate": 140,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "SandStream",
+  "Ability2": "None",
+  "AbilityH": "SandForce",
+  "FleeRate": 60,
+  "Weight": 49.5
+}

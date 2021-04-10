@@ -1,0 +1,19 @@
+{
+  "HP": 95,
+  "Attack": 80,
+  "Defense": 105,
+  "SpAttack": 40,
+  "SpDefense": 70,
+  "Speed": 100,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M0_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "ThickFat",
+  "Ability2": "Scrappy",
+  "AbilityH": "SapSipper",
+  "FleeRate": 0,
+  "Weight": 75.5
+}

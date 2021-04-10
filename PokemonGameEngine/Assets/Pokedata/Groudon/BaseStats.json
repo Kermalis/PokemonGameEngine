@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 150,
+  "Defense": 140,
+  "SpAttack": 100,
+  "SpDefense": 90,
+  "Speed": 90,
+  "Type1": "Ground",
+  "Type2": "None",
+  "CatchRate": 5,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Drought",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 950.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 95,
+  "Defense": 80,
+  "SpAttack": 60,
+  "SpDefense": 80,
+  "Speed": 30,
+  "Type1": "Bug",
+  "Type2": "Grass",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Grass",
+  "Ability1": "EffectSpore",
+  "Ability2": "DrySkin",
+  "AbilityH": "Damp",
+  "FleeRate": 90,
+  "Weight": 29.5
+}

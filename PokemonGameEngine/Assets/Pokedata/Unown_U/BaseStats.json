@@ -1,0 +1,19 @@
+{
+  "HP": 48,
+  "Attack": 72,
+  "Defense": 48,
+  "SpAttack": 72,
+  "SpDefense": 48,
+  "Speed": 48,
+  "Type1": "Psychic",
+  "Type2": "None",
+  "CatchRate": 225,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Levitate",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 5.0
+}

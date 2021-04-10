@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 100,
+  "Defense": 100,
+  "SpAttack": 100,
+  "SpDefense": 100,
+  "Speed": 100,
+  "Type1": "Psychic",
+  "Type2": "Fire",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "VictoryStar",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 4.0
+}

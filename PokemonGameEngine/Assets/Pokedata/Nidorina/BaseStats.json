@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 62,
+  "Defense": 67,
+  "SpAttack": 55,
+  "SpDefense": 55,
+  "Speed": 56,
+  "Type1": "Poison",
+  "Type2": "None",
+  "CatchRate": 120,
+  "GenderRatio": "M0_F1",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "PoisonPoint",
+  "Ability2": "Rivalry",
+  "AbilityH": "Hustle",
+  "FleeRate": 60,
+  "Weight": 20.0
+}

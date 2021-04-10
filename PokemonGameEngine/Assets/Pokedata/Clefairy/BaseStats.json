@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 45,
+  "Defense": 48,
+  "SpAttack": 60,
+  "SpDefense": 65,
+  "Speed": 35,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 150,
+  "GenderRatio": "M1_F3",
+  "EggGroup1": "Fairy",
+  "EggGroup2": "Fairy",
+  "Ability1": "CuteCharm",
+  "Ability2": "MagicGuard",
+  "AbilityH": "FriendGuard",
+  "FleeRate": 120,
+  "Weight": 7.5
+}

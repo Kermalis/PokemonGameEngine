@@ -1,0 +1,19 @@
+{
+  "HP": 73,
+  "Attack": 100,
+  "Defense": 60,
+  "SpAttack": 100,
+  "SpDefense": 60,
+  "Speed": 65,
+  "Type1": "Poison",
+  "Type2": "None",
+  "CatchRate": 90,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Dragon",
+  "Ability1": "ShedSkin",
+  "Ability2": "None",
+  "AbilityH": "Infiltrator",
+  "FleeRate": 90,
+  "Weight": 52.5
+}

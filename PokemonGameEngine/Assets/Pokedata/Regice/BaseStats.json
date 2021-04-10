@@ -1,0 +1,19 @@
+{
+  "HP": 80,
+  "Attack": 50,
+  "Defense": 100,
+  "SpAttack": 100,
+  "SpDefense": 200,
+  "Speed": 50,
+  "Type1": "Ice",
+  "Type2": "None",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "ClearBody",
+  "Ability2": "None",
+  "AbilityH": "IceBody",
+  "FleeRate": 0,
+  "Weight": 175.0
+}

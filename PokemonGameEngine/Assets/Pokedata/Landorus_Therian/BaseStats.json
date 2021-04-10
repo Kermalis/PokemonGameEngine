@@ -1,0 +1,19 @@
+{
+  "HP": 89,
+  "Attack": 145,
+  "Defense": 90,
+  "SpAttack": 105,
+  "SpDefense": 80,
+  "Speed": 91,
+  "Type1": "Ground",
+  "Type2": "Flying",
+  "CatchRate": 3,
+  "GenderRatio": "M1_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Intimidate",
+  "Ability2": "None",
+  "AbilityH": "Intimidate",
+  "FleeRate": 0,
+  "Weight": 68.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 30,
+  "Attack": 30,
+  "Defense": 42,
+  "SpAttack": 30,
+  "SpDefense": 42,
+  "Speed": 70,
+  "Type1": "Bug",
+  "Type2": "Flying",
+  "CatchRate": 120,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "HoneyGather",
+  "Ability2": "None",
+  "AbilityH": "Hustle",
+  "FleeRate": 0,
+  "Weight": 5.5
+}

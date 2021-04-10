@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 60,
+  "Defense": 50,
+  "SpAttack": 40,
+  "SpDefense": 50,
+  "Speed": 75,
+  "Type1": "Normal",
+  "Type2": "Grass",
+  "CatchRate": 190,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Chlorophyll",
+  "Ability2": "SapSipper",
+  "AbilityH": "SereneGrace",
+  "FleeRate": 0,
+  "Weight": 19.5
+}

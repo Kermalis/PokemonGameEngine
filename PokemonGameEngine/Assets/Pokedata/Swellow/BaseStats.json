@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 85,
+  "Defense": 60,
+  "SpAttack": 50,
+  "SpDefense": 50,
+  "Speed": 125,
+  "Type1": "Normal",
+  "Type2": "Flying",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Flying",
+  "Ability1": "Guts",
+  "Ability2": "None",
+  "AbilityH": "Scrappy",
+  "FleeRate": 0,
+  "Weight": 19.8
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 95,
+  "Attack": 100,
+  "Defense": 85,
+  "SpAttack": 108,
+  "SpDefense": 70,
+  "Speed": 70,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Torrent",
+  "Ability2": "Torrent",
+  "AbilityH": "ShellArmor",
+  "FleeRate": 0,
+  "Weight": 94.6
+}

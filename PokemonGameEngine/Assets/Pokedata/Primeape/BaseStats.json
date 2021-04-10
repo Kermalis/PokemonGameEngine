@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 105,
+  "Defense": 60,
+  "SpAttack": 60,
+  "SpDefense": 70,
+  "Speed": 95,
+  "Type1": "Fighting",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "VitalSpirit",
+  "Ability2": "AngerPoint",
+  "AbilityH": "Defiant",
+  "FleeRate": 0,
+  "Weight": 32.0
+}

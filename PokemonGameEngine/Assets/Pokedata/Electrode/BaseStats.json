@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 50,
+  "Defense": 70,
+  "SpAttack": 80,
+  "SpDefense": 80,
+  "Speed": 140,
+  "Type1": "Electric",
+  "Type2": "None",
+  "CatchRate": 60,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "Soundproof",
+  "Ability2": "Static",
+  "AbilityH": "Aftermath",
+  "FleeRate": 0,
+  "Weight": 66.6
+}

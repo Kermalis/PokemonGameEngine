@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 92,
+  "Defense": 108,
+  "SpAttack": 92,
+  "SpDefense": 108,
+  "Speed": 35,
+  "Type1": "Ghost",
+  "Type2": "Dark",
+  "CatchRate": 100,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Amorphous",
+  "EggGroup2": "Amorphous",
+  "Ability1": "Pressure",
+  "Ability2": "None",
+  "AbilityH": "Infiltrator",
+  "FleeRate": 0,
+  "Weight": 108.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 111,
+  "Attack": 83,
+  "Defense": 68,
+  "SpAttack": 92,
+  "SpDefense": 82,
+  "Speed": 39,
+  "Type1": "Water",
+  "Type2": "Ground",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Amorphous",
+  "Ability1": "StickyHold",
+  "Ability2": "StormDrain",
+  "AbilityH": "SandForce",
+  "FleeRate": 0,
+  "Weight": 29.9
+}

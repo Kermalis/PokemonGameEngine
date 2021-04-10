@@ -1,0 +1,19 @@
+{
+  "HP": 80,
+  "Attack": 120,
+  "Defense": 79,
+  "SpAttack": 95,
+  "SpDefense": 79,
+  "Speed": 70,
+  "Type1": "Electric",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Rivalry",
+  "Ability2": "Intimidate",
+  "AbilityH": "Guts",
+  "FleeRate": 0,
+  "Weight": 42.0
+}

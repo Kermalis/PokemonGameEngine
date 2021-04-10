@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 80,
+  "Defense": 110,
+  "SpAttack": 50,
+  "SpDefense": 80,
+  "Speed": 45,
+  "Type1": "Ground",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Monster",
+  "Ability1": "RockHead",
+  "Ability2": "Lightningrod",
+  "AbilityH": "BattleArmor",
+  "FleeRate": 60,
+  "Weight": 45.0
+}

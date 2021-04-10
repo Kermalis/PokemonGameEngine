@@ -1,0 +1,19 @@
+{
+  "HP": 63,
+  "Attack": 120,
+  "Defense": 85,
+  "SpAttack": 90,
+  "SpDefense": 55,
+  "Speed": 55,
+  "Type1": "Water",
+  "Type2": "Dark",
+  "CatchRate": 155,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Water3",
+  "Ability1": "HyperCutter",
+  "Ability2": "ShellArmor",
+  "AbilityH": "Adaptability",
+  "FleeRate": 0,
+  "Weight": 32.8
+}

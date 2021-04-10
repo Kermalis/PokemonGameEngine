@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 43,
+  "Defense": 53,
+  "SpAttack": 43,
+  "SpDefense": 53,
+  "Speed": 40,
+  "Type1": "Poison",
+  "Type2": "None",
+  "CatchRate": 225,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Amorphous",
+  "EggGroup2": "Amorphous",
+  "Ability1": "LiquidOoze",
+  "Ability2": "StickyHold",
+  "AbilityH": "Gluttony",
+  "FleeRate": 120,
+  "Weight": 10.3
+}

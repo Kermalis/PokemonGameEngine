@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 85,
+  "Defense": 200,
+  "SpAttack": 55,
+  "SpDefense": 65,
+  "Speed": 30,
+  "Type1": "Steel",
+  "Type2": "Ground",
+  "CatchRate": 25,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "RockHead",
+  "Ability2": "Sturdy",
+  "AbilityH": "SheerForce",
+  "FleeRate": 0,
+  "Weight": 400.0
+}

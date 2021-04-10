@@ -1,0 +1,19 @@
+{
+  "HP": 170,
+  "Attack": 90,
+  "Defense": 45,
+  "SpAttack": 90,
+  "SpDefense": 45,
+  "Speed": 60,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 60,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Water2",
+  "Ability1": "WaterVeil",
+  "Ability2": "Oblivious",
+  "AbilityH": "Pressure",
+  "FleeRate": 0,
+  "Weight": 398.0
+}

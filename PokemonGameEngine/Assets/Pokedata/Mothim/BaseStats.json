@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 94,
+  "Defense": 50,
+  "SpAttack": 94,
+  "SpDefense": 50,
+  "Speed": 66,
+  "Type1": "Bug",
+  "Type2": "Flying",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F0",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "Swarm",
+  "Ability2": "None",
+  "AbilityH": "TintedLens",
+  "FleeRate": 0,
+  "Weight": 23.3
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 83,
+  "Attack": 106,
+  "Defense": 65,
+  "SpAttack": 86,
+  "SpDefense": 65,
+  "Speed": 85,
+  "Type1": "Poison",
+  "Type2": "Fighting",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Anticipation",
+  "Ability2": "DrySkin",
+  "AbilityH": "PoisonTouch",
+  "FleeRate": 120,
+  "Weight": 44.4
+}

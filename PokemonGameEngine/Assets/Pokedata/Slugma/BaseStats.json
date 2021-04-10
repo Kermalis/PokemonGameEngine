@@ -1,0 +1,19 @@
+{
+  "HP": 40,
+  "Attack": 40,
+  "Defense": 40,
+  "SpAttack": 70,
+  "SpDefense": 40,
+  "Speed": 20,
+  "Type1": "Fire",
+  "Type2": "None",
+  "CatchRate": 190,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Amorphous",
+  "EggGroup2": "Amorphous",
+  "Ability1": "MagmaArmor",
+  "Ability2": "FlameBody",
+  "AbilityH": "WeakArmor",
+  "FleeRate": 0,
+  "Weight": 35.0
+}

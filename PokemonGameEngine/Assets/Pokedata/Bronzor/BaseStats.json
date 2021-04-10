@@ -1,0 +1,19 @@
+{
+  "HP": 57,
+  "Attack": 24,
+  "Defense": 86,
+  "SpAttack": 24,
+  "SpDefense": 86,
+  "Speed": 23,
+  "Type1": "Steel",
+  "Type2": "Psychic",
+  "CatchRate": 255,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "Levitate",
+  "Ability2": "Heatproof",
+  "AbilityH": "HeavyMetal",
+  "FleeRate": 90,
+  "Weight": 60.5
+}

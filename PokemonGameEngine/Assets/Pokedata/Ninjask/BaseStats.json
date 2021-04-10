@@ -1,0 +1,19 @@
+{
+  "HP": 61,
+  "Attack": 90,
+  "Defense": 45,
+  "SpAttack": 50,
+  "SpDefense": 50,
+  "Speed": 160,
+  "Type1": "Bug",
+  "Type2": "Flying",
+  "CatchRate": 120,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "SpeedBoost",
+  "Ability2": "None",
+  "AbilityH": "Infiltrator",
+  "FleeRate": 0,
+  "Weight": 12.0
+}

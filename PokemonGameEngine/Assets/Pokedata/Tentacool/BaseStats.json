@@ -1,0 +1,19 @@
+{
+  "HP": 40,
+  "Attack": 40,
+  "Defense": 35,
+  "SpAttack": 50,
+  "SpDefense": 100,
+  "Speed": 70,
+  "Type1": "Water",
+  "Type2": "Poison",
+  "CatchRate": 190,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water3",
+  "EggGroup2": "Water3",
+  "Ability1": "ClearBody",
+  "Ability2": "LiquidOoze",
+  "AbilityH": "RainDish",
+  "FleeRate": 0,
+  "Weight": 45.5
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 55,
+  "Attack": 45,
+  "Defense": 45,
+  "SpAttack": 25,
+  "SpDefense": 25,
+  "Speed": 15,
+  "Type1": "Water",
+  "Type2": "Ground",
+  "CatchRate": 255,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Field",
+  "Ability1": "Damp",
+  "Ability2": "WaterAbsorb",
+  "AbilityH": "Unaware",
+  "FleeRate": 120,
+  "Weight": 8.5
+}

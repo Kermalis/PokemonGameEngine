@@ -1,0 +1,19 @@
+{
+  "HP": 85,
+  "Attack": 90,
+  "Defense": 80,
+  "SpAttack": 70,
+  "SpDefense": 80,
+  "Speed": 130,
+  "Type1": "Poison",
+  "Type2": "Flying",
+  "CatchRate": 90,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Flying",
+  "Ability1": "InnerFocus",
+  "Ability2": "None",
+  "AbilityH": "Infiltrator",
+  "FleeRate": 0,
+  "Weight": 75.0
+}

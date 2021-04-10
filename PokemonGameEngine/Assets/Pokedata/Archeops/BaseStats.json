@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 140,
+  "Defense": 65,
+  "SpAttack": 112,
+  "SpDefense": 65,
+  "Speed": 110,
+  "Type1": "Rock",
+  "Type2": "Flying",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Flying",
+  "EggGroup2": "Water3",
+  "Ability1": "Defeatist",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 32.0
+}

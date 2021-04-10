@@ -1,0 +1,19 @@
+{
+  "HP": 86,
+  "Attack": 81,
+  "Defense": 97,
+  "SpAttack": 81,
+  "SpDefense": 107,
+  "Speed": 43,
+  "Type1": "Rock",
+  "Type2": "Grass",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Water3",
+  "EggGroup2": "Water3",
+  "Ability1": "SuctionCups",
+  "Ability2": "None",
+  "AbilityH": "StormDrain",
+  "FleeRate": 0,
+  "Weight": 60.4
+}

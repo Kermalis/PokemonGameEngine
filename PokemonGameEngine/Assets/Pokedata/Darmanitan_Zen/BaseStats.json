@@ -1,0 +1,19 @@
+{
+  "HP": 105,
+  "Attack": 30,
+  "Defense": 105,
+  "SpAttack": 140,
+  "SpDefense": 105,
+  "Speed": 55,
+  "Type1": "Fire",
+  "Type2": "Psychic",
+  "CatchRate": 60,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "SheerForce",
+  "Ability2": "None",
+  "AbilityH": "ZenMode",
+  "FleeRate": 0,
+  "Weight": 92.9
+}

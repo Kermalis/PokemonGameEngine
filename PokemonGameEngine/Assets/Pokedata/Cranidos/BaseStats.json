@@ -1,0 +1,19 @@
+{
+  "HP": 67,
+  "Attack": 125,
+  "Defense": 40,
+  "SpAttack": 30,
+  "SpDefense": 30,
+  "Speed": 58,
+  "Type1": "Rock",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Monster",
+  "Ability1": "MoldBreaker",
+  "Ability2": "None",
+  "AbilityH": "SheerForce",
+  "FleeRate": 0,
+  "Weight": 31.5
+}

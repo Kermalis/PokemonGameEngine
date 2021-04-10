@@ -1,0 +1,19 @@
+{
+  "HP": 71,
+  "Attack": 120,
+  "Defense": 95,
+  "SpAttack": 120,
+  "SpDefense": 95,
+  "Speed": 99,
+  "Type1": "Bug",
+  "Type2": "Steel",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Download",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 82.5
+}

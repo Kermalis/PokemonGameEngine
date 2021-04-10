@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 130,
+  "Defense": 60,
+  "SpAttack": 75,
+  "SpDefense": 60,
+  "Speed": 75,
+  "Type1": "Dark",
+  "Type2": "None",
+  "CatchRate": 30,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Pressure",
+  "Ability2": "SuperLuck",
+  "AbilityH": "Justified",
+  "FleeRate": 0,
+  "Weight": 47.0
+}

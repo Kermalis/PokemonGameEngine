@@ -1,0 +1,19 @@
+{
+  "HP": 45,
+  "Attack": 85,
+  "Defense": 50,
+  "SpAttack": 55,
+  "SpDefense": 50,
+  "Speed": 65,
+  "Type1": "Fighting",
+  "Type2": "None",
+  "CatchRate": 180,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "HumanLike",
+  "Ability1": "InnerFocus",
+  "Ability2": "Regenerator",
+  "AbilityH": "Reckless",
+  "FleeRate": 0,
+  "Weight": 20.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 44,
+  "Attack": 58,
+  "Defense": 44,
+  "SpAttack": 58,
+  "SpDefense": 44,
+  "Speed": 61,
+  "Type1": "Fire",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Blaze",
+  "Ability2": "None",
+  "AbilityH": "IronFist",
+  "FleeRate": 0,
+  "Weight": 6.2
+}

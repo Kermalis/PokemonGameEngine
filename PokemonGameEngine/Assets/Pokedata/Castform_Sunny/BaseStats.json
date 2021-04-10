@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 70,
+  "Defense": 70,
+  "SpAttack": 70,
+  "SpDefense": 70,
+  "Speed": 70,
+  "Type1": "Fire",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Fairy",
+  "EggGroup2": "Amorphous",
+  "Ability1": "Forecast",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 0.8
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 90,
+  "Defense": 115,
+  "SpAttack": 45,
+  "SpDefense": 115,
+  "Speed": 58,
+  "Type1": "Dark",
+  "Type2": "Fighting",
+  "CatchRate": 90,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Dragon",
+  "Ability1": "ShedSkin",
+  "Ability2": "Moxie",
+  "AbilityH": "Intimidate",
+  "FleeRate": 0,
+  "Weight": 30.0
+}

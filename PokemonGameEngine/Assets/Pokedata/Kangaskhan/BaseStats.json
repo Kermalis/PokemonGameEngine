@@ -1,0 +1,19 @@
+{
+  "HP": 105,
+  "Attack": 95,
+  "Defense": 80,
+  "SpAttack": 40,
+  "SpDefense": 80,
+  "Speed": 90,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M0_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Monster",
+  "Ability1": "EarlyBird",
+  "Ability2": "Scrappy",
+  "AbilityH": "InnerFocus",
+  "FleeRate": 150,
+  "Weight": 80.0
+}

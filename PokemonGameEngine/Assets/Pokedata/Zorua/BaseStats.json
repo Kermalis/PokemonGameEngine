@@ -1,0 +1,19 @@
+{
+  "HP": 40,
+  "Attack": 65,
+  "Defense": 40,
+  "SpAttack": 80,
+  "SpDefense": 40,
+  "Speed": 65,
+  "Type1": "Dark",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Illusion",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 12.5
+}

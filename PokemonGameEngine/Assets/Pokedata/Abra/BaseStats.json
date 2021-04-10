@@ -1,0 +1,19 @@
+{
+  "HP": 25,
+  "Attack": 20,
+  "Defense": 15,
+  "SpAttack": 105,
+  "SpDefense": 55,
+  "Speed": 90,
+  "Type1": "Psychic",
+  "Type2": "None",
+  "CatchRate": 200,
+  "GenderRatio": "M3_F1",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Synchronize",
+  "Ability2": "InnerFocus",
+  "AbilityH": "MagicGuard",
+  "FleeRate": 120,
+  "Weight": 19.5
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 103,
+  "Defense": 75,
+  "SpAttack": 120,
+  "SpDefense": 75,
+  "Speed": 127,
+  "Type1": "Grass",
+  "Type2": "Flying",
+  "CatchRate": 45,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "SereneGrace",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 5.2
+}

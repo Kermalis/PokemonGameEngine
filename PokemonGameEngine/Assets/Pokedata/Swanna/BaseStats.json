@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 87,
+  "Defense": 63,
+  "SpAttack": 87,
+  "SpDefense": 63,
+  "Speed": 98,
+  "Type1": "Water",
+  "Type2": "Flying",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Flying",
+  "Ability1": "KeenEye",
+  "Ability2": "BigPecks",
+  "AbilityH": "Hydration",
+  "FleeRate": 0,
+  "Weight": 24.2
+}

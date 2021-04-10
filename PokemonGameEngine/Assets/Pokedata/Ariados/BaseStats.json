@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 90,
+  "Defense": 70,
+  "SpAttack": 60,
+  "SpDefense": 60,
+  "Speed": 40,
+  "Type1": "Bug",
+  "Type2": "Poison",
+  "CatchRate": 90,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "Swarm",
+  "Ability2": "Insomnia",
+  "AbilityH": "Sniper",
+  "FleeRate": 0,
+  "Weight": 33.5
+}

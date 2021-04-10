@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 65,
+  "Defense": 45,
+  "SpAttack": 85,
+  "SpDefense": 65,
+  "Speed": 95,
+  "Type1": "Grass",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Dragon",
+  "Ability1": "Overgrow",
+  "Ability2": "None",
+  "AbilityH": "Unburden",
+  "FleeRate": 0,
+  "Weight": 21.6
+}

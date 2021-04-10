@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 90,
+  "Defense": 50,
+  "SpAttack": 110,
+  "SpDefense": 80,
+  "Speed": 95,
+  "Type1": "Dark",
+  "Type2": "Fire",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "EarlyBird",
+  "Ability2": "FlashFire",
+  "AbilityH": "Unnerve",
+  "FleeRate": 90,
+  "Weight": 35.0
+}

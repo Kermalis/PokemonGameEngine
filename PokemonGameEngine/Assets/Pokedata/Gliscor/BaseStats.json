@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 95,
+  "Defense": 125,
+  "SpAttack": 45,
+  "SpDefense": 75,
+  "Speed": 95,
+  "Type1": "Ground",
+  "Type2": "Flying",
+  "CatchRate": 30,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "HyperCutter",
+  "Ability2": "SandVeil",
+  "AbilityH": "PoisonHeal",
+  "FleeRate": 0,
+  "Weight": 42.5
+}

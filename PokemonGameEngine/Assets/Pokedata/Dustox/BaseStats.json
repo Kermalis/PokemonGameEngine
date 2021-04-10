@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 50,
+  "Defense": 70,
+  "SpAttack": 50,
+  "SpDefense": 90,
+  "Speed": 65,
+  "Type1": "Bug",
+  "Type2": "Poison",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "ShieldDust",
+  "Ability2": "None",
+  "AbilityH": "Compoundeyes",
+  "FleeRate": 0,
+  "Weight": 31.6
+}

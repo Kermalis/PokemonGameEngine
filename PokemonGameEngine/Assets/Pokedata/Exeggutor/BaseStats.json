@@ -1,0 +1,19 @@
+{
+  "HP": 95,
+  "Attack": 95,
+  "Defense": 85,
+  "SpAttack": 125,
+  "SpDefense": 65,
+  "Speed": 55,
+  "Type1": "Grass",
+  "Type2": "Psychic",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Grass",
+  "EggGroup2": "Grass",
+  "Ability1": "Chlorophyll",
+  "Ability2": "None",
+  "AbilityH": "Harvest",
+  "FleeRate": 0,
+  "Weight": 120.0
+}

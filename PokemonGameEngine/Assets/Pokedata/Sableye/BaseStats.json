@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 75,
+  "Defense": 75,
+  "SpAttack": 65,
+  "SpDefense": 65,
+  "Speed": 50,
+  "Type1": "Dark",
+  "Type2": "Ghost",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "KeenEye",
+  "Ability2": "Stall",
+  "AbilityH": "Prankster",
+  "FleeRate": 0,
+  "Weight": 11.0
+}

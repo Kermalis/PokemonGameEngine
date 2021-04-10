@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 105,
+  "Defense": 75,
+  "SpAttack": 105,
+  "SpDefense": 75,
+  "Speed": 45,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Water2",
+  "Ability1": "SuctionCups",
+  "Ability2": "Sniper",
+  "AbilityH": "Moody",
+  "FleeRate": 0,
+  "Weight": 28.5
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 61,
+  "Attack": 72,
+  "Defense": 57,
+  "SpAttack": 55,
+  "SpDefense": 55,
+  "Speed": 65,
+  "Type1": "Poison",
+  "Type2": "None",
+  "CatchRate": 120,
+  "GenderRatio": "M1_F0",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Field",
+  "Ability1": "PoisonPoint",
+  "Ability2": "Rivalry",
+  "AbilityH": "Hustle",
+  "FleeRate": 60,
+  "Weight": 19.5
+}

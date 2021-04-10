@@ -1,0 +1,19 @@
+{
+  "HP": 90,
+  "Attack": 120,
+  "Defense": 100,
+  "SpAttack": 150,
+  "SpDefense": 120,
+  "Speed": 100,
+  "Type1": "Water",
+  "Type2": "Dragon",
+  "CatchRate": 30,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Pressure",
+  "Ability2": "None",
+  "AbilityH": "Telepathy",
+  "FleeRate": 0,
+  "Weight": 336.0
+}

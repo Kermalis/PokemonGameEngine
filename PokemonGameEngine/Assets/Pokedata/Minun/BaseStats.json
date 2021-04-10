@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 40,
+  "Defense": 50,
+  "SpAttack": 75,
+  "SpDefense": 85,
+  "Speed": 95,
+  "Type1": "Electric",
+  "Type2": "None",
+  "CatchRate": 200,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Fairy",
+  "EggGroup2": "Fairy",
+  "Ability1": "Minus",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 4.2
+}

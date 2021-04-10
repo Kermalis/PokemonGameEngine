@@ -1,0 +1,19 @@
+{
+  "HP": 31,
+  "Attack": 45,
+  "Defense": 90,
+  "SpAttack": 30,
+  "SpDefense": 30,
+  "Speed": 40,
+  "Type1": "Bug",
+  "Type2": "Ground",
+  "CatchRate": 255,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "Compoundeyes",
+  "Ability2": "None",
+  "AbilityH": "RunAway",
+  "FleeRate": 0,
+  "Weight": 5.5
+}

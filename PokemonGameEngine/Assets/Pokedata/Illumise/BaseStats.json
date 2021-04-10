@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 47,
+  "Defense": 55,
+  "SpAttack": 73,
+  "SpDefense": 75,
+  "Speed": 85,
+  "Type1": "Bug",
+  "Type2": "None",
+  "CatchRate": 150,
+  "GenderRatio": "M0_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Oblivious",
+  "Ability2": "TintedLens",
+  "AbilityH": "Prankster",
+  "FleeRate": 90,
+  "Weight": 17.7
+}

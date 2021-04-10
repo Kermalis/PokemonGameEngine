@@ -1,0 +1,19 @@
+{
+  "HP": 90,
+  "Attack": 60,
+  "Defense": 60,
+  "SpAttack": 40,
+  "SpDefense": 40,
+  "Speed": 40,
+  "Type1": "Ground",
+  "Type2": "None",
+  "CatchRate": 120,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Pickup",
+  "Ability2": "None",
+  "AbilityH": "SandVeil",
+  "FleeRate": 0,
+  "Weight": 33.5
+}

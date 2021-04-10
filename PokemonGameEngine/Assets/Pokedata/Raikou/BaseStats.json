@@ -1,0 +1,19 @@
+{
+  "HP": 90,
+  "Attack": 85,
+  "Defense": 75,
+  "SpAttack": 115,
+  "SpDefense": 100,
+  "Speed": 115,
+  "Type1": "Electric",
+  "Type2": "None",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Pressure",
+  "Ability2": "None",
+  "AbilityH": "VoltAbsorb",
+  "FleeRate": 0,
+  "Weight": 178.0
+}

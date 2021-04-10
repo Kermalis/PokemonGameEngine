@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 89,
+  "Defense": 85,
+  "SpAttack": 55,
+  "SpDefense": 65,
+  "Speed": 36,
+  "Type1": "Grass",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Grass",
+  "Ability1": "Overgrow",
+  "Ability2": "None",
+  "AbilityH": "ShellArmor",
+  "FleeRate": 0,
+  "Weight": 97.0
+}

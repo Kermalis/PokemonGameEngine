@@ -1,0 +1,19 @@
+{
+  "HP": 45,
+  "Attack": 60,
+  "Defense": 32,
+  "SpAttack": 50,
+  "SpDefense": 32,
+  "Speed": 76,
+  "Type1": "Electric",
+  "Type2": "None",
+  "CatchRate": 190,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Lightningrod",
+  "Ability2": "MotorDrive",
+  "AbilityH": "SapSipper",
+  "FleeRate": 0,
+  "Weight": 29.8
+}

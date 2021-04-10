@@ -1,0 +1,19 @@
+{
+  "HP": 40,
+  "Attack": 70,
+  "Defense": 130,
+  "SpAttack": 60,
+  "SpDefense": 130,
+  "Speed": 25,
+  "Type1": "Ghost",
+  "Type2": "None",
+  "CatchRate": 90,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Amorphous",
+  "EggGroup2": "Amorphous",
+  "Ability1": "Pressure",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 90,
+  "Weight": 30.6
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 85,
+  "Attack": 73,
+  "Defense": 70,
+  "SpAttack": 73,
+  "SpDefense": 115,
+  "Speed": 67,
+  "Type1": "Psychic",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Insomnia",
+  "Ability2": "Forewarn",
+  "AbilityH": "InnerFocus",
+  "FleeRate": 60,
+  "Weight": 75.6
+}

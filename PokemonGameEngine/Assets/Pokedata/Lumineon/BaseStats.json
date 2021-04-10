@@ -1,0 +1,19 @@
+{
+  "HP": 69,
+  "Attack": 69,
+  "Defense": 76,
+  "SpAttack": 69,
+  "SpDefense": 86,
+  "Speed": 91,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water2",
+  "EggGroup2": "Water2",
+  "Ability1": "SwiftSwim",
+  "Ability2": "StormDrain",
+  "AbilityH": "WaterVeil",
+  "FleeRate": 0,
+  "Weight": 24.0
+}

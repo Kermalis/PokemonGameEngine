@@ -1,0 +1,19 @@
+{
+  "HP": 125,
+  "Attack": 170,
+  "Defense": 100,
+  "SpAttack": 120,
+  "SpDefense": 90,
+  "Speed": 95,
+  "Type1": "Dragon",
+  "Type2": "Ice",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Teravolt",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 325.0
+}

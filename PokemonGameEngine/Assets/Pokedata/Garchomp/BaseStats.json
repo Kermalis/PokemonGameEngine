@@ -1,0 +1,19 @@
+{
+  "HP": 108,
+  "Attack": 130,
+  "Defense": 95,
+  "SpAttack": 80,
+  "SpDefense": 85,
+  "Speed": 102,
+  "Type1": "Dragon",
+  "Type2": "Ground",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Dragon",
+  "Ability1": "SandVeil",
+  "Ability2": "None",
+  "AbilityH": "RoughSkin",
+  "FleeRate": 0,
+  "Weight": 95.0
+}

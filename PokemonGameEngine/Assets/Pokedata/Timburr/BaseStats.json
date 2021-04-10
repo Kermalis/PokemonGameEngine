@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 80,
+  "Defense": 55,
+  "SpAttack": 25,
+  "SpDefense": 35,
+  "Speed": 35,
+  "Type1": "Fighting",
+  "Type2": "None",
+  "CatchRate": 180,
+  "GenderRatio": "M3_F1",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Guts",
+  "Ability2": "SheerForce",
+  "AbilityH": "IronFist",
+  "FleeRate": 0,
+  "Weight": 12.5
+}

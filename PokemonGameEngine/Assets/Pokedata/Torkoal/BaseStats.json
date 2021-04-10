@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 85,
+  "Defense": 140,
+  "SpAttack": 85,
+  "SpDefense": 70,
+  "Speed": 20,
+  "Type1": "Fire",
+  "Type2": "None",
+  "CatchRate": 90,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "WhiteSmoke",
+  "Ability2": "None",
+  "AbilityH": "ShellArmor",
+  "FleeRate": 60,
+  "Weight": 80.4
+}

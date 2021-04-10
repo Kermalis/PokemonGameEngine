@@ -1,0 +1,19 @@
+{
+  "HP": 109,
+  "Attack": 66,
+  "Defense": 84,
+  "SpAttack": 81,
+  "SpDefense": 99,
+  "Speed": 32,
+  "Type1": "Ground",
+  "Type2": "Electric",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Amorphous",
+  "Ability1": "Static",
+  "Ability2": "Limber",
+  "AbilityH": "SandVeil",
+  "FleeRate": 0,
+  "Weight": 11.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 55,
+  "Defense": 95,
+  "SpAttack": 95,
+  "SpDefense": 110,
+  "Speed": 65,
+  "Type1": "Psychic",
+  "Type2": "None",
+  "CatchRate": 50,
+  "GenderRatio": "M1_F3",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Frisk",
+  "Ability2": "None",
+  "AbilityH": "ShadowTag",
+  "FleeRate": 0,
+  "Weight": 44.0
+}

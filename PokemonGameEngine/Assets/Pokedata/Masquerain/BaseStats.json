@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 60,
+  "Defense": 62,
+  "SpAttack": 80,
+  "SpDefense": 82,
+  "Speed": 60,
+  "Type1": "Bug",
+  "Type2": "Flying",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Bug",
+  "Ability1": "Intimidate",
+  "Ability2": "None",
+  "AbilityH": "Unnerve",
+  "FleeRate": 90,
+  "Weight": 3.6
+}

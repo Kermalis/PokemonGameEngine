@@ -1,0 +1,19 @@
+{
+  "HP": 58,
+  "Attack": 64,
+  "Defense": 58,
+  "SpAttack": 80,
+  "SpDefense": 65,
+  "Speed": 80,
+  "Type1": "Fire",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Dragon",
+  "Ability1": "Blaze",
+  "Ability2": "None",
+  "AbilityH": "SolarPower",
+  "FleeRate": 0,
+  "Weight": 19.0
+}

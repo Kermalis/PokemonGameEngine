@@ -1,0 +1,19 @@
+{
+  "HP": 45,
+  "Attack": 35,
+  "Defense": 45,
+  "SpAttack": 62,
+  "SpDefense": 53,
+  "Speed": 35,
+  "Type1": "Grass",
+  "Type2": "None",
+  "CatchRate": 190,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Fairy",
+  "EggGroup2": "Grass",
+  "Ability1": "Chlorophyll",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 3.3
+}

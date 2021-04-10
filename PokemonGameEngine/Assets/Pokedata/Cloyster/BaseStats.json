@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 95,
+  "Defense": 180,
+  "SpAttack": 85,
+  "SpDefense": 45,
+  "Speed": 70,
+  "Type1": "Water",
+  "Type2": "Ice",
+  "CatchRate": 60,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water3",
+  "EggGroup2": "Water3",
+  "Ability1": "ShellArmor",
+  "Ability2": "SkillLink",
+  "AbilityH": "Overcoat",
+  "FleeRate": 0,
+  "Weight": 132.5
+}

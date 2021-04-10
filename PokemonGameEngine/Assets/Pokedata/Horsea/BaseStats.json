@@ -1,0 +1,19 @@
+{
+  "HP": 30,
+  "Attack": 40,
+  "Defense": 70,
+  "SpAttack": 70,
+  "SpDefense": 25,
+  "Speed": 60,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 225,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Dragon",
+  "Ability1": "SwiftSwim",
+  "Ability2": "Sniper",
+  "AbilityH": "Damp",
+  "FleeRate": 0,
+  "Weight": 8.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 64,
+  "Defense": 50,
+  "SpAttack": 45,
+  "SpDefense": 50,
+  "Speed": 41,
+  "Type1": "Rock",
+  "Type2": "Ground",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Monster",
+  "Ability1": "Guts",
+  "Ability2": "None",
+  "AbilityH": "SandVeil",
+  "FleeRate": 90,
+  "Weight": 72.0
+}

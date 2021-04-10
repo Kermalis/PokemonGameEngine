@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.World;
 using System;
 
@@ -63,5 +64,18 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             return _isUnderwater;
         }
+
+        /*public override bool HasEvolutions(PBESpecies species, PBEForm form, bool cache = true)
+        {
+            return base.HasEvolutions(species, form, cache);
+        }*/
+        public override IPBEPokemonData GetPokemonData(PBESpecies species, PBEForm form, bool cache = true)
+        {
+            return new BaseStats(species, form);
+        }
+        /*public override IPBEPokemonDataExtended GetPokemonDataExtended(PBESpecies species, PBEForm form, bool cache = true)
+        {
+            throw new NotImplementedException(); // Never allow
+        }*/
     }
 }

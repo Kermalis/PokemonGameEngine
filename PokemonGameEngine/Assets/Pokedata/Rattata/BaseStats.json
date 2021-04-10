@@ -1,0 +1,19 @@
+{
+  "HP": 30,
+  "Attack": 56,
+  "Defense": 35,
+  "SpAttack": 25,
+  "SpDefense": 35,
+  "Speed": 72,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 255,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "RunAway",
+  "Ability2": "Guts",
+  "AbilityH": "Hustle",
+  "FleeRate": 120,
+  "Weight": 3.5
+}

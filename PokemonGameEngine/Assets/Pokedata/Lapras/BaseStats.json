@@ -1,0 +1,19 @@
+{
+  "HP": 130,
+  "Attack": 85,
+  "Defense": 80,
+  "SpAttack": 85,
+  "SpDefense": 95,
+  "Speed": 60,
+  "Type1": "Water",
+  "Type2": "Ice",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Water1",
+  "Ability1": "WaterAbsorb",
+  "Ability2": "ShellArmor",
+  "AbilityH": "Hydration",
+  "FleeRate": 60,
+  "Weight": 220.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 50,
+  "Defense": 62,
+  "SpAttack": 40,
+  "SpDefense": 62,
+  "Speed": 65,
+  "Type1": "Poison",
+  "Type2": "None",
+  "CatchRate": 190,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "Stench",
+  "Ability2": "StickyHold",
+  "AbilityH": "Aftermath",
+  "FleeRate": 0,
+  "Weight": 31.0
+}

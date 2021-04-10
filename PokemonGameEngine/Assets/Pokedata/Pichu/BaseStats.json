@@ -1,0 +1,19 @@
+{
+  "HP": 20,
+  "Attack": 40,
+  "Defense": 15,
+  "SpAttack": 35,
+  "SpDefense": 35,
+  "Speed": 60,
+  "Type1": "Electric",
+  "Type2": "None",
+  "CatchRate": 190,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Static",
+  "Ability2": "None",
+  "AbilityH": "Lightningrod",
+  "FleeRate": 0,
+  "Weight": 2.0
+}

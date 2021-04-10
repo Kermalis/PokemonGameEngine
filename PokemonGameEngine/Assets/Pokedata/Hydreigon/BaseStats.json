@@ -1,0 +1,19 @@
+{
+  "HP": 92,
+  "Attack": 105,
+  "Defense": 90,
+  "SpAttack": 125,
+  "SpDefense": 90,
+  "Speed": 98,
+  "Type1": "Dark",
+  "Type2": "Dragon",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Dragon",
+  "EggGroup2": "Dragon",
+  "Ability1": "Levitate",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 160.0
+}

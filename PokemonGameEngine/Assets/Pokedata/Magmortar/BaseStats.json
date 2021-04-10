@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 95,
+  "Defense": 67,
+  "SpAttack": 125,
+  "SpDefense": 95,
+  "Speed": 83,
+  "Type1": "Fire",
+  "Type2": "None",
+  "CatchRate": 30,
+  "GenderRatio": "M3_F1",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "FlameBody",
+  "Ability2": "None",
+  "AbilityH": "VitalSpirit",
+  "FleeRate": 0,
+  "Weight": 68.0
+}

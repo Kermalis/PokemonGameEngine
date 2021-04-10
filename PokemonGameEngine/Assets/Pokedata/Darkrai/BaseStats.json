@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 90,
+  "Defense": 90,
+  "SpAttack": 135,
+  "SpDefense": 90,
+  "Speed": 125,
+  "Type1": "Dark",
+  "Type2": "None",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "BadDreams",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 50.5
+}

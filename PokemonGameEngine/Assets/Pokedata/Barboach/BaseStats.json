@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 48,
+  "Defense": 43,
+  "SpAttack": 46,
+  "SpDefense": 41,
+  "Speed": 60,
+  "Type1": "Water",
+  "Type2": "Ground",
+  "CatchRate": 190,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water2",
+  "EggGroup2": "Water2",
+  "Ability1": "Oblivious",
+  "Ability2": "Anticipation",
+  "AbilityH": "Hydration",
+  "FleeRate": 120,
+  "Weight": 1.9
+}

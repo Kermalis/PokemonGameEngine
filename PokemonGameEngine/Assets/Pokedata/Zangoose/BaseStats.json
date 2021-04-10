@@ -1,0 +1,19 @@
+{
+  "HP": 73,
+  "Attack": 115,
+  "Defense": 60,
+  "SpAttack": 60,
+  "SpDefense": 60,
+  "Speed": 90,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 90,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Immunity",
+  "Ability2": "None",
+  "AbilityH": "ToxicBoost",
+  "FleeRate": 90,
+  "Weight": 40.3
+}

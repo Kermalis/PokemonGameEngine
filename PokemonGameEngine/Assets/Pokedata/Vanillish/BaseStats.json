@@ -1,0 +1,19 @@
+{
+  "HP": 51,
+  "Attack": 65,
+  "Defense": 65,
+  "SpAttack": 80,
+  "SpDefense": 75,
+  "Speed": 59,
+  "Type1": "Ice",
+  "Type2": "None",
+  "CatchRate": 120,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "IceBody",
+  "Ability2": "None",
+  "AbilityH": "WeakArmor",
+  "FleeRate": 0,
+  "Weight": 41.0
+}

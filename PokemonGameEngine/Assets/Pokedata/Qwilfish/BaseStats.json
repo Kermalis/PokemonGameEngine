@@ -1,0 +1,19 @@
+{
+  "HP": 65,
+  "Attack": 95,
+  "Defense": 75,
+  "SpAttack": 55,
+  "SpDefense": 55,
+  "Speed": 85,
+  "Type1": "Water",
+  "Type2": "Poison",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water2",
+  "EggGroup2": "Water2",
+  "Ability1": "PoisonPoint",
+  "Ability2": "SwiftSwim",
+  "AbilityH": "Intimidate",
+  "FleeRate": 0,
+  "Weight": 3.9
+}

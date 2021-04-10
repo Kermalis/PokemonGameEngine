@@ -1,0 +1,19 @@
+{
+  "HP": 103,
+  "Attack": 93,
+  "Defense": 67,
+  "SpAttack": 71,
+  "SpDefense": 61,
+  "Speed": 84,
+  "Type1": "Poison",
+  "Type2": "Dark",
+  "CatchRate": 60,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Stench",
+  "Ability2": "Aftermath",
+  "AbilityH": "KeenEye",
+  "FleeRate": 0,
+  "Weight": 38.0
+}

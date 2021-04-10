@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 80,
+  "Defense": 65,
+  "SpAttack": 90,
+  "SpDefense": 65,
+  "Speed": 85,
+  "Type1": "Normal",
+  "Type2": "Psychic",
+  "CatchRate": 60,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "InnerFocus",
+  "Ability2": "EarlyBird",
+  "AbilityH": "SapSipper",
+  "FleeRate": 60,
+  "Weight": 41.5
+}

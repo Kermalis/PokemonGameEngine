@@ -1,0 +1,19 @@
+{
+  "HP": 37,
+  "Attack": 25,
+  "Defense": 41,
+  "SpAttack": 25,
+  "SpDefense": 41,
+  "Speed": 25,
+  "Type1": "Bug",
+  "Type2": "None",
+  "CatchRate": 255,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "ShedSkin",
+  "Ability2": "None",
+  "AbilityH": "RunAway",
+  "FleeRate": 0,
+  "Weight": 2.2
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 110,
+  "Attack": 65,
+  "Defense": 75,
+  "SpAttack": 125,
+  "SpDefense": 85,
+  "Speed": 30,
+  "Type1": "Psychic",
+  "Type2": "None",
+  "CatchRate": 50,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Amorphous",
+  "EggGroup2": "Amorphous",
+  "Ability1": "Overcoat",
+  "Ability2": "MagicGuard",
+  "AbilityH": "Regenerator",
+  "FleeRate": 0,
+  "Weight": 20.1
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 72,
+  "Attack": 60,
+  "Defense": 30,
+  "SpAttack": 20,
+  "SpDefense": 30,
+  "Speed": 25,
+  "Type1": "Fighting",
+  "Type2": "None",
+  "CatchRate": 180,
+  "GenderRatio": "M3_F1",
+  "EggGroup1": "HumanLike",
+  "EggGroup2": "HumanLike",
+  "Ability1": "ThickFat",
+  "Ability2": "Guts",
+  "AbilityH": "SheerForce",
+  "FleeRate": 0,
+  "Weight": 86.4
+}

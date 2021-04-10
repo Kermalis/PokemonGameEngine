@@ -1,0 +1,19 @@
+{
+  "HP": 80,
+  "Attack": 80,
+  "Defense": 80,
+  "SpAttack": 80,
+  "SpDefense": 80,
+  "Speed": 80,
+  "Type1": "Ice",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Fairy",
+  "EggGroup2": "Mineral",
+  "Ability1": "InnerFocus",
+  "Ability2": "IceBody",
+  "AbilityH": "Moody",
+  "FleeRate": 0,
+  "Weight": 256.5
+}

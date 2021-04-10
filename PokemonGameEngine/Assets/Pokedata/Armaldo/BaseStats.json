@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 125,
+  "Defense": 100,
+  "SpAttack": 70,
+  "SpDefense": 80,
+  "Speed": 45,
+  "Type1": "Rock",
+  "Type2": "Bug",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Water3",
+  "EggGroup2": "Water3",
+  "Ability1": "BattleArmor",
+  "Ability2": "None",
+  "AbilityH": "SwiftSwim",
+  "FleeRate": 0,
+  "Weight": 68.2
+}

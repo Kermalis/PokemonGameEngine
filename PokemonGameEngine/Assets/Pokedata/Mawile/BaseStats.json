@@ -1,0 +1,19 @@
+{
+  "HP": 50,
+  "Attack": 85,
+  "Defense": 85,
+  "SpAttack": 55,
+  "SpDefense": 55,
+  "Speed": 50,
+  "Type1": "Steel",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Fairy",
+  "Ability1": "HyperCutter",
+  "Ability2": "Intimidate",
+  "AbilityH": "SheerForce",
+  "FleeRate": 0,
+  "Weight": 11.5
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 80,
+  "Defense": 70,
+  "SpAttack": 80,
+  "SpDefense": 70,
+  "Speed": 110,
+  "Type1": "Ice",
+  "Type2": "Ghost",
+  "CatchRate": 75,
+  "GenderRatio": "M0_F1",
+  "EggGroup1": "Fairy",
+  "EggGroup2": "Mineral",
+  "Ability1": "SnowCloak",
+  "Ability2": "SnowCloak",
+  "AbilityH": "CursedBody",
+  "FleeRate": 0,
+  "Weight": 26.6
+}

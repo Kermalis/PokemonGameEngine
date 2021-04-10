@@ -1,0 +1,19 @@
+{
+  "HP": 106,
+  "Attack": 130,
+  "Defense": 90,
+  "SpAttack": 110,
+  "SpDefense": 154,
+  "Speed": 90,
+  "Type1": "Fire",
+  "Type2": "Flying",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "Pressure",
+  "Ability2": "None",
+  "AbilityH": "Regenerator",
+  "FleeRate": 0,
+  "Weight": 199.0
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 75,
+  "Attack": 80,
+  "Defense": 85,
+  "SpAttack": 100,
+  "SpDefense": 90,
+  "Speed": 50,
+  "Type1": "Grass",
+  "Type2": "Poison",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Grass",
+  "EggGroup2": "Grass",
+  "Ability1": "Chlorophyll",
+  "Ability2": "None",
+  "AbilityH": "EffectSpore",
+  "FleeRate": 0,
+  "Weight": 18.6
+}

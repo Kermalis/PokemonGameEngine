@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 128,
+  "Defense": 90,
+  "SpAttack": 77,
+  "SpDefense": 77,
+  "Speed": 128,
+  "Type1": "Normal",
+  "Type2": "Fighting",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "SereneGrace",
+  "Ability2": "None",
+  "AbilityH": "None",
+  "FleeRate": 0,
+  "Weight": 6.5
+}

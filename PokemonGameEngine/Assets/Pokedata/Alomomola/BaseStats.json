@@ -1,0 +1,19 @@
+{
+  "HP": 165,
+  "Attack": 75,
+  "Defense": 80,
+  "SpAttack": 40,
+  "SpDefense": 45,
+  "Speed": 65,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Water2",
+  "Ability1": "Healer",
+  "Ability2": "Hydration",
+  "AbilityH": "Regenerator",
+  "FleeRate": 0,
+  "Weight": 31.6
+}

@@ -1,0 +1,19 @@
+{
+  "HP": 95,
+  "Attack": 60,
+  "Defense": 79,
+  "SpAttack": 100,
+  "SpDefense": 125,
+  "Speed": 81,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 60,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Dragon",
+  "Ability1": "MarvelScale",
+  "Ability2": "None",
+  "AbilityH": "CuteCharm",
+  "FleeRate": 0,
+  "Weight": 162.0
+}

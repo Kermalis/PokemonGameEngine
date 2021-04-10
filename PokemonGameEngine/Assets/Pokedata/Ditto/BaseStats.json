@@ -1,0 +1,19 @@
+{
+  "HP": 48,
+  "Attack": 48,
+  "Defense": 48,
+  "SpAttack": 48,
+  "SpDefense": 48,
+  "Speed": 48,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 35,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Ditto",
+  "EggGroup2": "Ditto",
+  "Ability1": "Limber",
+  "Ability2": "None",
+  "AbilityH": "Imposter",
+  "FleeRate": 90,
+  "Weight": 4.0
+}

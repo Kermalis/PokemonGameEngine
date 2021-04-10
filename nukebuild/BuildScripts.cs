@@ -20,7 +20,6 @@ public sealed partial class Build
         public long Offset;
     }
 
-    public static readonly AbsolutePath AssetPath = RootDirectory / "PokemonGameEngine" / "Assets";
     private static readonly AbsolutePath ScriptPath = AssetPath / "Script";
     private static readonly AbsolutePath ScriptOutputPath = ScriptPath / "Scripts.bin";
     private const string CommentChars = "//";

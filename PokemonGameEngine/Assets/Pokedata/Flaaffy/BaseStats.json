@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 55,
+  "Defense": 55,
+  "SpAttack": 80,
+  "SpDefense": 60,
+  "Speed": 45,
+  "Type1": "Electric",
+  "Type2": "None",
+  "CatchRate": 120,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Field",
+  "Ability1": "Static",
+  "Ability2": "None",
+  "AbilityH": "Plus",
+  "FleeRate": 0,
+  "Weight": 13.3
+}

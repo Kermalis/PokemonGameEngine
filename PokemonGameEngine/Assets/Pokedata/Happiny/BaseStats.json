@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 5,
+  "Defense": 5,
+  "SpAttack": 15,
+  "SpDefense": 65,
+  "Speed": 30,
+  "Type1": "Normal",
+  "Type2": "None",
+  "CatchRate": 130,
+  "GenderRatio": "M0_F1",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "NaturalCure",
+  "Ability2": "SereneGrace",
+  "AbilityH": "FriendGuard",
+  "FleeRate": 0,
+  "Weight": 24.4
+}

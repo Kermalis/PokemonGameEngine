@@ -1,0 +1,19 @@
+{
+  "HP": 45,
+  "Attack": 55,
+  "Defense": 45,
+  "SpAttack": 65,
+  "SpDefense": 45,
+  "Speed": 75,
+  "Type1": "Ice",
+  "Type2": "Flying",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Field",
+  "Ability1": "VitalSpirit",
+  "Ability2": "Hustle",
+  "AbilityH": "Insomnia",
+  "FleeRate": 0,
+  "Weight": 16.0
+}

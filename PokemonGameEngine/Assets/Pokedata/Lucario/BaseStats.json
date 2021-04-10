@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 110,
+  "Defense": 70,
+  "SpAttack": 115,
+  "SpDefense": 70,
+  "Speed": 90,
+  "Type1": "Fighting",
+  "Type2": "Steel",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "HumanLike",
+  "Ability1": "Steadfast",
+  "Ability2": "InnerFocus",
+  "AbilityH": "Justified",
+  "FleeRate": 0,
+  "Weight": 54.0
+}

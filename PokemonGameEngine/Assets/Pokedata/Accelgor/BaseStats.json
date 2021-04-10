@@ -1,0 +1,19 @@
+{
+  "HP": 80,
+  "Attack": 70,
+  "Defense": 40,
+  "SpAttack": 100,
+  "SpDefense": 60,
+  "Speed": 145,
+  "Type1": "Bug",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "Hydration",
+  "Ability2": "StickyHold",
+  "AbilityH": "Unburden",
+  "FleeRate": 0,
+  "Weight": 25.3
+}

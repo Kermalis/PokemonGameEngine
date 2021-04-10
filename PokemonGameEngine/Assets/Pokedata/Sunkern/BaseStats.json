@@ -1,0 +1,19 @@
+{
+  "HP": 30,
+  "Attack": 30,
+  "Defense": 30,
+  "SpAttack": 30,
+  "SpDefense": 30,
+  "Speed": 30,
+  "Type1": "Grass",
+  "Type2": "None",
+  "CatchRate": 235,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Grass",
+  "EggGroup2": "Grass",
+  "Ability1": "Chlorophyll",
+  "Ability2": "SolarPower",
+  "AbilityH": "EarlyBird",
+  "FleeRate": 90,
+  "Weight": 1.8
+}

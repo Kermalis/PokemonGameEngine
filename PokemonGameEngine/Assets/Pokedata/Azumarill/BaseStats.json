@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 50,
+  "Defense": 80,
+  "SpAttack": 50,
+  "SpDefense": 80,
+  "Speed": 50,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Water1",
+  "EggGroup2": "Fairy",
+  "Ability1": "ThickFat",
+  "Ability2": "HugePower",
+  "AbilityH": "SapSipper",
+  "FleeRate": 0,
+  "Weight": 28.5
+}

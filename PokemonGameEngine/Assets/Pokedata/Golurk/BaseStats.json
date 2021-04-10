@@ -1,0 +1,19 @@
+{
+  "HP": 89,
+  "Attack": 124,
+  "Defense": 80,
+  "SpAttack": 55,
+  "SpDefense": 80,
+  "Speed": 55,
+  "Type1": "Ground",
+  "Type2": "Ghost",
+  "CatchRate": 90,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Mineral",
+  "EggGroup2": "Mineral",
+  "Ability1": "IronFist",
+  "Ability2": "Klutz",
+  "AbilityH": "NoGuard",
+  "FleeRate": 0,
+  "Weight": 330.0
+}

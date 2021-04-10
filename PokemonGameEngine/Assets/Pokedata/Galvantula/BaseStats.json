@@ -1,0 +1,19 @@
+{
+  "HP": 70,
+  "Attack": 77,
+  "Defense": 60,
+  "SpAttack": 97,
+  "SpDefense": 60,
+  "Speed": 108,
+  "Type1": "Bug",
+  "Type2": "Electric",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Bug",
+  "EggGroup2": "Bug",
+  "Ability1": "Compoundeyes",
+  "Ability2": "Unnerve",
+  "AbilityH": "Swarm",
+  "FleeRate": 0,
+  "Weight": 14.3
+}

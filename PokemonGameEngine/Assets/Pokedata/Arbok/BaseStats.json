@@ -1,0 +1,19 @@
+{
+  "HP": 60,
+  "Attack": 85,
+  "Defense": 69,
+  "SpAttack": 65,
+  "SpDefense": 79,
+  "Speed": 80,
+  "Type1": "Poison",
+  "Type2": "None",
+  "CatchRate": 90,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Dragon",
+  "Ability1": "Intimidate",
+  "Ability2": "ShedSkin",
+  "AbilityH": "Unnerve",
+  "FleeRate": 60,
+  "Weight": 65.0
+}

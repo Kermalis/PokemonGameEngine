@@ -1,0 +1,19 @@
+{
+  "HP": 95,
+  "Attack": 117,
+  "Defense": 70,
+  "SpAttack": 65,
+  "SpDefense": 70,
+  "Speed": 92,
+  "Type1": "Ground",
+  "Type2": "Dark",
+  "CatchRate": 45,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Intimidate",
+  "Ability2": "Moxie",
+  "AbilityH": "AngerPoint",
+  "FleeRate": 0,
+  "Weight": 96.3
+}

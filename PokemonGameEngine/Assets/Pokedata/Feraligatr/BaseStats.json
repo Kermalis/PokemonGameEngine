@@ -1,0 +1,19 @@
+{
+  "HP": 85,
+  "Attack": 105,
+  "Defense": 100,
+  "SpAttack": 79,
+  "SpDefense": 83,
+  "Speed": 78,
+  "Type1": "Water",
+  "Type2": "None",
+  "CatchRate": 45,
+  "GenderRatio": "M7_F1",
+  "EggGroup1": "Monster",
+  "EggGroup2": "Water1",
+  "Ability1": "Torrent",
+  "Ability2": "None",
+  "AbilityH": "SheerForce",
+  "FleeRate": 0,
+  "Weight": 88.8
+}

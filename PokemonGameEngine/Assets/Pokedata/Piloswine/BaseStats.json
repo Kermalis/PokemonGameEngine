@@ -1,0 +1,19 @@
+{
+  "HP": 100,
+  "Attack": 100,
+  "Defense": 80,
+  "SpAttack": 60,
+  "SpDefense": 60,
+  "Speed": 50,
+  "Type1": "Ice",
+  "Type2": "Ground",
+  "CatchRate": 75,
+  "GenderRatio": "M1_F1",
+  "EggGroup1": "Field",
+  "EggGroup2": "Field",
+  "Ability1": "Oblivious",
+  "Ability2": "SnowCloak",
+  "AbilityH": "ThickFat",
+  "FleeRate": 0,
+  "Weight": 55.8
+}

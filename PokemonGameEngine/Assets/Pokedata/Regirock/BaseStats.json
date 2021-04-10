@@ -1,0 +1,19 @@
+{
+  "HP": 80,
+  "Attack": 100,
+  "Defense": 200,
+  "SpAttack": 50,
+  "SpDefense": 100,
+  "Speed": 50,
+  "Type1": "Rock",
+  "Type2": "None",
+  "CatchRate": 3,
+  "GenderRatio": "M0_F0",
+  "EggGroup1": "Undiscovered",
+  "EggGroup2": "Undiscovered",
+  "Ability1": "ClearBody",
+  "Ability2": "None",
+  "AbilityH": "Sturdy",
+  "FleeRate": 0,
+  "Weight": 230.0
+}
