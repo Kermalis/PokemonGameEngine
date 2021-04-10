@@ -1,22 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <RootNamespace></RootNamespace>
-    <IsPackable>False</IsPackable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net5.0</TargetFramework>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<RootNamespace></RootNamespace>
+		<IsPackable>False</IsPackable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\PokemonGameEngine\Core\FlagVarConstants.cs" Link="FlagVarConstants.cs" />
-    <Compile Include="..\PokemonGameEngine\Script\ScriptEnums.cs" Link="ScriptEnums.cs" />
-    <Compile Include="..\PokemonGameEngine\World\WorldConstants.cs" Link="WorldConstants.cs" />
-    <PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-    <PackageReference Include="Nuke.Common" Version="0.24.11" />
-    <Reference Include="PokemonBattleEngine">
-      <HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\PokemonGameEngine\Core\FlagVarConstants.cs" Link="FlagVarConstants.cs" />
+		<Compile Include="..\PokemonGameEngine\Script\ScriptEnums.cs" Link="ScriptEnums.cs" />
+		<Compile Include="..\PokemonGameEngine\World\WorldConstants.cs" Link="WorldConstants.cs" />
+		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
+		<PackageReference Include="Nuke.Common" Version="0.24.11" />
+		<Reference Include="PokemonBattleEngine">
+			<HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
 </Project>

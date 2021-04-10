@@ -1,65 +1,69 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net48;netcoreapp3.1</TargetFrameworks>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Kermalis.PokemonGameEngine</RootNamespace>
-    <Authors>Kermalis</Authors>
-    <Copyright>Kermalis</Copyright>
-    <RepositoryUrl>https://github.com/Kermalis/PokemonGameEngine</RepositoryUrl>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn />
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors>NU1605</WarningsAsErrors>
-    <StartupObject>Kermalis.PokemonGameEngine.UI.Program</StartupObject>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net48;netcoreapp3.1</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>Kermalis.PokemonGameEngine</RootNamespace>
+		<Authors>Kermalis</Authors>
+		<Copyright>Kermalis</Copyright>
+		<RepositoryUrl>https://github.com/Kermalis/PokemonGameEngine</RepositoryUrl>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<NoWarn />
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<WarningsAsErrors>NU1605</WarningsAsErrors>
+		<StartupObject>Kermalis.PokemonGameEngine.UI.Program</StartupObject>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\**" />
-    <EmbeddedResource Remove="Assets\Encounter\**\*.json" />
-    <EmbeddedResource Remove="Assets\Map\**\*.json" />
-    <EmbeddedResource Remove="Assets\ObjSprites\ObjSprites.json" />
-    <EmbeddedResource Remove="Assets\Script\**\*.txt" />
-    <EmbeddedResource Remove="Assets\Tileset\Animation\**\*.json" />
-    <EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
-      <Link>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\BG\**\*.*">
-      <Link>Assets\GUI\Battle\Background\%(RecursiveDir)%(FileName)%(Extension)</Link>
-    </EmbeddedResource>
-    <ContentWithTargetPath Include="..\Shared Dependencies\PokemonBattleEngine.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>PokemonBattleEngine.db</TargetPath>
-    </ContentWithTargetPath>
-    <PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
-    <Reference Include="PokemonBattleEngine">
-      <HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
-    </Reference>
-    <ContentWithTargetPath Include="Dependencies\SDL2.dll"> <!--64-bit windows dll for now-->
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>SDL2.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="Dependencies\SDL_Image\SDL2_image.dll"> <!--64-bit windows dll for now-->
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>SDL2_image.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="Dependencies\SDL_Image\libpng16-16.dll"> <!--64-bit windows dll for now-->
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>libpng16-16.dll</TargetPath>
-    </ContentWithTargetPath>
-    <ContentWithTargetPath Include="Dependencies\SDL_Image\zlib1.dll"> <!--64-bit windows dll for now-->
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>zlib1.dll</TargetPath>
-    </ContentWithTargetPath>
-    <Reference Include="SDL2-CS">
-      <HintPath>Dependencies\SDL2-CS.dll</HintPath>
-    </Reference>
-    <Reference Include="SimpleGIF">
-      <HintPath>Dependencies\SimpleGIF.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\**" />
+		<EmbeddedResource Remove="Assets\Encounter\**\*.json" />
+		<EmbeddedResource Remove="Assets\Map\**\*.json" />
+		<EmbeddedResource Remove="Assets\ObjSprites\ObjSprites.json" />
+		<EmbeddedResource Remove="Assets\Script\**\*.txt" />
+		<EmbeddedResource Remove="Assets\Tileset\Animation\**\*.json" />
+		<EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
+			<Link>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</EmbeddedResource>
+		<EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\BG\**\*.*">
+			<Link>Assets\GUI\Battle\Background\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</EmbeddedResource>
+		<ContentWithTargetPath Include="..\Shared Dependencies\PokemonBattleEngine.db">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<TargetPath>PokemonBattleEngine.db</TargetPath>
+		</ContentWithTargetPath>
+		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.4" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
+		<Reference Include="PokemonBattleEngine">
+			<HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
+		</Reference>
+		<ContentWithTargetPath Include="Dependencies\SDL2.dll">
+			<!--64-bit windows dll for now-->
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<TargetPath>SDL2.dll</TargetPath>
+		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="Dependencies\SDL_Image\SDL2_image.dll">
+			<!--64-bit windows dll for now-->
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<TargetPath>SDL2_image.dll</TargetPath>
+		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="Dependencies\SDL_Image\libpng16-16.dll">
+			<!--64-bit windows dll for now-->
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<TargetPath>libpng16-16.dll</TargetPath>
+		</ContentWithTargetPath>
+		<ContentWithTargetPath Include="Dependencies\SDL_Image\zlib1.dll">
+			<!--64-bit windows dll for now-->
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<TargetPath>zlib1.dll</TargetPath>
+		</ContentWithTargetPath>
+		<Reference Include="SDL2-CS">
+			<HintPath>Dependencies\SDL2-CS.dll</HintPath>
+		</Reference>
+		<Reference Include="SimpleGIF">
+			<HintPath>Dependencies\SimpleGIF.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
 </Project>

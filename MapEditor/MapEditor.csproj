@@ -1,43 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
-  <PropertyGroup>
-    <TargetFrameworks>net48;net5.0</TargetFrameworks>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Kermalis.MapEditor</RootNamespace>
-    <Authors>Kermalis</Authors>
-    <Copyright>Kermalis</Copyright>
-    <RepositoryUrl>https://github.com/Kermalis/PokemonGameEngine</RepositoryUrl>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn />
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors>NU1605</WarningsAsErrors>
-    <StartupObject>Kermalis.MapEditor.Program</StartupObject>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <AvaloniaResource Include="**\*.xaml">
-      <SubType>Designer</SubType>
-    </AvaloniaResource>
-    <Compile Include="..\PokemonGameEngine\Core\FlagVarConstants.cs" Link="Core\FlagVarConstants.cs" />
-    <Compile Include="..\PokemonGameEngine\Script\ScriptEnums.cs" Link="Core\ScriptEnums.cs" />
-    <Compile Include="..\PokemonGameEngine\World\WorldConstants.cs" Link="Core\WorldConstants.cs" />
-    <Content Include="..\Shared Dependencies\PokemonBattleEngine.db">
-      <Link>PokemonBattleEngine.db</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <PackageReference Include="Avalonia" Version="0.10.0" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
-    <PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
-    <Reference Include="PokemonBattleEngine">
-      <HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  
+
+	<PropertyGroup>
+		<TargetFrameworks>net48;net5.0</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>Kermalis.MapEditor</RootNamespace>
+		<Authors>Kermalis</Authors>
+		<Copyright>Kermalis</Copyright>
+		<RepositoryUrl>https://github.com/Kermalis/PokemonGameEngine</RepositoryUrl>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<NoWarn />
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<WarningsAsErrors>NU1605</WarningsAsErrors>
+		<StartupObject>Kermalis.MapEditor.Program</StartupObject>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Update="**\*.xaml.cs">
+			<DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<AvaloniaResource Include="**\*.xaml">
+			<SubType>Designer</SubType>
+		</AvaloniaResource>
+		<Compile Include="..\PokemonGameEngine\Core\FlagVarConstants.cs" Link="Core\FlagVarConstants.cs" />
+		<Compile Include="..\PokemonGameEngine\Script\ScriptEnums.cs" Link="Core\ScriptEnums.cs" />
+		<Compile Include="..\PokemonGameEngine\World\WorldConstants.cs" Link="Core\WorldConstants.cs" />
+		<Content Include="..\Shared Dependencies\PokemonBattleEngine.db">
+			<Link>PokemonBattleEngine.db</Link>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<PackageReference Include="Avalonia" Version="0.10.0" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
+		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.4" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
+		<Reference Include="PokemonBattleEngine">
+			<HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
 </Project>
