@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Battle;
+﻿/*using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
@@ -154,3 +154,4 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
     }
 }
+*/

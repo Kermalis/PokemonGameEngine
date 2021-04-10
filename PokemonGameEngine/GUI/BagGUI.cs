@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
+using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
@@ -10,8 +11,11 @@ namespace Kermalis.PokemonGameEngine.GUI
 {
     internal sealed class BagGUI
     {
+        public static BagGUI Instance { get; private set; }
+
         private readonly PlayerInventory _inv;
 
+        private FadeColorTransition _fadeTransition;
         private Action _onClosed;
 
         private bool _isOnParty = false;
@@ -23,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         private string _cashMoney;
         private int _cashMoneyWidth;
 
-        public BagGUI(PlayerInventory inv, Party party, Action onClosed)
+        public unsafe BagGUI(PlayerInventory inv, Party party, Action onClosed)
         {
             _inv = inv;
 
@@ -37,6 +41,10 @@ namespace Kermalis.PokemonGameEngine.GUI
             LoadCashMoney();
 
             _onClosed = onClosed;
+            _fadeTransition = new FadeFromColorTransition(20, 0);
+            Game.Instance.SetCallback(CB_FadeInBag);
+            Game.Instance.SetRCallback(RCB_Fading);
+            Instance = this;
         }
 
         private void LoadCashMoney()
@@ -58,13 +66,33 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
-        private void CloseMenu()
+        private unsafe void CloseMenu()
         {
-            _onClosed.Invoke();
-            _onClosed = null;
+            _fadeTransition = new FadeToColorTransition(20, 0);
+            Game.Instance.SetCallback(CB_FadeOutBag);
+            Game.Instance.SetRCallback(RCB_Fading);
         }
 
-        public void LogicTick()
+        private unsafe void CB_FadeInBag()
+        {
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                Game.Instance.SetCallback(CB_LogicTick);
+                Game.Instance.SetRCallback(RCB_RenderTick);
+            }
+        }
+        private unsafe void CB_FadeOutBag()
+        {
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                _onClosed.Invoke();
+                _onClosed = null;
+                Instance = null;
+            }
+        }
+        private void CB_LogicTick()
         {
             if (InputManager.IsPressed(Key.B))
             {
@@ -91,7 +119,12 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
-        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+        }
+        private unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             // Background
             RenderUtils.ThreeColorBackground(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(215, 231, 230, 255), RenderUtils.Color(231, 163, 0, 255), RenderUtils.Color(242, 182, 32, 255));

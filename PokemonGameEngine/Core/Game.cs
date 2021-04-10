@@ -1,36 +1,15 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonGameEngine.GUI;
-using Kermalis.PokemonGameEngine.GUI.Battle;
-using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Script;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
-using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Game
     {
-        public enum GameState : byte
-        {
-            Init, // Loading
-            Overworld, // Overworld
-            OverworldToBag, // Fading to black
-            Bag, // Bag
-            BagFromOverworld, // Fading from black
-            BagToOverworld, // Fading to black
-            OverworldFromBag, // Fading from black
-            OverworldToBattle, // Fading to black
-            Battle, // Battling
-            BattleFromOverworld, // Fading from black
-            BattleToOverworld, // Fading to black
-            OverworldFromBattle, // Fading from black
-            OverworldWarpOut, // Warp fade
-            OverworldWarpIn, // Warp return
-        }
-
         public static Game Instance { get; private set; }
 
         public Save Save { get; }
@@ -39,55 +18,38 @@ namespace Kermalis.PokemonGameEngine.Core
         public readonly List<ScriptContext> Scripts = new List<ScriptContext>();
         public readonly List<MessageBox> MessageBoxes = new List<MessageBox>();
 
-        public GameState State { get; private set; } = GameState.Init;
-        public OverworldGUI OverworldGUI { get; }
-        private FadeFromColorTransition _fadeFromTransition;
-        private FadeToColorTransition _fadeToTransition;
-        private SpiralTransition _battleTransition;
-        private BattleGUI _battleGUI;
-        private BagGUI _bagGUI;
+        /// <summary>For use with Script command "AwaitBattle"</summary>
+        public bool IsOnOverworld;
+
+        public delegate void MainCallback();
+        public MainCallback Callback;
+        public uint CBState;
+        public unsafe delegate void RenderCallback(uint* bmpAddress, int bmpWidth, int bmpHeight);
+        public RenderCallback RCallback;
 
         public Game()
         {
             Instance = this;
             Save = new Save(); // Load/initialize Save
             StringBuffers = new StringBuffers();
-            var map = Map.LoadOrGet(0);
-            const int x = 2;
-            const int y = 29;
-            PlayerObj.Player.Pos.X = x;
-            PlayerObj.Player.Pos.Y = y;
-            PlayerObj.Player.Map = map;
-            map.Objs.Add(PlayerObj.Player);
-            CameraObj.Camera.Pos = PlayerObj.Player.Pos;
-            CameraObj.Camera.Map = map;
-            map.Objs.Add(CameraObj.Camera);
-            map.LoadObjEvents();
-            OverworldGUI = new OverworldGUI();
-            State = GameState.Overworld;
+
+            OverworldGUI.Debug_InitOverworldGUI();
         }
 
-        public void TempWarp(IWarp warp)
+        public void SetCallback(MainCallback callback)
         {
-            void FadeToTransitionEnded()
-            {
-                Obj player = PlayerObj.Player;
-                player.Warp(warp);
-                void FadeFromTransitionEnded()
-                {
-                    State = GameState.Overworld;
-                    _fadeFromTransition = null;
-                }
-                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
-                if (player.QueuedScriptMovements.Count > 0)
-                {
-                    player.RunNextScriptMovement();
-                }
-                State = GameState.OverworldWarpIn;
-                _fadeToTransition = null;
-            }
-            _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
-            State = GameState.OverworldWarpOut;
+#if DEBUG
+            System.Console.WriteLine("Main Callback\t{0} - {1}", callback.Method.DeclaringType.Name, callback.Method);
+#endif
+            Callback = callback;
+            CBState = 0;
+        }
+        public void SetRCallback(RenderCallback callback)
+        {
+#if DEBUG
+            System.Console.WriteLine("Render Callback\t{0} - {1}", callback.Method.DeclaringType.Name, callback.Method);
+#endif
+            RCallback = callback;
         }
 
         private PBEBattleTerrain UpdateBattleSetting(Map.Layout.Block block)
@@ -102,37 +64,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         private void CreateBattle(PBEBattle battle, IReadOnlyList<Party> trainerParties)
         {
-            void FadeToBattleTransitionEnded()
-            {
-                void OnBattleEnded()
-                {
-                    void FadeToOverworldTransitionEnded()
-                    {
-                        void FadeFromBagTransitionEnded()
-                        {
-                            State = GameState.Overworld;
-                            _fadeFromTransition = null;
-                        }
-                        _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromBagTransitionEnded);
-                        State = GameState.OverworldFromBattle;
-                        _battleGUI = null;
-                        _fadeToTransition = null;
-                    }
-                    _fadeToTransition = new FadeToColorTransition(20, 0, FadeToOverworldTransitionEnded);
-                    State = GameState.BattleToOverworld;
-                }
-                void FadeFromOverworldTransitionEnded()
-                {
-                    State = GameState.Battle;
-                    _fadeFromTransition = null;
-                }
-                _battleGUI = new BattleGUI(battle, OnBattleEnded, trainerParties);
-                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromOverworldTransitionEnded);
-                State = GameState.BattleFromOverworld;
-                _battleTransition = null;
-            }
-            _battleTransition = new SpiralTransition(FadeToBattleTransitionEnded);
-            State = GameState.OverworldToBattle;
+            OverworldGUI.Instance.StartBattle(battle, trainerParties);
         }
         private void CreateWildBattle(Map map, Map.Layout.Block block, Party wildParty, PBEBattleFormat format)
         {
@@ -157,186 +89,49 @@ namespace Kermalis.PokemonGameEngine.Core
             CreateWildBattle(map, block, new Party { wildPkmn }, PBEBattleFormat.Single);
         }
 
-        public void OpenStartMenu()
-        {
-            void FadeToBagTransitionEnded()
-            {
-                void OnBagMenuGUIClosed()
-                {
-                    void FadeToOverworldTransitionEnded()
-                    {
-                        void FadeFromBagTransitionEnded()
-                        {
-                            State = GameState.Overworld;
-                            _fadeFromTransition = null;
-                        }
-                        _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromBagTransitionEnded);
-                        State = GameState.OverworldFromBag;
-                        _bagGUI = null;
-                        _fadeToTransition = null;
-                    }
-                    _fadeToTransition = new FadeToColorTransition(20, 0, FadeToOverworldTransitionEnded);
-                    State = GameState.BagToOverworld;
-                }
-                void FadeFromOverworldTransitionEnded()
-                {
-                    State = GameState.Bag;
-                    _fadeFromTransition = null;
-                }
-                _bagGUI = new BagGUI(Save.PlayerInventory, Save.PlayerParty, OnBagMenuGUIClosed);
-                _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromOverworldTransitionEnded);
-                State = GameState.BagFromOverworld;
-                _fadeToTransition = null;
-            }
-            _fadeToTransition = new FadeToColorTransition(20, 0, FadeToBagTransitionEnded);
-            State = GameState.OverworldToBag;
-        }
-
         #region Logic Tick
 
-        private void ProcessScripts()
+        public void ProcessScripts()
         {
             foreach (ScriptContext ctx in Scripts.ToArray()) // Copy the list so a script ending/starting does not crash here
             {
                 ctx.LogicTick();
             }
         }
-        private void ProcessMessageBoxes()
+        public void ProcessMessageBoxes()
         {
             foreach (MessageBox mb in MessageBoxes.ToArray())
             {
                 mb.LogicTick();
             }
         }
-        private void ProcessDayTint(DateTime time, bool skipTransition)
-        {
-            if (Overworld.ShouldRenderDayTint())
-            {
-                DayTint.LogicTick(time, skipTransition);
-            }
-        }
         public void LogicTick()
         {
-            DateTime time = DateTime.Now;
-            switch (State)
-            {
-                case GameState.Overworld:
-                {
-                    ProcessScripts();
-                    ProcessMessageBoxes();
-                    Tileset.AnimationTick();
-                    ProcessDayTint(time, false);
-                    OverworldGUI.LogicTick();
-                    return;
-                }
-                case GameState.OverworldToBag:
-                case GameState.OverworldToBattle:
-                case GameState.OverworldFromBattle:
-                case GameState.OverworldWarpOut:
-                {
-                    Tileset.AnimationTick();
-                    ProcessDayTint(time, false); // Don't want it to suddenly become dark when fading out the overworld
-                    return;
-                }
-                case GameState.OverworldFromBag:
-                case GameState.OverworldWarpIn:
-                {
-                    Tileset.AnimationTick();
-                    ProcessDayTint(time, true); // Want the time to automatically be correct when we are on the overworld again (could've been in a cave for hours, or paused in the bag, etc)
-                    return;
-                }
-                case GameState.Bag:
-                {
-                    _bagGUI.LogicTick();
-                    return;
-                }
-                case GameState.Battle:
-                {
-                    ProcessDayTint(time, false);
-                    _battleGUI.LogicTick();
-                    return;
-                }
-            }
+            Callback?.Invoke();
         }
 
         #endregion
 
         #region Render Tick
 
-        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight, string topLeftMessage)
+        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight
+#if DEBUG
+            , string topLeftMessage
+#endif
+            )
         {
-            switch (State)
-            {
-                case GameState.Overworld:
-                {
-                    OverworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    break;
-                }
-                case GameState.OverworldToBag:
-                case GameState.OverworldWarpOut:
-                {
-                    OverworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    break;
-                }
-                case GameState.OverworldFromBattle:
-                case GameState.OverworldFromBag:
-                case GameState.OverworldWarpIn:
-                {
-                    OverworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    break;
-                }
-                case GameState.BagFromOverworld:
-                {
-                    _bagGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    break;
-                }
-                case GameState.Bag:
-                {
-                    _bagGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    break;
-                }
-                case GameState.BagToOverworld:
-                {
-                    _bagGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    break;
-                }
-                case GameState.OverworldToBattle:
-                {
-                    OverworldGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    _battleTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    break;
-                }
-                case GameState.BattleFromOverworld:
-                {
-                    _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    break;
-                }
-                case GameState.Battle:
-                {
-                    _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    break;
-                }
-                case GameState.BattleToOverworld:
-                {
-                    _battleGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    break;
-                }
-            }
+            RCallback?.Invoke(bmpAddress, bmpWidth, bmpHeight);
             // Render messagebox
             foreach (MessageBox mb in MessageBoxes.ToArray())
             {
                 mb.Render(bmpAddress, bmpWidth, bmpHeight);
             }
+#if DEBUG
             if (topLeftMessage != null)
             {
                 Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, topLeftMessage, Font.DefaultFemale);
             }
+#endif
         }
 
         #endregion

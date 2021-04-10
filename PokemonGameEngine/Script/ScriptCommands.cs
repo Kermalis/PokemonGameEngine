@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
@@ -235,7 +236,7 @@ namespace Kermalis.PokemonGameEngine.Script
             int x = _reader.ReadInt32();
             int y = _reader.ReadInt32();
             byte elevation = (byte)ReadVarOrValue();
-            Game.Instance.TempWarp(new Warp(mapId, x, y, elevation));
+            OverworldGUI.Instance.TempWarp(new Warp(mapId, x, y, elevation));
         }
 
         private void MessageCommand()

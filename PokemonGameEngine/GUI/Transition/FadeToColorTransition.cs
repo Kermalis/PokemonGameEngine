@@ -1,34 +1,30 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
-using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
 {
-    internal sealed class FadeToColorTransition
+    internal sealed class FadeToColorTransition : FadeColorTransition
     {
         private readonly int _transitionDuration;
         private readonly float _transitionDurationF;
         private readonly uint _color;
-        private Action _onTransitionEnded;
 
         private int _counter;
 
-        public FadeToColorTransition(int transitionDuration, uint color, Action onTransitionEnded)
+        public FadeToColorTransition(int transitionDuration, uint color)
         {
             _transitionDuration = transitionDuration;
             _transitionDurationF = transitionDuration;
             _color = color;
-            _onTransitionEnded = onTransitionEnded;
         }
 
-        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe override void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.SetA(_color, (uint)(_counter / _transitionDurationF * 0xFF)));
 
-            if (_counter++ >= _transitionDuration)
+            if (!IsDone && _counter++ >= _transitionDuration)
             {
-                _onTransitionEnded.Invoke();
-                _onTransitionEnded = null;
-                return;
+                _counter = _transitionDuration;
+                IsDone = true;
             }
         }
     }

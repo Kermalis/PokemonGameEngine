@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Kermalis.PokemonGameEngine.UI
 {
-    internal class Program
+    internal sealed class Program
     {
         [STAThread]
         private static void Main()
@@ -28,7 +28,9 @@ namespace Kermalis.PokemonGameEngine.UI
         public const int RenderHeight = 216;
         public const int NumTicksPerSecond = 20;
         public const int MaxFPS = 60;
+#if DEBUG
         public static readonly bool _showFPS = true;
+#endif
 
         private readonly object _threadLockObj = new object();
         private readonly IntPtr _window;
@@ -211,7 +213,11 @@ namespace Kermalis.PokemonGameEngine.UI
                     IntPtr s = _screen;
                     IntPtr r = _renderer;
                     SDL.SDL_LockTexture(s, IntPtr.Zero, out IntPtr pixels, out _);
-                    Game.Instance.RenderTick((uint*)pixels.ToPointer(), RenderWidth, RenderHeight, _showFPS ? ((int)Math.Round(1_000 / timePassed.TotalMilliseconds)).ToString() : null);
+                    Game.Instance.RenderTick((uint*)pixels.ToPointer(), RenderWidth, RenderHeight
+#if DEBUG
+                        , _showFPS ? ((int)Math.Round(1_000 / timePassed.TotalMilliseconds)).ToString() : null
+#endif
+                        );
                     SDL.SDL_UnlockTexture(s);
                     SDL.SDL_RenderClear(r);
                     SDL.SDL_RenderCopy(r, s, IntPtr.Zero, IntPtr.Zero);

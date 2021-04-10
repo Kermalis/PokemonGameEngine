@@ -4,6 +4,7 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.World;
@@ -16,11 +17,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
     internal sealed partial class BattleGUI
     {
+        public static BattleGUI Instance { get; private set; }
+
         private const int WaitMilliseconds = 1750;
         private const string ThreadName = "Battle Thread"; // TODO: Put this on LogicTick somehow so it can be locked with render thread
         private readonly Sprite _battleBackground;
 
         private Action _onClosed;
+        private FadeColorTransition _fadeTransition;
 
         private readonly PBEBattle _battle;
         public readonly SpritedBattlePokemonParty[] _spritedParties;
@@ -43,17 +47,23 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _onClosed = onClosed;
             battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
             battle.OnStateChanged += SinglePlayerBattle_OnStateChanged;
+
+            Instance = this;
         }
 
-        private void TransitionOut()
+        public unsafe void FadeIn()
         {
-            _onClosed.Invoke();
-            _onClosed = null;
-            if (_actionsGUI != null)
-            {
-                _actionsGUI.Dispose();
-                _actionsGUI = null;
-            }
+            OverworldGUI.ProcessDayTint(true); // Catch up time
+            _fadeTransition = new FadeFromColorTransition(20, 0);
+            Game.Instance.SetCallback(CB_FadeInBattle);
+            Game.Instance.SetRCallback(RCB_Fading);
+        }
+
+        private unsafe void TransitionOut()
+        {
+            _fadeTransition = new FadeToColorTransition(20, 0);
+            Game.Instance.SetCallback(CB_FadeOutBattle);
+            Game.Instance.SetRCallback(RCB_Fading);
         }
 
         private void SinglePlayerBattle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
@@ -95,13 +105,35 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _message = message;
         }
 
-        public void LogicTick()
+        private unsafe void CB_FadeInBattle()
         {
-            if (_battle.BattleState == PBEBattleState.ReadyToBegin)
+            OverworldGUI.ProcessDayTint(false);
+            if (_fadeTransition.IsDone)
             {
+                _fadeTransition = null;
                 new Thread(_battle.Begin) { Name = ThreadName }.Start();
-                return;
+                Game.Instance.SetCallback(CB_LogicTick);
+                Game.Instance.SetRCallback(RCB_RenderTick);
             }
+        }
+        private unsafe void CB_FadeOutBattle()
+        {
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                _onClosed.Invoke();
+                _onClosed = null;
+                if (_actionsGUI != null)
+                {
+                    _actionsGUI.Dispose();
+                    _actionsGUI = null;
+                }
+                Instance = null;
+            }
+        }
+        private void CB_LogicTick()
+        {
+            OverworldGUI.ProcessDayTint(false);
             _actionsGUI?.LogicTick();
         }
 
@@ -141,7 +173,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
-        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+        }
+        private unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             Font fontDefault = Font.Default;
             uint[] defaultWhite = Font.DefaultWhite;

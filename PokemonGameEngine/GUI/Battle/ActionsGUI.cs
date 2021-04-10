@@ -1,7 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
-using Kermalis.PokemonGameEngine.GUI.Transition;
+//using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using System;
 using System.Linq;
@@ -27,9 +27,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private readonly PBEBattlePokemon _pkmn;
 
         private ActionsState _state;
-        private FadeFromColorTransition _fadeFromTransition;
+        /*private FadeFromColorTransition _fadeFromTransition;
         private FadeToColorTransition _fadeToTransition;
-        private PartyMenuGUI _partyMenuGUI;
+        private PartyMenuGUI _partyMenuGUI;*/
         private TargetsGUI _targetsGUI;
         private readonly TextGUIChoices _fightChoices;
         private TextGUIChoices _moveChoices;
@@ -98,7 +98,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void PokemonChoice()
         {
-            void FadeToTransitionEnded()
+            /*void FadeToTransitionEnded()
             {
                 _fadeToTransition = null;
                 void OnPartyMenuGUIClosed()
@@ -116,7 +116,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _state = ActionsState.Party;
             }
             _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
-            _state = ActionsState.FadeToParty;
+            _state = ActionsState.FadeToParty;*/
         }
         private void BagChoice()
         {
@@ -176,11 +176,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             switch (_state)
             {
-                case ActionsState.Party:
+                /*case ActionsState.Party:
                 {
                     _partyMenuGUI.LogicTick();
                     return;
-                }
+                }*/
                 case ActionsState.Moves:
                 {
                     _moveChoices.HandleInputs();
@@ -203,7 +203,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             switch (_state)
             {
-                case ActionsState.FadeToParty:
+                /*case ActionsState.FadeToParty:
                 {
                     _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
                     _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
@@ -219,7 +219,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
                     _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                     return;
-                }
+                }*/
                 case ActionsState.ShowAll:
                 {
                     _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);

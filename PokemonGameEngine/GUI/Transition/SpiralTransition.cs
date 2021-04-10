@@ -3,19 +3,13 @@ using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
 {
-    internal sealed class SpiralTransition
+    internal sealed class SpiralTransition : FadeColorTransition
     {
         // This will leave artifacts if NumBoxes is not cleanly divisible by the width and height of the screen
         // In the future we can have it draw bigger squares if it's not cleanly divisible (like, outside the bounds of the screen)
         private const int NumBoxes = 8;
 
         private int _counter;
-        private Action _onTransitionEnded;
-
-        public SpiralTransition(Action onTransitionEnded)
-        {
-            _onTransitionEnded = onTransitionEnded;
-        }
 
         private unsafe void SpiralTransitionLogic(uint* bmpAddress, int bmpWidth, int bmpHeight, int num)
         {
@@ -38,8 +32,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
                     ? goBackwards ? counterX < target : counterX > target
                     : goBackwards ? counterY < target : counterY > target)
                 {
-                    _onTransitionEnded.Invoke();
-                    _onTransitionEnded = null;
+                    IsDone = true;
                     return;
                 }
 
@@ -107,9 +100,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             }
         }
 
-        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe override void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            SpiralTransitionLogic(bmpAddress, bmpWidth, bmpHeight, _counter++);
+            SpiralTransitionLogic(bmpAddress, bmpWidth, bmpHeight, _counter);
+            if (!IsDone)
+            {
+                _counter++;
+            }
         }
     }
 }

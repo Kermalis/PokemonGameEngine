@@ -64,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             if (_waitBattle)
             {
-                if (Game.Instance.State != Game.GameState.Overworld)
+                if (!Game.Instance.IsOnOverworld)
                 {
                     stopRunning = true;
                 }

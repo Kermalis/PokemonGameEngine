@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Script;
 
@@ -47,7 +48,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 {
                     if (playerPos.IsSamePosition(warp))
                     {
-                        Game.Instance.TempWarp(warp);
+                        OverworldGUI.Instance.TempWarp(warp);
                         return;
                     }
                 }
@@ -60,7 +61,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
             if (InputManager.IsPressed(Key.Start))
             {
-                Game.Instance.OpenStartMenu();
+                OverworldGUI.Instance.OpenStartMenu();
                 return;
             }
             if (InputManager.IsPressed(Key.A))
@@ -89,7 +90,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                     string script = o.Script;
                     if (script != string.Empty)
                     {
-                        Game.Instance.OverworldGUI.SetInteractiveScript(o, script);
+                        OverworldGUI.Instance.SetInteractiveScript(o, script);
                         return;
                     }
                 }
