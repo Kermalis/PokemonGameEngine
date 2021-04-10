@@ -6,42 +6,42 @@
       "MinLevel": 34,
       "MaxLevel": 41,
       "Species": "Torkoal",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 20,
       "MinLevel": 37,
       "MaxLevel": 44,
       "Species": "Gliscor",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 5,
       "MinLevel": 37,
       "MaxLevel": 39,
       "Species": "Steelix",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 20,
       "MinLevel": 32,
       "MaxLevel": 36,
       "Species": "Lairon",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 20,
       "MinLevel": 35,
       "MaxLevel": 35,
       "Species": "Lampent",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 1,
       "MinLevel": 38,
       "MaxLevel": 43,
       "Species": "Deino",
-      "Form": 0
+      "Form": null
     }
   ]
 }

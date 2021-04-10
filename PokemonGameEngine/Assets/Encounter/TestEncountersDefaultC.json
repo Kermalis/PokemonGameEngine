@@ -6,35 +6,35 @@
       "MinLevel": 3,
       "MaxLevel": 5,
       "Species": "Zigzagoon",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 25,
       "MinLevel": 3,
       "MaxLevel": 4,
       "Species": "Spinda",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 15,
       "MinLevel": 5,
       "MaxLevel": 7,
       "Species": "Deerling",
-      "Form": 0
+      "Form": "Deerling_Spring"
     },
     {
       "Chance": 5,
       "MinLevel": 4,
       "MaxLevel": 6,
       "Species": "Joltik",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 25,
       "MinLevel": 3,
       "MaxLevel": 5,
       "Species": "Purrloin",
-      "Form": 0
+      "Form": null
     }
   ]
 }

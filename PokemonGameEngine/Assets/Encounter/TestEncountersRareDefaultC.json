@@ -6,35 +6,35 @@
       "MinLevel": 7,
       "MaxLevel": 9,
       "Species": "Audino",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 20,
       "MinLevel": 8,
       "MaxLevel": 10,
       "Species": "Luxio",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 15,
       "MinLevel": 8,
       "MaxLevel": 11,
       "Species": "Ralts",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 15,
       "MinLevel": 8,
       "MaxLevel": 11,
       "Species": "Riolu",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 10,
       "MinLevel": 6,
       "MaxLevel": 9,
       "Species": "Croagunk",
-      "Form": 0
+      "Form": null
     }
   ]
 }

@@ -6,35 +6,35 @@
       "MinLevel": 23,
       "MaxLevel": 23,
       "Species": "Linoone",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 13,
       "MinLevel": 25,
       "MaxLevel": 25,
       "Species": "Tranquill",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 5,
       "MinLevel": 27,
       "MaxLevel": 27,
       "Species": "Galvantula",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 5,
       "MinLevel": 26,
       "MaxLevel": 26,
       "Species": "Sawsbuck",
-      "Form": 0
+      "Form": "Sawsbuck_Spring"
     },
     {
       "Chance": 1,
       "MinLevel": 29,
       "MaxLevel": 30,
       "Species": "Mismagius",
-      "Form": 0
+      "Form": null
     }
   ]
 }

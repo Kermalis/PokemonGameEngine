@@ -6,42 +6,42 @@
       "MinLevel": 69,
       "MaxLevel": 69,
       "Species": "Feebas",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 1,
       "MinLevel": 69,
       "MaxLevel": 69,
       "Species": "Milotic",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 30,
       "MinLevel": 32,
       "MaxLevel": 38,
       "Species": "Luvdisc",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 15,
       "MinLevel": 43,
       "MaxLevel": 48,
       "Species": "Clamperl",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 30,
       "MinLevel": 35,
       "MaxLevel": 60,
       "Species": "Stunfisk",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 10,
       "MinLevel": 35,
       "MaxLevel": 70,
       "Species": "Barboach",
-      "Form": 0
+      "Form": null
     }
   ]
 }

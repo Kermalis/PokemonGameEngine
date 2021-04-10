@@ -33,7 +33,15 @@ namespace Kermalis.MapEditor.Core
                 MinLevel = j[nameof(MinLevel)].Value<byte>();
                 MaxLevel = j[nameof(MaxLevel)].Value<byte>();
                 Species = j[nameof(Species)].EnumValue<PBESpecies>();
-                Form = (PBEForm)j[nameof(Form)].Value<byte>(); // Do not use "EnumValue" because strings are bad for forms
+                string strForm = j[nameof(Form)].Value<string>();
+                if (strForm == null)
+                {
+                    Form = 0;
+                }
+                else
+                {
+                    Form = (PBEForm)Enum.Parse(typeof(PBEForm), strForm);
+                }
             }
 
             public void Write(JsonTextWriter w)
@@ -48,7 +56,7 @@ namespace Kermalis.MapEditor.Core
                 w.WritePropertyName(nameof(Species));
                 w.WriteEnum(Species);
                 w.WritePropertyName(nameof(Form));
-                w.WriteValue((byte)Form); // Do not use "WriteEnum" because strings are bad for forms
+                w.WriteValue(PBEDataUtils.GetNameOfForm(Species, Form));
                 w.WriteEndObject();
             }
         }

@@ -6,49 +6,49 @@
       "MinLevel": 33,
       "MaxLevel": 35,
       "Species": "Azumarill",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 20,
       "MinLevel": 25,
       "MaxLevel": 30,
       "Species": "Mantyke",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 5,
       "MinLevel": 20,
       "MaxLevel": 27,
       "Species": "Dratini",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 30,
       "MinLevel": 32,
       "MaxLevel": 36,
       "Species": "Floatzel",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 15,
       "MinLevel": 28,
       "MaxLevel": 31,
       "Species": "Simipour",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 8,
       "MinLevel": 30,
       "MaxLevel": 34,
       "Species": "Masquerain",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 6,
       "MinLevel": 30,
       "MaxLevel": 31,
       "Species": "Gastrodon",
-      "Form": 0
+      "Form": "Gastrodon_West"
     }
   ]
 }

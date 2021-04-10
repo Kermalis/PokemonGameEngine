@@ -6,21 +6,21 @@
       "MinLevel": 15,
       "MaxLevel": 69,
       "Species": "Feebas",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 30,
       "MinLevel": 10,
       "MaxLevel": 20,
       "Species": "Finneon",
-      "Form": 0
+      "Form": null
     },
     {
       "Chance": 80,
       "MinLevel": 12,
       "MaxLevel": 33,
       "Species": "Remoraid",
-      "Form": 0
+      "Form": null
     }
   ]
 }

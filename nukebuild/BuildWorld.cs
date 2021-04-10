@@ -53,7 +53,15 @@ public sealed partial class Build
                 MinLevel = j[nameof(MinLevel)].Value<byte>();
                 MaxLevel = j[nameof(MaxLevel)].Value<byte>();
                 Species = j[nameof(Species)].EnumValue<PBESpecies>();
-                Form = (PBEForm)j[nameof(Form)].Value<byte>(); // Do not use "EnumValue" because strings are bad for forms
+                string strForm = j[nameof(Form)].Value<string>();
+                if (strForm == null)
+                {
+                    Form = 0;
+                }
+                else
+                {
+                    Form = (PBEForm)Enum.Parse(typeof(PBEForm), strForm);
+                }
             }
 
             public void Write(EndianBinaryWriter w)
