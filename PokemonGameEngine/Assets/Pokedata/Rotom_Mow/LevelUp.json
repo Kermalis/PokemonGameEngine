@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Trick",
+      "Level": 1
+    },
+    {
+      "Move": "Astonish",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderWave",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderShock",
+      "Level": 1
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 1
+    },
+    {
+      "Move": "Uproar",
+      "Level": 8
+    },
+    {
+      "Move": "DoubleTeam",
+      "Level": 15
+    },
+    {
+      "Move": "ShockWave",
+      "Level": 22
+    },
+    {
+      "Move": "OminousWind",
+      "Level": 29
+    },
+    {
+      "Move": "Substitute",
+      "Level": 36
+    },
+    {
+      "Move": "ElectroBall",
+      "Level": 43
+    },
+    {
+      "Move": "Hex",
+      "Level": 50
+    },
+    {
+      "Move": "Charge",
+      "Level": 57
+    },
+    {
+      "Move": "Discharge",
+      "Level": 64
+    }
+  ]
+}

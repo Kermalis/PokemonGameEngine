@@ -99,10 +99,9 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             return new BaseStats(species, form);
         }
-        // This can be removed once moves are built
-        /*public override IPBEPokemonDataExtended GetPokemonDataExtended(PBESpecies species, PBEForm form, bool cache = true)
+        public override IPBEPokemonDataExtended GetPokemonDataExtended(PBESpecies species, PBEForm form, bool cache = true)
         {
             throw new InvalidOperationException(); // By default I won't use these systems
-        }*/
+        }
     }
 }

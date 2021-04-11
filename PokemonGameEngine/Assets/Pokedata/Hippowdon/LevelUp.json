@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "IceFang",
+      "Level": 1
+    },
+    {
+      "Move": "FireFang",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderFang",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 1
+    },
+    {
+      "Move": "Yawn",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 7
+    },
+    {
+      "Move": "Yawn",
+      "Level": 13
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 19
+    },
+    {
+      "Move": "Dig",
+      "Level": 19
+    },
+    {
+      "Move": "SandTomb",
+      "Level": 25
+    },
+    {
+      "Move": "Crunch",
+      "Level": 31
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 40
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 50
+    },
+    {
+      "Move": "Fissure",
+      "Level": 60
+    }
+  ]
+}

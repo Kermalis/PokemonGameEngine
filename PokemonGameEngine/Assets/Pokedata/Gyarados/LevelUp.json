@@ -1,0 +1,48 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Thrash",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 20
+    },
+    {
+      "Move": "DragonRage",
+      "Level": 23
+    },
+    {
+      "Move": "Leer",
+      "Level": 26
+    },
+    {
+      "Move": "Twister",
+      "Level": 29
+    },
+    {
+      "Move": "IceFang",
+      "Level": 32
+    },
+    {
+      "Move": "AquaTail",
+      "Level": 35
+    },
+    {
+      "Move": "RainDance",
+      "Level": 38
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 41
+    },
+    {
+      "Move": "DragonDance",
+      "Level": 44
+    },
+    {
+      "Move": "HyperBeam",
+      "Level": 47
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Yawn",
+      "Level": 1
+    },
+    {
+      "Move": "Smog",
+      "Level": 1
+    },
+    {
+      "Move": "Ember",
+      "Level": 5
+    },
+    {
+      "Move": "RockThrow",
+      "Level": 10
+    },
+    {
+      "Move": "Harden",
+      "Level": 14
+    },
+    {
+      "Move": "Recover",
+      "Level": 19
+    },
+    {
+      "Move": "FlameBurst",
+      "Level": 23
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 28
+    },
+    {
+      "Move": "Amnesia",
+      "Level": 32
+    },
+    {
+      "Move": "LavaPlume",
+      "Level": 37
+    },
+    {
+      "Move": "RockSlide",
+      "Level": 41
+    },
+    {
+      "Move": "BodySlam",
+      "Level": 46
+    },
+    {
+      "Move": "Flamethrower",
+      "Level": 50
+    },
+    {
+      "Move": "EarthPower",
+      "Level": 55
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Wrap",
+      "Level": 1
+    },
+    {
+      "Move": "NightShade",
+      "Level": 9
+    },
+    {
+      "Move": "DoubleTeam",
+      "Level": 17
+    },
+    {
+      "Move": "KnockOff",
+      "Level": 25
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 33
+    },
+    {
+      "Move": "Psychic",
+      "Level": 41
+    },
+    {
+      "Move": "Swift",
+      "Level": 49
+    },
+    {
+      "Move": "PsychoShift",
+      "Level": 57
+    },
+    {
+      "Move": "ZenHeadbutt",
+      "Level": 65
+    },
+    {
+      "Move": "Agility",
+      "Level": 73
+    },
+    {
+      "Move": "Recover",
+      "Level": 81
+    },
+    {
+      "Move": "PsychoBoost",
+      "Level": 89
+    },
+    {
+      "Move": "ExtremeSpeed",
+      "Level": 97
+    }
+  ]
+}

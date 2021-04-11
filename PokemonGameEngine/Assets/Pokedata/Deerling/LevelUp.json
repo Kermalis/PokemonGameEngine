@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Camouflage",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 4
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 7
+    },
+    {
+      "Move": "DoubleKick",
+      "Level": 10
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 13
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 16
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 20
+    },
+    {
+      "Move": "JumpKick",
+      "Level": 24
+    },
+    {
+      "Move": "Aromatherapy",
+      "Level": 28
+    },
+    {
+      "Move": "EnergyBall",
+      "Level": 32
+    },
+    {
+      "Move": "Charm",
+      "Level": 36
+    },
+    {
+      "Move": "NaturePower",
+      "Level": 41
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 46
+    },
+    {
+      "Move": "SolarBeam",
+      "Level": 51
+    }
+  ]
+}

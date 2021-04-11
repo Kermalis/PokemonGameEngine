@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 4
+    },
+    {
+      "Move": "ThunderShock",
+      "Level": 7
+    },
+    {
+      "Move": "SonicBoom",
+      "Level": 11
+    },
+    {
+      "Move": "ThunderWave",
+      "Level": 15
+    },
+    {
+      "Move": "MagnetBomb",
+      "Level": 18
+    },
+    {
+      "Move": "Spark",
+      "Level": 21
+    },
+    {
+      "Move": "MirrorShot",
+      "Level": 25
+    },
+    {
+      "Move": "MetalSound",
+      "Level": 29
+    },
+    {
+      "Move": "ElectroBall",
+      "Level": 32
+    },
+    {
+      "Move": "FlashCannon",
+      "Level": 35
+    },
+    {
+      "Move": "Screech",
+      "Level": 39
+    },
+    {
+      "Move": "Discharge",
+      "Level": 43
+    },
+    {
+      "Move": "LockOn",
+      "Level": 46
+    },
+    {
+      "Move": "MagnetRise",
+      "Level": 49
+    },
+    {
+      "Move": "GyroBall",
+      "Level": 53
+    },
+    {
+      "Move": "ZapCannon",
+      "Level": 57
+    }
+  ]
+}

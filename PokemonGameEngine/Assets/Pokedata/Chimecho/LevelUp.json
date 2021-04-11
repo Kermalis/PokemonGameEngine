@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Wrap",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 6
+    },
+    {
+      "Move": "Astonish",
+      "Level": 9
+    },
+    {
+      "Move": "Confusion",
+      "Level": 14
+    },
+    {
+      "Move": "Uproar",
+      "Level": 17
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 22
+    },
+    {
+      "Move": "Yawn",
+      "Level": 25
+    },
+    {
+      "Move": "Psywave",
+      "Level": 30
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 33
+    },
+    {
+      "Move": "HealBell",
+      "Level": 38
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 41
+    },
+    {
+      "Move": "Extrasensory",
+      "Level": 46
+    },
+    {
+      "Move": "HealPulse",
+      "Level": 49
+    },
+    {
+      "Move": "Synchronoise",
+      "Level": 54
+    },
+    {
+      "Move": "HealingWish",
+      "Level": 57
+    }
+  ]
+}

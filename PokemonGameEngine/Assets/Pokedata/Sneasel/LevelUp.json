@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Taunt",
+      "Level": 1
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 8
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 10
+    },
+    {
+      "Move": "IcyWind",
+      "Level": 14
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 16
+    },
+    {
+      "Move": "Agility",
+      "Level": 20
+    },
+    {
+      "Move": "MetalClaw",
+      "Level": 22
+    },
+    {
+      "Move": "HoneClaws",
+      "Level": 25
+    },
+    {
+      "Move": "BeatUp",
+      "Level": 28
+    },
+    {
+      "Move": "Screech",
+      "Level": 32
+    },
+    {
+      "Move": "Slash",
+      "Level": 35
+    },
+    {
+      "Move": "Snatch",
+      "Level": 40
+    },
+    {
+      "Move": "Punishment",
+      "Level": 44
+    },
+    {
+      "Move": "IceShard",
+      "Level": 47
+    }
+  ]
+}

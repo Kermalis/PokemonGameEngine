@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "MudSport",
+      "Level": 1
+    },
+    {
+      "Move": "RapidSpin",
+      "Level": 1
+    },
+    {
+      "Move": "MudSlap",
+      "Level": 1
+    },
+    {
+      "Move": "RapidSpin",
+      "Level": 5
+    },
+    {
+      "Move": "MudSlap",
+      "Level": 8
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 12
+    },
+    {
+      "Move": "MetalClaw",
+      "Level": 15
+    },
+    {
+      "Move": "Dig",
+      "Level": 19
+    },
+    {
+      "Move": "HoneClaws",
+      "Level": 22
+    },
+    {
+      "Move": "Slash",
+      "Level": 26
+    },
+    {
+      "Move": "RockSlide",
+      "Level": 29
+    },
+    {
+      "Move": "HornDrill",
+      "Level": 31
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 36
+    },
+    {
+      "Move": "SwordsDance",
+      "Level": 42
+    },
+    {
+      "Move": "Sandstorm",
+      "Level": 49
+    },
+    {
+      "Move": "DrillRun",
+      "Level": 55
+    },
+    {
+      "Move": "Fissure",
+      "Level": 62
+    }
+  ]
+}

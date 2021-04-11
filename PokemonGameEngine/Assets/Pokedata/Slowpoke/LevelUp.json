@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Curse",
+      "Level": 1
+    },
+    {
+      "Move": "Yawn",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 5
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 9
+    },
+    {
+      "Move": "Confusion",
+      "Level": 14
+    },
+    {
+      "Move": "Disable",
+      "Level": 19
+    },
+    {
+      "Move": "Headbutt",
+      "Level": 23
+    },
+    {
+      "Move": "WaterPulse",
+      "Level": 28
+    },
+    {
+      "Move": "ZenHeadbutt",
+      "Level": 32
+    },
+    {
+      "Move": "SlackOff",
+      "Level": 36
+    },
+    {
+      "Move": "Amnesia",
+      "Level": 41
+    },
+    {
+      "Move": "Psychic",
+      "Level": 45
+    },
+    {
+      "Move": "RainDance",
+      "Level": 49
+    },
+    {
+      "Move": "PsychUp",
+      "Level": 54
+    },
+    {
+      "Move": "HealPulse",
+      "Level": 58
+    }
+  ]
+}

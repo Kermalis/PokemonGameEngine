@@ -1,0 +1,32 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Growth",
+      "Level": 1
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 1
+    },
+    {
+      "Move": "MegaDrain",
+      "Level": 1
+    },
+    {
+      "Move": "CottonSpore",
+      "Level": 1
+    },
+    {
+      "Move": "Gust",
+      "Level": 10
+    },
+    {
+      "Move": "Tailwind",
+      "Level": 28
+    },
+    {
+      "Move": "Hurricane",
+      "Level": 46
+    }
+  ]
+}

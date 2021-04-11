@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "MagicalLeaf",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Charm",
+      "Level": 1
+    },
+    {
+      "Move": "Metronome",
+      "Level": 1
+    },
+    {
+      "Move": "SweetKiss",
+      "Level": 1
+    },
+    {
+      "Move": "Metronome",
+      "Level": 5
+    },
+    {
+      "Move": "SweetKiss",
+      "Level": 9
+    },
+    {
+      "Move": "Yawn",
+      "Level": 13
+    },
+    {
+      "Move": "Encore",
+      "Level": 17
+    },
+    {
+      "Move": "FollowMe",
+      "Level": 21
+    },
+    {
+      "Move": "Bestow",
+      "Level": 25
+    },
+    {
+      "Move": "Wish",
+      "Level": 29
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 33
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 37
+    },
+    {
+      "Move": "BatonPass",
+      "Level": 41
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 45
+    },
+    {
+      "Move": "LastResort",
+      "Level": 49
+    },
+    {
+      "Move": "AfterYou",
+      "Level": 53
+    }
+  ]
+}

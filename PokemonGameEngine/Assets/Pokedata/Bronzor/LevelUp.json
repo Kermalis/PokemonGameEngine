@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Confusion",
+      "Level": 1
+    },
+    {
+      "Move": "Hypnosis",
+      "Level": 5
+    },
+    {
+      "Move": "Imprison",
+      "Level": 9
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 11
+    },
+    {
+      "Move": "Psywave",
+      "Level": 15
+    },
+    {
+      "Move": "IronDefense",
+      "Level": 19
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 21
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 25
+    },
+    {
+      "Move": "FutureSight",
+      "Level": 29
+    },
+    {
+      "Move": "MetalSound",
+      "Level": 31
+    },
+    {
+      "Move": "GyroBall",
+      "Level": 35
+    },
+    {
+      "Move": "Extrasensory",
+      "Level": 39
+    },
+    {
+      "Move": "Payback",
+      "Level": 41
+    },
+    {
+      "Move": "HealBlock",
+      "Level": 45
+    },
+    {
+      "Move": "HeavySlam",
+      "Level": 49
+    }
+  ]
+}

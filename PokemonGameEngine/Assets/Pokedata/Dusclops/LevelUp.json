@@ -1,0 +1,88 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "FirePunch",
+      "Level": 1
+    },
+    {
+      "Move": "IcePunch",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderPunch",
+      "Level": 1
+    },
+    {
+      "Move": "Gravity",
+      "Level": 1
+    },
+    {
+      "Move": "Bind",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "NightShade",
+      "Level": 1
+    },
+    {
+      "Move": "Disable",
+      "Level": 1
+    },
+    {
+      "Move": "Disable",
+      "Level": 6
+    },
+    {
+      "Move": "Foresight",
+      "Level": 9
+    },
+    {
+      "Move": "Astonish",
+      "Level": 14
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 17
+    },
+    {
+      "Move": "ShadowSneak",
+      "Level": 22
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 25
+    },
+    {
+      "Move": "Curse",
+      "Level": 30
+    },
+    {
+      "Move": "WillOWisp",
+      "Level": 33
+    },
+    {
+      "Move": "ShadowPunch",
+      "Level": 37
+    },
+    {
+      "Move": "Hex",
+      "Level": 42
+    },
+    {
+      "Move": "MeanLook",
+      "Level": 49
+    },
+    {
+      "Move": "Payback",
+      "Level": 58
+    },
+    {
+      "Move": "FutureSight",
+      "Level": 61
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "PowderSnow",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 1
+    },
+    {
+      "Move": "Encore",
+      "Level": 1
+    },
+    {
+      "Move": "Encore",
+      "Level": 7
+    },
+    {
+      "Move": "IceBall",
+      "Level": 13
+    },
+    {
+      "Move": "BodySlam",
+      "Level": 19
+    },
+    {
+      "Move": "AuroraBeam",
+      "Level": 25
+    },
+    {
+      "Move": "Hail",
+      "Level": 31
+    },
+    {
+      "Move": "Swagger",
+      "Level": 32
+    },
+    {
+      "Move": "Rest",
+      "Level": 39
+    },
+    {
+      "Move": "Snore",
+      "Level": 39
+    },
+    {
+      "Move": "Blizzard",
+      "Level": 47
+    },
+    {
+      "Move": "SheerCold",
+      "Level": 55
+    }
+  ]
+}

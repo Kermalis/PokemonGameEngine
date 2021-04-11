@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Hypnosis",
+      "Level": 1
+    },
+    {
+      "Move": "Lick",
+      "Level": 1
+    },
+    {
+      "Move": "Spite",
+      "Level": 1
+    },
+    {
+      "Move": "Spite",
+      "Level": 5
+    },
+    {
+      "Move": "MeanLook",
+      "Level": 8
+    },
+    {
+      "Move": "Curse",
+      "Level": 12
+    },
+    {
+      "Move": "NightShade",
+      "Level": 15
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 19
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 22
+    },
+    {
+      "Move": "ShadowPunch",
+      "Level": 25
+    },
+    {
+      "Move": "Payback",
+      "Level": 28
+    },
+    {
+      "Move": "ShadowBall",
+      "Level": 33
+    },
+    {
+      "Move": "DreamEater",
+      "Level": 39
+    },
+    {
+      "Move": "DarkPulse",
+      "Level": 44
+    },
+    {
+      "Move": "DestinyBond",
+      "Level": 50
+    },
+    {
+      "Move": "Hex",
+      "Level": 55
+    },
+    {
+      "Move": "Nightmare",
+      "Level": 61
+    }
+  ]
+}

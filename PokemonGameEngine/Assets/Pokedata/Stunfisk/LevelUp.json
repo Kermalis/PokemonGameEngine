@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "MudSlap",
+      "Level": 1
+    },
+    {
+      "Move": "MudSport",
+      "Level": 1
+    },
+    {
+      "Move": "Bide",
+      "Level": 5
+    },
+    {
+      "Move": "ThunderShock",
+      "Level": 9
+    },
+    {
+      "Move": "MudShot",
+      "Level": 13
+    },
+    {
+      "Move": "Camouflage",
+      "Level": 17
+    },
+    {
+      "Move": "MudBomb",
+      "Level": 21
+    },
+    {
+      "Move": "Discharge",
+      "Level": 25
+    },
+    {
+      "Move": "Endure",
+      "Level": 30
+    },
+    {
+      "Move": "Bounce",
+      "Level": 35
+    },
+    {
+      "Move": "MuddyWater",
+      "Level": 40
+    },
+    {
+      "Move": "Thunderbolt",
+      "Level": 45
+    },
+    {
+      "Move": "Revenge",
+      "Level": 50
+    },
+    {
+      "Move": "Flail",
+      "Level": 55
+    },
+    {
+      "Move": "Fissure",
+      "Level": 61
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Astonish",
+      "Level": 1
+    },
+    {
+      "Move": "FakeTears",
+      "Level": 6
+    },
+    {
+      "Move": "Bite",
+      "Level": 11
+    },
+    {
+      "Move": "SweetScent",
+      "Level": 16
+    },
+    {
+      "Move": "ViceGrip",
+      "Level": 21
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 26
+    },
+    {
+      "Move": "BatonPass",
+      "Level": 31
+    },
+    {
+      "Move": "Crunch",
+      "Level": 36
+    },
+    {
+      "Move": "IronDefense",
+      "Level": 41
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 46
+    },
+    {
+      "Move": "Stockpile",
+      "Level": 51
+    },
+    {
+      "Move": "Swallow",
+      "Level": 51
+    },
+    {
+      "Move": "SpitUp",
+      "Level": 51
+    },
+    {
+      "Move": "IronHead",
+      "Level": 56
+    }
+  ]
+}

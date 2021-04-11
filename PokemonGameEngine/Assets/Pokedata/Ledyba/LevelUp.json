@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 6
+    },
+    {
+      "Move": "CometPunch",
+      "Level": 9
+    },
+    {
+      "Move": "LightScreen",
+      "Level": 14
+    },
+    {
+      "Move": "Reflect",
+      "Level": 14
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 14
+    },
+    {
+      "Move": "MachPunch",
+      "Level": 17
+    },
+    {
+      "Move": "BatonPass",
+      "Level": 22
+    },
+    {
+      "Move": "SilverWind",
+      "Level": 25
+    },
+    {
+      "Move": "Agility",
+      "Level": 30
+    },
+    {
+      "Move": "Swift",
+      "Level": 33
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 38
+    },
+    {
+      "Move": "BugBuzz",
+      "Level": 41
+    }
+  ]
+}

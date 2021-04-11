@@ -1,0 +1,88 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Encore",
+      "Level": 4
+    },
+    {
+      "Move": "Sing",
+      "Level": 7
+    },
+    {
+      "Move": "DoubleSlap",
+      "Level": 10
+    },
+    {
+      "Move": "DefenseCurl",
+      "Level": 13
+    },
+    {
+      "Move": "FollowMe",
+      "Level": 16
+    },
+    {
+      "Move": "Bestow",
+      "Level": 19
+    },
+    {
+      "Move": "WakeUpSlap",
+      "Level": 22
+    },
+    {
+      "Move": "Minimize",
+      "Level": 25
+    },
+    {
+      "Move": "StoredPower",
+      "Level": 28
+    },
+    {
+      "Move": "Metronome",
+      "Level": 31
+    },
+    {
+      "Move": "CosmicPower",
+      "Level": 34
+    },
+    {
+      "Move": "LuckyChant",
+      "Level": 37
+    },
+    {
+      "Move": "BodySlam",
+      "Level": 40
+    },
+    {
+      "Move": "Moonlight",
+      "Level": 43
+    },
+    {
+      "Move": "LightScreen",
+      "Level": 46
+    },
+    {
+      "Move": "Gravity",
+      "Level": 49
+    },
+    {
+      "Move": "MeteorMash",
+      "Level": 52
+    },
+    {
+      "Move": "HealingWish",
+      "Level": 55
+    },
+    {
+      "Move": "AfterYou",
+      "Level": 58
+    }
+  ]
+}

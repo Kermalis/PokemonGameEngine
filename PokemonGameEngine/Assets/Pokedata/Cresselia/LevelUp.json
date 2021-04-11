@@ -1,0 +1,52 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Confusion",
+      "Level": 1
+    },
+    {
+      "Move": "DoubleTeam",
+      "Level": 1
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 11
+    },
+    {
+      "Move": "Mist",
+      "Level": 20
+    },
+    {
+      "Move": "AuroraBeam",
+      "Level": 29
+    },
+    {
+      "Move": "FutureSight",
+      "Level": 38
+    },
+    {
+      "Move": "Slash",
+      "Level": 47
+    },
+    {
+      "Move": "Moonlight",
+      "Level": 57
+    },
+    {
+      "Move": "PsychoCut",
+      "Level": 66
+    },
+    {
+      "Move": "PsychoShift",
+      "Level": 75
+    },
+    {
+      "Move": "LunarDance",
+      "Level": 84
+    },
+    {
+      "Move": "Psychic",
+      "Level": 93
+    }
+  ]
+}

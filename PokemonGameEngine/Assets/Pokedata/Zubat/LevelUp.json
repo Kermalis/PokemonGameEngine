@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "LeechLife",
+      "Level": 1
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 4
+    },
+    {
+      "Move": "Astonish",
+      "Level": 8
+    },
+    {
+      "Move": "Bite",
+      "Level": 12
+    },
+    {
+      "Move": "WingAttack",
+      "Level": 15
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 19
+    },
+    {
+      "Move": "Swift",
+      "Level": 23
+    },
+    {
+      "Move": "AirCutter",
+      "Level": 26
+    },
+    {
+      "Move": "Acrobatics",
+      "Level": 30
+    },
+    {
+      "Move": "MeanLook",
+      "Level": 34
+    },
+    {
+      "Move": "PoisonFang",
+      "Level": 37
+    },
+    {
+      "Move": "Haze",
+      "Level": 41
+    },
+    {
+      "Move": "AirSlash",
+      "Level": 45
+    }
+  ]
+}

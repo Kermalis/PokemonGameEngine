@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 5
+    },
+    {
+      "Move": "FakeTears",
+      "Level": 9
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 13
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 17
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 21
+    },
+    {
+      "Move": "Taunt",
+      "Level": 25
+    },
+    {
+      "Move": "FoulPlay",
+      "Level": 29
+    },
+    {
+      "Move": "Torment",
+      "Level": 33
+    },
+    {
+      "Move": "Agility",
+      "Level": 37
+    },
+    {
+      "Move": "Embargo",
+      "Level": 41
+    },
+    {
+      "Move": "Punishment",
+      "Level": 45
+    },
+    {
+      "Move": "NastyPlot",
+      "Level": 49
+    },
+    {
+      "Move": "Imprison",
+      "Level": 53
+    },
+    {
+      "Move": "NightDaze",
+      "Level": 57
+    }
+  ]
+}

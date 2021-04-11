@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "QuickAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "WingAttack",
+      "Level": 1
+    },
+    {
+      "Move": "RockThrow",
+      "Level": 5
+    },
+    {
+      "Move": "DoubleTeam",
+      "Level": 8
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 11
+    },
+    {
+      "Move": "Pluck",
+      "Level": 15
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 18
+    },
+    {
+      "Move": "Agility",
+      "Level": 21
+    },
+    {
+      "Move": "QuickGuard",
+      "Level": 25
+    },
+    {
+      "Move": "Acrobatics",
+      "Level": 28
+    },
+    {
+      "Move": "DragonBreath",
+      "Level": 31
+    },
+    {
+      "Move": "Crunch",
+      "Level": 35
+    },
+    {
+      "Move": "Endeavor",
+      "Level": 38
+    },
+    {
+      "Move": "Uturn",
+      "Level": 41
+    },
+    {
+      "Move": "RockSlide",
+      "Level": 45
+    },
+    {
+      "Move": "DragonClaw",
+      "Level": 48
+    },
+    {
+      "Move": "Thrash",
+      "Level": 51
+    }
+  ]
+}

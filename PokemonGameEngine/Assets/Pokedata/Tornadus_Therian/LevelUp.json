@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Uproar",
+      "Level": 1
+    },
+    {
+      "Move": "Astonish",
+      "Level": 1
+    },
+    {
+      "Move": "Gust",
+      "Level": 1
+    },
+    {
+      "Move": "Swagger",
+      "Level": 7
+    },
+    {
+      "Move": "Bite",
+      "Level": 13
+    },
+    {
+      "Move": "Revenge",
+      "Level": 19
+    },
+    {
+      "Move": "AirCutter",
+      "Level": 25
+    },
+    {
+      "Move": "Extrasensory",
+      "Level": 31
+    },
+    {
+      "Move": "Agility",
+      "Level": 37
+    },
+    {
+      "Move": "AirSlash",
+      "Level": 43
+    },
+    {
+      "Move": "Crunch",
+      "Level": 49
+    },
+    {
+      "Move": "Tailwind",
+      "Level": 55
+    },
+    {
+      "Move": "RainDance",
+      "Level": 61
+    },
+    {
+      "Move": "Hurricane",
+      "Level": 67
+    },
+    {
+      "Move": "DarkPulse",
+      "Level": 73
+    },
+    {
+      "Move": "HammerArm",
+      "Level": 79
+    },
+    {
+      "Move": "Thrash",
+      "Level": 85
+    }
+  ]
+}

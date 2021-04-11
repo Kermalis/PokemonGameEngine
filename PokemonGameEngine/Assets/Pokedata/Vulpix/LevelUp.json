@@ -1,0 +1,80 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Ember",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 4
+    },
+    {
+      "Move": "Roar",
+      "Level": 7
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 10
+    },
+    {
+      "Move": "FireSpin",
+      "Level": 12
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 15
+    },
+    {
+      "Move": "Imprison",
+      "Level": 18
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 20
+    },
+    {
+      "Move": "FlameBurst",
+      "Level": 23
+    },
+    {
+      "Move": "WillOWisp",
+      "Level": 26
+    },
+    {
+      "Move": "Hex",
+      "Level": 28
+    },
+    {
+      "Move": "Payback",
+      "Level": 31
+    },
+    {
+      "Move": "Flamethrower",
+      "Level": 34
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 36
+    },
+    {
+      "Move": "Extrasensory",
+      "Level": 39
+    },
+    {
+      "Move": "FireBlast",
+      "Level": 42
+    },
+    {
+      "Move": "Grudge",
+      "Level": 44
+    },
+    {
+      "Move": "Captivate",
+      "Level": 47
+    },
+    {
+      "Move": "Inferno",
+      "Level": 50
+    }
+  ]
+}

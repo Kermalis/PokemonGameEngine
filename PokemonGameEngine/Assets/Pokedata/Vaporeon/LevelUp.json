@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "HelpingHand",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 5
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 9
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 13
+    },
+    {
+      "Move": "WaterPulse",
+      "Level": 17
+    },
+    {
+      "Move": "AuroraBeam",
+      "Level": 21
+    },
+    {
+      "Move": "AquaRing",
+      "Level": 25
+    },
+    {
+      "Move": "AcidArmor",
+      "Level": 29
+    },
+    {
+      "Move": "Haze",
+      "Level": 33
+    },
+    {
+      "Move": "MuddyWater",
+      "Level": 37
+    },
+    {
+      "Move": "LastResort",
+      "Level": 41
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 45
+    }
+  ]
+}

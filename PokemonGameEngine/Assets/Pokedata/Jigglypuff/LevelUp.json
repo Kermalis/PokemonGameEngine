@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Sing",
+      "Level": 1
+    },
+    {
+      "Move": "DefenseCurl",
+      "Level": 5
+    },
+    {
+      "Move": "Pound",
+      "Level": 9
+    },
+    {
+      "Move": "Disable",
+      "Level": 13
+    },
+    {
+      "Move": "Round",
+      "Level": 17
+    },
+    {
+      "Move": "Rollout",
+      "Level": 21
+    },
+    {
+      "Move": "DoubleSlap",
+      "Level": 25
+    },
+    {
+      "Move": "Rest",
+      "Level": 29
+    },
+    {
+      "Move": "BodySlam",
+      "Level": 33
+    },
+    {
+      "Move": "GyroBall",
+      "Level": 37
+    },
+    {
+      "Move": "WakeUpSlap",
+      "Level": 41
+    },
+    {
+      "Move": "Mimic",
+      "Level": 45
+    },
+    {
+      "Move": "HyperVoice",
+      "Level": 49
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 53
+    }
+  ]
+}

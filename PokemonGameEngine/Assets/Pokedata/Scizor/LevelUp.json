@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "BulletPunch",
+      "Level": 1
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 5
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 9
+    },
+    {
+      "Move": "FalseSwipe",
+      "Level": 13
+    },
+    {
+      "Move": "Agility",
+      "Level": 17
+    },
+    {
+      "Move": "MetalClaw",
+      "Level": 21
+    },
+    {
+      "Move": "FuryCutter",
+      "Level": 25
+    },
+    {
+      "Move": "Slash",
+      "Level": 29
+    },
+    {
+      "Move": "RazorWind",
+      "Level": 33
+    },
+    {
+      "Move": "IronDefense",
+      "Level": 37
+    },
+    {
+      "Move": "XScissor",
+      "Level": 41
+    },
+    {
+      "Move": "NightSlash",
+      "Level": 45
+    },
+    {
+      "Move": "DoubleHit",
+      "Level": 49
+    },
+    {
+      "Move": "IronHead",
+      "Level": 53
+    },
+    {
+      "Move": "SwordsDance",
+      "Level": 57
+    },
+    {
+      "Move": "Feint",
+      "Level": 61
+    }
+  ]
+}

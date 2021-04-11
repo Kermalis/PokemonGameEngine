@@ -1,0 +1,80 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Feint",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 1
+    },
+    {
+      "Move": "Rage",
+      "Level": 1
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 1
+    },
+    {
+      "Move": "Rage",
+      "Level": 6
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 8
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 11
+    },
+    {
+      "Move": "IceFang",
+      "Level": 16
+    },
+    {
+      "Move": "Screech",
+      "Level": 18
+    },
+    {
+      "Move": "Swagger",
+      "Level": 21
+    },
+    {
+      "Move": "Assurance",
+      "Level": 26
+    },
+    {
+      "Move": "Crunch",
+      "Level": 28
+    },
+    {
+      "Move": "Slash",
+      "Level": 30
+    },
+    {
+      "Move": "AquaJet",
+      "Level": 34
+    },
+    {
+      "Move": "Taunt",
+      "Level": 40
+    },
+    {
+      "Move": "Agility",
+      "Level": 45
+    },
+    {
+      "Move": "SkullBash",
+      "Level": 50
+    },
+    {
+      "Move": "NightSlash",
+      "Level": 56
+    }
+  ]
+}

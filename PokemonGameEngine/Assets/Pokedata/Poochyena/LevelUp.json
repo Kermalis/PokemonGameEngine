@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Howl",
+      "Level": 5
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 9
+    },
+    {
+      "Move": "Bite",
+      "Level": 13
+    },
+    {
+      "Move": "OdorSleuth",
+      "Level": 17
+    },
+    {
+      "Move": "Roar",
+      "Level": 21
+    },
+    {
+      "Move": "Swagger",
+      "Level": 25
+    },
+    {
+      "Move": "Assurance",
+      "Level": 29
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 33
+    },
+    {
+      "Move": "Taunt",
+      "Level": 37
+    },
+    {
+      "Move": "Embargo",
+      "Level": 41
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 45
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 49
+    },
+    {
+      "Move": "Crunch",
+      "Level": 53
+    }
+  ]
+}

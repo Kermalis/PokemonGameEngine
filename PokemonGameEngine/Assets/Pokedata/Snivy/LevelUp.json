@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 4
+    },
+    {
+      "Move": "VineWhip",
+      "Level": 7
+    },
+    {
+      "Move": "Wrap",
+      "Level": 10
+    },
+    {
+      "Move": "Growth",
+      "Level": 13
+    },
+    {
+      "Move": "LeafTornado",
+      "Level": 16
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 19
+    },
+    {
+      "Move": "MegaDrain",
+      "Level": 22
+    },
+    {
+      "Move": "Slam",
+      "Level": 25
+    },
+    {
+      "Move": "LeafBlade",
+      "Level": 28
+    },
+    {
+      "Move": "Coil",
+      "Level": 31
+    },
+    {
+      "Move": "GigaDrain",
+      "Level": 34
+    },
+    {
+      "Move": "WringOut",
+      "Level": 37
+    },
+    {
+      "Move": "GastroAcid",
+      "Level": 40
+    },
+    {
+      "Move": "LeafStorm",
+      "Level": 43
+    }
+  ]
+}

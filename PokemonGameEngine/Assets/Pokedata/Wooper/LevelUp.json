@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "WaterGun",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 1
+    },
+    {
+      "Move": "MudSport",
+      "Level": 5
+    },
+    {
+      "Move": "MudShot",
+      "Level": 9
+    },
+    {
+      "Move": "Slam",
+      "Level": 15
+    },
+    {
+      "Move": "MudBomb",
+      "Level": 19
+    },
+    {
+      "Move": "Amnesia",
+      "Level": 23
+    },
+    {
+      "Move": "Yawn",
+      "Level": 29
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 33
+    },
+    {
+      "Move": "RainDance",
+      "Level": 37
+    },
+    {
+      "Move": "Mist",
+      "Level": 43
+    },
+    {
+      "Move": "Haze",
+      "Level": 43
+    },
+    {
+      "Move": "MuddyWater",
+      "Level": 47
+    }
+  ]
+}

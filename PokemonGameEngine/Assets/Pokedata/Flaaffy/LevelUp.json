@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderWave",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderShock",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderWave",
+      "Level": 4
+    },
+    {
+      "Move": "ThunderShock",
+      "Level": 8
+    },
+    {
+      "Move": "CottonSpore",
+      "Level": 11
+    },
+    {
+      "Move": "Charge",
+      "Level": 16
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 20
+    },
+    {
+      "Move": "ElectroBall",
+      "Level": 25
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 29
+    },
+    {
+      "Move": "PowerGem",
+      "Level": 34
+    },
+    {
+      "Move": "Discharge",
+      "Level": 38
+    },
+    {
+      "Move": "CottonGuard",
+      "Level": 43
+    },
+    {
+      "Move": "SignalBeam",
+      "Level": 47
+    },
+    {
+      "Move": "LightScreen",
+      "Level": 52
+    },
+    {
+      "Move": "Thunder",
+      "Level": 56
+    }
+  ]
+}

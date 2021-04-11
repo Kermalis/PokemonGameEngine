@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Bite",
+      "Level": 1
+    },
+    {
+      "Move": "Roar",
+      "Level": 1
+    },
+    {
+      "Move": "Ember",
+      "Level": 6
+    },
+    {
+      "Move": "Leer",
+      "Level": 8
+    },
+    {
+      "Move": "OdorSleuth",
+      "Level": 10
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 12
+    },
+    {
+      "Move": "FlameWheel",
+      "Level": 17
+    },
+    {
+      "Move": "Reversal",
+      "Level": 19
+    },
+    {
+      "Move": "FireFang",
+      "Level": 21
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 23
+    },
+    {
+      "Move": "FlameBurst",
+      "Level": 28
+    },
+    {
+      "Move": "Agility",
+      "Level": 30
+    },
+    {
+      "Move": "Retaliate",
+      "Level": 32
+    },
+    {
+      "Move": "Flamethrower",
+      "Level": 34
+    },
+    {
+      "Move": "Crunch",
+      "Level": 39
+    },
+    {
+      "Move": "HeatWave",
+      "Level": 41
+    },
+    {
+      "Move": "Outrage",
+      "Level": 43
+    },
+    {
+      "Move": "FlareBlitz",
+      "Level": 45
+    }
+  ]
+}

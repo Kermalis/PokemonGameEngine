@@ -1,0 +1,80 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Ember",
+      "Level": 1
+    },
+    {
+      "Move": "Astonish",
+      "Level": 1
+    },
+    {
+      "Move": "Minimize",
+      "Level": 1
+    },
+    {
+      "Move": "Smog",
+      "Level": 1
+    },
+    {
+      "Move": "Minimize",
+      "Level": 3
+    },
+    {
+      "Move": "Smog",
+      "Level": 5
+    },
+    {
+      "Move": "FireSpin",
+      "Level": 7
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 10
+    },
+    {
+      "Move": "NightShade",
+      "Level": 13
+    },
+    {
+      "Move": "WillOWisp",
+      "Level": 16
+    },
+    {
+      "Move": "FlameBurst",
+      "Level": 20
+    },
+    {
+      "Move": "Imprison",
+      "Level": 24
+    },
+    {
+      "Move": "Hex",
+      "Level": 28
+    },
+    {
+      "Move": "Memento",
+      "Level": 33
+    },
+    {
+      "Move": "Inferno",
+      "Level": 38
+    },
+    {
+      "Move": "Curse",
+      "Level": 45
+    },
+    {
+      "Move": "ShadowBall",
+      "Level": 53
+    },
+    {
+      "Move": "PainSplit",
+      "Level": 61
+    },
+    {
+      "Move": "Overheat",
+      "Level": 69
+    }
+  ]
+}

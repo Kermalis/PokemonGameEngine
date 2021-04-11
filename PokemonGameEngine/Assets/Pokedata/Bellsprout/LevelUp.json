@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "VineWhip",
+      "Level": 1
+    },
+    {
+      "Move": "Growth",
+      "Level": 7
+    },
+    {
+      "Move": "Wrap",
+      "Level": 11
+    },
+    {
+      "Move": "SleepPowder",
+      "Level": 13
+    },
+    {
+      "Move": "PoisonPowder",
+      "Level": 15
+    },
+    {
+      "Move": "StunSpore",
+      "Level": 17
+    },
+    {
+      "Move": "Acid",
+      "Level": 23
+    },
+    {
+      "Move": "KnockOff",
+      "Level": 27
+    },
+    {
+      "Move": "SweetScent",
+      "Level": 29
+    },
+    {
+      "Move": "GastroAcid",
+      "Level": 35
+    },
+    {
+      "Move": "RazorLeaf",
+      "Level": 39
+    },
+    {
+      "Move": "Slam",
+      "Level": 41
+    },
+    {
+      "Move": "WringOut",
+      "Level": 47
+    }
+  ]
+}

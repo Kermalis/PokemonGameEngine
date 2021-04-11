@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "WaterSport",
+      "Level": 1
+    },
+    {
+      "Move": "AquaRing",
+      "Level": 5
+    },
+    {
+      "Move": "AquaJet",
+      "Level": 9
+    },
+    {
+      "Move": "DoubleSlap",
+      "Level": 13
+    },
+    {
+      "Move": "HealPulse",
+      "Level": 17
+    },
+    {
+      "Move": "Protect",
+      "Level": 21
+    },
+    {
+      "Move": "WaterPulse",
+      "Level": 25
+    },
+    {
+      "Move": "WakeUpSlap",
+      "Level": 29
+    },
+    {
+      "Move": "Soak",
+      "Level": 33
+    },
+    {
+      "Move": "Wish",
+      "Level": 37
+    },
+    {
+      "Move": "Brine",
+      "Level": 41
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 45
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 49
+    },
+    {
+      "Move": "WideGuard",
+      "Level": 53
+    },
+    {
+      "Move": "HealingWish",
+      "Level": 57
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 61
+    }
+  ]
+}

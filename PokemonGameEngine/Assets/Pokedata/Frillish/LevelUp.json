@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Bubble",
+      "Level": 1
+    },
+    {
+      "Move": "WaterSport",
+      "Level": 1
+    },
+    {
+      "Move": "Absorb",
+      "Level": 5
+    },
+    {
+      "Move": "NightShade",
+      "Level": 9
+    },
+    {
+      "Move": "BubbleBeam",
+      "Level": 13
+    },
+    {
+      "Move": "Recover",
+      "Level": 17
+    },
+    {
+      "Move": "WaterPulse",
+      "Level": 22
+    },
+    {
+      "Move": "OminousWind",
+      "Level": 27
+    },
+    {
+      "Move": "Brine",
+      "Level": 32
+    },
+    {
+      "Move": "RainDance",
+      "Level": 37
+    },
+    {
+      "Move": "Hex",
+      "Level": 43
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 49
+    },
+    {
+      "Move": "WringOut",
+      "Level": 55
+    },
+    {
+      "Move": "WaterSpout",
+      "Level": 61
+    }
+  ]
+}

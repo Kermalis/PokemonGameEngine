@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 5
+    },
+    {
+      "Move": "Gust",
+      "Level": 9
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 13
+    },
+    {
+      "Move": "Whirlwind",
+      "Level": 17
+    },
+    {
+      "Move": "Twister",
+      "Level": 21
+    },
+    {
+      "Move": "FeatherDance",
+      "Level": 25
+    },
+    {
+      "Move": "Agility",
+      "Level": 29
+    },
+    {
+      "Move": "WingAttack",
+      "Level": 33
+    },
+    {
+      "Move": "Roost",
+      "Level": 37
+    },
+    {
+      "Move": "Tailwind",
+      "Level": 41
+    },
+    {
+      "Move": "MirrorMove",
+      "Level": 45
+    },
+    {
+      "Move": "AirSlash",
+      "Level": 49
+    },
+    {
+      "Move": "Hurricane",
+      "Level": 53
+    }
+  ]
+}

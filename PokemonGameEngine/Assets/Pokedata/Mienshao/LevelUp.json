@@ -1,0 +1,80 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "Meditate",
+      "Level": 1
+    },
+    {
+      "Move": "Detect",
+      "Level": 1
+    },
+    {
+      "Move": "FakeOut",
+      "Level": 1
+    },
+    {
+      "Move": "Meditate",
+      "Level": 5
+    },
+    {
+      "Move": "Detect",
+      "Level": 9
+    },
+    {
+      "Move": "FakeOut",
+      "Level": 13
+    },
+    {
+      "Move": "DoubleSlap",
+      "Level": 17
+    },
+    {
+      "Move": "Swift",
+      "Level": 21
+    },
+    {
+      "Move": "CalmMind",
+      "Level": 25
+    },
+    {
+      "Move": "ForcePalm",
+      "Level": 29
+    },
+    {
+      "Move": "DrainPunch",
+      "Level": 33
+    },
+    {
+      "Move": "JumpKick",
+      "Level": 37
+    },
+    {
+      "Move": "Uturn",
+      "Level": 41
+    },
+    {
+      "Move": "WideGuard",
+      "Level": 45
+    },
+    {
+      "Move": "Bounce",
+      "Level": 49
+    },
+    {
+      "Move": "HiJumpKick",
+      "Level": 56
+    },
+    {
+      "Move": "Reversal",
+      "Level": 63
+    },
+    {
+      "Move": "AuraSphere",
+      "Level": 70
+    }
+  ]
+}

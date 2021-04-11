@@ -1,0 +1,52 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "FuryAttack",
+      "Level": 1
+    },
+    {
+      "Move": "FuryAttack",
+      "Level": 10
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 13
+    },
+    {
+      "Move": "Twineedle",
+      "Level": 16
+    },
+    {
+      "Move": "Rage",
+      "Level": 19
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 22
+    },
+    {
+      "Move": "ToxicSpikes",
+      "Level": 25
+    },
+    {
+      "Move": "PinMissile",
+      "Level": 28
+    },
+    {
+      "Move": "Agility",
+      "Level": 31
+    },
+    {
+      "Move": "Assurance",
+      "Level": 34
+    },
+    {
+      "Move": "PoisonJab",
+      "Level": 37
+    },
+    {
+      "Move": "Endeavor",
+      "Level": 40
+    }
+  ]
+}

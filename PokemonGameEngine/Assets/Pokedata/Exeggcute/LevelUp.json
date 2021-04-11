@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Barrage",
+      "Level": 1
+    },
+    {
+      "Move": "Uproar",
+      "Level": 1
+    },
+    {
+      "Move": "Hypnosis",
+      "Level": 1
+    },
+    {
+      "Move": "Reflect",
+      "Level": 7
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 11
+    },
+    {
+      "Move": "BulletSeed",
+      "Level": 17
+    },
+    {
+      "Move": "StunSpore",
+      "Level": 19
+    },
+    {
+      "Move": "PoisonPowder",
+      "Level": 21
+    },
+    {
+      "Move": "SleepPowder",
+      "Level": 23
+    },
+    {
+      "Move": "Confusion",
+      "Level": 27
+    },
+    {
+      "Move": "WorrySeed",
+      "Level": 33
+    },
+    {
+      "Move": "NaturalGift",
+      "Level": 37
+    },
+    {
+      "Move": "SolarBeam",
+      "Level": 43
+    },
+    {
+      "Move": "Extrasensory",
+      "Level": 47
+    },
+    {
+      "Move": "Bestow",
+      "Level": 53
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "FakeOut",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Foresight",
+      "Level": 4
+    },
+    {
+      "Move": "Attract",
+      "Level": 8
+    },
+    {
+      "Move": "Sing",
+      "Level": 11
+    },
+    {
+      "Move": "DoubleSlap",
+      "Level": 15
+    },
+    {
+      "Move": "Copycat",
+      "Level": 18
+    },
+    {
+      "Move": "Assist",
+      "Level": 22
+    },
+    {
+      "Move": "Charm",
+      "Level": 25
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 29
+    },
+    {
+      "Move": "WakeUpSlap",
+      "Level": 32
+    },
+    {
+      "Move": "Covet",
+      "Level": 36
+    },
+    {
+      "Move": "HealBell",
+      "Level": 39
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 42
+    },
+    {
+      "Move": "Captivate",
+      "Level": 46
+    }
+  ]
+}

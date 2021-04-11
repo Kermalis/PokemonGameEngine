@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Peck",
+      "Level": 1
+    },
+    {
+      "Move": "Absorb",
+      "Level": 1
+    },
+    {
+      "Move": "SweetScent",
+      "Level": 3
+    },
+    {
+      "Move": "Growth",
+      "Level": 6
+    },
+    {
+      "Move": "PinMissile",
+      "Level": 10
+    },
+    {
+      "Move": "MegaDrain",
+      "Level": 13
+    },
+    {
+      "Move": "Synthesis",
+      "Level": 15
+    },
+    {
+      "Move": "CottonSpore",
+      "Level": 18
+    },
+    {
+      "Move": "NeedleArm",
+      "Level": 22
+    },
+    {
+      "Move": "GigaDrain",
+      "Level": 26
+    },
+    {
+      "Move": "Acupressure",
+      "Level": 29
+    },
+    {
+      "Move": "Ingrain",
+      "Level": 33
+    },
+    {
+      "Move": "PetalDance",
+      "Level": 38
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 42
+    },
+    {
+      "Move": "SunnyDay",
+      "Level": 45
+    },
+    {
+      "Move": "SolarBeam",
+      "Level": 50
+    },
+    {
+      "Move": "CottonGuard",
+      "Level": 55
+    },
+    {
+      "Move": "AfterYou",
+      "Level": 57
+    }
+  ]
+}

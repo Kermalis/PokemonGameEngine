@@ -1,0 +1,84 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Teleport",
+      "Level": 1
+    },
+    {
+      "Move": "Harden",
+      "Level": 1
+    },
+    {
+      "Move": "Confusion",
+      "Level": 1
+    },
+    {
+      "Move": "RapidSpin",
+      "Level": 1
+    },
+    {
+      "Move": "RapidSpin",
+      "Level": 4
+    },
+    {
+      "Move": "MudSlap",
+      "Level": 7
+    },
+    {
+      "Move": "RockTomb",
+      "Level": 10
+    },
+    {
+      "Move": "Psybeam",
+      "Level": 13
+    },
+    {
+      "Move": "PowerTrick",
+      "Level": 17
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 21
+    },
+    {
+      "Move": "Selfdestruct",
+      "Level": 25
+    },
+    {
+      "Move": "Extrasensory",
+      "Level": 28
+    },
+    {
+      "Move": "CosmicPower",
+      "Level": 31
+    },
+    {
+      "Move": "GuardSplit",
+      "Level": 34
+    },
+    {
+      "Move": "PowerSplit",
+      "Level": 34
+    },
+    {
+      "Move": "HyperBeam",
+      "Level": 36
+    },
+    {
+      "Move": "EarthPower",
+      "Level": 40
+    },
+    {
+      "Move": "Sandstorm",
+      "Level": 47
+    },
+    {
+      "Move": "HealBlock",
+      "Level": 54
+    },
+    {
+      "Move": "Explosion",
+      "Level": 61
+    }
+  ]
+}

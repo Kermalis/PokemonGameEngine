@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 1
+    },
+    {
+      "Move": "Bide",
+      "Level": 1
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 4
+    },
+    {
+      "Move": "Bide",
+      "Level": 8
+    },
+    {
+      "Move": "LowKick",
+      "Level": 12
+    },
+    {
+      "Move": "RockThrow",
+      "Level": 16
+    },
+    {
+      "Move": "WakeUpSlap",
+      "Level": 20
+    },
+    {
+      "Move": "ChipAway",
+      "Level": 24
+    },
+    {
+      "Move": "BulkUp",
+      "Level": 29
+    },
+    {
+      "Move": "RockSlide",
+      "Level": 33
+    },
+    {
+      "Move": "DynamicPunch",
+      "Level": 37
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 41
+    },
+    {
+      "Move": "HammerArm",
+      "Level": 45
+    },
+    {
+      "Move": "StoneEdge",
+      "Level": 49
+    },
+    {
+      "Move": "FocusPunch",
+      "Level": 53
+    },
+    {
+      "Move": "Superpower",
+      "Level": 57
+    }
+  ]
+}

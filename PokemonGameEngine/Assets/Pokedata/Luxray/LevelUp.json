@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Charge",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 5
+    },
+    {
+      "Move": "Charge",
+      "Level": 9
+    },
+    {
+      "Move": "Spark",
+      "Level": 13
+    },
+    {
+      "Move": "Bite",
+      "Level": 18
+    },
+    {
+      "Move": "Roar",
+      "Level": 23
+    },
+    {
+      "Move": "Swagger",
+      "Level": 28
+    },
+    {
+      "Move": "ThunderFang",
+      "Level": 35
+    },
+    {
+      "Move": "Crunch",
+      "Level": 42
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 49
+    },
+    {
+      "Move": "Discharge",
+      "Level": 56
+    },
+    {
+      "Move": "WildCharge",
+      "Level": 63
+    }
+  ]
+}

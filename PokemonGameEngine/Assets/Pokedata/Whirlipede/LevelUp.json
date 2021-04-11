@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "DefenseCurl",
+      "Level": 1
+    },
+    {
+      "Move": "Rollout",
+      "Level": 1
+    },
+    {
+      "Move": "PoisonSting",
+      "Level": 1
+    },
+    {
+      "Move": "Screech",
+      "Level": 1
+    },
+    {
+      "Move": "PoisonSting",
+      "Level": 5
+    },
+    {
+      "Move": "Screech",
+      "Level": 8
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 12
+    },
+    {
+      "Move": "Protect",
+      "Level": 15
+    },
+    {
+      "Move": "PoisonTail",
+      "Level": 19
+    },
+    {
+      "Move": "IronDefense",
+      "Level": 22
+    },
+    {
+      "Move": "BugBite",
+      "Level": 23
+    },
+    {
+      "Move": "Venoshock",
+      "Level": 28
+    },
+    {
+      "Move": "Agility",
+      "Level": 32
+    },
+    {
+      "Move": "Steamroller",
+      "Level": 37
+    },
+    {
+      "Move": "Toxic",
+      "Level": 41
+    },
+    {
+      "Move": "RockClimb",
+      "Level": 46
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 50
+    }
+  ]
+}

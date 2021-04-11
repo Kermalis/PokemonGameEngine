@@ -45,10 +45,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public ushort SpDefense { get; private set; }
         public ushort Speed { get; private set; }
 
-        public uint PID { get; } = (uint)PBEDataProvider.GlobalRandom.RandomInt(); // Currently only used for Spinda spots; has no other effect
+        public uint PID { get; private set; } // Currently only used for Spinda spots; has no other effect
 
         public PartyPokemon(PBESpecies species, PBEForm form, byte level)
         {
+            RandomPID();
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
             Species = species;
             Form = form;
@@ -70,6 +71,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public PartyPokemon(EncounterTable.Encounter encounter)
         {
+            RandomPID();
             Species = encounter.Species;
             Form = encounter.Form;
             IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(this);
@@ -88,6 +90,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public PartyPokemon(BoxPokemon other)
         {
+            PID = other.PID;
             Species = other.Species;
             Form = other.Form;
             Nickname = other.Nickname;
@@ -104,6 +107,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             UpdateTimeBasedForms(DateTime.Now);
             CalcStats();
             SetMaxHP();
+        }
+
+        private void RandomPID()
+        {
+            PID = (uint)PBEDataProvider.GlobalRandom.RandomInt();
         }
 
         public void SetMaxHP()
@@ -143,9 +151,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
 
         // Temp function to get completely random moves
-        public void RandomizeMoves()
+        public void Debug_RandomizeMoves()
         {
-            var moves = new List<PBEMove>(PBELegalityChecker.GetLegalMoves(Species, Form, Level, PkmnConstants.PBESettings));
+            var moves = new List<PBEMove>(new LevelUpData(Species, Form).Moves.Where(t => t.Level <= Level && PBEDataUtils.IsMoveUsable(t.Move)).Select(t => t.Move).Distinct());
             for (int i = 0; i < PkmnConstants.NumMoves; i++)
             {
                 Moveset[i].Clear();
@@ -160,11 +168,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 slot.SetMaxPP();
             }
         }
-        private void SetWildMoves(IPBEPokemonDataExtended pData)
+        private void SetWildMoves()
         {
-            // Get last 4 moves that can be learned by level up, with no repeats (such as Sketch)
-            PBEMove[] moves = pData.LevelUpMoves.Where(t => t.Level <= Level && t.ObtainMethod.HasFlag(PBEMoveObtainMethod.LevelUp_B2W2) && PBEDataUtils.IsMoveUsable(t.Move))
-                .Select(t => t.Move).Distinct().Reverse().Take(PkmnConstants.NumMoves).ToArray();
+            PBEMove[] moves = new LevelUpData(Species, Form).GetWildMoves(Level);
             for (int i = 0; i < PkmnConstants.NumMoves; i++)
             {
                 Moveset[i].Clear();
@@ -177,11 +183,16 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 slot.SetMaxPP();
             }
         }
-        private void SetWildMoves()
-        {
-            SetWildMoves(PBEDataProvider.Instance.GetPokemonDataExtended(this));
-        }
 
+        private void UpdateAbilityAndCalcStatsAfterFormChange()
+        {
+            var bs = new BaseStats(Species, Form);
+            CalcStats(bs.Stats);
+            if (!bs.Abilities.Contains(Ability))
+            {
+                Ability = bs.Abilities[0];
+            }
+        }
         // TODO: Burmy areas. (Giratina would work similarly if you wanted, with an additional || for the orb)
         public void UpdateTimeBasedForms(DateTime time)
         {
@@ -196,14 +207,16 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             if (Species == PBESpecies.Deerling || Species == PBESpecies.Sawsbuck)
             {
-                Form = season.ToDeerlingSawsbuckForm(); // TODO: Update stats/ability
+                Form = season.ToDeerlingSawsbuckForm();
+                UpdateAbilityAndCalcStatsAfterFormChange();
             }
         }
         public void UpdateShayminForm(TimeOfDay tod)
         {
             if (tod == TimeOfDay.Night && Species == PBESpecies.Shaymin && Form == PBEForm.Shaymin_Sky)
             {
-                Form = PBEForm.Shaymin; // TODO: Update stats/ability
+                Form = PBEForm.Shaymin;
+                UpdateAbilityAndCalcStatsAfterFormChange();
             }
         }
 

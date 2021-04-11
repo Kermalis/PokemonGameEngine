@@ -1,0 +1,24 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "WaterGun",
+      "Level": 1
+    },
+    {
+      "Move": "RapidSpin",
+      "Level": 1
+    },
+    {
+      "Move": "Recover",
+      "Level": 1
+    },
+    {
+      "Move": "Swift",
+      "Level": 1
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 22
+    }
+  ]
+}

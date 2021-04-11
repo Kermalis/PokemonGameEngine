@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Astonish",
+      "Level": 1
+    },
+    {
+      "Move": "Protect",
+      "Level": 1
+    },
+    {
+      "Move": "Disable",
+      "Level": 1
+    },
+    {
+      "Move": "Haze",
+      "Level": 1
+    },
+    {
+      "Move": "Disable",
+      "Level": 5
+    },
+    {
+      "Move": "Haze",
+      "Level": 9
+    },
+    {
+      "Move": "NightShade",
+      "Level": 13
+    },
+    {
+      "Move": "Hex",
+      "Level": 17
+    },
+    {
+      "Move": "WillOWisp",
+      "Level": 21
+    },
+    {
+      "Move": "OminousWind",
+      "Level": 25
+    },
+    {
+      "Move": "Curse",
+      "Level": 29
+    },
+    {
+      "Move": "PowerSplit",
+      "Level": 33
+    },
+    {
+      "Move": "GuardSplit",
+      "Level": 33
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 34
+    },
+    {
+      "Move": "ShadowBall",
+      "Level": 39
+    },
+    {
+      "Move": "Grudge",
+      "Level": 45
+    },
+    {
+      "Move": "MeanLook",
+      "Level": 51
+    },
+    {
+      "Move": "DestinyBond",
+      "Level": 57
+    }
+  ]
+}

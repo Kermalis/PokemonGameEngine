@@ -1,0 +1,24 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "Charm",
+      "Level": 1
+    },
+    {
+      "Move": "Copycat",
+      "Level": 5
+    },
+    {
+      "Move": "Refresh",
+      "Level": 9
+    },
+    {
+      "Move": "SweetKiss",
+      "Level": 12
+    }
+  ]
+}

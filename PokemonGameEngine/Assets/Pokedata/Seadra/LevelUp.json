@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Bubble",
+      "Level": 1
+    },
+    {
+      "Move": "SmokeScreen",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 1
+    },
+    {
+      "Move": "SmokeScreen",
+      "Level": 4
+    },
+    {
+      "Move": "Leer",
+      "Level": 8
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 11
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 14
+    },
+    {
+      "Move": "BubbleBeam",
+      "Level": 18
+    },
+    {
+      "Move": "Agility",
+      "Level": 23
+    },
+    {
+      "Move": "Twister",
+      "Level": 26
+    },
+    {
+      "Move": "Brine",
+      "Level": 30
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 40
+    },
+    {
+      "Move": "DragonDance",
+      "Level": 48
+    },
+    {
+      "Move": "DragonPulse",
+      "Level": 57
+    }
+  ]
+}

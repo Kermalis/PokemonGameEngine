@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "PoisonSting",
+      "Level": 1
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 1
+    },
+    {
+      "Move": "Constrict",
+      "Level": 1
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 5
+    },
+    {
+      "Move": "Constrict",
+      "Level": 8
+    },
+    {
+      "Move": "Acid",
+      "Level": 12
+    },
+    {
+      "Move": "ToxicSpikes",
+      "Level": 15
+    },
+    {
+      "Move": "BubbleBeam",
+      "Level": 19
+    },
+    {
+      "Move": "Wrap",
+      "Level": 22
+    },
+    {
+      "Move": "AcidSpray",
+      "Level": 26
+    },
+    {
+      "Move": "Barrier",
+      "Level": 29
+    },
+    {
+      "Move": "WaterPulse",
+      "Level": 34
+    },
+    {
+      "Move": "PoisonJab",
+      "Level": 38
+    },
+    {
+      "Move": "Screech",
+      "Level": 43
+    },
+    {
+      "Move": "Hex",
+      "Level": 47
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 52
+    },
+    {
+      "Move": "SludgeWave",
+      "Level": 56
+    },
+    {
+      "Move": "WringOut",
+      "Level": 61
+    }
+  ]
+}

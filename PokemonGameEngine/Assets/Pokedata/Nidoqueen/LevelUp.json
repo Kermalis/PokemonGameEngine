@@ -1,0 +1,36 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 1
+    },
+    {
+      "Move": "DoubleKick",
+      "Level": 1
+    },
+    {
+      "Move": "PoisonSting",
+      "Level": 1
+    },
+    {
+      "Move": "ChipAway",
+      "Level": 23
+    },
+    {
+      "Move": "BodySlam",
+      "Level": 35
+    },
+    {
+      "Move": "EarthPower",
+      "Level": 43
+    },
+    {
+      "Move": "Superpower",
+      "Level": 58
+    }
+  ]
+}

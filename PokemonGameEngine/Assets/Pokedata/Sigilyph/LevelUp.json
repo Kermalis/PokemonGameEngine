@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Gust",
+      "Level": 1
+    },
+    {
+      "Move": "MiracleEye",
+      "Level": 1
+    },
+    {
+      "Move": "Hypnosis",
+      "Level": 4
+    },
+    {
+      "Move": "Psywave",
+      "Level": 8
+    },
+    {
+      "Move": "Tailwind",
+      "Level": 11
+    },
+    {
+      "Move": "Whirlwind",
+      "Level": 14
+    },
+    {
+      "Move": "Psybeam",
+      "Level": 18
+    },
+    {
+      "Move": "AirCutter",
+      "Level": 21
+    },
+    {
+      "Move": "LightScreen",
+      "Level": 24
+    },
+    {
+      "Move": "Reflect",
+      "Level": 28
+    },
+    {
+      "Move": "Synchronoise",
+      "Level": 31
+    },
+    {
+      "Move": "MirrorMove",
+      "Level": 34
+    },
+    {
+      "Move": "Gravity",
+      "Level": 38
+    },
+    {
+      "Move": "AirSlash",
+      "Level": 41
+    },
+    {
+      "Move": "Psychic",
+      "Level": 44
+    },
+    {
+      "Move": "CosmicPower",
+      "Level": 48
+    },
+    {
+      "Move": "SkyAttack",
+      "Level": 51
+    }
+  ]
+}

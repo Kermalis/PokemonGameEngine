@@ -1,0 +1,84 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Megahorn",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 1
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 1
+    },
+    {
+      "Move": "WaterSport",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 5
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 7
+    },
+    {
+      "Move": "WaterSport",
+      "Level": 11
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 13
+    },
+    {
+      "Move": "RazorShell",
+      "Level": 17
+    },
+    {
+      "Move": "FuryCutter",
+      "Level": 20
+    },
+    {
+      "Move": "WaterPulse",
+      "Level": 25
+    },
+    {
+      "Move": "Revenge",
+      "Level": 28
+    },
+    {
+      "Move": "AquaJet",
+      "Level": 33
+    },
+    {
+      "Move": "Slash",
+      "Level": 36
+    },
+    {
+      "Move": "Encore",
+      "Level": 38
+    },
+    {
+      "Move": "AquaTail",
+      "Level": 45
+    },
+    {
+      "Move": "Retaliate",
+      "Level": 50
+    },
+    {
+      "Move": "SwordsDance",
+      "Level": 57
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 62
+    }
+  ]
+}

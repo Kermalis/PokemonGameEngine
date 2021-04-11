@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Astonish",
+      "Level": 1
+    },
+    {
+      "Move": "Constrict",
+      "Level": 1
+    },
+    {
+      "Move": "Acid",
+      "Level": 8
+    },
+    {
+      "Move": "Ingrain",
+      "Level": 15
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 22
+    },
+    {
+      "Move": "Amnesia",
+      "Level": 29
+    },
+    {
+      "Move": "GastroAcid",
+      "Level": 36
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 43
+    },
+    {
+      "Move": "EnergyBall",
+      "Level": 50
+    },
+    {
+      "Move": "Stockpile",
+      "Level": 57
+    },
+    {
+      "Move": "SpitUp",
+      "Level": 57
+    },
+    {
+      "Move": "Swallow",
+      "Level": 57
+    },
+    {
+      "Move": "WringOut",
+      "Level": 64
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "NightSlash",
+      "Level": 1
+    },
+    {
+      "Move": "TriAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 4
+    },
+    {
+      "Move": "Astonish",
+      "Level": 7
+    },
+    {
+      "Move": "MudSlap",
+      "Level": 12
+    },
+    {
+      "Move": "Magnitude",
+      "Level": 15
+    },
+    {
+      "Move": "Bulldoze",
+      "Level": 18
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 23
+    },
+    {
+      "Move": "SandTomb",
+      "Level": 26
+    },
+    {
+      "Move": "MudBomb",
+      "Level": 28
+    },
+    {
+      "Move": "EarthPower",
+      "Level": 33
+    },
+    {
+      "Move": "Dig",
+      "Level": 40
+    },
+    {
+      "Move": "Slash",
+      "Level": 45
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 50
+    },
+    {
+      "Move": "Fissure",
+      "Level": 57
+    }
+  ]
+}

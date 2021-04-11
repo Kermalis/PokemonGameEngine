@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "ViceGrip",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 1
+    },
+    {
+      "Move": "FuryCutter",
+      "Level": 6
+    },
+    {
+      "Move": "Bite",
+      "Level": 11
+    },
+    {
+      "Move": "Agility",
+      "Level": 16
+    },
+    {
+      "Move": "MetalClaw",
+      "Level": 21
+    },
+    {
+      "Move": "BugBite",
+      "Level": 26
+    },
+    {
+      "Move": "Crunch",
+      "Level": 31
+    },
+    {
+      "Move": "IronHead",
+      "Level": 36
+    },
+    {
+      "Move": "Dig",
+      "Level": 41
+    },
+    {
+      "Move": "Entrainment",
+      "Level": 46
+    },
+    {
+      "Move": "XScissor",
+      "Level": 51
+    },
+    {
+      "Move": "IronDefense",
+      "Level": 56
+    },
+    {
+      "Move": "Guillotine",
+      "Level": 61
+    },
+    {
+      "Move": "MetalSound",
+      "Level": 66
+    }
+  ]
+}

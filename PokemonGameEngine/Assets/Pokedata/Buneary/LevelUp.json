@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Splash",
+      "Level": 1
+    },
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "DefenseCurl",
+      "Level": 1
+    },
+    {
+      "Move": "Foresight",
+      "Level": 1
+    },
+    {
+      "Move": "Endure",
+      "Level": 6
+    },
+    {
+      "Move": "Frustration",
+      "Level": 13
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 16
+    },
+    {
+      "Move": "JumpKick",
+      "Level": 23
+    },
+    {
+      "Move": "BatonPass",
+      "Level": 26
+    },
+    {
+      "Move": "Agility",
+      "Level": 33
+    },
+    {
+      "Move": "DizzyPunch",
+      "Level": 36
+    },
+    {
+      "Move": "AfterYou",
+      "Level": 43
+    },
+    {
+      "Move": "Charm",
+      "Level": 46
+    },
+    {
+      "Move": "Entrainment",
+      "Level": 53
+    },
+    {
+      "Move": "Bounce",
+      "Level": 56
+    },
+    {
+      "Move": "HealingWish",
+      "Level": 63
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Peck",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 1
+    },
+    {
+      "Move": "WaterSport",
+      "Level": 1
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 7
+    },
+    {
+      "Move": "HornAttack",
+      "Level": 11
+    },
+    {
+      "Move": "WaterPulse",
+      "Level": 17
+    },
+    {
+      "Move": "Flail",
+      "Level": 21
+    },
+    {
+      "Move": "AquaRing",
+      "Level": 27
+    },
+    {
+      "Move": "FuryAttack",
+      "Level": 31
+    },
+    {
+      "Move": "Waterfall",
+      "Level": 37
+    },
+    {
+      "Move": "HornDrill",
+      "Level": 41
+    },
+    {
+      "Move": "Agility",
+      "Level": 47
+    },
+    {
+      "Move": "Soak",
+      "Level": 51
+    },
+    {
+      "Move": "Megahorn",
+      "Level": 57
+    }
+  ]
+}

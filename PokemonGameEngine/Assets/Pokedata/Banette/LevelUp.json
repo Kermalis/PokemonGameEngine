@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "KnockOff",
+      "Level": 1
+    },
+    {
+      "Move": "Screech",
+      "Level": 1
+    },
+    {
+      "Move": "NightShade",
+      "Level": 1
+    },
+    {
+      "Move": "Curse",
+      "Level": 1
+    },
+    {
+      "Move": "Screech",
+      "Level": 4
+    },
+    {
+      "Move": "NightShade",
+      "Level": 7
+    },
+    {
+      "Move": "Spite",
+      "Level": 10
+    },
+    {
+      "Move": "WillOWisp",
+      "Level": 13
+    },
+    {
+      "Move": "ShadowSneak",
+      "Level": 16
+    },
+    {
+      "Move": "Curse",
+      "Level": 19
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 22
+    },
+    {
+      "Move": "Hex",
+      "Level": 26
+    },
+    {
+      "Move": "ShadowBall",
+      "Level": 30
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 34
+    },
+    {
+      "Move": "Embargo",
+      "Level": 40
+    },
+    {
+      "Move": "Snatch",
+      "Level": 46
+    },
+    {
+      "Move": "Grudge",
+      "Level": 52
+    },
+    {
+      "Move": "Trick",
+      "Level": 58
+    }
+  ]
+}

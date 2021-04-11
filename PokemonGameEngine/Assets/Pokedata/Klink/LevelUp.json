@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "ViceGrip",
+      "Level": 1
+    },
+    {
+      "Move": "Charge",
+      "Level": 6
+    },
+    {
+      "Move": "ThunderShock",
+      "Level": 11
+    },
+    {
+      "Move": "GearGrind",
+      "Level": 16
+    },
+    {
+      "Move": "Bind",
+      "Level": 21
+    },
+    {
+      "Move": "ChargeBeam",
+      "Level": 26
+    },
+    {
+      "Move": "Autotomize",
+      "Level": 31
+    },
+    {
+      "Move": "MirrorShot",
+      "Level": 36
+    },
+    {
+      "Move": "Screech",
+      "Level": 39
+    },
+    {
+      "Move": "Discharge",
+      "Level": 42
+    },
+    {
+      "Move": "MetalSound",
+      "Level": 45
+    },
+    {
+      "Move": "ShiftGear",
+      "Level": 48
+    },
+    {
+      "Move": "LockOn",
+      "Level": 51
+    },
+    {
+      "Move": "ZapCannon",
+      "Level": 54
+    },
+    {
+      "Move": "HyperBeam",
+      "Level": 57
+    }
+  ]
+}

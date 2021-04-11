@@ -1,0 +1,52 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Rest",
+      "Level": 1
+    },
+    {
+      "Move": "Confusion",
+      "Level": 1
+    },
+    {
+      "Move": "Imprison",
+      "Level": 6
+    },
+    {
+      "Move": "Protect",
+      "Level": 16
+    },
+    {
+      "Move": "Swift",
+      "Level": 21
+    },
+    {
+      "Move": "LuckyChant",
+      "Level": 31
+    },
+    {
+      "Move": "FutureSight",
+      "Level": 36
+    },
+    {
+      "Move": "Charm",
+      "Level": 46
+    },
+    {
+      "Move": "Extrasensory",
+      "Level": 51
+    },
+    {
+      "Move": "Copycat",
+      "Level": 61
+    },
+    {
+      "Move": "NaturalGift",
+      "Level": 66
+    },
+    {
+      "Move": "HealingWish",
+      "Level": 76
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "GyroBall",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "SmokeScreen",
+      "Level": 1
+    },
+    {
+      "Move": "Ember",
+      "Level": 1
+    },
+    {
+      "Move": "SmokeScreen",
+      "Level": 6
+    },
+    {
+      "Move": "Ember",
+      "Level": 10
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 13
+    },
+    {
+      "Move": "FlameWheel",
+      "Level": 20
+    },
+    {
+      "Move": "DefenseCurl",
+      "Level": 24
+    },
+    {
+      "Move": "Swift",
+      "Level": 31
+    },
+    {
+      "Move": "FlameCharge",
+      "Level": 35
+    },
+    {
+      "Move": "LavaPlume",
+      "Level": 43
+    },
+    {
+      "Move": "Flamethrower",
+      "Level": 48
+    },
+    {
+      "Move": "Inferno",
+      "Level": 56
+    },
+    {
+      "Move": "Rollout",
+      "Level": 61
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 69
+    },
+    {
+      "Move": "Eruption",
+      "Level": 74
+    }
+  ]
+}

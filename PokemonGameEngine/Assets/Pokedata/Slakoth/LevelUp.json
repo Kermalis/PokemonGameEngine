@@ -1,0 +1,44 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "Yawn",
+      "Level": 1
+    },
+    {
+      "Move": "Encore",
+      "Level": 7
+    },
+    {
+      "Move": "SlackOff",
+      "Level": 13
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 19
+    },
+    {
+      "Move": "Amnesia",
+      "Level": 25
+    },
+    {
+      "Move": "Covet",
+      "Level": 31
+    },
+    {
+      "Move": "ChipAway",
+      "Level": 37
+    },
+    {
+      "Move": "Counter",
+      "Level": 43
+    },
+    {
+      "Move": "Flail",
+      "Level": 49
+    }
+  ]
+}

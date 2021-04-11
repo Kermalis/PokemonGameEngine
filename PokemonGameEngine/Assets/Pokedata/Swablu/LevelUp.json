@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Peck",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Astonish",
+      "Level": 4
+    },
+    {
+      "Move": "Sing",
+      "Level": 8
+    },
+    {
+      "Move": "FuryAttack",
+      "Level": 10
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 13
+    },
+    {
+      "Move": "Mist",
+      "Level": 15
+    },
+    {
+      "Move": "Round",
+      "Level": 18
+    },
+    {
+      "Move": "NaturalGift",
+      "Level": 21
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 25
+    },
+    {
+      "Move": "Refresh",
+      "Level": 29
+    },
+    {
+      "Move": "MirrorMove",
+      "Level": 34
+    },
+    {
+      "Move": "CottonGuard",
+      "Level": 39
+    },
+    {
+      "Move": "DragonPulse",
+      "Level": 42
+    },
+    {
+      "Move": "PerishSong",
+      "Level": 48
+    }
+  ]
+}

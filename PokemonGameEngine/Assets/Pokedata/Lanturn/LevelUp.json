@@ -1,0 +1,80 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Bubble",
+      "Level": 1
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderWave",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderWave",
+      "Level": 6
+    },
+    {
+      "Move": "Flail",
+      "Level": 9
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 12
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 17
+    },
+    {
+      "Move": "Spark",
+      "Level": 20
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 23
+    },
+    {
+      "Move": "Stockpile",
+      "Level": 27
+    },
+    {
+      "Move": "Swallow",
+      "Level": 27
+    },
+    {
+      "Move": "SpitUp",
+      "Level": 27
+    },
+    {
+      "Move": "ElectroBall",
+      "Level": 30
+    },
+    {
+      "Move": "BubbleBeam",
+      "Level": 35
+    },
+    {
+      "Move": "SignalBeam",
+      "Level": 40
+    },
+    {
+      "Move": "Discharge",
+      "Level": 47
+    },
+    {
+      "Move": "AquaRing",
+      "Level": 52
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 57
+    },
+    {
+      "Move": "Charge",
+      "Level": 64
+    }
+  ]
+}

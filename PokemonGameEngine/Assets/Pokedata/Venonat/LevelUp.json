@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Disable",
+      "Level": 1
+    },
+    {
+      "Move": "Foresight",
+      "Level": 1
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 5
+    },
+    {
+      "Move": "Confusion",
+      "Level": 11
+    },
+    {
+      "Move": "PoisonPowder",
+      "Level": 13
+    },
+    {
+      "Move": "LeechLife",
+      "Level": 17
+    },
+    {
+      "Move": "StunSpore",
+      "Level": 23
+    },
+    {
+      "Move": "Psybeam",
+      "Level": 25
+    },
+    {
+      "Move": "SleepPowder",
+      "Level": 29
+    },
+    {
+      "Move": "SignalBeam",
+      "Level": 35
+    },
+    {
+      "Move": "ZenHeadbutt",
+      "Level": 37
+    },
+    {
+      "Move": "PoisonFang",
+      "Level": 41
+    },
+    {
+      "Move": "Psychic",
+      "Level": 47
+    }
+  ]
+}

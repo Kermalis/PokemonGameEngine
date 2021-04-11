@@ -1,0 +1,52 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "OminousWind",
+      "Level": 1
+    },
+    {
+      "Move": "Disable",
+      "Level": 1
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 11
+    },
+    {
+      "Move": "Hypnosis",
+      "Level": 20
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 29
+    },
+    {
+      "Move": "Nightmare",
+      "Level": 38
+    },
+    {
+      "Move": "DoubleTeam",
+      "Level": 47
+    },
+    {
+      "Move": "Haze",
+      "Level": 57
+    },
+    {
+      "Move": "DarkVoid",
+      "Level": 66
+    },
+    {
+      "Move": "NastyPlot",
+      "Level": 75
+    },
+    {
+      "Move": "DreamEater",
+      "Level": 84
+    },
+    {
+      "Move": "DarkPulse",
+      "Level": 93
+    }
+  ]
+}

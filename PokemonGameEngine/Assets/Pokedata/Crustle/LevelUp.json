@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "ShellSmash",
+      "Level": 1
+    },
+    {
+      "Move": "RockBlast",
+      "Level": 1
+    },
+    {
+      "Move": "Withdraw",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 1
+    },
+    {
+      "Move": "RockBlast",
+      "Level": 5
+    },
+    {
+      "Move": "Withdraw",
+      "Level": 7
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 11
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 13
+    },
+    {
+      "Move": "SmackDown",
+      "Level": 17
+    },
+    {
+      "Move": "RockPolish",
+      "Level": 19
+    },
+    {
+      "Move": "BugBite",
+      "Level": 23
+    },
+    {
+      "Move": "StealthRock",
+      "Level": 24
+    },
+    {
+      "Move": "RockSlide",
+      "Level": 29
+    },
+    {
+      "Move": "Slash",
+      "Level": 31
+    },
+    {
+      "Move": "XScissor",
+      "Level": 38
+    },
+    {
+      "Move": "ShellSmash",
+      "Level": 43
+    },
+    {
+      "Move": "Flail",
+      "Level": 50
+    },
+    {
+      "Move": "RockWrecker",
+      "Level": 55
+    }
+  ]
+}

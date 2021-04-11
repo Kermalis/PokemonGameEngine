@@ -1,0 +1,52 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Rest",
+      "Level": 1
+    },
+    {
+      "Move": "Confusion",
+      "Level": 1
+    },
+    {
+      "Move": "Imprison",
+      "Level": 6
+    },
+    {
+      "Move": "Detect",
+      "Level": 16
+    },
+    {
+      "Move": "Swift",
+      "Level": 21
+    },
+    {
+      "Move": "Uproar",
+      "Level": 31
+    },
+    {
+      "Move": "FutureSight",
+      "Level": 36
+    },
+    {
+      "Move": "NastyPlot",
+      "Level": 46
+    },
+    {
+      "Move": "Extrasensory",
+      "Level": 51
+    },
+    {
+      "Move": "LastResort",
+      "Level": 61
+    },
+    {
+      "Move": "NaturalGift",
+      "Level": 66
+    },
+    {
+      "Move": "Explosion",
+      "Level": 76
+    }
+  ]
+}

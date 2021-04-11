@@ -1,0 +1,80 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "AncientPower",
+      "Level": 1
+    },
+    {
+      "Move": "Peck",
+      "Level": 1
+    },
+    {
+      "Move": "OdorSleuth",
+      "Level": 1
+    },
+    {
+      "Move": "MudSport",
+      "Level": 1
+    },
+    {
+      "Move": "PowderSnow",
+      "Level": 1
+    },
+    {
+      "Move": "MudSport",
+      "Level": 5
+    },
+    {
+      "Move": "PowderSnow",
+      "Level": 8
+    },
+    {
+      "Move": "MudSlap",
+      "Level": 11
+    },
+    {
+      "Move": "Endure",
+      "Level": 14
+    },
+    {
+      "Move": "MudBomb",
+      "Level": 18
+    },
+    {
+      "Move": "IcyWind",
+      "Level": 21
+    },
+    {
+      "Move": "IceFang",
+      "Level": 24
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 28
+    },
+    {
+      "Move": "FuryAttack",
+      "Level": 33
+    },
+    {
+      "Move": "Mist",
+      "Level": 37
+    },
+    {
+      "Move": "Thrash",
+      "Level": 41
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 46
+    },
+    {
+      "Move": "Blizzard",
+      "Level": 52
+    },
+    {
+      "Move": "Amnesia",
+      "Level": 58
+    }
+  ]
+}

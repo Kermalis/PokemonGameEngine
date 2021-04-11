@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "PoisonSting",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Absorb",
+      "Level": 5
+    },
+    {
+      "Move": "Growth",
+      "Level": 9
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 13
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 17
+    },
+    {
+      "Move": "PinMissile",
+      "Level": 21
+    },
+    {
+      "Move": "Ingrain",
+      "Level": 25
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 29
+    },
+    {
+      "Move": "Spikes",
+      "Level": 33
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 37
+    },
+    {
+      "Move": "Payback",
+      "Level": 41
+    },
+    {
+      "Move": "NeedleArm",
+      "Level": 45
+    },
+    {
+      "Move": "CottonSpore",
+      "Level": 49
+    },
+    {
+      "Move": "Sandstorm",
+      "Level": 53
+    },
+    {
+      "Move": "DestinyBond",
+      "Level": 57
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "QuickAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "DoubleKick",
+      "Level": 7
+    },
+    {
+      "Move": "MagicalLeaf",
+      "Level": 13
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 19
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 25
+    },
+    {
+      "Move": "Retaliate",
+      "Level": 31
+    },
+    {
+      "Move": "GigaDrain",
+      "Level": 37
+    },
+    {
+      "Move": "SacredSword",
+      "Level": 42
+    },
+    {
+      "Move": "SwordsDance",
+      "Level": 49
+    },
+    {
+      "Move": "QuickGuard",
+      "Level": 55
+    },
+    {
+      "Move": "WorkUp",
+      "Level": 61
+    },
+    {
+      "Move": "LeafBlade",
+      "Level": 67
+    },
+    {
+      "Move": "CloseCombat",
+      "Level": 73
+    }
+  ]
+}

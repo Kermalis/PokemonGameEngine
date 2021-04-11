@@ -1,0 +1,36 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "ToxicSpikes",
+      "Level": 1
+    },
+    {
+      "Move": "Withdraw",
+      "Level": 1
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 1
+    },
+    {
+      "Move": "Protect",
+      "Level": 1
+    },
+    {
+      "Move": "AuroraBeam",
+      "Level": 1
+    },
+    {
+      "Move": "SpikeCannon",
+      "Level": 13
+    },
+    {
+      "Move": "Spikes",
+      "Level": 28
+    },
+    {
+      "Move": "IcicleCrash",
+      "Level": 52
+    }
+  ]
+}

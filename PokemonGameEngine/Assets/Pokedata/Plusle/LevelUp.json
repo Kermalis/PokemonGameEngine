@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderWave",
+      "Level": 3
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 7
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 10
+    },
+    {
+      "Move": "Spark",
+      "Level": 15
+    },
+    {
+      "Move": "Encore",
+      "Level": 17
+    },
+    {
+      "Move": "FakeTears",
+      "Level": 21
+    },
+    {
+      "Move": "Copycat",
+      "Level": 24
+    },
+    {
+      "Move": "ElectroBall",
+      "Level": 29
+    },
+    {
+      "Move": "Swift",
+      "Level": 31
+    },
+    {
+      "Move": "FakeTears",
+      "Level": 35
+    },
+    {
+      "Move": "Charge",
+      "Level": 38
+    },
+    {
+      "Move": "Thunder",
+      "Level": 42
+    },
+    {
+      "Move": "BatonPass",
+      "Level": 44
+    },
+    {
+      "Move": "Agility",
+      "Level": 48
+    },
+    {
+      "Move": "LastResort",
+      "Level": 51
+    },
+    {
+      "Move": "NastyPlot",
+      "Level": 56
+    },
+    {
+      "Move": "Entrainment",
+      "Level": 63
+    }
+  ]
+}

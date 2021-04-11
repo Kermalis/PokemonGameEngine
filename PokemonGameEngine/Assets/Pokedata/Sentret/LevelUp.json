@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "Foresight",
+      "Level": 1
+    },
+    {
+      "Move": "DefenseCurl",
+      "Level": 4
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 7
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 13
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 16
+    },
+    {
+      "Move": "FollowMe",
+      "Level": 19
+    },
+    {
+      "Move": "Slam",
+      "Level": 25
+    },
+    {
+      "Move": "Rest",
+      "Level": 28
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 31
+    },
+    {
+      "Move": "Amnesia",
+      "Level": 36
+    },
+    {
+      "Move": "BatonPass",
+      "Level": 39
+    },
+    {
+      "Move": "MeFirst",
+      "Level": 42
+    },
+    {
+      "Move": "HyperVoice",
+      "Level": 47
+    }
+  ]
+}

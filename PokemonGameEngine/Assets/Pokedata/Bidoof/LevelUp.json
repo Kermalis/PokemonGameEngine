@@ -1,0 +1,52 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 5
+    },
+    {
+      "Move": "DefenseCurl",
+      "Level": 9
+    },
+    {
+      "Move": "Rollout",
+      "Level": 13
+    },
+    {
+      "Move": "Headbutt",
+      "Level": 17
+    },
+    {
+      "Move": "HyperFang",
+      "Level": 21
+    },
+    {
+      "Move": "Yawn",
+      "Level": 25
+    },
+    {
+      "Move": "Amnesia",
+      "Level": 29
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 33
+    },
+    {
+      "Move": "SuperFang",
+      "Level": 37
+    },
+    {
+      "Move": "Superpower",
+      "Level": 41
+    },
+    {
+      "Move": "Curse",
+      "Level": 45
+    }
+  ]
+}

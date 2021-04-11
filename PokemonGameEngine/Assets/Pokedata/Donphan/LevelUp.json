@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "FireFang",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderFang",
+      "Level": 1
+    },
+    {
+      "Move": "HornAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "DefenseCurl",
+      "Level": 1
+    },
+    {
+      "Move": "Bulldoze",
+      "Level": 1
+    },
+    {
+      "Move": "RapidSpin",
+      "Level": 6
+    },
+    {
+      "Move": "KnockOff",
+      "Level": 10
+    },
+    {
+      "Move": "Rollout",
+      "Level": 15
+    },
+    {
+      "Move": "Magnitude",
+      "Level": 19
+    },
+    {
+      "Move": "Slam",
+      "Level": 24
+    },
+    {
+      "Move": "FuryAttack",
+      "Level": 25
+    },
+    {
+      "Move": "Assurance",
+      "Level": 31
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 39
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 46
+    },
+    {
+      "Move": "GigaImpact",
+      "Level": 54
+    }
+  ]
+}

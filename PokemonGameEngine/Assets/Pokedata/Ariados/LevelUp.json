@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "BugBite",
+      "Level": 1
+    },
+    {
+      "Move": "PoisonSting",
+      "Level": 1
+    },
+    {
+      "Move": "StringShot",
+      "Level": 1
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 1
+    },
+    {
+      "Move": "Constrict",
+      "Level": 1
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 5
+    },
+    {
+      "Move": "Constrict",
+      "Level": 8
+    },
+    {
+      "Move": "LeechLife",
+      "Level": 12
+    },
+    {
+      "Move": "NightShade",
+      "Level": 15
+    },
+    {
+      "Move": "ShadowSneak",
+      "Level": 19
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 23
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 28
+    },
+    {
+      "Move": "SpiderWeb",
+      "Level": 32
+    },
+    {
+      "Move": "Agility",
+      "Level": 37
+    },
+    {
+      "Move": "PinMissile",
+      "Level": 41
+    },
+    {
+      "Move": "Psychic",
+      "Level": 46
+    },
+    {
+      "Move": "PoisonJab",
+      "Level": 50
+    },
+    {
+      "Move": "CrossPoison",
+      "Level": 55
+    }
+  ]
+}

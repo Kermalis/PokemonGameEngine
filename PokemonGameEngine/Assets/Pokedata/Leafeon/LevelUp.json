@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "TailWhip",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 5
+    },
+    {
+      "Move": "RazorLeaf",
+      "Level": 9
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 13
+    },
+    {
+      "Move": "GrassWhistle",
+      "Level": 17
+    },
+    {
+      "Move": "MagicalLeaf",
+      "Level": 21
+    },
+    {
+      "Move": "GigaDrain",
+      "Level": 25
+    },
+    {
+      "Move": "SwordsDance",
+      "Level": 29
+    },
+    {
+      "Move": "Synthesis",
+      "Level": 33
+    },
+    {
+      "Move": "SunnyDay",
+      "Level": 37
+    },
+    {
+      "Move": "LastResort",
+      "Level": 41
+    },
+    {
+      "Move": "LeafBlade",
+      "Level": 45
+    }
+  ]
+}

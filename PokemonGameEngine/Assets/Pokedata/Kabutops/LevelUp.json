@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Feint",
+      "Level": 1
+    },
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "Harden",
+      "Level": 1
+    },
+    {
+      "Move": "Absorb",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Absorb",
+      "Level": 6
+    },
+    {
+      "Move": "Leer",
+      "Level": 11
+    },
+    {
+      "Move": "MudShot",
+      "Level": 16
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 21
+    },
+    {
+      "Move": "Endure",
+      "Level": 26
+    },
+    {
+      "Move": "AquaJet",
+      "Level": 31
+    },
+    {
+      "Move": "MegaDrain",
+      "Level": 36
+    },
+    {
+      "Move": "Slash",
+      "Level": 40
+    },
+    {
+      "Move": "MetalSound",
+      "Level": 45
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 54
+    },
+    {
+      "Move": "WringOut",
+      "Level": 63
+    },
+    {
+      "Move": "NightSlash",
+      "Level": 72
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "LowKick",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 5
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 9
+    },
+    {
+      "Move": "Headbutt",
+      "Level": 12
+    },
+    {
+      "Move": "Swagger",
+      "Level": 16
+    },
+    {
+      "Move": "BrickBreak",
+      "Level": 20
+    },
+    {
+      "Move": "Payback",
+      "Level": 23
+    },
+    {
+      "Move": "ChipAway",
+      "Level": 27
+    },
+    {
+      "Move": "HiJumpKick",
+      "Level": 31
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 34
+    },
+    {
+      "Move": "Crunch",
+      "Level": 38
+    },
+    {
+      "Move": "Facade",
+      "Level": 42
+    },
+    {
+      "Move": "RockClimb",
+      "Level": 45
+    },
+    {
+      "Move": "FocusPunch",
+      "Level": 49
+    },
+    {
+      "Move": "HeadSmash",
+      "Level": 53
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "WaterSport",
+      "Level": 1
+    },
+    {
+      "Move": "Bubble",
+      "Level": 5
+    },
+    {
+      "Move": "Hypnosis",
+      "Level": 8
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 11
+    },
+    {
+      "Move": "DoubleSlap",
+      "Level": 15
+    },
+    {
+      "Move": "RainDance",
+      "Level": 18
+    },
+    {
+      "Move": "BodySlam",
+      "Level": 21
+    },
+    {
+      "Move": "BubbleBeam",
+      "Level": 25
+    },
+    {
+      "Move": "MudShot",
+      "Level": 28
+    },
+    {
+      "Move": "BellyDrum",
+      "Level": 31
+    },
+    {
+      "Move": "WakeUpSlap",
+      "Level": 35
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 38
+    },
+    {
+      "Move": "MudBomb",
+      "Level": 41
+    }
+  ]
+}

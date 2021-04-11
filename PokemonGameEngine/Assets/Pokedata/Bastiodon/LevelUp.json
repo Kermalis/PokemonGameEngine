@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Protect",
+      "Level": 1
+    },
+    {
+      "Move": "Taunt",
+      "Level": 1
+    },
+    {
+      "Move": "MetalSound",
+      "Level": 1
+    },
+    {
+      "Move": "Taunt",
+      "Level": 6
+    },
+    {
+      "Move": "MetalSound",
+      "Level": 10
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 15
+    },
+    {
+      "Move": "IronDefense",
+      "Level": 19
+    },
+    {
+      "Move": "Swagger",
+      "Level": 24
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 28
+    },
+    {
+      "Move": "Block",
+      "Level": 30
+    },
+    {
+      "Move": "Endure",
+      "Level": 36
+    },
+    {
+      "Move": "MetalBurst",
+      "Level": 43
+    },
+    {
+      "Move": "IronHead",
+      "Level": 51
+    },
+    {
+      "Move": "HeavySlam",
+      "Level": 58
+    }
+  ]
+}

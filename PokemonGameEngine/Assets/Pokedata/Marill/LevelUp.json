@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Bubble",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 2
+    },
+    {
+      "Move": "WaterSport",
+      "Level": 5
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 7
+    },
+    {
+      "Move": "DefenseCurl",
+      "Level": 10
+    },
+    {
+      "Move": "Rollout",
+      "Level": 10
+    },
+    {
+      "Move": "BubbleBeam",
+      "Level": 13
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 16
+    },
+    {
+      "Move": "AquaTail",
+      "Level": 20
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 23
+    },
+    {
+      "Move": "AquaRing",
+      "Level": 28
+    },
+    {
+      "Move": "RainDance",
+      "Level": 31
+    },
+    {
+      "Move": "Superpower",
+      "Level": 37
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 40
+    }
+  ]
+}

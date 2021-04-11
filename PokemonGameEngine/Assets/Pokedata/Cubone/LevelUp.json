@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 3
+    },
+    {
+      "Move": "BoneClub",
+      "Level": 7
+    },
+    {
+      "Move": "Headbutt",
+      "Level": 11
+    },
+    {
+      "Move": "Leer",
+      "Level": 13
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 17
+    },
+    {
+      "Move": "Bonemerang",
+      "Level": 21
+    },
+    {
+      "Move": "Rage",
+      "Level": 23
+    },
+    {
+      "Move": "FalseSwipe",
+      "Level": 27
+    },
+    {
+      "Move": "Thrash",
+      "Level": 31
+    },
+    {
+      "Move": "Fling",
+      "Level": 33
+    },
+    {
+      "Move": "BoneRush",
+      "Level": 37
+    },
+    {
+      "Move": "Endeavor",
+      "Level": 41
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 43
+    },
+    {
+      "Move": "Retaliate",
+      "Level": 47
+    }
+  ]
+}

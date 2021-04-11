@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "SearingShot",
+      "Level": 1
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 1
+    },
+    {
+      "Move": "Confusion",
+      "Level": 1
+    },
+    {
+      "Move": "Incinerate",
+      "Level": 1
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Endure",
+      "Level": 9
+    },
+    {
+      "Move": "Headbutt",
+      "Level": 17
+    },
+    {
+      "Move": "FlameCharge",
+      "Level": 25
+    },
+    {
+      "Move": "Reversal",
+      "Level": 33
+    },
+    {
+      "Move": "FlameBurst",
+      "Level": 41
+    },
+    {
+      "Move": "ZenHeadbutt",
+      "Level": 49
+    },
+    {
+      "Move": "Inferno",
+      "Level": 57
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 65
+    },
+    {
+      "Move": "FlareBlitz",
+      "Level": 73
+    },
+    {
+      "Move": "FinalGambit",
+      "Level": 81
+    },
+    {
+      "Move": "StoredPower",
+      "Level": 89
+    },
+    {
+      "Move": "Overheat",
+      "Level": 97
+    }
+  ]
+}

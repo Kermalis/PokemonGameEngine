@@ -1,0 +1,96 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "MagicalLeaf",
+      "Level": 1
+    },
+    {
+      "Move": "QuickGuard",
+      "Level": 1
+    },
+    {
+      "Move": "WideGuard",
+      "Level": 1
+    },
+    {
+      "Move": "PowerSwap",
+      "Level": 1
+    },
+    {
+      "Move": "GuardSwap",
+      "Level": 1
+    },
+    {
+      "Move": "Barrier",
+      "Level": 1
+    },
+    {
+      "Move": "Confusion",
+      "Level": 1
+    },
+    {
+      "Move": "Copycat",
+      "Level": 4
+    },
+    {
+      "Move": "Meditate",
+      "Level": 8
+    },
+    {
+      "Move": "DoubleSlap",
+      "Level": 11
+    },
+    {
+      "Move": "Mimic",
+      "Level": 15
+    },
+    {
+      "Move": "Psywave",
+      "Level": 15
+    },
+    {
+      "Move": "Encore",
+      "Level": 18
+    },
+    {
+      "Move": "LightScreen",
+      "Level": 22
+    },
+    {
+      "Move": "Reflect",
+      "Level": 22
+    },
+    {
+      "Move": "Psybeam",
+      "Level": 25
+    },
+    {
+      "Move": "Substitute",
+      "Level": 29
+    },
+    {
+      "Move": "Recycle",
+      "Level": 32
+    },
+    {
+      "Move": "Trick",
+      "Level": 36
+    },
+    {
+      "Move": "Psychic",
+      "Level": 39
+    },
+    {
+      "Move": "RolePlay",
+      "Level": 43
+    },
+    {
+      "Move": "BatonPass",
+      "Level": 46
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 50
+    }
+  ]
+}

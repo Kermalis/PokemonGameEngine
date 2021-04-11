@@ -1,0 +1,52 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 5
+    },
+    {
+      "Move": "WingAttack",
+      "Level": 9
+    },
+    {
+      "Move": "DoubleTeam",
+      "Level": 13
+    },
+    {
+      "Move": "Endeavor",
+      "Level": 17
+    },
+    {
+      "Move": "Whirlwind",
+      "Level": 21
+    },
+    {
+      "Move": "AerialAce",
+      "Level": 25
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 29
+    },
+    {
+      "Move": "Agility",
+      "Level": 33
+    },
+    {
+      "Move": "BraveBird",
+      "Level": 37
+    },
+    {
+      "Move": "FinalGambit",
+      "Level": 41
+    }
+  ]
+}

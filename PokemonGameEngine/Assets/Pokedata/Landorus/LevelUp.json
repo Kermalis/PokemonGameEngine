@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Block",
+      "Level": 1
+    },
+    {
+      "Move": "MudShot",
+      "Level": 1
+    },
+    {
+      "Move": "RockTomb",
+      "Level": 1
+    },
+    {
+      "Move": "Imprison",
+      "Level": 7
+    },
+    {
+      "Move": "Punishment",
+      "Level": 13
+    },
+    {
+      "Move": "Bulldoze",
+      "Level": 19
+    },
+    {
+      "Move": "RockThrow",
+      "Level": 25
+    },
+    {
+      "Move": "Extrasensory",
+      "Level": 31
+    },
+    {
+      "Move": "SwordsDance",
+      "Level": 37
+    },
+    {
+      "Move": "EarthPower",
+      "Level": 43
+    },
+    {
+      "Move": "RockSlide",
+      "Level": 49
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 55
+    },
+    {
+      "Move": "Sandstorm",
+      "Level": 61
+    },
+    {
+      "Move": "Fissure",
+      "Level": 67
+    },
+    {
+      "Move": "StoneEdge",
+      "Level": 73
+    },
+    {
+      "Move": "HammerArm",
+      "Level": 79
+    },
+    {
+      "Move": "Outrage",
+      "Level": 85
+    }
+  ]
+}

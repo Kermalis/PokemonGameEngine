@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "IcyWind",
+      "Level": 1
+    },
+    {
+      "Move": "DragonRage",
+      "Level": 1
+    },
+    {
+      "Move": "Imprison",
+      "Level": 8
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 15
+    },
+    {
+      "Move": "IceBeam",
+      "Level": 22
+    },
+    {
+      "Move": "DragonBreath",
+      "Level": 29
+    },
+    {
+      "Move": "Slash",
+      "Level": 36
+    },
+    {
+      "Move": "FusionBolt",
+      "Level": 43
+    },
+    {
+      "Move": "FreezeShock",
+      "Level": 50
+    },
+    {
+      "Move": "DragonPulse",
+      "Level": 57
+    },
+    {
+      "Move": "Imprison",
+      "Level": 64
+    },
+    {
+      "Move": "Endeavor",
+      "Level": 71
+    },
+    {
+      "Move": "Blizzard",
+      "Level": 78
+    },
+    {
+      "Move": "Outrage",
+      "Level": 85
+    },
+    {
+      "Move": "HyperVoice",
+      "Level": 92
+    }
+  ]
+}

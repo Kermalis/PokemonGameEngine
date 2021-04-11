@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Ember",
+      "Level": 1
+    },
+    {
+      "Move": "Howl",
+      "Level": 4
+    },
+    {
+      "Move": "Smog",
+      "Level": 8
+    },
+    {
+      "Move": "Roar",
+      "Level": 13
+    },
+    {
+      "Move": "Bite",
+      "Level": 16
+    },
+    {
+      "Move": "OdorSleuth",
+      "Level": 20
+    },
+    {
+      "Move": "BeatUp",
+      "Level": 25
+    },
+    {
+      "Move": "FireFang",
+      "Level": 28
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 32
+    },
+    {
+      "Move": "Embargo",
+      "Level": 37
+    },
+    {
+      "Move": "FoulPlay",
+      "Level": 40
+    },
+    {
+      "Move": "Flamethrower",
+      "Level": 44
+    },
+    {
+      "Move": "Crunch",
+      "Level": 49
+    },
+    {
+      "Move": "NastyPlot",
+      "Level": 52
+    },
+    {
+      "Move": "Inferno",
+      "Level": 56
+    }
+  ]
+}

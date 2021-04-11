@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "CometPunch",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "FakeOut",
+      "Level": 7
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 10
+    },
+    {
+      "Move": "Bite",
+      "Level": 13
+    },
+    {
+      "Move": "DoubleHit",
+      "Level": 19
+    },
+    {
+      "Move": "Rage",
+      "Level": 22
+    },
+    {
+      "Move": "MegaPunch",
+      "Level": 25
+    },
+    {
+      "Move": "ChipAway",
+      "Level": 31
+    },
+    {
+      "Move": "DizzyPunch",
+      "Level": 34
+    },
+    {
+      "Move": "Crunch",
+      "Level": 37
+    },
+    {
+      "Move": "Endure",
+      "Level": 43
+    },
+    {
+      "Move": "Outrage",
+      "Level": 46
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 49
+    },
+    {
+      "Move": "Reversal",
+      "Level": 55
+    }
+  ]
+}

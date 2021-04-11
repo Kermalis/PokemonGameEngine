@@ -1,0 +1,80 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "TechnoBlast",
+      "Level": 1
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 1
+    },
+    {
+      "Move": "MagnetRise",
+      "Level": 1
+    },
+    {
+      "Move": "MetalClaw",
+      "Level": 1
+    },
+    {
+      "Move": "Screech",
+      "Level": 1
+    },
+    {
+      "Move": "FuryCutter",
+      "Level": 7
+    },
+    {
+      "Move": "LockOn",
+      "Level": 11
+    },
+    {
+      "Move": "FlameCharge",
+      "Level": 18
+    },
+    {
+      "Move": "MagnetBomb",
+      "Level": 22
+    },
+    {
+      "Move": "Slash",
+      "Level": 29
+    },
+    {
+      "Move": "MetalSound",
+      "Level": 33
+    },
+    {
+      "Move": "SignalBeam",
+      "Level": 40
+    },
+    {
+      "Move": "TriAttack",
+      "Level": 44
+    },
+    {
+      "Move": "XScissor",
+      "Level": 51
+    },
+    {
+      "Move": "BugBuzz",
+      "Level": 55
+    },
+    {
+      "Move": "SimpleBeam",
+      "Level": 62
+    },
+    {
+      "Move": "ZapCannon",
+      "Level": 66
+    },
+    {
+      "Move": "HyperBeam",
+      "Level": 73
+    },
+    {
+      "Move": "Selfdestruct",
+      "Level": 77
+    }
+  ]
+}

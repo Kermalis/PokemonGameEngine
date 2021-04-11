@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Peck",
+      "Level": 1
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 7
+    },
+    {
+      "Move": "DoubleKick",
+      "Level": 9
+    },
+    {
+      "Move": "PoisonSting",
+      "Level": 13
+    },
+    {
+      "Move": "FuryAttack",
+      "Level": 19
+    },
+    {
+      "Move": "HornAttack",
+      "Level": 21
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 25
+    },
+    {
+      "Move": "ToxicSpikes",
+      "Level": 31
+    },
+    {
+      "Move": "Flatter",
+      "Level": 33
+    },
+    {
+      "Move": "PoisonJab",
+      "Level": 37
+    },
+    {
+      "Move": "Captivate",
+      "Level": 43
+    },
+    {
+      "Move": "HornDrill",
+      "Level": 45
+    }
+  ]
+}

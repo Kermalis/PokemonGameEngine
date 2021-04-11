@@ -1,0 +1,44 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Peck",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 4
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 8
+    },
+    {
+      "Move": "WingAttack",
+      "Level": 13
+    },
+    {
+      "Move": "DoubleTeam",
+      "Level": 19
+    },
+    {
+      "Move": "Endeavor",
+      "Level": 26
+    },
+    {
+      "Move": "AerialAce",
+      "Level": 34
+    },
+    {
+      "Move": "Agility",
+      "Level": 43
+    },
+    {
+      "Move": "AirSlash",
+      "Level": 53
+    }
+  ]
+}

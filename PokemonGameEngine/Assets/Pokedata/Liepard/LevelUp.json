@@ -1,0 +1,80 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Assist",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 3
+    },
+    {
+      "Move": "Assist",
+      "Level": 6
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 10
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 12
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 15
+    },
+    {
+      "Move": "Torment",
+      "Level": 19
+    },
+    {
+      "Move": "FakeOut",
+      "Level": 22
+    },
+    {
+      "Move": "HoneClaws",
+      "Level": 26
+    },
+    {
+      "Move": "Assurance",
+      "Level": 31
+    },
+    {
+      "Move": "Slash",
+      "Level": 34
+    },
+    {
+      "Move": "Taunt",
+      "Level": 38
+    },
+    {
+      "Move": "NightSlash",
+      "Level": 43
+    },
+    {
+      "Move": "Snatch",
+      "Level": 47
+    },
+    {
+      "Move": "NastyPlot",
+      "Level": 50
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 55
+    }
+  ]
+}

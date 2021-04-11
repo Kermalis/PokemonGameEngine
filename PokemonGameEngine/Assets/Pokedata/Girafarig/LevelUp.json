@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "PowerSwap",
+      "Level": 1
+    },
+    {
+      "Move": "GuardSwap",
+      "Level": 1
+    },
+    {
+      "Move": "Astonish",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Confusion",
+      "Level": 1
+    },
+    {
+      "Move": "OdorSleuth",
+      "Level": 5
+    },
+    {
+      "Move": "Stomp",
+      "Level": 10
+    },
+    {
+      "Move": "Agility",
+      "Level": 14
+    },
+    {
+      "Move": "Psybeam",
+      "Level": 19
+    },
+    {
+      "Move": "BatonPass",
+      "Level": 23
+    },
+    {
+      "Move": "Assurance",
+      "Level": 28
+    },
+    {
+      "Move": "DoubleHit",
+      "Level": 32
+    },
+    {
+      "Move": "Psychic",
+      "Level": 37
+    },
+    {
+      "Move": "ZenHeadbutt",
+      "Level": 41
+    },
+    {
+      "Move": "Crunch",
+      "Level": 46
+    }
+  ]
+}

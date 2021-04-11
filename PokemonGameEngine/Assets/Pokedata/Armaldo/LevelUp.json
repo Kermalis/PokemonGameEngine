@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "Harden",
+      "Level": 1
+    },
+    {
+      "Move": "MudSport",
+      "Level": 1
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 1
+    },
+    {
+      "Move": "MudSport",
+      "Level": 7
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 13
+    },
+    {
+      "Move": "MetalClaw",
+      "Level": 19
+    },
+    {
+      "Move": "Protect",
+      "Level": 25
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 31
+    },
+    {
+      "Move": "FuryCutter",
+      "Level": 37
+    },
+    {
+      "Move": "Slash",
+      "Level": 46
+    },
+    {
+      "Move": "RockBlast",
+      "Level": 55
+    },
+    {
+      "Move": "CrushClaw",
+      "Level": 67
+    },
+    {
+      "Move": "XScissor",
+      "Level": 73
+    }
+  ]
+}

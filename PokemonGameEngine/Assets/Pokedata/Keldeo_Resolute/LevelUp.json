@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "AquaJet",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "DoubleKick",
+      "Level": 7
+    },
+    {
+      "Move": "BubbleBeam",
+      "Level": 13
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 19
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 25
+    },
+    {
+      "Move": "Retaliate",
+      "Level": 31
+    },
+    {
+      "Move": "AquaTail",
+      "Level": 37
+    },
+    {
+      "Move": "SacredSword",
+      "Level": 43
+    },
+    {
+      "Move": "SwordsDance",
+      "Level": 49
+    },
+    {
+      "Move": "QuickGuard",
+      "Level": 55
+    },
+    {
+      "Move": "WorkUp",
+      "Level": 61
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 67
+    },
+    {
+      "Move": "CloseCombat",
+      "Level": 73
+    }
+  ]
+}

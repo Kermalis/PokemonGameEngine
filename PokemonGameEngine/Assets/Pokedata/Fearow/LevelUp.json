@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Pluck",
+      "Level": 1
+    },
+    {
+      "Move": "Peck",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "FuryAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 5
+    },
+    {
+      "Move": "FuryAttack",
+      "Level": 9
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 13
+    },
+    {
+      "Move": "AerialAce",
+      "Level": 17
+    },
+    {
+      "Move": "MirrorMove",
+      "Level": 23
+    },
+    {
+      "Move": "Agility",
+      "Level": 29
+    },
+    {
+      "Move": "Assurance",
+      "Level": 35
+    },
+    {
+      "Move": "Roost",
+      "Level": 41
+    },
+    {
+      "Move": "DrillPeck",
+      "Level": 47
+    },
+    {
+      "Move": "DrillRun",
+      "Level": 53
+    }
+  ]
+}

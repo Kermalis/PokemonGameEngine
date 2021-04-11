@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "DefenseCurl",
+      "Level": 1
+    },
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 5
+    },
+    {
+      "Move": "Refresh",
+      "Level": 9
+    },
+    {
+      "Move": "DoubleSlap",
+      "Level": 12
+    },
+    {
+      "Move": "Softboiled",
+      "Level": 16
+    },
+    {
+      "Move": "Bestow",
+      "Level": 20
+    },
+    {
+      "Move": "Minimize",
+      "Level": 23
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 27
+    },
+    {
+      "Move": "Sing",
+      "Level": 31
+    },
+    {
+      "Move": "Fling",
+      "Level": 34
+    },
+    {
+      "Move": "HealPulse",
+      "Level": 38
+    },
+    {
+      "Move": "EggBomb",
+      "Level": 42
+    },
+    {
+      "Move": "LightScreen",
+      "Level": 46
+    },
+    {
+      "Move": "HealingWish",
+      "Level": 50
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 54
+    }
+  ]
+}

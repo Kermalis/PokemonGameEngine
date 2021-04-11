@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Harden",
+      "Level": 1
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 8
+    },
+    {
+      "Move": "RockTomb",
+      "Level": 15
+    },
+    {
+      "Move": "Yawn",
+      "Level": 22
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 29
+    },
+    {
+      "Move": "MudSport",
+      "Level": 36
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 43
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 50
+    },
+    {
+      "Move": "Dive",
+      "Level": 57
+    },
+    {
+      "Move": "Rest",
+      "Level": 64
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 71
+    },
+    {
+      "Move": "HeadSmash",
+      "Level": 78
+    }
+  ]
+}

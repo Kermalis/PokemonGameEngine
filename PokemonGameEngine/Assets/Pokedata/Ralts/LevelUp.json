@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Confusion",
+      "Level": 6
+    },
+    {
+      "Move": "DoubleTeam",
+      "Level": 10
+    },
+    {
+      "Move": "Teleport",
+      "Level": 12
+    },
+    {
+      "Move": "LuckyChant",
+      "Level": 17
+    },
+    {
+      "Move": "MagicalLeaf",
+      "Level": 21
+    },
+    {
+      "Move": "HealPulse",
+      "Level": 23
+    },
+    {
+      "Move": "CalmMind",
+      "Level": 28
+    },
+    {
+      "Move": "Psychic",
+      "Level": 32
+    },
+    {
+      "Move": "Imprison",
+      "Level": 34
+    },
+    {
+      "Move": "FutureSight",
+      "Level": 39
+    },
+    {
+      "Move": "Charm",
+      "Level": 43
+    },
+    {
+      "Move": "Hypnosis",
+      "Level": 45
+    },
+    {
+      "Move": "DreamEater",
+      "Level": 50
+    },
+    {
+      "Move": "StoredPower",
+      "Level": 54
+    }
+  ]
+}

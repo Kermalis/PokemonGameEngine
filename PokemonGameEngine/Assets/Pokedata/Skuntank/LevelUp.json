@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 1
+    },
+    {
+      "Move": "PoisonGas",
+      "Level": 1
+    },
+    {
+      "Move": "PoisonGas",
+      "Level": 4
+    },
+    {
+      "Move": "Screech",
+      "Level": 7
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 10
+    },
+    {
+      "Move": "SmokeScreen",
+      "Level": 14
+    },
+    {
+      "Move": "Feint",
+      "Level": 18
+    },
+    {
+      "Move": "Slash",
+      "Level": 22
+    },
+    {
+      "Move": "Toxic",
+      "Level": 27
+    },
+    {
+      "Move": "AcidSpray",
+      "Level": 32
+    },
+    {
+      "Move": "Flamethrower",
+      "Level": 34
+    },
+    {
+      "Move": "NightSlash",
+      "Level": 41
+    },
+    {
+      "Move": "Memento",
+      "Level": 51
+    },
+    {
+      "Move": "Explosion",
+      "Level": 61
+    }
+  ]
+}

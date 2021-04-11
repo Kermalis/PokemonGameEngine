@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "Astonish",
+      "Level": 1
+    },
+    {
+      "Move": "DefenseCurl",
+      "Level": 1
+    },
+    {
+      "Move": "MudSlap",
+      "Level": 1
+    },
+    {
+      "Move": "MudSlap",
+      "Level": 5
+    },
+    {
+      "Move": "Rollout",
+      "Level": 9
+    },
+    {
+      "Move": "ShadowPunch",
+      "Level": 13
+    },
+    {
+      "Move": "IronDefense",
+      "Level": 17
+    },
+    {
+      "Move": "MegaPunch",
+      "Level": 21
+    },
+    {
+      "Move": "Magnitude",
+      "Level": 25
+    },
+    {
+      "Move": "DynamicPunch",
+      "Level": 30
+    },
+    {
+      "Move": "NightShade",
+      "Level": 35
+    },
+    {
+      "Move": "Curse",
+      "Level": 40
+    },
+    {
+      "Move": "HeavySlam",
+      "Level": 43
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 50
+    },
+    {
+      "Move": "HammerArm",
+      "Level": 60
+    },
+    {
+      "Move": "FocusPunch",
+      "Level": 70
+    }
+  ]
+}

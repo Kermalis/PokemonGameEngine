@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "LeechSeed",
+      "Level": 1
+    },
+    {
+      "Move": "Confusion",
+      "Level": 1
+    },
+    {
+      "Move": "Recover",
+      "Level": 1
+    },
+    {
+      "Move": "HealBell",
+      "Level": 1
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 10
+    },
+    {
+      "Move": "MagicalLeaf",
+      "Level": 19
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 28
+    },
+    {
+      "Move": "BatonPass",
+      "Level": 37
+    },
+    {
+      "Move": "NaturalGift",
+      "Level": 46
+    },
+    {
+      "Move": "HealBlock",
+      "Level": 55
+    },
+    {
+      "Move": "FutureSight",
+      "Level": 64
+    },
+    {
+      "Move": "HealingWish",
+      "Level": 73
+    },
+    {
+      "Move": "LeafStorm",
+      "Level": 82
+    },
+    {
+      "Move": "PerishSong",
+      "Level": 91
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "NastyPlot",
+      "Level": 1
+    },
+    {
+      "Move": "Ember",
+      "Level": 1
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 1
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 1
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 1
+    }
+  ]
+}

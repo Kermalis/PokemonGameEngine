@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Revenge",
+      "Level": 1
+    },
+    {
+      "Move": "RollingKick",
+      "Level": 1
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 6
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 10
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 15
+    },
+    {
+      "Move": "TripleKick",
+      "Level": 19
+    },
+    {
+      "Move": "RapidSpin",
+      "Level": 24
+    },
+    {
+      "Move": "Counter",
+      "Level": 28
+    },
+    {
+      "Move": "Feint",
+      "Level": 33
+    },
+    {
+      "Move": "Agility",
+      "Level": 37
+    },
+    {
+      "Move": "GyroBall",
+      "Level": 42
+    },
+    {
+      "Move": "WideGuard",
+      "Level": 46
+    },
+    {
+      "Move": "QuickGuard",
+      "Level": 46
+    },
+    {
+      "Move": "Detect",
+      "Level": 51
+    },
+    {
+      "Move": "CloseCombat",
+      "Level": 55
+    },
+    {
+      "Move": "Endeavor",
+      "Level": 60
+    }
+  ]
+}

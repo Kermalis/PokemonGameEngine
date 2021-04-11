@@ -1,0 +1,52 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Growth",
+      "Level": 1
+    },
+    {
+      "Move": "MagicalLeaf",
+      "Level": 10
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 19
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 28
+    },
+    {
+      "Move": "SweetScent",
+      "Level": 37
+    },
+    {
+      "Move": "NaturalGift",
+      "Level": 46
+    },
+    {
+      "Move": "WorrySeed",
+      "Level": 55
+    },
+    {
+      "Move": "AirSlash",
+      "Level": 64
+    },
+    {
+      "Move": "EnergyBall",
+      "Level": 73
+    },
+    {
+      "Move": "SweetKiss",
+      "Level": 82
+    },
+    {
+      "Move": "LeafStorm",
+      "Level": 91
+    },
+    {
+      "Move": "SeedFlare",
+      "Level": 100
+    }
+  ]
+}

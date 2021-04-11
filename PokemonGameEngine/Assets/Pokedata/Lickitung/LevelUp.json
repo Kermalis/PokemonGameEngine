@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Lick",
+      "Level": 1
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 5
+    },
+    {
+      "Move": "DefenseCurl",
+      "Level": 9
+    },
+    {
+      "Move": "KnockOff",
+      "Level": 13
+    },
+    {
+      "Move": "Wrap",
+      "Level": 17
+    },
+    {
+      "Move": "Stomp",
+      "Level": 21
+    },
+    {
+      "Move": "Disable",
+      "Level": 25
+    },
+    {
+      "Move": "Slam",
+      "Level": 29
+    },
+    {
+      "Move": "Rollout",
+      "Level": 33
+    },
+    {
+      "Move": "ChipAway",
+      "Level": 37
+    },
+    {
+      "Move": "MeFirst",
+      "Level": 41
+    },
+    {
+      "Move": "Refresh",
+      "Level": 45
+    },
+    {
+      "Move": "Screech",
+      "Level": 49
+    },
+    {
+      "Move": "PowerWhip",
+      "Level": 53
+    },
+    {
+      "Move": "WringOut",
+      "Level": 57
+    }
+  ]
+}

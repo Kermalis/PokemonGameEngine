@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "SonicBoom",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 1
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 1
+    },
+    {
+      "Move": "SandTomb",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 4
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 7
+    },
+    {
+      "Move": "SandTomb",
+      "Level": 10
+    },
+    {
+      "Move": "MudSlap",
+      "Level": 13
+    },
+    {
+      "Move": "Bide",
+      "Level": 17
+    },
+    {
+      "Move": "Bulldoze",
+      "Level": 21
+    },
+    {
+      "Move": "RockSlide",
+      "Level": 25
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 29
+    },
+    {
+      "Move": "Screech",
+      "Level": 34
+    },
+    {
+      "Move": "DragonBreath",
+      "Level": 35
+    },
+    {
+      "Move": "EarthPower",
+      "Level": 39
+    },
+    {
+      "Move": "Sandstorm",
+      "Level": 44
+    },
+    {
+      "Move": "HyperBeam",
+      "Level": 49
+    }
+  ]
+}

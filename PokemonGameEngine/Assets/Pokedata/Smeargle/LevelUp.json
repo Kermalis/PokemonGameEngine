@@ -1,0 +1,44 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Sketch",
+      "Level": 1
+    },
+    {
+      "Move": "Sketch",
+      "Level": 11
+    },
+    {
+      "Move": "Sketch",
+      "Level": 21
+    },
+    {
+      "Move": "Sketch",
+      "Level": 31
+    },
+    {
+      "Move": "Sketch",
+      "Level": 41
+    },
+    {
+      "Move": "Sketch",
+      "Level": 51
+    },
+    {
+      "Move": "Sketch",
+      "Level": 61
+    },
+    {
+      "Move": "Sketch",
+      "Level": 71
+    },
+    {
+      "Move": "Sketch",
+      "Level": 81
+    },
+    {
+      "Move": "Sketch",
+      "Level": 91
+    }
+  ]
+}

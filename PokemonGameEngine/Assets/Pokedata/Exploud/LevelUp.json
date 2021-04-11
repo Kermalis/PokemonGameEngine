@@ -1,0 +1,88 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "IceFang",
+      "Level": 1
+    },
+    {
+      "Move": "FireFang",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderFang",
+      "Level": 1
+    },
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "Uproar",
+      "Level": 1
+    },
+    {
+      "Move": "Astonish",
+      "Level": 1
+    },
+    {
+      "Move": "Howl",
+      "Level": 1
+    },
+    {
+      "Move": "Uproar",
+      "Level": 5
+    },
+    {
+      "Move": "Astonish",
+      "Level": 11
+    },
+    {
+      "Move": "Howl",
+      "Level": 15
+    },
+    {
+      "Move": "Bite",
+      "Level": 20
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 23
+    },
+    {
+      "Move": "Stomp",
+      "Level": 29
+    },
+    {
+      "Move": "Screech",
+      "Level": 37
+    },
+    {
+      "Move": "Crunch",
+      "Level": 40
+    },
+    {
+      "Move": "Roar",
+      "Level": 45
+    },
+    {
+      "Move": "Synchronoise",
+      "Level": 55
+    },
+    {
+      "Move": "Rest",
+      "Level": 55
+    },
+    {
+      "Move": "SleepTalk",
+      "Level": 63
+    },
+    {
+      "Move": "HyperVoice",
+      "Level": 71
+    },
+    {
+      "Move": "HyperBeam",
+      "Level": 79
+    }
+  ]
+}

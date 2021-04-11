@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Psywave",
+      "Level": 1
+    },
+    {
+      "Move": "Spite",
+      "Level": 5
+    },
+    {
+      "Move": "Astonish",
+      "Level": 10
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 14
+    },
+    {
+      "Move": "MeanLook",
+      "Level": 19
+    },
+    {
+      "Move": "Hex",
+      "Level": 23
+    },
+    {
+      "Move": "Psybeam",
+      "Level": 28
+    },
+    {
+      "Move": "PainSplit",
+      "Level": 32
+    },
+    {
+      "Move": "Payback",
+      "Level": 37
+    },
+    {
+      "Move": "ShadowBall",
+      "Level": 41
+    },
+    {
+      "Move": "PerishSong",
+      "Level": 46
+    },
+    {
+      "Move": "Grudge",
+      "Level": 50
+    },
+    {
+      "Move": "PowerGem",
+      "Level": 55
+    }
+  ]
+}

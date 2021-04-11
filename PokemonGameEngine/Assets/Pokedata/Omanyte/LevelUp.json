@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Constrict",
+      "Level": 1
+    },
+    {
+      "Move": "Withdraw",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 7
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 10
+    },
+    {
+      "Move": "Rollout",
+      "Level": 16
+    },
+    {
+      "Move": "Leer",
+      "Level": 19
+    },
+    {
+      "Move": "MudShot",
+      "Level": 25
+    },
+    {
+      "Move": "Brine",
+      "Level": 28
+    },
+    {
+      "Move": "Protect",
+      "Level": 34
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 37
+    },
+    {
+      "Move": "Tickle",
+      "Level": 43
+    },
+    {
+      "Move": "RockBlast",
+      "Level": 46
+    },
+    {
+      "Move": "ShellSmash",
+      "Level": 52
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 55
+    }
+  ]
+}

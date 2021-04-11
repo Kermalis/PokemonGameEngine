@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Incinerate",
+      "Level": 1
+    },
+    {
+      "Move": "Lick",
+      "Level": 1
+    },
+    {
+      "Move": "OdorSleuth",
+      "Level": 6
+    },
+    {
+      "Move": "Bind",
+      "Level": 11
+    },
+    {
+      "Move": "FireSpin",
+      "Level": 16
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 21
+    },
+    {
+      "Move": "Snatch",
+      "Level": 26
+    },
+    {
+      "Move": "FlameBurst",
+      "Level": 31
+    },
+    {
+      "Move": "BugBite",
+      "Level": 36
+    },
+    {
+      "Move": "Slash",
+      "Level": 41
+    },
+    {
+      "Move": "Amnesia",
+      "Level": 46
+    },
+    {
+      "Move": "Flamethrower",
+      "Level": 51
+    },
+    {
+      "Move": "Stockpile",
+      "Level": 56
+    },
+    {
+      "Move": "SpitUp",
+      "Level": 56
+    },
+    {
+      "Move": "Swallow",
+      "Level": 56
+    },
+    {
+      "Move": "Inferno",
+      "Level": 61
+    }
+  ]
+}

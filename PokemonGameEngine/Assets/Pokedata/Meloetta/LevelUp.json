@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Round",
+      "Level": 1
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 6
+    },
+    {
+      "Move": "Confusion",
+      "Level": 11
+    },
+    {
+      "Move": "Sing",
+      "Level": 16
+    },
+    {
+      "Move": "TeeterDance",
+      "Level": 21
+    },
+    {
+      "Move": "Acrobatics",
+      "Level": 26
+    },
+    {
+      "Move": "Psybeam",
+      "Level": 31
+    },
+    {
+      "Move": "EchoedVoice",
+      "Level": 36
+    },
+    {
+      "Move": "Uturn",
+      "Level": 43
+    },
+    {
+      "Move": "WakeUpSlap",
+      "Level": 50
+    },
+    {
+      "Move": "Psychic",
+      "Level": 57
+    },
+    {
+      "Move": "HyperVoice",
+      "Level": 64
+    },
+    {
+      "Move": "RolePlay",
+      "Level": 71
+    },
+    {
+      "Move": "CloseCombat",
+      "Level": 78
+    },
+    {
+      "Move": "PerishSong",
+      "Level": 85
+    }
+  ]
+}

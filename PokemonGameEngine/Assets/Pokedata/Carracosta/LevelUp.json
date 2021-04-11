@@ -1,0 +1,80 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Bide",
+      "Level": 1
+    },
+    {
+      "Move": "Withdraw",
+      "Level": 1
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 1
+    },
+    {
+      "Move": "Rollout",
+      "Level": 1
+    },
+    {
+      "Move": "Rollout",
+      "Level": 5
+    },
+    {
+      "Move": "Bite",
+      "Level": 8
+    },
+    {
+      "Move": "Protect",
+      "Level": 11
+    },
+    {
+      "Move": "AquaJet",
+      "Level": 15
+    },
+    {
+      "Move": "AncientPower",
+      "Level": 18
+    },
+    {
+      "Move": "Crunch",
+      "Level": 21
+    },
+    {
+      "Move": "WideGuard",
+      "Level": 25
+    },
+    {
+      "Move": "Brine",
+      "Level": 28
+    },
+    {
+      "Move": "SmackDown",
+      "Level": 31
+    },
+    {
+      "Move": "Curse",
+      "Level": 35
+    },
+    {
+      "Move": "ShellSmash",
+      "Level": 40
+    },
+    {
+      "Move": "AquaTail",
+      "Level": 45
+    },
+    {
+      "Move": "RockSlide",
+      "Level": 51
+    },
+    {
+      "Move": "RainDance",
+      "Level": 56
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 61
+    }
+  ]
+}

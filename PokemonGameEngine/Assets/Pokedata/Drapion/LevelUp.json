@@ -1,0 +1,84 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "ThunderFang",
+      "Level": 1
+    },
+    {
+      "Move": "IceFang",
+      "Level": 1
+    },
+    {
+      "Move": "FireFang",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 1
+    },
+    {
+      "Move": "PoisonSting",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "KnockOff",
+      "Level": 1
+    },
+    {
+      "Move": "KnockOff",
+      "Level": 5
+    },
+    {
+      "Move": "PinMissile",
+      "Level": 9
+    },
+    {
+      "Move": "Acupressure",
+      "Level": 13
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 16
+    },
+    {
+      "Move": "BugBite",
+      "Level": 20
+    },
+    {
+      "Move": "PoisonFang",
+      "Level": 23
+    },
+    {
+      "Move": "Venoshock",
+      "Level": 27
+    },
+    {
+      "Move": "HoneClaws",
+      "Level": 30
+    },
+    {
+      "Move": "ToxicSpikes",
+      "Level": 34
+    },
+    {
+      "Move": "NightSlash",
+      "Level": 38
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 43
+    },
+    {
+      "Move": "Crunch",
+      "Level": 49
+    },
+    {
+      "Move": "CrossPoison",
+      "Level": 57
+    }
+  ]
+}

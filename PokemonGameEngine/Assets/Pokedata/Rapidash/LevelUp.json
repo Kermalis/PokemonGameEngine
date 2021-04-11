@@ -1,0 +1,80 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "PoisonJab",
+      "Level": 1
+    },
+    {
+      "Move": "Megahorn",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 1
+    },
+    {
+      "Move": "Ember",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 4
+    },
+    {
+      "Move": "Ember",
+      "Level": 9
+    },
+    {
+      "Move": "FlameWheel",
+      "Level": 13
+    },
+    {
+      "Move": "Stomp",
+      "Level": 17
+    },
+    {
+      "Move": "FlameCharge",
+      "Level": 21
+    },
+    {
+      "Move": "FireSpin",
+      "Level": 25
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 29
+    },
+    {
+      "Move": "Inferno",
+      "Level": 33
+    },
+    {
+      "Move": "Agility",
+      "Level": 37
+    },
+    {
+      "Move": "FuryAttack",
+      "Level": 40
+    },
+    {
+      "Move": "FireBlast",
+      "Level": 41
+    },
+    {
+      "Move": "Bounce",
+      "Level": 45
+    },
+    {
+      "Move": "FlareBlitz",
+      "Level": 49
+    }
+  ]
+}

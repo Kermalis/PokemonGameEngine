@@ -1,0 +1,28 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "FaintAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Whirlwind",
+      "Level": 1
+    },
+    {
+      "Move": "NastyPlot",
+      "Level": 1
+    },
+    {
+      "Move": "RazorLeaf",
+      "Level": 1
+    },
+    {
+      "Move": "LeafTornado",
+      "Level": 19
+    },
+    {
+      "Move": "LeafStorm",
+      "Level": 49
+    }
+  ]
+}

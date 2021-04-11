@@ -1,0 +1,52 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Ember",
+      "Level": 1
+    },
+    {
+      "Move": "StringShot",
+      "Level": 1
+    },
+    {
+      "Move": "LeechLife",
+      "Level": 10
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 20
+    },
+    {
+      "Move": "FlameCharge",
+      "Level": 30
+    },
+    {
+      "Move": "BugBite",
+      "Level": 40
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 50
+    },
+    {
+      "Move": "FlameWheel",
+      "Level": 60
+    },
+    {
+      "Move": "BugBuzz",
+      "Level": 70
+    },
+    {
+      "Move": "Amnesia",
+      "Level": 80
+    },
+    {
+      "Move": "Thrash",
+      "Level": 90
+    },
+    {
+      "Move": "FlareBlitz",
+      "Level": 100
+    }
+  ]
+}

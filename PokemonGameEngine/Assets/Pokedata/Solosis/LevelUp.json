@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Psywave",
+      "Level": 1
+    },
+    {
+      "Move": "Reflect",
+      "Level": 3
+    },
+    {
+      "Move": "Rollout",
+      "Level": 7
+    },
+    {
+      "Move": "Snatch",
+      "Level": 10
+    },
+    {
+      "Move": "HiddenPower",
+      "Level": 14
+    },
+    {
+      "Move": "LightScreen",
+      "Level": 16
+    },
+    {
+      "Move": "Charm",
+      "Level": 19
+    },
+    {
+      "Move": "Recover",
+      "Level": 24
+    },
+    {
+      "Move": "Psyshock",
+      "Level": 25
+    },
+    {
+      "Move": "Endeavor",
+      "Level": 28
+    },
+    {
+      "Move": "FutureSight",
+      "Level": 31
+    },
+    {
+      "Move": "PainSplit",
+      "Level": 33
+    },
+    {
+      "Move": "Psychic",
+      "Level": 37
+    },
+    {
+      "Move": "SkillSwap",
+      "Level": 40
+    },
+    {
+      "Move": "HealBlock",
+      "Level": 46
+    },
+    {
+      "Move": "WonderRoom",
+      "Level": 48
+    }
+  ]
+}

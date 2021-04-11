@@ -1,0 +1,88 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Superpower",
+      "Level": 1
+    },
+    {
+      "Move": "AquaJet",
+      "Level": 1
+    },
+    {
+      "Move": "PowderSnow",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Bide",
+      "Level": 1
+    },
+    {
+      "Move": "IcyWind",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 5
+    },
+    {
+      "Move": "Bide",
+      "Level": 9
+    },
+    {
+      "Move": "IcyWind",
+      "Level": 13
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 17
+    },
+    {
+      "Move": "Brine",
+      "Level": 21
+    },
+    {
+      "Move": "Endure",
+      "Level": 25
+    },
+    {
+      "Move": "Swagger",
+      "Level": 29
+    },
+    {
+      "Move": "Slash",
+      "Level": 33
+    },
+    {
+      "Move": "Flail",
+      "Level": 36
+    },
+    {
+      "Move": "IcicleCrash",
+      "Level": 37
+    },
+    {
+      "Move": "Rest",
+      "Level": 41
+    },
+    {
+      "Move": "Blizzard",
+      "Level": 45
+    },
+    {
+      "Move": "Hail",
+      "Level": 53
+    },
+    {
+      "Move": "Thrash",
+      "Level": 59
+    },
+    {
+      "Move": "SheerCold",
+      "Level": 66
+    }
+  ]
+}

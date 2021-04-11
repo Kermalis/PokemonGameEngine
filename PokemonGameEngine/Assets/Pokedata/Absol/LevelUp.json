@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "Feint",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 4
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 9
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 12
+    },
+    {
+      "Move": "Taunt",
+      "Level": 17
+    },
+    {
+      "Move": "Bite",
+      "Level": 20
+    },
+    {
+      "Move": "DoubleTeam",
+      "Level": 25
+    },
+    {
+      "Move": "Slash",
+      "Level": 28
+    },
+    {
+      "Move": "SwordsDance",
+      "Level": 33
+    },
+    {
+      "Move": "FutureSight",
+      "Level": 36
+    },
+    {
+      "Move": "NightSlash",
+      "Level": 41
+    },
+    {
+      "Move": "Detect",
+      "Level": 44
+    },
+    {
+      "Move": "PsychoCut",
+      "Level": 49
+    },
+    {
+      "Move": "SuckerPunch",
+      "Level": 52
+    },
+    {
+      "Move": "RazorWind",
+      "Level": 57
+    },
+    {
+      "Move": "MeFirst",
+      "Level": 60
+    },
+    {
+      "Move": "PerishSong",
+      "Level": 65
+    }
+  ]
+}

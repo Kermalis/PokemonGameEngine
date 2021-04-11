@@ -167,9 +167,9 @@ public sealed partial class Build
         {
             BabySpecies = j[nameof(BabySpecies)].EnumValue<PBESpecies>();
             var evos = (JArray)j[nameof(Evolutions)];
-            int numEncounters = evos.Count;
-            Evolutions = new Evo[numEncounters];
-            for (int i = 0; i < numEncounters; i++)
+            int numEvos = evos.Count;
+            Evolutions = new Evo[numEvos];
+            for (int i = 0; i < numEvos; i++)
             {
                 Evolutions[i] = new Evo(evos[i]);
             }
@@ -183,6 +183,49 @@ public sealed partial class Build
             for (int i = 0; i < count; i++)
             {
                 Evolutions[i].Write(w);
+            }
+        }
+    }
+
+    private sealed class LevelUps
+    {
+        private sealed class LevelUp
+        {
+            private readonly PBEMove Move;
+            private readonly byte Level;
+
+            public LevelUp(JToken j)
+            {
+                Move = j[nameof(Move)].EnumValue<PBEMove>();
+                Level = j[nameof(Level)].Value<byte>();
+            }
+
+            public void Write(EndianBinaryWriter w)
+            {
+                w.Write(Move);
+                w.Write(Level);
+            }
+        }
+        private readonly LevelUp[] LevelUpMoves;
+
+        public LevelUps(JToken j)
+        {
+            var moves = (JArray)j[nameof(LevelUpMoves)];
+            int numMoves = moves.Count;
+            LevelUpMoves = new LevelUp[numMoves];
+            for (int i = 0; i < numMoves; i++)
+            {
+                LevelUpMoves[i] = new LevelUp(moves[i]);
+            }
+        }
+
+        public void Write(EndianBinaryWriter w)
+        {
+            byte count = (byte)LevelUpMoves.Length;
+            w.Write(count);
+            for (int i = 0; i < count; i++)
+            {
+                LevelUpMoves[i].Write(w);
             }
         }
     }
@@ -236,6 +279,16 @@ public sealed partial class Build
                 using (var w = new EndianBinaryWriter(File.Create(Path.Combine(dir, "Evolutions.bin"))))
                 {
                     new Evos(json).Write(w);
+                }
+            }
+            #endregion
+
+            #region Level Up
+            {
+                var json = JObject.Parse(File.ReadAllText(Path.Combine(dir, "LevelUp.json")));
+                using (var w = new EndianBinaryWriter(File.Create(Path.Combine(dir, "LevelUp.bin"))))
+                {
+                    new LevelUps(json).Write(w);
                 }
             }
             #endregion

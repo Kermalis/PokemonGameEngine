@@ -1,0 +1,16 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "StringShot",
+      "Level": 1
+    },
+    {
+      "Move": "BugBite",
+      "Level": 15
+    }
+  ]
+}

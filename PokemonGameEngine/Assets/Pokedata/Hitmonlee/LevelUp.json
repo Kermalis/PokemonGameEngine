@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Revenge",
+      "Level": 1
+    },
+    {
+      "Move": "DoubleKick",
+      "Level": 1
+    },
+    {
+      "Move": "Meditate",
+      "Level": 5
+    },
+    {
+      "Move": "RollingKick",
+      "Level": 9
+    },
+    {
+      "Move": "JumpKick",
+      "Level": 13
+    },
+    {
+      "Move": "BrickBreak",
+      "Level": 17
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 21
+    },
+    {
+      "Move": "Feint",
+      "Level": 25
+    },
+    {
+      "Move": "HiJumpKick",
+      "Level": 29
+    },
+    {
+      "Move": "MindReader",
+      "Level": 33
+    },
+    {
+      "Move": "Foresight",
+      "Level": 37
+    },
+    {
+      "Move": "WideGuard",
+      "Level": 41
+    },
+    {
+      "Move": "BlazeKick",
+      "Level": 45
+    },
+    {
+      "Move": "Endure",
+      "Level": 49
+    },
+    {
+      "Move": "MegaKick",
+      "Level": 53
+    },
+    {
+      "Move": "CloseCombat",
+      "Level": 57
+    },
+    {
+      "Move": "Reversal",
+      "Level": 61
+    }
+  ]
+}

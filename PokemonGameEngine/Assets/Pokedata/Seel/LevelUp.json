@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Headbutt",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 3
+    },
+    {
+      "Move": "WaterSport",
+      "Level": 7
+    },
+    {
+      "Move": "IcyWind",
+      "Level": 11
+    },
+    {
+      "Move": "Encore",
+      "Level": 13
+    },
+    {
+      "Move": "IceShard",
+      "Level": 17
+    },
+    {
+      "Move": "Rest",
+      "Level": 21
+    },
+    {
+      "Move": "AquaRing",
+      "Level": 23
+    },
+    {
+      "Move": "AuroraBeam",
+      "Level": 27
+    },
+    {
+      "Move": "AquaJet",
+      "Level": 31
+    },
+    {
+      "Move": "Brine",
+      "Level": 33
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 37
+    },
+    {
+      "Move": "Dive",
+      "Level": 41
+    },
+    {
+      "Move": "AquaTail",
+      "Level": 43
+    },
+    {
+      "Move": "IceBeam",
+      "Level": 47
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 51
+    },
+    {
+      "Move": "Hail",
+      "Level": 53
+    }
+  ]
+}

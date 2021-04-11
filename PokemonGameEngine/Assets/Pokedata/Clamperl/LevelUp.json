@@ -1,0 +1,24 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Clamp",
+      "Level": 1
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 1
+    },
+    {
+      "Move": "Whirlpool",
+      "Level": 1
+    },
+    {
+      "Move": "IronDefense",
+      "Level": 1
+    },
+    {
+      "Move": "ShellSmash",
+      "Level": 51
+    }
+  ]
+}

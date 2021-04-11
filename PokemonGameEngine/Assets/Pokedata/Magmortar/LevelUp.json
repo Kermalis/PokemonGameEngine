@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "ThunderPunch",
+      "Level": 1
+    },
+    {
+      "Move": "Smog",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Ember",
+      "Level": 1
+    },
+    {
+      "Move": "SmokeScreen",
+      "Level": 1
+    },
+    {
+      "Move": "Ember",
+      "Level": 5
+    },
+    {
+      "Move": "SmokeScreen",
+      "Level": 8
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 12
+    },
+    {
+      "Move": "FireSpin",
+      "Level": 15
+    },
+    {
+      "Move": "ClearSmog",
+      "Level": 19
+    },
+    {
+      "Move": "FlameBurst",
+      "Level": 22
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 26
+    },
+    {
+      "Move": "FirePunch",
+      "Level": 29
+    },
+    {
+      "Move": "LavaPlume",
+      "Level": 36
+    },
+    {
+      "Move": "SunnyDay",
+      "Level": 42
+    },
+    {
+      "Move": "Flamethrower",
+      "Level": 49
+    },
+    {
+      "Move": "FireBlast",
+      "Level": 55
+    },
+    {
+      "Move": "HyperBeam",
+      "Level": 62
+    }
+  ]
+}

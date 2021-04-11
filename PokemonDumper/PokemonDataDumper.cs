@@ -50,6 +50,7 @@ namespace Kermalis.PokemonDumper
                 Pokemon pkmn = tup.Value;
                 WritePokemonData(dir, pkmn);
                 WriteEvolutions(dir, pkmn);
+                WriteLevelUpMoves(dir, pkmn);
             }
         }
 
@@ -349,6 +350,26 @@ namespace Kermalis.PokemonDumper
                         }
                     }
                 }
+            }
+        }
+        private static void WriteLevelUpMoves(string dir, Pokemon pkmn)
+        {
+            using (var w = new JsonTextWriter(File.CreateText(Path.Combine(dir, "LevelUp.json"))) { Formatting = Formatting.Indented })
+            {
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(Pokemon.LevelUpMoves));
+                w.WriteStartArray();
+                foreach ((PBEMove move, byte level) in pkmn.LevelUpMoves)
+                {
+                    w.WriteStartObject();
+                    w.WritePropertyName("Move");
+                    w.WriteValue(move.ToString());
+                    w.WritePropertyName("Level");
+                    w.WriteValue(level);
+                    w.WriteEndObject();
+                }
+                w.WriteEndArray();
+                w.WriteEndObject();
             }
         }
 

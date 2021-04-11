@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Bind",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Bide",
+      "Level": 5
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 9
+    },
+    {
+      "Move": "SeismicToss",
+      "Level": 13
+    },
+    {
+      "Move": "VitalThrow",
+      "Level": 17
+    },
+    {
+      "Move": "Revenge",
+      "Level": 21
+    },
+    {
+      "Move": "StormThrow",
+      "Level": 25
+    },
+    {
+      "Move": "BodySlam",
+      "Level": 29
+    },
+    {
+      "Move": "BulkUp",
+      "Level": 33
+    },
+    {
+      "Move": "CircleThrow",
+      "Level": 37
+    },
+    {
+      "Move": "Endure",
+      "Level": 41
+    },
+    {
+      "Move": "WideGuard",
+      "Level": 45
+    },
+    {
+      "Move": "Superpower",
+      "Level": 49
+    },
+    {
+      "Move": "Reversal",
+      "Level": 53
+    }
+  ]
+}

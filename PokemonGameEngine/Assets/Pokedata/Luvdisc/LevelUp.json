@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Charm",
+      "Level": 4
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 7
+    },
+    {
+      "Move": "Agility",
+      "Level": 9
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 14
+    },
+    {
+      "Move": "LuckyChant",
+      "Level": 17
+    },
+    {
+      "Move": "WaterPulse",
+      "Level": 22
+    },
+    {
+      "Move": "Attract",
+      "Level": 27
+    },
+    {
+      "Move": "Flail",
+      "Level": 31
+    },
+    {
+      "Move": "SweetKiss",
+      "Level": 37
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 40
+    },
+    {
+      "Move": "AquaRing",
+      "Level": 46
+    },
+    {
+      "Move": "Captivate",
+      "Level": 51
+    },
+    {
+      "Move": "Safeguard",
+      "Level": 55
+    }
+  ]
+}

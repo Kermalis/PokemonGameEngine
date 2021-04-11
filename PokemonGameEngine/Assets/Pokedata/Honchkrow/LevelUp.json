@@ -1,0 +1,44 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Astonish",
+      "Level": 1
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 1
+    },
+    {
+      "Move": "Haze",
+      "Level": 1
+    },
+    {
+      "Move": "WingAttack",
+      "Level": 1
+    },
+    {
+      "Move": "Swagger",
+      "Level": 25
+    },
+    {
+      "Move": "NastyPlot",
+      "Level": 35
+    },
+    {
+      "Move": "FoulPlay",
+      "Level": 45
+    },
+    {
+      "Move": "NightSlash",
+      "Level": 55
+    },
+    {
+      "Move": "Quash",
+      "Level": 65
+    },
+    {
+      "Move": "DarkPulse",
+      "Level": 75
+    }
+  ]
+}

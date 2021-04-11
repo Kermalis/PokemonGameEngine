@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 3
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 7
+    },
+    {
+      "Move": "VineWhip",
+      "Level": 9
+    },
+    {
+      "Move": "PoisonPowder",
+      "Level": 13
+    },
+    {
+      "Move": "SleepPowder",
+      "Level": 13
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 15
+    },
+    {
+      "Move": "RazorLeaf",
+      "Level": 20
+    },
+    {
+      "Move": "SweetScent",
+      "Level": 23
+    },
+    {
+      "Move": "Growth",
+      "Level": 28
+    },
+    {
+      "Move": "DoubleEdge",
+      "Level": 31
+    },
+    {
+      "Move": "WorrySeed",
+      "Level": 36
+    },
+    {
+      "Move": "Synthesis",
+      "Level": 39
+    },
+    {
+      "Move": "SolarBeam",
+      "Level": 44
+    }
+  ]
+}

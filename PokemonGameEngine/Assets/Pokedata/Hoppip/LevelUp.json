@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Splash",
+      "Level": 1
+    },
+    {
+      "Move": "Synthesis",
+      "Level": 4
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 7
+    },
+    {
+      "Move": "Tackle",
+      "Level": 10
+    },
+    {
+      "Move": "PoisonPowder",
+      "Level": 12
+    },
+    {
+      "Move": "StunSpore",
+      "Level": 14
+    },
+    {
+      "Move": "SleepPowder",
+      "Level": 16
+    },
+    {
+      "Move": "BulletSeed",
+      "Level": 19
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 22
+    },
+    {
+      "Move": "MegaDrain",
+      "Level": 25
+    },
+    {
+      "Move": "Acrobatics",
+      "Level": 28
+    },
+    {
+      "Move": "RagePowder",
+      "Level": 31
+    },
+    {
+      "Move": "CottonSpore",
+      "Level": 34
+    },
+    {
+      "Move": "Uturn",
+      "Level": 37
+    },
+    {
+      "Move": "WorrySeed",
+      "Level": 40
+    },
+    {
+      "Move": "GigaDrain",
+      "Level": 43
+    },
+    {
+      "Move": "Bounce",
+      "Level": 46
+    },
+    {
+      "Move": "Memento",
+      "Level": 49
+    }
+  ]
+}

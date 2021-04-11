@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 3
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 7
+    },
+    {
+      "Move": "Tickle",
+      "Level": 9
+    },
+    {
+      "Move": "DoubleSlap",
+      "Level": 13
+    },
+    {
+      "Move": "Encore",
+      "Level": 15
+    },
+    {
+      "Move": "Swift",
+      "Level": 19
+    },
+    {
+      "Move": "Sing",
+      "Level": 21
+    },
+    {
+      "Move": "TailSlap",
+      "Level": 25
+    },
+    {
+      "Move": "Charm",
+      "Level": 27
+    },
+    {
+      "Move": "WakeUpSlap",
+      "Level": 31
+    },
+    {
+      "Move": "EchoedVoice",
+      "Level": 33
+    },
+    {
+      "Move": "Slam",
+      "Level": 37
+    },
+    {
+      "Move": "Captivate",
+      "Level": 39
+    },
+    {
+      "Move": "HyperVoice",
+      "Level": 43
+    },
+    {
+      "Move": "LastResort",
+      "Level": 45
+    },
+    {
+      "Move": "AfterYou",
+      "Level": 49
+    }
+  ]
+}

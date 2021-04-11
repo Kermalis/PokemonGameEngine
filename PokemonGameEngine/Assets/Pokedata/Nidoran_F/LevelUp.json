@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 7
+    },
+    {
+      "Move": "DoubleKick",
+      "Level": 9
+    },
+    {
+      "Move": "PoisonSting",
+      "Level": 13
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 19
+    },
+    {
+      "Move": "Bite",
+      "Level": 21
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 25
+    },
+    {
+      "Move": "ToxicSpikes",
+      "Level": 31
+    },
+    {
+      "Move": "Flatter",
+      "Level": 33
+    },
+    {
+      "Move": "Crunch",
+      "Level": 37
+    },
+    {
+      "Move": "Captivate",
+      "Level": 43
+    },
+    {
+      "Move": "PoisonFang",
+      "Level": 45
+    }
+  ]
+}

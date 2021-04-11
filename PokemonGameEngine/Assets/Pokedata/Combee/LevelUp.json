@@ -1,0 +1,20 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "SweetScent",
+      "Level": 1
+    },
+    {
+      "Move": "Gust",
+      "Level": 1
+    },
+    {
+      "Move": "BugBite",
+      "Level": 13
+    },
+    {
+      "Move": "BugBuzz",
+      "Level": 29
+    }
+  ]
+}

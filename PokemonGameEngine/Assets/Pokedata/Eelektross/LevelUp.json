@@ -1,0 +1,24 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "CrushClaw",
+      "Level": 1
+    },
+    {
+      "Move": "Headbutt",
+      "Level": 1
+    },
+    {
+      "Move": "Acid",
+      "Level": 1
+    },
+    {
+      "Move": "Discharge",
+      "Level": 1
+    },
+    {
+      "Move": "Crunch",
+      "Level": 1
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "SweetScent",
+      "Level": 1
+    },
+    {
+      "Move": "Gust",
+      "Level": 1
+    },
+    {
+      "Move": "PoisonSting",
+      "Level": 1
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 1
+    },
+    {
+      "Move": "FuryCutter",
+      "Level": 5
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 9
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 13
+    },
+    {
+      "Move": "DefendOrder",
+      "Level": 17
+    },
+    {
+      "Move": "Slash",
+      "Level": 21
+    },
+    {
+      "Move": "PowerGem",
+      "Level": 25
+    },
+    {
+      "Move": "HealOrder",
+      "Level": 29
+    },
+    {
+      "Move": "Toxic",
+      "Level": 33
+    },
+    {
+      "Move": "AirSlash",
+      "Level": 37
+    },
+    {
+      "Move": "Captivate",
+      "Level": 41
+    },
+    {
+      "Move": "AttackOrder",
+      "Level": 45
+    },
+    {
+      "Move": "Swagger",
+      "Level": 49
+    },
+    {
+      "Move": "DestinyBond",
+      "Level": 53
+    }
+  ]
+}

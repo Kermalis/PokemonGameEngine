@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Absorb",
+      "Level": 1
+    },
+    {
+      "Move": "Growth",
+      "Level": 4
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 8
+    },
+    {
+      "Move": "SleepPowder",
+      "Level": 10
+    },
+    {
+      "Move": "MegaDrain",
+      "Level": 13
+    },
+    {
+      "Move": "Synthesis",
+      "Level": 17
+    },
+    {
+      "Move": "MagicalLeaf",
+      "Level": 19
+    },
+    {
+      "Move": "StunSpore",
+      "Level": 22
+    },
+    {
+      "Move": "GigaDrain",
+      "Level": 26
+    },
+    {
+      "Move": "Aromatherapy",
+      "Level": 28
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 31
+    },
+    {
+      "Move": "EnergyBall",
+      "Level": 35
+    },
+    {
+      "Move": "Entrainment",
+      "Level": 37
+    },
+    {
+      "Move": "SunnyDay",
+      "Level": 40
+    },
+    {
+      "Move": "AfterYou",
+      "Level": 44
+    },
+    {
+      "Move": "LeafStorm",
+      "Level": 46
+    }
+  ]
+}

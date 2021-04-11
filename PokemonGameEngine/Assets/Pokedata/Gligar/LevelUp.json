@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "PoisonSting",
+      "Level": 1
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 4
+    },
+    {
+      "Move": "Harden",
+      "Level": 7
+    },
+    {
+      "Move": "KnockOff",
+      "Level": 10
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 13
+    },
+    {
+      "Move": "FuryCutter",
+      "Level": 16
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 19
+    },
+    {
+      "Move": "Acrobatics",
+      "Level": 22
+    },
+    {
+      "Move": "Slash",
+      "Level": 27
+    },
+    {
+      "Move": "Uturn",
+      "Level": 30
+    },
+    {
+      "Move": "Screech",
+      "Level": 35
+    },
+    {
+      "Move": "XScissor",
+      "Level": 40
+    },
+    {
+      "Move": "SkyUppercut",
+      "Level": 45
+    },
+    {
+      "Move": "SwordsDance",
+      "Level": 50
+    },
+    {
+      "Move": "Guillotine",
+      "Level": 55
+    }
+  ]
+}

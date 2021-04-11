@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Protect",
+      "Level": 10
+    },
+    {
+      "Move": "BugBite",
+      "Level": 15
+    },
+    {
+      "Move": "HiddenPower",
+      "Level": 20
+    },
+    {
+      "Move": "Confusion",
+      "Level": 23
+    },
+    {
+      "Move": "RazorLeaf",
+      "Level": 26
+    },
+    {
+      "Move": "Growth",
+      "Level": 29
+    },
+    {
+      "Move": "Psybeam",
+      "Level": 32
+    },
+    {
+      "Move": "Captivate",
+      "Level": 35
+    },
+    {
+      "Move": "Flail",
+      "Level": 38
+    },
+    {
+      "Move": "Attract",
+      "Level": 41
+    },
+    {
+      "Move": "Psychic",
+      "Level": 44
+    },
+    {
+      "Move": "LeafStorm",
+      "Level": 47
+    }
+  ]
+}

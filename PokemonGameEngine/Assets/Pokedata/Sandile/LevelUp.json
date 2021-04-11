@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Rage",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 4
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 7
+    },
+    {
+      "Move": "Torment",
+      "Level": 10
+    },
+    {
+      "Move": "SandTomb",
+      "Level": 13
+    },
+    {
+      "Move": "Assurance",
+      "Level": 16
+    },
+    {
+      "Move": "MudSlap",
+      "Level": 19
+    },
+    {
+      "Move": "Embargo",
+      "Level": 22
+    },
+    {
+      "Move": "Swagger",
+      "Level": 25
+    },
+    {
+      "Move": "Crunch",
+      "Level": 28
+    },
+    {
+      "Move": "Dig",
+      "Level": 31
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 34
+    },
+    {
+      "Move": "FoulPlay",
+      "Level": 37
+    },
+    {
+      "Move": "Sandstorm",
+      "Level": 40
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 43
+    },
+    {
+      "Move": "Thrash",
+      "Level": 46
+    }
+  ]
+}

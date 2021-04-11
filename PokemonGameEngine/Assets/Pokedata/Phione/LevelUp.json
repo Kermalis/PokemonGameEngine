@@ -1,0 +1,48 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Bubble",
+      "Level": 1
+    },
+    {
+      "Move": "WaterSport",
+      "Level": 1
+    },
+    {
+      "Move": "Charm",
+      "Level": 9
+    },
+    {
+      "Move": "Supersonic",
+      "Level": 16
+    },
+    {
+      "Move": "BubbleBeam",
+      "Level": 24
+    },
+    {
+      "Move": "AcidArmor",
+      "Level": 31
+    },
+    {
+      "Move": "Whirlpool",
+      "Level": 39
+    },
+    {
+      "Move": "WaterPulse",
+      "Level": 46
+    },
+    {
+      "Move": "AquaRing",
+      "Level": 54
+    },
+    {
+      "Move": "Dive",
+      "Level": 61
+    },
+    {
+      "Move": "RainDance",
+      "Level": 69
+    }
+  ]
+}

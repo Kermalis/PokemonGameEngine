@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Spikes",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "PoisonSting",
+      "Level": 1
+    },
+    {
+      "Move": "Harden",
+      "Level": 9
+    },
+    {
+      "Move": "Minimize",
+      "Level": 9
+    },
+    {
+      "Move": "WaterGun",
+      "Level": 13
+    },
+    {
+      "Move": "Rollout",
+      "Level": 17
+    },
+    {
+      "Move": "ToxicSpikes",
+      "Level": 21
+    },
+    {
+      "Move": "Stockpile",
+      "Level": 25
+    },
+    {
+      "Move": "SpitUp",
+      "Level": 25
+    },
+    {
+      "Move": "Revenge",
+      "Level": 29
+    },
+    {
+      "Move": "Brine",
+      "Level": 33
+    },
+    {
+      "Move": "PinMissile",
+      "Level": 37
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 41
+    },
+    {
+      "Move": "AquaTail",
+      "Level": 45
+    },
+    {
+      "Move": "PoisonJab",
+      "Level": 49
+    },
+    {
+      "Move": "DestinyBond",
+      "Level": 53
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 57
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "Bide",
+      "Level": 1
+    },
+    {
+      "Move": "FuryCutter",
+      "Level": 10
+    },
+    {
+      "Move": "LeechLife",
+      "Level": 14
+    },
+    {
+      "Move": "Sing",
+      "Level": 18
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 22
+    },
+    {
+      "Move": "Slash",
+      "Level": 26
+    },
+    {
+      "Move": "XScissor",
+      "Level": 30
+    },
+    {
+      "Move": "Screech",
+      "Level": 34
+    },
+    {
+      "Move": "Taunt",
+      "Level": 38
+    },
+    {
+      "Move": "NightSlash",
+      "Level": 42
+    },
+    {
+      "Move": "BugBuzz",
+      "Level": 46
+    },
+    {
+      "Move": "PerishSong",
+      "Level": 50
+    }
+  ]
+}

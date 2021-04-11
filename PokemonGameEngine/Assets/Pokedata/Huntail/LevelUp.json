@@ -1,0 +1,52 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Whirlpool",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 6
+    },
+    {
+      "Move": "Screech",
+      "Level": 10
+    },
+    {
+      "Move": "WaterPulse",
+      "Level": 15
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 19
+    },
+    {
+      "Move": "IceFang",
+      "Level": 24
+    },
+    {
+      "Move": "Brine",
+      "Level": 28
+    },
+    {
+      "Move": "BatonPass",
+      "Level": 33
+    },
+    {
+      "Move": "Dive",
+      "Level": 37
+    },
+    {
+      "Move": "Crunch",
+      "Level": 42
+    },
+    {
+      "Move": "AquaTail",
+      "Level": 46
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 51
+    }
+  ]
+}

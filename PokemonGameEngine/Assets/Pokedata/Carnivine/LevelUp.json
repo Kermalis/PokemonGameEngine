@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Bind",
+      "Level": 1
+    },
+    {
+      "Move": "Growth",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 7
+    },
+    {
+      "Move": "VineWhip",
+      "Level": 11
+    },
+    {
+      "Move": "SweetScent",
+      "Level": 17
+    },
+    {
+      "Move": "Ingrain",
+      "Level": 21
+    },
+    {
+      "Move": "FaintAttack",
+      "Level": 27
+    },
+    {
+      "Move": "LeafTornado",
+      "Level": 31
+    },
+    {
+      "Move": "Stockpile",
+      "Level": 37
+    },
+    {
+      "Move": "SpitUp",
+      "Level": 37
+    },
+    {
+      "Move": "Swallow",
+      "Level": 37
+    },
+    {
+      "Move": "Crunch",
+      "Level": 41
+    },
+    {
+      "Move": "WringOut",
+      "Level": 47
+    },
+    {
+      "Move": "PowerWhip",
+      "Level": 51
+    }
+  ]
+}

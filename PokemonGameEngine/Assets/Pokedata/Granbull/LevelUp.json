@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "IceFang",
+      "Level": 1
+    },
+    {
+      "Move": "FireFang",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderFang",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 1
+    },
+    {
+      "Move": "Charm",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 7
+    },
+    {
+      "Move": "Lick",
+      "Level": 13
+    },
+    {
+      "Move": "Headbutt",
+      "Level": 19
+    },
+    {
+      "Move": "Roar",
+      "Level": 27
+    },
+    {
+      "Move": "Rage",
+      "Level": 35
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 43
+    },
+    {
+      "Move": "Payback",
+      "Level": 51
+    },
+    {
+      "Move": "Crunch",
+      "Level": 59
+    },
+    {
+      "Move": "Outrage",
+      "Level": 67
+    }
+  ]
+}

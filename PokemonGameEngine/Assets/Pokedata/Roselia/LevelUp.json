@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Absorb",
+      "Level": 1
+    },
+    {
+      "Move": "Growth",
+      "Level": 4
+    },
+    {
+      "Move": "PoisonSting",
+      "Level": 7
+    },
+    {
+      "Move": "StunSpore",
+      "Level": 10
+    },
+    {
+      "Move": "MegaDrain",
+      "Level": 13
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 16
+    },
+    {
+      "Move": "MagicalLeaf",
+      "Level": 19
+    },
+    {
+      "Move": "GrassWhistle",
+      "Level": 22
+    },
+    {
+      "Move": "GigaDrain",
+      "Level": 25
+    },
+    {
+      "Move": "ToxicSpikes",
+      "Level": 28
+    },
+    {
+      "Move": "SweetScent",
+      "Level": 31
+    },
+    {
+      "Move": "Ingrain",
+      "Level": 34
+    },
+    {
+      "Move": "PetalDance",
+      "Level": 37
+    },
+    {
+      "Move": "Toxic",
+      "Level": 40
+    },
+    {
+      "Move": "Aromatherapy",
+      "Level": 43
+    },
+    {
+      "Move": "Synthesis",
+      "Level": 46
+    }
+  ]
+}

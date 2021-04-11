@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "Lick",
+      "Level": 1
+    },
+    {
+      "Move": "LovelyKiss",
+      "Level": 1
+    },
+    {
+      "Move": "PowderSnow",
+      "Level": 1
+    },
+    {
+      "Move": "Lick",
+      "Level": 5
+    },
+    {
+      "Move": "LovelyKiss",
+      "Level": 8
+    },
+    {
+      "Move": "PowderSnow",
+      "Level": 11
+    },
+    {
+      "Move": "DoubleSlap",
+      "Level": 15
+    },
+    {
+      "Move": "IcePunch",
+      "Level": 18
+    },
+    {
+      "Move": "HeartStamp",
+      "Level": 21
+    },
+    {
+      "Move": "MeanLook",
+      "Level": 25
+    },
+    {
+      "Move": "FakeTears",
+      "Level": 28
+    },
+    {
+      "Move": "WakeUpSlap",
+      "Level": 33
+    },
+    {
+      "Move": "Avalanche",
+      "Level": 39
+    },
+    {
+      "Move": "BodySlam",
+      "Level": 44
+    },
+    {
+      "Move": "WringOut",
+      "Level": 49
+    },
+    {
+      "Move": "PerishSong",
+      "Level": 55
+    },
+    {
+      "Move": "Blizzard",
+      "Level": 60
+    }
+  ]
+}

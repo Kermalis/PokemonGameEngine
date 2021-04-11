@@ -1,0 +1,52 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "Harden",
+      "Level": 1
+    },
+    {
+      "Move": "LeechLife",
+      "Level": 5
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 9
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 14
+    },
+    {
+      "Move": "MindReader",
+      "Level": 19
+    },
+    {
+      "Move": "Spite",
+      "Level": 25
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 31
+    },
+    {
+      "Move": "ShadowSneak",
+      "Level": 38
+    },
+    {
+      "Move": "Grudge",
+      "Level": 45
+    },
+    {
+      "Move": "HealBlock",
+      "Level": 52
+    },
+    {
+      "Move": "ShadowBall",
+      "Level": 59
+    }
+  ]
+}

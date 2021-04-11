@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "HornAttack",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 1
+    },
+    {
+      "Move": "Stomp",
+      "Level": 8
+    },
+    {
+      "Move": "FuryAttack",
+      "Level": 12
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 19
+    },
+    {
+      "Move": "RockBlast",
+      "Level": 23
+    },
+    {
+      "Move": "Bulldoze",
+      "Level": 30
+    },
+    {
+      "Move": "ChipAway",
+      "Level": 34
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 41
+    },
+    {
+      "Move": "DrillRun",
+      "Level": 45
+    },
+    {
+      "Move": "StoneEdge",
+      "Level": 52
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 56
+    },
+    {
+      "Move": "HornDrill",
+      "Level": 63
+    },
+    {
+      "Move": "Megahorn",
+      "Level": 67
+    }
+  ]
+}

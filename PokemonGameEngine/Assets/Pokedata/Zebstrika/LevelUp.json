@@ -1,0 +1,68 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "QuickAttack",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 1
+    },
+    {
+      "Move": "Charge",
+      "Level": 1
+    },
+    {
+      "Move": "ThunderWave",
+      "Level": 1
+    },
+    {
+      "Move": "TailWhip",
+      "Level": 4
+    },
+    {
+      "Move": "Charge",
+      "Level": 8
+    },
+    {
+      "Move": "ShockWave",
+      "Level": 11
+    },
+    {
+      "Move": "ThunderWave",
+      "Level": 15
+    },
+    {
+      "Move": "FlameCharge",
+      "Level": 18
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 22
+    },
+    {
+      "Move": "Spark",
+      "Level": 25
+    },
+    {
+      "Move": "Stomp",
+      "Level": 31
+    },
+    {
+      "Move": "Discharge",
+      "Level": 36
+    },
+    {
+      "Move": "Agility",
+      "Level": 42
+    },
+    {
+      "Move": "WildCharge",
+      "Level": 47
+    },
+    {
+      "Move": "Thrash",
+      "Level": 53
+    }
+  ]
+}

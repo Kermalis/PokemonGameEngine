@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "RockSmash",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Bide",
+      "Level": 5
+    },
+    {
+      "Move": "FocusEnergy",
+      "Level": 9
+    },
+    {
+      "Move": "DoubleKick",
+      "Level": 13
+    },
+    {
+      "Move": "LowSweep",
+      "Level": 17
+    },
+    {
+      "Move": "Counter",
+      "Level": 21
+    },
+    {
+      "Move": "KarateChop",
+      "Level": 25
+    },
+    {
+      "Move": "BrickBreak",
+      "Level": 29
+    },
+    {
+      "Move": "BulkUp",
+      "Level": 33
+    },
+    {
+      "Move": "Retaliate",
+      "Level": 37
+    },
+    {
+      "Move": "Endure",
+      "Level": 41
+    },
+    {
+      "Move": "QuickGuard",
+      "Level": 45
+    },
+    {
+      "Move": "CloseCombat",
+      "Level": 49
+    },
+    {
+      "Move": "Reversal",
+      "Level": 53
+    }
+  ]
+}

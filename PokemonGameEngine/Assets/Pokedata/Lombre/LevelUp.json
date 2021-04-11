@@ -1,0 +1,48 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Astonish",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 3
+    },
+    {
+      "Move": "Absorb",
+      "Level": 5
+    },
+    {
+      "Move": "NaturePower",
+      "Level": 7
+    },
+    {
+      "Move": "FakeOut",
+      "Level": 11
+    },
+    {
+      "Move": "FurySwipes",
+      "Level": 15
+    },
+    {
+      "Move": "WaterSport",
+      "Level": 19
+    },
+    {
+      "Move": "BubbleBeam",
+      "Level": 25
+    },
+    {
+      "Move": "ZenHeadbutt",
+      "Level": 31
+    },
+    {
+      "Move": "Uproar",
+      "Level": 37
+    },
+    {
+      "Move": "HydroPump",
+      "Level": 45
+    }
+  ]
+}

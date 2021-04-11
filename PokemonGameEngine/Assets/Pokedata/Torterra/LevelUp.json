@@ -1,0 +1,72 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "WoodHammer",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Withdraw",
+      "Level": 1
+    },
+    {
+      "Move": "Absorb",
+      "Level": 1
+    },
+    {
+      "Move": "RazorLeaf",
+      "Level": 1
+    },
+    {
+      "Move": "Withdraw",
+      "Level": 5
+    },
+    {
+      "Move": "Absorb",
+      "Level": 9
+    },
+    {
+      "Move": "RazorLeaf",
+      "Level": 13
+    },
+    {
+      "Move": "Curse",
+      "Level": 17
+    },
+    {
+      "Move": "Bite",
+      "Level": 22
+    },
+    {
+      "Move": "MegaDrain",
+      "Level": 27
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 32
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 33
+    },
+    {
+      "Move": "Synthesis",
+      "Level": 39
+    },
+    {
+      "Move": "Crunch",
+      "Level": 45
+    },
+    {
+      "Move": "GigaDrain",
+      "Level": 51
+    },
+    {
+      "Move": "LeafStorm",
+      "Level": 57
+    }
+  ]
+}

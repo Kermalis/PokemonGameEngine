@@ -1,0 +1,56 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Peck",
+      "Level": 1
+    },
+    {
+      "Move": "Growl",
+      "Level": 1
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 5
+    },
+    {
+      "Move": "Rage",
+      "Level": 10
+    },
+    {
+      "Move": "FuryAttack",
+      "Level": 14
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 19
+    },
+    {
+      "Move": "Uproar",
+      "Level": 23
+    },
+    {
+      "Move": "Acupressure",
+      "Level": 28
+    },
+    {
+      "Move": "DoubleHit",
+      "Level": 32
+    },
+    {
+      "Move": "Agility",
+      "Level": 37
+    },
+    {
+      "Move": "DrillPeck",
+      "Level": 41
+    },
+    {
+      "Move": "Endeavor",
+      "Level": 46
+    },
+    {
+      "Move": "Thrash",
+      "Level": 50
+    }
+  ]
+}

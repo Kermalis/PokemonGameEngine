@@ -1,0 +1,84 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "ThunderFang",
+      "Level": 1
+    },
+    {
+      "Move": "IceFang",
+      "Level": 1
+    },
+    {
+      "Move": "FireFang",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Sandstorm",
+      "Level": 1
+    },
+    {
+      "Move": "Screech",
+      "Level": 1
+    },
+    {
+      "Move": "Sandstorm",
+      "Level": 5
+    },
+    {
+      "Move": "Screech",
+      "Level": 10
+    },
+    {
+      "Move": "ChipAway",
+      "Level": 14
+    },
+    {
+      "Move": "RockSlide",
+      "Level": 19
+    },
+    {
+      "Move": "ScaryFace",
+      "Level": 23
+    },
+    {
+      "Move": "Thrash",
+      "Level": 28
+    },
+    {
+      "Move": "DarkPulse",
+      "Level": 34
+    },
+    {
+      "Move": "Payback",
+      "Level": 41
+    },
+    {
+      "Move": "Crunch",
+      "Level": 47
+    },
+    {
+      "Move": "Earthquake",
+      "Level": 54
+    },
+    {
+      "Move": "StoneEdge",
+      "Level": 63
+    },
+    {
+      "Move": "HyperBeam",
+      "Level": 73
+    },
+    {
+      "Move": "GigaImpact",
+      "Level": 82
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Growth",
+      "Level": 1
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 1
+    },
+    {
+      "Move": "MegaDrain",
+      "Level": 1
+    },
+    {
+      "Move": "Synthesis",
+      "Level": 1
+    },
+    {
+      "Move": "TeeterDance",
+      "Level": 10
+    },
+    {
+      "Move": "QuiverDance",
+      "Level": 28
+    },
+    {
+      "Move": "PetalDance",
+      "Level": 46
+    }
+  ]
+}

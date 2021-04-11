@@ -1,0 +1,64 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Scratch",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "QuickAttack",
+      "Level": 5
+    },
+    {
+      "Move": "FuryCutter",
+      "Level": 8
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 12
+    },
+    {
+      "Move": "Slash",
+      "Level": 15
+    },
+    {
+      "Move": "Embargo",
+      "Level": 19
+    },
+    {
+      "Move": "CrushClaw",
+      "Level": 22
+    },
+    {
+      "Move": "Revenge",
+      "Level": 26
+    },
+    {
+      "Move": "FalseSwipe",
+      "Level": 29
+    },
+    {
+      "Move": "Detect",
+      "Level": 33
+    },
+    {
+      "Move": "XScissor",
+      "Level": 36
+    },
+    {
+      "Move": "Taunt",
+      "Level": 40
+    },
+    {
+      "Move": "SwordsDance",
+      "Level": 43
+    },
+    {
+      "Move": "CloseCombat",
+      "Level": 47
+    }
+  ]
+}

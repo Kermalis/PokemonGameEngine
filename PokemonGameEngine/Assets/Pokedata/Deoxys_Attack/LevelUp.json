@@ -1,0 +1,60 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Wrap",
+      "Level": 1
+    },
+    {
+      "Move": "NightShade",
+      "Level": 9
+    },
+    {
+      "Move": "Teleport",
+      "Level": 17
+    },
+    {
+      "Move": "Taunt",
+      "Level": 25
+    },
+    {
+      "Move": "Pursuit",
+      "Level": 33
+    },
+    {
+      "Move": "Psychic",
+      "Level": 41
+    },
+    {
+      "Move": "Superpower",
+      "Level": 49
+    },
+    {
+      "Move": "PsychoShift",
+      "Level": 57
+    },
+    {
+      "Move": "ZenHeadbutt",
+      "Level": 65
+    },
+    {
+      "Move": "CosmicPower",
+      "Level": 73
+    },
+    {
+      "Move": "ZapCannon",
+      "Level": 81
+    },
+    {
+      "Move": "PsychoBoost",
+      "Level": 89
+    },
+    {
+      "Move": "HyperBeam",
+      "Level": 97
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "LeafBlade",
+      "Level": 1
+    },
+    {
+      "Move": "NightSlash",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Confusion",
+      "Level": 1
+    },
+    {
+      "Move": "DoubleTeam",
+      "Level": 1
+    },
+    {
+      "Move": "Teleport",
+      "Level": 1
+    },
+    {
+      "Move": "Confusion",
+      "Level": 6
+    },
+    {
+      "Move": "DoubleTeam",
+      "Level": 10
+    },
+    {
+      "Move": "Teleport",
+      "Level": 12
+    },
+    {
+      "Move": "FuryCutter",
+      "Level": 17
+    },
+    {
+      "Move": "Slash",
+      "Level": 22
+    },
+    {
+      "Move": "HealPulse",
+      "Level": 25
+    },
+    {
+      "Move": "SwordsDance",
+      "Level": 31
+    },
+    {
+      "Move": "PsychoCut",
+      "Level": 36
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 39
+    },
+    {
+      "Move": "Feint",
+      "Level": 45
+    },
+    {
+      "Move": "FalseSwipe",
+      "Level": 50
+    },
+    {
+      "Move": "Protect",
+      "Level": 53
+    },
+    {
+      "Move": "CloseCombat",
+      "Level": 59
+    },
+    {
+      "Move": "StoredPower",
+      "Level": 64
+    }
+  ]
+}

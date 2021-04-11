@@ -1,0 +1,76 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Pound",
+      "Level": 1
+    },
+    {
+      "Move": "PoisonGas",
+      "Level": 1
+    },
+    {
+      "Move": "Recycle",
+      "Level": 1
+    },
+    {
+      "Move": "ToxicSpikes",
+      "Level": 1
+    },
+    {
+      "Move": "Recycle",
+      "Level": 3
+    },
+    {
+      "Move": "ToxicSpikes",
+      "Level": 7
+    },
+    {
+      "Move": "AcidSpray",
+      "Level": 12
+    },
+    {
+      "Move": "DoubleSlap",
+      "Level": 14
+    },
+    {
+      "Move": "Sludge",
+      "Level": 18
+    },
+    {
+      "Move": "Stockpile",
+      "Level": 23
+    },
+    {
+      "Move": "Swallow",
+      "Level": 23
+    },
+    {
+      "Move": "BodySlam",
+      "Level": 25
+    },
+    {
+      "Move": "SludgeBomb",
+      "Level": 29
+    },
+    {
+      "Move": "ClearSmog",
+      "Level": 34
+    },
+    {
+      "Move": "Toxic",
+      "Level": 39
+    },
+    {
+      "Move": "Amnesia",
+      "Level": 46
+    },
+    {
+      "Move": "GunkShot",
+      "Level": 54
+    },
+    {
+      "Move": "Explosion",
+      "Level": 59
+    }
+  ]
+}

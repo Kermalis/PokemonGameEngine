@@ -1,0 +1,28 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Absorb",
+      "Level": 1
+    },
+    {
+      "Move": "Growth",
+      "Level": 4
+    },
+    {
+      "Move": "WaterSport",
+      "Level": 7
+    },
+    {
+      "Move": "StunSpore",
+      "Level": 10
+    },
+    {
+      "Move": "MegaDrain",
+      "Level": 13
+    },
+    {
+      "Move": "WorrySeed",
+      "Level": 16
+    }
+  ]
+}

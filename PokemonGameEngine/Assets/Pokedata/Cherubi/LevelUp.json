@@ -1,0 +1,48 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "MorningSun",
+      "Level": 1
+    },
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Growth",
+      "Level": 7
+    },
+    {
+      "Move": "LeechSeed",
+      "Level": 10
+    },
+    {
+      "Move": "HelpingHand",
+      "Level": 13
+    },
+    {
+      "Move": "MagicalLeaf",
+      "Level": 19
+    },
+    {
+      "Move": "SunnyDay",
+      "Level": 22
+    },
+    {
+      "Move": "WorrySeed",
+      "Level": 28
+    },
+    {
+      "Move": "TakeDown",
+      "Level": 31
+    },
+    {
+      "Move": "SolarBeam",
+      "Level": 37
+    },
+    {
+      "Move": "LuckyChant",
+      "Level": 40
+    }
+  ]
+}

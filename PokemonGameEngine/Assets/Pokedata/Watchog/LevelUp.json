@@ -1,0 +1,80 @@
+{
+  "LevelUpMoves": [
+    {
+      "Move": "Tackle",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 1
+    },
+    {
+      "Move": "Bite",
+      "Level": 1
+    },
+    {
+      "Move": "LowKick",
+      "Level": 1
+    },
+    {
+      "Move": "Leer",
+      "Level": 3
+    },
+    {
+      "Move": "Bite",
+      "Level": 6
+    },
+    {
+      "Move": "Bide",
+      "Level": 8
+    },
+    {
+      "Move": "Detect",
+      "Level": 11
+    },
+    {
+      "Move": "SandAttack",
+      "Level": 13
+    },
+    {
+      "Move": "Crunch",
+      "Level": 16
+    },
+    {
+      "Move": "Hypnosis",
+      "Level": 18
+    },
+    {
+      "Move": "ConfuseRay",
+      "Level": 20
+    },
+    {
+      "Move": "SuperFang",
+      "Level": 22
+    },
+    {
+      "Move": "AfterYou",
+      "Level": 25
+    },
+    {
+      "Move": "PsychUp",
+      "Level": 29
+    },
+    {
+      "Move": "HyperFang",
+      "Level": 32
+    },
+    {
+      "Move": "MeanLook",
+      "Level": 36
+    },
+    {
+      "Move": "BatonPass",
+      "Level": 39
+    },
+    {
+      "Move": "Slam",
+      "Level": 43
+    }
+  ]
+}
