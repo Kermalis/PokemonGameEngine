@@ -1,32 +1,11 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "BubbleBeam",
-      "Level": 1
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 1
-    },
-    {
-      "Move": "DoubleSlap",
-      "Level": 1
-    },
-    {
-      "Move": "PerishSong",
-      "Level": 1
-    },
-    {
-      "Move": "Swagger",
-      "Level": 27
-    },
-    {
-      "Move": "Bounce",
-      "Level": 37
-    },
-    {
-      "Move": "HyperVoice",
-      "Level": 48
-    }
+    {"Move":"BubbleBeam","Level":1},
+    {"Move":"Hypnosis","Level":1},
+    {"Move":"DoubleSlap","Level":1},
+    {"Move":"PerishSong","Level":1},
+    {"Move":"Swagger","Level":27},
+    {"Move":"Bounce","Level":37},
+    {"Move":"HyperVoice","Level":48}
   ]
 }

@@ -1,20 +1,8 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Protect",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 10
-    },
-    {
-      "Move": "BugBite",
-      "Level": 15
-    },
-    {
-      "Move": "HiddenPower",
-      "Level": 20
-    }
+    {"Move":"Protect","Level":1},
+    {"Move":"Tackle","Level":10},
+    {"Move":"BugBite","Level":15},
+    {"Move":"HiddenPower","Level":20}
   ]
 }

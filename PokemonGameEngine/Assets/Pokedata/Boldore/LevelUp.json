@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 4
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 7
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 10
-    },
-    {
-      "Move": "RockBlast",
-      "Level": 14
-    },
-    {
-      "Move": "MudSlap",
-      "Level": 17
-    },
-    {
-      "Move": "IronDefense",
-      "Level": 20
-    },
-    {
-      "Move": "SmackDown",
-      "Level": 23
-    },
-    {
-      "Move": "PowerGem",
-      "Level": 25
-    },
-    {
-      "Move": "RockSlide",
-      "Level": 30
-    },
-    {
-      "Move": "StealthRock",
-      "Level": 36
-    },
-    {
-      "Move": "Sandstorm",
-      "Level": 42
-    },
-    {
-      "Move": "StoneEdge",
-      "Level": 48
-    },
-    {
-      "Move": "Explosion",
-      "Level": 55
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Harden","Level":1},
+    {"Move":"SandAttack","Level":1},
+    {"Move":"Headbutt","Level":1},
+    {"Move":"Harden","Level":4},
+    {"Move":"SandAttack","Level":7},
+    {"Move":"Headbutt","Level":10},
+    {"Move":"RockBlast","Level":14},
+    {"Move":"MudSlap","Level":17},
+    {"Move":"IronDefense","Level":20},
+    {"Move":"SmackDown","Level":23},
+    {"Move":"PowerGem","Level":25},
+    {"Move":"RockSlide","Level":30},
+    {"Move":"StealthRock","Level":36},
+    {"Move":"Sandstorm","Level":42},
+    {"Move":"StoneEdge","Level":48},
+    {"Move":"Explosion","Level":55}
   ]
 }

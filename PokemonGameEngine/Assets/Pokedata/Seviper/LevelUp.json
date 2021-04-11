@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Wrap",
-      "Level": 1
-    },
-    {
-      "Move": "Lick",
-      "Level": 1
-    },
-    {
-      "Move": "Bite",
-      "Level": 5
-    },
-    {
-      "Move": "Swagger",
-      "Level": 9
-    },
-    {
-      "Move": "PoisonTail",
-      "Level": 12
-    },
-    {
-      "Move": "Screech",
-      "Level": 16
-    },
-    {
-      "Move": "Venoshock",
-      "Level": 20
-    },
-    {
-      "Move": "Glare",
-      "Level": 23
-    },
-    {
-      "Move": "PoisonFang",
-      "Level": 27
-    },
-    {
-      "Move": "NightSlash",
-      "Level": 31
-    },
-    {
-      "Move": "GastroAcid",
-      "Level": 34
-    },
-    {
-      "Move": "Haze",
-      "Level": 38
-    },
-    {
-      "Move": "PoisonJab",
-      "Level": 42
-    },
-    {
-      "Move": "Crunch",
-      "Level": 45
-    },
-    {
-      "Move": "Coil",
-      "Level": 49
-    },
-    {
-      "Move": "WringOut",
-      "Level": 53
-    }
+    {"Move":"Wrap","Level":1},
+    {"Move":"Lick","Level":1},
+    {"Move":"Bite","Level":5},
+    {"Move":"Swagger","Level":9},
+    {"Move":"PoisonTail","Level":12},
+    {"Move":"Screech","Level":16},
+    {"Move":"Venoshock","Level":20},
+    {"Move":"Glare","Level":23},
+    {"Move":"PoisonFang","Level":27},
+    {"Move":"NightSlash","Level":31},
+    {"Move":"GastroAcid","Level":34},
+    {"Move":"Haze","Level":38},
+    {"Move":"PoisonJab","Level":42},
+    {"Move":"Crunch","Level":45},
+    {"Move":"Coil","Level":49},
+    {"Move":"WringOut","Level":53}
   ]
 }

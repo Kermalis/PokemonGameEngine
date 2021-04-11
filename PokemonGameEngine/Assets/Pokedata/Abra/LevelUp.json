@@ -1,8 +1,5 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Teleport",
-      "Level": 1
-    }
+    {"Move":"Teleport","Level":1}
   ]
 }

@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "LeechLife",
-      "Level": 1
-    },
-    {
-      "Move": "Acid",
-      "Level": 4
-    },
-    {
-      "Move": "Bide",
-      "Level": 8
-    },
-    {
-      "Move": "Curse",
-      "Level": 13
-    },
-    {
-      "Move": "StruggleBug",
-      "Level": 16
-    },
-    {
-      "Move": "MegaDrain",
-      "Level": 20
-    },
-    {
-      "Move": "Yawn",
-      "Level": 25
-    },
-    {
-      "Move": "Protect",
-      "Level": 28
-    },
-    {
-      "Move": "AcidArmor",
-      "Level": 32
-    },
-    {
-      "Move": "GigaDrain",
-      "Level": 37
-    },
-    {
-      "Move": "BodySlam",
-      "Level": 40
-    },
-    {
-      "Move": "BugBuzz",
-      "Level": 44
-    },
-    {
-      "Move": "Recover",
-      "Level": 49
-    },
-    {
-      "Move": "GuardSwap",
-      "Level": 52
-    },
-    {
-      "Move": "FinalGambit",
-      "Level": 56
-    }
+    {"Move":"LeechLife","Level":1},
+    {"Move":"Acid","Level":4},
+    {"Move":"Bide","Level":8},
+    {"Move":"Curse","Level":13},
+    {"Move":"StruggleBug","Level":16},
+    {"Move":"MegaDrain","Level":20},
+    {"Move":"Yawn","Level":25},
+    {"Move":"Protect","Level":28},
+    {"Move":"AcidArmor","Level":32},
+    {"Move":"GigaDrain","Level":37},
+    {"Move":"BodySlam","Level":40},
+    {"Move":"BugBuzz","Level":44},
+    {"Move":"Recover","Level":49},
+    {"Move":"GuardSwap","Level":52},
+    {"Move":"FinalGambit","Level":56}
   ]
 }

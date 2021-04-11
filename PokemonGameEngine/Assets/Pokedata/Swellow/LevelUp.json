@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pluck",
-      "Level": 1
-    },
-    {
-      "Move": "Peck",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 4
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 8
-    },
-    {
-      "Move": "WingAttack",
-      "Level": 13
-    },
-    {
-      "Move": "DoubleTeam",
-      "Level": 19
-    },
-    {
-      "Move": "Endeavor",
-      "Level": 28
-    },
-    {
-      "Move": "AerialAce",
-      "Level": 38
-    },
-    {
-      "Move": "Agility",
-      "Level": 49
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 61
-    }
+    {"Move":"Pluck","Level":1},
+    {"Move":"Peck","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"FocusEnergy","Level":1},
+    {"Move":"QuickAttack","Level":1},
+    {"Move":"FocusEnergy","Level":4},
+    {"Move":"QuickAttack","Level":8},
+    {"Move":"WingAttack","Level":13},
+    {"Move":"DoubleTeam","Level":19},
+    {"Move":"Endeavor","Level":28},
+    {"Move":"AerialAce","Level":38},
+    {"Move":"Agility","Level":49},
+    {"Move":"AirSlash","Level":61}
   ]
 }

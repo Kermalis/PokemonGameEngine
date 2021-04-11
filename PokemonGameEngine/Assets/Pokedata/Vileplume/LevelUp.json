@@ -1,28 +1,10 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "MegaDrain",
-      "Level": 1
-    },
-    {
-      "Move": "Aromatherapy",
-      "Level": 1
-    },
-    {
-      "Move": "StunSpore",
-      "Level": 1
-    },
-    {
-      "Move": "PoisonPowder",
-      "Level": 1
-    },
-    {
-      "Move": "PetalDance",
-      "Level": 53
-    },
-    {
-      "Move": "SolarBeam",
-      "Level": 65
-    }
+    {"Move":"MegaDrain","Level":1},
+    {"Move":"Aromatherapy","Level":1},
+    {"Move":"StunSpore","Level":1},
+    {"Move":"PoisonPowder","Level":1},
+    {"Move":"PetalDance","Level":53},
+    {"Move":"SolarBeam","Level":65}
   ]
 }

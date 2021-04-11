@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "HelpingHand",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 5
-    },
-    {
-      "Move": "Ember",
-      "Level": 9
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 13
-    },
-    {
-      "Move": "Bite",
-      "Level": 17
-    },
-    {
-      "Move": "FireFang",
-      "Level": 21
-    },
-    {
-      "Move": "FireSpin",
-      "Level": 25
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 29
-    },
-    {
-      "Move": "Smog",
-      "Level": 33
-    },
-    {
-      "Move": "LavaPlume",
-      "Level": 37
-    },
-    {
-      "Move": "LastResort",
-      "Level": 41
-    },
-    {
-      "Move": "FireBlast",
-      "Level": 45
-    }
+    {"Move":"HelpingHand","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"TailWhip","Level":1},
+    {"Move":"SandAttack","Level":5},
+    {"Move":"Ember","Level":9},
+    {"Move":"QuickAttack","Level":13},
+    {"Move":"Bite","Level":17},
+    {"Move":"FireFang","Level":21},
+    {"Move":"FireSpin","Level":25},
+    {"Move":"ScaryFace","Level":29},
+    {"Move":"Smog","Level":33},
+    {"Move":"LavaPlume","Level":37},
+    {"Move":"LastResort","Level":41},
+    {"Move":"FireBlast","Level":45}
   ]
 }

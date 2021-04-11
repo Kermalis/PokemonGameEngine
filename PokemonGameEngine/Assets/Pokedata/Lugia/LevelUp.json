@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Whirlwind",
-      "Level": 1
-    },
-    {
-      "Move": "WeatherBall",
-      "Level": 1
-    },
-    {
-      "Move": "Gust",
-      "Level": 9
-    },
-    {
-      "Move": "DragonRush",
-      "Level": 15
-    },
-    {
-      "Move": "Extrasensory",
-      "Level": 23
-    },
-    {
-      "Move": "RainDance",
-      "Level": 29
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 37
-    },
-    {
-      "Move": "Aeroblast",
-      "Level": 43
-    },
-    {
-      "Move": "Punishment",
-      "Level": 50
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 57
-    },
-    {
-      "Move": "Safeguard",
-      "Level": 65
-    },
-    {
-      "Move": "Recover",
-      "Level": 71
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 79
-    },
-    {
-      "Move": "NaturalGift",
-      "Level": 85
-    },
-    {
-      "Move": "CalmMind",
-      "Level": 93
-    },
-    {
-      "Move": "SkyAttack",
-      "Level": 99
-    }
+    {"Move":"Whirlwind","Level":1},
+    {"Move":"WeatherBall","Level":1},
+    {"Move":"Gust","Level":9},
+    {"Move":"DragonRush","Level":15},
+    {"Move":"Extrasensory","Level":23},
+    {"Move":"RainDance","Level":29},
+    {"Move":"HydroPump","Level":37},
+    {"Move":"Aeroblast","Level":43},
+    {"Move":"Punishment","Level":50},
+    {"Move":"AncientPower","Level":57},
+    {"Move":"Safeguard","Level":65},
+    {"Move":"Recover","Level":71},
+    {"Move":"FutureSight","Level":79},
+    {"Move":"NaturalGift","Level":85},
+    {"Move":"CalmMind","Level":93},
+    {"Move":"SkyAttack","Level":99}
   ]
 }

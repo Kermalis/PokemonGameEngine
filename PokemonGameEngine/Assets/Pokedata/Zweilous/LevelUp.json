@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "DoubleHit",
-      "Level": 1
-    },
-    {
-      "Move": "DragonRage",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 1
-    },
-    {
-      "Move": "Bite",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 4
-    },
-    {
-      "Move": "Bite",
-      "Level": 9
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 12
-    },
-    {
-      "Move": "DragonBreath",
-      "Level": 17
-    },
-    {
-      "Move": "Roar",
-      "Level": 20
-    },
-    {
-      "Move": "Crunch",
-      "Level": 25
-    },
-    {
-      "Move": "Slam",
-      "Level": 28
-    },
-    {
-      "Move": "DragonPulse",
-      "Level": 32
-    },
-    {
-      "Move": "WorkUp",
-      "Level": 38
-    },
-    {
-      "Move": "DragonRush",
-      "Level": 42
-    },
-    {
-      "Move": "BodySlam",
-      "Level": 48
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 55
-    },
-    {
-      "Move": "HyperVoice",
-      "Level": 64
-    },
-    {
-      "Move": "Outrage",
-      "Level": 71
-    }
+    {"Move":"DoubleHit","Level":1},
+    {"Move":"DragonRage","Level":1},
+    {"Move":"FocusEnergy","Level":1},
+    {"Move":"Bite","Level":1},
+    {"Move":"FocusEnergy","Level":4},
+    {"Move":"Bite","Level":9},
+    {"Move":"Headbutt","Level":12},
+    {"Move":"DragonBreath","Level":17},
+    {"Move":"Roar","Level":20},
+    {"Move":"Crunch","Level":25},
+    {"Move":"Slam","Level":28},
+    {"Move":"DragonPulse","Level":32},
+    {"Move":"WorkUp","Level":38},
+    {"Move":"DragonRush","Level":42},
+    {"Move":"BodySlam","Level":48},
+    {"Move":"ScaryFace","Level":55},
+    {"Move":"HyperVoice","Level":64},
+    {"Move":"Outrage","Level":71}
   ]
 }

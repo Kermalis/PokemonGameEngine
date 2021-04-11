@@ -1,52 +1,16 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Rage",
-      "Level": 1
-    },
-    {
-      "Move": "Bite",
-      "Level": 5
-    },
-    {
-      "Move": "Leer",
-      "Level": 10
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 16
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 20
-    },
-    {
-      "Move": "Ember",
-      "Level": 25
-    },
-    {
-      "Move": "DragonBreath",
-      "Level": 31
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 35
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 40
-    },
-    {
-      "Move": "Crunch",
-      "Level": 46
-    },
-    {
-      "Move": "DragonClaw",
-      "Level": 50
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 55
-    }
+    {"Move":"Rage","Level":1},
+    {"Move":"Bite","Level":5},
+    {"Move":"Leer","Level":10},
+    {"Move":"Headbutt","Level":16},
+    {"Move":"FocusEnergy","Level":20},
+    {"Move":"Ember","Level":25},
+    {"Move":"DragonBreath","Level":31},
+    {"Move":"ZenHeadbutt","Level":35},
+    {"Move":"ScaryFace","Level":40},
+    {"Move":"Crunch","Level":46},
+    {"Move":"DragonClaw","Level":50},
+    {"Move":"DoubleEdge","Level":55}
   ]
 }

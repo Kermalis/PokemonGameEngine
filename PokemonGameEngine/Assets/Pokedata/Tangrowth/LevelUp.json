@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Ingrain",
-      "Level": 1
-    },
-    {
-      "Move": "Constrict",
-      "Level": 1
-    },
-    {
-      "Move": "SleepPowder",
-      "Level": 4
-    },
-    {
-      "Move": "VineWhip",
-      "Level": 7
-    },
-    {
-      "Move": "Absorb",
-      "Level": 10
-    },
-    {
-      "Move": "PoisonPowder",
-      "Level": 14
-    },
-    {
-      "Move": "Bind",
-      "Level": 17
-    },
-    {
-      "Move": "Growth",
-      "Level": 20
-    },
-    {
-      "Move": "MegaDrain",
-      "Level": 23
-    },
-    {
-      "Move": "KnockOff",
-      "Level": 27
-    },
-    {
-      "Move": "StunSpore",
-      "Level": 30
-    },
-    {
-      "Move": "NaturalGift",
-      "Level": 33
-    },
-    {
-      "Move": "GigaDrain",
-      "Level": 36
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 40
-    },
-    {
-      "Move": "Slam",
-      "Level": 43
-    },
-    {
-      "Move": "Tickle",
-      "Level": 46
-    },
-    {
-      "Move": "WringOut",
-      "Level": 49
-    },
-    {
-      "Move": "PowerWhip",
-      "Level": 53
-    },
-    {
-      "Move": "Block",
-      "Level": 56
-    }
+    {"Move":"Ingrain","Level":1},
+    {"Move":"Constrict","Level":1},
+    {"Move":"SleepPowder","Level":4},
+    {"Move":"VineWhip","Level":7},
+    {"Move":"Absorb","Level":10},
+    {"Move":"PoisonPowder","Level":14},
+    {"Move":"Bind","Level":17},
+    {"Move":"Growth","Level":20},
+    {"Move":"MegaDrain","Level":23},
+    {"Move":"KnockOff","Level":27},
+    {"Move":"StunSpore","Level":30},
+    {"Move":"NaturalGift","Level":33},
+    {"Move":"GigaDrain","Level":36},
+    {"Move":"AncientPower","Level":40},
+    {"Move":"Slam","Level":43},
+    {"Move":"Tickle","Level":46},
+    {"Move":"WringOut","Level":49},
+    {"Move":"PowerWhip","Level":53},
+    {"Move":"Block","Level":56}
   ]
 }

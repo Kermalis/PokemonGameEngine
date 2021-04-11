@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Revenge",
-      "Level": 1
-    },
-    {
-      "Move": "CometPunch",
-      "Level": 1
-    },
-    {
-      "Move": "Agility",
-      "Level": 6
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 11
-    },
-    {
-      "Move": "MachPunch",
-      "Level": 16
-    },
-    {
-      "Move": "BulletPunch",
-      "Level": 16
-    },
-    {
-      "Move": "Feint",
-      "Level": 21
-    },
-    {
-      "Move": "VacuumWave",
-      "Level": 26
-    },
-    {
-      "Move": "QuickGuard",
-      "Level": 31
-    },
-    {
-      "Move": "ThunderPunch",
-      "Level": 36
-    },
-    {
-      "Move": "IcePunch",
-      "Level": 36
-    },
-    {
-      "Move": "FirePunch",
-      "Level": 36
-    },
-    {
-      "Move": "SkyUppercut",
-      "Level": 41
-    },
-    {
-      "Move": "MegaPunch",
-      "Level": 46
-    },
-    {
-      "Move": "Detect",
-      "Level": 51
-    },
-    {
-      "Move": "FocusPunch",
-      "Level": 56
-    },
-    {
-      "Move": "Counter",
-      "Level": 61
-    },
-    {
-      "Move": "CloseCombat",
-      "Level": 66
-    }
+    {"Move":"Revenge","Level":1},
+    {"Move":"CometPunch","Level":1},
+    {"Move":"Agility","Level":6},
+    {"Move":"Pursuit","Level":11},
+    {"Move":"MachPunch","Level":16},
+    {"Move":"BulletPunch","Level":16},
+    {"Move":"Feint","Level":21},
+    {"Move":"VacuumWave","Level":26},
+    {"Move":"QuickGuard","Level":31},
+    {"Move":"ThunderPunch","Level":36},
+    {"Move":"IcePunch","Level":36},
+    {"Move":"FirePunch","Level":36},
+    {"Move":"SkyUppercut","Level":41},
+    {"Move":"MegaPunch","Level":46},
+    {"Move":"Detect","Level":51},
+    {"Move":"FocusPunch","Level":56},
+    {"Move":"Counter","Level":61},
+    {"Move":"CloseCombat","Level":66}
   ]
 }

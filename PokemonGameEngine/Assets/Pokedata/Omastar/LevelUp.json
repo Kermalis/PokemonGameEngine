@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Constrict",
-      "Level": 1
-    },
-    {
-      "Move": "Withdraw",
-      "Level": 1
-    },
-    {
-      "Move": "Bite",
-      "Level": 1
-    },
-    {
-      "Move": "Bite",
-      "Level": 7
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 10
-    },
-    {
-      "Move": "Rollout",
-      "Level": 16
-    },
-    {
-      "Move": "Leer",
-      "Level": 19
-    },
-    {
-      "Move": "MudShot",
-      "Level": 25
-    },
-    {
-      "Move": "Brine",
-      "Level": 28
-    },
-    {
-      "Move": "Protect",
-      "Level": 34
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 37
-    },
-    {
-      "Move": "SpikeCannon",
-      "Level": 40
-    },
-    {
-      "Move": "Tickle",
-      "Level": 48
-    },
-    {
-      "Move": "RockBlast",
-      "Level": 56
-    },
-    {
-      "Move": "ShellSmash",
-      "Level": 67
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 75
-    }
+    {"Move":"Constrict","Level":1},
+    {"Move":"Withdraw","Level":1},
+    {"Move":"Bite","Level":1},
+    {"Move":"Bite","Level":7},
+    {"Move":"WaterGun","Level":10},
+    {"Move":"Rollout","Level":16},
+    {"Move":"Leer","Level":19},
+    {"Move":"MudShot","Level":25},
+    {"Move":"Brine","Level":28},
+    {"Move":"Protect","Level":34},
+    {"Move":"AncientPower","Level":37},
+    {"Move":"SpikeCannon","Level":40},
+    {"Move":"Tickle","Level":48},
+    {"Move":"RockBlast","Level":56},
+    {"Move":"ShellSmash","Level":67},
+    {"Move":"HydroPump","Level":75}
   ]
 }

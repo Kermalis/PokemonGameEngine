@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 5
-    },
-    {
-      "Move": "WingAttack",
-      "Level": 9
-    },
-    {
-      "Move": "DoubleTeam",
-      "Level": 13
-    },
-    {
-      "Move": "Endeavor",
-      "Level": 18
-    },
-    {
-      "Move": "Whirlwind",
-      "Level": 23
-    },
-    {
-      "Move": "AerialAce",
-      "Level": 28
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 33
-    },
-    {
-      "Move": "Agility",
-      "Level": 38
-    },
-    {
-      "Move": "BraveBird",
-      "Level": 43
-    },
-    {
-      "Move": "FinalGambit",
-      "Level": 48
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"QuickAttack","Level":1},
+    {"Move":"QuickAttack","Level":5},
+    {"Move":"WingAttack","Level":9},
+    {"Move":"DoubleTeam","Level":13},
+    {"Move":"Endeavor","Level":18},
+    {"Move":"Whirlwind","Level":23},
+    {"Move":"AerialAce","Level":28},
+    {"Move":"TakeDown","Level":33},
+    {"Move":"Agility","Level":38},
+    {"Move":"BraveBird","Level":43},
+    {"Move":"FinalGambit","Level":48}
   ]
 }

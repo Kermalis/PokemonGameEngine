@@ -1,16 +1,7 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Splash",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 15
-    },
-    {
-      "Move": "Flail",
-      "Level": 30
-    }
+    {"Move":"Splash","Level":1},
+    {"Move":"Tackle","Level":15},
+    {"Move":"Flail","Level":30}
   ]
 }

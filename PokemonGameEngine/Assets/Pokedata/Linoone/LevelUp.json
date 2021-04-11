@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Switcheroo",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 1
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 5
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 9
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 13
-    },
-    {
-      "Move": "OdorSleuth",
-      "Level": 17
-    },
-    {
-      "Move": "MudSport",
-      "Level": 23
-    },
-    {
-      "Move": "FurySwipes",
-      "Level": 29
-    },
-    {
-      "Move": "Covet",
-      "Level": 35
-    },
-    {
-      "Move": "Bestow",
-      "Level": 41
-    },
-    {
-      "Move": "Slash",
-      "Level": 47
-    },
-    {
-      "Move": "Rest",
-      "Level": 53
-    },
-    {
-      "Move": "BellyDrum",
-      "Level": 59
-    },
-    {
-      "Move": "Fling",
-      "Level": 65
-    }
+    {"Move":"Switcheroo","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"TailWhip","Level":1},
+    {"Move":"Headbutt","Level":1},
+    {"Move":"TailWhip","Level":5},
+    {"Move":"Headbutt","Level":9},
+    {"Move":"SandAttack","Level":13},
+    {"Move":"OdorSleuth","Level":17},
+    {"Move":"MudSport","Level":23},
+    {"Move":"FurySwipes","Level":29},
+    {"Move":"Covet","Level":35},
+    {"Move":"Bestow","Level":41},
+    {"Move":"Slash","Level":47},
+    {"Move":"Rest","Level":53},
+    {"Move":"BellyDrum","Level":59},
+    {"Move":"Fling","Level":65}
   ]
 }

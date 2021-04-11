@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "ViceGrip",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 1
-    },
-    {
-      "Move": "Bind",
-      "Level": 4
-    },
-    {
-      "Move": "SeismicToss",
-      "Level": 8
-    },
-    {
-      "Move": "Harden",
-      "Level": 11
-    },
-    {
-      "Move": "Revenge",
-      "Level": 15
-    },
-    {
-      "Move": "BrickBreak",
-      "Level": 18
-    },
-    {
-      "Move": "VitalThrow",
-      "Level": 22
-    },
-    {
-      "Move": "Submission",
-      "Level": 26
-    },
-    {
-      "Move": "XScissor",
-      "Level": 29
-    },
-    {
-      "Move": "StormThrow",
-      "Level": 33
-    },
-    {
-      "Move": "Thrash",
-      "Level": 36
-    },
-    {
-      "Move": "SwordsDance",
-      "Level": 40
-    },
-    {
-      "Move": "Superpower",
-      "Level": 43
-    },
-    {
-      "Move": "Guillotine",
-      "Level": 47
-    }
+    {"Move":"ViceGrip","Level":1},
+    {"Move":"FocusEnergy","Level":1},
+    {"Move":"Bind","Level":4},
+    {"Move":"SeismicToss","Level":8},
+    {"Move":"Harden","Level":11},
+    {"Move":"Revenge","Level":15},
+    {"Move":"BrickBreak","Level":18},
+    {"Move":"VitalThrow","Level":22},
+    {"Move":"Submission","Level":26},
+    {"Move":"XScissor","Level":29},
+    {"Move":"StormThrow","Level":33},
+    {"Move":"Thrash","Level":36},
+    {"Move":"SwordsDance","Level":40},
+    {"Move":"Superpower","Level":43},
+    {"Move":"Guillotine","Level":47}
   ]
 }

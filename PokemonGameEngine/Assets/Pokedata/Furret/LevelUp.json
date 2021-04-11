@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "Foresight",
-      "Level": 1
-    },
-    {
-      "Move": "DefenseCurl",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 1
-    },
-    {
-      "Move": "DefenseCurl",
-      "Level": 4
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 7
-    },
-    {
-      "Move": "FurySwipes",
-      "Level": 13
-    },
-    {
-      "Move": "HelpingHand",
-      "Level": 17
-    },
-    {
-      "Move": "FollowMe",
-      "Level": 21
-    },
-    {
-      "Move": "Slam",
-      "Level": 28
-    },
-    {
-      "Move": "Rest",
-      "Level": 32
-    },
-    {
-      "Move": "SuckerPunch",
-      "Level": 36
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 42
-    },
-    {
-      "Move": "BatonPass",
-      "Level": 46
-    },
-    {
-      "Move": "MeFirst",
-      "Level": 50
-    },
-    {
-      "Move": "HyperVoice",
-      "Level": 56
-    }
+    {"Move":"Scratch","Level":1},
+    {"Move":"Foresight","Level":1},
+    {"Move":"DefenseCurl","Level":1},
+    {"Move":"QuickAttack","Level":1},
+    {"Move":"DefenseCurl","Level":4},
+    {"Move":"QuickAttack","Level":7},
+    {"Move":"FurySwipes","Level":13},
+    {"Move":"HelpingHand","Level":17},
+    {"Move":"FollowMe","Level":21},
+    {"Move":"Slam","Level":28},
+    {"Move":"Rest","Level":32},
+    {"Move":"SuckerPunch","Level":36},
+    {"Move":"Amnesia","Level":42},
+    {"Move":"BatonPass","Level":46},
+    {"Move":"MeFirst","Level":50},
+    {"Move":"HyperVoice","Level":56}
   ]
 }

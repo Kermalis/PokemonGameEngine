@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "ThunderShock",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 4
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 7
-    },
-    {
-      "Move": "Charge",
-      "Level": 10
-    },
-    {
-      "Move": "Spark",
-      "Level": 13
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 16
-    },
-    {
-      "Move": "DoubleTeam",
-      "Level": 19
-    },
-    {
-      "Move": "ShockWave",
-      "Level": 22
-    },
-    {
-      "Move": "ElectroBall",
-      "Level": 26
-    },
-    {
-      "Move": "Acrobatics",
-      "Level": 30
-    },
-    {
-      "Move": "LightScreen",
-      "Level": 34
-    },
-    {
-      "Move": "Encore",
-      "Level": 38
-    },
-    {
-      "Move": "VoltSwitch",
-      "Level": 42
-    },
-    {
-      "Move": "Agility",
-      "Level": 46
-    },
-    {
-      "Move": "Discharge",
-      "Level": 50
-    }
+    {"Move":"ThunderShock","Level":1},
+    {"Move":"QuickAttack","Level":4},
+    {"Move":"TailWhip","Level":7},
+    {"Move":"Charge","Level":10},
+    {"Move":"Spark","Level":13},
+    {"Move":"Pursuit","Level":16},
+    {"Move":"DoubleTeam","Level":19},
+    {"Move":"ShockWave","Level":22},
+    {"Move":"ElectroBall","Level":26},
+    {"Move":"Acrobatics","Level":30},
+    {"Move":"LightScreen","Level":34},
+    {"Move":"Encore","Level":38},
+    {"Move":"VoltSwitch","Level":42},
+    {"Move":"Agility","Level":46},
+    {"Move":"Discharge","Level":50}
   ]
 }

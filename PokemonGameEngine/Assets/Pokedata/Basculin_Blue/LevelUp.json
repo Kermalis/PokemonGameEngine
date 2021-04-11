@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 1
-    },
-    {
-      "Move": "Uproar",
-      "Level": 4
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 7
-    },
-    {
-      "Move": "Bite",
-      "Level": 10
-    },
-    {
-      "Move": "AquaJet",
-      "Level": 13
-    },
-    {
-      "Move": "ChipAway",
-      "Level": 16
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 20
-    },
-    {
-      "Move": "Crunch",
-      "Level": 24
-    },
-    {
-      "Move": "AquaTail",
-      "Level": 28
-    },
-    {
-      "Move": "Soak",
-      "Level": 32
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 36
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 41
-    },
-    {
-      "Move": "Flail",
-      "Level": 46
-    },
-    {
-      "Move": "FinalGambit",
-      "Level": 51
-    },
-    {
-      "Move": "Thrash",
-      "Level": 56
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"WaterGun","Level":1},
+    {"Move":"Uproar","Level":4},
+    {"Move":"Headbutt","Level":7},
+    {"Move":"Bite","Level":10},
+    {"Move":"AquaJet","Level":13},
+    {"Move":"ChipAway","Level":16},
+    {"Move":"TakeDown","Level":20},
+    {"Move":"Crunch","Level":24},
+    {"Move":"AquaTail","Level":28},
+    {"Move":"Soak","Level":32},
+    {"Move":"DoubleEdge","Level":36},
+    {"Move":"ScaryFace","Level":41},
+    {"Move":"Flail","Level":46},
+    {"Move":"FinalGambit","Level":51},
+    {"Move":"Thrash","Level":56}
   ]
 }

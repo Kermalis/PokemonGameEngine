@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 3
-    },
-    {
-      "Move": "DefenseCurl",
-      "Level": 5
-    },
-    {
-      "Move": "Stomp",
-      "Level": 8
-    },
-    {
-      "Move": "MilkDrink",
-      "Level": 11
-    },
-    {
-      "Move": "Bide",
-      "Level": 15
-    },
-    {
-      "Move": "Rollout",
-      "Level": 19
-    },
-    {
-      "Move": "BodySlam",
-      "Level": 24
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 29
-    },
-    {
-      "Move": "Captivate",
-      "Level": 35
-    },
-    {
-      "Move": "GyroBall",
-      "Level": 41
-    },
-    {
-      "Move": "HealBell",
-      "Level": 48
-    },
-    {
-      "Move": "WakeUpSlap",
-      "Level": 55
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Growl","Level":3},
+    {"Move":"DefenseCurl","Level":5},
+    {"Move":"Stomp","Level":8},
+    {"Move":"MilkDrink","Level":11},
+    {"Move":"Bide","Level":15},
+    {"Move":"Rollout","Level":19},
+    {"Move":"BodySlam","Level":24},
+    {"Move":"ZenHeadbutt","Level":29},
+    {"Move":"Captivate","Level":35},
+    {"Move":"GyroBall","Level":41},
+    {"Move":"HealBell","Level":48},
+    {"Move":"WakeUpSlap","Level":55}
   ]
 }

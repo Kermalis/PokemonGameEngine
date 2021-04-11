@@ -364,11 +364,13 @@ namespace Kermalis.PokemonDumper
                 foreach ((PBEMove move, byte level) in pkmn.LevelUpMoves)
                 {
                     w.WriteStartObject();
+                    w.Formatting = Formatting.None;
                     w.WritePropertyName("Move");
                     w.WriteValue(move.ToString());
                     w.WritePropertyName("Level");
                     w.WriteValue(level);
                     w.WriteEndObject();
+                    w.Formatting = Formatting.Indented;
                 }
                 w.WriteEndArray();
                 w.WriteEndObject();

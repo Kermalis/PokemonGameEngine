@@ -1,28 +1,10 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "ThunderShock",
-      "Level": 1
-    },
-    {
-      "Move": "Charm",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 5
-    },
-    {
-      "Move": "ThunderWave",
-      "Level": 10
-    },
-    {
-      "Move": "SweetKiss",
-      "Level": 13
-    },
-    {
-      "Move": "NastyPlot",
-      "Level": 18
-    }
+    {"Move":"ThunderShock","Level":1},
+    {"Move":"Charm","Level":1},
+    {"Move":"TailWhip","Level":5},
+    {"Move":"ThunderWave","Level":10},
+    {"Move":"SweetKiss","Level":13},
+    {"Move":"NastyPlot","Level":18}
   ]
 }

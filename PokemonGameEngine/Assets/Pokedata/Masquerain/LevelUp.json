@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "OminousWind",
-      "Level": 1
-    },
-    {
-      "Move": "Bubble",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 1
-    },
-    {
-      "Move": "SweetScent",
-      "Level": 1
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 7
-    },
-    {
-      "Move": "SweetScent",
-      "Level": 13
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 19
-    },
-    {
-      "Move": "Gust",
-      "Level": 22
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 26
-    },
-    {
-      "Move": "StunSpore",
-      "Level": 33
-    },
-    {
-      "Move": "SilverWind",
-      "Level": 40
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 47
-    },
-    {
-      "Move": "Whirlwind",
-      "Level": 54
-    },
-    {
-      "Move": "BugBuzz",
-      "Level": 61
-    },
-    {
-      "Move": "QuiverDance",
-      "Level": 68
-    }
+    {"Move":"OminousWind","Level":1},
+    {"Move":"Bubble","Level":1},
+    {"Move":"QuickAttack","Level":1},
+    {"Move":"SweetScent","Level":1},
+    {"Move":"WaterSport","Level":1},
+    {"Move":"QuickAttack","Level":7},
+    {"Move":"SweetScent","Level":13},
+    {"Move":"WaterSport","Level":19},
+    {"Move":"Gust","Level":22},
+    {"Move":"ScaryFace","Level":26},
+    {"Move":"StunSpore","Level":33},
+    {"Move":"SilverWind","Level":40},
+    {"Move":"AirSlash","Level":47},
+    {"Move":"Whirlwind","Level":54},
+    {"Move":"BugBuzz","Level":61},
+    {"Move":"QuiverDance","Level":68}
   ]
 }

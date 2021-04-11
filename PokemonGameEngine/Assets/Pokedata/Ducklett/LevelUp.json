@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "WaterGun",
-      "Level": 1
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 3
-    },
-    {
-      "Move": "Defog",
-      "Level": 6
-    },
-    {
-      "Move": "WingAttack",
-      "Level": 9
-    },
-    {
-      "Move": "WaterPulse",
-      "Level": 13
-    },
-    {
-      "Move": "AerialAce",
-      "Level": 15
-    },
-    {
-      "Move": "BubbleBeam",
-      "Level": 19
-    },
-    {
-      "Move": "FeatherDance",
-      "Level": 21
-    },
-    {
-      "Move": "AquaRing",
-      "Level": 24
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 27
-    },
-    {
-      "Move": "Roost",
-      "Level": 30
-    },
-    {
-      "Move": "RainDance",
-      "Level": 34
-    },
-    {
-      "Move": "Tailwind",
-      "Level": 37
-    },
-    {
-      "Move": "BraveBird",
-      "Level": 41
-    },
-    {
-      "Move": "Hurricane",
-      "Level": 46
-    }
+    {"Move":"WaterGun","Level":1},
+    {"Move":"WaterSport","Level":3},
+    {"Move":"Defog","Level":6},
+    {"Move":"WingAttack","Level":9},
+    {"Move":"WaterPulse","Level":13},
+    {"Move":"AerialAce","Level":15},
+    {"Move":"BubbleBeam","Level":19},
+    {"Move":"FeatherDance","Level":21},
+    {"Move":"AquaRing","Level":24},
+    {"Move":"AirSlash","Level":27},
+    {"Move":"Roost","Level":30},
+    {"Move":"RainDance","Level":34},
+    {"Move":"Tailwind","Level":37},
+    {"Move":"BraveBird","Level":41},
+    {"Move":"Hurricane","Level":46}
   ]
 }

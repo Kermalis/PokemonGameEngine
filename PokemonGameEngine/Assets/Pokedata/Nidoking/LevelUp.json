@@ -1,36 +1,12 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Peck",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 1
-    },
-    {
-      "Move": "DoubleKick",
-      "Level": 1
-    },
-    {
-      "Move": "PoisonSting",
-      "Level": 1
-    },
-    {
-      "Move": "ChipAway",
-      "Level": 23
-    },
-    {
-      "Move": "Thrash",
-      "Level": 35
-    },
-    {
-      "Move": "EarthPower",
-      "Level": 43
-    },
-    {
-      "Move": "Megahorn",
-      "Level": 58
-    }
+    {"Move":"Peck","Level":1},
+    {"Move":"FocusEnergy","Level":1},
+    {"Move":"DoubleKick","Level":1},
+    {"Move":"PoisonSting","Level":1},
+    {"Move":"ChipAway","Level":23},
+    {"Move":"Thrash","Level":35},
+    {"Move":"EarthPower","Level":43},
+    {"Move":"Megahorn","Level":58}
   ]
 }

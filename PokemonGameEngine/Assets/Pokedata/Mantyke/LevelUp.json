@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Bubble",
-      "Level": 1
-    },
-    {
-      "Move": "Supersonic",
-      "Level": 3
-    },
-    {
-      "Move": "BubbleBeam",
-      "Level": 7
-    },
-    {
-      "Move": "ConfuseRay",
-      "Level": 11
-    },
-    {
-      "Move": "WingAttack",
-      "Level": 14
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 16
-    },
-    {
-      "Move": "WaterPulse",
-      "Level": 19
-    },
-    {
-      "Move": "WideGuard",
-      "Level": 23
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 27
-    },
-    {
-      "Move": "Agility",
-      "Level": 32
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 36
-    },
-    {
-      "Move": "AquaRing",
-      "Level": 39
-    },
-    {
-      "Move": "Bounce",
-      "Level": 46
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 49
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Bubble","Level":1},
+    {"Move":"Supersonic","Level":3},
+    {"Move":"BubbleBeam","Level":7},
+    {"Move":"ConfuseRay","Level":11},
+    {"Move":"WingAttack","Level":14},
+    {"Move":"Headbutt","Level":16},
+    {"Move":"WaterPulse","Level":19},
+    {"Move":"WideGuard","Level":23},
+    {"Move":"TakeDown","Level":27},
+    {"Move":"Agility","Level":32},
+    {"Move":"AirSlash","Level":36},
+    {"Move":"AquaRing","Level":39},
+    {"Move":"Bounce","Level":46},
+    {"Move":"HydroPump","Level":49}
   ]
 }

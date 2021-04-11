@@ -1,8 +1,5 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "TakeDown",
-      "Level": 1
-    }
+    {"Move":"TakeDown","Level":1}
   ]
 }

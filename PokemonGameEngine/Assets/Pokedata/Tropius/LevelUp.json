@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Gust",
-      "Level": 1
-    },
-    {
-      "Move": "Growth",
-      "Level": 7
-    },
-    {
-      "Move": "RazorLeaf",
-      "Level": 11
-    },
-    {
-      "Move": "Stomp",
-      "Level": 17
-    },
-    {
-      "Move": "SweetScent",
-      "Level": 21
-    },
-    {
-      "Move": "Whirlwind",
-      "Level": 27
-    },
-    {
-      "Move": "MagicalLeaf",
-      "Level": 31
-    },
-    {
-      "Move": "BodySlam",
-      "Level": 37
-    },
-    {
-      "Move": "Synthesis",
-      "Level": 41
-    },
-    {
-      "Move": "LeafTornado",
-      "Level": 47
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 51
-    },
-    {
-      "Move": "Bestow",
-      "Level": 57
-    },
-    {
-      "Move": "SolarBeam",
-      "Level": 61
-    },
-    {
-      "Move": "NaturalGift",
-      "Level": 67
-    },
-    {
-      "Move": "LeafStorm",
-      "Level": 71
-    }
+    {"Move":"Leer","Level":1},
+    {"Move":"Gust","Level":1},
+    {"Move":"Growth","Level":7},
+    {"Move":"RazorLeaf","Level":11},
+    {"Move":"Stomp","Level":17},
+    {"Move":"SweetScent","Level":21},
+    {"Move":"Whirlwind","Level":27},
+    {"Move":"MagicalLeaf","Level":31},
+    {"Move":"BodySlam","Level":37},
+    {"Move":"Synthesis","Level":41},
+    {"Move":"LeafTornado","Level":47},
+    {"Move":"AirSlash","Level":51},
+    {"Move":"Bestow","Level":57},
+    {"Move":"SolarBeam","Level":61},
+    {"Move":"NaturalGift","Level":67},
+    {"Move":"LeafStorm","Level":71}
   ]
 }

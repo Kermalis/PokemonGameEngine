@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Bite",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "BubbleBeam",
-      "Level": 8
-    },
-    {
-      "Move": "RainDance",
-      "Level": 15
-    },
-    {
-      "Move": "Gust",
-      "Level": 22
-    },
-    {
-      "Move": "AuroraBeam",
-      "Level": 29
-    },
-    {
-      "Move": "Mist",
-      "Level": 36
-    },
-    {
-      "Move": "MirrorCoat",
-      "Level": 43
-    },
-    {
-      "Move": "IceFang",
-      "Level": 50
-    },
-    {
-      "Move": "Tailwind",
-      "Level": 57
-    },
-    {
-      "Move": "Extrasensory",
-      "Level": 64
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 71
-    },
-    {
-      "Move": "CalmMind",
-      "Level": 78
-    },
-    {
-      "Move": "Blizzard",
-      "Level": 85
-    }
+    {"Move":"Bite","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"BubbleBeam","Level":8},
+    {"Move":"RainDance","Level":15},
+    {"Move":"Gust","Level":22},
+    {"Move":"AuroraBeam","Level":29},
+    {"Move":"Mist","Level":36},
+    {"Move":"MirrorCoat","Level":43},
+    {"Move":"IceFang","Level":50},
+    {"Move":"Tailwind","Level":57},
+    {"Move":"Extrasensory","Level":64},
+    {"Move":"HydroPump","Level":71},
+    {"Move":"CalmMind","Level":78},
+    {"Move":"Blizzard","Level":85}
   ]
 }

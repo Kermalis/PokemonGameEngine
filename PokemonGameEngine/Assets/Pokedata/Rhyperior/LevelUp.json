@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "PoisonJab",
-      "Level": 1
-    },
-    {
-      "Move": "HornAttack",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 1
-    },
-    {
-      "Move": "Stomp",
-      "Level": 1
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Stomp",
-      "Level": 9
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 19
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 19
-    },
-    {
-      "Move": "RockBlast",
-      "Level": 23
-    },
-    {
-      "Move": "ChipAway",
-      "Level": 30
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 41
-    },
-    {
-      "Move": "HammerArm",
-      "Level": 42
-    },
-    {
-      "Move": "DrillRun",
-      "Level": 47
-    },
-    {
-      "Move": "StoneEdge",
-      "Level": 56
-    },
-    {
-      "Move": "Earthquake",
-      "Level": 62
-    },
-    {
-      "Move": "HornDrill",
-      "Level": 71
-    },
-    {
-      "Move": "Megahorn",
-      "Level": 77
-    },
-    {
-      "Move": "RockWrecker",
-      "Level": 86
-    }
+    {"Move":"PoisonJab","Level":1},
+    {"Move":"HornAttack","Level":1},
+    {"Move":"TailWhip","Level":1},
+    {"Move":"Stomp","Level":1},
+    {"Move":"FuryAttack","Level":1},
+    {"Move":"Stomp","Level":9},
+    {"Move":"FuryAttack","Level":19},
+    {"Move":"ScaryFace","Level":19},
+    {"Move":"RockBlast","Level":23},
+    {"Move":"ChipAway","Level":30},
+    {"Move":"TakeDown","Level":41},
+    {"Move":"HammerArm","Level":42},
+    {"Move":"DrillRun","Level":47},
+    {"Move":"StoneEdge","Level":56},
+    {"Move":"Earthquake","Level":62},
+    {"Move":"HornDrill","Level":71},
+    {"Move":"Megahorn","Level":77},
+    {"Move":"RockWrecker","Level":86}
   ]
 }

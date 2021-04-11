@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "AncientPower",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 9
-    },
-    {
-      "Move": "FireFang",
-      "Level": 17
-    },
-    {
-      "Move": "MetalSound",
-      "Level": 25
-    },
-    {
-      "Move": "Crunch",
-      "Level": 33
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 41
-    },
-    {
-      "Move": "LavaPlume",
-      "Level": 49
-    },
-    {
-      "Move": "FireSpin",
-      "Level": 57
-    },
-    {
-      "Move": "IronHead",
-      "Level": 65
-    },
-    {
-      "Move": "EarthPower",
-      "Level": 73
-    },
-    {
-      "Move": "HeatWave",
-      "Level": 81
-    },
-    {
-      "Move": "StoneEdge",
-      "Level": 88
-    },
-    {
-      "Move": "MagmaStorm",
-      "Level": 96
-    }
+    {"Move":"AncientPower","Level":1},
+    {"Move":"Leer","Level":9},
+    {"Move":"FireFang","Level":17},
+    {"Move":"MetalSound","Level":25},
+    {"Move":"Crunch","Level":33},
+    {"Move":"ScaryFace","Level":41},
+    {"Move":"LavaPlume","Level":49},
+    {"Move":"FireSpin","Level":57},
+    {"Move":"IronHead","Level":65},
+    {"Move":"EarthPower","Level":73},
+    {"Move":"HeatWave","Level":81},
+    {"Move":"StoneEdge","Level":88},
+    {"Move":"MagmaStorm","Level":96}
   ]
 }

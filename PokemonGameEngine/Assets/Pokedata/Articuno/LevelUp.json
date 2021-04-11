@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Gust",
-      "Level": 1
-    },
-    {
-      "Move": "PowderSnow",
-      "Level": 1
-    },
-    {
-      "Move": "Mist",
-      "Level": 8
-    },
-    {
-      "Move": "IceShard",
-      "Level": 15
-    },
-    {
-      "Move": "MindReader",
-      "Level": 22
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 29
-    },
-    {
-      "Move": "Agility",
-      "Level": 36
-    },
-    {
-      "Move": "IceBeam",
-      "Level": 43
-    },
-    {
-      "Move": "Reflect",
-      "Level": 50
-    },
-    {
-      "Move": "Roost",
-      "Level": 57
-    },
-    {
-      "Move": "Tailwind",
-      "Level": 64
-    },
-    {
-      "Move": "Blizzard",
-      "Level": 71
-    },
-    {
-      "Move": "SheerCold",
-      "Level": 78
-    },
-    {
-      "Move": "Hail",
-      "Level": 85
-    },
-    {
-      "Move": "Hurricane",
-      "Level": 92
-    }
+    {"Move":"Gust","Level":1},
+    {"Move":"PowderSnow","Level":1},
+    {"Move":"Mist","Level":8},
+    {"Move":"IceShard","Level":15},
+    {"Move":"MindReader","Level":22},
+    {"Move":"AncientPower","Level":29},
+    {"Move":"Agility","Level":36},
+    {"Move":"IceBeam","Level":43},
+    {"Move":"Reflect","Level":50},
+    {"Move":"Roost","Level":57},
+    {"Move":"Tailwind","Level":64},
+    {"Move":"Blizzard","Level":71},
+    {"Move":"SheerCold","Level":78},
+    {"Move":"Hail","Level":85},
+    {"Move":"Hurricane","Level":92}
   ]
 }

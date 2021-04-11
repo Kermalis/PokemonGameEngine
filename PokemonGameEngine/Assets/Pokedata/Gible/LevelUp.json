@@ -1,44 +1,14 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 3
-    },
-    {
-      "Move": "DragonRage",
-      "Level": 7
-    },
-    {
-      "Move": "Sandstorm",
-      "Level": 13
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 15
-    },
-    {
-      "Move": "SandTomb",
-      "Level": 19
-    },
-    {
-      "Move": "Slash",
-      "Level": 25
-    },
-    {
-      "Move": "DragonClaw",
-      "Level": 27
-    },
-    {
-      "Move": "Dig",
-      "Level": 31
-    },
-    {
-      "Move": "DragonRush",
-      "Level": 37
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"SandAttack","Level":3},
+    {"Move":"DragonRage","Level":7},
+    {"Move":"Sandstorm","Level":13},
+    {"Move":"TakeDown","Level":15},
+    {"Move":"SandTomb","Level":19},
+    {"Move":"Slash","Level":25},
+    {"Move":"DragonClaw","Level":27},
+    {"Move":"Dig","Level":31},
+    {"Move":"DragonRush","Level":37}
   ]
 }

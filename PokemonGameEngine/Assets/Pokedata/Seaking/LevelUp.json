@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "PoisonJab",
-      "Level": 1
-    },
-    {
-      "Move": "Peck",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 1
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 1
-    },
-    {
-      "Move": "Supersonic",
-      "Level": 1
-    },
-    {
-      "Move": "Supersonic",
-      "Level": 7
-    },
-    {
-      "Move": "HornAttack",
-      "Level": 11
-    },
-    {
-      "Move": "WaterPulse",
-      "Level": 17
-    },
-    {
-      "Move": "Flail",
-      "Level": 21
-    },
-    {
-      "Move": "AquaRing",
-      "Level": 27
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 31
-    },
-    {
-      "Move": "Waterfall",
-      "Level": 40
-    },
-    {
-      "Move": "HornDrill",
-      "Level": 47
-    },
-    {
-      "Move": "Agility",
-      "Level": 56
-    },
-    {
-      "Move": "Soak",
-      "Level": 63
-    },
-    {
-      "Move": "Megahorn",
-      "Level": 72
-    }
+    {"Move":"PoisonJab","Level":1},
+    {"Move":"Peck","Level":1},
+    {"Move":"TailWhip","Level":1},
+    {"Move":"WaterSport","Level":1},
+    {"Move":"Supersonic","Level":1},
+    {"Move":"Supersonic","Level":7},
+    {"Move":"HornAttack","Level":11},
+    {"Move":"WaterPulse","Level":17},
+    {"Move":"Flail","Level":21},
+    {"Move":"AquaRing","Level":27},
+    {"Move":"FuryAttack","Level":31},
+    {"Move":"Waterfall","Level":40},
+    {"Move":"HornDrill","Level":47},
+    {"Move":"Agility","Level":56},
+    {"Move":"Soak","Level":63},
+    {"Move":"Megahorn","Level":72}
   ]
 }

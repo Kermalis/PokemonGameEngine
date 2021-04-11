@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Ember",
-      "Level": 1
-    },
-    {
-      "Move": "StringShot",
-      "Level": 1
-    },
-    {
-      "Move": "LeechLife",
-      "Level": 1
-    },
-    {
-      "Move": "Gust",
-      "Level": 1
-    },
-    {
-      "Move": "LeechLife",
-      "Level": 10
-    },
-    {
-      "Move": "Gust",
-      "Level": 20
-    },
-    {
-      "Move": "FireSpin",
-      "Level": 30
-    },
-    {
-      "Move": "Whirlwind",
-      "Level": 40
-    },
-    {
-      "Move": "SilverWind",
-      "Level": 50
-    },
-    {
-      "Move": "QuiverDance",
-      "Level": 59
-    },
-    {
-      "Move": "HeatWave",
-      "Level": 60
-    },
-    {
-      "Move": "BugBuzz",
-      "Level": 70
-    },
-    {
-      "Move": "RagePowder",
-      "Level": 80
-    },
-    {
-      "Move": "Hurricane",
-      "Level": 90
-    },
-    {
-      "Move": "FieryDance",
-      "Level": 100
-    }
+    {"Move":"Ember","Level":1},
+    {"Move":"StringShot","Level":1},
+    {"Move":"LeechLife","Level":1},
+    {"Move":"Gust","Level":1},
+    {"Move":"LeechLife","Level":10},
+    {"Move":"Gust","Level":20},
+    {"Move":"FireSpin","Level":30},
+    {"Move":"Whirlwind","Level":40},
+    {"Move":"SilverWind","Level":50},
+    {"Move":"QuiverDance","Level":59},
+    {"Move":"HeatWave","Level":60},
+    {"Move":"BugBuzz","Level":70},
+    {"Move":"RagePowder","Level":80},
+    {"Move":"Hurricane","Level":90},
+    {"Move":"FieryDance","Level":100}
   ]
 }

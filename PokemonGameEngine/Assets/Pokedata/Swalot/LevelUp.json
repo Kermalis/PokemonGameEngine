@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pound",
-      "Level": 1
-    },
-    {
-      "Move": "Yawn",
-      "Level": 1
-    },
-    {
-      "Move": "PoisonGas",
-      "Level": 1
-    },
-    {
-      "Move": "Sludge",
-      "Level": 1
-    },
-    {
-      "Move": "Yawn",
-      "Level": 6
-    },
-    {
-      "Move": "PoisonGas",
-      "Level": 9
-    },
-    {
-      "Move": "Sludge",
-      "Level": 14
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 17
-    },
-    {
-      "Move": "Encore",
-      "Level": 23
-    },
-    {
-      "Move": "BodySlam",
-      "Level": 26
-    },
-    {
-      "Move": "Toxic",
-      "Level": 30
-    },
-    {
-      "Move": "AcidSpray",
-      "Level": 38
-    },
-    {
-      "Move": "Stockpile",
-      "Level": 45
-    },
-    {
-      "Move": "SpitUp",
-      "Level": 45
-    },
-    {
-      "Move": "Swallow",
-      "Level": 45
-    },
-    {
-      "Move": "SludgeBomb",
-      "Level": 52
-    },
-    {
-      "Move": "GastroAcid",
-      "Level": 59
-    },
-    {
-      "Move": "WringOut",
-      "Level": 66
-    },
-    {
-      "Move": "GunkShot",
-      "Level": 73
-    }
+    {"Move":"Pound","Level":1},
+    {"Move":"Yawn","Level":1},
+    {"Move":"PoisonGas","Level":1},
+    {"Move":"Sludge","Level":1},
+    {"Move":"Yawn","Level":6},
+    {"Move":"PoisonGas","Level":9},
+    {"Move":"Sludge","Level":14},
+    {"Move":"Amnesia","Level":17},
+    {"Move":"Encore","Level":23},
+    {"Move":"BodySlam","Level":26},
+    {"Move":"Toxic","Level":30},
+    {"Move":"AcidSpray","Level":38},
+    {"Move":"Stockpile","Level":45},
+    {"Move":"SpitUp","Level":45},
+    {"Move":"Swallow","Level":45},
+    {"Move":"SludgeBomb","Level":52},
+    {"Move":"GastroAcid","Level":59},
+    {"Move":"WringOut","Level":66},
+    {"Move":"GunkShot","Level":73}
   ]
 }

@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "SeismicToss",
-      "Level": 1
-    },
-    {
-      "Move": "CosmicPower",
-      "Level": 1
-    },
-    {
-      "Move": "NaturalGift",
-      "Level": 1
-    },
-    {
-      "Move": "Punishment",
-      "Level": 1
-    },
-    {
-      "Move": "Gravity",
-      "Level": 10
-    },
-    {
-      "Move": "EarthPower",
-      "Level": 20
-    },
-    {
-      "Move": "HyperVoice",
-      "Level": 30
-    },
-    {
-      "Move": "ExtremeSpeed",
-      "Level": 40
-    },
-    {
-      "Move": "Refresh",
-      "Level": 50
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 60
-    },
-    {
-      "Move": "Recover",
-      "Level": 70
-    },
-    {
-      "Move": "HyperBeam",
-      "Level": 80
-    },
-    {
-      "Move": "PerishSong",
-      "Level": 90
-    },
-    {
-      "Move": "Judgment",
-      "Level": 100
-    }
+    {"Move":"SeismicToss","Level":1},
+    {"Move":"CosmicPower","Level":1},
+    {"Move":"NaturalGift","Level":1},
+    {"Move":"Punishment","Level":1},
+    {"Move":"Gravity","Level":10},
+    {"Move":"EarthPower","Level":20},
+    {"Move":"HyperVoice","Level":30},
+    {"Move":"ExtremeSpeed","Level":40},
+    {"Move":"Refresh","Level":50},
+    {"Move":"FutureSight","Level":60},
+    {"Move":"Recover","Level":70},
+    {"Move":"HyperBeam","Level":80},
+    {"Move":"PerishSong","Level":90},
+    {"Move":"Judgment","Level":100}
   ]
 }

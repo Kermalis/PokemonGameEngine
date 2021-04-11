@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "HelpingHand",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 5
-    },
-    {
-      "Move": "Confusion",
-      "Level": 9
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 13
-    },
-    {
-      "Move": "Swift",
-      "Level": 17
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 21
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 25
-    },
-    {
-      "Move": "PsychUp",
-      "Level": 29
-    },
-    {
-      "Move": "MorningSun",
-      "Level": 33
-    },
-    {
-      "Move": "Psychic",
-      "Level": 37
-    },
-    {
-      "Move": "LastResort",
-      "Level": 41
-    },
-    {
-      "Move": "PowerSwap",
-      "Level": 45
-    }
+    {"Move":"HelpingHand","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"TailWhip","Level":1},
+    {"Move":"SandAttack","Level":5},
+    {"Move":"Confusion","Level":9},
+    {"Move":"QuickAttack","Level":13},
+    {"Move":"Swift","Level":17},
+    {"Move":"Psybeam","Level":21},
+    {"Move":"FutureSight","Level":25},
+    {"Move":"PsychUp","Level":29},
+    {"Move":"MorningSun","Level":33},
+    {"Move":"Psychic","Level":37},
+    {"Move":"LastResort","Level":41},
+    {"Move":"PowerSwap","Level":45}
   ]
 }

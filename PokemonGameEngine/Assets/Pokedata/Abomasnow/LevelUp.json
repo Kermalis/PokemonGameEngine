@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "IcePunch",
-      "Level": 1
-    },
-    {
-      "Move": "PowderSnow",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "RazorLeaf",
-      "Level": 1
-    },
-    {
-      "Move": "IcyWind",
-      "Level": 1
-    },
-    {
-      "Move": "RazorLeaf",
-      "Level": 5
-    },
-    {
-      "Move": "IcyWind",
-      "Level": 9
-    },
-    {
-      "Move": "GrassWhistle",
-      "Level": 13
-    },
-    {
-      "Move": "Swagger",
-      "Level": 17
-    },
-    {
-      "Move": "Mist",
-      "Level": 21
-    },
-    {
-      "Move": "IceShard",
-      "Level": 26
-    },
-    {
-      "Move": "Ingrain",
-      "Level": 31
-    },
-    {
-      "Move": "WoodHammer",
-      "Level": 36
-    },
-    {
-      "Move": "Blizzard",
-      "Level": 47
-    },
-    {
-      "Move": "SheerCold",
-      "Level": 58
-    }
+    {"Move":"IcePunch","Level":1},
+    {"Move":"PowderSnow","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"RazorLeaf","Level":1},
+    {"Move":"IcyWind","Level":1},
+    {"Move":"RazorLeaf","Level":5},
+    {"Move":"IcyWind","Level":9},
+    {"Move":"GrassWhistle","Level":13},
+    {"Move":"Swagger","Level":17},
+    {"Move":"Mist","Level":21},
+    {"Move":"IceShard","Level":26},
+    {"Move":"Ingrain","Level":31},
+    {"Move":"WoodHammer","Level":36},
+    {"Move":"Blizzard","Level":47},
+    {"Move":"SheerCold","Level":58}
   ]
 }

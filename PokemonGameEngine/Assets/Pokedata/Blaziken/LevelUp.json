@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "FirePunch",
-      "Level": 1
-    },
-    {
-      "Move": "HiJumpKick",
-      "Level": 1
-    },
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 1
-    },
-    {
-      "Move": "Ember",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 7
-    },
-    {
-      "Move": "Ember",
-      "Level": 13
-    },
-    {
-      "Move": "DoubleKick",
-      "Level": 16
-    },
-    {
-      "Move": "Peck",
-      "Level": 17
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 21
-    },
-    {
-      "Move": "BulkUp",
-      "Level": 28
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 32
-    },
-    {
-      "Move": "BlazeKick",
-      "Level": 36
-    },
-    {
-      "Move": "Slash",
-      "Level": 42
-    },
-    {
-      "Move": "BraveBird",
-      "Level": 49
-    },
-    {
-      "Move": "SkyUppercut",
-      "Level": 59
-    },
-    {
-      "Move": "FlareBlitz",
-      "Level": 66
-    }
+    {"Move":"FirePunch","Level":1},
+    {"Move":"HiJumpKick","Level":1},
+    {"Move":"Scratch","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"FocusEnergy","Level":1},
+    {"Move":"Ember","Level":1},
+    {"Move":"FocusEnergy","Level":7},
+    {"Move":"Ember","Level":13},
+    {"Move":"DoubleKick","Level":16},
+    {"Move":"Peck","Level":17},
+    {"Move":"SandAttack","Level":21},
+    {"Move":"BulkUp","Level":28},
+    {"Move":"QuickAttack","Level":32},
+    {"Move":"BlazeKick","Level":36},
+    {"Move":"Slash","Level":42},
+    {"Move":"BraveBird","Level":49},
+    {"Move":"SkyUppercut","Level":59},
+    {"Move":"FlareBlitz","Level":66}
   ]
 }

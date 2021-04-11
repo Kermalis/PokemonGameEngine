@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Psywave",
-      "Level": 1
-    },
-    {
-      "Move": "DefenseCurl",
-      "Level": 1
-    },
-    {
-      "Move": "LuckyChant",
-      "Level": 5
-    },
-    {
-      "Move": "Yawn",
-      "Level": 7
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 11
-    },
-    {
-      "Move": "Imprison",
-      "Level": 13
-    },
-    {
-      "Move": "Moonlight",
-      "Level": 17
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 19
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 23
-    },
-    {
-      "Move": "Synchronoise",
-      "Level": 25
-    },
-    {
-      "Move": "Nightmare",
-      "Level": 29
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 31
-    },
-    {
-      "Move": "CalmMind",
-      "Level": 35
-    },
-    {
-      "Move": "Psychic",
-      "Level": 37
-    },
-    {
-      "Move": "DreamEater",
-      "Level": 41
-    },
-    {
-      "Move": "Telekinesis",
-      "Level": 43
-    },
-    {
-      "Move": "StoredPower",
-      "Level": 47
-    }
+    {"Move":"Psywave","Level":1},
+    {"Move":"DefenseCurl","Level":1},
+    {"Move":"LuckyChant","Level":5},
+    {"Move":"Yawn","Level":7},
+    {"Move":"Psybeam","Level":11},
+    {"Move":"Imprison","Level":13},
+    {"Move":"Moonlight","Level":17},
+    {"Move":"Hypnosis","Level":19},
+    {"Move":"ZenHeadbutt","Level":23},
+    {"Move":"Synchronoise","Level":25},
+    {"Move":"Nightmare","Level":29},
+    {"Move":"FutureSight","Level":31},
+    {"Move":"CalmMind","Level":35},
+    {"Move":"Psychic","Level":37},
+    {"Move":"DreamEater","Level":41},
+    {"Move":"Telekinesis","Level":43},
+    {"Move":"StoredPower","Level":47}
   ]
 }

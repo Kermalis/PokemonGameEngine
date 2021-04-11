@@ -1,20 +1,8 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "HelpingHand",
-      "Level": 1
-    },
-    {
-      "Move": "FakeOut",
-      "Level": 1
-    },
-    {
-      "Move": "Foresight",
-      "Level": 1
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"HelpingHand","Level":1},
+    {"Move":"FakeOut","Level":1},
+    {"Move":"Foresight","Level":1}
   ]
 }

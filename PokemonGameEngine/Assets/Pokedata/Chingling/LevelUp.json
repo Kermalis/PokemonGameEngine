@@ -1,32 +1,11 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Wrap",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 6
-    },
-    {
-      "Move": "Astonish",
-      "Level": 9
-    },
-    {
-      "Move": "Confusion",
-      "Level": 14
-    },
-    {
-      "Move": "Uproar",
-      "Level": 17
-    },
-    {
-      "Move": "LastResort",
-      "Level": 22
-    },
-    {
-      "Move": "Entrainment",
-      "Level": 25
-    }
+    {"Move":"Wrap","Level":1},
+    {"Move":"Growl","Level":6},
+    {"Move":"Astonish","Level":9},
+    {"Move":"Confusion","Level":14},
+    {"Move":"Uproar","Level":17},
+    {"Move":"LastResort","Level":22},
+    {"Move":"Entrainment","Level":25}
   ]
 }

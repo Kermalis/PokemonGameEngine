@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "DefenseCurl",
-      "Level": 1
-    },
-    {
-      "Move": "MudSport",
-      "Level": 1
-    },
-    {
-      "Move": "RockPolish",
-      "Level": 1
-    },
-    {
-      "Move": "MudSport",
-      "Level": 4
-    },
-    {
-      "Move": "RockPolish",
-      "Level": 8
-    },
-    {
-      "Move": "RockThrow",
-      "Level": 11
-    },
-    {
-      "Move": "Magnitude",
-      "Level": 15
-    },
-    {
-      "Move": "Steamroller",
-      "Level": 18
-    },
-    {
-      "Move": "RockBlast",
-      "Level": 22
-    },
-    {
-      "Move": "SmackDown",
-      "Level": 27
-    },
-    {
-      "Move": "Selfdestruct",
-      "Level": 31
-    },
-    {
-      "Move": "Bulldoze",
-      "Level": 36
-    },
-    {
-      "Move": "StealthRock",
-      "Level": 42
-    },
-    {
-      "Move": "Earthquake",
-      "Level": 47
-    },
-    {
-      "Move": "Explosion",
-      "Level": 53
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 58
-    },
-    {
-      "Move": "StoneEdge",
-      "Level": 64
-    },
-    {
-      "Move": "HeavySlam",
-      "Level": 69
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"DefenseCurl","Level":1},
+    {"Move":"MudSport","Level":1},
+    {"Move":"RockPolish","Level":1},
+    {"Move":"MudSport","Level":4},
+    {"Move":"RockPolish","Level":8},
+    {"Move":"RockThrow","Level":11},
+    {"Move":"Magnitude","Level":15},
+    {"Move":"Steamroller","Level":18},
+    {"Move":"RockBlast","Level":22},
+    {"Move":"SmackDown","Level":27},
+    {"Move":"Selfdestruct","Level":31},
+    {"Move":"Bulldoze","Level":36},
+    {"Move":"StealthRock","Level":42},
+    {"Move":"Earthquake","Level":47},
+    {"Move":"Explosion","Level":53},
+    {"Move":"DoubleEdge","Level":58},
+    {"Move":"StoneEdge","Level":64},
+    {"Move":"HeavySlam","Level":69}
   ]
 }

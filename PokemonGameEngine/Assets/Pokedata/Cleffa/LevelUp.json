@@ -1,32 +1,11 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pound",
-      "Level": 1
-    },
-    {
-      "Move": "Charm",
-      "Level": 1
-    },
-    {
-      "Move": "Encore",
-      "Level": 4
-    },
-    {
-      "Move": "Sing",
-      "Level": 7
-    },
-    {
-      "Move": "SweetKiss",
-      "Level": 10
-    },
-    {
-      "Move": "Copycat",
-      "Level": 13
-    },
-    {
-      "Move": "MagicalLeaf",
-      "Level": 16
-    }
+    {"Move":"Pound","Level":1},
+    {"Move":"Charm","Level":1},
+    {"Move":"Encore","Level":4},
+    {"Move":"Sing","Level":7},
+    {"Move":"SweetKiss","Level":10},
+    {"Move":"Copycat","Level":13},
+    {"Move":"MagicalLeaf","Level":16}
   ]
 }

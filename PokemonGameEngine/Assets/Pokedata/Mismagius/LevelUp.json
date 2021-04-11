@@ -1,28 +1,10 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "LuckyChant",
-      "Level": 1
-    },
-    {
-      "Move": "MagicalLeaf",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "Psywave",
-      "Level": 1
-    },
-    {
-      "Move": "Spite",
-      "Level": 1
-    },
-    {
-      "Move": "Astonish",
-      "Level": 1
-    }
+    {"Move":"LuckyChant","Level":1},
+    {"Move":"MagicalLeaf","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"Psywave","Level":1},
+    {"Move":"Spite","Level":1},
+    {"Move":"Astonish","Level":1}
   ]
 }

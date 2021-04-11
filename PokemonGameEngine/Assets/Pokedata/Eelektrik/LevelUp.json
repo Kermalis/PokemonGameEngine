@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Headbutt",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderWave",
-      "Level": 1
-    },
-    {
-      "Move": "Spark",
-      "Level": 1
-    },
-    {
-      "Move": "ChargeBeam",
-      "Level": 1
-    },
-    {
-      "Move": "Bind",
-      "Level": 9
-    },
-    {
-      "Move": "Acid",
-      "Level": 19
-    },
-    {
-      "Move": "Discharge",
-      "Level": 29
-    },
-    {
-      "Move": "Crunch",
-      "Level": 39
-    },
-    {
-      "Move": "Thunderbolt",
-      "Level": 44
-    },
-    {
-      "Move": "AcidSpray",
-      "Level": 49
-    },
-    {
-      "Move": "Coil",
-      "Level": 54
-    },
-    {
-      "Move": "WildCharge",
-      "Level": 59
-    },
-    {
-      "Move": "GastroAcid",
-      "Level": 64
-    },
-    {
-      "Move": "ZapCannon",
-      "Level": 69
-    },
-    {
-      "Move": "Thrash",
-      "Level": 74
-    }
+    {"Move":"Headbutt","Level":1},
+    {"Move":"ThunderWave","Level":1},
+    {"Move":"Spark","Level":1},
+    {"Move":"ChargeBeam","Level":1},
+    {"Move":"Bind","Level":9},
+    {"Move":"Acid","Level":19},
+    {"Move":"Discharge","Level":29},
+    {"Move":"Crunch","Level":39},
+    {"Move":"Thunderbolt","Level":44},
+    {"Move":"AcidSpray","Level":49},
+    {"Move":"Coil","Level":54},
+    {"Move":"WildCharge","Level":59},
+    {"Move":"GastroAcid","Level":64},
+    {"Move":"ZapCannon","Level":69},
+    {"Move":"Thrash","Level":74}
   ]
 }

@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Bubble",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 7
-    },
-    {
-      "Move": "ViceGrip",
-      "Level": 10
-    },
-    {
-      "Move": "Leer",
-      "Level": 13
-    },
-    {
-      "Move": "BubbleBeam",
-      "Level": 20
-    },
-    {
-      "Move": "Protect",
-      "Level": 23
-    },
-    {
-      "Move": "KnockOff",
-      "Level": 26
-    },
-    {
-      "Move": "Taunt",
-      "Level": 32
-    },
-    {
-      "Move": "NightSlash",
-      "Level": 35
-    },
-    {
-      "Move": "Crabhammer",
-      "Level": 38
-    },
-    {
-      "Move": "SwordsDance",
-      "Level": 44
-    },
-    {
-      "Move": "Crunch",
-      "Level": 47
-    },
-    {
-      "Move": "Guillotine",
-      "Level": 53
-    }
+    {"Move":"Bubble","Level":1},
+    {"Move":"Harden","Level":7},
+    {"Move":"ViceGrip","Level":10},
+    {"Move":"Leer","Level":13},
+    {"Move":"BubbleBeam","Level":20},
+    {"Move":"Protect","Level":23},
+    {"Move":"KnockOff","Level":26},
+    {"Move":"Taunt","Level":32},
+    {"Move":"NightSlash","Level":35},
+    {"Move":"Crabhammer","Level":38},
+    {"Move":"SwordsDance","Level":44},
+    {"Move":"Crunch","Level":47},
+    {"Move":"Guillotine","Level":53}
   ]
 }

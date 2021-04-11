@@ -1,52 +1,16 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Protect",
-      "Level": 1
-    },
-    {
-      "Move": "Taunt",
-      "Level": 6
-    },
-    {
-      "Move": "MetalSound",
-      "Level": 10
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 15
-    },
-    {
-      "Move": "IronDefense",
-      "Level": 19
-    },
-    {
-      "Move": "Swagger",
-      "Level": 24
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 28
-    },
-    {
-      "Move": "Endure",
-      "Level": 33
-    },
-    {
-      "Move": "MetalBurst",
-      "Level": 37
-    },
-    {
-      "Move": "IronHead",
-      "Level": 42
-    },
-    {
-      "Move": "HeavySlam",
-      "Level": 46
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Protect","Level":1},
+    {"Move":"Taunt","Level":6},
+    {"Move":"MetalSound","Level":10},
+    {"Move":"TakeDown","Level":15},
+    {"Move":"IronDefense","Level":19},
+    {"Move":"Swagger","Level":24},
+    {"Move":"AncientPower","Level":28},
+    {"Move":"Endure","Level":33},
+    {"Move":"MetalBurst","Level":37},
+    {"Move":"IronHead","Level":42},
+    {"Move":"HeavySlam","Level":46}
   ]
 }

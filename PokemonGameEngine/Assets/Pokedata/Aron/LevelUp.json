@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 1
-    },
-    {
-      "Move": "MudSlap",
-      "Level": 4
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 8
-    },
-    {
-      "Move": "MetalClaw",
-      "Level": 11
-    },
-    {
-      "Move": "IronDefense",
-      "Level": 15
-    },
-    {
-      "Move": "Roar",
-      "Level": 18
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 22
-    },
-    {
-      "Move": "IronHead",
-      "Level": 25
-    },
-    {
-      "Move": "Protect",
-      "Level": 29
-    },
-    {
-      "Move": "MetalSound",
-      "Level": 32
-    },
-    {
-      "Move": "IronTail",
-      "Level": 36
-    },
-    {
-      "Move": "Autotomize",
-      "Level": 39
-    },
-    {
-      "Move": "HeavySlam",
-      "Level": 43
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 46
-    },
-    {
-      "Move": "MetalBurst",
-      "Level": 50
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Harden","Level":1},
+    {"Move":"MudSlap","Level":4},
+    {"Move":"Headbutt","Level":8},
+    {"Move":"MetalClaw","Level":11},
+    {"Move":"IronDefense","Level":15},
+    {"Move":"Roar","Level":18},
+    {"Move":"TakeDown","Level":22},
+    {"Move":"IronHead","Level":25},
+    {"Move":"Protect","Level":29},
+    {"Move":"MetalSound","Level":32},
+    {"Move":"IronTail","Level":36},
+    {"Move":"Autotomize","Level":39},
+    {"Move":"HeavySlam","Level":43},
+    {"Move":"DoubleEdge","Level":46},
+    {"Move":"MetalBurst","Level":50}
   ]
 }

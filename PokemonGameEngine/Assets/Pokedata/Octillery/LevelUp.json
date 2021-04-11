@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "GunkShot",
-      "Level": 1
-    },
-    {
-      "Move": "RockBlast",
-      "Level": 1
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 1
-    },
-    {
-      "Move": "Constrict",
-      "Level": 1
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 1
-    },
-    {
-      "Move": "AuroraBeam",
-      "Level": 1
-    },
-    {
-      "Move": "Constrict",
-      "Level": 6
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 10
-    },
-    {
-      "Move": "AuroraBeam",
-      "Level": 14
-    },
-    {
-      "Move": "BubbleBeam",
-      "Level": 18
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 22
-    },
-    {
-      "Move": "Octazooka",
-      "Level": 25
-    },
-    {
-      "Move": "WringOut",
-      "Level": 28
-    },
-    {
-      "Move": "SignalBeam",
-      "Level": 34
-    },
-    {
-      "Move": "IceBeam",
-      "Level": 40
-    },
-    {
-      "Move": "BulletSeed",
-      "Level": 46
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 52
-    },
-    {
-      "Move": "HyperBeam",
-      "Level": 58
-    },
-    {
-      "Move": "Soak",
-      "Level": 64
-    }
+    {"Move":"GunkShot","Level":1},
+    {"Move":"RockBlast","Level":1},
+    {"Move":"WaterGun","Level":1},
+    {"Move":"Constrict","Level":1},
+    {"Move":"Psybeam","Level":1},
+    {"Move":"AuroraBeam","Level":1},
+    {"Move":"Constrict","Level":6},
+    {"Move":"Psybeam","Level":10},
+    {"Move":"AuroraBeam","Level":14},
+    {"Move":"BubbleBeam","Level":18},
+    {"Move":"FocusEnergy","Level":22},
+    {"Move":"Octazooka","Level":25},
+    {"Move":"WringOut","Level":28},
+    {"Move":"SignalBeam","Level":34},
+    {"Move":"IceBeam","Level":40},
+    {"Move":"BulletSeed","Level":46},
+    {"Move":"HydroPump","Level":52},
+    {"Move":"HyperBeam","Level":58},
+    {"Move":"Soak","Level":64}
   ]
 }

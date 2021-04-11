@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "WaterPulse",
-      "Level": 1
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 5
-    },
-    {
-      "Move": "BodySlam",
-      "Level": 15
-    },
-    {
-      "Move": "MuddyWater",
-      "Level": 20
-    },
-    {
-      "Move": "AquaRing",
-      "Level": 30
-    },
-    {
-      "Move": "IceBeam",
-      "Level": 35
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 45
-    },
-    {
-      "Move": "WaterSpout",
-      "Level": 50
-    },
-    {
-      "Move": "CalmMind",
-      "Level": 60
-    },
-    {
-      "Move": "AquaTail",
-      "Level": 65
-    },
-    {
-      "Move": "SheerCold",
-      "Level": 75
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 80
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 90
-    }
+    {"Move":"WaterPulse","Level":1},
+    {"Move":"ScaryFace","Level":5},
+    {"Move":"BodySlam","Level":15},
+    {"Move":"MuddyWater","Level":20},
+    {"Move":"AquaRing","Level":30},
+    {"Move":"IceBeam","Level":35},
+    {"Move":"AncientPower","Level":45},
+    {"Move":"WaterSpout","Level":50},
+    {"Move":"CalmMind","Level":60},
+    {"Move":"AquaTail","Level":65},
+    {"Move":"SheerCold","Level":75},
+    {"Move":"DoubleEdge","Level":80},
+    {"Move":"HydroPump","Level":90}
   ]
 }

@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "PowderSnow",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "DoubleTeam",
-      "Level": 1
-    },
-    {
-      "Move": "Bite",
-      "Level": 1
-    },
-    {
-      "Move": "DoubleTeam",
-      "Level": 4
-    },
-    {
-      "Move": "Bite",
-      "Level": 10
-    },
-    {
-      "Move": "IcyWind",
-      "Level": 13
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 19
-    },
-    {
-      "Move": "Protect",
-      "Level": 22
-    },
-    {
-      "Move": "IceFang",
-      "Level": 28
-    },
-    {
-      "Move": "Crunch",
-      "Level": 31
-    },
-    {
-      "Move": "IceBeam",
-      "Level": 37
-    },
-    {
-      "Move": "Hail",
-      "Level": 40
-    },
-    {
-      "Move": "Blizzard",
-      "Level": 51
-    },
-    {
-      "Move": "SheerCold",
-      "Level": 59
-    }
+    {"Move":"PowderSnow","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"DoubleTeam","Level":1},
+    {"Move":"Bite","Level":1},
+    {"Move":"DoubleTeam","Level":4},
+    {"Move":"Bite","Level":10},
+    {"Move":"IcyWind","Level":13},
+    {"Move":"Headbutt","Level":19},
+    {"Move":"Protect","Level":22},
+    {"Move":"IceFang","Level":28},
+    {"Move":"Crunch","Level":31},
+    {"Move":"IceBeam","Level":37},
+    {"Move":"Hail","Level":40},
+    {"Move":"Blizzard","Level":51},
+    {"Move":"SheerCold","Level":59}
   ]
 }

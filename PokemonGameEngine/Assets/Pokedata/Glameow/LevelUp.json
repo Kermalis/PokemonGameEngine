@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "FakeOut",
-      "Level": 1
-    },
-    {
-      "Move": "Scratch",
-      "Level": 5
-    },
-    {
-      "Move": "Growl",
-      "Level": 8
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 13
-    },
-    {
-      "Move": "FaintAttack",
-      "Level": 17
-    },
-    {
-      "Move": "FurySwipes",
-      "Level": 20
-    },
-    {
-      "Move": "Charm",
-      "Level": 25
-    },
-    {
-      "Move": "Assist",
-      "Level": 29
-    },
-    {
-      "Move": "Captivate",
-      "Level": 32
-    },
-    {
-      "Move": "Slash",
-      "Level": 37
-    },
-    {
-      "Move": "SuckerPunch",
-      "Level": 41
-    },
-    {
-      "Move": "Attract",
-      "Level": 44
-    },
-    {
-      "Move": "HoneClaws",
-      "Level": 48
-    }
+    {"Move":"FakeOut","Level":1},
+    {"Move":"Scratch","Level":5},
+    {"Move":"Growl","Level":8},
+    {"Move":"Hypnosis","Level":13},
+    {"Move":"FaintAttack","Level":17},
+    {"Move":"FurySwipes","Level":20},
+    {"Move":"Charm","Level":25},
+    {"Move":"Assist","Level":29},
+    {"Move":"Captivate","Level":32},
+    {"Move":"Slash","Level":37},
+    {"Move":"SuckerPunch","Level":41},
+    {"Move":"Attract","Level":44},
+    {"Move":"HoneClaws","Level":48}
   ]
 }

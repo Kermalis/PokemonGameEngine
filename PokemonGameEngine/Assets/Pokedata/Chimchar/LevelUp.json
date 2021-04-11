@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Ember",
-      "Level": 7
-    },
-    {
-      "Move": "Taunt",
-      "Level": 9
-    },
-    {
-      "Move": "FurySwipes",
-      "Level": 15
-    },
-    {
-      "Move": "FlameWheel",
-      "Level": 17
-    },
-    {
-      "Move": "NastyPlot",
-      "Level": 23
-    },
-    {
-      "Move": "Torment",
-      "Level": 25
-    },
-    {
-      "Move": "Facade",
-      "Level": 31
-    },
-    {
-      "Move": "FireSpin",
-      "Level": 33
-    },
-    {
-      "Move": "Acrobatics",
-      "Level": 39
-    },
-    {
-      "Move": "SlackOff",
-      "Level": 41
-    },
-    {
-      "Move": "Flamethrower",
-      "Level": 47
-    }
+    {"Move":"Scratch","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"Ember","Level":7},
+    {"Move":"Taunt","Level":9},
+    {"Move":"FurySwipes","Level":15},
+    {"Move":"FlameWheel","Level":17},
+    {"Move":"NastyPlot","Level":23},
+    {"Move":"Torment","Level":25},
+    {"Move":"Facade","Level":31},
+    {"Move":"FireSpin","Level":33},
+    {"Move":"Acrobatics","Level":39},
+    {"Move":"SlackOff","Level":41},
+    {"Move":"Flamethrower","Level":47}
   ]
 }

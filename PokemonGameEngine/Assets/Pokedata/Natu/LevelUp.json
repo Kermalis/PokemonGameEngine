@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Peck",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "NightShade",
-      "Level": 6
-    },
-    {
-      "Move": "Teleport",
-      "Level": 9
-    },
-    {
-      "Move": "LuckyChant",
-      "Level": 12
-    },
-    {
-      "Move": "MiracleEye",
-      "Level": 17
-    },
-    {
-      "Move": "MeFirst",
-      "Level": 20
-    },
-    {
-      "Move": "ConfuseRay",
-      "Level": 23
-    },
-    {
-      "Move": "Wish",
-      "Level": 28
-    },
-    {
-      "Move": "PsychoShift",
-      "Level": 33
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 36
-    },
-    {
-      "Move": "StoredPower",
-      "Level": 39
-    },
-    {
-      "Move": "OminousWind",
-      "Level": 44
-    },
-    {
-      "Move": "PowerSwap",
-      "Level": 47
-    },
-    {
-      "Move": "GuardSwap",
-      "Level": 47
-    },
-    {
-      "Move": "Psychic",
-      "Level": 50
-    }
+    {"Move":"Peck","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"NightShade","Level":6},
+    {"Move":"Teleport","Level":9},
+    {"Move":"LuckyChant","Level":12},
+    {"Move":"MiracleEye","Level":17},
+    {"Move":"MeFirst","Level":20},
+    {"Move":"ConfuseRay","Level":23},
+    {"Move":"Wish","Level":28},
+    {"Move":"PsychoShift","Level":33},
+    {"Move":"FutureSight","Level":36},
+    {"Move":"StoredPower","Level":39},
+    {"Move":"OminousWind","Level":44},
+    {"Move":"PowerSwap","Level":47},
+    {"Move":"GuardSwap","Level":47},
+    {"Move":"Psychic","Level":50}
   ]
 }

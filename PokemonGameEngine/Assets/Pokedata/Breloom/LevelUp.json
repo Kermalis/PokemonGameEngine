@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Absorb",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "StunSpore",
-      "Level": 1
-    },
-    {
-      "Move": "LeechSeed",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 5
-    },
-    {
-      "Move": "StunSpore",
-      "Level": 9
-    },
-    {
-      "Move": "LeechSeed",
-      "Level": 13
-    },
-    {
-      "Move": "MegaDrain",
-      "Level": 17
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 21
-    },
-    {
-      "Move": "MachPunch",
-      "Level": 23
-    },
-    {
-      "Move": "Counter",
-      "Level": 25
-    },
-    {
-      "Move": "ForcePalm",
-      "Level": 29
-    },
-    {
-      "Move": "SkyUppercut",
-      "Level": 33
-    },
-    {
-      "Move": "MindReader",
-      "Level": 37
-    },
-    {
-      "Move": "SeedBomb",
-      "Level": 41
-    },
-    {
-      "Move": "DynamicPunch",
-      "Level": 45
-    }
+    {"Move":"Absorb","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"StunSpore","Level":1},
+    {"Move":"LeechSeed","Level":1},
+    {"Move":"Tackle","Level":5},
+    {"Move":"StunSpore","Level":9},
+    {"Move":"LeechSeed","Level":13},
+    {"Move":"MegaDrain","Level":17},
+    {"Move":"Headbutt","Level":21},
+    {"Move":"MachPunch","Level":23},
+    {"Move":"Counter","Level":25},
+    {"Move":"ForcePalm","Level":29},
+    {"Move":"SkyUppercut","Level":33},
+    {"Move":"MindReader","Level":37},
+    {"Move":"SeedBomb","Level":41},
+    {"Move":"DynamicPunch","Level":45}
   ]
 }

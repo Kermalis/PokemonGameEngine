@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "NightSlash",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "HornAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Endure",
-      "Level": 1
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 7
-    },
-    {
-      "Move": "AerialAce",
-      "Level": 10
-    },
-    {
-      "Move": "ChipAway",
-      "Level": 16
-    },
-    {
-      "Move": "Counter",
-      "Level": 19
-    },
-    {
-      "Move": "BrickBreak",
-      "Level": 25
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 28
-    },
-    {
-      "Move": "CloseCombat",
-      "Level": 34
-    },
-    {
-      "Move": "Feint",
-      "Level": 37
-    },
-    {
-      "Move": "Reversal",
-      "Level": 43
-    },
-    {
-      "Move": "Megahorn",
-      "Level": 46
-    }
+    {"Move":"NightSlash","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"HornAttack","Level":1},
+    {"Move":"Endure","Level":1},
+    {"Move":"FuryAttack","Level":7},
+    {"Move":"AerialAce","Level":10},
+    {"Move":"ChipAway","Level":16},
+    {"Move":"Counter","Level":19},
+    {"Move":"BrickBreak","Level":25},
+    {"Move":"TakeDown","Level":28},
+    {"Move":"CloseCombat","Level":34},
+    {"Move":"Feint","Level":37},
+    {"Move":"Reversal","Level":43},
+    {"Move":"Megahorn","Level":46}
   ]
 }

@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Astonish",
-      "Level": 1
-    },
-    {
-      "Move": "Constrict",
-      "Level": 1
-    },
-    {
-      "Move": "Acid",
-      "Level": 1
-    },
-    {
-      "Move": "Ingrain",
-      "Level": 1
-    },
-    {
-      "Move": "Acid",
-      "Level": 8
-    },
-    {
-      "Move": "Ingrain",
-      "Level": 15
-    },
-    {
-      "Move": "ConfuseRay",
-      "Level": 22
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 29
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 36
-    },
-    {
-      "Move": "GastroAcid",
-      "Level": 46
-    },
-    {
-      "Move": "EnergyBall",
-      "Level": 56
-    },
-    {
-      "Move": "Stockpile",
-      "Level": 66
-    },
-    {
-      "Move": "SpitUp",
-      "Level": 66
-    },
-    {
-      "Move": "Swallow",
-      "Level": 66
-    },
-    {
-      "Move": "WringOut",
-      "Level": 76
-    }
+    {"Move":"Astonish","Level":1},
+    {"Move":"Constrict","Level":1},
+    {"Move":"Acid","Level":1},
+    {"Move":"Ingrain","Level":1},
+    {"Move":"Acid","Level":8},
+    {"Move":"Ingrain","Level":15},
+    {"Move":"ConfuseRay","Level":22},
+    {"Move":"Amnesia","Level":29},
+    {"Move":"AncientPower","Level":36},
+    {"Move":"GastroAcid","Level":46},
+    {"Move":"EnergyBall","Level":56},
+    {"Move":"Stockpile","Level":66},
+    {"Move":"SpitUp","Level":66},
+    {"Move":"Swallow","Level":66},
+    {"Move":"WringOut","Level":76}
   ]
 }

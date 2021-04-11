@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "PowerGem",
-      "Level": 1
-    },
-    {
-      "Move": "HiddenPower",
-      "Level": 1
-    },
-    {
-      "Move": "Curse",
-      "Level": 1
-    },
-    {
-      "Move": "Yawn",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 5
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 9
-    },
-    {
-      "Move": "Confusion",
-      "Level": 14
-    },
-    {
-      "Move": "Disable",
-      "Level": 19
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 23
-    },
-    {
-      "Move": "WaterPulse",
-      "Level": 28
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 32
-    },
-    {
-      "Move": "NastyPlot",
-      "Level": 36
-    },
-    {
-      "Move": "Swagger",
-      "Level": 41
-    },
-    {
-      "Move": "Psychic",
-      "Level": 45
-    },
-    {
-      "Move": "TrumpCard",
-      "Level": 49
-    },
-    {
-      "Move": "PsychUp",
-      "Level": 54
-    },
-    {
-      "Move": "HealPulse",
-      "Level": 58
-    }
+    {"Move":"PowerGem","Level":1},
+    {"Move":"HiddenPower","Level":1},
+    {"Move":"Curse","Level":1},
+    {"Move":"Yawn","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"Growl","Level":5},
+    {"Move":"WaterGun","Level":9},
+    {"Move":"Confusion","Level":14},
+    {"Move":"Disable","Level":19},
+    {"Move":"Headbutt","Level":23},
+    {"Move":"WaterPulse","Level":28},
+    {"Move":"ZenHeadbutt","Level":32},
+    {"Move":"NastyPlot","Level":36},
+    {"Move":"Swagger","Level":41},
+    {"Move":"Psychic","Level":45},
+    {"Move":"TrumpCard","Level":49},
+    {"Move":"PsychUp","Level":54},
+    {"Move":"HealPulse","Level":58}
   ]
 }

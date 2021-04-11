@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Peck",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 7
-    },
-    {
-      "Move": "DoubleKick",
-      "Level": 9
-    },
-    {
-      "Move": "PoisonSting",
-      "Level": 13
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 20
-    },
-    {
-      "Move": "HornAttack",
-      "Level": 23
-    },
-    {
-      "Move": "HelpingHand",
-      "Level": 28
-    },
-    {
-      "Move": "ToxicSpikes",
-      "Level": 35
-    },
-    {
-      "Move": "Flatter",
-      "Level": 38
-    },
-    {
-      "Move": "PoisonJab",
-      "Level": 43
-    },
-    {
-      "Move": "Captivate",
-      "Level": 50
-    },
-    {
-      "Move": "HornDrill",
-      "Level": 58
-    }
+    {"Move":"Leer","Level":1},
+    {"Move":"Peck","Level":1},
+    {"Move":"FocusEnergy","Level":7},
+    {"Move":"DoubleKick","Level":9},
+    {"Move":"PoisonSting","Level":13},
+    {"Move":"FuryAttack","Level":20},
+    {"Move":"HornAttack","Level":23},
+    {"Move":"HelpingHand","Level":28},
+    {"Move":"ToxicSpikes","Level":35},
+    {"Move":"Flatter","Level":38},
+    {"Move":"PoisonJab","Level":43},
+    {"Move":"Captivate","Level":50},
+    {"Move":"HornDrill","Level":58}
   ]
 }

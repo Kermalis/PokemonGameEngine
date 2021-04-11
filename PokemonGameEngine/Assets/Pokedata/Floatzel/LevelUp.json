@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "IceFang",
-      "Level": 1
-    },
-    {
-      "Move": "Crunch",
-      "Level": 1
-    },
-    {
-      "Move": "SonicBoom",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 4
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 7
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 11
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 15
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 18
-    },
-    {
-      "Move": "Swift",
-      "Level": 21
-    },
-    {
-      "Move": "AquaJet",
-      "Level": 24
-    },
-    {
-      "Move": "DoubleHit",
-      "Level": 29
-    },
-    {
-      "Move": "Whirlpool",
-      "Level": 35
-    },
-    {
-      "Move": "RazorWind",
-      "Level": 41
-    },
-    {
-      "Move": "AquaTail",
-      "Level": 46
-    },
-    {
-      "Move": "Agility",
-      "Level": 51
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 57
-    }
+    {"Move":"IceFang","Level":1},
+    {"Move":"Crunch","Level":1},
+    {"Move":"SonicBoom","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"WaterSport","Level":1},
+    {"Move":"QuickAttack","Level":1},
+    {"Move":"Growl","Level":4},
+    {"Move":"WaterSport","Level":7},
+    {"Move":"QuickAttack","Level":11},
+    {"Move":"WaterGun","Level":15},
+    {"Move":"Pursuit","Level":18},
+    {"Move":"Swift","Level":21},
+    {"Move":"AquaJet","Level":24},
+    {"Move":"DoubleHit","Level":29},
+    {"Move":"Whirlpool","Level":35},
+    {"Move":"RazorWind","Level":41},
+    {"Move":"AquaTail","Level":46},
+    {"Move":"Agility","Level":51},
+    {"Move":"HydroPump","Level":57}
   ]
 }

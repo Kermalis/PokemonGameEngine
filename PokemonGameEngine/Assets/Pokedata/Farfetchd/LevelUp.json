@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "PoisonJab",
-      "Level": 1
-    },
-    {
-      "Move": "Peck",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "FuryCutter",
-      "Level": 1
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 7
-    },
-    {
-      "Move": "KnockOff",
-      "Level": 9
-    },
-    {
-      "Move": "AerialAce",
-      "Level": 13
-    },
-    {
-      "Move": "Slash",
-      "Level": 19
-    },
-    {
-      "Move": "AirCutter",
-      "Level": 21
-    },
-    {
-      "Move": "SwordsDance",
-      "Level": 25
-    },
-    {
-      "Move": "Agility",
-      "Level": 31
-    },
-    {
-      "Move": "NightSlash",
-      "Level": 33
-    },
-    {
-      "Move": "Acrobatics",
-      "Level": 37
-    },
-    {
-      "Move": "Feint",
-      "Level": 43
-    },
-    {
-      "Move": "FalseSwipe",
-      "Level": 45
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 49
-    },
-    {
-      "Move": "BraveBird",
-      "Level": 55
-    }
+    {"Move":"PoisonJab","Level":1},
+    {"Move":"Peck","Level":1},
+    {"Move":"SandAttack","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"FuryCutter","Level":1},
+    {"Move":"FuryAttack","Level":7},
+    {"Move":"KnockOff","Level":9},
+    {"Move":"AerialAce","Level":13},
+    {"Move":"Slash","Level":19},
+    {"Move":"AirCutter","Level":21},
+    {"Move":"SwordsDance","Level":25},
+    {"Move":"Agility","Level":31},
+    {"Move":"NightSlash","Level":33},
+    {"Move":"Acrobatics","Level":37},
+    {"Move":"Feint","Level":43},
+    {"Move":"FalseSwipe","Level":45},
+    {"Move":"AirSlash","Level":49},
+    {"Move":"BraveBird","Level":55}
   ]
 }

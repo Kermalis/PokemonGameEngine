@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Bide",
-      "Level": 1
-    },
-    {
-      "Move": "Meditate",
-      "Level": 4
-    },
-    {
-      "Move": "Confusion",
-      "Level": 8
-    },
-    {
-      "Move": "Detect",
-      "Level": 11
-    },
-    {
-      "Move": "HiddenPower",
-      "Level": 15
-    },
-    {
-      "Move": "MindReader",
-      "Level": 18
-    },
-    {
-      "Move": "Feint",
-      "Level": 22
-    },
-    {
-      "Move": "CalmMind",
-      "Level": 25
-    },
-    {
-      "Move": "ForcePalm",
-      "Level": 29
-    },
-    {
-      "Move": "HiJumpKick",
-      "Level": 32
-    },
-    {
-      "Move": "PsychUp",
-      "Level": 36
-    },
-    {
-      "Move": "Acupressure",
-      "Level": 39
-    },
-    {
-      "Move": "PowerTrick",
-      "Level": 43
-    },
-    {
-      "Move": "Reversal",
-      "Level": 46
-    },
-    {
-      "Move": "Recover",
-      "Level": 50
-    }
+    {"Move":"Bide","Level":1},
+    {"Move":"Meditate","Level":4},
+    {"Move":"Confusion","Level":8},
+    {"Move":"Detect","Level":11},
+    {"Move":"HiddenPower","Level":15},
+    {"Move":"MindReader","Level":18},
+    {"Move":"Feint","Level":22},
+    {"Move":"CalmMind","Level":25},
+    {"Move":"ForcePalm","Level":29},
+    {"Move":"HiJumpKick","Level":32},
+    {"Move":"PsychUp","Level":36},
+    {"Move":"Acupressure","Level":39},
+    {"Move":"PowerTrick","Level":43},
+    {"Move":"Reversal","Level":46},
+    {"Move":"Recover","Level":50}
   ]
 }

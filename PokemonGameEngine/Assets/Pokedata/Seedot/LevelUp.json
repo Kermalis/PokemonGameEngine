@@ -1,32 +1,11 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Bide",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 3
-    },
-    {
-      "Move": "Growth",
-      "Level": 7
-    },
-    {
-      "Move": "NaturePower",
-      "Level": 13
-    },
-    {
-      "Move": "Synthesis",
-      "Level": 21
-    },
-    {
-      "Move": "SunnyDay",
-      "Level": 31
-    },
-    {
-      "Move": "Explosion",
-      "Level": 43
-    }
+    {"Move":"Bide","Level":1},
+    {"Move":"Harden","Level":3},
+    {"Move":"Growth","Level":7},
+    {"Move":"NaturePower","Level":13},
+    {"Move":"Synthesis","Level":21},
+    {"Move":"SunnyDay","Level":31},
+    {"Move":"Explosion","Level":43}
   ]
 }

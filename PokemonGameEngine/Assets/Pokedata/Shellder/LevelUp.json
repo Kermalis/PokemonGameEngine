@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Withdraw",
-      "Level": 4
-    },
-    {
-      "Move": "Supersonic",
-      "Level": 8
-    },
-    {
-      "Move": "IcicleSpear",
-      "Level": 13
-    },
-    {
-      "Move": "Protect",
-      "Level": 16
-    },
-    {
-      "Move": "Leer",
-      "Level": 20
-    },
-    {
-      "Move": "Clamp",
-      "Level": 25
-    },
-    {
-      "Move": "IceShard",
-      "Level": 28
-    },
-    {
-      "Move": "RazorShell",
-      "Level": 32
-    },
-    {
-      "Move": "AuroraBeam",
-      "Level": 37
-    },
-    {
-      "Move": "Whirlpool",
-      "Level": 40
-    },
-    {
-      "Move": "Brine",
-      "Level": 44
-    },
-    {
-      "Move": "IronDefense",
-      "Level": 49
-    },
-    {
-      "Move": "IceBeam",
-      "Level": 52
-    },
-    {
-      "Move": "ShellSmash",
-      "Level": 56
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 61
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Withdraw","Level":4},
+    {"Move":"Supersonic","Level":8},
+    {"Move":"IcicleSpear","Level":13},
+    {"Move":"Protect","Level":16},
+    {"Move":"Leer","Level":20},
+    {"Move":"Clamp","Level":25},
+    {"Move":"IceShard","Level":28},
+    {"Move":"RazorShell","Level":32},
+    {"Move":"AuroraBeam","Level":37},
+    {"Move":"Whirlpool","Level":40},
+    {"Move":"Brine","Level":44},
+    {"Move":"IronDefense","Level":49},
+    {"Move":"IceBeam","Level":52},
+    {"Move":"ShellSmash","Level":56},
+    {"Move":"HydroPump","Level":61}
   ]
 }

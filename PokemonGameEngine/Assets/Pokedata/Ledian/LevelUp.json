@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Supersonic",
-      "Level": 1
-    },
-    {
-      "Move": "CometPunch",
-      "Level": 1
-    },
-    {
-      "Move": "Supersonic",
-      "Level": 6
-    },
-    {
-      "Move": "CometPunch",
-      "Level": 9
-    },
-    {
-      "Move": "LightScreen",
-      "Level": 14
-    },
-    {
-      "Move": "Reflect",
-      "Level": 14
-    },
-    {
-      "Move": "Safeguard",
-      "Level": 14
-    },
-    {
-      "Move": "MachPunch",
-      "Level": 17
-    },
-    {
-      "Move": "BatonPass",
-      "Level": 24
-    },
-    {
-      "Move": "SilverWind",
-      "Level": 29
-    },
-    {
-      "Move": "Agility",
-      "Level": 36
-    },
-    {
-      "Move": "Swift",
-      "Level": 41
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 48
-    },
-    {
-      "Move": "BugBuzz",
-      "Level": 53
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Supersonic","Level":1},
+    {"Move":"CometPunch","Level":1},
+    {"Move":"Supersonic","Level":6},
+    {"Move":"CometPunch","Level":9},
+    {"Move":"LightScreen","Level":14},
+    {"Move":"Reflect","Level":14},
+    {"Move":"Safeguard","Level":14},
+    {"Move":"MachPunch","Level":17},
+    {"Move":"BatonPass","Level":24},
+    {"Move":"SilverWind","Level":29},
+    {"Move":"Agility","Level":36},
+    {"Move":"Swift","Level":41},
+    {"Move":"DoubleEdge","Level":48},
+    {"Move":"BugBuzz","Level":53}
   ]
 }

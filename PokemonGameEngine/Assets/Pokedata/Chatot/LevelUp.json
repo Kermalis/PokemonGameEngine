@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Peck",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 5
-    },
-    {
-      "Move": "MirrorMove",
-      "Level": 9
-    },
-    {
-      "Move": "Sing",
-      "Level": 13
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 17
-    },
-    {
-      "Move": "Chatter",
-      "Level": 21
-    },
-    {
-      "Move": "Taunt",
-      "Level": 25
-    },
-    {
-      "Move": "Round",
-      "Level": 29
-    },
-    {
-      "Move": "Mimic",
-      "Level": 33
-    },
-    {
-      "Move": "EchoedVoice",
-      "Level": 37
-    },
-    {
-      "Move": "Roost",
-      "Level": 41
-    },
-    {
-      "Move": "Uproar",
-      "Level": 45
-    },
-    {
-      "Move": "Synchronoise",
-      "Level": 49
-    },
-    {
-      "Move": "FeatherDance",
-      "Level": 53
-    },
-    {
-      "Move": "HyperVoice",
-      "Level": 57
-    }
+    {"Move":"Peck","Level":1},
+    {"Move":"Growl","Level":5},
+    {"Move":"MirrorMove","Level":9},
+    {"Move":"Sing","Level":13},
+    {"Move":"FuryAttack","Level":17},
+    {"Move":"Chatter","Level":21},
+    {"Move":"Taunt","Level":25},
+    {"Move":"Round","Level":29},
+    {"Move":"Mimic","Level":33},
+    {"Move":"EchoedVoice","Level":37},
+    {"Move":"Roost","Level":41},
+    {"Move":"Uproar","Level":45},
+    {"Move":"Synchronoise","Level":49},
+    {"Move":"FeatherDance","Level":53},
+    {"Move":"HyperVoice","Level":57}
   ]
 }

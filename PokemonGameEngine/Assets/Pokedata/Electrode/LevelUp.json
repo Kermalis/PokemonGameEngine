@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Charge",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "SonicBoom",
-      "Level": 1
-    },
-    {
-      "Move": "Spark",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 5
-    },
-    {
-      "Move": "SonicBoom",
-      "Level": 8
-    },
-    {
-      "Move": "Spark",
-      "Level": 12
-    },
-    {
-      "Move": "Rollout",
-      "Level": 15
-    },
-    {
-      "Move": "Screech",
-      "Level": 19
-    },
-    {
-      "Move": "ChargeBeam",
-      "Level": 22
-    },
-    {
-      "Move": "LightScreen",
-      "Level": 26
-    },
-    {
-      "Move": "ElectroBall",
-      "Level": 29
-    },
-    {
-      "Move": "Selfdestruct",
-      "Level": 35
-    },
-    {
-      "Move": "Swift",
-      "Level": 40
-    },
-    {
-      "Move": "MagnetRise",
-      "Level": 46
-    },
-    {
-      "Move": "GyroBall",
-      "Level": 51
-    },
-    {
-      "Move": "Explosion",
-      "Level": 57
-    },
-    {
-      "Move": "MirrorCoat",
-      "Level": 62
-    }
+    {"Move":"Charge","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"SonicBoom","Level":1},
+    {"Move":"Spark","Level":1},
+    {"Move":"Tackle","Level":5},
+    {"Move":"SonicBoom","Level":8},
+    {"Move":"Spark","Level":12},
+    {"Move":"Rollout","Level":15},
+    {"Move":"Screech","Level":19},
+    {"Move":"ChargeBeam","Level":22},
+    {"Move":"LightScreen","Level":26},
+    {"Move":"ElectroBall","Level":29},
+    {"Move":"Selfdestruct","Level":35},
+    {"Move":"Swift","Level":40},
+    {"Move":"MagnetRise","Level":46},
+    {"Move":"GyroBall","Level":51},
+    {"Move":"Explosion","Level":57},
+    {"Move":"MirrorCoat","Level":62}
   ]
 }

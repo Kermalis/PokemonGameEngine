@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Withdraw",
-      "Level": 1
-    },
-    {
-      "Move": "Withdraw",
-      "Level": 5
-    },
-    {
-      "Move": "Absorb",
-      "Level": 9
-    },
-    {
-      "Move": "RazorLeaf",
-      "Level": 13
-    },
-    {
-      "Move": "Curse",
-      "Level": 17
-    },
-    {
-      "Move": "Bite",
-      "Level": 22
-    },
-    {
-      "Move": "MegaDrain",
-      "Level": 27
-    },
-    {
-      "Move": "LeechSeed",
-      "Level": 32
-    },
-    {
-      "Move": "Synthesis",
-      "Level": 37
-    },
-    {
-      "Move": "Crunch",
-      "Level": 42
-    },
-    {
-      "Move": "GigaDrain",
-      "Level": 47
-    },
-    {
-      "Move": "LeafStorm",
-      "Level": 52
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Withdraw","Level":1},
+    {"Move":"Withdraw","Level":5},
+    {"Move":"Absorb","Level":9},
+    {"Move":"RazorLeaf","Level":13},
+    {"Move":"Curse","Level":17},
+    {"Move":"Bite","Level":22},
+    {"Move":"MegaDrain","Level":27},
+    {"Move":"LeechSeed","Level":32},
+    {"Move":"Synthesis","Level":37},
+    {"Move":"Crunch","Level":42},
+    {"Move":"GigaDrain","Level":47},
+    {"Move":"LeafStorm","Level":52}
   ]
 }

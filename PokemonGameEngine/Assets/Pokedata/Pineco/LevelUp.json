@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Protect",
-      "Level": 1
-    },
-    {
-      "Move": "Selfdestruct",
-      "Level": 6
-    },
-    {
-      "Move": "BugBite",
-      "Level": 9
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 12
-    },
-    {
-      "Move": "RapidSpin",
-      "Level": 17
-    },
-    {
-      "Move": "Bide",
-      "Level": 20
-    },
-    {
-      "Move": "NaturalGift",
-      "Level": 23
-    },
-    {
-      "Move": "Spikes",
-      "Level": 28
-    },
-    {
-      "Move": "Payback",
-      "Level": 31
-    },
-    {
-      "Move": "Explosion",
-      "Level": 34
-    },
-    {
-      "Move": "IronDefense",
-      "Level": 39
-    },
-    {
-      "Move": "GyroBall",
-      "Level": 42
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 45
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Protect","Level":1},
+    {"Move":"Selfdestruct","Level":6},
+    {"Move":"BugBite","Level":9},
+    {"Move":"TakeDown","Level":12},
+    {"Move":"RapidSpin","Level":17},
+    {"Move":"Bide","Level":20},
+    {"Move":"NaturalGift","Level":23},
+    {"Move":"Spikes","Level":28},
+    {"Move":"Payback","Level":31},
+    {"Move":"Explosion","Level":34},
+    {"Move":"IronDefense","Level":39},
+    {"Move":"GyroBall","Level":42},
+    {"Move":"DoubleEdge","Level":45}
   ]
 }

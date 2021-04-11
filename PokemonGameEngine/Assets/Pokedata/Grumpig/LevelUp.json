@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Splash",
-      "Level": 1
-    },
-    {
-      "Move": "Psywave",
-      "Level": 1
-    },
-    {
-      "Move": "OdorSleuth",
-      "Level": 1
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 1
-    },
-    {
-      "Move": "Psywave",
-      "Level": 7
-    },
-    {
-      "Move": "OdorSleuth",
-      "Level": 10
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 14
-    },
-    {
-      "Move": "PsychUp",
-      "Level": 15
-    },
-    {
-      "Move": "ConfuseRay",
-      "Level": 18
-    },
-    {
-      "Move": "MagicCoat",
-      "Level": 21
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 26
-    },
-    {
-      "Move": "Rest",
-      "Level": 29
-    },
-    {
-      "Move": "Snore",
-      "Level": 29
-    },
-    {
-      "Move": "PowerGem",
-      "Level": 35
-    },
-    {
-      "Move": "Psyshock",
-      "Level": 42
-    },
-    {
-      "Move": "Payback",
-      "Level": 46
-    },
-    {
-      "Move": "Psychic",
-      "Level": 52
-    },
-    {
-      "Move": "Bounce",
-      "Level": 60
-    }
+    {"Move":"Splash","Level":1},
+    {"Move":"Psywave","Level":1},
+    {"Move":"OdorSleuth","Level":1},
+    {"Move":"Psybeam","Level":1},
+    {"Move":"Psywave","Level":7},
+    {"Move":"OdorSleuth","Level":10},
+    {"Move":"Psybeam","Level":14},
+    {"Move":"PsychUp","Level":15},
+    {"Move":"ConfuseRay","Level":18},
+    {"Move":"MagicCoat","Level":21},
+    {"Move":"ZenHeadbutt","Level":26},
+    {"Move":"Rest","Level":29},
+    {"Move":"Snore","Level":29},
+    {"Move":"PowerGem","Level":35},
+    {"Move":"Psyshock","Level":42},
+    {"Move":"Payback","Level":46},
+    {"Move":"Psychic","Level":52},
+    {"Move":"Bounce","Level":60}
   ]
 }

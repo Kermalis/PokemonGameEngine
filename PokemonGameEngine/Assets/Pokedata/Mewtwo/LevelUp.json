@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Confusion",
-      "Level": 1
-    },
-    {
-      "Move": "Disable",
-      "Level": 1
-    },
-    {
-      "Move": "Barrier",
-      "Level": 1
-    },
-    {
-      "Move": "Swift",
-      "Level": 8
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 15
-    },
-    {
-      "Move": "PsychUp",
-      "Level": 22
-    },
-    {
-      "Move": "MiracleEye",
-      "Level": 29
-    },
-    {
-      "Move": "Mist",
-      "Level": 36
-    },
-    {
-      "Move": "PsychoCut",
-      "Level": 43
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 50
-    },
-    {
-      "Move": "PowerSwap",
-      "Level": 57
-    },
-    {
-      "Move": "GuardSwap",
-      "Level": 57
-    },
-    {
-      "Move": "Psychic",
-      "Level": 64
-    },
-    {
-      "Move": "MeFirst",
-      "Level": 71
-    },
-    {
-      "Move": "Recover",
-      "Level": 79
-    },
-    {
-      "Move": "Safeguard",
-      "Level": 86
-    },
-    {
-      "Move": "AuraSphere",
-      "Level": 93
-    },
-    {
-      "Move": "Psystrike",
-      "Level": 100
-    }
+    {"Move":"Confusion","Level":1},
+    {"Move":"Disable","Level":1},
+    {"Move":"Barrier","Level":1},
+    {"Move":"Swift","Level":8},
+    {"Move":"FutureSight","Level":15},
+    {"Move":"PsychUp","Level":22},
+    {"Move":"MiracleEye","Level":29},
+    {"Move":"Mist","Level":36},
+    {"Move":"PsychoCut","Level":43},
+    {"Move":"Amnesia","Level":50},
+    {"Move":"PowerSwap","Level":57},
+    {"Move":"GuardSwap","Level":57},
+    {"Move":"Psychic","Level":64},
+    {"Move":"MeFirst","Level":71},
+    {"Move":"Recover","Level":79},
+    {"Move":"Safeguard","Level":86},
+    {"Move":"AuraSphere","Level":93},
+    {"Move":"Psystrike","Level":100}
   ]
 }

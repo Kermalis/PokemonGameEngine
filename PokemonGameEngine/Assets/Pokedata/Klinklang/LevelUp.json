@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "ViceGrip",
-      "Level": 1
-    },
-    {
-      "Move": "Charge",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderShock",
-      "Level": 1
-    },
-    {
-      "Move": "GearGrind",
-      "Level": 1
-    },
-    {
-      "Move": "Charge",
-      "Level": 6
-    },
-    {
-      "Move": "ThunderShock",
-      "Level": 11
-    },
-    {
-      "Move": "GearGrind",
-      "Level": 16
-    },
-    {
-      "Move": "Bind",
-      "Level": 21
-    },
-    {
-      "Move": "ChargeBeam",
-      "Level": 25
-    },
-    {
-      "Move": "Autotomize",
-      "Level": 31
-    },
-    {
-      "Move": "MirrorShot",
-      "Level": 36
-    },
-    {
-      "Move": "Screech",
-      "Level": 40
-    },
-    {
-      "Move": "Discharge",
-      "Level": 44
-    },
-    {
-      "Move": "MetalSound",
-      "Level": 48
-    },
-    {
-      "Move": "ShiftGear",
-      "Level": 54
-    },
-    {
-      "Move": "LockOn",
-      "Level": 60
-    },
-    {
-      "Move": "ZapCannon",
-      "Level": 66
-    },
-    {
-      "Move": "HyperBeam",
-      "Level": 72
-    }
+    {"Move":"ViceGrip","Level":1},
+    {"Move":"Charge","Level":1},
+    {"Move":"ThunderShock","Level":1},
+    {"Move":"GearGrind","Level":1},
+    {"Move":"Charge","Level":6},
+    {"Move":"ThunderShock","Level":11},
+    {"Move":"GearGrind","Level":16},
+    {"Move":"Bind","Level":21},
+    {"Move":"ChargeBeam","Level":25},
+    {"Move":"Autotomize","Level":31},
+    {"Move":"MirrorShot","Level":36},
+    {"Move":"Screech","Level":40},
+    {"Move":"Discharge","Level":44},
+    {"Move":"MetalSound","Level":48},
+    {"Move":"ShiftGear","Level":54},
+    {"Move":"LockOn","Level":60},
+    {"Move":"ZapCannon","Level":66},
+    {"Move":"HyperBeam","Level":72}
   ]
 }

@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "MudShot",
-      "Level": 1
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 5
-    },
-    {
-      "Move": "LavaPlume",
-      "Level": 15
-    },
-    {
-      "Move": "HammerArm",
-      "Level": 20
-    },
-    {
-      "Move": "Rest",
-      "Level": 30
-    },
-    {
-      "Move": "Earthquake",
-      "Level": 35
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 45
-    },
-    {
-      "Move": "Eruption",
-      "Level": 50
-    },
-    {
-      "Move": "BulkUp",
-      "Level": 60
-    },
-    {
-      "Move": "EarthPower",
-      "Level": 65
-    },
-    {
-      "Move": "Fissure",
-      "Level": 75
-    },
-    {
-      "Move": "SolarBeam",
-      "Level": 80
-    },
-    {
-      "Move": "FireBlast",
-      "Level": 90
-    }
+    {"Move":"MudShot","Level":1},
+    {"Move":"ScaryFace","Level":5},
+    {"Move":"LavaPlume","Level":15},
+    {"Move":"HammerArm","Level":20},
+    {"Move":"Rest","Level":30},
+    {"Move":"Earthquake","Level":35},
+    {"Move":"AncientPower","Level":45},
+    {"Move":"Eruption","Level":50},
+    {"Move":"BulkUp","Level":60},
+    {"Move":"EarthPower","Level":65},
+    {"Move":"Fissure","Level":75},
+    {"Move":"SolarBeam","Level":80},
+    {"Move":"FireBlast","Level":90}
   ]
 }

@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Gust",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 5
-    },
-    {
-      "Move": "Pluck",
-      "Level": 10
-    },
-    {
-      "Move": "NastyPlot",
-      "Level": 14
-    },
-    {
-      "Move": "Flatter",
-      "Level": 19
-    },
-    {
-      "Move": "FaintAttack",
-      "Level": 23
-    },
-    {
-      "Move": "Punishment",
-      "Level": 28
-    },
-    {
-      "Move": "Defog",
-      "Level": 32
-    },
-    {
-      "Move": "Tailwind",
-      "Level": 37
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 41
-    },
-    {
-      "Move": "DarkPulse",
-      "Level": 46
-    },
-    {
-      "Move": "Embargo",
-      "Level": 50
-    },
-    {
-      "Move": "Whirlwind",
-      "Level": 55
-    },
-    {
-      "Move": "BraveBird",
-      "Level": 59
-    },
-    {
-      "Move": "MirrorMove",
-      "Level": 64
-    }
+    {"Move":"Gust","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"FuryAttack","Level":5},
+    {"Move":"Pluck","Level":10},
+    {"Move":"NastyPlot","Level":14},
+    {"Move":"Flatter","Level":19},
+    {"Move":"FaintAttack","Level":23},
+    {"Move":"Punishment","Level":28},
+    {"Move":"Defog","Level":32},
+    {"Move":"Tailwind","Level":37},
+    {"Move":"AirSlash","Level":41},
+    {"Move":"DarkPulse","Level":46},
+    {"Move":"Embargo","Level":50},
+    {"Move":"Whirlwind","Level":55},
+    {"Move":"BraveBird","Level":59},
+    {"Move":"MirrorMove","Level":64}
   ]
 }

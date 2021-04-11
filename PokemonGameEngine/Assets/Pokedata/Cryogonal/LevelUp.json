@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Bind",
-      "Level": 1
-    },
-    {
-      "Move": "IceShard",
-      "Level": 5
-    },
-    {
-      "Move": "Sharpen",
-      "Level": 9
-    },
-    {
-      "Move": "RapidSpin",
-      "Level": 13
-    },
-    {
-      "Move": "IcyWind",
-      "Level": 17
-    },
-    {
-      "Move": "Mist",
-      "Level": 21
-    },
-    {
-      "Move": "Haze",
-      "Level": 21
-    },
-    {
-      "Move": "AuroraBeam",
-      "Level": 25
-    },
-    {
-      "Move": "AcidArmor",
-      "Level": 29
-    },
-    {
-      "Move": "IceBeam",
-      "Level": 33
-    },
-    {
-      "Move": "LightScreen",
-      "Level": 37
-    },
-    {
-      "Move": "Reflect",
-      "Level": 37
-    },
-    {
-      "Move": "Slash",
-      "Level": 41
-    },
-    {
-      "Move": "ConfuseRay",
-      "Level": 45
-    },
-    {
-      "Move": "Recover",
-      "Level": 49
-    },
-    {
-      "Move": "SolarBeam",
-      "Level": 53
-    },
-    {
-      "Move": "NightSlash",
-      "Level": 57
-    },
-    {
-      "Move": "SheerCold",
-      "Level": 61
-    }
+    {"Move":"Bind","Level":1},
+    {"Move":"IceShard","Level":5},
+    {"Move":"Sharpen","Level":9},
+    {"Move":"RapidSpin","Level":13},
+    {"Move":"IcyWind","Level":17},
+    {"Move":"Mist","Level":21},
+    {"Move":"Haze","Level":21},
+    {"Move":"AuroraBeam","Level":25},
+    {"Move":"AcidArmor","Level":29},
+    {"Move":"IceBeam","Level":33},
+    {"Move":"LightScreen","Level":37},
+    {"Move":"Reflect","Level":37},
+    {"Move":"Slash","Level":41},
+    {"Move":"ConfuseRay","Level":45},
+    {"Move":"Recover","Level":49},
+    {"Move":"SolarBeam","Level":53},
+    {"Move":"NightSlash","Level":57},
+    {"Move":"SheerCold","Level":61}
   ]
 }

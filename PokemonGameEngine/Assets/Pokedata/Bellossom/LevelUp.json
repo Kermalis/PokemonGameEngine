@@ -1,32 +1,11 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "LeafBlade",
-      "Level": 1
-    },
-    {
-      "Move": "MegaDrain",
-      "Level": 1
-    },
-    {
-      "Move": "SweetScent",
-      "Level": 1
-    },
-    {
-      "Move": "StunSpore",
-      "Level": 1
-    },
-    {
-      "Move": "SunnyDay",
-      "Level": 1
-    },
-    {
-      "Move": "MagicalLeaf",
-      "Level": 23
-    },
-    {
-      "Move": "LeafStorm",
-      "Level": 53
-    }
+    {"Move":"LeafBlade","Level":1},
+    {"Move":"MegaDrain","Level":1},
+    {"Move":"SweetScent","Level":1},
+    {"Move":"StunSpore","Level":1},
+    {"Move":"SunnyDay","Level":1},
+    {"Move":"MagicalLeaf","Level":23},
+    {"Move":"LeafStorm","Level":53}
   ]
 }

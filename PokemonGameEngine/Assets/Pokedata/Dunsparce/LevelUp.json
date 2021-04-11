@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Rage",
-      "Level": 1
-    },
-    {
-      "Move": "DefenseCurl",
-      "Level": 1
-    },
-    {
-      "Move": "Rollout",
-      "Level": 4
-    },
-    {
-      "Move": "Spite",
-      "Level": 7
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 10
-    },
-    {
-      "Move": "Screech",
-      "Level": 13
-    },
-    {
-      "Move": "Yawn",
-      "Level": 16
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 19
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 22
-    },
-    {
-      "Move": "Roost",
-      "Level": 25
-    },
-    {
-      "Move": "Glare",
-      "Level": 28
-    },
-    {
-      "Move": "Dig",
-      "Level": 31
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 34
-    },
-    {
-      "Move": "Coil",
-      "Level": 37
-    },
-    {
-      "Move": "Endure",
-      "Level": 40
-    },
-    {
-      "Move": "DrillRun",
-      "Level": 43
-    },
-    {
-      "Move": "Endeavor",
-      "Level": 46
-    },
-    {
-      "Move": "Flail",
-      "Level": 49
-    }
+    {"Move":"Rage","Level":1},
+    {"Move":"DefenseCurl","Level":1},
+    {"Move":"Rollout","Level":4},
+    {"Move":"Spite","Level":7},
+    {"Move":"Pursuit","Level":10},
+    {"Move":"Screech","Level":13},
+    {"Move":"Yawn","Level":16},
+    {"Move":"AncientPower","Level":19},
+    {"Move":"TakeDown","Level":22},
+    {"Move":"Roost","Level":25},
+    {"Move":"Glare","Level":28},
+    {"Move":"Dig","Level":31},
+    {"Move":"DoubleEdge","Level":34},
+    {"Move":"Coil","Level":37},
+    {"Move":"Endure","Level":40},
+    {"Move":"DrillRun","Level":43},
+    {"Move":"Endeavor","Level":46},
+    {"Move":"Flail","Level":49}
   ]
 }

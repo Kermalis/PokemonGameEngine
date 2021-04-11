@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 4
-    },
-    {
-      "Move": "ArmThrust",
-      "Level": 7
-    },
-    {
-      "Move": "VitalThrow",
-      "Level": 10
-    },
-    {
-      "Move": "FakeOut",
-      "Level": 13
-    },
-    {
-      "Move": "Whirlwind",
-      "Level": 16
-    },
-    {
-      "Move": "KnockOff",
-      "Level": 19
-    },
-    {
-      "Move": "SmellingSalt",
-      "Level": 22
-    },
-    {
-      "Move": "BellyDrum",
-      "Level": 25
-    },
-    {
-      "Move": "ForcePalm",
-      "Level": 28
-    },
-    {
-      "Move": "SeismicToss",
-      "Level": 31
-    },
-    {
-      "Move": "WakeUpSlap",
-      "Level": 34
-    },
-    {
-      "Move": "Endure",
-      "Level": 37
-    },
-    {
-      "Move": "CloseCombat",
-      "Level": 40
-    },
-    {
-      "Move": "Reversal",
-      "Level": 43
-    },
-    {
-      "Move": "HeavySlam",
-      "Level": 46
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"FocusEnergy","Level":1},
+    {"Move":"SandAttack","Level":4},
+    {"Move":"ArmThrust","Level":7},
+    {"Move":"VitalThrow","Level":10},
+    {"Move":"FakeOut","Level":13},
+    {"Move":"Whirlwind","Level":16},
+    {"Move":"KnockOff","Level":19},
+    {"Move":"SmellingSalt","Level":22},
+    {"Move":"BellyDrum","Level":25},
+    {"Move":"ForcePalm","Level":28},
+    {"Move":"SeismicToss","Level":31},
+    {"Move":"WakeUpSlap","Level":34},
+    {"Move":"Endure","Level":37},
+    {"Move":"CloseCombat","Level":40},
+    {"Move":"Reversal","Level":43},
+    {"Move":"HeavySlam","Level":46}
   ]
 }

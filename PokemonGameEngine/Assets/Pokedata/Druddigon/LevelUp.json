@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "HoneClaws",
-      "Level": 5
-    },
-    {
-      "Move": "Bite",
-      "Level": 9
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 13
-    },
-    {
-      "Move": "DragonRage",
-      "Level": 18
-    },
-    {
-      "Move": "Slash",
-      "Level": 21
-    },
-    {
-      "Move": "Crunch",
-      "Level": 25
-    },
-    {
-      "Move": "DragonClaw",
-      "Level": 27
-    },
-    {
-      "Move": "ChipAway",
-      "Level": 31
-    },
-    {
-      "Move": "Revenge",
-      "Level": 35
-    },
-    {
-      "Move": "NightSlash",
-      "Level": 40
-    },
-    {
-      "Move": "DragonTail",
-      "Level": 45
-    },
-    {
-      "Move": "RockClimb",
-      "Level": 49
-    },
-    {
-      "Move": "Superpower",
-      "Level": 55
-    },
-    {
-      "Move": "Outrage",
-      "Level": 62
-    }
+    {"Move":"Leer","Level":1},
+    {"Move":"Scratch","Level":1},
+    {"Move":"HoneClaws","Level":5},
+    {"Move":"Bite","Level":9},
+    {"Move":"ScaryFace","Level":13},
+    {"Move":"DragonRage","Level":18},
+    {"Move":"Slash","Level":21},
+    {"Move":"Crunch","Level":25},
+    {"Move":"DragonClaw","Level":27},
+    {"Move":"ChipAway","Level":31},
+    {"Move":"Revenge","Level":35},
+    {"Move":"NightSlash","Level":40},
+    {"Move":"DragonTail","Level":45},
+    {"Move":"RockClimb","Level":49},
+    {"Move":"Superpower","Level":55},
+    {"Move":"Outrage","Level":62}
   ]
 }

@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "Foresight",
-      "Level": 4
-    },
-    {
-      "Move": "NightShade",
-      "Level": 8
-    },
-    {
-      "Move": "Astonish",
-      "Level": 11
-    },
-    {
-      "Move": "FurySwipes",
-      "Level": 15
-    },
-    {
-      "Move": "FakeOut",
-      "Level": 18
-    },
-    {
-      "Move": "Detect",
-      "Level": 22
-    },
-    {
-      "Move": "ShadowSneak",
-      "Level": 25
-    },
-    {
-      "Move": "KnockOff",
-      "Level": 29
-    },
-    {
-      "Move": "FaintAttack",
-      "Level": 32
-    },
-    {
-      "Move": "Punishment",
-      "Level": 36
-    },
-    {
-      "Move": "ShadowClaw",
-      "Level": 39
-    },
-    {
-      "Move": "PowerGem",
-      "Level": 43
-    },
-    {
-      "Move": "ConfuseRay",
-      "Level": 46
-    },
-    {
-      "Move": "FoulPlay",
-      "Level": 50
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 53
-    },
-    {
-      "Move": "ShadowBall",
-      "Level": 57
-    },
-    {
-      "Move": "MeanLook",
-      "Level": 60
-    }
+    {"Move":"Leer","Level":1},
+    {"Move":"Scratch","Level":1},
+    {"Move":"Foresight","Level":4},
+    {"Move":"NightShade","Level":8},
+    {"Move":"Astonish","Level":11},
+    {"Move":"FurySwipes","Level":15},
+    {"Move":"FakeOut","Level":18},
+    {"Move":"Detect","Level":22},
+    {"Move":"ShadowSneak","Level":25},
+    {"Move":"KnockOff","Level":29},
+    {"Move":"FaintAttack","Level":32},
+    {"Move":"Punishment","Level":36},
+    {"Move":"ShadowClaw","Level":39},
+    {"Move":"PowerGem","Level":43},
+    {"Move":"ConfuseRay","Level":46},
+    {"Move":"FoulPlay","Level":50},
+    {"Move":"ZenHeadbutt","Level":53},
+    {"Move":"ShadowBall","Level":57},
+    {"Move":"MeanLook","Level":60}
   ]
 }

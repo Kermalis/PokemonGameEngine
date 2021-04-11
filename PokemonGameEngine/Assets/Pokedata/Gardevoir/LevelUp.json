@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "HealingWish",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "Confusion",
-      "Level": 1
-    },
-    {
-      "Move": "DoubleTeam",
-      "Level": 1
-    },
-    {
-      "Move": "Teleport",
-      "Level": 1
-    },
-    {
-      "Move": "Confusion",
-      "Level": 6
-    },
-    {
-      "Move": "DoubleTeam",
-      "Level": 10
-    },
-    {
-      "Move": "Teleport",
-      "Level": 12
-    },
-    {
-      "Move": "Wish",
-      "Level": 17
-    },
-    {
-      "Move": "MagicalLeaf",
-      "Level": 22
-    },
-    {
-      "Move": "HealPulse",
-      "Level": 25
-    },
-    {
-      "Move": "CalmMind",
-      "Level": 33
-    },
-    {
-      "Move": "Psychic",
-      "Level": 40
-    },
-    {
-      "Move": "Imprison",
-      "Level": 45
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 53
-    },
-    {
-      "Move": "Captivate",
-      "Level": 60
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 65
-    },
-    {
-      "Move": "DreamEater",
-      "Level": 73
-    },
-    {
-      "Move": "StoredPower",
-      "Level": 80
-    }
+    {"Move":"HealingWish","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"Confusion","Level":1},
+    {"Move":"DoubleTeam","Level":1},
+    {"Move":"Teleport","Level":1},
+    {"Move":"Confusion","Level":6},
+    {"Move":"DoubleTeam","Level":10},
+    {"Move":"Teleport","Level":12},
+    {"Move":"Wish","Level":17},
+    {"Move":"MagicalLeaf","Level":22},
+    {"Move":"HealPulse","Level":25},
+    {"Move":"CalmMind","Level":33},
+    {"Move":"Psychic","Level":40},
+    {"Move":"Imprison","Level":45},
+    {"Move":"FutureSight","Level":53},
+    {"Move":"Captivate","Level":60},
+    {"Move":"Hypnosis","Level":65},
+    {"Move":"DreamEater","Level":73},
+    {"Move":"StoredPower","Level":80}
   ]
 }

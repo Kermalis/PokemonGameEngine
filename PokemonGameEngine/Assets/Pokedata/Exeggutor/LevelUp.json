@@ -1,40 +1,13 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "SeedBomb",
-      "Level": 1
-    },
-    {
-      "Move": "Barrage",
-      "Level": 1
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 1
-    },
-    {
-      "Move": "Confusion",
-      "Level": 1
-    },
-    {
-      "Move": "Stomp",
-      "Level": 1
-    },
-    {
-      "Move": "Psyshock",
-      "Level": 17
-    },
-    {
-      "Move": "EggBomb",
-      "Level": 27
-    },
-    {
-      "Move": "WoodHammer",
-      "Level": 37
-    },
-    {
-      "Move": "LeafStorm",
-      "Level": 47
-    }
+    {"Move":"SeedBomb","Level":1},
+    {"Move":"Barrage","Level":1},
+    {"Move":"Hypnosis","Level":1},
+    {"Move":"Confusion","Level":1},
+    {"Move":"Stomp","Level":1},
+    {"Move":"Psyshock","Level":17},
+    {"Move":"EggBomb","Level":27},
+    {"Move":"WoodHammer","Level":37},
+    {"Move":"LeafStorm","Level":47}
   ]
 }

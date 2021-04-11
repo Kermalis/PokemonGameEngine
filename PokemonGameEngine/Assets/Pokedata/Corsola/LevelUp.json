@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 4
-    },
-    {
-      "Move": "Bubble",
-      "Level": 8
-    },
-    {
-      "Move": "Recover",
-      "Level": 10
-    },
-    {
-      "Move": "Refresh",
-      "Level": 13
-    },
-    {
-      "Move": "BubbleBeam",
-      "Level": 17
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 20
-    },
-    {
-      "Move": "LuckyChant",
-      "Level": 23
-    },
-    {
-      "Move": "SpikeCannon",
-      "Level": 27
-    },
-    {
-      "Move": "IronDefense",
-      "Level": 29
-    },
-    {
-      "Move": "RockBlast",
-      "Level": 31
-    },
-    {
-      "Move": "Endure",
-      "Level": 35
-    },
-    {
-      "Move": "AquaRing",
-      "Level": 38
-    },
-    {
-      "Move": "PowerGem",
-      "Level": 41
-    },
-    {
-      "Move": "MirrorCoat",
-      "Level": 45
-    },
-    {
-      "Move": "EarthPower",
-      "Level": 47
-    },
-    {
-      "Move": "Flail",
-      "Level": 52
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Harden","Level":4},
+    {"Move":"Bubble","Level":8},
+    {"Move":"Recover","Level":10},
+    {"Move":"Refresh","Level":13},
+    {"Move":"BubbleBeam","Level":17},
+    {"Move":"AncientPower","Level":20},
+    {"Move":"LuckyChant","Level":23},
+    {"Move":"SpikeCannon","Level":27},
+    {"Move":"IronDefense","Level":29},
+    {"Move":"RockBlast","Level":31},
+    {"Move":"Endure","Level":35},
+    {"Move":"AquaRing","Level":38},
+    {"Move":"PowerGem","Level":41},
+    {"Move":"MirrorCoat","Level":45},
+    {"Move":"EarthPower","Level":47},
+    {"Move":"Flail","Level":52}
   ]
 }

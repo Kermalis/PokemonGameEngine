@@ -1,92 +1,26 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "MirrorCoat",
-      "Level": 1
-    },
-    {
-      "Move": "Barrier",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Supersonic",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderShock",
-      "Level": 1
-    },
-    {
-      "Move": "SonicBoom",
-      "Level": 1
-    },
-    {
-      "Move": "Supersonic",
-      "Level": 4
-    },
-    {
-      "Move": "ThunderShock",
-      "Level": 7
-    },
-    {
-      "Move": "SonicBoom",
-      "Level": 11
-    },
-    {
-      "Move": "ThunderWave",
-      "Level": 15
-    },
-    {
-      "Move": "MagnetBomb",
-      "Level": 18
-    },
-    {
-      "Move": "Spark",
-      "Level": 21
-    },
-    {
-      "Move": "MirrorShot",
-      "Level": 25
-    },
-    {
-      "Move": "MetalSound",
-      "Level": 29
-    },
-    {
-      "Move": "ElectroBall",
-      "Level": 34
-    },
-    {
-      "Move": "FlashCannon",
-      "Level": 39
-    },
-    {
-      "Move": "Screech",
-      "Level": 45
-    },
-    {
-      "Move": "Discharge",
-      "Level": 51
-    },
-    {
-      "Move": "LockOn",
-      "Level": 56
-    },
-    {
-      "Move": "MagnetRise",
-      "Level": 62
-    },
-    {
-      "Move": "GyroBall",
-      "Level": 67
-    },
-    {
-      "Move": "ZapCannon",
-      "Level": 73
-    }
+    {"Move":"MirrorCoat","Level":1},
+    {"Move":"Barrier","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"Supersonic","Level":1},
+    {"Move":"ThunderShock","Level":1},
+    {"Move":"SonicBoom","Level":1},
+    {"Move":"Supersonic","Level":4},
+    {"Move":"ThunderShock","Level":7},
+    {"Move":"SonicBoom","Level":11},
+    {"Move":"ThunderWave","Level":15},
+    {"Move":"MagnetBomb","Level":18},
+    {"Move":"Spark","Level":21},
+    {"Move":"MirrorShot","Level":25},
+    {"Move":"MetalSound","Level":29},
+    {"Move":"ElectroBall","Level":34},
+    {"Move":"FlashCannon","Level":39},
+    {"Move":"Screech","Level":45},
+    {"Move":"Discharge","Level":51},
+    {"Move":"LockOn","Level":56},
+    {"Move":"MagnetRise","Level":62},
+    {"Move":"GyroBall","Level":67},
+    {"Move":"ZapCannon","Level":73}
   ]
 }

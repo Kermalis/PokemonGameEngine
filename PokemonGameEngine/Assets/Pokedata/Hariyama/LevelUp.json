@@ -1,84 +1,24 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Brine",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 1
-    },
-    {
-      "Move": "ArmThrust",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 4
-    },
-    {
-      "Move": "ArmThrust",
-      "Level": 7
-    },
-    {
-      "Move": "VitalThrow",
-      "Level": 10
-    },
-    {
-      "Move": "FakeOut",
-      "Level": 13
-    },
-    {
-      "Move": "Whirlwind",
-      "Level": 16
-    },
-    {
-      "Move": "KnockOff",
-      "Level": 19
-    },
-    {
-      "Move": "SmellingSalt",
-      "Level": 22
-    },
-    {
-      "Move": "BellyDrum",
-      "Level": 27
-    },
-    {
-      "Move": "ForcePalm",
-      "Level": 32
-    },
-    {
-      "Move": "SeismicToss",
-      "Level": 37
-    },
-    {
-      "Move": "WakeUpSlap",
-      "Level": 42
-    },
-    {
-      "Move": "Endure",
-      "Level": 47
-    },
-    {
-      "Move": "CloseCombat",
-      "Level": 52
-    },
-    {
-      "Move": "Reversal",
-      "Level": 57
-    },
-    {
-      "Move": "HeavySlam",
-      "Level": 62
-    }
+    {"Move":"Brine","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"FocusEnergy","Level":1},
+    {"Move":"SandAttack","Level":1},
+    {"Move":"ArmThrust","Level":1},
+    {"Move":"SandAttack","Level":4},
+    {"Move":"ArmThrust","Level":7},
+    {"Move":"VitalThrow","Level":10},
+    {"Move":"FakeOut","Level":13},
+    {"Move":"Whirlwind","Level":16},
+    {"Move":"KnockOff","Level":19},
+    {"Move":"SmellingSalt","Level":22},
+    {"Move":"BellyDrum","Level":27},
+    {"Move":"ForcePalm","Level":32},
+    {"Move":"SeismicToss","Level":37},
+    {"Move":"WakeUpSlap","Level":42},
+    {"Move":"Endure","Level":47},
+    {"Move":"CloseCombat","Level":52},
+    {"Move":"Reversal","Level":57},
+    {"Move":"HeavySlam","Level":62}
   ]
 }

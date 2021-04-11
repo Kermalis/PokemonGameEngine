@@ -1,44 +1,14 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Stockpile",
-      "Level": 1
-    },
-    {
-      "Move": "Swallow",
-      "Level": 1
-    },
-    {
-      "Move": "SpitUp",
-      "Level": 1
-    },
-    {
-      "Move": "VineWhip",
-      "Level": 1
-    },
-    {
-      "Move": "SleepPowder",
-      "Level": 1
-    },
-    {
-      "Move": "SweetScent",
-      "Level": 1
-    },
-    {
-      "Move": "RazorLeaf",
-      "Level": 1
-    },
-    {
-      "Move": "LeafTornado",
-      "Level": 27
-    },
-    {
-      "Move": "LeafStorm",
-      "Level": 47
-    },
-    {
-      "Move": "LeafBlade",
-      "Level": 47
-    }
+    {"Move":"Stockpile","Level":1},
+    {"Move":"Swallow","Level":1},
+    {"Move":"SpitUp","Level":1},
+    {"Move":"VineWhip","Level":1},
+    {"Move":"SleepPowder","Level":1},
+    {"Move":"SweetScent","Level":1},
+    {"Move":"RazorLeaf","Level":1},
+    {"Move":"LeafTornado","Level":27},
+    {"Move":"LeafStorm","Level":47},
+    {"Move":"LeafBlade","Level":47}
   ]
 }

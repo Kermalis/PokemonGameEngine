@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Ember",
-      "Level": 1
-    },
-    {
-      "Move": "Smog",
-      "Level": 4
-    },
-    {
-      "Move": "Withdraw",
-      "Level": 7
-    },
-    {
-      "Move": "Curse",
-      "Level": 12
-    },
-    {
-      "Move": "FireSpin",
-      "Level": 17
-    },
-    {
-      "Move": "SmokeScreen",
-      "Level": 20
-    },
-    {
-      "Move": "RapidSpin",
-      "Level": 23
-    },
-    {
-      "Move": "Flamethrower",
-      "Level": 28
-    },
-    {
-      "Move": "BodySlam",
-      "Level": 33
-    },
-    {
-      "Move": "Protect",
-      "Level": 36
-    },
-    {
-      "Move": "LavaPlume",
-      "Level": 39
-    },
-    {
-      "Move": "IronDefense",
-      "Level": 44
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 49
-    },
-    {
-      "Move": "Flail",
-      "Level": 52
-    },
-    {
-      "Move": "HeatWave",
-      "Level": 55
-    },
-    {
-      "Move": "Inferno",
-      "Level": 60
-    },
-    {
-      "Move": "ShellSmash",
-      "Level": 65
-    }
+    {"Move":"Ember","Level":1},
+    {"Move":"Smog","Level":4},
+    {"Move":"Withdraw","Level":7},
+    {"Move":"Curse","Level":12},
+    {"Move":"FireSpin","Level":17},
+    {"Move":"SmokeScreen","Level":20},
+    {"Move":"RapidSpin","Level":23},
+    {"Move":"Flamethrower","Level":28},
+    {"Move":"BodySlam","Level":33},
+    {"Move":"Protect","Level":36},
+    {"Move":"LavaPlume","Level":39},
+    {"Move":"IronDefense","Level":44},
+    {"Move":"Amnesia","Level":49},
+    {"Move":"Flail","Level":52},
+    {"Move":"HeatWave","Level":55},
+    {"Move":"Inferno","Level":60},
+    {"Move":"ShellSmash","Level":65}
   ]
 }

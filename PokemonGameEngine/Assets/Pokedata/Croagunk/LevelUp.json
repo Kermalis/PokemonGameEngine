@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Astonish",
-      "Level": 1
-    },
-    {
-      "Move": "MudSlap",
-      "Level": 3
-    },
-    {
-      "Move": "PoisonSting",
-      "Level": 8
-    },
-    {
-      "Move": "Taunt",
-      "Level": 10
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 15
-    },
-    {
-      "Move": "FaintAttack",
-      "Level": 17
-    },
-    {
-      "Move": "Revenge",
-      "Level": 22
-    },
-    {
-      "Move": "Swagger",
-      "Level": 24
-    },
-    {
-      "Move": "MudBomb",
-      "Level": 29
-    },
-    {
-      "Move": "SuckerPunch",
-      "Level": 31
-    },
-    {
-      "Move": "Venoshock",
-      "Level": 36
-    },
-    {
-      "Move": "NastyPlot",
-      "Level": 38
-    },
-    {
-      "Move": "PoisonJab",
-      "Level": 43
-    },
-    {
-      "Move": "SludgeBomb",
-      "Level": 45
-    },
-    {
-      "Move": "Flatter",
-      "Level": 50
-    }
+    {"Move":"Astonish","Level":1},
+    {"Move":"MudSlap","Level":3},
+    {"Move":"PoisonSting","Level":8},
+    {"Move":"Taunt","Level":10},
+    {"Move":"Pursuit","Level":15},
+    {"Move":"FaintAttack","Level":17},
+    {"Move":"Revenge","Level":22},
+    {"Move":"Swagger","Level":24},
+    {"Move":"MudBomb","Level":29},
+    {"Move":"SuckerPunch","Level":31},
+    {"Move":"Venoshock","Level":36},
+    {"Move":"NastyPlot","Level":38},
+    {"Move":"PoisonJab","Level":43},
+    {"Move":"SludgeBomb","Level":45},
+    {"Move":"Flatter","Level":50}
   ]
 }

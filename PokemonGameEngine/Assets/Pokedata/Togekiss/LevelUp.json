@@ -1,20 +1,8 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "SkyAttack",
-      "Level": 1
-    },
-    {
-      "Move": "ExtremeSpeed",
-      "Level": 1
-    },
-    {
-      "Move": "AuraSphere",
-      "Level": 1
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 1
-    }
+    {"Move":"SkyAttack","Level":1},
+    {"Move":"ExtremeSpeed","Level":1},
+    {"Move":"AuraSphere","Level":1},
+    {"Move":"AirSlash","Level":1}
   ]
 }

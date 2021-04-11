@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pound",
-      "Level": 1
-    },
-    {
-      "Move": "Lick",
-      "Level": 5
-    },
-    {
-      "Move": "SweetKiss",
-      "Level": 8
-    },
-    {
-      "Move": "PowderSnow",
-      "Level": 11
-    },
-    {
-      "Move": "Confusion",
-      "Level": 15
-    },
-    {
-      "Move": "Sing",
-      "Level": 18
-    },
-    {
-      "Move": "HeartStamp",
-      "Level": 21
-    },
-    {
-      "Move": "MeanLook",
-      "Level": 25
-    },
-    {
-      "Move": "FakeTears",
-      "Level": 28
-    },
-    {
-      "Move": "LuckyChant",
-      "Level": 31
-    },
-    {
-      "Move": "Avalanche",
-      "Level": 35
-    },
-    {
-      "Move": "Psychic",
-      "Level": 38
-    },
-    {
-      "Move": "Copycat",
-      "Level": 41
-    },
-    {
-      "Move": "PerishSong",
-      "Level": 45
-    },
-    {
-      "Move": "Blizzard",
-      "Level": 48
-    }
+    {"Move":"Pound","Level":1},
+    {"Move":"Lick","Level":5},
+    {"Move":"SweetKiss","Level":8},
+    {"Move":"PowderSnow","Level":11},
+    {"Move":"Confusion","Level":15},
+    {"Move":"Sing","Level":18},
+    {"Move":"HeartStamp","Level":21},
+    {"Move":"MeanLook","Level":25},
+    {"Move":"FakeTears","Level":28},
+    {"Move":"LuckyChant","Level":31},
+    {"Move":"Avalanche","Level":35},
+    {"Move":"Psychic","Level":38},
+    {"Move":"Copycat","Level":41},
+    {"Move":"PerishSong","Level":45},
+    {"Move":"Blizzard","Level":48}
   ]
 }

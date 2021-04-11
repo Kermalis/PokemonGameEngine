@@ -1,20 +1,8 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Lick",
-      "Level": 1
-    },
-    {
-      "Move": "FurySwipes",
-      "Level": 1
-    },
-    {
-      "Move": "FlameBurst",
-      "Level": 1
-    }
+    {"Move":"Leer","Level":1},
+    {"Move":"Lick","Level":1},
+    {"Move":"FurySwipes","Level":1},
+    {"Move":"FlameBurst","Level":1}
   ]
 }

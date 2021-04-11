@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Uproar",
-      "Level": 1
-    },
-    {
-      "Move": "Astonish",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderShock",
-      "Level": 1
-    },
-    {
-      "Move": "Swagger",
-      "Level": 7
-    },
-    {
-      "Move": "Bite",
-      "Level": 13
-    },
-    {
-      "Move": "Revenge",
-      "Level": 19
-    },
-    {
-      "Move": "ShockWave",
-      "Level": 25
-    },
-    {
-      "Move": "HealBlock",
-      "Level": 31
-    },
-    {
-      "Move": "Agility",
-      "Level": 37
-    },
-    {
-      "Move": "Discharge",
-      "Level": 43
-    },
-    {
-      "Move": "Crunch",
-      "Level": 49
-    },
-    {
-      "Move": "Charge",
-      "Level": 55
-    },
-    {
-      "Move": "NastyPlot",
-      "Level": 61
-    },
-    {
-      "Move": "Thunder",
-      "Level": 67
-    },
-    {
-      "Move": "DarkPulse",
-      "Level": 73
-    },
-    {
-      "Move": "HammerArm",
-      "Level": 79
-    },
-    {
-      "Move": "Thrash",
-      "Level": 85
-    }
+    {"Move":"Uproar","Level":1},
+    {"Move":"Astonish","Level":1},
+    {"Move":"ThunderShock","Level":1},
+    {"Move":"Swagger","Level":7},
+    {"Move":"Bite","Level":13},
+    {"Move":"Revenge","Level":19},
+    {"Move":"ShockWave","Level":25},
+    {"Move":"HealBlock","Level":31},
+    {"Move":"Agility","Level":37},
+    {"Move":"Discharge","Level":43},
+    {"Move":"Crunch","Level":49},
+    {"Move":"Charge","Level":55},
+    {"Move":"NastyPlot","Level":61},
+    {"Move":"Thunder","Level":67},
+    {"Move":"DarkPulse","Level":73},
+    {"Move":"HammerArm","Level":79},
+    {"Move":"Thrash","Level":85}
   ]
 }

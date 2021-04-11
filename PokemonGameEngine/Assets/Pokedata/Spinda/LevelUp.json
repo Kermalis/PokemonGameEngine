@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Uproar",
-      "Level": 5
-    },
-    {
-      "Move": "Copycat",
-      "Level": 10
-    },
-    {
-      "Move": "FaintAttack",
-      "Level": 14
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 19
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 23
-    },
-    {
-      "Move": "DizzyPunch",
-      "Level": 28
-    },
-    {
-      "Move": "SuckerPunch",
-      "Level": 32
-    },
-    {
-      "Move": "TeeterDance",
-      "Level": 37
-    },
-    {
-      "Move": "PsychUp",
-      "Level": 41
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 46
-    },
-    {
-      "Move": "Flail",
-      "Level": 50
-    },
-    {
-      "Move": "Thrash",
-      "Level": 55
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Uproar","Level":5},
+    {"Move":"Copycat","Level":10},
+    {"Move":"FaintAttack","Level":14},
+    {"Move":"Psybeam","Level":19},
+    {"Move":"Hypnosis","Level":23},
+    {"Move":"DizzyPunch","Level":28},
+    {"Move":"SuckerPunch","Level":32},
+    {"Move":"TeeterDance","Level":37},
+    {"Move":"PsychUp","Level":41},
+    {"Move":"DoubleEdge","Level":46},
+    {"Move":"Flail","Level":50},
+    {"Move":"Thrash","Level":55}
   ]
 }

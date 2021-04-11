@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "Bide",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 5
-    },
-    {
-      "Move": "Charm",
-      "Level": 9
-    },
-    {
-      "Move": "Spark",
-      "Level": 13
-    },
-    {
-      "Move": "Endure",
-      "Level": 17
-    },
-    {
-      "Move": "Swift",
-      "Level": 21
-    },
-    {
-      "Move": "ElectroBall",
-      "Level": 25
-    },
-    {
-      "Move": "SweetKiss",
-      "Level": 29
-    },
-    {
-      "Move": "ThunderWave",
-      "Level": 33
-    },
-    {
-      "Move": "SuperFang",
-      "Level": 37
-    },
-    {
-      "Move": "Discharge",
-      "Level": 41
-    },
-    {
-      "Move": "LastResort",
-      "Level": 45
-    },
-    {
-      "Move": "HyperFang",
-      "Level": 49
-    }
+    {"Move":"Growl","Level":1},
+    {"Move":"Bide","Level":1},
+    {"Move":"QuickAttack","Level":5},
+    {"Move":"Charm","Level":9},
+    {"Move":"Spark","Level":13},
+    {"Move":"Endure","Level":17},
+    {"Move":"Swift","Level":21},
+    {"Move":"ElectroBall","Level":25},
+    {"Move":"SweetKiss","Level":29},
+    {"Move":"ThunderWave","Level":33},
+    {"Move":"SuperFang","Level":37},
+    {"Move":"Discharge","Level":41},
+    {"Move":"LastResort","Level":45},
+    {"Move":"HyperFang","Level":49}
   ]
 }

@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 3
-    },
-    {
-      "Move": "Astonish",
-      "Level": 7
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 10
-    },
-    {
-      "Move": "Stomp",
-      "Level": 13
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 16
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 21
-    },
-    {
-      "Move": "ConfuseRay",
-      "Level": 23
-    },
-    {
-      "Move": "CalmMind",
-      "Level": 27
-    },
-    {
-      "Move": "RolePlay",
-      "Level": 33
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 38
-    },
-    {
-      "Move": "JumpKick",
-      "Level": 43
-    },
-    {
-      "Move": "Imprison",
-      "Level": 49
-    },
-    {
-      "Move": "Captivate",
-      "Level": 53
-    },
-    {
-      "Move": "MeFirst",
-      "Level": 55
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Leer","Level":3},
+    {"Move":"Astonish","Level":7},
+    {"Move":"Hypnosis","Level":10},
+    {"Move":"Stomp","Level":13},
+    {"Move":"SandAttack","Level":16},
+    {"Move":"TakeDown","Level":21},
+    {"Move":"ConfuseRay","Level":23},
+    {"Move":"CalmMind","Level":27},
+    {"Move":"RolePlay","Level":33},
+    {"Move":"ZenHeadbutt","Level":38},
+    {"Move":"JumpKick","Level":43},
+    {"Move":"Imprison","Level":49},
+    {"Move":"Captivate","Level":53},
+    {"Move":"MeFirst","Level":55}
   ]
 }

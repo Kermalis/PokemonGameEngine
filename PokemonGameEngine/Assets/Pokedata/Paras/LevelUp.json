@@ -1,52 +1,16 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "StunSpore",
-      "Level": 6
-    },
-    {
-      "Move": "PoisonPowder",
-      "Level": 6
-    },
-    {
-      "Move": "LeechLife",
-      "Level": 11
-    },
-    {
-      "Move": "FuryCutter",
-      "Level": 17
-    },
-    {
-      "Move": "Spore",
-      "Level": 22
-    },
-    {
-      "Move": "Slash",
-      "Level": 27
-    },
-    {
-      "Move": "Growth",
-      "Level": 33
-    },
-    {
-      "Move": "GigaDrain",
-      "Level": 38
-    },
-    {
-      "Move": "Aromatherapy",
-      "Level": 43
-    },
-    {
-      "Move": "RagePowder",
-      "Level": 49
-    },
-    {
-      "Move": "XScissor",
-      "Level": 54
-    }
+    {"Move":"Scratch","Level":1},
+    {"Move":"StunSpore","Level":6},
+    {"Move":"PoisonPowder","Level":6},
+    {"Move":"LeechLife","Level":11},
+    {"Move":"FuryCutter","Level":17},
+    {"Move":"Spore","Level":22},
+    {"Move":"Slash","Level":27},
+    {"Move":"Growth","Level":33},
+    {"Move":"GigaDrain","Level":38},
+    {"Move":"Aromatherapy","Level":43},
+    {"Move":"RagePowder","Level":49},
+    {"Move":"XScissor","Level":54}
   ]
 }

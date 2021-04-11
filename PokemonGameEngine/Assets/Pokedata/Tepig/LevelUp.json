@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 3
-    },
-    {
-      "Move": "Ember",
-      "Level": 7
-    },
-    {
-      "Move": "OdorSleuth",
-      "Level": 9
-    },
-    {
-      "Move": "DefenseCurl",
-      "Level": 13
-    },
-    {
-      "Move": "FlameCharge",
-      "Level": 15
-    },
-    {
-      "Move": "Smog",
-      "Level": 19
-    },
-    {
-      "Move": "Rollout",
-      "Level": 21
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 25
-    },
-    {
-      "Move": "HeatCrash",
-      "Level": 27
-    },
-    {
-      "Move": "Assurance",
-      "Level": 31
-    },
-    {
-      "Move": "Flamethrower",
-      "Level": 33
-    },
-    {
-      "Move": "HeadSmash",
-      "Level": 37
-    },
-    {
-      "Move": "Roar",
-      "Level": 39
-    },
-    {
-      "Move": "FlareBlitz",
-      "Level": 43
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"TailWhip","Level":3},
+    {"Move":"Ember","Level":7},
+    {"Move":"OdorSleuth","Level":9},
+    {"Move":"DefenseCurl","Level":13},
+    {"Move":"FlameCharge","Level":15},
+    {"Move":"Smog","Level":19},
+    {"Move":"Rollout","Level":21},
+    {"Move":"TakeDown","Level":25},
+    {"Move":"HeatCrash","Level":27},
+    {"Move":"Assurance","Level":31},
+    {"Move":"Flamethrower","Level":33},
+    {"Move":"HeadSmash","Level":37},
+    {"Move":"Roar","Level":39},
+    {"Move":"FlareBlitz","Level":43}
   ]
 }

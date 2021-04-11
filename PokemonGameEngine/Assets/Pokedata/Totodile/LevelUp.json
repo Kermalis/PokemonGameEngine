@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 6
-    },
-    {
-      "Move": "Rage",
-      "Level": 8
-    },
-    {
-      "Move": "Bite",
-      "Level": 13
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 15
-    },
-    {
-      "Move": "IceFang",
-      "Level": 20
-    },
-    {
-      "Move": "Flail",
-      "Level": 22
-    },
-    {
-      "Move": "Crunch",
-      "Level": 27
-    },
-    {
-      "Move": "ChipAway",
-      "Level": 29
-    },
-    {
-      "Move": "Slash",
-      "Level": 34
-    },
-    {
-      "Move": "Screech",
-      "Level": 36
-    },
-    {
-      "Move": "Thrash",
-      "Level": 41
-    },
-    {
-      "Move": "AquaTail",
-      "Level": 43
-    },
-    {
-      "Move": "Superpower",
-      "Level": 48
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 50
-    }
+    {"Move":"Scratch","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"WaterGun","Level":6},
+    {"Move":"Rage","Level":8},
+    {"Move":"Bite","Level":13},
+    {"Move":"ScaryFace","Level":15},
+    {"Move":"IceFang","Level":20},
+    {"Move":"Flail","Level":22},
+    {"Move":"Crunch","Level":27},
+    {"Move":"ChipAway","Level":29},
+    {"Move":"Slash","Level":34},
+    {"Move":"Screech","Level":36},
+    {"Move":"Thrash","Level":41},
+    {"Move":"AquaTail","Level":43},
+    {"Move":"Superpower","Level":48},
+    {"Move":"HydroPump","Level":50}
   ]
 }

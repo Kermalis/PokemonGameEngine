@@ -1,20 +1,8 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "DefenseCurl",
-      "Level": 1
-    },
-    {
-      "Move": "LuckyChant",
-      "Level": 1
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 1
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 1
-    }
+    {"Move":"DefenseCurl","Level":1},
+    {"Move":"LuckyChant","Level":1},
+    {"Move":"Psybeam","Level":1},
+    {"Move":"Hypnosis","Level":1}
   ]
 }

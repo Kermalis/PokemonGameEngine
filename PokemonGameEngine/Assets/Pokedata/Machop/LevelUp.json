@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "LowKick",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 7
-    },
-    {
-      "Move": "KarateChop",
-      "Level": 10
-    },
-    {
-      "Move": "LowSweep",
-      "Level": 13
-    },
-    {
-      "Move": "Foresight",
-      "Level": 19
-    },
-    {
-      "Move": "SeismicToss",
-      "Level": 22
-    },
-    {
-      "Move": "Revenge",
-      "Level": 25
-    },
-    {
-      "Move": "VitalThrow",
-      "Level": 31
-    },
-    {
-      "Move": "Submission",
-      "Level": 34
-    },
-    {
-      "Move": "WakeUpSlap",
-      "Level": 37
-    },
-    {
-      "Move": "CrossChop",
-      "Level": 43
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 46
-    },
-    {
-      "Move": "DynamicPunch",
-      "Level": 49
-    }
+    {"Move":"LowKick","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"FocusEnergy","Level":7},
+    {"Move":"KarateChop","Level":10},
+    {"Move":"LowSweep","Level":13},
+    {"Move":"Foresight","Level":19},
+    {"Move":"SeismicToss","Level":22},
+    {"Move":"Revenge","Level":25},
+    {"Move":"VitalThrow","Level":31},
+    {"Move":"Submission","Level":34},
+    {"Move":"WakeUpSlap","Level":37},
+    {"Move":"CrossChop","Level":43},
+    {"Move":"ScaryFace","Level":46},
+    {"Move":"DynamicPunch","Level":49}
   ]
 }

@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 1
-    },
-    {
-      "Move": "Confusion",
-      "Level": 1
-    },
-    {
-      "Move": "RockThrow",
-      "Level": 5
-    },
-    {
-      "Move": "FireSpin",
-      "Level": 9
-    },
-    {
-      "Move": "RockPolish",
-      "Level": 13
-    },
-    {
-      "Move": "Psywave",
-      "Level": 17
-    },
-    {
-      "Move": "Embargo",
-      "Level": 21
-    },
-    {
-      "Move": "RockSlide",
-      "Level": 25
-    },
-    {
-      "Move": "CosmicPower",
-      "Level": 29
-    },
-    {
-      "Move": "Psychic",
-      "Level": 33
-    },
-    {
-      "Move": "HealBlock",
-      "Level": 37
-    },
-    {
-      "Move": "StoneEdge",
-      "Level": 41
-    },
-    {
-      "Move": "SolarBeam",
-      "Level": 45
-    },
-    {
-      "Move": "Explosion",
-      "Level": 49
-    },
-    {
-      "Move": "WonderRoom",
-      "Level": 53
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Harden","Level":1},
+    {"Move":"Confusion","Level":1},
+    {"Move":"RockThrow","Level":5},
+    {"Move":"FireSpin","Level":9},
+    {"Move":"RockPolish","Level":13},
+    {"Move":"Psywave","Level":17},
+    {"Move":"Embargo","Level":21},
+    {"Move":"RockSlide","Level":25},
+    {"Move":"CosmicPower","Level":29},
+    {"Move":"Psychic","Level":33},
+    {"Move":"HealBlock","Level":37},
+    {"Move":"StoneEdge","Level":41},
+    {"Move":"SolarBeam","Level":45},
+    {"Move":"Explosion","Level":49},
+    {"Move":"WonderRoom","Level":53}
   ]
 }

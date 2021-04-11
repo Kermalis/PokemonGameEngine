@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "IcicleSpear",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 1
-    },
-    {
-      "Move": "Astonish",
-      "Level": 1
-    },
-    {
-      "Move": "Uproar",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 4
-    },
-    {
-      "Move": "Astonish",
-      "Level": 7
-    },
-    {
-      "Move": "Uproar",
-      "Level": 10
-    },
-    {
-      "Move": "IcyWind",
-      "Level": 13
-    },
-    {
-      "Move": "Mist",
-      "Level": 16
-    },
-    {
-      "Move": "Avalanche",
-      "Level": 19
-    },
-    {
-      "Move": "Taunt",
-      "Level": 22
-    },
-    {
-      "Move": "MirrorShot",
-      "Level": 26
-    },
-    {
-      "Move": "AcidArmor",
-      "Level": 31
-    },
-    {
-      "Move": "IceBeam",
-      "Level": 36
-    },
-    {
-      "Move": "Hail",
-      "Level": 42
-    },
-    {
-      "Move": "MirrorCoat",
-      "Level": 47
-    },
-    {
-      "Move": "Blizzard",
-      "Level": 53
-    },
-    {
-      "Move": "SheerCold",
-      "Level": 58
-    }
+    {"Move":"IcicleSpear","Level":1},
+    {"Move":"Harden","Level":1},
+    {"Move":"Astonish","Level":1},
+    {"Move":"Uproar","Level":1},
+    {"Move":"Harden","Level":4},
+    {"Move":"Astonish","Level":7},
+    {"Move":"Uproar","Level":10},
+    {"Move":"IcyWind","Level":13},
+    {"Move":"Mist","Level":16},
+    {"Move":"Avalanche","Level":19},
+    {"Move":"Taunt","Level":22},
+    {"Move":"MirrorShot","Level":26},
+    {"Move":"AcidArmor","Level":31},
+    {"Move":"IceBeam","Level":36},
+    {"Move":"Hail","Level":42},
+    {"Move":"MirrorCoat","Level":47},
+    {"Move":"Blizzard","Level":53},
+    {"Move":"SheerCold","Level":58}
   ]
 }

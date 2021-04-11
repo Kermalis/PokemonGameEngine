@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 1
-    },
-    {
-      "Move": "Tickle",
-      "Level": 1
-    },
-    {
-      "Move": "MudSlap",
-      "Level": 1
-    },
-    {
-      "Move": "MudSport",
-      "Level": 1
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 1
-    },
-    {
-      "Move": "MudSport",
-      "Level": 6
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 6
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 10
-    },
-    {
-      "Move": "MudBomb",
-      "Level": 14
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 18
-    },
-    {
-      "Move": "WaterPulse",
-      "Level": 22
-    },
-    {
-      "Move": "Magnitude",
-      "Level": 26
-    },
-    {
-      "Move": "Rest",
-      "Level": 33
-    },
-    {
-      "Move": "Snore",
-      "Level": 33
-    },
-    {
-      "Move": "AquaTail",
-      "Level": 39
-    },
-    {
-      "Move": "Earthquake",
-      "Level": 45
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 51
-    },
-    {
-      "Move": "Fissure",
-      "Level": 57
-    }
+    {"Move":"ZenHeadbutt","Level":1},
+    {"Move":"Tickle","Level":1},
+    {"Move":"MudSlap","Level":1},
+    {"Move":"MudSport","Level":1},
+    {"Move":"WaterSport","Level":1},
+    {"Move":"MudSport","Level":6},
+    {"Move":"WaterSport","Level":6},
+    {"Move":"WaterGun","Level":10},
+    {"Move":"MudBomb","Level":14},
+    {"Move":"Amnesia","Level":18},
+    {"Move":"WaterPulse","Level":22},
+    {"Move":"Magnitude","Level":26},
+    {"Move":"Rest","Level":33},
+    {"Move":"Snore","Level":33},
+    {"Move":"AquaTail","Level":39},
+    {"Move":"Earthquake","Level":45},
+    {"Move":"FutureSight","Level":51},
+    {"Move":"Fissure","Level":57}
   ]
 }

@@ -1,44 +1,14 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Splash",
-      "Level": 1
-    },
-    {
-      "Move": "Bubble",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 2
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 5
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 7
-    },
-    {
-      "Move": "Charm",
-      "Level": 10
-    },
-    {
-      "Move": "BubbleBeam",
-      "Level": 13
-    },
-    {
-      "Move": "HelpingHand",
-      "Level": 16
-    },
-    {
-      "Move": "Slam",
-      "Level": 20
-    },
-    {
-      "Move": "Bounce",
-      "Level": 23
-    }
+    {"Move":"Splash","Level":1},
+    {"Move":"Bubble","Level":1},
+    {"Move":"TailWhip","Level":2},
+    {"Move":"WaterSport","Level":5},
+    {"Move":"WaterGun","Level":7},
+    {"Move":"Charm","Level":10},
+    {"Move":"BubbleBeam","Level":13},
+    {"Move":"HelpingHand","Level":16},
+    {"Move":"Slam","Level":20},
+    {"Move":"Bounce","Level":23}
   ]
 }

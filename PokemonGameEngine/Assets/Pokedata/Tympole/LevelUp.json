@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Bubble",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "Supersonic",
-      "Level": 5
-    },
-    {
-      "Move": "Round",
-      "Level": 9
-    },
-    {
-      "Move": "BubbleBeam",
-      "Level": 12
-    },
-    {
-      "Move": "MudShot",
-      "Level": 16
-    },
-    {
-      "Move": "AquaRing",
-      "Level": 20
-    },
-    {
-      "Move": "Uproar",
-      "Level": 23
-    },
-    {
-      "Move": "MuddyWater",
-      "Level": 27
-    },
-    {
-      "Move": "RainDance",
-      "Level": 31
-    },
-    {
-      "Move": "Flail",
-      "Level": 34
-    },
-    {
-      "Move": "EchoedVoice",
-      "Level": 38
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 42
-    },
-    {
-      "Move": "HyperVoice",
-      "Level": 45
-    }
+    {"Move":"Bubble","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"Supersonic","Level":5},
+    {"Move":"Round","Level":9},
+    {"Move":"BubbleBeam","Level":12},
+    {"Move":"MudShot","Level":16},
+    {"Move":"AquaRing","Level":20},
+    {"Move":"Uproar","Level":23},
+    {"Move":"MuddyWater","Level":27},
+    {"Move":"RainDance","Level":31},
+    {"Move":"Flail","Level":34},
+    {"Move":"EchoedVoice","Level":38},
+    {"Move":"HydroPump","Level":42},
+    {"Move":"HyperVoice","Level":45}
   ]
 }

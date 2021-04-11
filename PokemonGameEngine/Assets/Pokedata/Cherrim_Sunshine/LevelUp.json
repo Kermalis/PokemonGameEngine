@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "MorningSun",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Growth",
-      "Level": 1
-    },
-    {
-      "Move": "Growth",
-      "Level": 7
-    },
-    {
-      "Move": "LeechSeed",
-      "Level": 10
-    },
-    {
-      "Move": "HelpingHand",
-      "Level": 13
-    },
-    {
-      "Move": "MagicalLeaf",
-      "Level": 19
-    },
-    {
-      "Move": "SunnyDay",
-      "Level": 22
-    },
-    {
-      "Move": "PetalDance",
-      "Level": 25
-    },
-    {
-      "Move": "WorrySeed",
-      "Level": 30
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 35
-    },
-    {
-      "Move": "SolarBeam",
-      "Level": 43
-    },
-    {
-      "Move": "LuckyChant",
-      "Level": 48
-    }
+    {"Move":"MorningSun","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"Growth","Level":1},
+    {"Move":"Growth","Level":7},
+    {"Move":"LeechSeed","Level":10},
+    {"Move":"HelpingHand","Level":13},
+    {"Move":"MagicalLeaf","Level":19},
+    {"Move":"SunnyDay","Level":22},
+    {"Move":"PetalDance","Level":25},
+    {"Move":"WorrySeed","Level":30},
+    {"Move":"TakeDown","Level":35},
+    {"Move":"SolarBeam","Level":43},
+    {"Move":"LuckyChant","Level":48}
   ]
 }

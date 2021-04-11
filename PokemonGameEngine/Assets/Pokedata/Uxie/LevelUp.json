@@ -1,52 +1,16 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Rest",
-      "Level": 1
-    },
-    {
-      "Move": "Confusion",
-      "Level": 1
-    },
-    {
-      "Move": "Imprison",
-      "Level": 6
-    },
-    {
-      "Move": "Endure",
-      "Level": 16
-    },
-    {
-      "Move": "Swift",
-      "Level": 21
-    },
-    {
-      "Move": "Yawn",
-      "Level": 31
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 36
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 46
-    },
-    {
-      "Move": "Extrasensory",
-      "Level": 51
-    },
-    {
-      "Move": "Flail",
-      "Level": 61
-    },
-    {
-      "Move": "NaturalGift",
-      "Level": 66
-    },
-    {
-      "Move": "Memento",
-      "Level": 76
-    }
+    {"Move":"Rest","Level":1},
+    {"Move":"Confusion","Level":1},
+    {"Move":"Imprison","Level":6},
+    {"Move":"Endure","Level":16},
+    {"Move":"Swift","Level":21},
+    {"Move":"Yawn","Level":31},
+    {"Move":"FutureSight","Level":36},
+    {"Move":"Amnesia","Level":46},
+    {"Move":"Extrasensory","Level":51},
+    {"Move":"Flail","Level":61},
+    {"Move":"NaturalGift","Level":66},
+    {"Move":"Memento","Level":76}
   ]
 }

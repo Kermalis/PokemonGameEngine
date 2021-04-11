@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Ember",
-      "Level": 5
-    },
-    {
-      "Move": "Magnitude",
-      "Level": 8
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 12
-    },
-    {
-      "Move": "FlameBurst",
-      "Level": 15
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 19
-    },
-    {
-      "Move": "LavaPlume",
-      "Level": 22
-    },
-    {
-      "Move": "EarthPower",
-      "Level": 26
-    },
-    {
-      "Move": "Curse",
-      "Level": 29
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 31
-    },
-    {
-      "Move": "Yawn",
-      "Level": 36
-    },
-    {
-      "Move": "Earthquake",
-      "Level": 40
-    },
-    {
-      "Move": "Flamethrower",
-      "Level": 43
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 47
-    }
+    {"Move":"Growl","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"Ember","Level":5},
+    {"Move":"Magnitude","Level":8},
+    {"Move":"FocusEnergy","Level":12},
+    {"Move":"FlameBurst","Level":15},
+    {"Move":"Amnesia","Level":19},
+    {"Move":"LavaPlume","Level":22},
+    {"Move":"EarthPower","Level":26},
+    {"Move":"Curse","Level":29},
+    {"Move":"TakeDown","Level":31},
+    {"Move":"Yawn","Level":36},
+    {"Move":"Earthquake","Level":40},
+    {"Move":"Flamethrower","Level":43},
+    {"Move":"DoubleEdge","Level":47}
   ]
 }

@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Absorb",
-      "Level": 1
-    },
-    {
-      "Move": "Pound",
-      "Level": 1
-    },
-    {
-      "Move": "Growth",
-      "Level": 1
-    },
-    {
-      "Move": "Ingrain",
-      "Level": 4
-    },
-    {
-      "Move": "GrassWhistle",
-      "Level": 7
-    },
-    {
-      "Move": "MegaDrain",
-      "Level": 10
-    },
-    {
-      "Move": "LeechSeed",
-      "Level": 13
-    },
-    {
-      "Move": "RazorLeaf",
-      "Level": 16
-    },
-    {
-      "Move": "WorrySeed",
-      "Level": 19
-    },
-    {
-      "Move": "GigaDrain",
-      "Level": 22
-    },
-    {
-      "Move": "BulletSeed",
-      "Level": 25
-    },
-    {
-      "Move": "PetalDance",
-      "Level": 28
-    },
-    {
-      "Move": "NaturalGift",
-      "Level": 31
-    },
-    {
-      "Move": "SolarBeam",
-      "Level": 34
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 37
-    },
-    {
-      "Move": "SunnyDay",
-      "Level": 40
-    },
-    {
-      "Move": "LeafStorm",
-      "Level": 43
-    }
+    {"Move":"Absorb","Level":1},
+    {"Move":"Pound","Level":1},
+    {"Move":"Growth","Level":1},
+    {"Move":"Ingrain","Level":4},
+    {"Move":"GrassWhistle","Level":7},
+    {"Move":"MegaDrain","Level":10},
+    {"Move":"LeechSeed","Level":13},
+    {"Move":"RazorLeaf","Level":16},
+    {"Move":"WorrySeed","Level":19},
+    {"Move":"GigaDrain","Level":22},
+    {"Move":"BulletSeed","Level":25},
+    {"Move":"PetalDance","Level":28},
+    {"Move":"NaturalGift","Level":31},
+    {"Move":"SolarBeam","Level":34},
+    {"Move":"DoubleEdge","Level":37},
+    {"Move":"SunnyDay","Level":40},
+    {"Move":"LeafStorm","Level":43}
   ]
 }

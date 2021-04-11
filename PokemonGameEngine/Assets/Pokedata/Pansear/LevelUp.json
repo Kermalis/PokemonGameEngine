@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 4
-    },
-    {
-      "Move": "Lick",
-      "Level": 7
-    },
-    {
-      "Move": "Incinerate",
-      "Level": 10
-    },
-    {
-      "Move": "FurySwipes",
-      "Level": 13
-    },
-    {
-      "Move": "Yawn",
-      "Level": 16
-    },
-    {
-      "Move": "Bite",
-      "Level": 19
-    },
-    {
-      "Move": "FlameBurst",
-      "Level": 22
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 25
-    },
-    {
-      "Move": "Fling",
-      "Level": 28
-    },
-    {
-      "Move": "Acrobatics",
-      "Level": 31
-    },
-    {
-      "Move": "FireBlast",
-      "Level": 34
-    },
-    {
-      "Move": "Recycle",
-      "Level": 37
-    },
-    {
-      "Move": "NaturalGift",
-      "Level": 40
-    },
-    {
-      "Move": "Crunch",
-      "Level": 43
-    }
+    {"Move":"Scratch","Level":1},
+    {"Move":"Leer","Level":4},
+    {"Move":"Lick","Level":7},
+    {"Move":"Incinerate","Level":10},
+    {"Move":"FurySwipes","Level":13},
+    {"Move":"Yawn","Level":16},
+    {"Move":"Bite","Level":19},
+    {"Move":"FlameBurst","Level":22},
+    {"Move":"Amnesia","Level":25},
+    {"Move":"Fling","Level":28},
+    {"Move":"Acrobatics","Level":31},
+    {"Move":"FireBlast","Level":34},
+    {"Move":"Recycle","Level":37},
+    {"Move":"NaturalGift","Level":40},
+    {"Move":"Crunch","Level":43}
   ]
 }

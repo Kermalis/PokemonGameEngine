@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "NightShade",
-      "Level": 1
-    },
-    {
-      "Move": "Disable",
-      "Level": 6
-    },
-    {
-      "Move": "Foresight",
-      "Level": 9
-    },
-    {
-      "Move": "Astonish",
-      "Level": 14
-    },
-    {
-      "Move": "ConfuseRay",
-      "Level": 17
-    },
-    {
-      "Move": "ShadowSneak",
-      "Level": 22
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 25
-    },
-    {
-      "Move": "Curse",
-      "Level": 30
-    },
-    {
-      "Move": "WillOWisp",
-      "Level": 33
-    },
-    {
-      "Move": "Hex",
-      "Level": 38
-    },
-    {
-      "Move": "MeanLook",
-      "Level": 41
-    },
-    {
-      "Move": "Payback",
-      "Level": 46
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 49
-    }
+    {"Move":"Leer","Level":1},
+    {"Move":"NightShade","Level":1},
+    {"Move":"Disable","Level":6},
+    {"Move":"Foresight","Level":9},
+    {"Move":"Astonish","Level":14},
+    {"Move":"ConfuseRay","Level":17},
+    {"Move":"ShadowSneak","Level":22},
+    {"Move":"Pursuit","Level":25},
+    {"Move":"Curse","Level":30},
+    {"Move":"WillOWisp","Level":33},
+    {"Move":"Hex","Level":38},
+    {"Move":"MeanLook","Level":41},
+    {"Move":"Payback","Level":46},
+    {"Move":"FutureSight","Level":49}
   ]
 }

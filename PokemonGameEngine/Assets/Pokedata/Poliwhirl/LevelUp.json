@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "WaterSport",
-      "Level": 1
-    },
-    {
-      "Move": "Bubble",
-      "Level": 1
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 1
-    },
-    {
-      "Move": "Bubble",
-      "Level": 5
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 8
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 11
-    },
-    {
-      "Move": "DoubleSlap",
-      "Level": 15
-    },
-    {
-      "Move": "RainDance",
-      "Level": 18
-    },
-    {
-      "Move": "BodySlam",
-      "Level": 21
-    },
-    {
-      "Move": "BubbleBeam",
-      "Level": 27
-    },
-    {
-      "Move": "MudShot",
-      "Level": 32
-    },
-    {
-      "Move": "BellyDrum",
-      "Level": 37
-    },
-    {
-      "Move": "WakeUpSlap",
-      "Level": 43
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 48
-    },
-    {
-      "Move": "MudBomb",
-      "Level": 53
-    }
+    {"Move":"WaterSport","Level":1},
+    {"Move":"Bubble","Level":1},
+    {"Move":"Hypnosis","Level":1},
+    {"Move":"Bubble","Level":5},
+    {"Move":"Hypnosis","Level":8},
+    {"Move":"WaterGun","Level":11},
+    {"Move":"DoubleSlap","Level":15},
+    {"Move":"RainDance","Level":18},
+    {"Move":"BodySlam","Level":21},
+    {"Move":"BubbleBeam","Level":27},
+    {"Move":"MudShot","Level":32},
+    {"Move":"BellyDrum","Level":37},
+    {"Move":"WakeUpSlap","Level":43},
+    {"Move":"HydroPump","Level":48},
+    {"Move":"MudBomb","Level":53}
   ]
 }

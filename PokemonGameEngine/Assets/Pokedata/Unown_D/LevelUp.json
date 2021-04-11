@@ -1,8 +1,5 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "HiddenPower",
-      "Level": 1
-    }
+    {"Move":"HiddenPower","Level":1}
   ]
 }

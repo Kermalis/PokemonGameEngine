@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "NightSlash",
-      "Level": 1
-    },
-    {
-      "Move": "Pound",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Absorb",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Absorb",
-      "Level": 6
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 11
-    },
-    {
-      "Move": "XScissor",
-      "Level": 16
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 17
-    },
-    {
-      "Move": "Screech",
-      "Level": 23
-    },
-    {
-      "Move": "LeafBlade",
-      "Level": 29
-    },
-    {
-      "Move": "Agility",
-      "Level": 35
-    },
-    {
-      "Move": "Slam",
-      "Level": 43
-    },
-    {
-      "Move": "Detect",
-      "Level": 51
-    },
-    {
-      "Move": "FalseSwipe",
-      "Level": 59
-    },
-    {
-      "Move": "LeafStorm",
-      "Level": 67
-    }
+    {"Move":"NightSlash","Level":1},
+    {"Move":"Pound","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"Absorb","Level":1},
+    {"Move":"QuickAttack","Level":1},
+    {"Move":"Absorb","Level":6},
+    {"Move":"QuickAttack","Level":11},
+    {"Move":"XScissor","Level":16},
+    {"Move":"Pursuit","Level":17},
+    {"Move":"Screech","Level":23},
+    {"Move":"LeafBlade","Level":29},
+    {"Move":"Agility","Level":35},
+    {"Move":"Slam","Level":43},
+    {"Move":"Detect","Level":51},
+    {"Move":"FalseSwipe","Level":59},
+    {"Move":"LeafStorm","Level":67}
   ]
 }

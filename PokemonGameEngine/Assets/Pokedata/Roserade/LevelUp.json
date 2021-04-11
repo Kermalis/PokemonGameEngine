@@ -1,24 +1,9 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "WeatherBall",
-      "Level": 1
-    },
-    {
-      "Move": "PoisonSting",
-      "Level": 1
-    },
-    {
-      "Move": "MegaDrain",
-      "Level": 1
-    },
-    {
-      "Move": "MagicalLeaf",
-      "Level": 1
-    },
-    {
-      "Move": "SweetScent",
-      "Level": 1
-    }
+    {"Move":"WeatherBall","Level":1},
+    {"Move":"PoisonSting","Level":1},
+    {"Move":"MegaDrain","Level":1},
+    {"Move":"MagicalLeaf","Level":1},
+    {"Move":"SweetScent","Level":1}
   ]
 }

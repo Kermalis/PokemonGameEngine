@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pursuit",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Rage",
-      "Level": 6
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 11
-    },
-    {
-      "Move": "HornAttack",
-      "Level": 16
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 21
-    },
-    {
-      "Move": "Revenge",
-      "Level": 26
-    },
-    {
-      "Move": "HeadCharge",
-      "Level": 31
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 36
-    },
-    {
-      "Move": "Megahorn",
-      "Level": 41
-    },
-    {
-      "Move": "Reversal",
-      "Level": 46
-    },
-    {
-      "Move": "Thrash",
-      "Level": 51
-    },
-    {
-      "Move": "SwordsDance",
-      "Level": 56
-    },
-    {
-      "Move": "GigaImpact",
-      "Level": 61
-    }
+    {"Move":"Pursuit","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"Rage","Level":6},
+    {"Move":"FuryAttack","Level":11},
+    {"Move":"HornAttack","Level":16},
+    {"Move":"ScaryFace","Level":21},
+    {"Move":"Revenge","Level":26},
+    {"Move":"HeadCharge","Level":31},
+    {"Move":"FocusEnergy","Level":36},
+    {"Move":"Megahorn","Level":41},
+    {"Move":"Reversal","Level":46},
+    {"Move":"Thrash","Level":51},
+    {"Move":"SwordsDance","Level":56},
+    {"Move":"GigaImpact","Level":61}
   ]
 }

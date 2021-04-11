@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Confusion",
-      "Level": 1
-    },
-    {
-      "Move": "Confusion",
-      "Level": 10
-    },
-    {
-      "Move": "PoisonPowder",
-      "Level": 12
-    },
-    {
-      "Move": "StunSpore",
-      "Level": 12
-    },
-    {
-      "Move": "SleepPowder",
-      "Level": 12
-    },
-    {
-      "Move": "Gust",
-      "Level": 16
-    },
-    {
-      "Move": "Supersonic",
-      "Level": 18
-    },
-    {
-      "Move": "Whirlwind",
-      "Level": 22
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 24
-    },
-    {
-      "Move": "SilverWind",
-      "Level": 28
-    },
-    {
-      "Move": "Tailwind",
-      "Level": 30
-    },
-    {
-      "Move": "RagePowder",
-      "Level": 34
-    },
-    {
-      "Move": "Safeguard",
-      "Level": 36
-    },
-    {
-      "Move": "Captivate",
-      "Level": 40
-    },
-    {
-      "Move": "BugBuzz",
-      "Level": 42
-    },
-    {
-      "Move": "QuiverDance",
-      "Level": 46
-    }
+    {"Move":"Confusion","Level":1},
+    {"Move":"Confusion","Level":10},
+    {"Move":"PoisonPowder","Level":12},
+    {"Move":"StunSpore","Level":12},
+    {"Move":"SleepPowder","Level":12},
+    {"Move":"Gust","Level":16},
+    {"Move":"Supersonic","Level":18},
+    {"Move":"Whirlwind","Level":22},
+    {"Move":"Psybeam","Level":24},
+    {"Move":"SilverWind","Level":28},
+    {"Move":"Tailwind","Level":30},
+    {"Move":"RagePowder","Level":34},
+    {"Move":"Safeguard","Level":36},
+    {"Move":"Captivate","Level":40},
+    {"Move":"BugBuzz","Level":42},
+    {"Move":"QuiverDance","Level":46}
   ]
 }

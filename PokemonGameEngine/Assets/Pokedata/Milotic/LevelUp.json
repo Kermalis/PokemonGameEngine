@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "WaterGun",
-      "Level": 1
-    },
-    {
-      "Move": "Wrap",
-      "Level": 1
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 5
-    },
-    {
-      "Move": "Refresh",
-      "Level": 9
-    },
-    {
-      "Move": "WaterPulse",
-      "Level": 13
-    },
-    {
-      "Move": "Twister",
-      "Level": 17
-    },
-    {
-      "Move": "Recover",
-      "Level": 21
-    },
-    {
-      "Move": "Captivate",
-      "Level": 25
-    },
-    {
-      "Move": "AquaTail",
-      "Level": 29
-    },
-    {
-      "Move": "RainDance",
-      "Level": 33
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 37
-    },
-    {
-      "Move": "Attract",
-      "Level": 41
-    },
-    {
-      "Move": "Safeguard",
-      "Level": 45
-    },
-    {
-      "Move": "AquaRing",
-      "Level": 49
-    }
+    {"Move":"WaterGun","Level":1},
+    {"Move":"Wrap","Level":1},
+    {"Move":"WaterSport","Level":5},
+    {"Move":"Refresh","Level":9},
+    {"Move":"WaterPulse","Level":13},
+    {"Move":"Twister","Level":17},
+    {"Move":"Recover","Level":21},
+    {"Move":"Captivate","Level":25},
+    {"Move":"AquaTail","Level":29},
+    {"Move":"RainDance","Level":33},
+    {"Move":"HydroPump","Level":37},
+    {"Move":"Attract","Level":41},
+    {"Move":"Safeguard","Level":45},
+    {"Move":"AquaRing","Level":49}
   ]
 }

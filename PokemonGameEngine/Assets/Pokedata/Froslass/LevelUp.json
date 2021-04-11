@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "PowderSnow",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "DoubleTeam",
-      "Level": 1
-    },
-    {
-      "Move": "Astonish",
-      "Level": 1
-    },
-    {
-      "Move": "DoubleTeam",
-      "Level": 4
-    },
-    {
-      "Move": "Astonish",
-      "Level": 10
-    },
-    {
-      "Move": "IcyWind",
-      "Level": 13
-    },
-    {
-      "Move": "ConfuseRay",
-      "Level": 19
-    },
-    {
-      "Move": "OminousWind",
-      "Level": 22
-    },
-    {
-      "Move": "WakeUpSlap",
-      "Level": 28
-    },
-    {
-      "Move": "Captivate",
-      "Level": 31
-    },
-    {
-      "Move": "IceShard",
-      "Level": 37
-    },
-    {
-      "Move": "Hail",
-      "Level": 40
-    },
-    {
-      "Move": "Blizzard",
-      "Level": 51
-    },
-    {
-      "Move": "DestinyBond",
-      "Level": 59
-    }
+    {"Move":"PowderSnow","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"DoubleTeam","Level":1},
+    {"Move":"Astonish","Level":1},
+    {"Move":"DoubleTeam","Level":4},
+    {"Move":"Astonish","Level":10},
+    {"Move":"IcyWind","Level":13},
+    {"Move":"ConfuseRay","Level":19},
+    {"Move":"OminousWind","Level":22},
+    {"Move":"WakeUpSlap","Level":28},
+    {"Move":"Captivate","Level":31},
+    {"Move":"IceShard","Level":37},
+    {"Move":"Hail","Level":40},
+    {"Move":"Blizzard","Level":51},
+    {"Move":"DestinyBond","Level":59}
   ]
 }

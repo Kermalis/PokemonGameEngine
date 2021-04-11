@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Gust",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Pluck",
-      "Level": 1
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 5
-    },
-    {
-      "Move": "Pluck",
-      "Level": 10
-    },
-    {
-      "Move": "NastyPlot",
-      "Level": 14
-    },
-    {
-      "Move": "Flatter",
-      "Level": 19
-    },
-    {
-      "Move": "FaintAttack",
-      "Level": 23
-    },
-    {
-      "Move": "Punishment",
-      "Level": 28
-    },
-    {
-      "Move": "Defog",
-      "Level": 32
-    },
-    {
-      "Move": "Tailwind",
-      "Level": 37
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 41
-    },
-    {
-      "Move": "DarkPulse",
-      "Level": 46
-    },
-    {
-      "Move": "Embargo",
-      "Level": 50
-    },
-    {
-      "Move": "BoneRush",
-      "Level": 51
-    },
-    {
-      "Move": "Whirlwind",
-      "Level": 57
-    },
-    {
-      "Move": "BraveBird",
-      "Level": 63
-    },
-    {
-      "Move": "MirrorMove",
-      "Level": 70
-    }
+    {"Move":"Gust","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"FuryAttack","Level":1},
+    {"Move":"Pluck","Level":1},
+    {"Move":"FuryAttack","Level":5},
+    {"Move":"Pluck","Level":10},
+    {"Move":"NastyPlot","Level":14},
+    {"Move":"Flatter","Level":19},
+    {"Move":"FaintAttack","Level":23},
+    {"Move":"Punishment","Level":28},
+    {"Move":"Defog","Level":32},
+    {"Move":"Tailwind","Level":37},
+    {"Move":"AirSlash","Level":41},
+    {"Move":"DarkPulse","Level":46},
+    {"Move":"Embargo","Level":50},
+    {"Move":"BoneRush","Level":51},
+    {"Move":"Whirlwind","Level":57},
+    {"Move":"BraveBird","Level":63},
+    {"Move":"MirrorMove","Level":70}
   ]
 }

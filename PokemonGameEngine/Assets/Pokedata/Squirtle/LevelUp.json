@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 4
-    },
-    {
-      "Move": "Bubble",
-      "Level": 7
-    },
-    {
-      "Move": "Withdraw",
-      "Level": 10
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 13
-    },
-    {
-      "Move": "Bite",
-      "Level": 16
-    },
-    {
-      "Move": "RapidSpin",
-      "Level": 19
-    },
-    {
-      "Move": "Protect",
-      "Level": 22
-    },
-    {
-      "Move": "WaterPulse",
-      "Level": 25
-    },
-    {
-      "Move": "AquaTail",
-      "Level": 28
-    },
-    {
-      "Move": "SkullBash",
-      "Level": 31
-    },
-    {
-      "Move": "IronDefense",
-      "Level": 34
-    },
-    {
-      "Move": "RainDance",
-      "Level": 37
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 40
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"TailWhip","Level":4},
+    {"Move":"Bubble","Level":7},
+    {"Move":"Withdraw","Level":10},
+    {"Move":"WaterGun","Level":13},
+    {"Move":"Bite","Level":16},
+    {"Move":"RapidSpin","Level":19},
+    {"Move":"Protect","Level":22},
+    {"Move":"WaterPulse","Level":25},
+    {"Move":"AquaTail","Level":28},
+    {"Move":"SkullBash","Level":31},
+    {"Move":"IronDefense","Level":34},
+    {"Move":"RainDance","Level":37},
+    {"Move":"HydroPump","Level":40}
   ]
 }

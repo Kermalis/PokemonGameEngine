@@ -1,52 +1,16 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Absorb",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 5
-    },
-    {
-      "Move": "StunSpore",
-      "Level": 9
-    },
-    {
-      "Move": "LeechSeed",
-      "Level": 13
-    },
-    {
-      "Move": "MegaDrain",
-      "Level": 17
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 21
-    },
-    {
-      "Move": "PoisonPowder",
-      "Level": 25
-    },
-    {
-      "Move": "WorrySeed",
-      "Level": 29
-    },
-    {
-      "Move": "Growth",
-      "Level": 33
-    },
-    {
-      "Move": "GigaDrain",
-      "Level": 37
-    },
-    {
-      "Move": "SeedBomb",
-      "Level": 41
-    },
-    {
-      "Move": "Spore",
-      "Level": 45
-    }
+    {"Move":"Absorb","Level":1},
+    {"Move":"Tackle","Level":5},
+    {"Move":"StunSpore","Level":9},
+    {"Move":"LeechSeed","Level":13},
+    {"Move":"MegaDrain","Level":17},
+    {"Move":"Headbutt","Level":21},
+    {"Move":"PoisonPowder","Level":25},
+    {"Move":"WorrySeed","Level":29},
+    {"Move":"Growth","Level":33},
+    {"Move":"GigaDrain","Level":37},
+    {"Move":"SeedBomb","Level":41},
+    {"Move":"Spore","Level":45}
   ]
 }

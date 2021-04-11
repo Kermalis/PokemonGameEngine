@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Protect",
-      "Level": 10
-    },
-    {
-      "Move": "BugBite",
-      "Level": 15
-    },
-    {
-      "Move": "HiddenPower",
-      "Level": 20
-    },
-    {
-      "Move": "Confusion",
-      "Level": 23
-    },
-    {
-      "Move": "Gust",
-      "Level": 26
-    },
-    {
-      "Move": "PoisonPowder",
-      "Level": 29
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 32
-    },
-    {
-      "Move": "Camouflage",
-      "Level": 35
-    },
-    {
-      "Move": "SilverWind",
-      "Level": 38
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 41
-    },
-    {
-      "Move": "Psychic",
-      "Level": 44
-    },
-    {
-      "Move": "BugBuzz",
-      "Level": 47
-    },
-    {
-      "Move": "QuiverDance",
-      "Level": 50
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Protect","Level":10},
+    {"Move":"BugBite","Level":15},
+    {"Move":"HiddenPower","Level":20},
+    {"Move":"Confusion","Level":23},
+    {"Move":"Gust","Level":26},
+    {"Move":"PoisonPowder","Level":29},
+    {"Move":"Psybeam","Level":32},
+    {"Move":"Camouflage","Level":35},
+    {"Move":"SilverWind","Level":38},
+    {"Move":"AirSlash","Level":41},
+    {"Move":"Psychic","Level":44},
+    {"Move":"BugBuzz","Level":47},
+    {"Move":"QuiverDance","Level":50}
   ]
 }

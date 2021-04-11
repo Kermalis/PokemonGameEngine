@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Conversion2",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Conversion",
-      "Level": 1
-    },
-    {
-      "Move": "Sharpen",
-      "Level": 1
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 7
-    },
-    {
-      "Move": "Agility",
-      "Level": 12
-    },
-    {
-      "Move": "Recover",
-      "Level": 18
-    },
-    {
-      "Move": "MagnetRise",
-      "Level": 23
-    },
-    {
-      "Move": "SignalBeam",
-      "Level": 29
-    },
-    {
-      "Move": "Recycle",
-      "Level": 34
-    },
-    {
-      "Move": "Discharge",
-      "Level": 40
-    },
-    {
-      "Move": "LockOn",
-      "Level": 45
-    },
-    {
-      "Move": "TriAttack",
-      "Level": 51
-    },
-    {
-      "Move": "MagicCoat",
-      "Level": 56
-    },
-    {
-      "Move": "ZapCannon",
-      "Level": 62
-    }
+    {"Move":"Conversion2","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"Conversion","Level":1},
+    {"Move":"Sharpen","Level":1},
+    {"Move":"Psybeam","Level":7},
+    {"Move":"Agility","Level":12},
+    {"Move":"Recover","Level":18},
+    {"Move":"MagnetRise","Level":23},
+    {"Move":"SignalBeam","Level":29},
+    {"Move":"Recycle","Level":34},
+    {"Move":"Discharge","Level":40},
+    {"Move":"LockOn","Level":45},
+    {"Move":"TriAttack","Level":51},
+    {"Move":"MagicCoat","Level":56},
+    {"Move":"ZapCannon","Level":62}
   ]
 }

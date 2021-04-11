@@ -1,88 +1,25 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "MudSport",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 1
-    },
-    {
-      "Move": "Bind",
-      "Level": 1
-    },
-    {
-      "Move": "Curse",
-      "Level": 4
-    },
-    {
-      "Move": "RockThrow",
-      "Level": 7
-    },
-    {
-      "Move": "Rage",
-      "Level": 10
-    },
-    {
-      "Move": "RockTomb",
-      "Level": 13
-    },
-    {
-      "Move": "StealthRock",
-      "Level": 16
-    },
-    {
-      "Move": "RockPolish",
-      "Level": 19
-    },
-    {
-      "Move": "SmackDown",
-      "Level": 22
-    },
-    {
-      "Move": "DragonBreath",
-      "Level": 25
-    },
-    {
-      "Move": "Slam",
-      "Level": 28
-    },
-    {
-      "Move": "Screech",
-      "Level": 31
-    },
-    {
-      "Move": "RockSlide",
-      "Level": 34
-    },
-    {
-      "Move": "SandTomb",
-      "Level": 37
-    },
-    {
-      "Move": "IronTail",
-      "Level": 40
-    },
-    {
-      "Move": "Dig",
-      "Level": 43
-    },
-    {
-      "Move": "StoneEdge",
-      "Level": 46
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 49
-    },
-    {
-      "Move": "Sandstorm",
-      "Level": 52
-    }
+    {"Move":"MudSport","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"Harden","Level":1},
+    {"Move":"Bind","Level":1},
+    {"Move":"Curse","Level":4},
+    {"Move":"RockThrow","Level":7},
+    {"Move":"Rage","Level":10},
+    {"Move":"RockTomb","Level":13},
+    {"Move":"StealthRock","Level":16},
+    {"Move":"RockPolish","Level":19},
+    {"Move":"SmackDown","Level":22},
+    {"Move":"DragonBreath","Level":25},
+    {"Move":"Slam","Level":28},
+    {"Move":"Screech","Level":31},
+    {"Move":"RockSlide","Level":34},
+    {"Move":"SandTomb","Level":37},
+    {"Move":"IronTail","Level":40},
+    {"Move":"Dig","Level":43},
+    {"Move":"StoneEdge","Level":46},
+    {"Move":"DoubleEdge","Level":49},
+    {"Move":"Sandstorm","Level":52}
   ]
 }

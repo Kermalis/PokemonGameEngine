@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Gust",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 4
-    },
-    {
-      "Move": "Leer",
-      "Level": 8
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 11
-    },
-    {
-      "Move": "AirCutter",
-      "Level": 15
-    },
-    {
-      "Move": "Roost",
-      "Level": 18
-    },
-    {
-      "Move": "Detect",
-      "Level": 23
-    },
-    {
-      "Move": "Taunt",
-      "Level": 27
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 33
-    },
-    {
-      "Move": "RazorWind",
-      "Level": 38
-    },
-    {
-      "Move": "FeatherDance",
-      "Level": 44
-    },
-    {
-      "Move": "Swagger",
-      "Level": 49
-    },
-    {
-      "Move": "Facade",
-      "Level": 55
-    },
-    {
-      "Move": "Tailwind",
-      "Level": 60
-    },
-    {
-      "Move": "SkyAttack",
-      "Level": 66
-    }
+    {"Move":"Gust","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"QuickAttack","Level":1},
+    {"Move":"Growl","Level":4},
+    {"Move":"Leer","Level":8},
+    {"Move":"QuickAttack","Level":11},
+    {"Move":"AirCutter","Level":15},
+    {"Move":"Roost","Level":18},
+    {"Move":"Detect","Level":23},
+    {"Move":"Taunt","Level":27},
+    {"Move":"AirSlash","Level":33},
+    {"Move":"RazorWind","Level":38},
+    {"Move":"FeatherDance","Level":44},
+    {"Move":"Swagger","Level":49},
+    {"Move":"Facade","Level":55},
+    {"Move":"Tailwind","Level":60},
+    {"Move":"SkyAttack","Level":66}
   ]
 }

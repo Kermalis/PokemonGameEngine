@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "SmokeScreen",
-      "Level": 1
-    },
-    {
-      "Move": "SmokeScreen",
-      "Level": 6
-    },
-    {
-      "Move": "Ember",
-      "Level": 10
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 13
-    },
-    {
-      "Move": "FlameWheel",
-      "Level": 20
-    },
-    {
-      "Move": "DefenseCurl",
-      "Level": 24
-    },
-    {
-      "Move": "Swift",
-      "Level": 31
-    },
-    {
-      "Move": "FlameCharge",
-      "Level": 35
-    },
-    {
-      "Move": "LavaPlume",
-      "Level": 42
-    },
-    {
-      "Move": "Flamethrower",
-      "Level": 46
-    },
-    {
-      "Move": "Inferno",
-      "Level": 53
-    },
-    {
-      "Move": "Rollout",
-      "Level": 57
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 64
-    },
-    {
-      "Move": "Eruption",
-      "Level": 68
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"SmokeScreen","Level":1},
+    {"Move":"SmokeScreen","Level":6},
+    {"Move":"Ember","Level":10},
+    {"Move":"QuickAttack","Level":13},
+    {"Move":"FlameWheel","Level":20},
+    {"Move":"DefenseCurl","Level":24},
+    {"Move":"Swift","Level":31},
+    {"Move":"FlameCharge","Level":35},
+    {"Move":"LavaPlume","Level":42},
+    {"Move":"Flamethrower","Level":46},
+    {"Move":"Inferno","Level":53},
+    {"Move":"Rollout","Level":57},
+    {"Move":"DoubleEdge","Level":64},
+    {"Move":"Eruption","Level":68}
   ]
 }

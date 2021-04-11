@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pound",
-      "Level": 1
-    },
-    {
-      "Move": "Confusion",
-      "Level": 3
-    },
-    {
-      "Move": "Tickle",
-      "Level": 7
-    },
-    {
-      "Move": "FakeTears",
-      "Level": 10
-    },
-    {
-      "Move": "DoubleSlap",
-      "Level": 14
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 16
-    },
-    {
-      "Move": "Embargo",
-      "Level": 19
-    },
-    {
-      "Move": "FaintAttack",
-      "Level": 24
-    },
-    {
-      "Move": "Psyshock",
-      "Level": 25
-    },
-    {
-      "Move": "Flatter",
-      "Level": 28
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 31
-    },
-    {
-      "Move": "HealBlock",
-      "Level": 33
-    },
-    {
-      "Move": "Psychic",
-      "Level": 37
-    },
-    {
-      "Move": "Telekinesis",
-      "Level": 40
-    },
-    {
-      "Move": "Charm",
-      "Level": 46
-    },
-    {
-      "Move": "MagicRoom",
-      "Level": 48
-    }
+    {"Move":"Pound","Level":1},
+    {"Move":"Confusion","Level":3},
+    {"Move":"Tickle","Level":7},
+    {"Move":"FakeTears","Level":10},
+    {"Move":"DoubleSlap","Level":14},
+    {"Move":"Psybeam","Level":16},
+    {"Move":"Embargo","Level":19},
+    {"Move":"FaintAttack","Level":24},
+    {"Move":"Psyshock","Level":25},
+    {"Move":"Flatter","Level":28},
+    {"Move":"FutureSight","Level":31},
+    {"Move":"HealBlock","Level":33},
+    {"Move":"Psychic","Level":37},
+    {"Move":"Telekinesis","Level":40},
+    {"Move":"Charm","Level":46},
+    {"Move":"MagicRoom","Level":48}
   ]
 }

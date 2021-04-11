@@ -1,20 +1,8 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "Bide",
-      "Level": 1
-    },
-    {
-      "Move": "StruggleBug",
-      "Level": 6
-    },
-    {
-      "Move": "BugBite",
-      "Level": 16
-    }
+    {"Move":"Growl","Level":1},
+    {"Move":"Bide","Level":1},
+    {"Move":"StruggleBug","Level":6},
+    {"Move":"BugBite","Level":16}
   ]
 }

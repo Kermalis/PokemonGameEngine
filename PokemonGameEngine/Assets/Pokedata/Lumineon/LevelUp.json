@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pound",
-      "Level": 1
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 1
-    },
-    {
-      "Move": "Attract",
-      "Level": 1
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 6
-    },
-    {
-      "Move": "Attract",
-      "Level": 10
-    },
-    {
-      "Move": "RainDance",
-      "Level": 13
-    },
-    {
-      "Move": "Gust",
-      "Level": 17
-    },
-    {
-      "Move": "WaterPulse",
-      "Level": 22
-    },
-    {
-      "Move": "Captivate",
-      "Level": 26
-    },
-    {
-      "Move": "Safeguard",
-      "Level": 29
-    },
-    {
-      "Move": "AquaRing",
-      "Level": 35
-    },
-    {
-      "Move": "Whirlpool",
-      "Level": 42
-    },
-    {
-      "Move": "Uturn",
-      "Level": 48
-    },
-    {
-      "Move": "Bounce",
-      "Level": 53
-    },
-    {
-      "Move": "SilverWind",
-      "Level": 59
-    },
-    {
-      "Move": "Soak",
-      "Level": 66
-    }
+    {"Move":"Pound","Level":1},
+    {"Move":"WaterGun","Level":1},
+    {"Move":"Attract","Level":1},
+    {"Move":"WaterGun","Level":6},
+    {"Move":"Attract","Level":10},
+    {"Move":"RainDance","Level":13},
+    {"Move":"Gust","Level":17},
+    {"Move":"WaterPulse","Level":22},
+    {"Move":"Captivate","Level":26},
+    {"Move":"Safeguard","Level":29},
+    {"Move":"AquaRing","Level":35},
+    {"Move":"Whirlpool","Level":42},
+    {"Move":"Uturn","Level":48},
+    {"Move":"Bounce","Level":53},
+    {"Move":"SilverWind","Level":59},
+    {"Move":"Soak","Level":66}
   ]
 }

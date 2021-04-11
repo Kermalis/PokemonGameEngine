@@ -1,84 +1,24 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pluck",
-      "Level": 1
-    },
-    {
-      "Move": "Peck",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "Astonish",
-      "Level": 1
-    },
-    {
-      "Move": "Sing",
-      "Level": 1
-    },
-    {
-      "Move": "Astonish",
-      "Level": 4
-    },
-    {
-      "Move": "Sing",
-      "Level": 8
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 10
-    },
-    {
-      "Move": "Safeguard",
-      "Level": 13
-    },
-    {
-      "Move": "Mist",
-      "Level": 15
-    },
-    {
-      "Move": "Round",
-      "Level": 18
-    },
-    {
-      "Move": "NaturalGift",
-      "Level": 21
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 25
-    },
-    {
-      "Move": "Refresh",
-      "Level": 29
-    },
-    {
-      "Move": "DragonDance",
-      "Level": 34
-    },
-    {
-      "Move": "DragonBreath",
-      "Level": 35
-    },
-    {
-      "Move": "CottonGuard",
-      "Level": 42
-    },
-    {
-      "Move": "DragonPulse",
-      "Level": 48
-    },
-    {
-      "Move": "PerishSong",
-      "Level": 57
-    },
-    {
-      "Move": "SkyAttack",
-      "Level": 64
-    }
+    {"Move":"Pluck","Level":1},
+    {"Move":"Peck","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"Astonish","Level":1},
+    {"Move":"Sing","Level":1},
+    {"Move":"Astonish","Level":4},
+    {"Move":"Sing","Level":8},
+    {"Move":"FuryAttack","Level":10},
+    {"Move":"Safeguard","Level":13},
+    {"Move":"Mist","Level":15},
+    {"Move":"Round","Level":18},
+    {"Move":"NaturalGift","Level":21},
+    {"Move":"TakeDown","Level":25},
+    {"Move":"Refresh","Level":29},
+    {"Move":"DragonDance","Level":34},
+    {"Move":"DragonBreath","Level":35},
+    {"Move":"CottonGuard","Level":42},
+    {"Move":"DragonPulse","Level":48},
+    {"Move":"PerishSong","Level":57},
+    {"Move":"SkyAttack","Level":64}
   ]
 }

@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "WingAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Ember",
-      "Level": 1
-    },
-    {
-      "Move": "FireSpin",
-      "Level": 8
-    },
-    {
-      "Move": "Agility",
-      "Level": 15
-    },
-    {
-      "Move": "Endure",
-      "Level": 22
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 29
-    },
-    {
-      "Move": "Flamethrower",
-      "Level": 36
-    },
-    {
-      "Move": "Safeguard",
-      "Level": 43
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 50
-    },
-    {
-      "Move": "Roost",
-      "Level": 57
-    },
-    {
-      "Move": "HeatWave",
-      "Level": 64
-    },
-    {
-      "Move": "SolarBeam",
-      "Level": 71
-    },
-    {
-      "Move": "SkyAttack",
-      "Level": 78
-    },
-    {
-      "Move": "SunnyDay",
-      "Level": 85
-    },
-    {
-      "Move": "Hurricane",
-      "Level": 92
-    }
+    {"Move":"WingAttack","Level":1},
+    {"Move":"Ember","Level":1},
+    {"Move":"FireSpin","Level":8},
+    {"Move":"Agility","Level":15},
+    {"Move":"Endure","Level":22},
+    {"Move":"AncientPower","Level":29},
+    {"Move":"Flamethrower","Level":36},
+    {"Move":"Safeguard","Level":43},
+    {"Move":"AirSlash","Level":50},
+    {"Move":"Roost","Level":57},
+    {"Move":"HeatWave","Level":64},
+    {"Move":"SolarBeam","Level":71},
+    {"Move":"SkyAttack","Level":78},
+    {"Move":"SunnyDay","Level":85},
+    {"Move":"Hurricane","Level":92}
   ]
 }

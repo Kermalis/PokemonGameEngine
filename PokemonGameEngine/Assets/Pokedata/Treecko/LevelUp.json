@@ -1,52 +1,16 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pound",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Absorb",
-      "Level": 6
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 11
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 16
-    },
-    {
-      "Move": "Screech",
-      "Level": 21
-    },
-    {
-      "Move": "MegaDrain",
-      "Level": 26
-    },
-    {
-      "Move": "Agility",
-      "Level": 31
-    },
-    {
-      "Move": "Slam",
-      "Level": 36
-    },
-    {
-      "Move": "Detect",
-      "Level": 41
-    },
-    {
-      "Move": "GigaDrain",
-      "Level": 46
-    },
-    {
-      "Move": "EnergyBall",
-      "Level": 51
-    }
+    {"Move":"Pound","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"Absorb","Level":6},
+    {"Move":"QuickAttack","Level":11},
+    {"Move":"Pursuit","Level":16},
+    {"Move":"Screech","Level":21},
+    {"Move":"MegaDrain","Level":26},
+    {"Move":"Agility","Level":31},
+    {"Move":"Slam","Level":36},
+    {"Move":"Detect","Level":41},
+    {"Move":"GigaDrain","Level":46},
+    {"Move":"EnergyBall","Level":51}
   ]
 }

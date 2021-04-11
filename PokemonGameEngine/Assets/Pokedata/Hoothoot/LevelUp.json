@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "Foresight",
-      "Level": 1
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 5
-    },
-    {
-      "Move": "Peck",
-      "Level": 9
-    },
-    {
-      "Move": "Uproar",
-      "Level": 13
-    },
-    {
-      "Move": "Reflect",
-      "Level": 17
-    },
-    {
-      "Move": "Confusion",
-      "Level": 21
-    },
-    {
-      "Move": "EchoedVoice",
-      "Level": 25
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 29
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 33
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 37
-    },
-    {
-      "Move": "Synchronoise",
-      "Level": 41
-    },
-    {
-      "Move": "Extrasensory",
-      "Level": 45
-    },
-    {
-      "Move": "PsychoShift",
-      "Level": 49
-    },
-    {
-      "Move": "Roost",
-      "Level": 53
-    },
-    {
-      "Move": "DreamEater",
-      "Level": 57
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"Foresight","Level":1},
+    {"Move":"Hypnosis","Level":5},
+    {"Move":"Peck","Level":9},
+    {"Move":"Uproar","Level":13},
+    {"Move":"Reflect","Level":17},
+    {"Move":"Confusion","Level":21},
+    {"Move":"EchoedVoice","Level":25},
+    {"Move":"TakeDown","Level":29},
+    {"Move":"AirSlash","Level":33},
+    {"Move":"ZenHeadbutt","Level":37},
+    {"Move":"Synchronoise","Level":41},
+    {"Move":"Extrasensory","Level":45},
+    {"Move":"PsychoShift","Level":49},
+    {"Move":"Roost","Level":53},
+    {"Move":"DreamEater","Level":57}
   ]
 }

@@ -1,28 +1,10 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "BulletSeed",
-      "Level": 1
-    },
-    {
-      "Move": "RockBlast",
-      "Level": 1
-    },
-    {
-      "Move": "HelpingHand",
-      "Level": 1
-    },
-    {
-      "Move": "Tickle",
-      "Level": 1
-    },
-    {
-      "Move": "Sing",
-      "Level": 1
-    },
-    {
-      "Move": "TailSlap",
-      "Level": 1
-    }
+    {"Move":"BulletSeed","Level":1},
+    {"Move":"RockBlast","Level":1},
+    {"Move":"HelpingHand","Level":1},
+    {"Move":"Tickle","Level":1},
+    {"Move":"Sing","Level":1},
+    {"Move":"TailSlap","Level":1}
   ]
 }

@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Teleport",
-      "Level": 1
-    },
-    {
-      "Move": "Kinesis",
-      "Level": 1
-    },
-    {
-      "Move": "Confusion",
-      "Level": 1
-    },
-    {
-      "Move": "Confusion",
-      "Level": 16
-    },
-    {
-      "Move": "Disable",
-      "Level": 18
-    },
-    {
-      "Move": "MiracleEye",
-      "Level": 22
-    },
-    {
-      "Move": "AllySwitch",
-      "Level": 24
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 28
-    },
-    {
-      "Move": "Reflect",
-      "Level": 30
-    },
-    {
-      "Move": "Telekinesis",
-      "Level": 34
-    },
-    {
-      "Move": "Recover",
-      "Level": 36
-    },
-    {
-      "Move": "PsychoCut",
-      "Level": 40
-    },
-    {
-      "Move": "RolePlay",
-      "Level": 42
-    },
-    {
-      "Move": "Psychic",
-      "Level": 46
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 48
-    },
-    {
-      "Move": "Trick",
-      "Level": 52
-    }
+    {"Move":"Teleport","Level":1},
+    {"Move":"Kinesis","Level":1},
+    {"Move":"Confusion","Level":1},
+    {"Move":"Confusion","Level":16},
+    {"Move":"Disable","Level":18},
+    {"Move":"MiracleEye","Level":22},
+    {"Move":"AllySwitch","Level":24},
+    {"Move":"Psybeam","Level":28},
+    {"Move":"Reflect","Level":30},
+    {"Move":"Telekinesis","Level":34},
+    {"Move":"Recover","Level":36},
+    {"Move":"PsychoCut","Level":40},
+    {"Move":"RolePlay","Level":42},
+    {"Move":"Psychic","Level":46},
+    {"Move":"FutureSight","Level":48},
+    {"Move":"Trick","Level":52}
   ]
 }

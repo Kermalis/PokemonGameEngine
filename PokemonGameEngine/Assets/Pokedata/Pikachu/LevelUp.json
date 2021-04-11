@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderShock",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 5
-    },
-    {
-      "Move": "ThunderWave",
-      "Level": 10
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 13
-    },
-    {
-      "Move": "ElectroBall",
-      "Level": 18
-    },
-    {
-      "Move": "DoubleTeam",
-      "Level": 21
-    },
-    {
-      "Move": "Slam",
-      "Level": 26
-    },
-    {
-      "Move": "Thunderbolt",
-      "Level": 29
-    },
-    {
-      "Move": "Feint",
-      "Level": 34
-    },
-    {
-      "Move": "Agility",
-      "Level": 37
-    },
-    {
-      "Move": "Discharge",
-      "Level": 42
-    },
-    {
-      "Move": "LightScreen",
-      "Level": 45
-    },
-    {
-      "Move": "Thunder",
-      "Level": 50
-    }
+    {"Move":"Growl","Level":1},
+    {"Move":"ThunderShock","Level":1},
+    {"Move":"TailWhip","Level":5},
+    {"Move":"ThunderWave","Level":10},
+    {"Move":"QuickAttack","Level":13},
+    {"Move":"ElectroBall","Level":18},
+    {"Move":"DoubleTeam","Level":21},
+    {"Move":"Slam","Level":26},
+    {"Move":"Thunderbolt","Level":29},
+    {"Move":"Feint","Level":34},
+    {"Move":"Agility","Level":37},
+    {"Move":"Discharge","Level":42},
+    {"Move":"LightScreen","Level":45},
+    {"Move":"Thunder","Level":50}
   ]
 }

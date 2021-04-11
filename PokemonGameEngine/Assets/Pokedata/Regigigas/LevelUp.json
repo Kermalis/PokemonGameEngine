@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "FirePunch",
-      "Level": 1
-    },
-    {
-      "Move": "IcePunch",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderPunch",
-      "Level": 1
-    },
-    {
-      "Move": "DizzyPunch",
-      "Level": 1
-    },
-    {
-      "Move": "KnockOff",
-      "Level": 1
-    },
-    {
-      "Move": "ConfuseRay",
-      "Level": 1
-    },
-    {
-      "Move": "Foresight",
-      "Level": 1
-    },
-    {
-      "Move": "Revenge",
-      "Level": 25
-    },
-    {
-      "Move": "WideGuard",
-      "Level": 40
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 50
-    },
-    {
-      "Move": "Payback",
-      "Level": 65
-    },
-    {
-      "Move": "CrushGrip",
-      "Level": 75
-    },
-    {
-      "Move": "HeavySlam",
-      "Level": 90
-    },
-    {
-      "Move": "GigaImpact",
-      "Level": 100
-    }
+    {"Move":"FirePunch","Level":1},
+    {"Move":"IcePunch","Level":1},
+    {"Move":"ThunderPunch","Level":1},
+    {"Move":"DizzyPunch","Level":1},
+    {"Move":"KnockOff","Level":1},
+    {"Move":"ConfuseRay","Level":1},
+    {"Move":"Foresight","Level":1},
+    {"Move":"Revenge","Level":25},
+    {"Move":"WideGuard","Level":40},
+    {"Move":"ZenHeadbutt","Level":50},
+    {"Move":"Payback","Level":65},
+    {"Move":"CrushGrip","Level":75},
+    {"Move":"HeavySlam","Level":90},
+    {"Move":"GigaImpact","Level":100}
   ]
 }

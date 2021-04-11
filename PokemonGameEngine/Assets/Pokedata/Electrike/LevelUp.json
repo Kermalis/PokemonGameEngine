@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderWave",
-      "Level": 4
-    },
-    {
-      "Move": "Leer",
-      "Level": 9
-    },
-    {
-      "Move": "Howl",
-      "Level": 12
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 17
-    },
-    {
-      "Move": "Spark",
-      "Level": 20
-    },
-    {
-      "Move": "OdorSleuth",
-      "Level": 25
-    },
-    {
-      "Move": "Bite",
-      "Level": 28
-    },
-    {
-      "Move": "ThunderFang",
-      "Level": 33
-    },
-    {
-      "Move": "Roar",
-      "Level": 36
-    },
-    {
-      "Move": "Discharge",
-      "Level": 41
-    },
-    {
-      "Move": "Charge",
-      "Level": 44
-    },
-    {
-      "Move": "WildCharge",
-      "Level": 49
-    },
-    {
-      "Move": "Thunder",
-      "Level": 52
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"ThunderWave","Level":4},
+    {"Move":"Leer","Level":9},
+    {"Move":"Howl","Level":12},
+    {"Move":"QuickAttack","Level":17},
+    {"Move":"Spark","Level":20},
+    {"Move":"OdorSleuth","Level":25},
+    {"Move":"Bite","Level":28},
+    {"Move":"ThunderFang","Level":33},
+    {"Move":"Roar","Level":36},
+    {"Move":"Discharge","Level":41},
+    {"Move":"Charge","Level":44},
+    {"Move":"WildCharge","Level":49},
+    {"Move":"Thunder","Level":52}
   ]
 }

@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Withdraw",
-      "Level": 1
-    },
-    {
-      "Move": "Constrict",
-      "Level": 1
-    },
-    {
-      "Move": "Bide",
-      "Level": 1
-    },
-    {
-      "Move": "Rollout",
-      "Level": 1
-    },
-    {
-      "Move": "Encore",
-      "Level": 5
-    },
-    {
-      "Move": "Wrap",
-      "Level": 9
-    },
-    {
-      "Move": "StruggleBug",
-      "Level": 12
-    },
-    {
-      "Move": "Safeguard",
-      "Level": 16
-    },
-    {
-      "Move": "Rest",
-      "Level": 20
-    },
-    {
-      "Move": "RockThrow",
-      "Level": 23
-    },
-    {
-      "Move": "GastroAcid",
-      "Level": 27
-    },
-    {
-      "Move": "PowerTrick",
-      "Level": 31
-    },
-    {
-      "Move": "ShellSmash",
-      "Level": 34
-    },
-    {
-      "Move": "RockSlide",
-      "Level": 38
-    },
-    {
-      "Move": "BugBite",
-      "Level": 42
-    },
-    {
-      "Move": "PowerSplit",
-      "Level": 45
-    },
-    {
-      "Move": "GuardSplit",
-      "Level": 45
-    },
-    {
-      "Move": "StoneEdge",
-      "Level": 49
-    }
+    {"Move":"Withdraw","Level":1},
+    {"Move":"Constrict","Level":1},
+    {"Move":"Bide","Level":1},
+    {"Move":"Rollout","Level":1},
+    {"Move":"Encore","Level":5},
+    {"Move":"Wrap","Level":9},
+    {"Move":"StruggleBug","Level":12},
+    {"Move":"Safeguard","Level":16},
+    {"Move":"Rest","Level":20},
+    {"Move":"RockThrow","Level":23},
+    {"Move":"GastroAcid","Level":27},
+    {"Move":"PowerTrick","Level":31},
+    {"Move":"ShellSmash","Level":34},
+    {"Move":"RockSlide","Level":38},
+    {"Move":"BugBite","Level":42},
+    {"Move":"PowerSplit","Level":45},
+    {"Move":"GuardSplit","Level":45},
+    {"Move":"StoneEdge","Level":49}
   ]
 }

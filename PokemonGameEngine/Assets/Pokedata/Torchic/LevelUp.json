@@ -1,48 +1,15 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 7
-    },
-    {
-      "Move": "Ember",
-      "Level": 10
-    },
-    {
-      "Move": "Peck",
-      "Level": 16
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 19
-    },
-    {
-      "Move": "FireSpin",
-      "Level": 25
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 28
-    },
-    {
-      "Move": "Slash",
-      "Level": 34
-    },
-    {
-      "Move": "MirrorMove",
-      "Level": 37
-    },
-    {
-      "Move": "Flamethrower",
-      "Level": 43
-    }
+    {"Move":"Scratch","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"FocusEnergy","Level":7},
+    {"Move":"Ember","Level":10},
+    {"Move":"Peck","Level":16},
+    {"Move":"SandAttack","Level":19},
+    {"Move":"FireSpin","Level":25},
+    {"Move":"QuickAttack","Level":28},
+    {"Move":"Slash","Level":34},
+    {"Move":"MirrorMove","Level":37},
+    {"Move":"Flamethrower","Level":43}
   ]
 }

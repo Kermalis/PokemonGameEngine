@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 1
-    },
-    {
-      "Move": "Supersonic",
-      "Level": 6
-    },
-    {
-      "Move": "WingAttack",
-      "Level": 9
-    },
-    {
-      "Move": "Mist",
-      "Level": 14
-    },
-    {
-      "Move": "WaterPulse",
-      "Level": 17
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 22
-    },
-    {
-      "Move": "Roost",
-      "Level": 26
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 30
-    },
-    {
-      "Move": "AirCutter",
-      "Level": 33
-    },
-    {
-      "Move": "Agility",
-      "Level": 38
-    },
-    {
-      "Move": "AerialAce",
-      "Level": 42
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 46
-    },
-    {
-      "Move": "Hurricane",
-      "Level": 49
-    }
+    {"Move":"Growl","Level":1},
+    {"Move":"WaterGun","Level":1},
+    {"Move":"Supersonic","Level":6},
+    {"Move":"WingAttack","Level":9},
+    {"Move":"Mist","Level":14},
+    {"Move":"WaterPulse","Level":17},
+    {"Move":"QuickAttack","Level":22},
+    {"Move":"Roost","Level":26},
+    {"Move":"Pursuit","Level":30},
+    {"Move":"AirCutter","Level":33},
+    {"Move":"Agility","Level":38},
+    {"Move":"AerialAce","Level":42},
+    {"Move":"AirSlash","Level":46},
+    {"Move":"Hurricane","Level":49}
   ]
 }

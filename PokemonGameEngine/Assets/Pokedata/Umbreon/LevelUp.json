@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "HelpingHand",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 5
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 9
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 13
-    },
-    {
-      "Move": "ConfuseRay",
-      "Level": 17
-    },
-    {
-      "Move": "FaintAttack",
-      "Level": 21
-    },
-    {
-      "Move": "Assurance",
-      "Level": 25
-    },
-    {
-      "Move": "Screech",
-      "Level": 29
-    },
-    {
-      "Move": "Moonlight",
-      "Level": 33
-    },
-    {
-      "Move": "MeanLook",
-      "Level": 37
-    },
-    {
-      "Move": "LastResort",
-      "Level": 41
-    },
-    {
-      "Move": "GuardSwap",
-      "Level": 45
-    }
+    {"Move":"HelpingHand","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"TailWhip","Level":1},
+    {"Move":"SandAttack","Level":5},
+    {"Move":"Pursuit","Level":9},
+    {"Move":"QuickAttack","Level":13},
+    {"Move":"ConfuseRay","Level":17},
+    {"Move":"FaintAttack","Level":21},
+    {"Move":"Assurance","Level":25},
+    {"Move":"Screech","Level":29},
+    {"Move":"Moonlight","Level":33},
+    {"Move":"MeanLook","Level":37},
+    {"Move":"LastResort","Level":41},
+    {"Move":"GuardSwap","Level":45}
   ]
 }

@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Yawn",
-      "Level": 1
-    },
-    {
-      "Move": "Smog",
-      "Level": 1
-    },
-    {
-      "Move": "Ember",
-      "Level": 1
-    },
-    {
-      "Move": "RockThrow",
-      "Level": 1
-    },
-    {
-      "Move": "Ember",
-      "Level": 5
-    },
-    {
-      "Move": "RockThrow",
-      "Level": 10
-    },
-    {
-      "Move": "Harden",
-      "Level": 14
-    },
-    {
-      "Move": "Recover",
-      "Level": 19
-    },
-    {
-      "Move": "FlameBurst",
-      "Level": 23
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 28
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 32
-    },
-    {
-      "Move": "LavaPlume",
-      "Level": 37
-    },
-    {
-      "Move": "ShellSmash",
-      "Level": 38
-    },
-    {
-      "Move": "RockSlide",
-      "Level": 44
-    },
-    {
-      "Move": "BodySlam",
-      "Level": 52
-    },
-    {
-      "Move": "Flamethrower",
-      "Level": 59
-    },
-    {
-      "Move": "EarthPower",
-      "Level": 67
-    }
+    {"Move":"Yawn","Level":1},
+    {"Move":"Smog","Level":1},
+    {"Move":"Ember","Level":1},
+    {"Move":"RockThrow","Level":1},
+    {"Move":"Ember","Level":5},
+    {"Move":"RockThrow","Level":10},
+    {"Move":"Harden","Level":14},
+    {"Move":"Recover","Level":19},
+    {"Move":"FlameBurst","Level":23},
+    {"Move":"AncientPower","Level":28},
+    {"Move":"Amnesia","Level":32},
+    {"Move":"LavaPlume","Level":37},
+    {"Move":"ShellSmash","Level":38},
+    {"Move":"RockSlide","Level":44},
+    {"Move":"BodySlam","Level":52},
+    {"Move":"Flamethrower","Level":59},
+    {"Move":"EarthPower","Level":67}
   ]
 }

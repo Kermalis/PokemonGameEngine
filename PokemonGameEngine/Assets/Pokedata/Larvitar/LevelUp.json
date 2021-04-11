@@ -1,60 +1,18 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Bite",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Sandstorm",
-      "Level": 5
-    },
-    {
-      "Move": "Screech",
-      "Level": 10
-    },
-    {
-      "Move": "ChipAway",
-      "Level": 14
-    },
-    {
-      "Move": "RockSlide",
-      "Level": 19
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 23
-    },
-    {
-      "Move": "Thrash",
-      "Level": 28
-    },
-    {
-      "Move": "DarkPulse",
-      "Level": 32
-    },
-    {
-      "Move": "Payback",
-      "Level": 37
-    },
-    {
-      "Move": "Crunch",
-      "Level": 41
-    },
-    {
-      "Move": "Earthquake",
-      "Level": 46
-    },
-    {
-      "Move": "StoneEdge",
-      "Level": 50
-    },
-    {
-      "Move": "HyperBeam",
-      "Level": 55
-    }
+    {"Move":"Bite","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"Sandstorm","Level":5},
+    {"Move":"Screech","Level":10},
+    {"Move":"ChipAway","Level":14},
+    {"Move":"RockSlide","Level":19},
+    {"Move":"ScaryFace","Level":23},
+    {"Move":"Thrash","Level":28},
+    {"Move":"DarkPulse","Level":32},
+    {"Move":"Payback","Level":37},
+    {"Move":"Crunch","Level":41},
+    {"Move":"Earthquake","Level":46},
+    {"Move":"StoneEdge","Level":50},
+    {"Move":"HyperBeam","Level":55}
   ]
 }

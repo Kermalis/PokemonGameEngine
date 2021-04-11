@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Assurance",
-      "Level": 1
-    },
-    {
-      "Move": "DragonRage",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 4
-    },
-    {
-      "Move": "Assurance",
-      "Level": 7
-    },
-    {
-      "Move": "DragonRage",
-      "Level": 10
-    },
-    {
-      "Move": "DualChop",
-      "Level": 13
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 16
-    },
-    {
-      "Move": "Slash",
-      "Level": 20
-    },
-    {
-      "Move": "FalseSwipe",
-      "Level": 24
-    },
-    {
-      "Move": "DragonClaw",
-      "Level": 28
-    },
-    {
-      "Move": "DragonDance",
-      "Level": 32
-    },
-    {
-      "Move": "Taunt",
-      "Level": 36
-    },
-    {
-      "Move": "DragonPulse",
-      "Level": 42
-    },
-    {
-      "Move": "SwordsDance",
-      "Level": 50
-    },
-    {
-      "Move": "Guillotine",
-      "Level": 58
-    },
-    {
-      "Move": "Outrage",
-      "Level": 66
-    },
-    {
-      "Move": "GigaImpact",
-      "Level": 74
-    }
+    {"Move":"Scratch","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"Assurance","Level":1},
+    {"Move":"DragonRage","Level":1},
+    {"Move":"Leer","Level":4},
+    {"Move":"Assurance","Level":7},
+    {"Move":"DragonRage","Level":10},
+    {"Move":"DualChop","Level":13},
+    {"Move":"ScaryFace","Level":16},
+    {"Move":"Slash","Level":20},
+    {"Move":"FalseSwipe","Level":24},
+    {"Move":"DragonClaw","Level":28},
+    {"Move":"DragonDance","Level":32},
+    {"Move":"Taunt","Level":36},
+    {"Move":"DragonPulse","Level":42},
+    {"Move":"SwordsDance","Level":50},
+    {"Move":"Guillotine","Level":58},
+    {"Move":"Outrage","Level":66},
+    {"Move":"GigaImpact","Level":74}
   ]
 }

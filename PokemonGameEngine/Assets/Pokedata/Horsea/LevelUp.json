@@ -1,52 +1,16 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Bubble",
-      "Level": 1
-    },
-    {
-      "Move": "SmokeScreen",
-      "Level": 4
-    },
-    {
-      "Move": "Leer",
-      "Level": 8
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 11
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 14
-    },
-    {
-      "Move": "BubbleBeam",
-      "Level": 18
-    },
-    {
-      "Move": "Agility",
-      "Level": 23
-    },
-    {
-      "Move": "Twister",
-      "Level": 26
-    },
-    {
-      "Move": "Brine",
-      "Level": 30
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 35
-    },
-    {
-      "Move": "DragonDance",
-      "Level": 38
-    },
-    {
-      "Move": "DragonPulse",
-      "Level": 42
-    }
+    {"Move":"Bubble","Level":1},
+    {"Move":"SmokeScreen","Level":4},
+    {"Move":"Leer","Level":8},
+    {"Move":"WaterGun","Level":11},
+    {"Move":"FocusEnergy","Level":14},
+    {"Move":"BubbleBeam","Level":18},
+    {"Move":"Agility","Level":23},
+    {"Move":"Twister","Level":26},
+    {"Move":"Brine","Level":30},
+    {"Move":"HydroPump","Level":35},
+    {"Move":"DragonDance","Level":38},
+    {"Move":"DragonPulse","Level":42}
   ]
 }

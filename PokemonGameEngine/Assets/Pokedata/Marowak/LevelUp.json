@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 1
-    },
-    {
-      "Move": "BoneClub",
-      "Level": 1
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 3
-    },
-    {
-      "Move": "BoneClub",
-      "Level": 7
-    },
-    {
-      "Move": "Headbutt",
-      "Level": 11
-    },
-    {
-      "Move": "Leer",
-      "Level": 13
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 17
-    },
-    {
-      "Move": "Bonemerang",
-      "Level": 21
-    },
-    {
-      "Move": "Rage",
-      "Level": 23
-    },
-    {
-      "Move": "FalseSwipe",
-      "Level": 27
-    },
-    {
-      "Move": "Thrash",
-      "Level": 33
-    },
-    {
-      "Move": "Fling",
-      "Level": 37
-    },
-    {
-      "Move": "BoneRush",
-      "Level": 43
-    },
-    {
-      "Move": "Endeavor",
-      "Level": 49
-    },
-    {
-      "Move": "DoubleEdge",
-      "Level": 53
-    },
-    {
-      "Move": "Retaliate",
-      "Level": 59
-    }
+    {"Move":"Growl","Level":1},
+    {"Move":"TailWhip","Level":1},
+    {"Move":"BoneClub","Level":1},
+    {"Move":"Headbutt","Level":1},
+    {"Move":"TailWhip","Level":3},
+    {"Move":"BoneClub","Level":7},
+    {"Move":"Headbutt","Level":11},
+    {"Move":"Leer","Level":13},
+    {"Move":"FocusEnergy","Level":17},
+    {"Move":"Bonemerang","Level":21},
+    {"Move":"Rage","Level":23},
+    {"Move":"FalseSwipe","Level":27},
+    {"Move":"Thrash","Level":33},
+    {"Move":"Fling","Level":37},
+    {"Move":"BoneRush","Level":43},
+    {"Move":"Endeavor","Level":49},
+    {"Move":"DoubleEdge","Level":53},
+    {"Move":"Retaliate","Level":59}
   ]
 }

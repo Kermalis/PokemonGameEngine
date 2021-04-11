@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Psywave",
-      "Level": 1
-    },
-    {
-      "Move": "Reflect",
-      "Level": 1
-    },
-    {
-      "Move": "Rollout",
-      "Level": 1
-    },
-    {
-      "Move": "Snatch",
-      "Level": 1
-    },
-    {
-      "Move": "Reflect",
-      "Level": 3
-    },
-    {
-      "Move": "Rollout",
-      "Level": 7
-    },
-    {
-      "Move": "Snatch",
-      "Level": 10
-    },
-    {
-      "Move": "HiddenPower",
-      "Level": 14
-    },
-    {
-      "Move": "LightScreen",
-      "Level": 16
-    },
-    {
-      "Move": "Charm",
-      "Level": 19
-    },
-    {
-      "Move": "Recover",
-      "Level": 24
-    },
-    {
-      "Move": "Psyshock",
-      "Level": 25
-    },
-    {
-      "Move": "Endeavor",
-      "Level": 28
-    },
-    {
-      "Move": "FutureSight",
-      "Level": 31
-    },
-    {
-      "Move": "PainSplit",
-      "Level": 34
-    },
-    {
-      "Move": "Psychic",
-      "Level": 39
-    },
-    {
-      "Move": "SkillSwap",
-      "Level": 43
-    },
-    {
-      "Move": "HealBlock",
-      "Level": 50
-    },
-    {
-      "Move": "WonderRoom",
-      "Level": 53
-    }
+    {"Move":"Psywave","Level":1},
+    {"Move":"Reflect","Level":1},
+    {"Move":"Rollout","Level":1},
+    {"Move":"Snatch","Level":1},
+    {"Move":"Reflect","Level":3},
+    {"Move":"Rollout","Level":7},
+    {"Move":"Snatch","Level":10},
+    {"Move":"HiddenPower","Level":14},
+    {"Move":"LightScreen","Level":16},
+    {"Move":"Charm","Level":19},
+    {"Move":"Recover","Level":24},
+    {"Move":"Psyshock","Level":25},
+    {"Move":"Endeavor","Level":28},
+    {"Move":"FutureSight","Level":31},
+    {"Move":"PainSplit","Level":34},
+    {"Move":"Psychic","Level":39},
+    {"Move":"SkillSwap","Level":43},
+    {"Move":"HealBlock","Level":50},
+    {"Move":"WonderRoom","Level":53}
   ]
 }

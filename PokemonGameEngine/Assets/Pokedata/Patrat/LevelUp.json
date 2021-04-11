@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 3
-    },
-    {
-      "Move": "Bite",
-      "Level": 6
-    },
-    {
-      "Move": "Bide",
-      "Level": 8
-    },
-    {
-      "Move": "Detect",
-      "Level": 11
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 13
-    },
-    {
-      "Move": "Crunch",
-      "Level": 16
-    },
-    {
-      "Move": "Hypnosis",
-      "Level": 18
-    },
-    {
-      "Move": "SuperFang",
-      "Level": 21
-    },
-    {
-      "Move": "AfterYou",
-      "Level": 23
-    },
-    {
-      "Move": "WorkUp",
-      "Level": 26
-    },
-    {
-      "Move": "HyperFang",
-      "Level": 28
-    },
-    {
-      "Move": "MeanLook",
-      "Level": 31
-    },
-    {
-      "Move": "BatonPass",
-      "Level": 33
-    },
-    {
-      "Move": "Slam",
-      "Level": 36
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Leer","Level":3},
+    {"Move":"Bite","Level":6},
+    {"Move":"Bide","Level":8},
+    {"Move":"Detect","Level":11},
+    {"Move":"SandAttack","Level":13},
+    {"Move":"Crunch","Level":16},
+    {"Move":"Hypnosis","Level":18},
+    {"Move":"SuperFang","Level":21},
+    {"Move":"AfterYou","Level":23},
+    {"Move":"WorkUp","Level":26},
+    {"Move":"HyperFang","Level":28},
+    {"Move":"MeanLook","Level":31},
+    {"Move":"BatonPass","Level":33},
+    {"Move":"Slam","Level":36}
   ]
 }

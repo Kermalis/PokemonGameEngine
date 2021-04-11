@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "MagnetRise",
-      "Level": 1
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 1
-    },
-    {
-      "Move": "MetalClaw",
-      "Level": 1
-    },
-    {
-      "Move": "Confusion",
-      "Level": 1
-    },
-    {
-      "Move": "Confusion",
-      "Level": 20
-    },
-    {
-      "Move": "MetalClaw",
-      "Level": 20
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 23
-    },
-    {
-      "Move": "MiracleEye",
-      "Level": 26
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 29
-    },
-    {
-      "Move": "BulletPunch",
-      "Level": 32
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 35
-    },
-    {
-      "Move": "Agility",
-      "Level": 38
-    },
-    {
-      "Move": "Psychic",
-      "Level": 41
-    },
-    {
-      "Move": "MeteorMash",
-      "Level": 44
-    },
-    {
-      "Move": "IronDefense",
-      "Level": 47
-    },
-    {
-      "Move": "HyperBeam",
-      "Level": 50
-    }
+    {"Move":"MagnetRise","Level":1},
+    {"Move":"TakeDown","Level":1},
+    {"Move":"MetalClaw","Level":1},
+    {"Move":"Confusion","Level":1},
+    {"Move":"Confusion","Level":20},
+    {"Move":"MetalClaw","Level":20},
+    {"Move":"Pursuit","Level":23},
+    {"Move":"MiracleEye","Level":26},
+    {"Move":"ZenHeadbutt","Level":29},
+    {"Move":"BulletPunch","Level":32},
+    {"Move":"ScaryFace","Level":35},
+    {"Move":"Agility","Level":38},
+    {"Move":"Psychic","Level":41},
+    {"Move":"MeteorMash","Level":44},
+    {"Move":"IronDefense","Level":47},
+    {"Move":"HyperBeam","Level":50}
   ]
 }

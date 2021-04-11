@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pound",
-      "Level": 1
-    },
-    {
-      "Move": "PoisonGas",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 1
-    },
-    {
-      "Move": "MudSlap",
-      "Level": 1
-    },
-    {
-      "Move": "Harden",
-      "Level": 4
-    },
-    {
-      "Move": "MudSlap",
-      "Level": 7
-    },
-    {
-      "Move": "Disable",
-      "Level": 12
-    },
-    {
-      "Move": "Sludge",
-      "Level": 15
-    },
-    {
-      "Move": "Minimize",
-      "Level": 18
-    },
-    {
-      "Move": "MudBomb",
-      "Level": 21
-    },
-    {
-      "Move": "SludgeBomb",
-      "Level": 26
-    },
-    {
-      "Move": "Fling",
-      "Level": 29
-    },
-    {
-      "Move": "Screech",
-      "Level": 32
-    },
-    {
-      "Move": "SludgeWave",
-      "Level": 37
-    },
-    {
-      "Move": "AcidArmor",
-      "Level": 43
-    },
-    {
-      "Move": "GunkShot",
-      "Level": 49
-    },
-    {
-      "Move": "Memento",
-      "Level": 57
-    }
+    {"Move":"Pound","Level":1},
+    {"Move":"PoisonGas","Level":1},
+    {"Move":"Harden","Level":1},
+    {"Move":"MudSlap","Level":1},
+    {"Move":"Harden","Level":4},
+    {"Move":"MudSlap","Level":7},
+    {"Move":"Disable","Level":12},
+    {"Move":"Sludge","Level":15},
+    {"Move":"Minimize","Level":18},
+    {"Move":"MudBomb","Level":21},
+    {"Move":"SludgeBomb","Level":26},
+    {"Move":"Fling","Level":29},
+    {"Move":"Screech","Level":32},
+    {"Move":"SludgeWave","Level":37},
+    {"Move":"AcidArmor","Level":43},
+    {"Move":"GunkShot","Level":49},
+    {"Move":"Memento","Level":57}
   ]
 }

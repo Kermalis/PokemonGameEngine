@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 6
-    },
-    {
-      "Move": "FuryCutter",
-      "Level": 9
-    },
-    {
-      "Move": "Torment",
-      "Level": 14
-    },
-    {
-      "Move": "FaintAttack",
-      "Level": 17
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 22
-    },
-    {
-      "Move": "MetalClaw",
-      "Level": 25
-    },
-    {
-      "Move": "Slash",
-      "Level": 30
-    },
-    {
-      "Move": "Assurance",
-      "Level": 33
-    },
-    {
-      "Move": "MetalSound",
-      "Level": 38
-    },
-    {
-      "Move": "Embargo",
-      "Level": 41
-    },
-    {
-      "Move": "IronDefense",
-      "Level": 46
-    },
-    {
-      "Move": "NightSlash",
-      "Level": 49
-    },
-    {
-      "Move": "IronHead",
-      "Level": 54
-    },
-    {
-      "Move": "SwordsDance",
-      "Level": 57
-    },
-    {
-      "Move": "Guillotine",
-      "Level": 62
-    }
+    {"Move":"Scratch","Level":1},
+    {"Move":"Leer","Level":6},
+    {"Move":"FuryCutter","Level":9},
+    {"Move":"Torment","Level":14},
+    {"Move":"FaintAttack","Level":17},
+    {"Move":"ScaryFace","Level":22},
+    {"Move":"MetalClaw","Level":25},
+    {"Move":"Slash","Level":30},
+    {"Move":"Assurance","Level":33},
+    {"Move":"MetalSound","Level":38},
+    {"Move":"Embargo","Level":41},
+    {"Move":"IronDefense","Level":46},
+    {"Move":"NightSlash","Level":49},
+    {"Move":"IronHead","Level":54},
+    {"Move":"SwordsDance","Level":57},
+    {"Move":"Guillotine","Level":62}
   ]
 }

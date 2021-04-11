@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Wrap",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "PoisonSting",
-      "Level": 4
-    },
-    {
-      "Move": "Bite",
-      "Level": 9
-    },
-    {
-      "Move": "Glare",
-      "Level": 12
-    },
-    {
-      "Move": "Screech",
-      "Level": 17
-    },
-    {
-      "Move": "Acid",
-      "Level": 20
-    },
-    {
-      "Move": "Stockpile",
-      "Level": 25
-    },
-    {
-      "Move": "Swallow",
-      "Level": 25
-    },
-    {
-      "Move": "SpitUp",
-      "Level": 25
-    },
-    {
-      "Move": "AcidSpray",
-      "Level": 28
-    },
-    {
-      "Move": "MudBomb",
-      "Level": 33
-    },
-    {
-      "Move": "GastroAcid",
-      "Level": 36
-    },
-    {
-      "Move": "Haze",
-      "Level": 41
-    },
-    {
-      "Move": "Coil",
-      "Level": 44
-    },
-    {
-      "Move": "GunkShot",
-      "Level": 49
-    }
+    {"Move":"Wrap","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"PoisonSting","Level":4},
+    {"Move":"Bite","Level":9},
+    {"Move":"Glare","Level":12},
+    {"Move":"Screech","Level":17},
+    {"Move":"Acid","Level":20},
+    {"Move":"Stockpile","Level":25},
+    {"Move":"Swallow","Level":25},
+    {"Move":"SpitUp","Level":25},
+    {"Move":"AcidSpray","Level":28},
+    {"Move":"MudBomb","Level":33},
+    {"Move":"GastroAcid","Level":36},
+    {"Move":"Haze","Level":41},
+    {"Move":"Coil","Level":44},
+    {"Move":"GunkShot","Level":49}
   ]
 }

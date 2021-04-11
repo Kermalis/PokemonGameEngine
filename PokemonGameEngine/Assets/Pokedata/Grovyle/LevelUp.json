@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pound",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Absorb",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Absorb",
-      "Level": 6
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 11
-    },
-    {
-      "Move": "FuryCutter",
-      "Level": 16
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 17
-    },
-    {
-      "Move": "Screech",
-      "Level": 23
-    },
-    {
-      "Move": "LeafBlade",
-      "Level": 29
-    },
-    {
-      "Move": "Agility",
-      "Level": 35
-    },
-    {
-      "Move": "Slam",
-      "Level": 41
-    },
-    {
-      "Move": "Detect",
-      "Level": 47
-    },
-    {
-      "Move": "FalseSwipe",
-      "Level": 53
-    },
-    {
-      "Move": "LeafStorm",
-      "Level": 59
-    }
+    {"Move":"Pound","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"Absorb","Level":1},
+    {"Move":"QuickAttack","Level":1},
+    {"Move":"Absorb","Level":6},
+    {"Move":"QuickAttack","Level":11},
+    {"Move":"FuryCutter","Level":16},
+    {"Move":"Pursuit","Level":17},
+    {"Move":"Screech","Level":23},
+    {"Move":"LeafBlade","Level":29},
+    {"Move":"Agility","Level":35},
+    {"Move":"Slam","Level":41},
+    {"Move":"Detect","Level":47},
+    {"Move":"FalseSwipe","Level":53},
+    {"Move":"LeafStorm","Level":59}
   ]
 }

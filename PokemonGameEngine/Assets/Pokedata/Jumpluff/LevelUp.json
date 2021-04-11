@@ -1,88 +1,25 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Splash",
-      "Level": 1
-    },
-    {
-      "Move": "Synthesis",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 1
-    },
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Synthesis",
-      "Level": 4
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 7
-    },
-    {
-      "Move": "Tackle",
-      "Level": 10
-    },
-    {
-      "Move": "PoisonPowder",
-      "Level": 12
-    },
-    {
-      "Move": "StunSpore",
-      "Level": 14
-    },
-    {
-      "Move": "SleepPowder",
-      "Level": 16
-    },
-    {
-      "Move": "BulletSeed",
-      "Level": 20
-    },
-    {
-      "Move": "LeechSeed",
-      "Level": 24
-    },
-    {
-      "Move": "MegaDrain",
-      "Level": 29
-    },
-    {
-      "Move": "Acrobatics",
-      "Level": 34
-    },
-    {
-      "Move": "RagePowder",
-      "Level": 39
-    },
-    {
-      "Move": "CottonSpore",
-      "Level": 44
-    },
-    {
-      "Move": "Uturn",
-      "Level": 49
-    },
-    {
-      "Move": "WorrySeed",
-      "Level": 54
-    },
-    {
-      "Move": "GigaDrain",
-      "Level": 59
-    },
-    {
-      "Move": "Bounce",
-      "Level": 64
-    },
-    {
-      "Move": "Memento",
-      "Level": 69
-    }
+    {"Move":"Splash","Level":1},
+    {"Move":"Synthesis","Level":1},
+    {"Move":"TailWhip","Level":1},
+    {"Move":"Tackle","Level":1},
+    {"Move":"Synthesis","Level":4},
+    {"Move":"TailWhip","Level":7},
+    {"Move":"Tackle","Level":10},
+    {"Move":"PoisonPowder","Level":12},
+    {"Move":"StunSpore","Level":14},
+    {"Move":"SleepPowder","Level":16},
+    {"Move":"BulletSeed","Level":20},
+    {"Move":"LeechSeed","Level":24},
+    {"Move":"MegaDrain","Level":29},
+    {"Move":"Acrobatics","Level":34},
+    {"Move":"RagePowder","Level":39},
+    {"Move":"CottonSpore","Level":44},
+    {"Move":"Uturn","Level":49},
+    {"Move":"WorrySeed","Level":54},
+    {"Move":"GigaDrain","Level":59},
+    {"Move":"Bounce","Level":64},
+    {"Move":"Memento","Level":69}
   ]
 }

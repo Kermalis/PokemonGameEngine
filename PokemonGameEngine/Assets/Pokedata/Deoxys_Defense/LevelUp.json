@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Wrap",
-      "Level": 1
-    },
-    {
-      "Move": "NightShade",
-      "Level": 9
-    },
-    {
-      "Move": "Teleport",
-      "Level": 17
-    },
-    {
-      "Move": "KnockOff",
-      "Level": 25
-    },
-    {
-      "Move": "Spikes",
-      "Level": 33
-    },
-    {
-      "Move": "Psychic",
-      "Level": 41
-    },
-    {
-      "Move": "Snatch",
-      "Level": 49
-    },
-    {
-      "Move": "PsychoShift",
-      "Level": 57
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 65
-    },
-    {
-      "Move": "IronDefense",
-      "Level": 73
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 73
-    },
-    {
-      "Move": "Recover",
-      "Level": 81
-    },
-    {
-      "Move": "PsychoBoost",
-      "Level": 89
-    },
-    {
-      "Move": "Counter",
-      "Level": 97
-    },
-    {
-      "Move": "MirrorCoat",
-      "Level": 97
-    }
+    {"Move":"Leer","Level":1},
+    {"Move":"Wrap","Level":1},
+    {"Move":"NightShade","Level":9},
+    {"Move":"Teleport","Level":17},
+    {"Move":"KnockOff","Level":25},
+    {"Move":"Spikes","Level":33},
+    {"Move":"Psychic","Level":41},
+    {"Move":"Snatch","Level":49},
+    {"Move":"PsychoShift","Level":57},
+    {"Move":"ZenHeadbutt","Level":65},
+    {"Move":"IronDefense","Level":73},
+    {"Move":"Amnesia","Level":73},
+    {"Move":"Recover","Level":81},
+    {"Move":"PsychoBoost","Level":89},
+    {"Move":"Counter","Level":97},
+    {"Move":"MirrorCoat","Level":97}
   ]
 }

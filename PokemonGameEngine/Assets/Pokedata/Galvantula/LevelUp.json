@@ -1,72 +1,21 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "StringShot",
-      "Level": 1
-    },
-    {
-      "Move": "LeechLife",
-      "Level": 1
-    },
-    {
-      "Move": "SpiderWeb",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderWave",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderWave",
-      "Level": 4
-    },
-    {
-      "Move": "Screech",
-      "Level": 7
-    },
-    {
-      "Move": "FuryCutter",
-      "Level": 12
-    },
-    {
-      "Move": "Electroweb",
-      "Level": 15
-    },
-    {
-      "Move": "BugBite",
-      "Level": 18
-    },
-    {
-      "Move": "GastroAcid",
-      "Level": 23
-    },
-    {
-      "Move": "Slash",
-      "Level": 26
-    },
-    {
-      "Move": "ElectroBall",
-      "Level": 29
-    },
-    {
-      "Move": "SignalBeam",
-      "Level": 34
-    },
-    {
-      "Move": "Agility",
-      "Level": 40
-    },
-    {
-      "Move": "SuckerPunch",
-      "Level": 46
-    },
-    {
-      "Move": "Discharge",
-      "Level": 54
-    },
-    {
-      "Move": "BugBuzz",
-      "Level": 60
-    }
+    {"Move":"StringShot","Level":1},
+    {"Move":"LeechLife","Level":1},
+    {"Move":"SpiderWeb","Level":1},
+    {"Move":"ThunderWave","Level":1},
+    {"Move":"ThunderWave","Level":4},
+    {"Move":"Screech","Level":7},
+    {"Move":"FuryCutter","Level":12},
+    {"Move":"Electroweb","Level":15},
+    {"Move":"BugBite","Level":18},
+    {"Move":"GastroAcid","Level":23},
+    {"Move":"Slash","Level":26},
+    {"Move":"ElectroBall","Level":29},
+    {"Move":"SignalBeam","Level":34},
+    {"Move":"Agility","Level":40},
+    {"Move":"SuckerPunch","Level":46},
+    {"Move":"Discharge","Level":54},
+    {"Move":"BugBuzz","Level":60}
   ]
 }

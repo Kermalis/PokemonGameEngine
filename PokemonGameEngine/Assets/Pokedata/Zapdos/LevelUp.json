@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Peck",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderShock",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderWave",
-      "Level": 8
-    },
-    {
-      "Move": "Detect",
-      "Level": 15
-    },
-    {
-      "Move": "Pluck",
-      "Level": 22
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 29
-    },
-    {
-      "Move": "Charge",
-      "Level": 36
-    },
-    {
-      "Move": "Agility",
-      "Level": 43
-    },
-    {
-      "Move": "Discharge",
-      "Level": 50
-    },
-    {
-      "Move": "Roost",
-      "Level": 57
-    },
-    {
-      "Move": "LightScreen",
-      "Level": 64
-    },
-    {
-      "Move": "DrillPeck",
-      "Level": 71
-    },
-    {
-      "Move": "Thunder",
-      "Level": 78
-    },
-    {
-      "Move": "RainDance",
-      "Level": 85
-    },
-    {
-      "Move": "ZapCannon",
-      "Level": 92
-    }
+    {"Move":"Peck","Level":1},
+    {"Move":"ThunderShock","Level":1},
+    {"Move":"ThunderWave","Level":8},
+    {"Move":"Detect","Level":15},
+    {"Move":"Pluck","Level":22},
+    {"Move":"AncientPower","Level":29},
+    {"Move":"Charge","Level":36},
+    {"Move":"Agility","Level":43},
+    {"Move":"Discharge","Level":50},
+    {"Move":"Roost","Level":57},
+    {"Move":"LightScreen","Level":64},
+    {"Move":"DrillPeck","Level":71},
+    {"Move":"Thunder","Level":78},
+    {"Move":"RainDance","Level":85},
+    {"Move":"ZapCannon","Level":92}
   ]
 }

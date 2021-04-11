@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Constrict",
-      "Level": 1
-    },
-    {
-      "Move": "Minimize",
-      "Level": 1
-    },
-    {
-      "Move": "Astonish",
-      "Level": 4
-    },
-    {
-      "Move": "Gust",
-      "Level": 8
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 13
-    },
-    {
-      "Move": "Payback",
-      "Level": 16
-    },
-    {
-      "Move": "OminousWind",
-      "Level": 20
-    },
-    {
-      "Move": "Stockpile",
-      "Level": 25
-    },
-    {
-      "Move": "Hex",
-      "Level": 27
-    },
-    {
-      "Move": "Swallow",
-      "Level": 32
-    },
-    {
-      "Move": "SpitUp",
-      "Level": 32
-    },
-    {
-      "Move": "ShadowBall",
-      "Level": 36
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 40
-    },
-    {
-      "Move": "BatonPass",
-      "Level": 44
-    },
-    {
-      "Move": "Explosion",
-      "Level": 50
-    }
+    {"Move":"Constrict","Level":1},
+    {"Move":"Minimize","Level":1},
+    {"Move":"Astonish","Level":4},
+    {"Move":"Gust","Level":8},
+    {"Move":"FocusEnergy","Level":13},
+    {"Move":"Payback","Level":16},
+    {"Move":"OminousWind","Level":20},
+    {"Move":"Stockpile","Level":25},
+    {"Move":"Hex","Level":27},
+    {"Move":"Swallow","Level":32},
+    {"Move":"SpitUp","Level":32},
+    {"Move":"ShadowBall","Level":36},
+    {"Move":"Amnesia","Level":40},
+    {"Move":"BatonPass","Level":44},
+    {"Move":"Explosion","Level":50}
   ]
 }

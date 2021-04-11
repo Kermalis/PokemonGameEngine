@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "MudSport",
-      "Level": 1
-    },
-    {
-      "Move": "RapidSpin",
-      "Level": 5
-    },
-    {
-      "Move": "MudSlap",
-      "Level": 8
-    },
-    {
-      "Move": "FurySwipes",
-      "Level": 12
-    },
-    {
-      "Move": "MetalClaw",
-      "Level": 15
-    },
-    {
-      "Move": "Dig",
-      "Level": 19
-    },
-    {
-      "Move": "HoneClaws",
-      "Level": 22
-    },
-    {
-      "Move": "Slash",
-      "Level": 26
-    },
-    {
-      "Move": "RockSlide",
-      "Level": 29
-    },
-    {
-      "Move": "Earthquake",
-      "Level": 33
-    },
-    {
-      "Move": "SwordsDance",
-      "Level": 36
-    },
-    {
-      "Move": "Sandstorm",
-      "Level": 40
-    },
-    {
-      "Move": "DrillRun",
-      "Level": 43
-    },
-    {
-      "Move": "Fissure",
-      "Level": 47
-    }
+    {"Move":"Scratch","Level":1},
+    {"Move":"MudSport","Level":1},
+    {"Move":"RapidSpin","Level":5},
+    {"Move":"MudSlap","Level":8},
+    {"Move":"FurySwipes","Level":12},
+    {"Move":"MetalClaw","Level":15},
+    {"Move":"Dig","Level":19},
+    {"Move":"HoneClaws","Level":22},
+    {"Move":"Slash","Level":26},
+    {"Move":"RockSlide","Level":29},
+    {"Move":"Earthquake","Level":33},
+    {"Move":"SwordsDance","Level":36},
+    {"Move":"Sandstorm","Level":40},
+    {"Move":"DrillRun","Level":43},
+    {"Move":"Fissure","Level":47}
   ]
 }

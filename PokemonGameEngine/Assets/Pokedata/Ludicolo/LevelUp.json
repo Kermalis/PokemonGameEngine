@@ -1,20 +1,8 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Astonish",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "MegaDrain",
-      "Level": 1
-    },
-    {
-      "Move": "NaturePower",
-      "Level": 1
-    }
+    {"Move":"Astonish","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"MegaDrain","Level":1},
+    {"Move":"NaturePower","Level":1}
   ]
 }

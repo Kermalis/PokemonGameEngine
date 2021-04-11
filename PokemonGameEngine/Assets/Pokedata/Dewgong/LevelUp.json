@@ -1,88 +1,25 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Headbutt",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "SignalBeam",
-      "Level": 1
-    },
-    {
-      "Move": "IcyWind",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 3
-    },
-    {
-      "Move": "SignalBeam",
-      "Level": 7
-    },
-    {
-      "Move": "IcyWind",
-      "Level": 11
-    },
-    {
-      "Move": "Encore",
-      "Level": 13
-    },
-    {
-      "Move": "IceShard",
-      "Level": 17
-    },
-    {
-      "Move": "Rest",
-      "Level": 21
-    },
-    {
-      "Move": "AquaRing",
-      "Level": 23
-    },
-    {
-      "Move": "AuroraBeam",
-      "Level": 27
-    },
-    {
-      "Move": "AquaJet",
-      "Level": 31
-    },
-    {
-      "Move": "Brine",
-      "Level": 33
-    },
-    {
-      "Move": "SheerCold",
-      "Level": 34
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 39
-    },
-    {
-      "Move": "Dive",
-      "Level": 45
-    },
-    {
-      "Move": "AquaTail",
-      "Level": 49
-    },
-    {
-      "Move": "IceBeam",
-      "Level": 55
-    },
-    {
-      "Move": "Safeguard",
-      "Level": 61
-    },
-    {
-      "Move": "Hail",
-      "Level": 65
-    }
+    {"Move":"Headbutt","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"SignalBeam","Level":1},
+    {"Move":"IcyWind","Level":1},
+    {"Move":"Growl","Level":3},
+    {"Move":"SignalBeam","Level":7},
+    {"Move":"IcyWind","Level":11},
+    {"Move":"Encore","Level":13},
+    {"Move":"IceShard","Level":17},
+    {"Move":"Rest","Level":21},
+    {"Move":"AquaRing","Level":23},
+    {"Move":"AuroraBeam","Level":27},
+    {"Move":"AquaJet","Level":31},
+    {"Move":"Brine","Level":33},
+    {"Move":"SheerCold","Level":34},
+    {"Move":"TakeDown","Level":39},
+    {"Move":"Dive","Level":45},
+    {"Move":"AquaTail","Level":49},
+    {"Move":"IceBeam","Level":55},
+    {"Move":"Safeguard","Level":61},
+    {"Move":"Hail","Level":65}
   ]
 }

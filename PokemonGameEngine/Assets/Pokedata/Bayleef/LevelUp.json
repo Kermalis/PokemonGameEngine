@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "RazorLeaf",
-      "Level": 1
-    },
-    {
-      "Move": "PoisonPowder",
-      "Level": 1
-    },
-    {
-      "Move": "RazorLeaf",
-      "Level": 6
-    },
-    {
-      "Move": "PoisonPowder",
-      "Level": 9
-    },
-    {
-      "Move": "Synthesis",
-      "Level": 12
-    },
-    {
-      "Move": "Reflect",
-      "Level": 18
-    },
-    {
-      "Move": "MagicalLeaf",
-      "Level": 22
-    },
-    {
-      "Move": "NaturalGift",
-      "Level": 26
-    },
-    {
-      "Move": "SweetScent",
-      "Level": 32
-    },
-    {
-      "Move": "LightScreen",
-      "Level": 36
-    },
-    {
-      "Move": "BodySlam",
-      "Level": 40
-    },
-    {
-      "Move": "Safeguard",
-      "Level": 46
-    },
-    {
-      "Move": "Aromatherapy",
-      "Level": 50
-    },
-    {
-      "Move": "SolarBeam",
-      "Level": 54
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"RazorLeaf","Level":1},
+    {"Move":"PoisonPowder","Level":1},
+    {"Move":"RazorLeaf","Level":6},
+    {"Move":"PoisonPowder","Level":9},
+    {"Move":"Synthesis","Level":12},
+    {"Move":"Reflect","Level":18},
+    {"Move":"MagicalLeaf","Level":22},
+    {"Move":"NaturalGift","Level":26},
+    {"Move":"SweetScent","Level":32},
+    {"Move":"LightScreen","Level":36},
+    {"Move":"BodySlam","Level":40},
+    {"Move":"Safeguard","Level":46},
+    {"Move":"Aromatherapy","Level":50},
+    {"Move":"SolarBeam","Level":54}
   ]
 }

@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Splash",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 1
-    },
-    {
-      "Move": "Rollout",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 4
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 7
-    },
-    {
-      "Move": "Rollout",
-      "Level": 11
-    },
-    {
-      "Move": "Whirlpool",
-      "Level": 14
-    },
-    {
-      "Move": "Astonish",
-      "Level": 17
-    },
-    {
-      "Move": "WaterPulse",
-      "Level": 21
-    },
-    {
-      "Move": "Mist",
-      "Level": 24
-    },
-    {
-      "Move": "Rest",
-      "Level": 27
-    },
-    {
-      "Move": "Brine",
-      "Level": 31
-    },
-    {
-      "Move": "WaterSpout",
-      "Level": 34
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 37
-    },
-    {
-      "Move": "Dive",
-      "Level": 46
-    },
-    {
-      "Move": "Bounce",
-      "Level": 54
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 62
-    },
-    {
-      "Move": "HeavySlam",
-      "Level": 70
-    }
+    {"Move":"Splash","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"WaterGun","Level":1},
+    {"Move":"Rollout","Level":1},
+    {"Move":"Growl","Level":4},
+    {"Move":"WaterGun","Level":7},
+    {"Move":"Rollout","Level":11},
+    {"Move":"Whirlpool","Level":14},
+    {"Move":"Astonish","Level":17},
+    {"Move":"WaterPulse","Level":21},
+    {"Move":"Mist","Level":24},
+    {"Move":"Rest","Level":27},
+    {"Move":"Brine","Level":31},
+    {"Move":"WaterSpout","Level":34},
+    {"Move":"Amnesia","Level":37},
+    {"Move":"Dive","Level":46},
+    {"Move":"Bounce","Level":54},
+    {"Move":"HydroPump","Level":62},
+    {"Move":"HeavySlam","Level":70}
   ]
 }

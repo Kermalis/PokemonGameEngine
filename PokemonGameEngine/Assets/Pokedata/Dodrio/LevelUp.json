@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pluck",
-      "Level": 1
-    },
-    {
-      "Move": "Peck",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Rage",
-      "Level": 1
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 5
-    },
-    {
-      "Move": "Rage",
-      "Level": 10
-    },
-    {
-      "Move": "FuryAttack",
-      "Level": 14
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 19
-    },
-    {
-      "Move": "Uproar",
-      "Level": 23
-    },
-    {
-      "Move": "Acupressure",
-      "Level": 28
-    },
-    {
-      "Move": "TriAttack",
-      "Level": 34
-    },
-    {
-      "Move": "Agility",
-      "Level": 41
-    },
-    {
-      "Move": "DrillPeck",
-      "Level": 47
-    },
-    {
-      "Move": "Endeavor",
-      "Level": 54
-    },
-    {
-      "Move": "Thrash",
-      "Level": 60
-    }
+    {"Move":"Pluck","Level":1},
+    {"Move":"Peck","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"QuickAttack","Level":1},
+    {"Move":"Rage","Level":1},
+    {"Move":"QuickAttack","Level":5},
+    {"Move":"Rage","Level":10},
+    {"Move":"FuryAttack","Level":14},
+    {"Move":"Pursuit","Level":19},
+    {"Move":"Uproar","Level":23},
+    {"Move":"Acupressure","Level":28},
+    {"Move":"TriAttack","Level":34},
+    {"Move":"Agility","Level":41},
+    {"Move":"DrillPeck","Level":47},
+    {"Move":"Endeavor","Level":54},
+    {"Move":"Thrash","Level":60}
   ]
 }

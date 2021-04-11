@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Pound",
-      "Level": 1
-    },
-    {
-      "Move": "ReflectType",
-      "Level": 1
-    },
-    {
-      "Move": "Transform",
-      "Level": 1
-    },
-    {
-      "Move": "MegaPunch",
-      "Level": 10
-    },
-    {
-      "Move": "Metronome",
-      "Level": 20
-    },
-    {
-      "Move": "Psychic",
-      "Level": 30
-    },
-    {
-      "Move": "Barrier",
-      "Level": 40
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 50
-    },
-    {
-      "Move": "Amnesia",
-      "Level": 60
-    },
-    {
-      "Move": "MeFirst",
-      "Level": 70
-    },
-    {
-      "Move": "BatonPass",
-      "Level": 80
-    },
-    {
-      "Move": "NastyPlot",
-      "Level": 90
-    },
-    {
-      "Move": "AuraSphere",
-      "Level": 100
-    }
+    {"Move":"Pound","Level":1},
+    {"Move":"ReflectType","Level":1},
+    {"Move":"Transform","Level":1},
+    {"Move":"MegaPunch","Level":10},
+    {"Move":"Metronome","Level":20},
+    {"Move":"Psychic","Level":30},
+    {"Move":"Barrier","Level":40},
+    {"Move":"AncientPower","Level":50},
+    {"Move":"Amnesia","Level":60},
+    {"Move":"MeFirst","Level":70},
+    {"Move":"BatonPass","Level":80},
+    {"Move":"NastyPlot","Level":90},
+    {"Move":"AuraSphere","Level":100}
   ]
 }

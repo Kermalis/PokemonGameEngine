@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "QuickAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderShock",
-      "Level": 1
-    },
-    {
-      "Move": "ThunderShock",
-      "Level": 5
-    },
-    {
-      "Move": "LowKick",
-      "Level": 8
-    },
-    {
-      "Move": "Swift",
-      "Level": 12
-    },
-    {
-      "Move": "ShockWave",
-      "Level": 15
-    },
-    {
-      "Move": "ThunderWave",
-      "Level": 19
-    },
-    {
-      "Move": "ElectroBall",
-      "Level": 22
-    },
-    {
-      "Move": "LightScreen",
-      "Level": 26
-    },
-    {
-      "Move": "ThunderPunch",
-      "Level": 29
-    },
-    {
-      "Move": "Discharge",
-      "Level": 36
-    },
-    {
-      "Move": "Screech",
-      "Level": 42
-    },
-    {
-      "Move": "Thunderbolt",
-      "Level": 49
-    },
-    {
-      "Move": "Thunder",
-      "Level": 55
-    }
+    {"Move":"QuickAttack","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"ThunderShock","Level":1},
+    {"Move":"ThunderShock","Level":5},
+    {"Move":"LowKick","Level":8},
+    {"Move":"Swift","Level":12},
+    {"Move":"ShockWave","Level":15},
+    {"Move":"ThunderWave","Level":19},
+    {"Move":"ElectroBall","Level":22},
+    {"Move":"LightScreen","Level":26},
+    {"Move":"ThunderPunch","Level":29},
+    {"Move":"Discharge","Level":36},
+    {"Move":"Screech","Level":42},
+    {"Move":"Thunderbolt","Level":49},
+    {"Move":"Thunder","Level":55}
   ]
 }

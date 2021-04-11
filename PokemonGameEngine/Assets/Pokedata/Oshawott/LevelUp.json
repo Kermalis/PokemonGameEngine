@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 5
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 7
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 11
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 13
-    },
-    {
-      "Move": "RazorShell",
-      "Level": 17
-    },
-    {
-      "Move": "FuryCutter",
-      "Level": 19
-    },
-    {
-      "Move": "WaterPulse",
-      "Level": 23
-    },
-    {
-      "Move": "Revenge",
-      "Level": 25
-    },
-    {
-      "Move": "AquaJet",
-      "Level": 29
-    },
-    {
-      "Move": "Encore",
-      "Level": 31
-    },
-    {
-      "Move": "AquaTail",
-      "Level": 35
-    },
-    {
-      "Move": "Retaliate",
-      "Level": 37
-    },
-    {
-      "Move": "SwordsDance",
-      "Level": 41
-    },
-    {
-      "Move": "HydroPump",
-      "Level": 43
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"TailWhip","Level":5},
+    {"Move":"WaterGun","Level":7},
+    {"Move":"WaterSport","Level":11},
+    {"Move":"FocusEnergy","Level":13},
+    {"Move":"RazorShell","Level":17},
+    {"Move":"FuryCutter","Level":19},
+    {"Move":"WaterPulse","Level":23},
+    {"Move":"Revenge","Level":25},
+    {"Move":"AquaJet","Level":29},
+    {"Move":"Encore","Level":31},
+    {"Move":"AquaTail","Level":35},
+    {"Move":"Retaliate","Level":37},
+    {"Move":"SwordsDance","Level":41},
+    {"Move":"HydroPump","Level":43}
   ]
 }

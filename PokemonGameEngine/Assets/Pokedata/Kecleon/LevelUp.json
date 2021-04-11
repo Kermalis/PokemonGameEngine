@@ -1,76 +1,22 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Thief",
-      "Level": 1
-    },
-    {
-      "Move": "TailWhip",
-      "Level": 1
-    },
-    {
-      "Move": "Astonish",
-      "Level": 1
-    },
-    {
-      "Move": "Lick",
-      "Level": 1
-    },
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "Bind",
-      "Level": 4
-    },
-    {
-      "Move": "FaintAttack",
-      "Level": 7
-    },
-    {
-      "Move": "FurySwipes",
-      "Level": 10
-    },
-    {
-      "Move": "Feint",
-      "Level": 14
-    },
-    {
-      "Move": "Psybeam",
-      "Level": 18
-    },
-    {
-      "Move": "ShadowSneak",
-      "Level": 22
-    },
-    {
-      "Move": "Slash",
-      "Level": 27
-    },
-    {
-      "Move": "Screech",
-      "Level": 32
-    },
-    {
-      "Move": "Substitute",
-      "Level": 37
-    },
-    {
-      "Move": "SuckerPunch",
-      "Level": 43
-    },
-    {
-      "Move": "ShadowClaw",
-      "Level": 49
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 55
-    },
-    {
-      "Move": "Synchronoise",
-      "Level": 58
-    }
+    {"Move":"Thief","Level":1},
+    {"Move":"TailWhip","Level":1},
+    {"Move":"Astonish","Level":1},
+    {"Move":"Lick","Level":1},
+    {"Move":"Scratch","Level":1},
+    {"Move":"Bind","Level":4},
+    {"Move":"FaintAttack","Level":7},
+    {"Move":"FurySwipes","Level":10},
+    {"Move":"Feint","Level":14},
+    {"Move":"Psybeam","Level":18},
+    {"Move":"ShadowSneak","Level":22},
+    {"Move":"Slash","Level":27},
+    {"Move":"Screech","Level":32},
+    {"Move":"Substitute","Level":37},
+    {"Move":"SuckerPunch","Level":43},
+    {"Move":"ShadowClaw","Level":49},
+    {"Move":"AncientPower","Level":55},
+    {"Move":"Synchronoise","Level":58}
   ]
 }

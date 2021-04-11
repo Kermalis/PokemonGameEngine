@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "Growl",
-      "Level": 1
-    },
-    {
-      "Move": "MudSlap",
-      "Level": 1
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 1
-    },
-    {
-      "Move": "MudSlap",
-      "Level": 6
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 10
-    },
-    {
-      "Move": "Bide",
-      "Level": 15
-    },
-    {
-      "Move": "MudShot",
-      "Level": 16
-    },
-    {
-      "Move": "Foresight",
-      "Level": 20
-    },
-    {
-      "Move": "MudBomb",
-      "Level": 25
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 31
-    },
-    {
-      "Move": "MuddyWater",
-      "Level": 39
-    },
-    {
-      "Move": "Protect",
-      "Level": 46
-    },
-    {
-      "Move": "Earthquake",
-      "Level": 52
-    },
-    {
-      "Move": "Endeavor",
-      "Level": 61
-    },
-    {
-      "Move": "HammerArm",
-      "Level": 69
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"Growl","Level":1},
+    {"Move":"MudSlap","Level":1},
+    {"Move":"WaterGun","Level":1},
+    {"Move":"MudSlap","Level":6},
+    {"Move":"WaterGun","Level":10},
+    {"Move":"Bide","Level":15},
+    {"Move":"MudShot","Level":16},
+    {"Move":"Foresight","Level":20},
+    {"Move":"MudBomb","Level":25},
+    {"Move":"TakeDown","Level":31},
+    {"Move":"MuddyWater","Level":39},
+    {"Move":"Protect","Level":46},
+    {"Move":"Earthquake","Level":52},
+    {"Move":"Endeavor","Level":61},
+    {"Move":"HammerArm","Level":69}
   ]
 }

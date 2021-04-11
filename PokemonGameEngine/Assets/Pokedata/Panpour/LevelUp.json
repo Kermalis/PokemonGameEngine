@@ -1,64 +1,19 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Scratch",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 4
-    },
-    {
-      "Move": "Lick",
-      "Level": 7
-    },
-    {
-      "Move": "WaterGun",
-      "Level": 10
-    },
-    {
-      "Move": "FurySwipes",
-      "Level": 13
-    },
-    {
-      "Move": "WaterSport",
-      "Level": 16
-    },
-    {
-      "Move": "Bite",
-      "Level": 19
-    },
-    {
-      "Move": "Scald",
-      "Level": 22
-    },
-    {
-      "Move": "Taunt",
-      "Level": 25
-    },
-    {
-      "Move": "Fling",
-      "Level": 28
-    },
-    {
-      "Move": "Acrobatics",
-      "Level": 31
-    },
-    {
-      "Move": "Brine",
-      "Level": 34
-    },
-    {
-      "Move": "Recycle",
-      "Level": 37
-    },
-    {
-      "Move": "NaturalGift",
-      "Level": 40
-    },
-    {
-      "Move": "Crunch",
-      "Level": 43
-    }
+    {"Move":"Scratch","Level":1},
+    {"Move":"Leer","Level":4},
+    {"Move":"Lick","Level":7},
+    {"Move":"WaterGun","Level":10},
+    {"Move":"FurySwipes","Level":13},
+    {"Move":"WaterSport","Level":16},
+    {"Move":"Bite","Level":19},
+    {"Move":"Scald","Level":22},
+    {"Move":"Taunt","Level":25},
+    {"Move":"Fling","Level":28},
+    {"Move":"Acrobatics","Level":31},
+    {"Move":"Brine","Level":34},
+    {"Move":"Recycle","Level":37},
+    {"Move":"NaturalGift","Level":40},
+    {"Move":"Crunch","Level":43}
   ]
 }

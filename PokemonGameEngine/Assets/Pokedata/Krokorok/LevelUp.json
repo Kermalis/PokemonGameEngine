@@ -1,80 +1,23 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "Rage",
-      "Level": 1
-    },
-    {
-      "Move": "Bite",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Bite",
-      "Level": 4
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 7
-    },
-    {
-      "Move": "Torment",
-      "Level": 10
-    },
-    {
-      "Move": "SandTomb",
-      "Level": 13
-    },
-    {
-      "Move": "Assurance",
-      "Level": 16
-    },
-    {
-      "Move": "MudSlap",
-      "Level": 19
-    },
-    {
-      "Move": "Embargo",
-      "Level": 22
-    },
-    {
-      "Move": "Swagger",
-      "Level": 25
-    },
-    {
-      "Move": "Crunch",
-      "Level": 28
-    },
-    {
-      "Move": "Dig",
-      "Level": 32
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 36
-    },
-    {
-      "Move": "FoulPlay",
-      "Level": 40
-    },
-    {
-      "Move": "Sandstorm",
-      "Level": 44
-    },
-    {
-      "Move": "Earthquake",
-      "Level": 48
-    },
-    {
-      "Move": "Thrash",
-      "Level": 52
-    }
+    {"Move":"Leer","Level":1},
+    {"Move":"Rage","Level":1},
+    {"Move":"Bite","Level":1},
+    {"Move":"SandAttack","Level":1},
+    {"Move":"Bite","Level":4},
+    {"Move":"SandAttack","Level":7},
+    {"Move":"Torment","Level":10},
+    {"Move":"SandTomb","Level":13},
+    {"Move":"Assurance","Level":16},
+    {"Move":"MudSlap","Level":19},
+    {"Move":"Embargo","Level":22},
+    {"Move":"Swagger","Level":25},
+    {"Move":"Crunch","Level":28},
+    {"Move":"Dig","Level":32},
+    {"Move":"ScaryFace","Level":36},
+    {"Move":"FoulPlay","Level":40},
+    {"Move":"Sandstorm","Level":44},
+    {"Move":"Earthquake","Level":48},
+    {"Move":"Thrash","Level":52}
   ]
 }

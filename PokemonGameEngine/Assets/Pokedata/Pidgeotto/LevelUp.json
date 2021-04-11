@@ -1,68 +1,20 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Tackle",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 1
-    },
-    {
-      "Move": "Gust",
-      "Level": 1
-    },
-    {
-      "Move": "SandAttack",
-      "Level": 5
-    },
-    {
-      "Move": "Gust",
-      "Level": 9
-    },
-    {
-      "Move": "QuickAttack",
-      "Level": 13
-    },
-    {
-      "Move": "Whirlwind",
-      "Level": 17
-    },
-    {
-      "Move": "Twister",
-      "Level": 22
-    },
-    {
-      "Move": "FeatherDance",
-      "Level": 27
-    },
-    {
-      "Move": "Agility",
-      "Level": 32
-    },
-    {
-      "Move": "WingAttack",
-      "Level": 37
-    },
-    {
-      "Move": "Roost",
-      "Level": 42
-    },
-    {
-      "Move": "Tailwind",
-      "Level": 47
-    },
-    {
-      "Move": "MirrorMove",
-      "Level": 52
-    },
-    {
-      "Move": "AirSlash",
-      "Level": 57
-    },
-    {
-      "Move": "Hurricane",
-      "Level": 62
-    }
+    {"Move":"Tackle","Level":1},
+    {"Move":"SandAttack","Level":1},
+    {"Move":"Gust","Level":1},
+    {"Move":"SandAttack","Level":5},
+    {"Move":"Gust","Level":9},
+    {"Move":"QuickAttack","Level":13},
+    {"Move":"Whirlwind","Level":17},
+    {"Move":"Twister","Level":22},
+    {"Move":"FeatherDance","Level":27},
+    {"Move":"Agility","Level":32},
+    {"Move":"WingAttack","Level":37},
+    {"Move":"Roost","Level":42},
+    {"Move":"Tailwind","Level":47},
+    {"Move":"MirrorMove","Level":52},
+    {"Move":"AirSlash","Level":57},
+    {"Move":"Hurricane","Level":62}
   ]
 }

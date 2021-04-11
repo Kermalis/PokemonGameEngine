@@ -1,56 +1,17 @@
 {
   "LevelUpMoves": [
-    {
-      "Move": "Headbutt",
-      "Level": 1
-    },
-    {
-      "Move": "Leer",
-      "Level": 1
-    },
-    {
-      "Move": "FocusEnergy",
-      "Level": 6
-    },
-    {
-      "Move": "Pursuit",
-      "Level": 10
-    },
-    {
-      "Move": "TakeDown",
-      "Level": 15
-    },
-    {
-      "Move": "ScaryFace",
-      "Level": 19
-    },
-    {
-      "Move": "Assurance",
-      "Level": 24
-    },
-    {
-      "Move": "ChipAway",
-      "Level": 28
-    },
-    {
-      "Move": "Endeavor",
-      "Level": 30
-    },
-    {
-      "Move": "AncientPower",
-      "Level": 36
-    },
-    {
-      "Move": "ZenHeadbutt",
-      "Level": 43
-    },
-    {
-      "Move": "Screech",
-      "Level": 51
-    },
-    {
-      "Move": "HeadSmash",
-      "Level": 58
-    }
+    {"Move":"Headbutt","Level":1},
+    {"Move":"Leer","Level":1},
+    {"Move":"FocusEnergy","Level":6},
+    {"Move":"Pursuit","Level":10},
+    {"Move":"TakeDown","Level":15},
+    {"Move":"ScaryFace","Level":19},
+    {"Move":"Assurance","Level":24},
+    {"Move":"ChipAway","Level":28},
+    {"Move":"Endeavor","Level":30},
+    {"Move":"AncientPower","Level":36},
+    {"Move":"ZenHeadbutt","Level":43},
+    {"Move":"Screech","Level":51},
+    {"Move":"HeadSmash","Level":58}
   ]
 }
