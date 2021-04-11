@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Gible",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 48,
+      "Species": "Garchomp",
+      "Form": null
+    }
+  ]
+}

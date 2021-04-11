@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Pichu",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "Thunderstone",
+      "Species": "Raichu",
+      "Form": null
+    }
+  ]
+}

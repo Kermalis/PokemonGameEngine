@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Oshawott",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 17,
+      "Species": "Dewott",
+      "Form": null
+    }
+  ]
+}

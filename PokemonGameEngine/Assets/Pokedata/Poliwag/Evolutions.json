@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Poliwag",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 25,
+      "Species": "Poliwhirl",
+      "Form": null
+    }
+  ]
+}

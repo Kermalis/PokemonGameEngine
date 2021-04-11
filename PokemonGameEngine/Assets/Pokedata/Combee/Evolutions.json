@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Combee",
+  "Evolutions": [
+    {
+      "Method": "Female_LevelUp",
+      "LevelRequired": 21,
+      "Species": "Vespiquen",
+      "Form": null
+    }
+  ]
+}

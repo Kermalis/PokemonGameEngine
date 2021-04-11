@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Elekid",
+  "Evolutions": [
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "Electirizer",
+      "Species": "Electivire",
+      "Form": null
+    }
+  ]
+}

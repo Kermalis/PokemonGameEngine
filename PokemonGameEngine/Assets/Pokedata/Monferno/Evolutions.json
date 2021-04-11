@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Chimchar",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Infernape",
+      "Form": null
+    }
+  ]
+}

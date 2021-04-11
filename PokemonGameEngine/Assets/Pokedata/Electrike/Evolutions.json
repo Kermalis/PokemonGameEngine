@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Electrike",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 26,
+      "Species": "Manectric",
+      "Form": null
+    }
+  ]
+}

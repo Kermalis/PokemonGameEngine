@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Happiny",
+  "Evolutions": [
+    {
+      "Method": "Friendship_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Blissey",
+      "Form": null
+    }
+  ]
+}

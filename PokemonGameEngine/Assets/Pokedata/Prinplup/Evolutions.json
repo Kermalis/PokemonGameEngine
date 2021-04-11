@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Piplup",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Empoleon",
+      "Form": null
+    }
+  ]
+}

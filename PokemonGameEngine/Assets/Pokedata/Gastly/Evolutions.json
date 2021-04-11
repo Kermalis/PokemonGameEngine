@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Gastly",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 25,
+      "Species": "Haunter",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Darumaka",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 35,
+      "Species": "Darmanitan",
+      "Form": "Darmanitan"
+    }
+  ]
+}

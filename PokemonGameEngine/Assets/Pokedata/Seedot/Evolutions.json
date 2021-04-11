@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Seedot",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 14,
+      "Species": "Nuzleaf",
+      "Form": null
+    }
+  ]
+}

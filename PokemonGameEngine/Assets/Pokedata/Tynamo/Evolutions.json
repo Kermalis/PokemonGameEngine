@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Tynamo",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 39,
+      "Species": "Eelektrik",
+      "Form": null
+    }
+  ]
+}

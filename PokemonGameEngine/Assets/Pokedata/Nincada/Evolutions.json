@@ -1,0 +1,17 @@
+{
+  "BabySpecies": "Nincada",
+  "Evolutions": [
+    {
+      "Method": "Ninjask_LevelUp",
+      "LevelRequired": 20,
+      "Species": "Ninjask",
+      "Form": null
+    },
+    {
+      "Method": "Shedinja_LevelUp",
+      "LevelRequired": 20,
+      "Species": "Shedinja",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Torchic",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Blaziken",
+      "Form": null
+    }
+  ]
+}

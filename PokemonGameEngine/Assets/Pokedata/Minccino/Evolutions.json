@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Minccino",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "ShinyStone",
+      "Species": "Cinccino",
+      "Form": null
+    }
+  ]
+}

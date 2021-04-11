@@ -16,8 +16,6 @@ namespace Kermalis.PokemonGameEngine.Core
         private bool _isSurfing;
         private bool _isUnderwater;
 
-        // TODO: Moon ball
-
         public void UpdateBattleSetting(bool isCave, bool isDarkGrass, bool isFishing, bool isSurfing, bool isUnderwater)
         {
             _isCave = isCave;
@@ -65,17 +63,46 @@ namespace Kermalis.PokemonGameEngine.Core
             return _isUnderwater;
         }
 
-        /*public override bool HasEvolutions(PBESpecies species, PBEForm form, bool cache = true)
+        public override bool IsMoonBallFamily(PBESpecies species, PBEForm form)
         {
-            return base.HasEvolutions(species, form, cache);
-        }*/
+            bool Check(EvolutionData data)
+            {
+                foreach (EvolutionData.EvoData e in data.Evolutions)
+                {
+                    if (e.Method == EvoMethod.Stone && e.Param == (ushort)PBEItem.MoonStone)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            // Check if this species and its future evolutions evolve by moon stone
+            var inData = new EvolutionData(species, form);
+            if (Check(inData))
+            {
+                return true;
+            }
+            // Check if baby species is a prior evolution and that prior evolution evolves by moon stone
+            var babyData = new EvolutionData(inData.BabySpecies, 0);
+            if (babyData.IsSpeciesFutureEvo(species) && Check(babyData))
+            {
+                return true;
+            }
+            return false;
+        }
+        public override bool HasEvolutions(PBESpecies species, PBEForm form, bool cache = true)
+        {
+            return new EvolutionData(species, form).Evolutions.Length > 0;
+        }
         public override IPBEPokemonData GetPokemonData(PBESpecies species, PBEForm form, bool cache = true)
         {
             return new BaseStats(species, form);
         }
+        // This can be removed once moves are built
         /*public override IPBEPokemonDataExtended GetPokemonDataExtended(PBESpecies species, PBEForm form, bool cache = true)
         {
-            throw new NotImplementedException(); // Never allow
+            throw new InvalidOperationException(); // By default I won't use these systems
         }*/
     }
 }

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Misdreavus",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "DuskStone",
+      "Species": "Mismagius",
+      "Form": null
+    }
+  ]
+}

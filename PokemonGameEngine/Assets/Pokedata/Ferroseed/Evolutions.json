@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Ferroseed",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 40,
+      "Species": "Ferrothorn",
+      "Form": null
+    }
+  ]
+}

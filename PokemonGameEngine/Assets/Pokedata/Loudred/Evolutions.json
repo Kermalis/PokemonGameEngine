@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Whismur",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 40,
+      "Species": "Exploud",
+      "Form": null
+    }
+  ]
+}

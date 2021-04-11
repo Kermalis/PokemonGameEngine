@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Vulpix",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "FireStone",
+      "Species": "Ninetales",
+      "Form": null
+    }
+  ]
+}

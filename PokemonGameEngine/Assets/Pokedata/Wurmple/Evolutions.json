@@ -1,0 +1,17 @@
+{
+  "BabySpecies": "Wurmple",
+  "Evolutions": [
+    {
+      "Method": "Silcoon_LevelUp",
+      "LevelRequired": 7,
+      "Species": "Silcoon",
+      "Form": null
+    },
+    {
+      "Method": "Cascoon_LevelUp",
+      "LevelRequired": 7,
+      "Species": "Cascoon",
+      "Form": null
+    }
+  ]
+}

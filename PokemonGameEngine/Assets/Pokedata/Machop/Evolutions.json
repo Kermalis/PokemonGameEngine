@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Machop",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 28,
+      "Species": "Machoke",
+      "Form": null
+    }
+  ]
+}

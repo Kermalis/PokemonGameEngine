@@ -1,0 +1,17 @@
+{
+  "BabySpecies": "Poliwag",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "WaterStone",
+      "Species": "Poliwrath",
+      "Form": null
+    },
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "KingsRock",
+      "Species": "Politoed",
+      "Form": null
+    }
+  ]
+}

@@ -78,6 +78,7 @@ namespace Kermalis.PokemonDumper
             public PBEAbility AbilityH;
             public List<(PBEMove Move, byte Level)> LevelUpMoves = new List<(PBEMove, byte)>();
             public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
+            public PBESpecies BabySpecies;
             public (EvoMethod Method, ushort Param, PBESpecies Species, PBEForm Form)[] Evolutions = new (EvoMethod, ushort, PBESpecies, PBEForm)[7];
         }
 

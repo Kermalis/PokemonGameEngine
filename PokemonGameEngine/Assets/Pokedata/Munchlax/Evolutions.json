@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Munchlax",
+  "Evolutions": [
+    {
+      "Method": "Friendship_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Snorlax",
+      "Form": null
+    }
+  ]
+}

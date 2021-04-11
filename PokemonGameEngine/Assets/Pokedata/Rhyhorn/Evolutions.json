@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Rhyhorn",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 42,
+      "Species": "Rhydon",
+      "Form": null
+    }
+  ]
+}

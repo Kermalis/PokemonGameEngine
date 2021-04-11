@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Aron",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 42,
+      "Species": "Aggron",
+      "Form": null
+    }
+  ]
+}

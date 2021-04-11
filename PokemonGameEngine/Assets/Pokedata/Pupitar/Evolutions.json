@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Larvitar",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 55,
+      "Species": "Tyranitar",
+      "Form": null
+    }
+  ]
+}

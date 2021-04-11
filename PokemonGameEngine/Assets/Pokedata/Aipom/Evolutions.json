@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Aipom",
+  "Evolutions": [
+    {
+      "Method": "Move_LevelUp",
+      "MoveRequired": "DoubleHit",
+      "Species": "Ambipom",
+      "Form": null
+    }
+  ]
+}

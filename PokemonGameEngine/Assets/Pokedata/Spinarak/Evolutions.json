@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Spinarak",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 22,
+      "Species": "Ariados",
+      "Form": null
+    }
+  ]
+}

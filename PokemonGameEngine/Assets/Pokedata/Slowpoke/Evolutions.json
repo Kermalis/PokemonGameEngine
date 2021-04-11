@@ -1,0 +1,17 @@
+{
+  "BabySpecies": "Slowpoke",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 37,
+      "Species": "Slowbro",
+      "Form": null
+    },
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "KingsRock",
+      "Species": "Slowking",
+      "Form": null
+    }
+  ]
+}

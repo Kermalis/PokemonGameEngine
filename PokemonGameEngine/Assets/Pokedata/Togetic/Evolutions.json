@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Togepi",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "ShinyStone",
+      "Species": "Togekiss",
+      "Form": null
+    }
+  ]
+}

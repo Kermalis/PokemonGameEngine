@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Woobat",
+  "Evolutions": [
+    {
+      "Method": "Friendship_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Swoobat",
+      "Form": null
+    }
+  ]
+}

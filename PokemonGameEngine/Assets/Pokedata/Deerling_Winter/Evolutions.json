@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Deerling",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 34,
+      "Species": "Sawsbuck",
+      "Form": "Sawsbuck_Winter"
+    }
+  ]
+}

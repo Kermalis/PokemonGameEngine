@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Poochyena",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 18,
+      "Species": "Mightyena",
+      "Form": null
+    }
+  ]
+}

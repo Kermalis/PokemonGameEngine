@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Drowzee",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 26,
+      "Species": "Hypno",
+      "Form": null
+    }
+  ]
+}

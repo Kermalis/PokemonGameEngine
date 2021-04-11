@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Deino",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 64,
+      "Species": "Hydreigon",
+      "Form": null
+    }
+  ]
+}

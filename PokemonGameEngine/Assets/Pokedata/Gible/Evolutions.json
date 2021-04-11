@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Gible",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 24,
+      "Species": "Gabite",
+      "Form": null
+    }
+  ]
+}

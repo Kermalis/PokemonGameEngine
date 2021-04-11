@@ -1,0 +1,17 @@
+{
+  "BabySpecies": "Snorunt",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 42,
+      "Species": "Glalie",
+      "Form": null
+    },
+    {
+      "Method": "Female_Stone",
+      "ItemRequired": "DawnStone",
+      "Species": "Froslass",
+      "Form": null
+    }
+  ]
+}

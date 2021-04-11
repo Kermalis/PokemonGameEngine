@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Oddish",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 21,
+      "Species": "Gloom",
+      "Form": null
+    }
+  ]
+}

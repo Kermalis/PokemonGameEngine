@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Snubbull",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 23,
+      "Species": "Granbull",
+      "Form": null
+    }
+  ]
+}

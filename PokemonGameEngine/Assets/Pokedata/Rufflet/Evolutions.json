@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Rufflet",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 54,
+      "Species": "Braviary",
+      "Form": null
+    }
+  ]
+}

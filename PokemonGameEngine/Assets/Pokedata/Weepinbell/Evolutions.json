@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Bellsprout",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "LeafStone",
+      "Species": "Victreebel",
+      "Form": null
+    }
+  ]
+}

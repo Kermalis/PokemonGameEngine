@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Munna",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "MoonStone",
+      "Species": "Musharna",
+      "Form": null
+    }
+  ]
+}

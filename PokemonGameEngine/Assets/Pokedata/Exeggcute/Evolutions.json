@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Exeggcute",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "LeafStone",
+      "Species": "Exeggutor",
+      "Form": null
+    }
+  ]
+}

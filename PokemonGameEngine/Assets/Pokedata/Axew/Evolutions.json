@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Axew",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 38,
+      "Species": "Fraxure",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Vullaby",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 54,
+      "Species": "Mandibuzz",
+      "Form": null
+    }
+  ]
+}

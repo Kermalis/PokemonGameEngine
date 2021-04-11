@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Panpour",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "WaterStone",
+      "Species": "Simipour",
+      "Form": null
+    }
+  ]
+}

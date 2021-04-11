@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Doduo",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 31,
+      "Species": "Dodrio",
+      "Form": null
+    }
+  ]
+}

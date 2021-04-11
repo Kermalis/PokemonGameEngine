@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Joltik",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Galvantula",
+      "Form": null
+    }
+  ]
+}

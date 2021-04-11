@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Happiny",
+  "Evolutions": [
+    {
+      "Method": "Item_Day_LevelUp",
+      "ItemRequired": "OvalStone",
+      "Species": "Chansey",
+      "Form": null
+    }
+  ]
+}

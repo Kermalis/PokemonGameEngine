@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Gligar",
+  "Evolutions": [
+    {
+      "Method": "Item_Night_LevelUp",
+      "ItemRequired": "RazorFang",
+      "Species": "Gliscor",
+      "Form": null
+    }
+  ]
+}

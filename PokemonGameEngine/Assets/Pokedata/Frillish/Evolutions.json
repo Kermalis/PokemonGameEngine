@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Frillish",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 40,
+      "Species": "Jellicent",
+      "Form": null
+    }
+  ]
+}

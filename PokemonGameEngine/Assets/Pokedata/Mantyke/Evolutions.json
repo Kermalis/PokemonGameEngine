@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Mantyke",
+  "Evolutions": [
+    {
+      "Method": "PartySpecies_LevelUp",
+      "SpeciesRequired": "Remoraid",
+      "Species": "Mantine",
+      "Form": null
+    }
+  ]
+}

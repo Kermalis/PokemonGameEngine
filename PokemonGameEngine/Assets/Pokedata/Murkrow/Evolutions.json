@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Murkrow",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "DuskStone",
+      "Species": "Honchkrow",
+      "Form": null
+    }
+  ]
+}

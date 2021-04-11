@@ -1,0 +1,10 @@
+{
+  "BabySpecies": "Shelmet",
+  "Evolutions": [
+    {
+      "Method": "ShelmetKarrablast",
+      "Species": "Accelgor",
+      "Form": null
+    }
+  ]
+}

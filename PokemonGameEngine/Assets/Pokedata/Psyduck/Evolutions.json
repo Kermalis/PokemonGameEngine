@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Psyduck",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 33,
+      "Species": "Golduck",
+      "Form": null
+    }
+  ]
+}

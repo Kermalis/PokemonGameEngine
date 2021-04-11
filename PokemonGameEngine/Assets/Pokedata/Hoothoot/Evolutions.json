@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Hoothoot",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 20,
+      "Species": "Noctowl",
+      "Form": null
+    }
+  ]
+}

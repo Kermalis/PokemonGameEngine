@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Venonat",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 31,
+      "Species": "Venomoth",
+      "Form": null
+    }
+  ]
+}

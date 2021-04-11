@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Lotad",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "WaterStone",
+      "Species": "Ludicolo",
+      "Form": null
+    }
+  ]
+}

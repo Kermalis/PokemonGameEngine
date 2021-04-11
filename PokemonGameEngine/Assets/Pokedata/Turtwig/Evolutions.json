@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Turtwig",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 18,
+      "Species": "Grotle",
+      "Form": null
+    }
+  ]
+}

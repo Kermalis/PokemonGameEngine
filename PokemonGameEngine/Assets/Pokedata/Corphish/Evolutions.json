@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Corphish",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Crawdaunt",
+      "Form": null
+    }
+  ]
+}

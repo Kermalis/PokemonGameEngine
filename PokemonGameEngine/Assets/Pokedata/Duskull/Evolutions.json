@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Duskull",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 37,
+      "Species": "Dusclops",
+      "Form": null
+    }
+  ]
+}

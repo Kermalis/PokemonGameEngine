@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Wingull",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 25,
+      "Species": "Pelipper",
+      "Form": null
+    }
+  ]
+}

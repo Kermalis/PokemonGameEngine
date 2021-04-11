@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Piplup",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 16,
+      "Species": "Prinplup",
+      "Form": null
+    }
+  ]
+}

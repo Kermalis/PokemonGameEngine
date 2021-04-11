@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Tangela",
+  "Evolutions": [
+    {
+      "Method": "Move_LevelUp",
+      "MoveRequired": "AncientPower",
+      "Species": "Tangrowth",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Zorua",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Zoroark",
+      "Form": null
+    }
+  ]
+}

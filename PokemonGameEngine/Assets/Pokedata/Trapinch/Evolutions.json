@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Trapinch",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 35,
+      "Species": "Vibrava",
+      "Form": null
+    }
+  ]
+}

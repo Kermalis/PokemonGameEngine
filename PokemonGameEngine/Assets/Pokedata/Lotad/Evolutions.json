@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Lotad",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 14,
+      "Species": "Lombre",
+      "Form": null
+    }
+  ]
+}

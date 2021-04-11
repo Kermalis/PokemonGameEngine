@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Elekid",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Electabuzz",
+      "Form": null
+    }
+  ]
+}

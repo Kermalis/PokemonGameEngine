@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Charmander",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Charizard",
+      "Form": null
+    }
+  ]
+}

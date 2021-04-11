@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Pidove",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 21,
+      "Species": "Tranquill",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Baltoy",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Claydol",
+      "Form": null
+    }
+  ]
+}

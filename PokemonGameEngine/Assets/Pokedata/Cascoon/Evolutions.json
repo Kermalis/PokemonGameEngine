@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Wurmple",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 10,
+      "Species": "Dustox",
+      "Form": null
+    }
+  ]
+}

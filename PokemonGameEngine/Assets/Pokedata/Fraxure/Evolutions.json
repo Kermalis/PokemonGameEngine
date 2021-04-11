@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Axew",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 48,
+      "Species": "Haxorus",
+      "Form": null
+    }
+  ]
+}

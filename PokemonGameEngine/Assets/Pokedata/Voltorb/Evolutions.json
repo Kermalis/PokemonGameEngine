@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Voltorb",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Electrode",
+      "Form": null
+    }
+  ]
+}

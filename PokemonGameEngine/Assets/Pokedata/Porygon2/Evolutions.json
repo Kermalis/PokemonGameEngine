@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Porygon",
+  "Evolutions": [
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "DubiousDisc",
+      "Species": "PorygonZ",
+      "Form": null
+    }
+  ]
+}

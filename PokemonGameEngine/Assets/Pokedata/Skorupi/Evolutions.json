@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Skorupi",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 40,
+      "Species": "Drapion",
+      "Form": null
+    }
+  ]
+}

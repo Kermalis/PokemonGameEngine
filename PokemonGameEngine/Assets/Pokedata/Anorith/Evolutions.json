@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Anorith",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 40,
+      "Species": "Armaldo",
+      "Form": null
+    }
+  ]
+}

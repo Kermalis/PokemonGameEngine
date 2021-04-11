@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Staryu",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "WaterStone",
+      "Species": "Starmie",
+      "Form": null
+    }
+  ]
+}

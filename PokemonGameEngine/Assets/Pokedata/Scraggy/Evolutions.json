@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Scraggy",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 39,
+      "Species": "Scrafty",
+      "Form": null
+    }
+  ]
+}

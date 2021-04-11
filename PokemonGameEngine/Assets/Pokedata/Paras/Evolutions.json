@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Paras",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 24,
+      "Species": "Parasect",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Chingling",
+  "Evolutions": [
+    {
+      "Method": "Friendship_Night_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Chimecho",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Ralts",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 20,
+      "Species": "Kirlia",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Ekans",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 22,
+      "Species": "Arbok",
+      "Form": null
+    }
+  ]
+}

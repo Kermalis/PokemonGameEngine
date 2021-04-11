@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Ponyta",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 40,
+      "Species": "Rapidash",
+      "Form": null
+    }
+  ]
+}

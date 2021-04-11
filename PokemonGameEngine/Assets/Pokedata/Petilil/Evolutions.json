@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Petilil",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "SunStone",
+      "Species": "Lilligant",
+      "Form": null
+    }
+  ]
+}

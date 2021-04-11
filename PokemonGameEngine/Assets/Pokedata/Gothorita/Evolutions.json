@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Gothita",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 41,
+      "Species": "Gothitelle",
+      "Form": null
+    }
+  ]
+}

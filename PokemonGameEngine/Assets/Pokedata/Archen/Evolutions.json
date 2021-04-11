@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Archen",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 37,
+      "Species": "Archeops",
+      "Form": null
+    }
+  ]
+}

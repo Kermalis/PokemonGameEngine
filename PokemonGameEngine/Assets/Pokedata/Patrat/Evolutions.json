@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Patrat",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 20,
+      "Species": "Watchog",
+      "Form": null
+    }
+  ]
+}

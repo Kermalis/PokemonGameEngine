@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Kabuto",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 40,
+      "Species": "Kabutops",
+      "Form": null
+    }
+  ]
+}

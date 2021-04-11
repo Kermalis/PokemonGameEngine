@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Bagon",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Shelgon",
+      "Form": null
+    }
+  ]
+}

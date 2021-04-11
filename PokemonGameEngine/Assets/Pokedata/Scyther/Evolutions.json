@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Scyther",
+  "Evolutions": [
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "MetalCoat",
+      "Species": "Scizor",
+      "Form": null
+    }
+  ]
+}

@@ -6,6 +6,22 @@ using Nuke.Common.IO;
 using System;
 using System.IO;
 
+internal static class PokedataBuilderHelper
+{
+    public static PBEForm FormValue(this JToken j)
+    {
+        string strForm = j.Value<string>();
+        if (strForm == null)
+        {
+            return 0;
+        }
+        else
+        {
+            return (PBEForm)Enum.Parse(typeof(PBEForm), strForm);
+        }
+    }
+}
+
 public sealed partial class Build
 {
     private sealed class BaseStats
@@ -71,6 +87,106 @@ public sealed partial class Build
         }
     }
 
+    private sealed class Evos
+    {
+        private sealed class Evo
+        {
+            private readonly EvoMethod Method;
+            private readonly ushort Param;
+            private readonly PBESpecies Species;
+            private readonly PBEForm Form;
+
+            public Evo(JToken j)
+            {
+                Method = j[nameof(Method)].EnumValue<EvoMethod>();
+                switch (Method)
+                {
+                    case EvoMethod.Friendship_LevelUp:
+                    case EvoMethod.Friendship_Day_LevelUp:
+                    case EvoMethod.Friendship_Night_LevelUp:
+                    {
+                        Param = j["FriendshipRequired"].Value<ushort>();
+                        break;
+                    }
+                    case EvoMethod.LevelUp:
+                    case EvoMethod.ATK_GT_DEF_LevelUp:
+                    case EvoMethod.ATK_EE_DEF_LevelUp:
+                    case EvoMethod.ATK_LT_DEF_LevelUp:
+                    case EvoMethod.Silcoon_LevelUp:
+                    case EvoMethod.Cascoon_LevelUp:
+                    case EvoMethod.Ninjask_LevelUp:
+                    case EvoMethod.Shedinja_LevelUp:
+                    case EvoMethod.Male_LevelUp:
+                    case EvoMethod.Female_LevelUp:
+                    {
+                        Param = j["LevelRequired"].Value<ushort>();
+                        break;
+                    }
+                    case EvoMethod.Beauty_LevelUp:
+                    {
+                        Param = j["BeautyRequired"].Value<ushort>();
+                        break;
+                    }
+                    case EvoMethod.Item_Trade:
+                    case EvoMethod.Stone:
+                    case EvoMethod.Male_Stone:
+                    case EvoMethod.Female_Stone:
+                    case EvoMethod.Item_Day_LevelUp:
+                    case EvoMethod.Item_Night_LevelUp:
+                    {
+                        Param = (ushort)j["ItemRequired"].EnumValue<PBEItem>();
+                        break;
+                    }
+                    case EvoMethod.Move_LevelUp:
+                    {
+                        Param = (ushort)j["MoveRequired"].EnumValue<PBEMove>();
+                        break;
+                    }
+                    case EvoMethod.PartySpecies_LevelUp:
+                    {
+                        Param = (ushort)j["SpeciesRequired"].EnumValue<PBESpecies>();
+                        break;
+                    }
+                }
+                Species = j[nameof(Species)].EnumValue<PBESpecies>();
+                Form = j[nameof(Form)].FormValue();
+            }
+
+            public void Write(EndianBinaryWriter w)
+            {
+                w.Write(Method);
+                w.Write(Param);
+                w.Write(Species);
+                w.Write(Form);
+            }
+        }
+        private readonly PBESpecies BabySpecies;
+        private readonly Evo[] Evolutions;
+
+        public Evos(JToken j)
+        {
+            BabySpecies = j[nameof(BabySpecies)].EnumValue<PBESpecies>();
+            var evos = (JArray)j[nameof(Evolutions)];
+            int numEncounters = evos.Count;
+            Evolutions = new Evo[numEncounters];
+            for (int i = 0; i < numEncounters; i++)
+            {
+                Evolutions[i] = new Evo(evos[i]);
+            }
+        }
+
+        public void Write(EndianBinaryWriter w)
+        {
+            w.Write(BabySpecies);
+            byte count = (byte)Evolutions.Length;
+            w.Write(count);
+            for (int i = 0; i < count; i++)
+            {
+                Evolutions[i].Write(w);
+            }
+        }
+    }
+
     private static readonly AbsolutePath PokedataPath = AssetPath / "Pokedata";
 
     private void CleanPokedata()
@@ -110,6 +226,16 @@ public sealed partial class Build
                 using (var w = new EndianBinaryWriter(File.Create(Path.Combine(dir, "BaseStats.bin"))))
                 {
                     new BaseStats(json).Write(w);
+                }
+            }
+            #endregion
+
+            #region Evolutions
+            {
+                var json = JObject.Parse(File.ReadAllText(Path.Combine(dir, "Evolutions.json")));
+                using (var w = new EndianBinaryWriter(File.Create(Path.Combine(dir, "Evolutions.bin"))))
+                {
+                    new Evos(json).Write(w);
                 }
             }
             #endregion

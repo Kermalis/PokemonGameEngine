@@ -1,0 +1,10 @@
+{
+  "BabySpecies": "Machop",
+  "Evolutions": [
+    {
+      "Method": "Trade",
+      "Species": "Machamp",
+      "Form": null
+    }
+  ]
+}

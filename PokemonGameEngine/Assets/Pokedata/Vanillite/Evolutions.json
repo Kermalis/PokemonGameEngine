@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Vanillite",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 35,
+      "Species": "Vanillish",
+      "Form": null
+    }
+  ]
+}

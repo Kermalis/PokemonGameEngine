@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Roggenrola",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 25,
+      "Species": "Boldore",
+      "Form": null
+    }
+  ]
+}

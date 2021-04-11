@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Chinchou",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 27,
+      "Species": "Lanturn",
+      "Form": null
+    }
+  ]
+}

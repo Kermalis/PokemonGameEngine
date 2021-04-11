@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Venipede",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Scolipede",
+      "Form": null
+    }
+  ]
+}

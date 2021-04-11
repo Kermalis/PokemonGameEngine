@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "MimeJr",
+  "Evolutions": [
+    {
+      "Method": "Move_LevelUp",
+      "MoveRequired": "Mimic",
+      "Species": "MrMime",
+      "Form": null
+    }
+  ]
+}

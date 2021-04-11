@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Tynamo",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "Thunderstone",
+      "Species": "Eelektross",
+      "Form": null
+    }
+  ]
+}

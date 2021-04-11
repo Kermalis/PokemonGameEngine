@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Larvitar",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Pupitar",
+      "Form": null
+    }
+  ]
+}

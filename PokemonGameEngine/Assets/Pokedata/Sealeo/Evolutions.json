@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Spheal",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 44,
+      "Species": "Walrein",
+      "Form": null
+    }
+  ]
+}

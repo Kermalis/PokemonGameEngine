@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Houndour",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 24,
+      "Species": "Houndoom",
+      "Form": null
+    }
+  ]
+}

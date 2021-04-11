@@ -1,0 +1,10 @@
+{
+  "BabySpecies": "Nosepass",
+  "Evolutions": [
+    {
+      "Method": "NosepassMagneton_Location_LevelUp",
+      "Species": "Probopass",
+      "Form": null
+    }
+  ]
+}

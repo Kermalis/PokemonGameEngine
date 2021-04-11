@@ -48,45 +48,8 @@ namespace Kermalis.PokemonDumper
                 (PBESpecies species, PBEForm form) = tup.Key;
                 string dir = GetDirectory(species, form);
                 Pokemon pkmn = tup.Value;
-                using (var w = new JsonTextWriter(File.CreateText(Path.Combine(dir, "BaseStats.json"))) { Formatting = Formatting.Indented })
-                {
-                    w.WriteStartObject();
-                    w.WritePropertyName(nameof(Pokemon.HP));
-                    w.WriteValue(pkmn.HP);
-                    w.WritePropertyName(nameof(Pokemon.Attack));
-                    w.WriteValue(pkmn.Attack);
-                    w.WritePropertyName(nameof(Pokemon.Defense));
-                    w.WriteValue(pkmn.Defense);
-                    w.WritePropertyName(nameof(Pokemon.SpAttack));
-                    w.WriteValue(pkmn.SpAttack);
-                    w.WritePropertyName(nameof(Pokemon.SpDefense));
-                    w.WriteValue(pkmn.SpDefense);
-                    w.WritePropertyName(nameof(Pokemon.Speed));
-                    w.WriteValue(pkmn.Speed);
-                    w.WritePropertyName(nameof(Pokemon.Type1));
-                    w.WriteValue(pkmn.Type1.ToString());
-                    w.WritePropertyName(nameof(Pokemon.Type2));
-                    w.WriteValue(pkmn.Type2.ToString());
-                    w.WritePropertyName(nameof(Pokemon.CatchRate));
-                    w.WriteValue(pkmn.CatchRate);
-                    w.WritePropertyName(nameof(Pokemon.GenderRatio));
-                    w.WriteValue(pkmn.GenderRatio.ToString());
-                    w.WritePropertyName(nameof(Pokemon.EggGroup1));
-                    w.WriteValue(pkmn.EggGroup1.ToString());
-                    w.WritePropertyName(nameof(Pokemon.EggGroup2));
-                    w.WriteValue(pkmn.EggGroup2.ToString());
-                    w.WritePropertyName(nameof(Pokemon.Ability1));
-                    w.WriteValue(pkmn.Ability1.ToString());
-                    w.WritePropertyName(nameof(Pokemon.Ability2));
-                    w.WriteValue(pkmn.Ability2.ToString());
-                    w.WritePropertyName(nameof(Pokemon.AbilityH));
-                    w.WriteValue(pkmn.AbilityH.ToString());
-                    w.WritePropertyName(nameof(Pokemon.FleeRate));
-                    w.WriteValue(pkmn.FleeRate);
-                    w.WritePropertyName(nameof(Pokemon.Weight));
-                    w.WriteValue(pkmn.Weight);
-                    w.WriteEndObject();
-                }
+                WritePokemonData(dir, pkmn);
+                WriteEvolutions(dir, pkmn);
             }
         }
 
@@ -192,6 +155,48 @@ namespace Kermalis.PokemonDumper
                 }
             }
         }
+        private static void WritePokemonData(string dir, Pokemon pkmn)
+        {
+            using (var w = new JsonTextWriter(File.CreateText(Path.Combine(dir, "BaseStats.json"))) { Formatting = Formatting.Indented })
+            {
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(Pokemon.HP));
+                w.WriteValue(pkmn.HP);
+                w.WritePropertyName(nameof(Pokemon.Attack));
+                w.WriteValue(pkmn.Attack);
+                w.WritePropertyName(nameof(Pokemon.Defense));
+                w.WriteValue(pkmn.Defense);
+                w.WritePropertyName(nameof(Pokemon.SpAttack));
+                w.WriteValue(pkmn.SpAttack);
+                w.WritePropertyName(nameof(Pokemon.SpDefense));
+                w.WriteValue(pkmn.SpDefense);
+                w.WritePropertyName(nameof(Pokemon.Speed));
+                w.WriteValue(pkmn.Speed);
+                w.WritePropertyName(nameof(Pokemon.Type1));
+                w.WriteValue(pkmn.Type1.ToString());
+                w.WritePropertyName(nameof(Pokemon.Type2));
+                w.WriteValue(pkmn.Type2.ToString());
+                w.WritePropertyName(nameof(Pokemon.CatchRate));
+                w.WriteValue(pkmn.CatchRate);
+                w.WritePropertyName(nameof(Pokemon.GenderRatio));
+                w.WriteValue(pkmn.GenderRatio.ToString());
+                w.WritePropertyName(nameof(Pokemon.EggGroup1));
+                w.WriteValue(pkmn.EggGroup1.ToString());
+                w.WritePropertyName(nameof(Pokemon.EggGroup2));
+                w.WriteValue(pkmn.EggGroup2.ToString());
+                w.WritePropertyName(nameof(Pokemon.Ability1));
+                w.WriteValue(pkmn.Ability1.ToString());
+                w.WritePropertyName(nameof(Pokemon.Ability2));
+                w.WriteValue(pkmn.Ability2.ToString());
+                w.WritePropertyName(nameof(Pokemon.AbilityH));
+                w.WriteValue(pkmn.AbilityH.ToString());
+                w.WritePropertyName(nameof(Pokemon.FleeRate));
+                w.WriteValue(pkmn.FleeRate);
+                w.WritePropertyName(nameof(Pokemon.Weight));
+                w.WriteValue(pkmn.Weight);
+                w.WriteEndObject();
+            }
+        }
 
         private static void ReadEvolutions(NARC b2w2Evolution)
         {
@@ -210,14 +215,107 @@ namespace Kermalis.PokemonDumper
                 using (var evolution = new EndianBinaryReader(new MemoryStream(b2w2Evolution[sp]), Endianness.LittleEndian))
                 {
                     Pokemon pkmn = _dict[key];
+                    if (pkmn.BabySpecies == 0)
+                    {
+                        pkmn.BabySpecies = key.Item1;
+                    }
                     for (int i = 0; i < 7; i++)
                     {
                         var method = (EvoMethod)evolution.ReadUInt16();
                         ushort param = evolution.ReadUInt16();
                         var evo = (PBESpecies)evolution.ReadUInt16();
                         pkmn.Evolutions[i] = (method, param, evo, 0);
+                        if (method != EvoMethod.None)
+                        {
+                            _dict[(evo, 0)].BabySpecies = pkmn.BabySpecies;
+                        }
                     }
                 }
+            }
+        }
+        private static void WriteEvolutions(string dir, Pokemon pkmn)
+        {
+            using (var w = new JsonTextWriter(File.CreateText(Path.Combine(dir, "Evolutions.json"))) { Formatting = Formatting.Indented })
+            {
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(Pokemon.BabySpecies));
+                w.WriteValue(pkmn.BabySpecies.ToString());
+                w.WritePropertyName(nameof(Pokemon.Evolutions));
+                w.WriteStartArray();
+                for (int i = 0; i < 7; i++)
+                {
+                    (EvoMethod method, ushort param, PBESpecies species, PBEForm form) = pkmn.Evolutions[i];
+                    if (method == EvoMethod.None)
+                    {
+                        continue;
+                    }
+
+                    w.WriteStartObject();
+                    w.WritePropertyName("Method");
+                    w.WriteValue(method.ToString());
+                    switch (method)
+                    {
+                        case EvoMethod.Friendship_LevelUp:
+                        case EvoMethod.Friendship_Day_LevelUp:
+                        case EvoMethod.Friendship_Night_LevelUp:
+                        {
+                            w.WritePropertyName("FriendshipRequired");
+                            w.WriteValue(param);
+                            break;
+                        }
+                        case EvoMethod.LevelUp:
+                        case EvoMethod.ATK_GT_DEF_LevelUp:
+                        case EvoMethod.ATK_EE_DEF_LevelUp:
+                        case EvoMethod.ATK_LT_DEF_LevelUp:
+                        case EvoMethod.Silcoon_LevelUp:
+                        case EvoMethod.Cascoon_LevelUp:
+                        case EvoMethod.Ninjask_LevelUp:
+                        case EvoMethod.Shedinja_LevelUp:
+                        case EvoMethod.Male_LevelUp:
+                        case EvoMethod.Female_LevelUp:
+                        {
+                            w.WritePropertyName("LevelRequired");
+                            w.WriteValue(param);
+                            break;
+                        }
+                        case EvoMethod.Beauty_LevelUp:
+                        {
+                            w.WritePropertyName("BeautyRequired");
+                            w.WriteValue(param);
+                            break;
+                        }
+                        case EvoMethod.Item_Trade:
+                        case EvoMethod.Stone:
+                        case EvoMethod.Male_Stone:
+                        case EvoMethod.Female_Stone:
+                        case EvoMethod.Item_Day_LevelUp:
+                        case EvoMethod.Item_Night_LevelUp:
+                        {
+                            w.WritePropertyName("ItemRequired");
+                            w.WriteValue(((PBEItem)param).ToString());
+                            break;
+                        }
+                        case EvoMethod.Move_LevelUp:
+                        {
+                            w.WritePropertyName("MoveRequired");
+                            w.WriteValue(((PBEMove)param).ToString());
+                            break;
+                        }
+                        case EvoMethod.PartySpecies_LevelUp:
+                        {
+                            w.WritePropertyName("SpeciesRequired");
+                            w.WriteValue(((PBESpecies)param).ToString());
+                            break;
+                        }
+                    }
+                    w.WritePropertyName("Species");
+                    w.WriteValue(species.ToString());
+                    w.WritePropertyName("Form");
+                    w.WriteValue(PBEDataUtils.GetNameOfForm(species, form));
+                    w.WriteEndObject();
+                }
+                w.WriteEndArray();
+                w.WriteEndObject();
             }
         }
 
@@ -376,6 +474,7 @@ namespace Kermalis.PokemonDumper
                 pkmn.CatchRate = basePkmn.CatchRate;
                 pkmn.FleeRate = basePkmn.FleeRate;
                 pkmn.Weight = basePkmn.Weight;
+                pkmn.BabySpecies = basePkmn.BabySpecies;
                 pkmn.Evolutions = ((EvoMethod, ushort, PBESpecies, PBEForm)[])basePkmn.Evolutions.Clone();
                 pkmn.LevelUpMoves = basePkmn.LevelUpMoves;
                 pkmn.OtherMoves = basePkmn.OtherMoves;
@@ -428,8 +527,9 @@ namespace Kermalis.PokemonDumper
             _dict[(PBESpecies.Deerling, PBEForm.Deerling_Autumn)].Evolutions[0].Form = PBEForm.Sawsbuck_Autumn;
             _dict[(PBESpecies.Deerling, PBEForm.Deerling_Winter)].Evolutions[0].Form = PBEForm.Sawsbuck_Winter;
             _dict[(PBESpecies.Shellos, PBEForm.Shellos_East)].Evolutions[0].Form = PBEForm.Gastrodon_East;
+            // Phione/Manaphy
+            _dict[(PBESpecies.Manaphy, 0)].BabySpecies = PBESpecies.Phione;
         }
-
         private static void FixArceus()
         {
             Pokemon basePkmn = _dict[(PBESpecies.Arceus, PBEForm.Arceus)];
@@ -453,6 +553,7 @@ namespace Kermalis.PokemonDumper
                 pkmn.CatchRate = basePkmn.CatchRate;
                 pkmn.FleeRate = basePkmn.FleeRate;
                 pkmn.Weight = basePkmn.Weight;
+                pkmn.BabySpecies = basePkmn.BabySpecies;
                 pkmn.Evolutions = basePkmn.Evolutions;
                 pkmn.LevelUpMoves = basePkmn.LevelUpMoves;
                 pkmn.OtherMoves = basePkmn.OtherMoves;
@@ -474,7 +575,6 @@ namespace Kermalis.PokemonDumper
             FixArceus(PBEForm.Arceus_Dragon, PBEType.Dragon);
             FixArceus(PBEForm.Arceus_Dark, PBEType.Dark);
         }
-
         private static void GiveFormsEggMoves()
         {
             foreach ((PBESpecies, PBEForm) key in _b2w2SpeciesIndexToPBESpecies.Values)

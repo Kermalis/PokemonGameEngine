@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Shroomish",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 23,
+      "Species": "Breloom",
+      "Form": null
+    }
+  ]
+}

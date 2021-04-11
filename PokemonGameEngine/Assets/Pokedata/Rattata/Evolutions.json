@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Rattata",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 20,
+      "Species": "Raticate",
+      "Form": null
+    }
+  ]
+}

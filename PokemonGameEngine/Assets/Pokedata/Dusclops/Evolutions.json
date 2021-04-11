@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Duskull",
+  "Evolutions": [
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "ReaperCloth",
+      "Species": "Dusknoir",
+      "Form": null
+    }
+  ]
+}

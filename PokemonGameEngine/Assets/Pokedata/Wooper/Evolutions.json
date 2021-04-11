@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Wooper",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 20,
+      "Species": "Quagsire",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Pidove",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 32,
+      "Species": "Unfezant",
+      "Form": null
+    }
+  ]
+}

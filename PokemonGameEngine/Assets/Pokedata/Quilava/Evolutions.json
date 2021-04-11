@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Cyndaquil",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Typhlosion",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Slugma",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 38,
+      "Species": "Magcargo",
+      "Form": null
+    }
+  ]
+}

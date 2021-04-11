@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Hoppip",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 27,
+      "Species": "Jumpluff",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Zigzagoon",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 20,
+      "Species": "Linoone",
+      "Form": null
+    }
+  ]
+}

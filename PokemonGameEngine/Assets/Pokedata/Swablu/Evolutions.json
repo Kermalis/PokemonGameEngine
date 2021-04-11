@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Swablu",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 35,
+      "Species": "Altaria",
+      "Form": null
+    }
+  ]
+}

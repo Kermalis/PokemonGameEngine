@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Spoink",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 32,
+      "Species": "Grumpig",
+      "Form": null
+    }
+  ]
+}

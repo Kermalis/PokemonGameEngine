@@ -1,0 +1,45 @@
+{
+  "BabySpecies": "Eevee",
+  "Evolutions": [
+    {
+      "Method": "Leafeon_Location_LevelUp",
+      "Species": "Leafeon",
+      "Form": null
+    },
+    {
+      "Method": "Glaceon_Location_LevelUp",
+      "Species": "Glaceon",
+      "Form": null
+    },
+    {
+      "Method": "Stone",
+      "ItemRequired": "Thunderstone",
+      "Species": "Jolteon",
+      "Form": null
+    },
+    {
+      "Method": "Stone",
+      "ItemRequired": "WaterStone",
+      "Species": "Vaporeon",
+      "Form": null
+    },
+    {
+      "Method": "Stone",
+      "ItemRequired": "FireStone",
+      "Species": "Flareon",
+      "Form": null
+    },
+    {
+      "Method": "Friendship_Day_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Espeon",
+      "Form": null
+    },
+    {
+      "Method": "Friendship_Night_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Umbreon",
+      "Form": null
+    }
+  ]
+}

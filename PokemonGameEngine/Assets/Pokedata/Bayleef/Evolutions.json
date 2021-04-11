@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Chikorita",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 32,
+      "Species": "Meganium",
+      "Form": null
+    }
+  ]
+}

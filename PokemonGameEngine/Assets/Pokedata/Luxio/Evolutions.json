@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Shinx",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Luxray",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Goldeen",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 33,
+      "Species": "Seaking",
+      "Form": null
+    }
+  ]
+}

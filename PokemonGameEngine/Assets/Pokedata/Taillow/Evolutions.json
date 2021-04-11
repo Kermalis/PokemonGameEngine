@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Taillow",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 22,
+      "Species": "Swellow",
+      "Form": null
+    }
+  ]
+}

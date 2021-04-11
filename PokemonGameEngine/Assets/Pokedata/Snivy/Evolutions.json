@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Snivy",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 17,
+      "Species": "Servine",
+      "Form": null
+    }
+  ]
+}

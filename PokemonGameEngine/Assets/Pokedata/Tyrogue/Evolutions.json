@@ -1,0 +1,23 @@
+{
+  "BabySpecies": "Tyrogue",
+  "Evolutions": [
+    {
+      "Method": "ATK_LT_DEF_LevelUp",
+      "LevelRequired": 20,
+      "Species": "Hitmonchan",
+      "Form": null
+    },
+    {
+      "Method": "ATK_GT_DEF_LevelUp",
+      "LevelRequired": 20,
+      "Species": "Hitmonlee",
+      "Form": null
+    },
+    {
+      "Method": "ATK_EE_DEF_LevelUp",
+      "LevelRequired": 20,
+      "Species": "Hitmontop",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "BabySpecies": "Oddish",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "LeafStone",
+      "Species": "Vileplume",
+      "Form": null
+    },
+    {
+      "Method": "Stone",
+      "ItemRequired": "SunStone",
+      "Species": "Bellossom",
+      "Form": null
+    }
+  ]
+}

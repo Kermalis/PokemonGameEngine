@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Timburr",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 25,
+      "Species": "Gurdurr",
+      "Form": null
+    }
+  ]
+}

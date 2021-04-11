@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Pichu",
+  "Evolutions": [
+    {
+      "Method": "Friendship_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Pikachu",
+      "Form": null
+    }
+  ]
+}

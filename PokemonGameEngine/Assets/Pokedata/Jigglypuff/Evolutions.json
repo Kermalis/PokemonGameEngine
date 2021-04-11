@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Igglybuff",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "MoonStone",
+      "Species": "Wigglytuff",
+      "Form": null
+    }
+  ]
+}

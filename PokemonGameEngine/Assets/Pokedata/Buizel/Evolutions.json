@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Buizel",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 26,
+      "Species": "Floatzel",
+      "Form": null
+    }
+  ]
+}

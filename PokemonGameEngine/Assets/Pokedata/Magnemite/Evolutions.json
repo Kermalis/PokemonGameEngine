@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Magnemite",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Magneton",
+      "Form": null
+    }
+  ]
+}

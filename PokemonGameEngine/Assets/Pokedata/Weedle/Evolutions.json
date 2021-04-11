@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Weedle",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 7,
+      "Species": "Kakuna",
+      "Form": null
+    }
+  ]
+}

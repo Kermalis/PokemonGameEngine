@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Golett",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 43,
+      "Species": "Golurk",
+      "Form": null
+    }
+  ]
+}

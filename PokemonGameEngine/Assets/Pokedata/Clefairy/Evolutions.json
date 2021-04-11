@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Cleffa",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "MoonStone",
+      "Species": "Clefable",
+      "Form": null
+    }
+  ]
+}

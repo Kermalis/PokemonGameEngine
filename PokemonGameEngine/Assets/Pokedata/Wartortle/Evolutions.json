@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Squirtle",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Blastoise",
+      "Form": null
+    }
+  ]
+}

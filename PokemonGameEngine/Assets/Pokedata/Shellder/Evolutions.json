@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Shellder",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "WaterStone",
+      "Species": "Cloyster",
+      "Form": null
+    }
+  ]
+}

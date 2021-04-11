@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Riolu",
+  "Evolutions": [
+    {
+      "Method": "Friendship_Day_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Lucario",
+      "Form": null
+    }
+  ]
+}

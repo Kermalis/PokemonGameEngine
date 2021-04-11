@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Seedot",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "LeafStone",
+      "Species": "Shiftry",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Mareep",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 15,
+      "Species": "Flaaffy",
+      "Form": null
+    }
+  ]
+}

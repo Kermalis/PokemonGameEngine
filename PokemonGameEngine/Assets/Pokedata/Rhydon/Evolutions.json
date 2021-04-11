@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Rhyhorn",
+  "Evolutions": [
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "Protector",
+      "Species": "Rhyperior",
+      "Form": null
+    }
+  ]
+}

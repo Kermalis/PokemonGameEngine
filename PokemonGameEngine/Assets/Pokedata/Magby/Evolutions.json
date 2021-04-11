@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Magby",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Magmar",
+      "Form": null
+    }
+  ]
+}

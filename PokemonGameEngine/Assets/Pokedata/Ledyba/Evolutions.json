@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Ledyba",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 18,
+      "Species": "Ledian",
+      "Form": null
+    }
+  ]
+}

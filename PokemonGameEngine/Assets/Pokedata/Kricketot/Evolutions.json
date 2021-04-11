@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Kricketot",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 10,
+      "Species": "Kricketune",
+      "Form": null
+    }
+  ]
+}

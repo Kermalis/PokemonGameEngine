@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Snover",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 40,
+      "Species": "Abomasnow",
+      "Form": null
+    }
+  ]
+}

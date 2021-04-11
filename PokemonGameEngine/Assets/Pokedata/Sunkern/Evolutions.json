@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Sunkern",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "SunStone",
+      "Species": "Sunflora",
+      "Form": null
+    }
+  ]
+}

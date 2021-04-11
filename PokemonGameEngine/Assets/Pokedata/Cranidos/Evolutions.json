@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Cranidos",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Rampardos",
+      "Form": null
+    }
+  ]
+}

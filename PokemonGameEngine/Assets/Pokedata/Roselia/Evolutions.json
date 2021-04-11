@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Budew",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "ShinyStone",
+      "Species": "Roserade",
+      "Form": null
+    }
+  ]
+}

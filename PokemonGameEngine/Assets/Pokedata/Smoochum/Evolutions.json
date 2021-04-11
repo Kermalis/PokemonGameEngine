@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Smoochum",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Jynx",
+      "Form": null
+    }
+  ]
+}

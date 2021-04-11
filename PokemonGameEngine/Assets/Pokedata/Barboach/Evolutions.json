@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Barboach",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Whiscash",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Swinub",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 33,
+      "Species": "Piloswine",
+      "Form": null
+    }
+  ]
+}

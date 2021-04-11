@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Grimer",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 38,
+      "Species": "Muk",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Azurill",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 18,
+      "Species": "Azumarill",
+      "Form": null
+    }
+  ]
+}

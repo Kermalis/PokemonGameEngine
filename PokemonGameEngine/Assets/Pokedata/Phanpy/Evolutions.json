@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Phanpy",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 25,
+      "Species": "Donphan",
+      "Form": null
+    }
+  ]
+}

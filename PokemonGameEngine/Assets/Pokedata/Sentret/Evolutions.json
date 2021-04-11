@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Sentret",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 15,
+      "Species": "Furret",
+      "Form": null
+    }
+  ]
+}

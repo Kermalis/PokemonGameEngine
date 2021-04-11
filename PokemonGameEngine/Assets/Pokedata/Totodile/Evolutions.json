@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Totodile",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 18,
+      "Species": "Croconaw",
+      "Form": null
+    }
+  ]
+}

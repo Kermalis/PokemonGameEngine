@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Cubchoo",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 37,
+      "Species": "Beartic",
+      "Form": null
+    }
+  ]
+}

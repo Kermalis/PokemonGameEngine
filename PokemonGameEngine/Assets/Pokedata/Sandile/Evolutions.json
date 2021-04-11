@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Sandile",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 29,
+      "Species": "Krokorok",
+      "Form": null
+    }
+  ]
+}

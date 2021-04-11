@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Cyndaquil",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 14,
+      "Species": "Quilava",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Swinub",
+  "Evolutions": [
+    {
+      "Method": "Move_LevelUp",
+      "MoveRequired": "AncientPower",
+      "Species": "Mamoswine",
+      "Form": null
+    }
+  ]
+}

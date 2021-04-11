@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Budew",
+  "Evolutions": [
+    {
+      "Method": "Friendship_Day_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Roselia",
+      "Form": null
+    }
+  ]
+}

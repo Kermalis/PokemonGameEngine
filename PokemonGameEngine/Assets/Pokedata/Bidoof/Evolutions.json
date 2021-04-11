@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Bidoof",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 15,
+      "Species": "Bibarel",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Treecko",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Sceptile",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Bronzor",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 33,
+      "Species": "Bronzong",
+      "Form": null
+    }
+  ]
+}

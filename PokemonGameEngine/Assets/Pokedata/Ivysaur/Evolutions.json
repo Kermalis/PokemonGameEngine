@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Bulbasaur",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 32,
+      "Species": "Venusaur",
+      "Form": null
+    }
+  ]
+}

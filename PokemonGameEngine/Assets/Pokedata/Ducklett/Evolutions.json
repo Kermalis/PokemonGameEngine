@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Ducklett",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 35,
+      "Species": "Swanna",
+      "Form": null
+    }
+  ]
+}

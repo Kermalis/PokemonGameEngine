@@ -1,0 +1,10 @@
+{
+  "BabySpecies": "Gastly",
+  "Evolutions": [
+    {
+      "Method": "Trade",
+      "Species": "Gengar",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Meditite",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 37,
+      "Species": "Medicham",
+      "Form": null
+    }
+  ]
+}

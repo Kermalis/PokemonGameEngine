@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Beldum",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 20,
+      "Species": "Metang",
+      "Form": null
+    }
+  ]
+}

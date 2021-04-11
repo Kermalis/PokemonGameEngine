@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Lickitung",
+  "Evolutions": [
+    {
+      "Method": "Move_LevelUp",
+      "MoveRequired": "Rollout",
+      "Species": "Lickilicky",
+      "Form": null
+    }
+  ]
+}

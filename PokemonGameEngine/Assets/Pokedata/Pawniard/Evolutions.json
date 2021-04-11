@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Pawniard",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 52,
+      "Species": "Bisharp",
+      "Form": null
+    }
+  ]
+}

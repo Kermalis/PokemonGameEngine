@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Nidoran_F",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "MoonStone",
+      "Species": "Nidoqueen",
+      "Form": null
+    }
+  ]
+}

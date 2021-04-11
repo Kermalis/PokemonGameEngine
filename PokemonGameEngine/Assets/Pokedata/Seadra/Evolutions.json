@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Horsea",
+  "Evolutions": [
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "DragonScale",
+      "Species": "Kingdra",
+      "Form": null
+    }
+  ]
+}

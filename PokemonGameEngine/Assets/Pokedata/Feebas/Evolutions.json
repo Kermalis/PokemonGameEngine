@@ -1,0 +1,17 @@
+{
+  "BabySpecies": "Feebas",
+  "Evolutions": [
+    {
+      "Method": "Beauty_LevelUp",
+      "BeautyRequired": 170,
+      "Species": "Milotic",
+      "Form": null
+    },
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "PrismScale",
+      "Species": "Milotic",
+      "Form": null
+    }
+  ]
+}

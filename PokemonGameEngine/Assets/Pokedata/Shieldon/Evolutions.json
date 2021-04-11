@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Shieldon",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Bastiodon",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Cacnea",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 32,
+      "Species": "Cacturne",
+      "Form": null
+    }
+  ]
+}

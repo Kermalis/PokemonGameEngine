@@ -1,0 +1,17 @@
+{
+  "BabySpecies": "Ralts",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Gardevoir",
+      "Form": null
+    },
+    {
+      "Method": "Male_Stone",
+      "ItemRequired": "DawnStone",
+      "Species": "Gallade",
+      "Form": null
+    }
+  ]
+}

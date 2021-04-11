@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Shuppet",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 37,
+      "Species": "Banette",
+      "Form": null
+    }
+  ]
+}

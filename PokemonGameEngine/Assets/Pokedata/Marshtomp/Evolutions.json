@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Mudkip",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Swampert",
+      "Form": null
+    }
+  ]
+}

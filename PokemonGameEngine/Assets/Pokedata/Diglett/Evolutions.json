@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Diglett",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 26,
+      "Species": "Dugtrio",
+      "Form": null
+    }
+  ]
+}

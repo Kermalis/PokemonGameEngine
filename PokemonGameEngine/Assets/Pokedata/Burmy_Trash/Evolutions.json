@@ -1,0 +1,17 @@
+{
+  "BabySpecies": "Burmy",
+  "Evolutions": [
+    {
+      "Method": "Female_LevelUp",
+      "LevelRequired": 20,
+      "Species": "Wormadam",
+      "Form": "Wormadam_Trash"
+    },
+    {
+      "Method": "Male_LevelUp",
+      "LevelRequired": 20,
+      "Species": "Mothim",
+      "Form": null
+    }
+  ]
+}

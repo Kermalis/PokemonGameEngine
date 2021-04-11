@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Gulpin",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 26,
+      "Species": "Swalot",
+      "Form": null
+    }
+  ]
+}

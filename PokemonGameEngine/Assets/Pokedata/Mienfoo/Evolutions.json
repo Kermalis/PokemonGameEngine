@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Mienfoo",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 50,
+      "Species": "Mienshao",
+      "Form": null
+    }
+  ]
+}

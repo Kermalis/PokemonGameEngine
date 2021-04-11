@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Growlithe",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "FireStone",
+      "Species": "Arcanine",
+      "Form": null
+    }
+  ]
+}

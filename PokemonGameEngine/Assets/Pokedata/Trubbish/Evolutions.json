@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Trubbish",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Garbodor",
+      "Form": null
+    }
+  ]
+}

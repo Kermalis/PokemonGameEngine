@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Blitzle",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 27,
+      "Species": "Zebstrika",
+      "Form": null
+    }
+  ]
+}

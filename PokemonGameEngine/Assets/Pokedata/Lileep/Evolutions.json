@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Lileep",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 40,
+      "Species": "Cradily",
+      "Form": null
+    }
+  ]
+}

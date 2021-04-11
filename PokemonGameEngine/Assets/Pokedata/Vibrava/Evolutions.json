@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Trapinch",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 45,
+      "Species": "Flygon",
+      "Form": null
+    }
+  ]
+}

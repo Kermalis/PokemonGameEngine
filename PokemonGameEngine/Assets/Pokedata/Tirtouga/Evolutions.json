@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Tirtouga",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 37,
+      "Species": "Carracosta",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Natu",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 25,
+      "Species": "Xatu",
+      "Form": null
+    }
+  ]
+}

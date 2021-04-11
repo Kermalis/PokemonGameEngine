@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Klink",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 49,
+      "Species": "Klinklang",
+      "Form": null
+    }
+  ]
+}

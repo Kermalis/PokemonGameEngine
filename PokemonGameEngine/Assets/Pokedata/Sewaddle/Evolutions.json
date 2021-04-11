@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Sewaddle",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 20,
+      "Species": "Swadloon",
+      "Form": null
+    }
+  ]
+}

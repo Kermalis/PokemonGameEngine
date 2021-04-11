@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Yanma",
+  "Evolutions": [
+    {
+      "Method": "Move_LevelUp",
+      "MoveRequired": "AncientPower",
+      "Species": "Yanmega",
+      "Form": null
+    }
+  ]
+}

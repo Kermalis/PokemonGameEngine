@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Remoraid",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 25,
+      "Species": "Octillery",
+      "Form": null
+    }
+  ]
+}

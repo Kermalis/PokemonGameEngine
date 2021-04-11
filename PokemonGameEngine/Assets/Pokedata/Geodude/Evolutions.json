@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Geodude",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 25,
+      "Species": "Graveler",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Numel",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 33,
+      "Species": "Camerupt",
+      "Form": null
+    }
+  ]
+}

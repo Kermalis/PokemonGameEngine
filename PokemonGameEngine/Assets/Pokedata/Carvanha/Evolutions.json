@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Carvanha",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Sharpedo",
+      "Form": null
+    }
+  ]
+}

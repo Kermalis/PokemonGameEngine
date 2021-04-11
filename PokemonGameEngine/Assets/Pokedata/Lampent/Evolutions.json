@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Litwick",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "DuskStone",
+      "Species": "Chandelure",
+      "Form": null
+    }
+  ]
+}

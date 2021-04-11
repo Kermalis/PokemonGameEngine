@@ -1,0 +1,10 @@
+{
+  "BabySpecies": "Magnemite",
+  "Evolutions": [
+    {
+      "Method": "NosepassMagneton_Location_LevelUp",
+      "Species": "Magnezone",
+      "Form": null
+    }
+  ]
+}

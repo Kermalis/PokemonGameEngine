@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Tepig",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Emboar",
+      "Form": null
+    }
+  ]
+}

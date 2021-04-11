@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Surskit",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 22,
+      "Species": "Masquerain",
+      "Form": null
+    }
+  ]
+}

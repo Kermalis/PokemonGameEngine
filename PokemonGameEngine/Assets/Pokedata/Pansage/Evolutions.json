@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Pansage",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "LeafStone",
+      "Species": "Simisage",
+      "Form": null
+    }
+  ]
+}

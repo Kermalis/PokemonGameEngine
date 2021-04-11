@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Croagunk",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 37,
+      "Species": "Toxicroak",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Teddiursa",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Ursaring",
+      "Form": null
+    }
+  ]
+}

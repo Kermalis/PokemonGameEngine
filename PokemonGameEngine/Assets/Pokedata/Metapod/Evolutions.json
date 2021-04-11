@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Caterpie",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 10,
+      "Species": "Butterfree",
+      "Form": null
+    }
+  ]
+}

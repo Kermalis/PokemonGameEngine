@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Togepi",
+  "Evolutions": [
+    {
+      "Method": "Friendship_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Togetic",
+      "Form": null
+    }
+  ]
+}

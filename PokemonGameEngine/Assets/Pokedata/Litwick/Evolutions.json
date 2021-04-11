@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Litwick",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 41,
+      "Species": "Lampent",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Porygon",
+  "Evolutions": [
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "UpGrade",
+      "Species": "Porygon2",
+      "Form": null
+    }
+  ]
+}

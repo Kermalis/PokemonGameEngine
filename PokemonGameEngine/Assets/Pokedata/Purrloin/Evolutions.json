@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Purrloin",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 20,
+      "Species": "Liepard",
+      "Form": null
+    }
+  ]
+}

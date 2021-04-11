@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Tentacool",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Tentacruel",
+      "Form": null
+    }
+  ]
+}

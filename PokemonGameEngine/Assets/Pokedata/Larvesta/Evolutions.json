@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Larvesta",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 59,
+      "Species": "Volcarona",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Nidoran_M",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 16,
+      "Species": "Nidorino",
+      "Form": null
+    }
+  ]
+}

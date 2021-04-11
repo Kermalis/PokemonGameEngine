@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Weedle",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 10,
+      "Species": "Beedrill",
+      "Form": null
+    }
+  ]
+}

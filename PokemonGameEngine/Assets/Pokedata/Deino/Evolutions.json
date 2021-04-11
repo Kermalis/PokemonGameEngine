@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Deino",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 50,
+      "Species": "Zweilous",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Krabby",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 28,
+      "Species": "Kingler",
+      "Form": null
+    }
+  ]
+}

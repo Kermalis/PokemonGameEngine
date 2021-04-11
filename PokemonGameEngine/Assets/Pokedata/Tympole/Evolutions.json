@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Tympole",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 25,
+      "Species": "Palpitoad",
+      "Form": null
+    }
+  ]
+}

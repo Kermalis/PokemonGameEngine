@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Cherubi",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 25,
+      "Species": "Cherrim",
+      "Form": "Cherrim"
+    }
+  ]
+}

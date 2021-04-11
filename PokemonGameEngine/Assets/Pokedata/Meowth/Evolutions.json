@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Meowth",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 28,
+      "Species": "Persian",
+      "Form": null
+    }
+  ]
+}

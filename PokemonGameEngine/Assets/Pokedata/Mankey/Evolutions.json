@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Mankey",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 28,
+      "Species": "Primeape",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Starly",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 14,
+      "Species": "Staravia",
+      "Form": null
+    }
+  ]
+}

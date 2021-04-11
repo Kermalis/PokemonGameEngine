@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Cubone",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 28,
+      "Species": "Marowak",
+      "Form": null
+    }
+  ]
+}

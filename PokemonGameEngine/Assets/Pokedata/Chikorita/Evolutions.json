@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Chikorita",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 16,
+      "Species": "Bayleef",
+      "Form": null
+    }
+  ]
+}

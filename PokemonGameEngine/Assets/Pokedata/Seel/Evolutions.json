@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Seel",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 34,
+      "Species": "Dewgong",
+      "Form": null
+    }
+  ]
+}

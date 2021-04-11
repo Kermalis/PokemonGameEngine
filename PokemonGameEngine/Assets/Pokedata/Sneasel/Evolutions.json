@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Sneasel",
+  "Evolutions": [
+    {
+      "Method": "Item_Night_LevelUp",
+      "ItemRequired": "RazorClaw",
+      "Species": "Weavile",
+      "Form": null
+    }
+  ]
+}

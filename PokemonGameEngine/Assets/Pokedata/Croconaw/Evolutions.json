@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Totodile",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Feraligatr",
+      "Form": null
+    }
+  ]
+}

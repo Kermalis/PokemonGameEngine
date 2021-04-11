@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Slakoth",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Slaking",
+      "Form": null
+    }
+  ]
+}

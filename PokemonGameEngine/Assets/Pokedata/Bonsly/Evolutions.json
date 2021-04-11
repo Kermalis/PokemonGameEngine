@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Bonsly",
+  "Evolutions": [
+    {
+      "Method": "Move_LevelUp",
+      "MoveRequired": "Mimic",
+      "Species": "Sudowoodo",
+      "Form": null
+    }
+  ]
+}

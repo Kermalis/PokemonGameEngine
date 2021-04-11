@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Cottonee",
+  "Evolutions": [
+    {
+      "Method": "Stone",
+      "ItemRequired": "SunStone",
+      "Species": "Whimsicott",
+      "Form": null
+    }
+  ]
+}

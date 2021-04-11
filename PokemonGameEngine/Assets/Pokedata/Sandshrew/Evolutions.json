@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Sandshrew",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 22,
+      "Species": "Sandslash",
+      "Form": null
+    }
+  ]
+}

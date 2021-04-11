@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Tympole",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 36,
+      "Species": "Seismitoad",
+      "Form": null
+    }
+  ]
+}

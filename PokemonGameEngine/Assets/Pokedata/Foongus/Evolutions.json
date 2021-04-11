@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Foongus",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 39,
+      "Species": "Amoonguss",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Igglybuff",
+  "Evolutions": [
+    {
+      "Method": "Friendship_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Jigglypuff",
+      "Form": null
+    }
+  ]
+}

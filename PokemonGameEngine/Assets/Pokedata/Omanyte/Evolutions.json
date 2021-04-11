@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Omanyte",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 40,
+      "Species": "Omastar",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Shellos",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 30,
+      "Species": "Gastrodon",
+      "Form": "Gastrodon_East"
+    }
+  ]
+}

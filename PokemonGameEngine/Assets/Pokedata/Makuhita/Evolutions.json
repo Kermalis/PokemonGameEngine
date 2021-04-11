@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Makuhita",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 24,
+      "Species": "Hariyama",
+      "Form": null
+    }
+  ]
+}

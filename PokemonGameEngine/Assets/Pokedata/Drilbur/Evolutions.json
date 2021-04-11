@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Drilbur",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 31,
+      "Species": "Excadrill",
+      "Form": null
+    }
+  ]
+}

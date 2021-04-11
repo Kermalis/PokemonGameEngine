@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Magby",
+  "Evolutions": [
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "Magmarizer",
+      "Species": "Magmortar",
+      "Form": null
+    }
+  ]
+}

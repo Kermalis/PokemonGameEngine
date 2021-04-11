@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Tepig",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 17,
+      "Species": "Pignite",
+      "Form": null
+    }
+  ]
+}

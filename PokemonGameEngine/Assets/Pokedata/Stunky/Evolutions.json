@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Stunky",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 34,
+      "Species": "Skuntank",
+      "Form": null
+    }
+  ]
+}

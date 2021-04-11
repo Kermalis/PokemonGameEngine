@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Finneon",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 31,
+      "Species": "Lumineon",
+      "Form": null
+    }
+  ]
+}

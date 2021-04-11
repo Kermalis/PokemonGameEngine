@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Onix",
+  "Evolutions": [
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "MetalCoat",
+      "Species": "Steelix",
+      "Form": null
+    }
+  ]
+}

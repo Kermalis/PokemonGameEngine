@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Wailmer",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 40,
+      "Species": "Wailord",
+      "Form": null
+    }
+  ]
+}

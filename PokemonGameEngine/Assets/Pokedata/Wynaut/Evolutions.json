@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Wynaut",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 15,
+      "Species": "Wobbuffet",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Bellsprout",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 21,
+      "Species": "Weepinbell",
+      "Form": null
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Glameow",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 38,
+      "Species": "Purugly",
+      "Form": null
+    }
+  ]
+}

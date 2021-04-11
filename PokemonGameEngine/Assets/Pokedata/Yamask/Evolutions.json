@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Yamask",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 34,
+      "Species": "Cofagrigus",
+      "Form": null
+    }
+  ]
+}

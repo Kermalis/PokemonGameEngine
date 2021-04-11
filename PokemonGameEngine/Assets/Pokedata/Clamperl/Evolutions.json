@@ -1,0 +1,17 @@
+{
+  "BabySpecies": "Clamperl",
+  "Evolutions": [
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "DeepSeaTooth",
+      "Species": "Huntail",
+      "Form": null
+    },
+    {
+      "Method": "Item_Trade",
+      "ItemRequired": "DeepSeaScale",
+      "Species": "Gorebyss",
+      "Form": null
+    }
+  ]
+}

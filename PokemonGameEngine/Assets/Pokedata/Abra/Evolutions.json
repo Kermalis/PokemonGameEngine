@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Abra",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 16,
+      "Species": "Kadabra",
+      "Form": null
+    }
+  ]
+}

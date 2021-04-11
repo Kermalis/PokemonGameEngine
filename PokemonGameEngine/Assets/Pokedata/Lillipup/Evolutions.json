@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Lillipup",
+  "Evolutions": [
+    {
+      "Method": "LevelUp",
+      "LevelRequired": 16,
+      "Species": "Herdier",
+      "Form": null
+    }
+  ]
+}

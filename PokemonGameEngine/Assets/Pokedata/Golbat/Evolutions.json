@@ -1,0 +1,11 @@
+{
+  "BabySpecies": "Zubat",
+  "Evolutions": [
+    {
+      "Method": "Friendship_LevelUp",
+      "FriendshipRequired": 0,
+      "Species": "Crobat",
+      "Form": null
+    }
+  ]
+}
