@@ -8,6 +8,7 @@
   "Type1": "Water",
   "Type2": "Psychic",
   "CatchRate": 60,
+  "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
   "EggGroup1": "Water3",
   "EggGroup2": "Water3",

@@ -8,6 +8,7 @@
   "Type1": "Fire",
   "Type2": "None",
   "CatchRate": 75,
+  "BaseFriendship": 70,
   "GenderRatio": "M1_F3",
   "EggGroup1": "Field",
   "EggGroup2": "Field",

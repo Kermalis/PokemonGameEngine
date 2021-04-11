@@ -8,6 +8,7 @@
   "Type1": "Grass",
   "Type2": "Poison",
   "CatchRate": 255,
+  "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "EggGroup1": "Grass",
   "EggGroup2": "Grass",

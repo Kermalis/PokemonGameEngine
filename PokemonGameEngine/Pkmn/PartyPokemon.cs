@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Data.Legality;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.World;
 using System;
@@ -50,7 +49,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public PartyPokemon(PBESpecies species, PBEForm form, byte level)
         {
             RandomPID();
-            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(species, form);
+            var pData = new BaseStats(species, form);
             Species = species;
             Form = form;
             Nickname = PBELocalizedString.GetSpeciesName(species).English;
@@ -65,8 +64,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             UpdateTimeBasedForms(DateTime.Now);
             SetWildMoves();
             CaughtBall = PBEItem.PokeBall;
-            Friendship = byte.MaxValue; // TODO: Default friendship
-            CalcStats(pData.BaseStats);
+            SetDefaultFriendship(pData);
+            CalcStats(pData.Stats);
             SetMaxHP();
         }
         public PartyPokemon(EncounterTable.Encounter encounter)
@@ -74,7 +73,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             RandomPID();
             Species = encounter.Species;
             Form = encounter.Form;
-            IPBEPokemonData pData = PBEDataProvider.Instance.GetPokemonData(this);
+            var pData = new BaseStats(Species, Form);
             Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             Nickname = PBELocalizedString.GetSpeciesName(Species).English;
             Shiny = PBEDataProvider.GlobalRandom.RandomShiny();
@@ -85,7 +84,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             IndividualValues = new IVs();
             UpdateTimeBasedForms(DateTime.Now);
             SetWildMoves();
-            CalcStats(pData.BaseStats);
+            CalcStats(pData.Stats);
             SetMaxHP();
         }
         public PartyPokemon(BoxPokemon other)
@@ -112,6 +111,10 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         private void RandomPID()
         {
             PID = (uint)PBEDataProvider.GlobalRandom.RandomInt();
+        }
+        private void SetDefaultFriendship(BaseStats pData)
+        {
+            Friendship = pData.BaseFriendship;
         }
 
         public void SetMaxHP()
@@ -235,7 +238,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void UpdateFromBattle_Caught(PBEBattlePokemon pkmn)
         {
-            // TODO: Default friendship (not applied if caught in a friend ball)
+            var bs = new BaseStats(Species, Form);
+            SetDefaultFriendship(bs);
             CaughtBall = pkmn.CaughtBall;
             switch (CaughtBall)
             {

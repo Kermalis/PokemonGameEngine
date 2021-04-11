@@ -8,6 +8,7 @@
   "Type1": "Psychic",
   "Type2": "None",
   "CatchRate": 235,
+  "BaseFriendship": 35,
   "GenderRatio": "M1_F1",
   "EggGroup1": "Amorphous",
   "EggGroup2": "Amorphous",

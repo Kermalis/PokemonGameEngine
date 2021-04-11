@@ -8,6 +8,7 @@
   "Type1": "Steel",
   "Type2": "Rock",
   "CatchRate": 180,
+  "BaseFriendship": 35,
   "GenderRatio": "M1_F1",
   "EggGroup1": "Monster",
   "EggGroup2": "Monster",

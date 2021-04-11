@@ -8,6 +8,7 @@
   "Type1": "Normal",
   "Type2": "None",
   "CatchRate": 25,
+  "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
   "EggGroup1": "Monster",
   "EggGroup2": "Monster",

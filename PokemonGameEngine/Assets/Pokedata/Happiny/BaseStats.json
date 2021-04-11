@@ -8,6 +8,7 @@
   "Type1": "Normal",
   "Type2": "None",
   "CatchRate": 130,
+  "BaseFriendship": 140,
   "GenderRatio": "M0_F1",
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",

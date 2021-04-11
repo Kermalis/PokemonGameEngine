@@ -8,6 +8,7 @@
   "Type1": "Rock",
   "Type2": "Steel",
   "CatchRate": 60,
+  "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "EggGroup1": "Mineral",
   "EggGroup2": "Mineral",

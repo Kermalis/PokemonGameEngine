@@ -8,6 +8,7 @@
   "Type1": "Normal",
   "Type2": "None",
   "CatchRate": 255,
+  "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "EggGroup1": "Fairy",
   "EggGroup2": "Fairy",

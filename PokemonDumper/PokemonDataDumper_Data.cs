@@ -68,6 +68,7 @@ namespace Kermalis.PokemonDumper
             public PBEType Type1;
             public PBEType Type2;
             public PBEGenderRatio GenderRatio;
+            public byte BaseFriendship;
             public byte CatchRate;
             public byte FleeRate;
             public double Weight;
@@ -80,6 +81,57 @@ namespace Kermalis.PokemonDumper
             public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
             public PBESpecies BabySpecies;
             public (EvoMethod Method, ushort Param, PBESpecies Species, PBEForm Form)[] Evolutions = new (EvoMethod, ushort, PBESpecies, PBEForm)[7];
+
+            public void Copy(Pokemon other)
+            {
+                HP = other.HP;
+                Attack = other.Attack;
+                Defense = other.Defense;
+                SpAttack = other.SpAttack;
+                SpDefense = other.SpDefense;
+                Speed = other.Speed;
+                Type1 = other.Type1;
+                Type2 = other.Type2;
+                GenderRatio = other.GenderRatio;
+                BaseFriendship = other.BaseFriendship;
+                EggGroup1 = other.EggGroup1;
+                EggGroup2 = other.EggGroup2;
+                Ability1 = other.Ability1;
+                Ability2 = other.Ability2;
+                AbilityH = other.AbilityH;
+                CatchRate = other.CatchRate;
+                FleeRate = other.FleeRate;
+                Weight = other.Weight;
+                BabySpecies = other.BabySpecies;
+                Evolutions = ((EvoMethod, ushort, PBESpecies, PBEForm)[])other.Evolutions.Clone();
+                LevelUpMoves = other.LevelUpMoves;
+                OtherMoves = other.OtherMoves;
+            }
+            public void CopyArceus(Pokemon other, PBEType type)
+            {
+                HP = other.HP;
+                Attack = other.Attack;
+                Defense = other.Defense;
+                SpAttack = other.SpAttack;
+                SpDefense = other.SpDefense;
+                Speed = other.Speed;
+                Type1 = type;
+                Type2 = other.Type2;
+                GenderRatio = other.GenderRatio;
+                BaseFriendship = other.BaseFriendship;
+                EggGroup1 = other.EggGroup1;
+                EggGroup2 = other.EggGroup2;
+                Ability1 = other.Ability1;
+                Ability2 = other.Ability2;
+                AbilityH = other.AbilityH;
+                CatchRate = other.CatchRate;
+                FleeRate = other.FleeRate;
+                Weight = other.Weight;
+                BabySpecies = other.BabySpecies;
+                Evolutions = other.Evolutions;
+                LevelUpMoves = other.LevelUpMoves;
+                OtherMoves = other.OtherMoves;
+            }
         }
 
         private static readonly PBEType[] _gen5Types = new PBEType[17]

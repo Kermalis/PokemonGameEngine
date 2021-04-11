@@ -8,6 +8,7 @@
   "Type1": "Dark",
   "Type2": "Ice",
   "CatchRate": 60,
+  "BaseFriendship": 35,
   "GenderRatio": "M1_F1",
   "EggGroup1": "Field",
   "EggGroup2": "Field",

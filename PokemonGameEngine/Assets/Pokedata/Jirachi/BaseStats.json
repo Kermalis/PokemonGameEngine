@@ -8,6 +8,7 @@
   "Type1": "Steel",
   "Type2": "Psychic",
   "CatchRate": 3,
+  "BaseFriendship": 100,
   "GenderRatio": "M0_F0",
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",

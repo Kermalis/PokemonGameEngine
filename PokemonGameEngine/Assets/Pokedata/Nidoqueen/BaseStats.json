@@ -8,6 +8,7 @@
   "Type1": "Poison",
   "Type2": "Ground",
   "CatchRate": 45,
+  "BaseFriendship": 70,
   "GenderRatio": "M0_F1",
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",

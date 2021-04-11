@@ -8,6 +8,7 @@
   "Type1": "Grass",
   "Type2": "Flying",
   "CatchRate": 45,
+  "BaseFriendship": 100,
   "GenderRatio": "M0_F0",
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",

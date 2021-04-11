@@ -8,6 +8,7 @@
   "Type1": "Electric",
   "Type2": "Grass",
   "CatchRate": 45,
+  "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
   "EggGroup1": "Amorphous",
   "EggGroup2": "Amorphous",

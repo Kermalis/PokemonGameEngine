@@ -133,7 +133,7 @@ namespace Kermalis.PokemonDumper
                     // 0x10-0x11 - Item3
                     pkmn.GenderRatio = (PBEGenderRatio)pokedata.ReadByte(0x12);
                     // 0x13 - hatch cycle
-                    // 0x14 - base friendship
+                    pkmn.BaseFriendship = pokedata.ReadByte(0x14);
                     // 0x15 - exp yield
                     pkmn.EggGroup1 = (EggGroup)pokedata.ReadByte(0x16);
                     pkmn.EggGroup2 = (EggGroup)pokedata.ReadByte(0x17);
@@ -179,6 +179,8 @@ namespace Kermalis.PokemonDumper
                 w.WriteValue(pkmn.Type2.ToString());
                 w.WritePropertyName(nameof(Pokemon.CatchRate));
                 w.WriteValue(pkmn.CatchRate);
+                w.WritePropertyName(nameof(Pokemon.BaseFriendship));
+                w.WriteValue(pkmn.BaseFriendship);
                 w.WritePropertyName(nameof(Pokemon.GenderRatio));
                 w.WriteValue(pkmn.GenderRatio.ToString());
                 w.WritePropertyName(nameof(Pokemon.EggGroup1));
@@ -478,27 +480,7 @@ namespace Kermalis.PokemonDumper
             {
                 Pokemon basePkmn = _dict[baseKey];
                 Pokemon pkmn = AddSpecies(newKey);
-                pkmn.HP = basePkmn.HP;
-                pkmn.Attack = basePkmn.Attack;
-                pkmn.Defense = basePkmn.Defense;
-                pkmn.SpAttack = basePkmn.SpAttack;
-                pkmn.SpDefense = basePkmn.SpDefense;
-                pkmn.Speed = basePkmn.Speed;
-                pkmn.Type1 = basePkmn.Type1;
-                pkmn.Type2 = basePkmn.Type2;
-                pkmn.GenderRatio = basePkmn.GenderRatio;
-                pkmn.EggGroup1 = basePkmn.EggGroup1;
-                pkmn.EggGroup2 = basePkmn.EggGroup2;
-                pkmn.Ability1 = basePkmn.Ability1;
-                pkmn.Ability2 = basePkmn.Ability2;
-                pkmn.AbilityH = basePkmn.AbilityH;
-                pkmn.CatchRate = basePkmn.CatchRate;
-                pkmn.FleeRate = basePkmn.FleeRate;
-                pkmn.Weight = basePkmn.Weight;
-                pkmn.BabySpecies = basePkmn.BabySpecies;
-                pkmn.Evolutions = ((EvoMethod, ushort, PBESpecies, PBEForm)[])basePkmn.Evolutions.Clone();
-                pkmn.LevelUpMoves = basePkmn.LevelUpMoves;
-                pkmn.OtherMoves = basePkmn.OtherMoves;
+                pkmn.Copy(basePkmn);
             }
             CopySpecies((PBESpecies.Burmy, PBEForm.Burmy_Plant), (PBESpecies.Burmy, PBEForm.Burmy_Sandy));
             CopySpecies((PBESpecies.Burmy, PBEForm.Burmy_Plant), (PBESpecies.Burmy, PBEForm.Burmy_Trash));
@@ -557,27 +539,7 @@ namespace Kermalis.PokemonDumper
             void FixArceus(PBEForm form, PBEType type)
             {
                 Pokemon pkmn = AddSpecies((PBESpecies.Arceus, form));
-                pkmn.HP = basePkmn.HP;
-                pkmn.Attack = basePkmn.Attack;
-                pkmn.Defense = basePkmn.Defense;
-                pkmn.SpAttack = basePkmn.SpAttack;
-                pkmn.SpDefense = basePkmn.SpDefense;
-                pkmn.Speed = basePkmn.Speed;
-                pkmn.Type1 = type;
-                pkmn.Type2 = basePkmn.Type2;
-                pkmn.GenderRatio = basePkmn.GenderRatio;
-                pkmn.EggGroup1 = basePkmn.EggGroup1;
-                pkmn.EggGroup2 = basePkmn.EggGroup2;
-                pkmn.Ability1 = basePkmn.Ability1;
-                pkmn.Ability2 = basePkmn.Ability2;
-                pkmn.AbilityH = basePkmn.AbilityH;
-                pkmn.CatchRate = basePkmn.CatchRate;
-                pkmn.FleeRate = basePkmn.FleeRate;
-                pkmn.Weight = basePkmn.Weight;
-                pkmn.BabySpecies = basePkmn.BabySpecies;
-                pkmn.Evolutions = basePkmn.Evolutions;
-                pkmn.LevelUpMoves = basePkmn.LevelUpMoves;
-                pkmn.OtherMoves = basePkmn.OtherMoves;
+                pkmn.CopyArceus(basePkmn, type);
             }
             FixArceus(PBEForm.Arceus_Fighting, PBEType.Fighting);
             FixArceus(PBEForm.Arceus_Flying, PBEType.Flying);

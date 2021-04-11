@@ -8,6 +8,7 @@
   "Type1": "Dark",
   "Type2": "Flying",
   "CatchRate": 190,
+  "BaseFriendship": 35,
   "GenderRatio": "M0_F1",
   "EggGroup1": "Flying",
   "EggGroup2": "Flying",

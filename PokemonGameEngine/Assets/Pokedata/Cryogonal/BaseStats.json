@@ -8,6 +8,7 @@
   "Type1": "Ice",
   "Type2": "None",
   "CatchRate": 25,
+  "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
   "EggGroup1": "Mineral",
   "EggGroup2": "Mineral",

@@ -8,6 +8,7 @@
   "Type1": "Fire",
   "Type2": "Flying",
   "CatchRate": 3,
+  "BaseFriendship": 0,
   "GenderRatio": "M0_F0",
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",

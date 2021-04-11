@@ -8,6 +8,7 @@
   "Type1": "Fighting",
   "Type2": "None",
   "CatchRate": 45,
+  "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "EggGroup1": "Field",
   "EggGroup2": "HumanLike",

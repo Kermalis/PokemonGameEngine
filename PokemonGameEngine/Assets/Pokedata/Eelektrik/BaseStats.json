@@ -8,6 +8,7 @@
   "Type1": "Electric",
   "Type2": "None",
   "CatchRate": 60,
+  "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "EggGroup1": "Amorphous",
   "EggGroup2": "Amorphous",

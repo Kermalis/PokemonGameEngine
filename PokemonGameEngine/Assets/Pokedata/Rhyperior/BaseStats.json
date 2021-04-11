@@ -8,6 +8,7 @@
   "Type1": "Ground",
   "Type2": "Rock",
   "CatchRate": 30,
+  "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "EggGroup1": "Monster",
   "EggGroup2": "Field",

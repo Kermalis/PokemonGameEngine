@@ -35,6 +35,7 @@ public sealed partial class Build
         private readonly PBEType Type1;
         private readonly PBEType Type2;
         private readonly byte CatchRate;
+        private readonly byte BaseFriendship;
         private readonly PBEGenderRatio GenderRatio;
         private readonly EggGroup EggGroup1;
         private readonly EggGroup EggGroup2;
@@ -55,6 +56,7 @@ public sealed partial class Build
             Type1 = j[nameof(Type1)].EnumValue<PBEType>();
             Type2 = j[nameof(Type2)].EnumValue<PBEType>();
             CatchRate = j[nameof(CatchRate)].Value<byte>();
+            BaseFriendship = j[nameof(BaseFriendship)].Value<byte>();
             GenderRatio = j[nameof(GenderRatio)].EnumValue<PBEGenderRatio>();
             EggGroup1 = j[nameof(EggGroup1)].EnumValue<EggGroup>();
             EggGroup2 = j[nameof(EggGroup2)].EnumValue<EggGroup>();
@@ -76,6 +78,7 @@ public sealed partial class Build
             w.Write(Type1);
             w.Write(Type2);
             w.Write(CatchRate);
+            w.Write(BaseFriendship);
             w.Write(GenderRatio);
             w.Write(EggGroup1);
             w.Write(EggGroup2);

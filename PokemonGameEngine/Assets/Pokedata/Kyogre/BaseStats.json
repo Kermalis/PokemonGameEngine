@@ -8,6 +8,7 @@
   "Type1": "Water",
   "Type2": "None",
   "CatchRate": 5,
+  "BaseFriendship": 0,
   "GenderRatio": "M0_F0",
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",

@@ -8,6 +8,7 @@
   "Type1": "Bug",
   "Type2": "None",
   "CatchRate": 150,
+  "BaseFriendship": 70,
   "GenderRatio": "M0_F1",
   "EggGroup1": "Bug",
   "EggGroup2": "HumanLike",

@@ -8,6 +8,7 @@
   "Type1": "Ground",
   "Type2": "Flying",
   "CatchRate": 30,
+  "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "EggGroup1": "Bug",
   "EggGroup2": "Bug",

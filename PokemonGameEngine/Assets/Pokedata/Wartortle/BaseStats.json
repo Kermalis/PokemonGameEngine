@@ -8,6 +8,7 @@
   "Type1": "Water",
   "Type2": "None",
   "CatchRate": 45,
+  "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
   "EggGroup1": "Monster",
   "EggGroup2": "Water1",

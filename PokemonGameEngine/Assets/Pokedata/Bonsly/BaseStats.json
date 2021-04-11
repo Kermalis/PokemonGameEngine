@@ -8,6 +8,7 @@
   "Type1": "Rock",
   "Type2": "None",
   "CatchRate": 255,
+  "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",

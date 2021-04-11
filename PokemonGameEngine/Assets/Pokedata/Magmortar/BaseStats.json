@@ -8,6 +8,7 @@
   "Type1": "Fire",
   "Type2": "None",
   "CatchRate": 30,
+  "BaseFriendship": 70,
   "GenderRatio": "M3_F1",
   "EggGroup1": "HumanLike",
   "EggGroup2": "HumanLike",

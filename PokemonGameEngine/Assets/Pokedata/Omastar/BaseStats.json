@@ -8,6 +8,7 @@
   "Type1": "Rock",
   "Type2": "Water",
   "CatchRate": 45,
+  "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
   "EggGroup1": "Water1",
   "EggGroup2": "Water3",

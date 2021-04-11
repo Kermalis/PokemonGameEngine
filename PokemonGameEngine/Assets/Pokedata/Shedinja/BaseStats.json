@@ -8,6 +8,7 @@
   "Type1": "Bug",
   "Type2": "Ghost",
   "CatchRate": 45,
+  "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
   "EggGroup1": "Mineral",
   "EggGroup2": "Mineral",
