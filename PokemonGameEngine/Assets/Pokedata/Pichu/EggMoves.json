@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"Reversal"},
+    {"Move":"Bide"},
+    {"Move":"Present"},
+    {"Move":"Encore"},
+    {"Move":"DoubleSlap"},
+    {"Move":"Wish"},
+    {"Move":"Charge"},
+    {"Move":"FakeOut"},
+    {"Move":"ThunderPunch"},
+    {"Move":"Tickle"},
+    {"Move":"Flail"},
+    {"Move":"Endure"},
+    {"Move":"LuckyChant"},
+    {"Move":"Bestow"}
+  ]
+}

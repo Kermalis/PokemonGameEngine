@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"MudSlap"},
+    {"Move":"Headbutt"},
+    {"Move":"FurySwipes"},
+    {"Move":"Slash"},
+    {"Move":"OdorSleuth"},
+    {"Move":"DoubleSlap"},
+    {"Move":"FuryCutter"},
+    {"Move":"BatonPass"},
+    {"Move":"AquaTail"},
+    {"Move":"AquaRing"},
+    {"Move":"MeFirst"},
+    {"Move":"Switcheroo"},
+    {"Move":"TailSlap"}
+  ]
+}

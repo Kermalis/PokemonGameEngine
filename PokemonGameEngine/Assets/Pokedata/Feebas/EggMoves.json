@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"MirrorCoat"},
+    {"Move":"DragonBreath"},
+    {"Move":"MudSport"},
+    {"Move":"Hypnosis"},
+    {"Move":"ConfuseRay"},
+    {"Move":"Mist"},
+    {"Move":"Haze"},
+    {"Move":"Tickle"},
+    {"Move":"Brine"},
+    {"Move":"IronTail"},
+    {"Move":"DragonPulse"},
+    {"Move":"Captivate"}
+  ]
+}

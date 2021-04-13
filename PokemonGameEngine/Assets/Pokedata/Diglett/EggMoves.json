@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"FaintAttack"},
+    {"Move":"Screech"},
+    {"Move":"AncientPower"},
+    {"Move":"Pursuit"},
+    {"Move":"BeatUp"},
+    {"Move":"Uproar"},
+    {"Move":"MudBomb"},
+    {"Move":"Astonish"},
+    {"Move":"Reversal"},
+    {"Move":"Headbutt"},
+    {"Move":"Endure"},
+    {"Move":"FinalGambit"},
+    {"Move":"Memento"}
+  ]
+}

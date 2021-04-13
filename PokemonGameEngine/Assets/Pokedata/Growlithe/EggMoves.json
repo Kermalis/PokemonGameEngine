@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"BodySlam"},
+    {"Move":"Crunch"},
+    {"Move":"Thrash"},
+    {"Move":"FireSpin"},
+    {"Move":"Howl"},
+    {"Move":"HeatWave"},
+    {"Move":"DoubleEdge"},
+    {"Move":"FlareBlitz"},
+    {"Move":"MorningSun"},
+    {"Move":"Covet"},
+    {"Move":"IronTail"},
+    {"Move":"DoubleKick"},
+    {"Move":"CloseCombat"}
+  ]
+}

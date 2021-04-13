@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"Encore"},
+    {"Move":"Assist"},
+    {"Move":"Disable"},
+    {"Move":"BatonPass"},
+    {"Move":"Wish"},
+    {"Move":"Trick"},
+    {"Move":"SmellingSalt"},
+    {"Move":"FakeOut"},
+    {"Move":"RolePlay"},
+    {"Move":"PsychoCut"},
+    {"Move":"FakeTears"},
+    {"Move":"RapidSpin"},
+    {"Move":"IcyWind"},
+    {"Move":"WaterPulse"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"BatonPass"},
+    {"Move":"FaintAttack"},
+    {"Move":"DoubleEdge"},
+    {"Move":"MagicCoat"},
+    {"Move":"Curse"},
+    {"Move":"MeanLook"},
+    {"Move":"ZenHeadbutt"},
+    {"Move":"Punishment"},
+    {"Move":"SuckerPunch"},
+    {"Move":"Assurance"},
+    {"Move":"MeFirst"},
+    {"Move":"Megahorn"},
+    {"Move":"Hex"},
+    {"Move":"PerishSong"}
+  ]
+}

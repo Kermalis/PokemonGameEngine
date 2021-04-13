@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Magnitude"},
+    {"Move":"Curse"},
+    {"Move":"Autotomize"},
+    {"Move":"RockTomb"},
+    {"Move":"LockOn"},
+    {"Move":"HeavySlam"},
+    {"Move":"TakeDown"},
+    {"Move":"Gravity"}
+  ]
+}

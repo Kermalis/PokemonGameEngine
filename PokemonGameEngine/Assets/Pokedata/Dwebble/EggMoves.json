@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Endure"},
+    {"Move":"IronDefense"},
+    {"Move":"NightSlash"},
+    {"Move":"SandTomb"},
+    {"Move":"Counter"},
+    {"Move":"Curse"},
+    {"Move":"Spikes"},
+    {"Move":"Block"}
+  ]
+}

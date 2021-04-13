@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"SweetScent"},
+    {"Move":"KnockOff"},
+    {"Move":"HelpingHand"},
+    {"Move":"Acupressure"},
+    {"Move":"SandTomb"},
+    {"Move":"MudSlap"},
+    {"Move":"Acid"},
+    {"Move":"RockBlast"},
+    {"Move":"FinalGambit"}
+  ]
+}

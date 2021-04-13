@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Block"},
+    {"Move":"Spikes"},
+    {"Move":"Rollout"},
+    {"Move":"Disable"},
+    {"Move":"Bide"},
+    {"Move":"WeatherBall"},
+    {"Move":"Avalanche"},
+    {"Move":"Hex"},
+    {"Move":"FakeTears"}
+  ]
+}

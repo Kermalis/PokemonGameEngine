@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"Metronome"},
+    {"Move":"FaintAttack"},
+    {"Move":"Present"},
+    {"Move":"Crunch"},
+    {"Move":"HealBell"},
+    {"Move":"Snore"},
+    {"Move":"SmellingSalt"},
+    {"Move":"CloseCombat"},
+    {"Move":"IceFang"},
+    {"Move":"FireFang"},
+    {"Move":"ThunderFang"},
+    {"Move":"FocusPunch"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Mimic"}
+  ]
+}

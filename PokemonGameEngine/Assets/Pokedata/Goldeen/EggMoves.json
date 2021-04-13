@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Psybeam"},
+    {"Move":"Haze"},
+    {"Move":"HydroPump"},
+    {"Move":"SleepTalk"},
+    {"Move":"MudSport"},
+    {"Move":"MudSlap"},
+    {"Move":"AquaTail"},
+    {"Move":"BodySlam"},
+    {"Move":"MudShot"},
+    {"Move":"SkullBash"},
+    {"Move":"SignalBeam"}
+  ]
+}

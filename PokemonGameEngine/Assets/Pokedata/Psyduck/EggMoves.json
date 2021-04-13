@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Hypnosis"},
+    {"Move":"Psybeam"},
+    {"Move":"Foresight"},
+    {"Move":"FutureSight"},
+    {"Move":"CrossChop"},
+    {"Move":"Refresh"},
+    {"Move":"ConfuseRay"},
+    {"Move":"Yawn"},
+    {"Move":"MudBomb"},
+    {"Move":"Encore"},
+    {"Move":"SecretPower"},
+    {"Move":"SleepTalk"},
+    {"Move":"Synchronoise"}
+  ]
+}

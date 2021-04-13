@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"BatonPass"},
+    {"Move":"SilverWind"},
+    {"Move":"Growth"},
+    {"Move":"Encore"},
+    {"Move":"BugBuzz"},
+    {"Move":"Captivate"},
+    {"Move":"FakeTears"},
+    {"Move":"ConfuseRay"}
+  ]
+}

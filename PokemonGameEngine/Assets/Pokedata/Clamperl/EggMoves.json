@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Refresh"},
+    {"Move":"MudSport"},
+    {"Move":"BodySlam"},
+    {"Move":"Supersonic"},
+    {"Move":"Barrier"},
+    {"Move":"ConfuseRay"},
+    {"Move":"AquaRing"},
+    {"Move":"MuddyWater"},
+    {"Move":"WaterPulse"},
+    {"Move":"Brine"},
+    {"Move":"Endure"}
+  ]
+}

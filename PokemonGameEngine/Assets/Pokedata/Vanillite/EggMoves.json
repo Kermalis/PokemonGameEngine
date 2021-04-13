@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"WaterPulse"},
+    {"Move":"NaturalGift"},
+    {"Move":"Imprison"},
+    {"Move":"Autotomize"},
+    {"Move":"IronDefense"},
+    {"Move":"MagnetRise"},
+    {"Move":"IceShard"},
+    {"Move":"PowderSnow"}
+  ]
+}

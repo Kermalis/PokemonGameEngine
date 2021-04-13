@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"TakeDown"},
+    {"Move":"Bite"},
+    {"Move":"BodySlam"},
+    {"Move":"AncientPower"},
+    {"Move":"MudShot"},
+    {"Move":"IcicleSpear"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Fissure"},
+    {"Move":"Curse"},
+    {"Move":"MudShot"},
+    {"Move":"Avalanche"},
+    {"Move":"StealthRock"},
+    {"Move":"IcicleCrash"}
+  ]
+}

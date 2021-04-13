@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Harden"},
+    {"Move":"Bide"},
+    {"Move":"Flail"},
+    {"Move":"Revenge"},
+    {"Move":"Pursuit"},
+    {"Move":"DoubleEdge"},
+    {"Move":"SeismicToss"},
+    {"Move":"FocusPunch"},
+    {"Move":"Megahorn"}
+  ]
+}

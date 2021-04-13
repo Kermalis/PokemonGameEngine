@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Foresight"},
+    {"Move":"Tickle"},
+    {"Move":"Refresh"},
+    {"Move":"DragonDance"},
+    {"Move":"Curse"},
+    {"Move":"SleepTalk"},
+    {"Move":"HornDrill"},
+    {"Move":"AncientPower"},
+    {"Move":"Whirlpool"},
+    {"Move":"Fissure"},
+    {"Move":"DragonPulse"},
+    {"Move":"Avalanche"},
+    {"Move":"FutureSight"}
+  ]
+}

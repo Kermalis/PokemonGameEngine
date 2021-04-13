@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Charm"},
+    {"Move":"Flail"},
+    {"Move":"Endure"},
+    {"Move":"Curse"},
+    {"Move":"Tickle"},
+    {"Move":"Wish"},
+    {"Move":"Yawn"},
+    {"Move":"FakeTears"},
+    {"Move":"Covet"},
+    {"Move":"Detect"},
+    {"Move":"NaturalGift"},
+    {"Move":"StoredPower"},
+    {"Move":"Synchronoise"}
+  ]
+}

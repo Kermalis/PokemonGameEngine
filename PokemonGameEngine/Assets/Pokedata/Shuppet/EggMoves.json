@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Disable"},
+    {"Move":"DestinyBond"},
+    {"Move":"Foresight"},
+    {"Move":"Astonish"},
+    {"Move":"Imprison"},
+    {"Move":"Pursuit"},
+    {"Move":"ShadowSneak"},
+    {"Move":"ConfuseRay"},
+    {"Move":"OminousWind"},
+    {"Move":"GunkShot"}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"WaterPulse"},
+    {"Move":"Refresh"},
+    {"Move":"MudSport"},
+    {"Move":"MudBomb"},
+    {"Move":"SleepTalk"},
+    {"Move":"Snore"},
+    {"Move":"Mist"},
+    {"Move":"EarthPower"}
+  ]
+}

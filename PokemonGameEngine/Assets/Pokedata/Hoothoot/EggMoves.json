@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"MirrorMove"},
+    {"Move":"Supersonic"},
+    {"Move":"FaintAttack"},
+    {"Move":"WingAttack"},
+    {"Move":"Whirlwind"},
+    {"Move":"SkyAttack"},
+    {"Move":"FeatherDance"},
+    {"Move":"Agility"},
+    {"Move":"NightShade"},
+    {"Move":"Defog"}
+  ]
+}

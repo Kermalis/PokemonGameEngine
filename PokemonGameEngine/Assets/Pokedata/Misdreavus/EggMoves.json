@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Screech"},
+    {"Move":"DestinyBond"},
+    {"Move":"Imprison"},
+    {"Move":"Memento"},
+    {"Move":"SuckerPunch"},
+    {"Move":"ShadowSneak"},
+    {"Move":"Curse"},
+    {"Move":"Spite"},
+    {"Move":"OminousWind"},
+    {"Move":"NastyPlot"},
+    {"Move":"SkillSwap"},
+    {"Move":"WonderRoom"}
+  ]
+}

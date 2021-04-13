@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"MeFirst"},
+    {"Move":"TakeDown"},
+    {"Move":"SandAttack"},
+    {"Move":"DoubleKick"},
+    {"Move":"Screech"},
+    {"Move":"Rage"},
+    {"Move":"Endure"},
+    {"Move":"DoubleEdge"},
+    {"Move":"ShockWave"}
+  ]
+}

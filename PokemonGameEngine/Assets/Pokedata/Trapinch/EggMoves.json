@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"FocusEnergy"},
+    {"Move":"QuickAttack"},
+    {"Move":"Gust"},
+    {"Move":"Flail"},
+    {"Move":"FuryCutter"},
+    {"Move":"MudShot"},
+    {"Move":"Endure"},
+    {"Move":"EarthPower"},
+    {"Move":"BugBite"},
+    {"Move":"SignalBeam"}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"PayDay"},
+    {"Move":"FoulPlay"},
+    {"Move":"FaintAttack"},
+    {"Move":"FakeTears"},
+    {"Move":"Charm"},
+    {"Move":"Encore"},
+    {"Move":"Yawn"},
+    {"Move":"Covet"}
+  ]
+}

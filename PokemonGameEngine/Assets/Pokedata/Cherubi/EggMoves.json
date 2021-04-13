@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"RazorLeaf"},
+    {"Move":"SweetScent"},
+    {"Move":"Tickle"},
+    {"Move":"NaturePower"},
+    {"Move":"GrassWhistle"},
+    {"Move":"Aromatherapy"},
+    {"Move":"WeatherBall"},
+    {"Move":"HealPulse"},
+    {"Move":"HealingWish"},
+    {"Move":"SeedBomb"},
+    {"Move":"NaturalGift"},
+    {"Move":"DefenseCurl"},
+    {"Move":"Rollout"}
+  ]
+}

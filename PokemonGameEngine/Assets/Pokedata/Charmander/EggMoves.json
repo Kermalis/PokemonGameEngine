@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"BellyDrum"},
+    {"Move":"AncientPower"},
+    {"Move":"Bite"},
+    {"Move":"Outrage"},
+    {"Move":"BeatUp"},
+    {"Move":"DragonDance"},
+    {"Move":"Crunch"},
+    {"Move":"DragonRush"},
+    {"Move":"MetalClaw"},
+    {"Move":"FlareBlitz"},
+    {"Move":"Counter"},
+    {"Move":"DragonPulse"},
+    {"Move":"FocusPunch"}
+  ]
+}

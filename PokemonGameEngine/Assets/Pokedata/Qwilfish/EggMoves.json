@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Flail"},
+    {"Move":"Haze"},
+    {"Move":"BubbleBeam"},
+    {"Move":"Supersonic"},
+    {"Move":"Astonish"},
+    {"Move":"SignalBeam"},
+    {"Move":"AquaJet"},
+    {"Move":"WaterPulse"},
+    {"Move":"Brine"},
+    {"Move":"AcidSpray"}
+  ]
+}

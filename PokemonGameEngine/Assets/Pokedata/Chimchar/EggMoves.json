@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"FirePunch"},
+    {"Move":"ThunderPunch"},
+    {"Move":"DoubleKick"},
+    {"Move":"Encore"},
+    {"Move":"HeatWave"},
+    {"Move":"FocusEnergy"},
+    {"Move":"HelpingHand"},
+    {"Move":"FakeOut"},
+    {"Move":"BlazeKick"},
+    {"Move":"Counter"},
+    {"Move":"Assist"},
+    {"Move":"QuickGuard"},
+    {"Move":"FocusPunch"},
+    {"Move":"Submission"}
+  ]
+}

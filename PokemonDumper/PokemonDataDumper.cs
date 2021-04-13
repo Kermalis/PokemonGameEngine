@@ -51,6 +51,7 @@ namespace Kermalis.PokemonDumper
                 WritePokemonData(dir, pkmn);
                 WriteEvolutions(dir, pkmn);
                 WriteLevelUpMoves(dir, pkmn);
+                WriteEggMoves(dir, pkmn);
             }
         }
 
@@ -466,13 +467,30 @@ namespace Kermalis.PokemonDumper
                     ushort numEggMoves = reader.ReadUInt16();
                     if (numEggMoves > 0)
                     {
-                        (PBESpecies, PBEForm) key = ((PBESpecies)sp, 0);
-                        for (int i = 0; i < numEggMoves; i++)
-                        {
-                            AddOtherMove(key, (PBEMove)reader.ReadUInt16(), PBEMoveObtainMethod.EggMove_BWB2W2);
-                        }
+                        Pokemon pkmn = _dict[((PBESpecies)sp, 0)];
+                        pkmn.EggMoves = reader.ReadEnums<PBEMove>(numEggMoves);
                     }
                 }
+            }
+        }
+        private static void WriteEggMoves(string dir, Pokemon pkmn)
+        {
+            using (var w = new JsonTextWriter(File.CreateText(Path.Combine(dir, "EggMoves.json"))) { Formatting = Formatting.Indented })
+            {
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(Pokemon.EggMoves));
+                w.WriteStartArray();
+                foreach (PBEMove move in pkmn.EggMoves)
+                {
+                    w.WriteStartObject();
+                    w.Formatting = Formatting.None;
+                    w.WritePropertyName("Move");
+                    w.WriteValue(move.ToString());
+                    w.WriteEndObject();
+                    w.Formatting = Formatting.Indented;
+                }
+                w.WriteEndArray();
+                w.WriteEndObject();
             }
         }
 
@@ -562,15 +580,10 @@ namespace Kermalis.PokemonDumper
         }
         private static void GiveFormsEggMoves()
         {
+            // The only ones to be copied are Castform and Basculin
             foreach ((PBESpecies, PBEForm) key in _b2w2SpeciesIndexToPBESpecies.Values)
             {
-                foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> kvp in _dict[(key.Item1, 0)].OtherMoves)
-                {
-                    if (kvp.Value.HasFlag(PBEMoveObtainMethod.EggMove_BWB2W2))
-                    {
-                        AddOtherMove(key, kvp.Key, PBEMoveObtainMethod.EggMove_BWB2W2);
-                    }
-                }
+                _dict[key].EggMoves = _dict[(key.Item1, 0)].EggMoves;
             }
         }
     }

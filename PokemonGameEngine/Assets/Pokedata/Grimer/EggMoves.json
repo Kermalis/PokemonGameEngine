@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Haze"},
+    {"Move":"MeanLook"},
+    {"Move":"Lick"},
+    {"Move":"Imprison"},
+    {"Move":"Curse"},
+    {"Move":"ShadowPunch"},
+    {"Move":"ShadowSneak"},
+    {"Move":"Stockpile"},
+    {"Move":"Swallow"},
+    {"Move":"SpitUp"},
+    {"Move":"ScaryFace"},
+    {"Move":"AcidSpray"}
+  ]
+}

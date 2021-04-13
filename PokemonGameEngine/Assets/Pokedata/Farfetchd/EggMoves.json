@@ -1,0 +1,19 @@
+{
+  "EggMoves": [
+    {"Move":"SteelWing"},
+    {"Move":"Foresight"},
+    {"Move":"MirrorMove"},
+    {"Move":"Gust"},
+    {"Move":"QuickAttack"},
+    {"Move":"Flail"},
+    {"Move":"FeatherDance"},
+    {"Move":"Curse"},
+    {"Move":"Covet"},
+    {"Move":"MudSlap"},
+    {"Move":"NightSlash"},
+    {"Move":"LeafBlade"},
+    {"Move":"Revenge"},
+    {"Move":"Roost"},
+    {"Move":"TrumpCard"}
+  ]
+}

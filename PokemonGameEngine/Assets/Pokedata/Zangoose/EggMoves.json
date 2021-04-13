@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Flail"},
+    {"Move":"DoubleKick"},
+    {"Move":"RazorWind"},
+    {"Move":"Counter"},
+    {"Move":"Curse"},
+    {"Move":"FurySwipes"},
+    {"Move":"NightSlash"},
+    {"Move":"MetalClaw"},
+    {"Move":"DoubleHit"},
+    {"Move":"Disable"},
+    {"Move":"IronTail"},
+    {"Move":"FinalGambit"},
+    {"Move":"Feint"}
+  ]
+}

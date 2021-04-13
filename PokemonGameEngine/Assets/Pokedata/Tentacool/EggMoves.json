@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"AuroraBeam"},
+    {"Move":"MirrorCoat"},
+    {"Move":"RapidSpin"},
+    {"Move":"Haze"},
+    {"Move":"ConfuseRay"},
+    {"Move":"KnockOff"},
+    {"Move":"Acupressure"},
+    {"Move":"MuddyWater"},
+    {"Move":"Bubble"},
+    {"Move":"AquaRing"},
+    {"Move":"Tickle"}
+  ]
+}

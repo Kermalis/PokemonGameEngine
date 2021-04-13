@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"TakeDown"},
+    {"Move":"BodySlam"},
+    {"Move":"Screech"},
+    {"Move":"OdorSleuth"},
+    {"Move":"Charge"},
+    {"Move":"Flatter"},
+    {"Move":"SandAttack"},
+    {"Move":"IronTail"},
+    {"Move":"AfterYou"},
+    {"Move":"Agility"}
+  ]
+}

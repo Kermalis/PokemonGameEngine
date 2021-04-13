@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"FaintAttack"},
+    {"Move":"Hypnosis"},
+    {"Move":"Flail"},
+    {"Move":"Spite"},
+    {"Move":"Disable"},
+    {"Move":"Howl"},
+    {"Move":"HeatWave"},
+    {"Move":"FlareBlitz"},
+    {"Move":"Extrasensory"},
+    {"Move":"PowerSwap"},
+    {"Move":"SecretPower"},
+    {"Move":"Hex"},
+    {"Move":"TailSlap"}
+  ]
+}

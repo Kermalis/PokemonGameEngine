@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"DestinyBond"},
+    {"Move":"PainSplit"},
+    {"Move":"SmokeScreen"},
+    {"Move":"Imprison"},
+    {"Move":"Grudge"},
+    {"Move":"ShadowSneak"},
+    {"Move":"Captivate"},
+    {"Move":"Nightmare"}
+  ]
+}

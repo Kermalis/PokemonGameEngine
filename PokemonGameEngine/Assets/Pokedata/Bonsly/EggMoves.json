@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Selfdestruct"},
+    {"Move":"Headbutt"},
+    {"Move":"Harden"},
+    {"Move":"DefenseCurl"},
+    {"Move":"Rollout"},
+    {"Move":"SandTomb"},
+    {"Move":"StealthRock"},
+    {"Move":"Curse"},
+    {"Move":"Endure"}
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"PoisonFang"},
+    {"Move":"AncientPower"},
+    {"Move":"Tickle"},
+    {"Move":"SuckerPunch"},
+    {"Move":"IceFang"},
+    {"Move":"FireFang"},
+    {"Move":"ThunderFang"},
+    {"Move":"Punishment"},
+    {"Move":"GuardSwap"},
+    {"Move":"Captivate"},
+    {"Move":"Slam"},
+    {"Move":"MetalBurst"}
+  ]
+}

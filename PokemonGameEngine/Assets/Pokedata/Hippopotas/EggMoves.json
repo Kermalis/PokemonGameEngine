@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Stockpile"},
+    {"Move":"Swallow"},
+    {"Move":"SpitUp"},
+    {"Move":"Curse"},
+    {"Move":"SlackOff"},
+    {"Move":"BodySlam"},
+    {"Move":"SandTomb"},
+    {"Move":"Revenge"},
+    {"Move":"SleepTalk"},
+    {"Move":"Whirlwind"}
+  ]
+}

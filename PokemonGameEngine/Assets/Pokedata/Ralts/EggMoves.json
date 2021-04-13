@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Disable"},
+    {"Move":"MeanLook"},
+    {"Move":"Memento"},
+    {"Move":"DestinyBond"},
+    {"Move":"Grudge"},
+    {"Move":"ShadowSneak"},
+    {"Move":"ConfuseRay"},
+    {"Move":"Encore"},
+    {"Move":"Synchronoise"},
+    {"Move":"SkillSwap"}
+  ]
+}

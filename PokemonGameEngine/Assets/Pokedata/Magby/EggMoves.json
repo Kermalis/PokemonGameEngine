@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"KarateChop"},
+    {"Move":"MegaPunch"},
+    {"Move":"Barrier"},
+    {"Move":"Screech"},
+    {"Move":"CrossChop"},
+    {"Move":"ThunderPunch"},
+    {"Move":"MachPunch"},
+    {"Move":"DynamicPunch"},
+    {"Move":"FlareBlitz"},
+    {"Move":"BellyDrum"},
+    {"Move":"IronTail"},
+    {"Move":"FocusEnergy"}
+  ]
+}

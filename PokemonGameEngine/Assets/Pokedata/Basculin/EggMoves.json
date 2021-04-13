@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Swift"},
+    {"Move":"BubbleBeam"},
+    {"Move":"MudShot"},
+    {"Move":"MuddyWater"},
+    {"Move":"Agility"},
+    {"Move":"Whirlpool"},
+    {"Move":"Rage"},
+    {"Move":"Brine"},
+    {"Move":"Revenge"}
+  ]
+}

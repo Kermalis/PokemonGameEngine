@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Present"},
+    {"Move":"Metronome"},
+    {"Move":"HealBell"},
+    {"Move":"Aromatherapy"},
+    {"Move":"Counter"},
+    {"Move":"HelpingHand"},
+    {"Move":"Gravity"},
+    {"Move":"LastResort"},
+    {"Move":"MudBomb"},
+    {"Move":"NaturalGift"},
+    {"Move":"Endure"}
+  ]
+}

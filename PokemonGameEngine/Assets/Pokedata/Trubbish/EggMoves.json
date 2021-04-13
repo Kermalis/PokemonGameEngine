@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Spikes"},
+    {"Move":"Rollout"},
+    {"Move":"Haze"},
+    {"Move":"Curse"},
+    {"Move":"RockBlast"},
+    {"Move":"SandAttack"},
+    {"Move":"MudSport"},
+    {"Move":"Selfdestruct"}
+  ]
+}

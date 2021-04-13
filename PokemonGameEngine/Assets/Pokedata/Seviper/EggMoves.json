@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Stockpile"},
+    {"Move":"Swallow"},
+    {"Move":"SpitUp"},
+    {"Move":"BodySlam"},
+    {"Move":"ScaryFace"},
+    {"Move":"Assurance"},
+    {"Move":"NightSlash"},
+    {"Move":"Switcheroo"},
+    {"Move":"IronTail"},
+    {"Move":"WringOut"},
+    {"Move":"Punishment"},
+    {"Move":"FinalGambit"}
+  ]
+}

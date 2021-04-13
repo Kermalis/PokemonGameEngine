@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"BellyDrum"},
+    {"Move":"Magnitude"},
+    {"Move":"BodySlam"},
+    {"Move":"Curse"},
+    {"Move":"SmellingSalt"},
+    {"Move":"SleepTalk"},
+    {"Move":"Snore"},
+    {"Move":"Amnesia"},
+    {"Move":"HammerArm"},
+    {"Move":"MuddyWater"},
+    {"Move":"ZenHeadbutt"}
+  ]
+}

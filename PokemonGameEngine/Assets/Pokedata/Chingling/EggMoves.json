@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Disable"},
+    {"Move":"Curse"},
+    {"Move":"Hypnosis"},
+    {"Move":"Wish"},
+    {"Move":"FutureSight"},
+    {"Move":"Recover"},
+    {"Move":"StoredPower"},
+    {"Move":"SkillSwap"}
+  ]
+}

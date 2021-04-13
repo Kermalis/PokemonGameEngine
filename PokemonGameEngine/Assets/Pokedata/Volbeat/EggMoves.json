@@ -1,0 +1,11 @@
+{
+  "EggMoves": [
+    {"Move":"BatonPass"},
+    {"Move":"SilverWind"},
+    {"Move":"Trick"},
+    {"Move":"Encore"},
+    {"Move":"BugBuzz"},
+    {"Move":"DizzyPunch"},
+    {"Move":"SeismicToss"}
+  ]
+}

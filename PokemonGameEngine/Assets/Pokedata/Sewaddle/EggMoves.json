@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"SilverWind"},
+    {"Move":"Screech"},
+    {"Move":"RazorWind"},
+    {"Move":"MindReader"},
+    {"Move":"Agility"},
+    {"Move":"MeFirst"},
+    {"Move":"BatonPass"},
+    {"Move":"Camouflage"},
+    {"Move":"AirSlash"}
+  ]
+}

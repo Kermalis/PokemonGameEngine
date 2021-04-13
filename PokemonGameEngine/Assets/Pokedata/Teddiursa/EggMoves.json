@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"Crunch"},
+    {"Move":"TakeDown"},
+    {"Move":"SeismicToss"},
+    {"Move":"Counter"},
+    {"Move":"MetalClaw"},
+    {"Move":"FakeTears"},
+    {"Move":"Yawn"},
+    {"Move":"SleepTalk"},
+    {"Move":"CrossChop"},
+    {"Move":"DoubleEdge"},
+    {"Move":"CloseCombat"},
+    {"Move":"NightSlash"},
+    {"Move":"BellyDrum"},
+    {"Move":"ChipAway"}
+  ]
+}

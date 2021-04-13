@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"BubbleBeam"},
+    {"Move":"TakeDown"},
+    {"Move":"Barrier"},
+    {"Move":"RapidSpin"},
+    {"Move":"Screech"},
+    {"Move":"IcicleSpear"},
+    {"Move":"MudShot"},
+    {"Move":"RockBlast"},
+    {"Move":"WaterPulse"},
+    {"Move":"AquaRing"},
+    {"Move":"Avalanche"},
+    {"Move":"Twineedle"}
+  ]
+}

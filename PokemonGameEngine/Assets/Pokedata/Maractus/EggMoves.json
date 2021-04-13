@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"BulletSeed"},
+    {"Move":"Bounce"},
+    {"Move":"WorrySeed"},
+    {"Move":"LeechSeed"},
+    {"Move":"SeedBomb"},
+    {"Move":"WoodHammer"},
+    {"Move":"Spikes"},
+    {"Move":"GrassWhistle"}
+  ]
+}

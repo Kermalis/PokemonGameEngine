@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"KarateChop"},
+    {"Move":"Barrier"},
+    {"Move":"RollingKick"},
+    {"Move":"Meditate"},
+    {"Move":"CrossChop"},
+    {"Move":"FirePunch"},
+    {"Move":"IcePunch"},
+    {"Move":"DynamicPunch"},
+    {"Move":"Feint"},
+    {"Move":"HammerArm"},
+    {"Move":"FocusPunch"}
+  ]
+}

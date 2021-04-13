@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"Whirlwind"},
+    {"Move":"DrillPeck"},
+    {"Move":"MirrorMove"},
+    {"Move":"WingAttack"},
+    {"Move":"SkyAttack"},
+    {"Move":"ConfuseRay"},
+    {"Move":"FeatherDance"},
+    {"Move":"PerishSong"},
+    {"Move":"PsychoShift"},
+    {"Move":"Screech"},
+    {"Move":"FaintAttack"},
+    {"Move":"BraveBird"},
+    {"Move":"Roost"},
+    {"Move":"Assurance"}
+  ]
+}

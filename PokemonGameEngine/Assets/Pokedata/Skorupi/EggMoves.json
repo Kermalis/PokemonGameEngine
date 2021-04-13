@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"FaintAttack"},
+    {"Move":"Screech"},
+    {"Move":"SandAttack"},
+    {"Move":"Slash"},
+    {"Move":"ConfuseRay"},
+    {"Move":"Whirlwind"},
+    {"Move":"Agility"},
+    {"Move":"Pursuit"},
+    {"Move":"NightSlash"},
+    {"Move":"IronTail"},
+    {"Move":"Twineedle"},
+    {"Move":"PoisonTail"}
+  ]
+}

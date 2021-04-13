@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Flail"},
+    {"Move":"Counter"},
+    {"Move":"RapidSpin"},
+    {"Move":"MetalClaw"},
+    {"Move":"CrushClaw"},
+    {"Move":"NightSlash"},
+    {"Move":"MudShot"},
+    {"Move":"Endure"},
+    {"Move":"ChipAway"},
+    {"Move":"RockClimb"}
+  ]
+}

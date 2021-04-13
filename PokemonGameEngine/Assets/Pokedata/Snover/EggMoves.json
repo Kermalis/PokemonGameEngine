@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"LeechSeed"},
+    {"Move":"MagicalLeaf"},
+    {"Move":"SeedBomb"},
+    {"Move":"Growth"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Mist"},
+    {"Move":"Stomp"},
+    {"Move":"SkullBash"},
+    {"Move":"Avalanche"},
+    {"Move":"NaturalGift"},
+    {"Move":"BulletSeed"}
+  ]
+}

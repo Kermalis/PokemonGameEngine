@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"ShockWave"},
+    {"Move":"EarthPower"},
+    {"Move":"Yawn"},
+    {"Move":"SleepTalk"},
+    {"Move":"Astonish"},
+    {"Move":"Curse"},
+    {"Move":"Spite"},
+    {"Move":"Spark"},
+    {"Move":"PainSplit"}
+  ]
+}

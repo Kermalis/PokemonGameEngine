@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"PerishSong"},
+    {"Move":"Present"},
+    {"Move":"FaintAttack"},
+    {"Move":"Wish"},
+    {"Move":"FakeTears"},
+    {"Move":"LastResort"},
+    {"Move":"Covet"},
+    {"Move":"Gravity"},
+    {"Move":"SleepTalk"},
+    {"Move":"Captivate"},
+    {"Move":"Punishment"}
+  ]
+}

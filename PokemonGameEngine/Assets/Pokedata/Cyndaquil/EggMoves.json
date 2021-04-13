@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"FurySwipes"},
+    {"Move":"QuickAttack"},
+    {"Move":"Reversal"},
+    {"Move":"Thrash"},
+    {"Move":"Foresight"},
+    {"Move":"Covet"},
+    {"Move":"Howl"},
+    {"Move":"CrushClaw"},
+    {"Move":"DoubleEdge"},
+    {"Move":"DoubleKick"},
+    {"Move":"FlareBlitz"},
+    {"Move":"Extrasensory"},
+    {"Move":"NaturePower"},
+    {"Move":"FlameBurst"}
+  ]
+}

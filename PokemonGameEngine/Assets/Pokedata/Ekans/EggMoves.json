@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Pursuit"},
+    {"Move":"Slam"},
+    {"Move":"Spite"},
+    {"Move":"BeatUp"},
+    {"Move":"PoisonFang"},
+    {"Move":"ScaryFace"},
+    {"Move":"PoisonTail"},
+    {"Move":"Disable"},
+    {"Move":"Switcheroo"},
+    {"Move":"IronTail"},
+    {"Move":"SuckerPunch"},
+    {"Move":"Snatch"}
+  ]
+}

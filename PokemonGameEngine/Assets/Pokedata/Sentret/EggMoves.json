@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"DoubleEdge"},
+    {"Move":"Pursuit"},
+    {"Move":"Slash"},
+    {"Move":"FocusEnergy"},
+    {"Move":"Reversal"},
+    {"Move":"Trick"},
+    {"Move":"Assist"},
+    {"Move":"LastResort"},
+    {"Move":"Charm"},
+    {"Move":"Covet"},
+    {"Move":"NaturalGift"},
+    {"Move":"IronTail"}
+  ]
+}

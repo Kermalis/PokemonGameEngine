@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Mist"},
+    {"Move":"Twister"},
+    {"Move":"Agility"},
+    {"Move":"Gust"},
+    {"Move":"WaterSport"},
+    {"Move":"AquaRing"},
+    {"Move":"KnockOff"},
+    {"Move":"Brine"},
+    {"Move":"Roost"}
+  ]
+}

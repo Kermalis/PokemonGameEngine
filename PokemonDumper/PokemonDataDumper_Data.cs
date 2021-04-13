@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonDumper
@@ -78,6 +79,7 @@ namespace Kermalis.PokemonDumper
             public PBEAbility Ability2;
             public PBEAbility AbilityH;
             public List<(PBEMove Move, byte Level)> LevelUpMoves = new List<(PBEMove, byte)>();
+            public PBEMove[] EggMoves = Array.Empty<PBEMove>();
             public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
             public PBESpecies BabySpecies;
             public (EvoMethod Method, ushort Param, PBESpecies Species, PBEForm Form)[] Evolutions = new (EvoMethod, ushort, PBESpecies, PBEForm)[7];
@@ -105,6 +107,7 @@ namespace Kermalis.PokemonDumper
                 BabySpecies = other.BabySpecies;
                 Evolutions = ((EvoMethod, ushort, PBESpecies, PBEForm)[])other.Evolutions.Clone();
                 LevelUpMoves = other.LevelUpMoves;
+                EggMoves = other.EggMoves;
                 OtherMoves = other.OtherMoves;
             }
             public void CopyArceus(Pokemon other, PBEType type)
@@ -130,6 +133,7 @@ namespace Kermalis.PokemonDumper
                 BabySpecies = other.BabySpecies;
                 Evolutions = other.Evolutions;
                 LevelUpMoves = other.LevelUpMoves;
+                EggMoves = other.EggMoves;
                 OtherMoves = other.OtherMoves;
             }
         }

@@ -1,0 +1,11 @@
+{
+  "EggMoves": [
+    {"Move":"SteelWing"},
+    {"Move":"Defog"},
+    {"Move":"DragonPulse"},
+    {"Move":"HeadSmash"},
+    {"Move":"KnockOff"},
+    {"Move":"EarthPower"},
+    {"Move":"Bite"}
+  ]
+}

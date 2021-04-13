@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Crunch"},
+    {"Move":"Reversal"},
+    {"Move":"Counter"},
+    {"Move":"Magnitude"},
+    {"Move":"Curse"},
+    {"Move":"CrushClaw"},
+    {"Move":"DragonRush"},
+    {"Move":"IceFang"},
+    {"Move":"FireFang"},
+    {"Move":"ThunderFang"},
+    {"Move":"SkullBash"},
+    {"Move":"IronTail"},
+    {"Move":"RockClimb"}
+  ]
+}

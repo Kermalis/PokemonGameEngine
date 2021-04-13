@@ -1,0 +1,10 @@
+{
+  "EggMoves": [
+    {"Move":"SteelWing"},
+    {"Move":"MeanLook"},
+    {"Move":"Roost"},
+    {"Move":"ScaryFace"},
+    {"Move":"KnockOff"},
+    {"Move":"FakeTears"}
+  ]
+}

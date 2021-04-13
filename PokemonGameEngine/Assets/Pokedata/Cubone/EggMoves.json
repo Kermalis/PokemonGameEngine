@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"AncientPower"},
+    {"Move":"BellyDrum"},
+    {"Move":"Screech"},
+    {"Move":"SkullBash"},
+    {"Move":"PerishSong"},
+    {"Move":"DoubleKick"},
+    {"Move":"IronHead"},
+    {"Move":"Detect"},
+    {"Move":"Endure"},
+    {"Move":"ChipAway"}
+  ]
+}

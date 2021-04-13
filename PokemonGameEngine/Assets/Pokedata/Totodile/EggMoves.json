@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Crunch"},
+    {"Move":"Thrash"},
+    {"Move":"HydroPump"},
+    {"Move":"AncientPower"},
+    {"Move":"MudSport"},
+    {"Move":"WaterSport"},
+    {"Move":"IcePunch"},
+    {"Move":"MetalClaw"},
+    {"Move":"DragonDance"},
+    {"Move":"AquaJet"},
+    {"Move":"FakeTears"},
+    {"Move":"Block"},
+    {"Move":"WaterPulse"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"FlameWheel"},
+    {"Move":"Thrash"},
+    {"Move":"DoubleKick"},
+    {"Move":"Hypnosis"},
+    {"Move":"Charm"},
+    {"Move":"DoubleEdge"},
+    {"Move":"HornDrill"},
+    {"Move":"MorningSun"},
+    {"Move":"LowKick"},
+    {"Move":"Captivate"}
+  ]
+}

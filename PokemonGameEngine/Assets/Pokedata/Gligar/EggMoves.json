@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"MetalClaw"},
+    {"Move":"WingAttack"},
+    {"Move":"RazorWind"},
+    {"Move":"Counter"},
+    {"Move":"SandTomb"},
+    {"Move":"Agility"},
+    {"Move":"BatonPass"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Feint"},
+    {"Move":"NightSlash"},
+    {"Move":"CrossPoison"},
+    {"Move":"PowerTrick"},
+    {"Move":"RockClimb"},
+    {"Move":"PoisonTail"}
+  ]
+}

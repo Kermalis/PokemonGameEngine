@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"SkullBash"},
+    {"Move":"Charm"},
+    {"Move":"PetalDance"},
+    {"Move":"MagicalLeaf"},
+    {"Move":"GrassWhistle"},
+    {"Move":"Curse"},
+    {"Move":"Ingrain"},
+    {"Move":"NaturePower"},
+    {"Move":"Amnesia"},
+    {"Move":"LeafStorm"},
+    {"Move":"PowerWhip"},
+    {"Move":"Sludge"},
+    {"Move":"Endure"},
+    {"Move":"GigaDrain"}
+  ]
+}

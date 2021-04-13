@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"FakeTears"},
+    {"Move":"Charm"},
+    {"Move":"HelpingHand"},
+    {"Move":"WorrySeed"},
+    {"Move":"WakeUpSlap"},
+    {"Move":"SeedBomb"},
+    {"Move":"BulletSeed"},
+    {"Move":"FocusPunch"},
+    {"Move":"NaturalGift"},
+    {"Move":"DrainPunch"}
+  ]
+}

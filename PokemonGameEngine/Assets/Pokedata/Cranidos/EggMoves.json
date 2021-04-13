@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Crunch"},
+    {"Move":"Thrash"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Leer"},
+    {"Move":"Slam"},
+    {"Move":"Stomp"},
+    {"Move":"Whirlwind"},
+    {"Move":"HammerArm"},
+    {"Move":"Curse"},
+    {"Move":"IronTail"},
+    {"Move":"IronHead"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"RazorLeaf"},
+    {"Move":"Flail"},
+    {"Move":"Synthesis"},
+    {"Move":"Charm"},
+    {"Move":"Ingrain"},
+    {"Move":"Tickle"},
+    {"Move":"TeeterDance"},
+    {"Move":"SecretPower"},
+    {"Move":"NaturePower"},
+    {"Move":"AfterYou"}
+  ]
+}

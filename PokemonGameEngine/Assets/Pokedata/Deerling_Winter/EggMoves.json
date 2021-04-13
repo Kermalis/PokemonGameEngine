@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"FakeTears"},
+    {"Move":"NaturalGift"},
+    {"Move":"Synthesis"},
+    {"Move":"WorrySeed"},
+    {"Move":"OdorSleuth"},
+    {"Move":"Agility"},
+    {"Move":"SleepTalk"},
+    {"Move":"BatonPass"},
+    {"Move":"GrassWhistle"}
+  ]
+}

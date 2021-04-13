@@ -1,0 +1,11 @@
+{
+  "EggMoves": [
+    {"Move":"StringShot"},
+    {"Move":"Harden"},
+    {"Move":"Foresight"},
+    {"Move":"Endure"},
+    {"Move":"ZenHeadbutt"},
+    {"Move":"MorningSun"},
+    {"Move":"MagnetRise"}
+  ]
+}

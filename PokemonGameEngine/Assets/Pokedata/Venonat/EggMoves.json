@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"BatonPass"},
+    {"Move":"Screech"},
+    {"Move":"GigaDrain"},
+    {"Move":"SignalBeam"},
+    {"Move":"Agility"},
+    {"Move":"MorningSun"},
+    {"Move":"ToxicSpikes"},
+    {"Move":"BugBite"},
+    {"Move":"SecretPower"},
+    {"Move":"SkillSwap"},
+    {"Move":"RagePowder"}
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"AcidArmor"},
+    {"Move":"HeatWave"},
+    {"Move":"Curse"},
+    {"Move":"SmokeScreen"},
+    {"Move":"Memento"},
+    {"Move":"Stockpile"},
+    {"Move":"SpitUp"},
+    {"Move":"Swallow"},
+    {"Move":"Rollout"},
+    {"Move":"Inferno"},
+    {"Move":"EarthPower"}
+  ]
+}

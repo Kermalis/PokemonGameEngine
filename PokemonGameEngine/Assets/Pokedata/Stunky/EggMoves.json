@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Pursuit"},
+    {"Move":"Leer"},
+    {"Move":"Smog"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Crunch"},
+    {"Move":"ScaryFace"},
+    {"Move":"Astonish"},
+    {"Move":"Punishment"},
+    {"Move":"Haze"},
+    {"Move":"IronTail"},
+    {"Move":"FoulPlay"},
+    {"Move":"FlameBurst"}
+  ]
+}

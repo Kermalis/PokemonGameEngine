@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Charm"},
+    {"Move":"Pursuit"},
+    {"Move":"Tickle"},
+    {"Move":"Trick"},
+    {"Move":"HelpingHand"},
+    {"Move":"MudSlap"},
+    {"Move":"SleepTalk"},
+    {"Move":"RockClimb"},
+    {"Move":"SimpleBeam"}
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "EggMoves": [
+    {"Move":"AcidArmor"},
+    {"Move":"HeatWave"},
+    {"Move":"Haze"},
+    {"Move":"Endure"},
+    {"Move":"Captivate"},
+    {"Move":"Acid"},
+    {"Move":"ClearSmog"}
+  ]
+}

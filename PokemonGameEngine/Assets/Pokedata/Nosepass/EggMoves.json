@@ -1,0 +1,10 @@
+{
+  "EggMoves": [
+    {"Move":"Magnitude"},
+    {"Move":"Rollout"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Block"},
+    {"Move":"StealthRock"},
+    {"Move":"Endure"}
+  ]
+}

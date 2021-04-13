@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"HydroPump"},
+    {"Move":"Thrash"},
+    {"Move":"DragonRage"},
+    {"Move":"Twister"},
+    {"Move":"DragonDance"},
+    {"Move":"FireFang"},
+    {"Move":"DragonRush"},
+    {"Move":"DragonPulse"},
+    {"Move":"Endure"},
+    {"Move":"DefenseCurl"}
+  ]
+}

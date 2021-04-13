@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Psybeam"},
+    {"Move":"Bide"},
+    {"Move":"SilverWind"},
+    {"Move":"BugBuzz"},
+    {"Move":"Screech"},
+    {"Move":"Encore"},
+    {"Move":"KnockOff"},
+    {"Move":"BugBite"},
+    {"Move":"FocusPunch"},
+    {"Move":"DrainPunch"},
+    {"Move":"DizzyPunch"}
+  ]
+}

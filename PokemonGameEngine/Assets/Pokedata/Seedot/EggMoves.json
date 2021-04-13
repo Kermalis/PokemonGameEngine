@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"LeechSeed"},
+    {"Move":"Amnesia"},
+    {"Move":"QuickAttack"},
+    {"Move":"RazorWind"},
+    {"Move":"TakeDown"},
+    {"Move":"WorrySeed"},
+    {"Move":"NastyPlot"},
+    {"Move":"PowerSwap"},
+    {"Move":"Defog"},
+    {"Move":"FoulPlay"},
+    {"Move":"BeatUp"},
+    {"Move":"BulletSeed"}
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "EggMoves": [
+    {"Move":"StoredPower"},
+    {"Move":"PsychoShift"},
+    {"Move":"AncientPower"},
+    {"Move":"SteelWing"},
+    {"Move":"Roost"},
+    {"Move":"SkillSwap"}
+  ]
+}

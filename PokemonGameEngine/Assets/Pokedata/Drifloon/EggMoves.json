@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Memento"},
+    {"Move":"BodySlam"},
+    {"Move":"DestinyBond"},
+    {"Move":"Disable"},
+    {"Move":"Haze"},
+    {"Move":"Hypnosis"},
+    {"Move":"WeatherBall"},
+    {"Move":"ClearSmog"},
+    {"Move":"Defog"}
+  ]
+}

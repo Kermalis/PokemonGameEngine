@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Counter"},
+    {"Move":"Screech"},
+    {"Move":"Pursuit"},
+    {"Move":"Agility"},
+    {"Move":"Spite"},
+    {"Move":"Slam"},
+    {"Move":"DoubleSlap"},
+    {"Move":"BeatUp"},
+    {"Move":"FakeOut"},
+    {"Move":"Covet"},
+    {"Move":"Bounce"},
+    {"Move":"Revenge"},
+    {"Move":"Switcheroo"}
+  ]
+}

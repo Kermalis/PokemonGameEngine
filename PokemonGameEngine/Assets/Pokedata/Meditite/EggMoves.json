@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"FirePunch"},
+    {"Move":"ThunderPunch"},
+    {"Move":"IcePunch"},
+    {"Move":"Foresight"},
+    {"Move":"FakeOut"},
+    {"Move":"BatonPass"},
+    {"Move":"DynamicPunch"},
+    {"Move":"PowerSwap"},
+    {"Move":"GuardSwap"},
+    {"Move":"PsychoCut"},
+    {"Move":"BulletPunch"},
+    {"Move":"DrainPunch"},
+    {"Move":"SecretPower"}
+  ]
+}

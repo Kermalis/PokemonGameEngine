@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"HelpingHand"},
+    {"Move":"Uproar"},
+    {"Move":"FakeTears"},
+    {"Move":"Wish"},
+    {"Move":"BatonPass"},
+    {"Move":"Tickle"},
+    {"Move":"LastResort"},
+    {"Move":"FakeOut"},
+    {"Move":"ZenHeadbutt"},
+    {"Move":"SuckerPunch"},
+    {"Move":"MudBomb"},
+    {"Move":"SimpleBeam"},
+    {"Move":"Captivate"}
+  ]
+}

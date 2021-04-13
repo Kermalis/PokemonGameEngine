@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"SleepTalk"},
+    {"Move":"FocusPunch"},
+    {"Move":"FocusEnergy"},
+    {"Move":"Endure"},
+    {"Move":"HammerArm"},
+    {"Move":"TakeDown"},
+    {"Move":"FlameWheel"},
+    {"Move":"Encore"},
+    {"Move":"Yawn"}
+  ]
+}

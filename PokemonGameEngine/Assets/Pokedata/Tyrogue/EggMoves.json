@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"RapidSpin"},
+    {"Move":"HiJumpKick"},
+    {"Move":"MachPunch"},
+    {"Move":"MindReader"},
+    {"Move":"HelpingHand"},
+    {"Move":"Counter"},
+    {"Move":"VacuumWave"},
+    {"Move":"BulletPunch"},
+    {"Move":"Endure"},
+    {"Move":"Pursuit"},
+    {"Move":"Feint"}
+  ]
+}

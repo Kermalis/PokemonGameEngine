@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Foresight"},
+    {"Move":"MudShot"},
+    {"Move":"Psybeam"},
+    {"Move":"HydroPump"},
+    {"Move":"MindReader"},
+    {"Move":"SignalBeam"},
+    {"Move":"BugBite"},
+    {"Move":"AquaJet"},
+    {"Move":"Endure"}
+  ]
+}

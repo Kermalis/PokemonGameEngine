@@ -1,0 +1,10 @@
+{
+  "EggMoves": [
+    {"Move":"HydroPump"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Thrash"},
+    {"Move":"AncientPower"},
+    {"Move":"Swift"},
+    {"Move":"Brine"}
+  ]
+}

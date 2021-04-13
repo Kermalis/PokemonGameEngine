@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Charm"},
+    {"Move":"KnockOff"},
+    {"Move":"FakeTears"},
+    {"Move":"Supersonic"},
+    {"Move":"Synchronoise"},
+    {"Move":"StoredPower"},
+    {"Move":"Roost"},
+    {"Move":"Flatter"},
+    {"Move":"HelpingHand"}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Synthesis"},
+    {"Move":"Moonlight"},
+    {"Move":"AncientPower"},
+    {"Move":"Ingrain"},
+    {"Move":"Curse"},
+    {"Move":"NaturePower"},
+    {"Move":"LuckyChant"},
+    {"Move":"LeafStorm"},
+    {"Move":"PowerSwap"},
+    {"Move":"GigaDrain"},
+    {"Move":"SkillSwap"},
+    {"Move":"NaturalGift"},
+    {"Move":"Block"}
+  ]
+}

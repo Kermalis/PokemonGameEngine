@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"TakeDown"},
+    {"Move":"Amnesia"},
+    {"Move":"Foresight"},
+    {"Move":"FutureSight"},
+    {"Move":"BeatUp"},
+    {"Move":"Wish"},
+    {"Move":"MagicCoat"},
+    {"Move":"DoubleKick"},
+    {"Move":"MirrorCoat"},
+    {"Move":"RazorWind"},
+    {"Move":"SkillSwap"},
+    {"Move":"SecretPower"},
+    {"Move":"MeanLook"}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"WaterPulse"},
+    {"Move":"KnockOff"},
+    {"Move":"RockThrow"},
+    {"Move":"Slam"},
+    {"Move":"IronDefense"},
+    {"Move":"Flail"},
+    {"Move":"Whirlpool"},
+    {"Move":"BodySlam"},
+    {"Move":"Bide"}
+  ]
+}

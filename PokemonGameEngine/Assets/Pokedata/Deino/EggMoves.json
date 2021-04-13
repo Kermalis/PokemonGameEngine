@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"FireFang"},
+    {"Move":"ThunderFang"},
+    {"Move":"IceFang"},
+    {"Move":"DoubleHit"},
+    {"Move":"Astonish"},
+    {"Move":"EarthPower"},
+    {"Move":"Screech"},
+    {"Move":"HeadSmash"},
+    {"Move":"Assurance"},
+    {"Move":"DarkPulse"}
+  ]
+}

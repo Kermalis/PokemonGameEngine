@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Eruption"},
+    {"Move":"Endure"},
+    {"Move":"SleepTalk"},
+    {"Move":"Yawn"},
+    {"Move":"Fissure"},
+    {"Move":"SkullBash"},
+    {"Move":"FlameBurst"},
+    {"Move":"ClearSmog"}
+  ]
+}

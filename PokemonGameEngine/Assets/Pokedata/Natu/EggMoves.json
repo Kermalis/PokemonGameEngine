@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Haze"},
+    {"Move":"DrillPeck"},
+    {"Move":"QuickAttack"},
+    {"Move":"FaintAttack"},
+    {"Move":"SteelWing"},
+    {"Move":"FeatherDance"},
+    {"Move":"Refresh"},
+    {"Move":"ZenHeadbutt"},
+    {"Move":"SuckerPunch"},
+    {"Move":"Synchronoise"},
+    {"Move":"Roost"},
+    {"Move":"SkillSwap"}
+  ]
+}

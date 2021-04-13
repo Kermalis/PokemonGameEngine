@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Foresight"},
+    {"Move":"Meditate"},
+    {"Move":"Counter"},
+    {"Move":"Reversal"},
+    {"Move":"BeatUp"},
+    {"Move":"Revenge"},
+    {"Move":"SmellingSalt"},
+    {"Move":"CloseCombat"},
+    {"Move":"Encore"},
+    {"Move":"FocusPunch"},
+    {"Move":"SleepTalk"}
+  ]
+}

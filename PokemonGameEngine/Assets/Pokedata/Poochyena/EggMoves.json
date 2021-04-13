@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Astonish"},
+    {"Move":"PoisonFang"},
+    {"Move":"Covet"},
+    {"Move":"Leer"},
+    {"Move":"Yawn"},
+    {"Move":"SuckerPunch"},
+    {"Move":"IceFang"},
+    {"Move":"FireFang"},
+    {"Move":"ThunderFang"},
+    {"Move":"MeFirst"},
+    {"Move":"Snatch"},
+    {"Move":"SleepTalk"}
+  ]
+}

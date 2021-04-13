@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Psybeam"},
+    {"Move":"Disable"},
+    {"Move":"SonicBoom"},
+    {"Move":"BatonPass"},
+    {"Move":"Pursuit"},
+    {"Move":"SignalBeam"},
+    {"Move":"ToxicSpikes"},
+    {"Move":"Twineedle"},
+    {"Move":"Electroweb"},
+    {"Move":"RagePowder"},
+    {"Move":"NightSlash"}
+  ]
+}

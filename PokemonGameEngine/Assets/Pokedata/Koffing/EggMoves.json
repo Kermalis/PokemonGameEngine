@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Screech"},
+    {"Move":"Psywave"},
+    {"Move":"Psybeam"},
+    {"Move":"DestinyBond"},
+    {"Move":"PainSplit"},
+    {"Move":"Grudge"},
+    {"Move":"Spite"},
+    {"Move":"Curse"},
+    {"Move":"Stockpile"},
+    {"Move":"Swallow"},
+    {"Move":"SpitUp"}
+  ]
+}

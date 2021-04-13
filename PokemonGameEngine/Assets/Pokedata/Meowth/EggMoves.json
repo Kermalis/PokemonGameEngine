@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Spite"},
+    {"Move":"Charm"},
+    {"Move":"Hypnosis"},
+    {"Move":"Amnesia"},
+    {"Move":"Assist"},
+    {"Move":"OdorSleuth"},
+    {"Move":"Flail"},
+    {"Move":"LastResort"},
+    {"Move":"Punishment"},
+    {"Move":"TailWhip"},
+    {"Move":"Snatch"},
+    {"Move":"IronTail"},
+    {"Move":"FoulPlay"}
+  ]
+}

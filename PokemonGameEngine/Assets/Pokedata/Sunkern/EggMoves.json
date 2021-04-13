@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"GrassWhistle"},
+    {"Move":"Encore"},
+    {"Move":"LeechSeed"},
+    {"Move":"NaturePower"},
+    {"Move":"Curse"},
+    {"Move":"HelpingHand"},
+    {"Move":"Ingrain"},
+    {"Move":"SweetScent"},
+    {"Move":"Endure"},
+    {"Move":"Bide"},
+    {"Move":"NaturalGift"},
+    {"Move":"MorningSun"}
+  ]
+}

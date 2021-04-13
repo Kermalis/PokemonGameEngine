@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"FireSpin"},
+    {"Move":"Rage"},
+    {"Move":"Pursuit"},
+    {"Move":"Counter"},
+    {"Move":"Spite"},
+    {"Move":"Reversal"},
+    {"Move":"BeatUp"},
+    {"Move":"FireFang"},
+    {"Move":"ThunderFang"},
+    {"Move":"NastyPlot"},
+    {"Move":"Punishment"},
+    {"Move":"Feint"},
+    {"Move":"SuckerPunch"}
+  ]
+}

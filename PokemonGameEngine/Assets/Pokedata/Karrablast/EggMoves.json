@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Megahorn"},
+    {"Move":"Pursuit"},
+    {"Move":"Counter"},
+    {"Move":"HornAttack"},
+    {"Move":"FaintAttack"},
+    {"Move":"BugBite"},
+    {"Move":"Screech"},
+    {"Move":"KnockOff"}
+  ]
+}

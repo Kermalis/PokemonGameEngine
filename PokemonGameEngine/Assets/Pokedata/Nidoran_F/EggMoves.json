@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Supersonic"},
+    {"Move":"Disable"},
+    {"Move":"TakeDown"},
+    {"Move":"FocusEnergy"},
+    {"Move":"Charm"},
+    {"Move":"Counter"},
+    {"Move":"BeatUp"},
+    {"Move":"Pursuit"},
+    {"Move":"SkullBash"},
+    {"Move":"IronTail"},
+    {"Move":"PoisonTail"},
+    {"Move":"Endure"},
+    {"Move":"ChipAway"}
+  ]
+}

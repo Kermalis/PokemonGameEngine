@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"GastroAcid"},
+    {"Move":"Growth"},
+    {"Move":"PoisonPowder"},
+    {"Move":"StunSpore"},
+    {"Move":"Rollout"},
+    {"Move":"DefenseCurl"},
+    {"Move":"Endure"},
+    {"Move":"BodySlam"}
+  ]
+}

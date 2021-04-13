@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"SleepTalk"},
+    {"Move":"SecretPower"},
+    {"Move":"Barrier"},
+    {"Move":"MagicCoat"},
+    {"Move":"HelpingHand"},
+    {"Move":"BatonPass"},
+    {"Move":"Swift"},
+    {"Move":"Curse"},
+    {"Move":"SonicBoom"}
+  ]
+}

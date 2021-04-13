@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"FaintAttack"},
+    {"Move":"ScaryFace"},
+    {"Move":"QuickAttack"},
+    {"Move":"TriAttack"},
+    {"Move":"Astonish"},
+    {"Move":"SkyAttack"},
+    {"Move":"Whirlwind"},
+    {"Move":"Uproar"},
+    {"Move":"FeatherDance"},
+    {"Move":"SteelWing"},
+    {"Move":"RazorWind"}
+  ]
+}

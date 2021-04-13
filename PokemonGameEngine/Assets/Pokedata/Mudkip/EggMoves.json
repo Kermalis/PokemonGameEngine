@@ -1,0 +1,20 @@
+{
+  "EggMoves": [
+    {"Move":"Refresh"},
+    {"Move":"Uproar"},
+    {"Move":"Curse"},
+    {"Move":"Stomp"},
+    {"Move":"IceBall"},
+    {"Move":"MirrorCoat"},
+    {"Move":"Counter"},
+    {"Move":"AncientPower"},
+    {"Move":"Whirlpool"},
+    {"Move":"Bite"},
+    {"Move":"DoubleEdge"},
+    {"Move":"MudBomb"},
+    {"Move":"Yawn"},
+    {"Move":"Sludge"},
+    {"Move":"Avalanche"},
+    {"Move":"WideGuard"}
+  ]
+}

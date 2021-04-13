@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"BellyDrum"},
+    {"Move":"FutureSight"},
+    {"Move":"Stomp"},
+    {"Move":"MudSport"},
+    {"Move":"SleepTalk"},
+    {"Move":"Snore"},
+    {"Move":"MeFirst"},
+    {"Move":"Block"},
+    {"Move":"ZenHeadbutt"},
+    {"Move":"WonderRoom"}
+  ]
+}

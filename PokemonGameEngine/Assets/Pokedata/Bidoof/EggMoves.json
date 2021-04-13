@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"QuickAttack"},
+    {"Move":"WaterSport"},
+    {"Move":"DoubleEdge"},
+    {"Move":"FurySwipes"},
+    {"Move":"DefenseCurl"},
+    {"Move":"Rollout"},
+    {"Move":"OdorSleuth"},
+    {"Move":"AquaTail"},
+    {"Move":"RockClimb"},
+    {"Move":"SleepTalk"},
+    {"Move":"Endure"},
+    {"Move":"SkullBash"}
+  ]
+}

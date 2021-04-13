@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Confusion"},
+    {"Move":"Encore"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Amnesia"},
+    {"Move":"HelpingHand"},
+    {"Move":"Aromatherapy"},
+    {"Move":"WorrySeed"},
+    {"Move":"CottonGuard"},
+    {"Move":"SeedBomb"},
+    {"Move":"Endure"}
+  ]
+}

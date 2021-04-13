@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Pursuit"},
+    {"Move":"Wrap"},
+    {"Move":"NightSlash"},
+    {"Move":"Curse"},
+    {"Move":"BodySlam"},
+    {"Move":"HeatWave"},
+    {"Move":"FaintAttack"},
+    {"Move":"SuckerPunch"},
+    {"Move":"Tickle"},
+    {"Move":"SleepTalk"}
+  ]
+}

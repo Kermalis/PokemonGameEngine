@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"QuickAttack"},
+    {"Move":"Pursuit"},
+    {"Move":"FaintAttack"},
+    {"Move":"Gust"},
+    {"Move":"Whirlwind"},
+    {"Move":"Curse"},
+    {"Move":"NastyPlot"},
+    {"Move":"Hypnosis"},
+    {"Move":"ZenHeadbutt"},
+    {"Move":"BraveBird"},
+    {"Move":"GigaDrain"},
+    {"Move":"SteelWing"},
+    {"Move":"Defog"}
+  ]
+}

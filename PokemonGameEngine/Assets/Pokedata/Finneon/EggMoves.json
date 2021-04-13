@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"SweetKiss"},
+    {"Move":"Charm"},
+    {"Move":"Flail"},
+    {"Move":"AquaTail"},
+    {"Move":"Splash"},
+    {"Move":"Psybeam"},
+    {"Move":"Tickle"},
+    {"Move":"Agility"},
+    {"Move":"Brine"},
+    {"Move":"AuroraBeam"},
+    {"Move":"SignalBeam"}
+  ]
+}

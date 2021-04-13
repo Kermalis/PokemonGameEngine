@@ -1,0 +1,10 @@
+{
+  "EggMoves": [
+    {"Move":"Twineedle"},
+    {"Move":"PinMissile"},
+    {"Move":"ToxicSpikes"},
+    {"Move":"Spikes"},
+    {"Move":"TakeDown"},
+    {"Move":"RockClimb"}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Screech"},
+    {"Move":"Mist"},
+    {"Move":"Amnesia"},
+    {"Move":"Barrier"},
+    {"Move":"Ingrain"},
+    {"Move":"ConfuseRay"},
+    {"Move":"IcicleSpear"},
+    {"Move":"NaturePower"},
+    {"Move":"AquaRing"},
+    {"Move":"Curse"},
+    {"Move":"Bide"},
+    {"Move":"WaterPulse"},
+    {"Move":"HeadSmash"}
+  ]
+}

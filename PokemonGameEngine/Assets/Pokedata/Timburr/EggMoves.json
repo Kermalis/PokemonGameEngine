@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"DrainPunch"},
+    {"Move":"Endure"},
+    {"Move":"Counter"},
+    {"Move":"CometPunch"},
+    {"Move":"Foresight"},
+    {"Move":"SmellingSalt"},
+    {"Move":"Detect"},
+    {"Move":"WideGuard"},
+    {"Move":"ForcePalm"},
+    {"Move":"Reversal"},
+    {"Move":"MachPunch"}
+  ]
+}

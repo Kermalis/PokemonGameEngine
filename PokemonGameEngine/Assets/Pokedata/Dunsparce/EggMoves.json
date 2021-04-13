@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Bide"},
+    {"Move":"AncientPower"},
+    {"Move":"Bite"},
+    {"Move":"Headbutt"},
+    {"Move":"Astonish"},
+    {"Move":"Curse"},
+    {"Move":"TrumpCard"},
+    {"Move":"MagicCoat"},
+    {"Move":"Snore"},
+    {"Move":"Agility"},
+    {"Move":"SecretPower"},
+    {"Move":"SleepTalk"},
+    {"Move":"Hex"}
+  ]
+}

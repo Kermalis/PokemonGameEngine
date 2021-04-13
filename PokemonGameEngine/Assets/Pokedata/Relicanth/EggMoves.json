@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Magnitude"},
+    {"Move":"SkullBash"},
+    {"Move":"WaterSport"},
+    {"Move":"Amnesia"},
+    {"Move":"SleepTalk"},
+    {"Move":"AquaTail"},
+    {"Move":"Snore"},
+    {"Move":"MudSlap"},
+    {"Move":"MuddyWater"},
+    {"Move":"MudShot"},
+    {"Move":"Brine"},
+    {"Move":"ZenHeadbutt"}
+  ]
+}

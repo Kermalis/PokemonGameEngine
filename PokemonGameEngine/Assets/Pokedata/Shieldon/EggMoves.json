@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Headbutt"},
+    {"Move":"ScaryFace"},
+    {"Move":"FocusEnergy"},
+    {"Move":"DoubleEdge"},
+    {"Move":"RockBlast"},
+    {"Move":"BodySlam"},
+    {"Move":"Screech"},
+    {"Move":"Curse"},
+    {"Move":"Fissure"},
+    {"Move":"Counter"},
+    {"Move":"StealthRock"},
+    {"Move":"WideGuard"}
+  ]
+}

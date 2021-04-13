@@ -1,0 +1,11 @@
+{
+  "EggMoves": [
+    {"Move":"PinMissile"},
+    {"Move":"PoisonSting"},
+    {"Move":"CrossPoison"},
+    {"Move":"RockClimb"},
+    {"Move":"Pursuit"},
+    {"Move":"Disable"},
+    {"Move":"FaintAttack"}
+  ]
+}

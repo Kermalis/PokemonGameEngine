@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"MegaPunch"},
+    {"Move":"Block"},
+    {"Move":"HammerArm"},
+    {"Move":"Flail"},
+    {"Move":"Curse"},
+    {"Move":"FocusPunch"},
+    {"Move":"RockClimb"},
+    {"Move":"Endure"},
+    {"Move":"Autotomize"}
+  ]
+}

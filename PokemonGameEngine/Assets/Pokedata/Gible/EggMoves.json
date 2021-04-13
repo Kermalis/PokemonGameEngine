@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"DragonBreath"},
+    {"Move":"Outrage"},
+    {"Move":"Twister"},
+    {"Move":"ScaryFace"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Thrash"},
+    {"Move":"MetalClaw"},
+    {"Move":"SandTomb"},
+    {"Move":"BodySlam"},
+    {"Move":"IronHead"},
+    {"Move":"MudShot"},
+    {"Move":"RockClimb"},
+    {"Move":"IronTail"}
+  ]
+}

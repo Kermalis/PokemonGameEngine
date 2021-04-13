@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Lick"},
+    {"Move":"Charm"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Curse"},
+    {"Move":"Whirlwind"},
+    {"Move":"Pursuit"},
+    {"Move":"ZenHeadbutt"},
+    {"Move":"Counter"},
+    {"Move":"NaturalGift"},
+    {"Move":"AfterYou"},
+    {"Move":"Selfdestruct"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Disable"},
+    {"Move":"MagicCoat"},
+    {"Move":"Trick"},
+    {"Move":"FakeOut"},
+    {"Move":"NastyPlot"},
+    {"Move":"DizzyPunch"},
+    {"Move":"Recover"},
+    {"Move":"SkillSwap"},
+    {"Move":"Snatch"},
+    {"Move":"FoulPlay"}
+  ]
+}

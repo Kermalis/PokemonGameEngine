@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Barrier"},
+    {"Move":"Recover"},
+    {"Move":"MirrorCoat"},
+    {"Move":"WringOut"},
+    {"Move":"Tickle"},
+    {"Move":"Curse"},
+    {"Move":"MegaDrain"},
+    {"Move":"Endure"},
+    {"Move":"StealthRock"}
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "EggMoves": [
+    {"Move":"Howl"},
+    {"Move":"ScaryFace"},
+    {"Move":"BodySlam"},
+    {"Move":"Rollout"},
+    {"Move":"DefenseCurl"},
+    {"Move":"Stomp"},
+    {"Move":"Yawn"},
+    {"Move":"AncientPower"},
+    {"Move":"MudBomb"},
+    {"Move":"HeatWave"},
+    {"Move":"Stockpile"},
+    {"Move":"Swallow"},
+    {"Move":"SpitUp"},
+    {"Move":"Endure"},
+    {"Move":"IronHead"}
+  ]
+}

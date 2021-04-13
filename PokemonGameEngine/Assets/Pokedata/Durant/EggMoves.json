@@ -1,0 +1,10 @@
+{
+  "EggMoves": [
+    {"Move":"Screech"},
+    {"Move":"Endure"},
+    {"Move":"RockClimb"},
+    {"Move":"BatonPass"},
+    {"Move":"ThunderFang"},
+    {"Move":"FaintAttack"}
+  ]
+}

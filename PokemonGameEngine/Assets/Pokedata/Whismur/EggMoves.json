@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"TakeDown"},
+    {"Move":"Snore"},
+    {"Move":"Extrasensory"},
+    {"Move":"SmellingSalt"},
+    {"Move":"SmokeScreen"},
+    {"Move":"Endeavor"},
+    {"Move":"HammerArm"},
+    {"Move":"FakeTears"},
+    {"Move":"CircleThrow"}
+  ]
+}

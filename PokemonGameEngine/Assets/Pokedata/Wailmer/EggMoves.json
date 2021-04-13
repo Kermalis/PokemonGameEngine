@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"DoubleEdge"},
+    {"Move":"Thrash"},
+    {"Move":"Snore"},
+    {"Move":"SleepTalk"},
+    {"Move":"Curse"},
+    {"Move":"Fissure"},
+    {"Move":"Tickle"},
+    {"Move":"DefenseCurl"},
+    {"Move":"BodySlam"},
+    {"Move":"AquaRing"},
+    {"Move":"Soak"},
+    {"Move":"ZenHeadbutt"}
+  ]
+}

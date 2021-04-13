@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Crunch"},
+    {"Move":"Headbutt"},
+    {"Move":"Uproar"},
+    {"Move":"Curse"},
+    {"Move":"Swift"},
+    {"Move":"Discharge"},
+    {"Move":"IceFang"},
+    {"Move":"FireFang"},
+    {"Move":"ThunderFang"},
+    {"Move":"Switcheroo"},
+    {"Move":"ElectroBall"},
+    {"Move":"ShockWave"},
+    {"Move":"FlameBurst"}
+  ]
+}

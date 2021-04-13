@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"MirrorCoat"},
+    {"Move":"Haze"},
+    {"Move":"Mist"},
+    {"Move":"Foresight"},
+    {"Move":"Flail"},
+    {"Move":"Refresh"},
+    {"Move":"MudSport"},
+    {"Move":"Yawn"},
+    {"Move":"MuddyWater"},
+    {"Move":"FakeOut"},
+    {"Move":"AquaRing"},
+    {"Move":"AquaJet"},
+    {"Move":"WaterSpout"},
+    {"Move":"Brine"}
+  ]
+}

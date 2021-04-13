@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"BubbleBeam"},
+    {"Move":"AuroraBeam"},
+    {"Move":"RapidSpin"},
+    {"Move":"Flail"},
+    {"Move":"KnockOff"},
+    {"Move":"ConfuseRay"},
+    {"Move":"MudShot"},
+    {"Move":"IcyWind"},
+    {"Move":"Screech"},
+    {"Move":"GigaDrain"},
+    {"Move":"Foresight"}
+  ]
+}

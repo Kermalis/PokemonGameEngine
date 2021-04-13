@@ -1,0 +1,10 @@
+{
+  "EggMoves": [
+    {"Move":"AcidArmor"},
+    {"Move":"ConfuseRay"},
+    {"Move":"PainSplit"},
+    {"Move":"Mist"},
+    {"Move":"Recover"},
+    {"Move":"Constrict"}
+  ]
+}

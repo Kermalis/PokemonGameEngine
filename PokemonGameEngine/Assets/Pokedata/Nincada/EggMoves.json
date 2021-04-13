@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Endure"},
+    {"Move":"FaintAttack"},
+    {"Move":"Gust"},
+    {"Move":"SilverWind"},
+    {"Move":"BugBuzz"},
+    {"Move":"NightSlash"},
+    {"Move":"BugBite"},
+    {"Move":"FinalGambit"}
+  ]
+}

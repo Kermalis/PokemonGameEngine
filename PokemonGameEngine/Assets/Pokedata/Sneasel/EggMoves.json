@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"Counter"},
+    {"Move":"Spite"},
+    {"Move":"Foresight"},
+    {"Move":"Bite"},
+    {"Move":"CrushClaw"},
+    {"Move":"FakeOut"},
+    {"Move":"DoubleHit"},
+    {"Move":"Punishment"},
+    {"Move":"Pursuit"},
+    {"Move":"IceShard"},
+    {"Move":"IcePunch"},
+    {"Move":"Assist"},
+    {"Move":"Avalanche"},
+    {"Move":"Feint"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Whirlwind"},
+    {"Move":"Reversal"},
+    {"Move":"LeechLife"},
+    {"Move":"SignalBeam"},
+    {"Move":"SilverWind"},
+    {"Move":"Feint"},
+    {"Move":"FaintAttack"},
+    {"Move":"Pursuit"},
+    {"Move":"DoubleEdge"},
+    {"Move":"SecretPower"}
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "EggMoves": [
+    {"Move":"PainSplit"},
+    {"Move":"Refresh"},
+    {"Move":"Tickle"},
+    {"Move":"MirrorCoat"},
+    {"Move":"Mist"},
+    {"Move":"Endure"}
+  ]
+}

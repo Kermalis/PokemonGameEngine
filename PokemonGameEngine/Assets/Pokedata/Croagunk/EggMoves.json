@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"MeFirst"},
+    {"Move":"Feint"},
+    {"Move":"DynamicPunch"},
+    {"Move":"Headbutt"},
+    {"Move":"VacuumWave"},
+    {"Move":"Meditate"},
+    {"Move":"FakeOut"},
+    {"Move":"WakeUpSlap"},
+    {"Move":"SmellingSalt"},
+    {"Move":"CrossChop"},
+    {"Move":"BulletPunch"},
+    {"Move":"Counter"},
+    {"Move":"DrainPunch"},
+    {"Move":"Acupressure"}
+  ]
+}

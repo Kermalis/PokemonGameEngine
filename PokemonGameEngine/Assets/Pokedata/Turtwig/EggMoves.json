@@ -1,0 +1,19 @@
+{
+  "EggMoves": [
+    {"Move":"WorrySeed"},
+    {"Move":"Growth"},
+    {"Move":"Tickle"},
+    {"Move":"BodySlam"},
+    {"Move":"DoubleEdge"},
+    {"Move":"SandTomb"},
+    {"Move":"SeedBomb"},
+    {"Move":"Thrash"},
+    {"Move":"Amnesia"},
+    {"Move":"Superpower"},
+    {"Move":"Stockpile"},
+    {"Move":"Swallow"},
+    {"Move":"SpitUp"},
+    {"Move":"EarthPower"},
+    {"Move":"WideGuard"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Counter"},
+    {"Move":"BatonPass"},
+    {"Move":"RazorWind"},
+    {"Move":"Reversal"},
+    {"Move":"Endure"},
+    {"Move":"SilverWind"},
+    {"Move":"BugBuzz"},
+    {"Move":"NightSlash"},
+    {"Move":"Defog"},
+    {"Move":"SteelWing"}
+  ]
+}

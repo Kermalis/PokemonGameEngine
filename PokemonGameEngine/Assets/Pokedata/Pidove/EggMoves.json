@@ -1,0 +1,11 @@
+{
+  "EggMoves": [
+    {"Move":"SteelWing"},
+    {"Move":"Hypnosis"},
+    {"Move":"Uproar"},
+    {"Move":"Bestow"},
+    {"Move":"Wish"},
+    {"Move":"MorningSun"},
+    {"Move":"LuckyChant"}
+  ]
+}

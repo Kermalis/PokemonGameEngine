@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Headbutt"},
+    {"Move":"Slam"},
+    {"Move":"RazorWind"},
+    {"Move":"LeechSeed"},
+    {"Move":"NaturePower"},
+    {"Move":"LeafStorm"},
+    {"Move":"Synthesis"},
+    {"Move":"Curse"},
+    {"Move":"LeafBlade"},
+    {"Move":"DragonDance"},
+    {"Move":"BulletSeed"},
+    {"Move":"NaturalGift"}
+  ]
+}

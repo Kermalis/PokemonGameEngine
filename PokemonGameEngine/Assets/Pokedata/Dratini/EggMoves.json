@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Mist"},
+    {"Move":"Haze"},
+    {"Move":"Supersonic"},
+    {"Move":"DragonBreath"},
+    {"Move":"DragonDance"},
+    {"Move":"DragonRush"},
+    {"Move":"ExtremeSpeed"},
+    {"Move":"WaterPulse"},
+    {"Move":"AquaJet"},
+    {"Move":"DragonPulse"},
+    {"Move":"IronTail"}
+  ]
+}

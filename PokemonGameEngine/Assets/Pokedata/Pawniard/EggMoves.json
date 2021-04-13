@@ -1,0 +1,11 @@
+{
+  "EggMoves": [
+    {"Move":"Revenge"},
+    {"Move":"SuckerPunch"},
+    {"Move":"Pursuit"},
+    {"Move":"Headbutt"},
+    {"Move":"StealthRock"},
+    {"Move":"PsychoCut"},
+    {"Move":"MeanLook"}
+  ]
+}

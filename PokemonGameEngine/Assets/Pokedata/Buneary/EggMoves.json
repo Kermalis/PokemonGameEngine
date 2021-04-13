@@ -1,0 +1,19 @@
+{
+  "EggMoves": [
+    {"Move":"FakeTears"},
+    {"Move":"FakeOut"},
+    {"Move":"Encore"},
+    {"Move":"SweetKiss"},
+    {"Move":"DoubleHit"},
+    {"Move":"LowKick"},
+    {"Move":"SkyUppercut"},
+    {"Move":"Switcheroo"},
+    {"Move":"ThunderPunch"},
+    {"Move":"IcePunch"},
+    {"Move":"FirePunch"},
+    {"Move":"Flail"},
+    {"Move":"FocusPunch"},
+    {"Move":"CircleThrow"},
+    {"Move":"Copycat"}
+  ]
+}

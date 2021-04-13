@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"DoubleEdge"},
+    {"Move":"RockClimb"},
+    {"Move":"Pursuit"},
+    {"Move":"Uproar"},
+    {"Move":"FireFang"},
+    {"Move":"ThunderFang"},
+    {"Move":"BeatUp"},
+    {"Move":"FocusEnergy"},
+    {"Move":"Counter"},
+    {"Move":"MeanLook"}
+  ]
+}

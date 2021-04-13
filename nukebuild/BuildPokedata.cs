@@ -89,7 +89,6 @@ public sealed partial class Build
             w.Write(Weight);
         }
     }
-
     private sealed class Evos
     {
         private sealed class Evo
@@ -189,7 +188,6 @@ public sealed partial class Build
             }
         }
     }
-
     private sealed class LevelUps
     {
         private sealed class LevelUp
@@ -230,6 +228,28 @@ public sealed partial class Build
             {
                 LevelUpMoves[i].Write(w);
             }
+        }
+    }
+    private sealed class EggMovs
+    {
+        private readonly PBEMove[] EggMoves;
+
+        public EggMovs(JToken j)
+        {
+            var moves = (JArray)j[nameof(EggMoves)];
+            int numMoves = moves.Count;
+            EggMoves = new PBEMove[numMoves];
+            for (int i = 0; i < numMoves; i++)
+            {
+                EggMoves[i] = moves[i]["Move"].EnumValue<PBEMove>();
+            }
+        }
+
+        public void Write(EndianBinaryWriter w)
+        {
+            byte count = (byte)EggMoves.Length;
+            w.Write(count);
+            w.Write(EggMoves, 0, count);
         }
     }
 
@@ -292,6 +312,16 @@ public sealed partial class Build
                 using (var w = new EndianBinaryWriter(File.Create(Path.Combine(dir, "LevelUp.bin"))))
                 {
                     new LevelUps(json).Write(w);
+                }
+            }
+            #endregion
+
+            #region Egg Moves
+            {
+                var json = JObject.Parse(File.ReadAllText(Path.Combine(dir, "EggMoves.json")));
+                using (var w = new EndianBinaryWriter(File.Create(Path.Combine(dir, "EggMoves.bin"))))
+                {
+                    new EggMovs(json).Write(w);
                 }
             }
             #endregion

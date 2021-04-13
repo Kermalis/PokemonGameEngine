@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Encore"},
+    {"Move":"Sing"},
+    {"Move":"Refresh"},
+    {"Move":"Slam"},
+    {"Move":"Tickle"},
+    {"Move":"FakeTears"},
+    {"Move":"BodySlam"},
+    {"Move":"WaterSport"},
+    {"Move":"Soak"},
+    {"Move":"MuddyWater"}
+  ]
+}

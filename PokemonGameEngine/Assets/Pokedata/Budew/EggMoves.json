@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Spikes"},
+    {"Move":"Synthesis"},
+    {"Move":"PinMissile"},
+    {"Move":"CottonSpore"},
+    {"Move":"SleepPowder"},
+    {"Move":"RazorLeaf"},
+    {"Move":"MindReader"},
+    {"Move":"LeafStorm"},
+    {"Move":"Extrasensory"},
+    {"Move":"SeedBomb"},
+    {"Move":"GigaDrain"},
+    {"Move":"NaturalGift"},
+    {"Move":"GrassWhistle"}
+  ]
+}

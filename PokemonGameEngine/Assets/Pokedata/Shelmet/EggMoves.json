@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Endure"},
+    {"Move":"BatonPass"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Encore"},
+    {"Move":"GuardSplit"},
+    {"Move":"MindReader"},
+    {"Move":"MudSlap"},
+    {"Move":"Spikes"},
+    {"Move":"Feint"},
+    {"Move":"Pursuit"}
+  ]
+}

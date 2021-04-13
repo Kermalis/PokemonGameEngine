@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Yawn"},
+    {"Move":"Avalanche"},
+    {"Move":"Encore"},
+    {"Move":"IcePunch"},
+    {"Move":"NightSlash"},
+    {"Move":"Assurance"},
+    {"Move":"SleepTalk"},
+    {"Move":"FocusPunch"}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Stomp"},
+    {"Move":"Foresight"},
+    {"Move":"FocusEnergy"},
+    {"Move":"Disable"},
+    {"Move":"Counter"},
+    {"Move":"CrushClaw"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Endeavor"},
+    {"Move":"HammerArm"},
+    {"Move":"FocusPunch"},
+    {"Move":"TrumpCard"},
+    {"Move":"Uproar"},
+    {"Move":"CircleThrow"}
+  ]
+}

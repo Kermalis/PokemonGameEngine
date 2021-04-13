@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Pursuit"},
+    {"Move":"FaintAttack"},
+    {"Move":"Foresight"},
+    {"Move":"SteelWing"},
+    {"Move":"AirCutter"},
+    {"Move":"AirSlash"},
+    {"Move":"BraveBird"},
+    {"Move":"Uproar"},
+    {"Move":"Defog"}
+  ]
+}

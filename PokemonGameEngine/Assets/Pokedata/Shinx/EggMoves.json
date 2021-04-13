@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"IceFang"},
+    {"Move":"FireFang"},
+    {"Move":"ThunderFang"},
+    {"Move":"QuickAttack"},
+    {"Move":"Howl"},
+    {"Move":"TakeDown"},
+    {"Move":"NightSlash"},
+    {"Move":"ShockWave"},
+    {"Move":"Swift"},
+    {"Move":"DoubleKick"},
+    {"Move":"SignalBeam"},
+    {"Move":"HelpingHand"}
+  ]
+}

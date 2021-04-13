@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"FocusEnergy"},
+    {"Move":"BodySlam"},
+    {"Move":"AncientPower"},
+    {"Move":"Snore"},
+    {"Move":"Counter"},
+    {"Move":"Fissure"},
+    {"Move":"Endeavor"},
+    {"Move":"IceShard"},
+    {"Move":"HeadSmash"},
+    {"Move":"MudSlap"},
+    {"Move":"HeavySlam"}
+  ]
+}

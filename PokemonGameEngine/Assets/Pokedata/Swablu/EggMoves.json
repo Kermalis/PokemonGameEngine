@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Agility"},
+    {"Move":"Haze"},
+    {"Move":"Pursuit"},
+    {"Move":"Rage"},
+    {"Move":"FeatherDance"},
+    {"Move":"DragonRush"},
+    {"Move":"PowerSwap"},
+    {"Move":"Roost"},
+    {"Move":"HyperVoice"},
+    {"Move":"SteelWing"}
+  ]
+}

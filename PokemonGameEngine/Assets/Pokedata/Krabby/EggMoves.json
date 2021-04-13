@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Haze"},
+    {"Move":"Amnesia"},
+    {"Move":"Flail"},
+    {"Move":"Slam"},
+    {"Move":"KnockOff"},
+    {"Move":"Tickle"},
+    {"Move":"AncientPower"},
+    {"Move":"Agility"},
+    {"Move":"Endure"},
+    {"Move":"ChipAway"},
+    {"Move":"Bide"}
+  ]
+}

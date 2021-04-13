@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"FireFang"},
+    {"Move":"ThunderFang"},
+    {"Move":"CrushClaw"},
+    {"Move":"FaintAttack"},
+    {"Move":"Pursuit"},
+    {"Move":"IronTail"},
+    {"Move":"PoisonTail"},
+    {"Move":"Snatch"},
+    {"Move":"MetalClaw"},
+    {"Move":"Glare"},
+    {"Move":"SuckerPunch"}
+  ]
+}

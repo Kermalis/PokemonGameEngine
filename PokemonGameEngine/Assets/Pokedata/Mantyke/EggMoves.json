@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Twister"},
+    {"Move":"HydroPump"},
+    {"Move":"Haze"},
+    {"Move":"Slam"},
+    {"Move":"MudSport"},
+    {"Move":"MirrorCoat"},
+    {"Move":"WaterSport"},
+    {"Move":"Splash"},
+    {"Move":"SignalBeam"},
+    {"Move":"WideGuard"},
+    {"Move":"Amnesia"}
+  ]
+}

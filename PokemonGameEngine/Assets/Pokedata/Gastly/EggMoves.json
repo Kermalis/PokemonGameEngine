@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Psywave"},
+    {"Move":"PerishSong"},
+    {"Move":"Haze"},
+    {"Move":"Astonish"},
+    {"Move":"Grudge"},
+    {"Move":"FirePunch"},
+    {"Move":"IcePunch"},
+    {"Move":"ThunderPunch"},
+    {"Move":"Disable"},
+    {"Move":"ScaryFace"},
+    {"Move":"ClearSmog"},
+    {"Move":"Smog"}
+  ]
+}

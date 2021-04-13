@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"PinMissile"},
+    {"Move":"Flail"},
+    {"Move":"Swift"},
+    {"Move":"Counter"},
+    {"Move":"SandTomb"},
+    {"Move":"Revenge"},
+    {"Move":"DoubleEdge"},
+    {"Move":"ToxicSpikes"},
+    {"Move":"PowerTrick"},
+    {"Move":"Endure"},
+    {"Move":"StealthRock"}
+  ]
+}

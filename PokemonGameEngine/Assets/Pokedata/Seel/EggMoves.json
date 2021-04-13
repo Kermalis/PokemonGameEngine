@@ -1,0 +1,19 @@
+{
+  "EggMoves": [
+    {"Move":"Lick"},
+    {"Move":"PerishSong"},
+    {"Move":"Disable"},
+    {"Move":"HornDrill"},
+    {"Move":"Slam"},
+    {"Move":"Encore"},
+    {"Move":"FakeOut"},
+    {"Move":"IcicleSpear"},
+    {"Move":"SignalBeam"},
+    {"Move":"Stockpile"},
+    {"Move":"Swallow"},
+    {"Move":"SpitUp"},
+    {"Move":"WaterPulse"},
+    {"Move":"IronTail"},
+    {"Move":"SleepTalk"}
+  ]
+}

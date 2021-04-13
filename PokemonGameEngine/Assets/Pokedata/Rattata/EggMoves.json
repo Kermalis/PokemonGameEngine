@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Screech"},
+    {"Move":"FlameWheel"},
+    {"Move":"FurySwipes"},
+    {"Move":"Bite"},
+    {"Move":"Counter"},
+    {"Move":"Reversal"},
+    {"Move":"Uproar"},
+    {"Move":"LastResort"},
+    {"Move":"MeFirst"},
+    {"Move":"Revenge"},
+    {"Move":"FinalGambit"}
+  ]
+}

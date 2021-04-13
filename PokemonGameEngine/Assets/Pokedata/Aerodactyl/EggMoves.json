@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Whirlwind"},
+    {"Move":"Pursuit"},
+    {"Move":"Foresight"},
+    {"Move":"SteelWing"},
+    {"Move":"DragonBreath"},
+    {"Move":"Curse"},
+    {"Move":"Assurance"},
+    {"Move":"Roost"},
+    {"Move":"Tailwind"}
+  ]
+}

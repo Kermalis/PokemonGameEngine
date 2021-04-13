@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"IronDefense"},
+    {"Move":"RapidSpin"},
+    {"Move":"EarthPower"},
+    {"Move":"CrushClaw"},
+    {"Move":"MetalSound"},
+    {"Move":"Submission"},
+    {"Move":"SkullBash"},
+    {"Move":"RockClimb"}
+  ]
+}

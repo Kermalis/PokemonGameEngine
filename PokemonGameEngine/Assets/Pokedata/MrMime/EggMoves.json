@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"FutureSight"},
+    {"Move":"Hypnosis"},
+    {"Move":"Mimic"},
+    {"Move":"FakeOut"},
+    {"Move":"Trick"},
+    {"Move":"ConfuseRay"},
+    {"Move":"WakeUpSlap"},
+    {"Move":"TeeterDance"},
+    {"Move":"NastyPlot"},
+    {"Move":"PowerSplit"},
+    {"Move":"MagicRoom"},
+    {"Move":"IcyWind"}
+  ]
+}

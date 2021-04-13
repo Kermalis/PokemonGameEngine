@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"BodySlam"},
+    {"Move":"AncientPower"},
+    {"Move":"Curse"},
+    {"Move":"MudSport"},
+    {"Move":"Stockpile"},
+    {"Move":"Swallow"},
+    {"Move":"SpitUp"},
+    {"Move":"Counter"},
+    {"Move":"Encore"},
+    {"Move":"DoubleKick"},
+    {"Move":"Recover"},
+    {"Move":"AfterYou"},
+    {"Move":"SleepTalk"},
+    {"Move":"AcidSpray"}
+  ]
+}

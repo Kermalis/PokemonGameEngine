@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Pursuit"},
+    {"Move":"Stomp"},
+    {"Move":"Outrage"},
+    {"Move":"FocusEnergy"},
+    {"Move":"AncientPower"},
+    {"Move":"DragonDance"},
+    {"Move":"Curse"},
+    {"Move":"IronDefense"},
+    {"Move":"Assurance"},
+    {"Move":"IronHead"},
+    {"Move":"StealthRock"},
+    {"Move":"IronTail"}
+  ]
+}

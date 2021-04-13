@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"RapidSpin"},
+    {"Move":"KnockOff"},
+    {"Move":"Screech"},
+    {"Move":"SandAttack"},
+    {"Move":"CrossPoison"},
+    {"Move":"Curse"},
+    {"Move":"IronDefense"},
+    {"Move":"WaterPulse"}
+  ]
+}

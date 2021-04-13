@@ -1,0 +1,19 @@
+{
+  "EggMoves": [
+    {"Move":"Crunch"},
+    {"Move":"MudSport"},
+    {"Move":"Endeavor"},
+    {"Move":"LeechSeed"},
+    {"Move":"DragonBreath"},
+    {"Move":"CrushClaw"},
+    {"Move":"WorrySeed"},
+    {"Move":"DoubleKick"},
+    {"Move":"GrassWhistle"},
+    {"Move":"Synthesis"},
+    {"Move":"MagicalLeaf"},
+    {"Move":"LeafStorm"},
+    {"Move":"RazorWind"},
+    {"Move":"BulletSeed"},
+    {"Move":"NaturalGift"}
+  ]
+}

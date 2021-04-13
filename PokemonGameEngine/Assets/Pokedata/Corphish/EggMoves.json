@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"MudSport"},
+    {"Move":"Endeavor"},
+    {"Move":"BodySlam"},
+    {"Move":"AncientPower"},
+    {"Move":"KnockOff"},
+    {"Move":"Superpower"},
+    {"Move":"MetalClaw"},
+    {"Move":"DragonDance"},
+    {"Move":"TrumpCard"},
+    {"Move":"ChipAway"},
+    {"Move":"DoubleEdge"}
+  ]
+}

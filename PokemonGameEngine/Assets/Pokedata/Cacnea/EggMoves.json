@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"GrassWhistle"},
+    {"Move":"Acid"},
+    {"Move":"TeeterDance"},
+    {"Move":"DynamicPunch"},
+    {"Move":"Counter"},
+    {"Move":"LowKick"},
+    {"Move":"SmellingSalt"},
+    {"Move":"MagicalLeaf"},
+    {"Move":"SeedBomb"},
+    {"Move":"NastyPlot"},
+    {"Move":"Disable"},
+    {"Move":"Block"},
+    {"Move":"WorrySeed"},
+    {"Move":"Switcheroo"}
+  ]
+}

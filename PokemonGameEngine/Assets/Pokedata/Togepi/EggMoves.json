@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Present"},
+    {"Move":"MirrorMove"},
+    {"Move":"Peck"},
+    {"Move":"Foresight"},
+    {"Move":"FutureSight"},
+    {"Move":"NastyPlot"},
+    {"Move":"PsychoShift"},
+    {"Move":"LuckyChant"},
+    {"Move":"Extrasensory"},
+    {"Move":"SecretPower"},
+    {"Move":"StoredPower"},
+    {"Move":"MorningSun"}
+  ]
+}

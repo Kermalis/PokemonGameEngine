@@ -1,0 +1,11 @@
+{
+  "EggMoves": [
+    {"Move":"AcidArmor"},
+    {"Move":"Smog"},
+    {"Move":"PainSplit"},
+    {"Move":"Curse"},
+    {"Move":"DestinyBond"},
+    {"Move":"MudSlap"},
+    {"Move":"GunkShot"}
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Covet"},
+    {"Move":"Bite"},
+    {"Move":"FakeTears"},
+    {"Move":"DefenseCurl"},
+    {"Move":"Rollout"},
+    {"Move":"Flatter"},
+    {"Move":"Flail"},
+    {"Move":"IronTail"},
+    {"Move":"TailWhip"},
+    {"Move":"FollowMe"},
+    {"Move":"Charge"},
+    {"Move":"Bestow"}
+  ]
+}

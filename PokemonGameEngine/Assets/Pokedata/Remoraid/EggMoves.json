@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"AuroraBeam"},
+    {"Move":"Octazooka"},
+    {"Move":"Supersonic"},
+    {"Move":"Haze"},
+    {"Move":"Screech"},
+    {"Move":"RockBlast"},
+    {"Move":"Snore"},
+    {"Move":"Flail"},
+    {"Move":"WaterSpout"},
+    {"Move":"MudShot"},
+    {"Move":"Swift"},
+    {"Move":"AcidSpray"},
+    {"Move":"WaterPulse"}
+  ]
+}

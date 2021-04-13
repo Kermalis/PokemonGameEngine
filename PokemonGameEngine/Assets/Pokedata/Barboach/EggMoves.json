@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Thrash"},
+    {"Move":"Whirlpool"},
+    {"Move":"Spark"},
+    {"Move":"HydroPump"},
+    {"Move":"Flail"},
+    {"Move":"TakeDown"},
+    {"Move":"DragonDance"},
+    {"Move":"EarthPower"},
+    {"Move":"MudShot"},
+    {"Move":"MuddyWater"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"Meditate"},
+    {"Move":"RollingKick"},
+    {"Move":"Encore"},
+    {"Move":"SmellingSalt"},
+    {"Move":"Counter"},
+    {"Move":"CloseCombat"},
+    {"Move":"FirePunch"},
+    {"Move":"ThunderPunch"},
+    {"Move":"IcePunch"},
+    {"Move":"BulletPunch"},
+    {"Move":"PowerTrick"},
+    {"Move":"HeavySlam"},
+    {"Move":"KnockOff"},
+    {"Move":"Tickle"}
+  ]
+}

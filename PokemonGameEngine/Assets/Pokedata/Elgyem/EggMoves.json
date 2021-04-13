@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Teleport"},
+    {"Move":"Disable"},
+    {"Move":"Astonish"},
+    {"Move":"PowerSwap"},
+    {"Move":"GuardSwap"},
+    {"Move":"Barrier"},
+    {"Move":"NastyPlot"},
+    {"Move":"SkillSwap"}
+  ]
+}

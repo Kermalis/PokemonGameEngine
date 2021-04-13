@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Pursuit"},
+    {"Move":"Supersonic"},
+    {"Move":"Refresh"},
+    {"Move":"MirrorMove"},
+    {"Move":"Rage"},
+    {"Move":"SkyAttack"},
+    {"Move":"Whirlwind"},
+    {"Move":"BraveBird"},
+    {"Move":"Roost"},
+    {"Move":"SteelWing"},
+    {"Move":"Defog"}
+  ]
+}

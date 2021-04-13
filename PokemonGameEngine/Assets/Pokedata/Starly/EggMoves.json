@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"FeatherDance"},
+    {"Move":"FuryAttack"},
+    {"Move":"Pursuit"},
+    {"Move":"Astonish"},
+    {"Move":"SandAttack"},
+    {"Move":"Foresight"},
+    {"Move":"DoubleEdge"},
+    {"Move":"SteelWing"},
+    {"Move":"Uproar"},
+    {"Move":"Roost"},
+    {"Move":"Detect"},
+    {"Move":"Revenge"}
+  ]
+}

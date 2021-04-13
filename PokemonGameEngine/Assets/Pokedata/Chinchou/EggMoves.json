@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Flail"},
+    {"Move":"Screech"},
+    {"Move":"Amnesia"},
+    {"Move":"Psybeam"},
+    {"Move":"Whirlpool"},
+    {"Move":"Agility"},
+    {"Move":"Mist"},
+    {"Move":"ShockWave"},
+    {"Move":"Brine"},
+    {"Move":"WaterPulse"}
+  ]
+}

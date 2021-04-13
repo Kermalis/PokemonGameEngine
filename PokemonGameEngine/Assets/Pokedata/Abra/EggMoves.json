@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Encore"},
+    {"Move":"Barrier"},
+    {"Move":"KnockOff"},
+    {"Move":"FirePunch"},
+    {"Move":"ThunderPunch"},
+    {"Move":"IcePunch"},
+    {"Move":"PowerTrick"},
+    {"Move":"GuardSwap"},
+    {"Move":"SkillSwap"},
+    {"Move":"GuardSplit"}
+  ]
+}

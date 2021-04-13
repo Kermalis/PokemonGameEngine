@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Detect"},
+    {"Move":"Captivate"},
+    {"Move":"DarkPulse"},
+    {"Move":"Snatch"},
+    {"Move":"Memento"},
+    {"Move":"SuckerPunch"},
+    {"Move":"Extrasensory"},
+    {"Move":"Counter"}
+  ]
+}

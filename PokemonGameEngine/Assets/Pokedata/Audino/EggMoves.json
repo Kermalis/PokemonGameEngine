@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Wish"},
+    {"Move":"HealBell"},
+    {"Move":"LuckyChant"},
+    {"Move":"Encore"},
+    {"Move":"Bestow"},
+    {"Move":"SweetKiss"},
+    {"Move":"Yawn"},
+    {"Move":"SleepTalk"},
+    {"Move":"HealingWish"},
+    {"Move":"Amnesia"}
+  ]
+}

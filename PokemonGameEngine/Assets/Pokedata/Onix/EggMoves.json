@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Flail"},
+    {"Move":"Block"},
+    {"Move":"DefenseCurl"},
+    {"Move":"Rollout"},
+    {"Move":"RockBlast"},
+    {"Move":"RockClimb"},
+    {"Move":"HeavySlam"},
+    {"Move":"StealthRock"}
+  ]
+}

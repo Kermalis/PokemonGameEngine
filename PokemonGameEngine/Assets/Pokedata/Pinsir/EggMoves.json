@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"FuryAttack"},
+    {"Move":"Flail"},
+    {"Move":"FaintAttack"},
+    {"Move":"QuickAttack"},
+    {"Move":"CloseCombat"},
+    {"Move":"Feint"},
+    {"Move":"MeFirst"},
+    {"Move":"BugBite"},
+    {"Move":"Superpower"}
+  ]
+}

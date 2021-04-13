@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"DrillPeck"},
+    {"Move":"Pursuit"},
+    {"Move":"Whirlwind"},
+    {"Move":"SkyAttack"},
+    {"Move":"Curse"},
+    {"Move":"BraveBird"},
+    {"Move":"Assurance"},
+    {"Move":"GuardSwap"},
+    {"Move":"StealthRock"},
+    {"Move":"Endure"}
+  ]
+}

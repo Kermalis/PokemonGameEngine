@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"IronTail"},
+    {"Move":"TailWhip"},
+    {"Move":"AquaTail"},
+    {"Move":"MudSlap"},
+    {"Move":"KnockOff"},
+    {"Move":"FakeTears"},
+    {"Move":"SleepTalk"},
+    {"Move":"Endure"},
+    {"Move":"Flail"}
+  ]
+}

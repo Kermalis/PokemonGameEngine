@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Bite"},
+    {"Move":"TailWhip"},
+    {"Move":"QuickAttack"},
+    {"Move":"SandAttack"},
+    {"Move":"FakeTears"},
+    {"Move":"Assurance"},
+    {"Move":"Flail"},
+    {"Move":"Snatch"},
+    {"Move":"WakeUpSlap"},
+    {"Move":"LastResort"}
+  ]
+}

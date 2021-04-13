@@ -1,0 +1,19 @@
+{
+  "EggMoves": [
+    {"Move":"Counter"},
+    {"Move":"MirrorCoat"},
+    {"Move":"Stockpile"},
+    {"Move":"Swallow"},
+    {"Move":"SpitUp"},
+    {"Move":"Yawn"},
+    {"Move":"Memento"},
+    {"Move":"Curse"},
+    {"Move":"Amnesia"},
+    {"Move":"Fissure"},
+    {"Move":"TrumpCard"},
+    {"Move":"Sludge"},
+    {"Move":"ClearSmog"},
+    {"Move":"Brine"},
+    {"Move":"Mist"}
+  ]
+}

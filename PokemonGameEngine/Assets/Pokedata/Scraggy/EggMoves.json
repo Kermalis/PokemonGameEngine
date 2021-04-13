@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"DrainPunch"},
+    {"Move":"Counter"},
+    {"Move":"DragonDance"},
+    {"Move":"Detect"},
+    {"Move":"FakeOut"},
+    {"Move":"FirePunch"},
+    {"Move":"IcePunch"},
+    {"Move":"ThunderPunch"},
+    {"Move":"Amnesia"},
+    {"Move":"FaintAttack"},
+    {"Move":"ZenHeadbutt"}
+  ]
+}

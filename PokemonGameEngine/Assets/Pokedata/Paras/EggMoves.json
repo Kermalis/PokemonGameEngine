@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Screech"},
+    {"Move":"Counter"},
+    {"Move":"Psybeam"},
+    {"Move":"Flail"},
+    {"Move":"SweetScent"},
+    {"Move":"Pursuit"},
+    {"Move":"MetalClaw"},
+    {"Move":"BugBite"},
+    {"Move":"CrossPoison"},
+    {"Move":"Agility"},
+    {"Move":"Endure"},
+    {"Move":"NaturalGift"},
+    {"Move":"LeechSeed"}
+  ]
+}

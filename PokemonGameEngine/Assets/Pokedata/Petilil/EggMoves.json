@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"NaturalGift"},
+    {"Move":"Charm"},
+    {"Move":"Endure"},
+    {"Move":"Ingrain"},
+    {"Move":"WorrySeed"},
+    {"Move":"GrassWhistle"},
+    {"Move":"SweetScent"},
+    {"Move":"Bide"},
+    {"Move":"HealingWish"}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Present"},
+    {"Move":"Reversal"},
+    {"Move":"SeismicToss"},
+    {"Move":"Endure"},
+    {"Move":"Curse"},
+    {"Move":"HelpingHand"},
+    {"Move":"SleepTalk"},
+    {"Move":"DizzyPunch"},
+    {"Move":"HammerArm"},
+    {"Move":"DoubleEdge"},
+    {"Move":"Punishment"},
+    {"Move":"NaturalGift"},
+    {"Move":"HeartStamp"}
+  ]
+}

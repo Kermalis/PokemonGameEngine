@@ -1,0 +1,19 @@
+{
+  "EggMoves": [
+    {"Move":"CrossChop"},
+    {"Move":"Detect"},
+    {"Move":"Bite"},
+    {"Move":"MindReader"},
+    {"Move":"SkyUppercut"},
+    {"Move":"HiJumpKick"},
+    {"Move":"Agility"},
+    {"Move":"VacuumWave"},
+    {"Move":"Crunch"},
+    {"Move":"LowKick"},
+    {"Move":"IronDefense"},
+    {"Move":"BlazeKick"},
+    {"Move":"BulletPunch"},
+    {"Move":"FollowMe"},
+    {"Move":"CircleThrow"}
+  ]
+}

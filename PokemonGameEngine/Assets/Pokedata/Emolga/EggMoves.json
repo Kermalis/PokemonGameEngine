@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Roost"},
+    {"Move":"IronTail"},
+    {"Move":"Astonish"},
+    {"Move":"AirSlash"},
+    {"Move":"ShockWave"},
+    {"Move":"Charm"},
+    {"Move":"Covet"},
+    {"Move":"Tickle"},
+    {"Move":"BatonPass"}
+  ]
+}

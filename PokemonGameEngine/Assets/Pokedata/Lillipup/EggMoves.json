@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"Howl"},
+    {"Move":"SandAttack"},
+    {"Move":"MudSlap"},
+    {"Move":"Lick"},
+    {"Move":"Charm"},
+    {"Move":"Endure"},
+    {"Move":"Yawn"},
+    {"Move":"Pursuit"},
+    {"Move":"FireFang"},
+    {"Move":"ThunderFang"},
+    {"Move":"IceFang"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"FutureSight"},
+    {"Move":"Extrasensory"},
+    {"Move":"Trick"},
+    {"Move":"ZenHeadbutt"},
+    {"Move":"Amnesia"},
+    {"Move":"MirrorCoat"},
+    {"Move":"SkillSwap"},
+    {"Move":"Whirlwind"},
+    {"Move":"LuckyChant"},
+    {"Move":"Endure"}
+  ]
+}

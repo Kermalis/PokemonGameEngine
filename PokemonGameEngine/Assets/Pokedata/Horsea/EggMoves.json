@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Flail"},
+    {"Move":"AuroraBeam"},
+    {"Move":"Octazooka"},
+    {"Move":"Disable"},
+    {"Move":"Splash"},
+    {"Move":"DragonRage"},
+    {"Move":"DragonBreath"},
+    {"Move":"SignalBeam"},
+    {"Move":"RazorWind"},
+    {"Move":"MuddyWater"},
+    {"Move":"WaterPulse"},
+    {"Move":"ClearSmog"},
+    {"Move":"Outrage"}
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "EggMoves": [
+    {"Move":"SleepPowder"},
+    {"Move":"StunSpore"},
+    {"Move":"RazorLeaf"},
+    {"Move":"Slam"},
+    {"Move":"Synthesis"},
+    {"Move":"MagicalLeaf"},
+    {"Move":"LeechSeed"},
+    {"Move":"WorrySeed"},
+    {"Move":"GigaDrain"},
+    {"Move":"RagePowder"},
+    {"Move":"GrassWhistle"}
+  ]
+}

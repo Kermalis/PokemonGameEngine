@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"Counter"},
+    {"Move":"FocusEnergy"},
+    {"Move":"Reversal"},
+    {"Move":"Endure"},
+    {"Move":"RazorWind"},
+    {"Move":"NightSlash"},
+    {"Move":"Endeavor"},
+    {"Move":"IronTail"},
+    {"Move":"DragonPulse"},
+    {"Move":"Harden"}
+  ]
+}

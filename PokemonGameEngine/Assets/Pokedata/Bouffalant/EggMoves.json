@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Stomp"},
+    {"Move":"RockClimb"},
+    {"Move":"Headbutt"},
+    {"Move":"SkullBash"},
+    {"Move":"MudShot"},
+    {"Move":"MudSlap"},
+    {"Move":"IronHead"},
+    {"Move":"Amnesia"}
+  ]
+}

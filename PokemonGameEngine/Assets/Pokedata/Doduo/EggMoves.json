@@ -1,0 +1,14 @@
+{
+  "EggMoves": [
+    {"Move":"QuickAttack"},
+    {"Move":"Supersonic"},
+    {"Move":"Haze"},
+    {"Move":"FaintAttack"},
+    {"Move":"Flail"},
+    {"Move":"Endeavor"},
+    {"Move":"MirrorMove"},
+    {"Move":"BraveBird"},
+    {"Move":"NaturalGift"},
+    {"Move":"Assurance"}
+  ]
+}

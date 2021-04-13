@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"DoubleHit"},
+    {"Move":"Supersonic"},
+    {"Move":"Yawn"},
+    {"Move":"MudSport"},
+    {"Move":"MudSlap"},
+    {"Move":"Snore"},
+    {"Move":"Flail"},
+    {"Move":"Agility"},
+    {"Move":"AquaRing"},
+    {"Move":"HydroPump"},
+    {"Move":"FeatherDance"},
+    {"Move":"Bide"},
+    {"Move":"IcyWind"}
+  ]
+}

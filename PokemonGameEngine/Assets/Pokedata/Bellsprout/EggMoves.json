@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Encore"},
+    {"Move":"Synthesis"},
+    {"Move":"LeechLife"},
+    {"Move":"Ingrain"},
+    {"Move":"MagicalLeaf"},
+    {"Move":"WorrySeed"},
+    {"Move":"Tickle"},
+    {"Move":"WeatherBall"},
+    {"Move":"BulletSeed"},
+    {"Move":"NaturalGift"},
+    {"Move":"GigaDrain"},
+    {"Move":"ClearSmog"},
+    {"Move":"PowerWhip"}
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"WaterSport"},
+    {"Move":"Stockpile"},
+    {"Move":"Swallow"},
+    {"Move":"SpitUp"},
+    {"Move":"Yawn"},
+    {"Move":"Curse"},
+    {"Move":"Fissure"},
+    {"Move":"SignalBeam"},
+    {"Move":"AquaRing"},
+    {"Move":"Rollout"},
+    {"Move":"SleepTalk"},
+    {"Move":"WaterPulse"}
+  ]
+}

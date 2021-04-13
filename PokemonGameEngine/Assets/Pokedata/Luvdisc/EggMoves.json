@@ -1,0 +1,13 @@
+{
+  "EggMoves": [
+    {"Move":"Splash"},
+    {"Move":"Supersonic"},
+    {"Move":"WaterSport"},
+    {"Move":"MudSport"},
+    {"Move":"Captivate"},
+    {"Move":"AquaRing"},
+    {"Move":"AquaJet"},
+    {"Move":"HealPulse"},
+    {"Move":"Brine"}
+  ]
+}

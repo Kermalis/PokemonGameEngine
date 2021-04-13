@@ -1,0 +1,12 @@
+{
+  "EggMoves": [
+    {"Move":"Endure"},
+    {"Move":"VitalThrow"},
+    {"Move":"BatonPass"},
+    {"Move":"SmellingSalt"},
+    {"Move":"LowKick"},
+    {"Move":"Feint"},
+    {"Move":"MeFirst"},
+    {"Move":"KnockOff"}
+  ]
+}

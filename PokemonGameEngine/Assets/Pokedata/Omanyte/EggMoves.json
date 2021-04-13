@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"BubbleBeam"},
+    {"Move":"AuroraBeam"},
+    {"Move":"Slam"},
+    {"Move":"Supersonic"},
+    {"Move":"Haze"},
+    {"Move":"Spikes"},
+    {"Move":"KnockOff"},
+    {"Move":"WringOut"},
+    {"Move":"ToxicSpikes"},
+    {"Move":"MuddyWater"},
+    {"Move":"Bide"},
+    {"Move":"WaterPulse"},
+    {"Move":"Whirlpool"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"VineWhip"},
+    {"Move":"LeechSeed"},
+    {"Move":"Counter"},
+    {"Move":"AncientPower"},
+    {"Move":"Flail"},
+    {"Move":"NaturePower"},
+    {"Move":"Ingrain"},
+    {"Move":"GrassWhistle"},
+    {"Move":"LeafStorm"},
+    {"Move":"Aromatherapy"},
+    {"Move":"WringOut"},
+    {"Move":"BodySlam"},
+    {"Move":"Refresh"},
+    {"Move":"HealPulse"}
+  ]
+}

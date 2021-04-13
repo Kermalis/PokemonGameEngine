@@ -1,0 +1,17 @@
+{
+  "EggMoves": [
+    {"Move":"Mist"},
+    {"Move":"Splash"},
+    {"Move":"BubbleBeam"},
+    {"Move":"Haze"},
+    {"Move":"MindReader"},
+    {"Move":"WaterSport"},
+    {"Move":"IceBall"},
+    {"Move":"MudShot"},
+    {"Move":"Refresh"},
+    {"Move":"Endeavor"},
+    {"Move":"Encore"},
+    {"Move":"Endure"},
+    {"Move":"WaterPulse"}
+  ]
+}

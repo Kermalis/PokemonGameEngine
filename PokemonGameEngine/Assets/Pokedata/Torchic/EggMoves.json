@@ -1,0 +1,18 @@
+{
+  "EggMoves": [
+    {"Move":"Counter"},
+    {"Move":"Reversal"},
+    {"Move":"Endure"},
+    {"Move":"SmellingSalt"},
+    {"Move":"CrushClaw"},
+    {"Move":"BatonPass"},
+    {"Move":"Agility"},
+    {"Move":"NightSlash"},
+    {"Move":"LastResort"},
+    {"Move":"Feint"},
+    {"Move":"FeatherDance"},
+    {"Move":"Curse"},
+    {"Move":"FlameBurst"},
+    {"Move":"LowKick"}
+  ]
+}

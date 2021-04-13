@@ -1,0 +1,11 @@
+{
+  "EggMoves": [
+    {"Move":"FutureSight"},
+    {"Move":"LuckyChant"},
+    {"Move":"Disable"},
+    {"Move":"Amnesia"},
+    {"Move":"OminousWind"},
+    {"Move":"Hex"},
+    {"Move":"ClearSmog"}
+  ]
+}

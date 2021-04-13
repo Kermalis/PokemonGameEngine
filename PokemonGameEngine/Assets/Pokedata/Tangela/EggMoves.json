@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Flail"},
+    {"Move":"Confusion"},
+    {"Move":"MegaDrain"},
+    {"Move":"Amnesia"},
+    {"Move":"LeechSeed"},
+    {"Move":"NaturePower"},
+    {"Move":"Endeavor"},
+    {"Move":"LeafStorm"},
+    {"Move":"PowerSwap"},
+    {"Move":"GigaDrain"},
+    {"Move":"RagePowder"},
+    {"Move":"NaturalGift"}
+  ]
+}

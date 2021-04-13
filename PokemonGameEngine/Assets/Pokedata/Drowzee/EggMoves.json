@@ -1,0 +1,16 @@
+{
+  "EggMoves": [
+    {"Move":"Barrier"},
+    {"Move":"Assist"},
+    {"Move":"RolePlay"},
+    {"Move":"FirePunch"},
+    {"Move":"ThunderPunch"},
+    {"Move":"IcePunch"},
+    {"Move":"NastyPlot"},
+    {"Move":"Flatter"},
+    {"Move":"PsychoCut"},
+    {"Move":"GuardSwap"},
+    {"Move":"SecretPower"},
+    {"Move":"SkillSwap"}
+  ]
+}
