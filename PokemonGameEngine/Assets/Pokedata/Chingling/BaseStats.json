@@ -10,6 +10,7 @@
   "CatchRate": 120,
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
+  "GrowthRate": "Fast",
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",
   "Ability1": "Levitate",

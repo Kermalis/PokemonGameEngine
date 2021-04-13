@@ -10,6 +10,7 @@
   "CatchRate": 155,
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
+  "GrowthRate": "Fluctuating",
   "EggGroup1": "Water1",
   "EggGroup2": "Water3",
   "Ability1": "HyperCutter",

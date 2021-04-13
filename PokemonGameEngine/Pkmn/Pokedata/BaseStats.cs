@@ -16,6 +16,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         public byte CatchRate { get; }
         public byte BaseFriendship { get; }
         public PBEGenderRatio GenderRatio { get; }
+        public PBEGrowthRate GrowthRate { get; }
         public EggGroup EggGroup1 { get; }
         public EggGroup EggGroup2 { get; }
         public PBEAbility Ability1 { get; }
@@ -42,6 +43,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
                 CatchRate = r.ReadByte();
                 BaseFriendship = r.ReadByte();
                 GenderRatio = r.ReadEnum<PBEGenderRatio>();
+                GrowthRate = r.ReadEnum<PBEGrowthRate>();
                 EggGroup1 = r.ReadEnum<EggGroup>();
                 EggGroup2 = r.ReadEnum<EggGroup>();
                 Ability1 = r.ReadEnum<PBEAbility>();

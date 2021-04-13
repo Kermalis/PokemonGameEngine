@@ -10,6 +10,7 @@
   "CatchRate": 75,
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
+  "GrowthRate": "Slow",
   "EggGroup1": "Water2",
   "EggGroup2": "Water2",
   "Ability1": "VoltAbsorb",

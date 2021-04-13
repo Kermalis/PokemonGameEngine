@@ -72,4 +72,5 @@ against your will!"
 #DaycareTest_CompatMin
 "The two don't really seem to like each other very much."
 #DaycareTest_CompatNone
-"The two prefer to play with other Pokémon more than with each other."
+"The two prefer to play with other Pokémon\n
+more than with each other."

@@ -10,6 +10,7 @@
   "CatchRate": 30,
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
+  "GrowthRate": "MediumFast",
   "EggGroup1": "Grass",
   "EggGroup2": "Grass",
   "Ability1": "Chlorophyll",

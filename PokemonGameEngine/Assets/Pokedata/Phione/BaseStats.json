@@ -10,6 +10,7 @@
   "CatchRate": 30,
   "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
+  "GrowthRate": "Slow",
   "EggGroup1": "Water1",
   "EggGroup2": "Fairy",
   "Ability1": "Hydration",

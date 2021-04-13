@@ -10,6 +10,7 @@
   "CatchRate": 25,
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
+  "GrowthRate": "Slow",
   "EggGroup1": "Water1",
   "EggGroup2": "Water1",
   "Ability1": "SwiftSwim",

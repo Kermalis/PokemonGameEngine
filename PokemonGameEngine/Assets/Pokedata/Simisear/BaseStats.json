@@ -10,6 +10,7 @@
   "CatchRate": 75,
   "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
+  "GrowthRate": "MediumFast",
   "EggGroup1": "Field",
   "EggGroup2": "Field",
   "Ability1": "Gluttony",

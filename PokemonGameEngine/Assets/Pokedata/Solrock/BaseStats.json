@@ -10,6 +10,7 @@
   "CatchRate": 45,
   "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
+  "GrowthRate": "Fast",
   "EggGroup1": "Mineral",
   "EggGroup2": "Mineral",
   "Ability1": "Levitate",

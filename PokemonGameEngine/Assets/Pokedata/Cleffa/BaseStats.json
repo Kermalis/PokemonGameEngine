@@ -10,6 +10,7 @@
   "CatchRate": 150,
   "BaseFriendship": 140,
   "GenderRatio": "M1_F3",
+  "GrowthRate": "Fast",
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",
   "Ability1": "CuteCharm",

@@ -69,7 +69,7 @@ namespace Kermalis.PokemonGameEngine.Core
         private void CreateWildBattle(Map map, Map.Layout.Block block, Party wildParty, PBEBattleFormat format)
         {
             Save sav = Save;
-            var me = new PBETrainerInfo(sav.PlayerParty, sav.OT.TrainerName, inventory: sav.PlayerInventory.ToPBEInventory());
+            var me = new PBETrainerInfo(sav.PlayerParty, sav.OT.TrainerName, true, inventory: sav.PlayerInventory.ToPBEInventory());
             var trainerParties = new Party[] { sav.PlayerParty, wildParty };
             var wild = new PBEWildInfo(wildParty);
             PBEBattleTerrain terrain = UpdateBattleSetting(block);

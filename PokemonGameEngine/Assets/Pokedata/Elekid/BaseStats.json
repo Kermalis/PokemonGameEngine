@@ -10,6 +10,7 @@
   "CatchRate": 45,
   "BaseFriendship": 70,
   "GenderRatio": "M3_F1",
+  "GrowthRate": "MediumFast",
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",
   "Ability1": "Static",

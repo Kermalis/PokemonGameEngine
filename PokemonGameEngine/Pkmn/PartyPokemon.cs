@@ -60,7 +60,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Nickname = PBELocalizedString.GetSpeciesName(species).English;
             Shiny = PBEDataProvider.GlobalRandom.RandomShiny();
             Level = level;
-            // EXP = default for level
+            EXP = PBEDataProvider.Instance.GetEXPRequired(pData.GrowthRate, level);
             Ability = PBEDataProvider.GlobalRandom.RandomElement(pData.Abilities);
             Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
@@ -84,7 +84,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Nickname = PBELocalizedString.GetSpeciesName(Species).English;
             Shiny = PBEDataProvider.GlobalRandom.RandomShiny();
             Level = (byte)PBEDataProvider.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel);
-            // EXP = default for level
+            EXP = PBEDataProvider.Instance.GetEXPRequired(pData.GrowthRate, Level);
             Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
             Moveset = new Moveset();
             EffortValues = new EVs();
@@ -243,26 +243,28 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Item = pkmn.Item;
             Ability = pkmn.RevertAbility;
             EffortValues.CopyFrom(pkmn.EffortValues);
+            Level = pkmn.Level;
+            EXP = pkmn.EXP;
             CalcStats();
         }
         public void UpdateFromBattle_Caught(PBEBattlePokemon pkmn)
         {
             OT = Game.Instance.Save.OT;
-            var bs = new BaseStats(Species, Form);
-            SetDefaultFriendship(bs);
+
             CaughtBall = pkmn.CaughtBall;
-            switch (CaughtBall)
+            if (CaughtBall == PBEItem.FriendBall)
             {
-                case PBEItem.FriendBall:
-                {
-                    Friendship = 200;
-                    break;
-                }
-                case PBEItem.HealBall:
-                {
-                    HealFully();
-                    break;
-                }
+                Friendship = 200;
+            }
+            else
+            {
+                var bs = new BaseStats(Species, Form);
+                SetDefaultFriendship(bs);
+            }
+
+            if (CaughtBall == PBEItem.HealBall)
+            {
+                HealFully();
             }
         }
     }
