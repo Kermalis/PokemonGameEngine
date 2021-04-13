@@ -76,6 +76,8 @@
         RandomizeVar,
         GoToIf,
         GoToIfFlag,
+        CallIf,
+        CallIfFlag,
         BufferSpeciesName,
         WildBattle,
         AwaitBattle,
@@ -84,5 +86,8 @@
         LookTowardsObj,
         BufferSeenCount,
         BufferCaughtCount,
+        GetDaycareState,
+        StorePokemonInDaycare,
+        GetDaycareCompatibility,
     }
 }

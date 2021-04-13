@@ -52,6 +52,8 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.RandomizeVar: RandomizeVarCommand(); break;
                 case ScriptCommand.GoToIf: GoToIfCommand(); break;
                 case ScriptCommand.GoToIfFlag: GoToIfFlagCommand(); break;
+                case ScriptCommand.CallIf: CallIfCommand(); break;
+                case ScriptCommand.CallIfFlag: CallIfFlagCommand(); break;
                 case ScriptCommand.BufferSpeciesName: BufferSpeciesNameCommand(); break;
                 case ScriptCommand.WildBattle: WildBattleCommand(); break;
                 case ScriptCommand.AwaitBattle: AwaitBattleCommand(); break;
@@ -60,6 +62,9 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.LookTowardsObj: LookTowardsObjCommand(); break;
                 case ScriptCommand.BufferSeenCount: BufferSeenCountCommand(); break;
                 case ScriptCommand.BufferCaughtCount: BufferCaughtCountCommand(); break;
+                case ScriptCommand.GetDaycareState: GetDaycareState(); break;
+                case ScriptCommand.StorePokemonInDaycare: StorePokemonInDaycare(); break;
+                case ScriptCommand.GetDaycareCompatibility: GetDaycareCompatibility(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -83,6 +88,36 @@ namespace Kermalis.PokemonGameEngine.Script
             return Game.Instance.Save.Vars.GetVarOrValue(_reader.ReadUInt32());
         }
 
+        private uint? IfVar()
+        {
+            uint offset = _reader.ReadUInt32();
+            short value1 = ReadVarOrValue();
+            ScriptConditional cond = ReadVarOrEnum<ScriptConditional>();
+            short value2 = ReadVarOrValue();
+            return cond.Match(value1, value2) ? offset : (uint?)null;
+        }
+        private uint? IfFlag()
+        {
+            uint offset = _reader.ReadUInt32();
+            Flag flag = ReadVarOrEnum<Flag>();
+            byte value = (byte)ReadVarOrValue();
+            if (Game.Instance.Save.Flags[flag] ? value != 0 : value == 0)
+            {
+                return offset;
+            }
+            return null;
+        }
+
+        private void PushPosition(uint newOffset)
+        {
+            _callStack.Push(_reader.BaseStream.Position);
+            _reader.BaseStream.Position = newOffset;
+        }
+        private void PopPosition()
+        {
+            _reader.BaseStream.Position = _callStack.Pop();
+        }
+
         private void EndCommand()
         {
             Dispose();
@@ -96,32 +131,42 @@ namespace Kermalis.PokemonGameEngine.Script
         private void CallCommand()
         {
             uint offset = _reader.ReadUInt32();
-            _callStack.Push(_reader.BaseStream.Position);
-            _reader.BaseStream.Position = offset;
+            PushPosition(offset);
         }
         private void ReturnCommand()
         {
-            _reader.BaseStream.Position = _callStack.Pop();
+            PopPosition();
         }
         private void GoToIfCommand()
         {
-            uint offset = _reader.ReadUInt32();
-            short value1 = ReadVarOrValue();
-            ScriptConditional cond = ReadVarOrEnum<ScriptConditional>();
-            short value2 = ReadVarOrValue();
-            if (cond.Match(value1, value2))
+            uint? offset = IfVar();
+            if (offset.HasValue)
             {
-                _reader.BaseStream.Position = offset;
+                _reader.BaseStream.Position = offset.Value;
             }
         }
         private void GoToIfFlagCommand()
         {
-            uint offset = _reader.ReadUInt32();
-            Flag flag = ReadVarOrEnum<Flag>();
-            byte value = (byte)ReadVarOrValue();
-            if (Game.Instance.Save.Flags[flag] ? value != 0 : value == 0)
+            uint? offset = IfFlag();
+            if (offset.HasValue)
             {
-                _reader.BaseStream.Position = offset;
+                _reader.BaseStream.Position = offset.Value;
+            }
+        }
+        private void CallIfCommand()
+        {
+            uint? offset = IfVar();
+            if (offset.HasValue)
+            {
+                PushPosition(offset.Value);
+            }
+        }
+        private void CallIfFlagCommand()
+        {
+            uint? offset = IfFlag();
+            if (offset.HasValue)
+            {
+                PushPosition(offset.Value);
             }
         }
 
@@ -134,7 +179,7 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             byte level = (byte)ReadVarOrValue();
-            var pkmn = new PartyPokemon(species, 0, level);
+            var pkmn = new PartyPokemon(species, 0, level, Game.Instance.Save.OT);
             Game.Instance.Save.GivePokemon(pkmn);
         }
         private void GivePokemonFormCommand()
@@ -142,7 +187,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
-            var pkmn = new PartyPokemon(species, form, level);
+            var pkmn = new PartyPokemon(species, form, level, Game.Instance.Save.OT);
             Game.Instance.Save.GivePokemon(pkmn);
         }
         private void GivePokemonFormItemCommand()
@@ -151,7 +196,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
             PBEItem item = ReadVarOrEnum<PBEItem>();
-            var pkmn = new PartyPokemon(species, form, level);
+            var pkmn = new PartyPokemon(species, form, level, Game.Instance.Save.OT);
             pkmn.Item = item;
             Game.Instance.Save.GivePokemon(pkmn);
         }
@@ -382,12 +427,28 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
-            var pkmn = new PartyPokemon(species, form, level);
+            var pkmn = new PartyPokemon(species, form, level, null);
             Game.Instance.TempCreateWildBattle(pkmn);
         }
         private void AwaitBattleCommand()
         {
             _waitBattle = true;
+        }
+
+        private void GetDaycareState()
+        {
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (byte)Game.Instance.Save.Daycare.GetDaycareState();
+        }
+        private void StorePokemonInDaycare()
+        {
+            int index = Game.Instance.Save.Vars[Var.SpecialVar1];
+            PartyPokemon pkmn = Game.Instance.Save.PlayerParty[index];
+            Game.Instance.Save.PlayerParty.Remove(pkmn);
+            Game.Instance.Save.Daycare.StorePokemon(pkmn);
+        }
+        private void GetDaycareCompatibility()
+        {
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = Game.Instance.Save.Daycare.GetCompatibility();
         }
     }
 }

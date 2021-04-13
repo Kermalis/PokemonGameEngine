@@ -62,5 +62,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
                 _abilities.Add(AbilityH);
             }
         }
+
+        public bool EggGroupsOverlap(BaseStats other)
+        {
+            return EggGroup1 == other.EggGroup1 || EggGroup1 == other.EggGroup2
+                || EggGroup2 == other.EggGroup1 || EggGroup2 == other.EggGroup2;
+        }
     }
 }

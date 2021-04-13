@@ -110,7 +110,7 @@
         "MovementY": 0,
         "TrainerType": "None",
         "TrainerSight": 0,
-        "Script": "TestScript",
+        "Script": "Daycare_Start",
         "Flag": "MAX"
       },
       {

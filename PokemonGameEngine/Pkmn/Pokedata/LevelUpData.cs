@@ -1,6 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Util;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
@@ -28,6 +29,12 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         {
             return Moves.Where(t => t.Level <= level && PBEDataUtils.IsMoveUsable(t.Move))
                 .Select(t => t.Move).Distinct().Reverse().Take(PkmnConstants.NumMoves).ToArray();
+        }
+
+        public IEnumerable<PBEMove> GetNewMoves(byte level)
+        {
+            return Moves.Where(t => t.Level == level && PBEDataUtils.IsMoveUsable(t.Move))
+                .Select(t => t.Move).Distinct();
         }
     }
 }

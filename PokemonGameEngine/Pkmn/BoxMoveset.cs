@@ -16,6 +16,12 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 Move = other.Move;
                 PPUps = other.PPUps;
             }
+
+            public void Clear()
+            {
+                Move = PBEMove.None;
+                PPUps = 0;
+            }
         }
 
         private readonly BoxMovesetSlot[] _slots;
@@ -30,6 +36,32 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             {
                 _slots[i] = new BoxMovesetSlot(other[i]);
             }
+        }
+
+        ///<summary>Forgets the move on top, and moves all of the others up once. The last slot will be empty</summary>
+        public void ShiftMovesUp()
+        {
+            for (int i = 1; i < PkmnConstants.NumMoves; i++)
+            {
+                BoxMovesetSlot above = _slots[i - 1];
+                BoxMovesetSlot below = _slots[i];
+                above.Move = below.Move;
+                above.PPUps = below.PPUps;
+            }
+            BoxMovesetSlot bottom = _slots[PkmnConstants.NumMoves - 1];
+            bottom.Clear();
+        }
+
+        public int GetFirstEmptySlot()
+        {
+            for (int i = 0; i < PkmnConstants.NumMoves; i++)
+            {
+                if (_slots[i].Move == PBEMove.None)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         IEnumerator<BoxMovesetSlot> IEnumerable<BoxMovesetSlot>.GetEnumerator()

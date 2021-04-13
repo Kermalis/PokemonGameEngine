@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.World;
 using System;
@@ -10,6 +11,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 {
     internal sealed class PartyPokemon : IPBEPartyPokemon
     {
+        public OTInfo OT { get; set; }
+
         public PBESpecies Species { get; set; }
         public PBEForm Form { get; set; }
         public PBEGender Gender { get; set; }
@@ -17,6 +20,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public string Nickname { get; set; }
         public bool Shiny { get; set; }
         public byte Level { get; set; }
+        public uint EXP { get; set; }
         public byte Friendship { get; set; }
         public PBEItem CaughtBall { get; set; }
 
@@ -46,15 +50,17 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public uint PID { get; private set; } // Currently only used for Spinda spots; has no other effect
 
-        public PartyPokemon(PBESpecies species, PBEForm form, byte level)
+        public PartyPokemon(PBESpecies species, PBEForm form, byte level, OTInfo ot)
         {
             RandomPID();
+            OT = ot;
             var pData = new BaseStats(species, form);
             Species = species;
             Form = form;
             Nickname = PBELocalizedString.GetSpeciesName(species).English;
             Shiny = PBEDataProvider.GlobalRandom.RandomShiny();
             Level = level;
+            // EXP = default for level
             Ability = PBEDataProvider.GlobalRandom.RandomElement(pData.Abilities);
             Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
@@ -78,6 +84,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Nickname = PBELocalizedString.GetSpeciesName(Species).English;
             Shiny = PBEDataProvider.GlobalRandom.RandomShiny();
             Level = (byte)PBEDataProvider.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel);
+            // EXP = default for level
             Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
             Moveset = new Moveset();
             EffortValues = new EVs();
@@ -90,11 +97,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public PartyPokemon(BoxPokemon other)
         {
             PID = other.PID;
+            OT = other.OT;
             Species = other.Species;
             Form = other.Form;
             Nickname = other.Nickname;
             Shiny = other.Shiny;
             Level = other.Level;
+            EXP = other.EXP;
             Ability = other.Ability;
             Gender = other.Gender;
             Nature = other.Nature;
@@ -238,6 +247,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void UpdateFromBattle_Caught(PBEBattlePokemon pkmn)
         {
+            OT = Game.Instance.Save.OT;
             var bs = new BaseStats(Species, Form);
             SetDefaultFriendship(bs);
             CaughtBall = pkmn.CaughtBall;

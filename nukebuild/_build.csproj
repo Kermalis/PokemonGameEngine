@@ -9,6 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Include="..\PokemonGameEngine\Core\DaycareState.cs" Link="DaycareState.cs" />
 		<Compile Include="..\PokemonGameEngine\Core\FlagVarConstants.cs" Link="FlagVarConstants.cs" />
 		<Compile Include="..\PokemonGameEngine\Pkmn\Pokedata\PokedataEnums.cs" Link="PokedataEnums.cs" />
 		<Compile Include="..\PokemonGameEngine\Script\ScriptEnums.cs" Link="ScriptEnums.cs" />

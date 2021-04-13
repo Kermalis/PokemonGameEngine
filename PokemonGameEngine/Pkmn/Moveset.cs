@@ -64,6 +64,18 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             }
         }
 
+        public int GetFirstEmptySlot()
+        {
+            for (int i = 0; i < PkmnConstants.NumMoves; i++)
+            {
+                if (_slots[i].Move == PBEMove.None)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         public void UpdateFromBattle(PBEBattleMoveset moves)
         {
             for (int i = 0; i < _slots.Length; i++)

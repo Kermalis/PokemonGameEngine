@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -21,6 +22,14 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 return _slots.Count - 1;
             }
             return -1;
+        }
+
+        public void Remove(PartyPokemon pkmn)
+        {
+            if (!_slots.Remove(pkmn))
+            {
+                throw new Exception();
+            }
         }
 
         public void HealFully()

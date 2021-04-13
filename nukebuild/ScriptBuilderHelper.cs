@@ -9,8 +9,9 @@ using System.Collections.Generic;
 internal static class ScriptBuilderHelper
 {
     public const string VarPrefix = "Var.";
-    public static readonly Dictionary<Type, string> EnumDefines = new Dictionary<Type, string>()
+    public static readonly Dictionary<Type, string> EnumDefines = new Dictionary<Type, string>
     {
+        { typeof(DaycareState), "DaycareState." },
         { typeof(Flag), "Flag." },
         { typeof(ScriptConditional), "C." },
         { typeof(Var), VarPrefix },
@@ -18,7 +19,7 @@ internal static class ScriptBuilderHelper
         { typeof(PBEItem), "Item." },
         { typeof(PBESpecies), "Species." }
     };
-    public static readonly Dictionary<string, IdList> StringDefines = new Dictionary<string, IdList>()
+    public static readonly Dictionary<string, IdList> StringDefines = new Dictionary<string, IdList>
     {
         { "Map.", new IdList(Build.AssetPath / "Map" / "MapIds.txt") }
     };
@@ -67,6 +68,8 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.RandomizeVar, new[] { typeof(Var), typeof(short), typeof(short) } }, // Var, minValue, maxValue
         { ScriptCommand.GoToIf, new[] { typeof(void*), typeof(short), typeof(ScriptConditional), typeof(short) } }, // Offset to go to, value1, condition, value2
         { ScriptCommand.GoToIfFlag, new[] { typeof(void*), typeof(Flag), typeof(byte) } }, // Offset to go to, flag, value
+        { ScriptCommand.CallIf, new[] { typeof(void*), typeof(short), typeof(ScriptConditional), typeof(short) } }, // Offset to jump to, value1, condition, value2
+        { ScriptCommand.CallIfFlag, new[] { typeof(void*), typeof(Flag), typeof(byte) } }, // Offset to jump to, flag, value
         { ScriptCommand.BufferSpeciesName, new[] { typeof(byte), typeof(PBESpecies) } }, // Buffer number, species
         { ScriptCommand.WildBattle, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte) } }, // Species, form, level
         { ScriptCommand.AwaitBattle, Array.Empty<Type>() },
@@ -75,6 +78,9 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.LookTowardsObj, new[] { typeof(ushort), typeof(ushort) } }, // Id of looker, id of obj to look at
         { ScriptCommand.BufferSeenCount, new[] { typeof(byte) } }, // Buffer number
         { ScriptCommand.BufferCaughtCount, new[] { typeof(byte) } }, // Buffer number
+        { ScriptCommand.GetDaycareState, Array.Empty<Type>() },
+        { ScriptCommand.StorePokemonInDaycare, Array.Empty<Type>() },
+        { ScriptCommand.GetDaycareCompatibility, Array.Empty<Type>() },
     };
 
     static ScriptBuilderHelper()

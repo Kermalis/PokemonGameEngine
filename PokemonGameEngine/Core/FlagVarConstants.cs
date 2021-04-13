@@ -48,6 +48,9 @@
         Test17,
         Test18,
         Test19,
+        SpecialVar1,
+        SpecialVar2,
+        SpecialVar_Result,
         MAX
     }
 }

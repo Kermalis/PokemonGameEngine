@@ -10,9 +10,9 @@ namespace Kermalis.PokemonGameEngine.Core
         public Pokedex Pokedex { get; }
         public Flags Flags { get; }
         public Vars Vars { get; }
-        public string PlayerName { get; }
-        public bool PlayerIsFemale { get; }
+        public OTInfo OT { get; }
         public PCBoxes PCBoxes { get; }
+        public Daycare Daycare { get; }
         public Party PlayerParty { get; }
         public PlayerInventory PlayerInventory { get; }
         public uint Money { get; private set; }
@@ -22,12 +22,12 @@ namespace Kermalis.PokemonGameEngine.Core
             Pokedex = new Pokedex();
             Flags = new Flags();
             Vars = new Vars();
-            PlayerName = "Dawn";
-            PlayerIsFemale = true;
+            OT = new OTInfo("Dawn", true);
             PCBoxes = new PCBoxes();
+            Daycare = new Daycare();
             PlayerParty = new Party();
             {
-                var victini = new PartyPokemon(PBESpecies.Victini, 0, 67);
+                var victini = new PartyPokemon(PBESpecies.Victini, 0, 67, OT);
                 victini.Ability = PBEAbility.Compoundeyes;
                 victini.Item = PBEItem.Leftovers;
                 victini.Moveset[0].Move = PBEMove.Bounce;
@@ -58,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.Core
         private void Debug_GiveRandomPokemon()
         {
             (PBESpecies species, PBEForm form) = PBEDataProvider.GlobalRandom.RandomSpecies(true);
-            var pkmn = new PartyPokemon(species, form, (byte)PBEDataProvider.GlobalRandom.RandomInt(PkmnConstants.MinLevel, PkmnConstants.MaxLevel));
+            var pkmn = new PartyPokemon(species, form, (byte)PBEDataProvider.GlobalRandom.RandomInt(PkmnConstants.MinLevel, PkmnConstants.MaxLevel), OT);
             pkmn.Debug_RandomizeMoves();
             GivePokemon(pkmn);
         }
