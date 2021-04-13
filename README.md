@@ -57,6 +57,12 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 * [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine)
 
+## PokemonDumper Uses:
+* [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)
+* [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+* [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine)
+* [SimpleNARC](https://github.com/Kermalis/SimpleNARC)
+
 ## Test tiles taken from... (I did modify them a bit)
 * https://www.deviantart.com/phyromatical/art/Taragonia-BW-Mix-434036293
 * https://www.deviantart.com/chaoticcherrycake/art/Pokemon-Tileset-From-Public-Tiles-358379026
