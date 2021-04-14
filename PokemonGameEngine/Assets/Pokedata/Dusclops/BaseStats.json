@@ -11,6 +11,7 @@
   "BaseFriendship": 35,
   "GenderRatio": "M1_F1",
   "GrowthRate": "Fast",
+  "BaseEXPYield": 159,
   "EggGroup1": "Amorphous",
   "EggGroup2": "Amorphous",
   "Ability1": "Pressure",

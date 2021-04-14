@@ -11,6 +11,7 @@
   "BaseFriendship": 100,
   "GenderRatio": "M0_F0",
   "GrowthRate": "MediumSlow",
+  "BaseEXPYield": 270,
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",
   "Ability1": "NaturalCure",

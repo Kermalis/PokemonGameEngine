@@ -11,6 +11,7 @@
   "BaseFriendship": 35,
   "GenderRatio": "M1_F0",
   "GrowthRate": "Slow",
+  "BaseEXPYield": 233,
   "EggGroup1": "Amorphous",
   "EggGroup2": "Amorphous",
   "Ability1": "Steadfast",

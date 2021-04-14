@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M0_F1",
   "GrowthRate": "MediumSlow",
+  "BaseEXPYield": 166,
   "EggGroup1": "Bug",
   "EggGroup2": "Bug",
   "Ability1": "Pressure",

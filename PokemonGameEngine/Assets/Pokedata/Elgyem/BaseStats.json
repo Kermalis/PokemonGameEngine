@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "MediumFast",
+  "BaseEXPYield": 67,
   "EggGroup1": "HumanLike",
   "EggGroup2": "HumanLike",
   "Ability1": "Telepathy",

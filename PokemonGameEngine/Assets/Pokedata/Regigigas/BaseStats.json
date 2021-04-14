@@ -11,6 +11,7 @@
   "BaseFriendship": 0,
   "GenderRatio": "M0_F0",
   "GrowthRate": "Slow",
+  "BaseEXPYield": 302,
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",
   "Ability1": "SlowStart",

@@ -11,6 +11,7 @@
   "BaseFriendship": 100,
   "GenderRatio": "M1_F1",
   "GrowthRate": "Fast",
+  "BaseEXPYield": 169,
   "EggGroup1": "Field",
   "EggGroup2": "Field",
   "Ability1": "Technician",

@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
   "GrowthRate": "Erratic",
+  "BaseEXPYield": 70,
   "EggGroup1": "Monster",
   "EggGroup2": "Monster",
   "Ability1": "MoldBreaker",

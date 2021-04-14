@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F0",
   "GrowthRate": "Erratic",
+  "BaseEXPYield": 140,
   "EggGroup1": "Bug",
   "EggGroup2": "HumanLike",
   "Ability1": "Illuminate",

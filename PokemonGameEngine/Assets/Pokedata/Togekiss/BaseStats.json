@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
   "GrowthRate": "Fast",
+  "BaseEXPYield": 245,
   "EggGroup1": "Flying",
   "EggGroup2": "Fairy",
   "Ability1": "Hustle",

@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
   "GrowthRate": "MediumFast",
+  "BaseEXPYield": 182,
   "EggGroup1": "Amorphous",
   "EggGroup2": "Amorphous",
   "Ability1": "Levitate",

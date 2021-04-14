@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
   "GrowthRate": "MediumSlow",
+  "BaseEXPYield": 66,
   "EggGroup1": "Field",
   "EggGroup2": "Field",
   "Ability1": "Illusion",

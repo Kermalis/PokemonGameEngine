@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
   "GrowthRate": "MediumSlow",
+  "BaseEXPYield": 64,
   "EggGroup1": "Monster",
   "EggGroup2": "Grass",
   "Ability1": "Overgrow",

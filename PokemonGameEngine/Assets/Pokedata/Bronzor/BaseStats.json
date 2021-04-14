@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
   "GrowthRate": "MediumFast",
+  "BaseEXPYield": 60,
   "EggGroup1": "Mineral",
   "EggGroup2": "Mineral",
   "Ability1": "Levitate",

@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
   "GrowthRate": "Slow",
+  "BaseEXPYield": 170,
   "EggGroup1": "Water1",
   "EggGroup2": "Water2",
   "Ability1": "SwiftSwim",

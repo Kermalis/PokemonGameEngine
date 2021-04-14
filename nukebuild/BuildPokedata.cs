@@ -38,6 +38,7 @@ public sealed partial class Build
         private readonly byte BaseFriendship;
         private readonly PBEGenderRatio GenderRatio;
         private readonly PBEGrowthRate GrowthRate;
+        private readonly ushort BaseEXPYield;
         private readonly EggGroup EggGroup1;
         private readonly EggGroup EggGroup2;
         private readonly PBEAbility Ability1;
@@ -60,6 +61,7 @@ public sealed partial class Build
             BaseFriendship = j[nameof(BaseFriendship)].Value<byte>();
             GenderRatio = j[nameof(GenderRatio)].EnumValue<PBEGenderRatio>();
             GrowthRate = j[nameof(GrowthRate)].EnumValue<PBEGrowthRate>();
+            BaseEXPYield = j[nameof(BaseEXPYield)].Value<ushort>();
             EggGroup1 = j[nameof(EggGroup1)].EnumValue<EggGroup>();
             EggGroup2 = j[nameof(EggGroup2)].EnumValue<EggGroup>();
             Ability1 = j[nameof(Ability1)].EnumValue<PBEAbility>();
@@ -83,6 +85,7 @@ public sealed partial class Build
             w.Write(BaseFriendship);
             w.Write(GenderRatio);
             w.Write(GrowthRate);
+            w.Write(BaseEXPYield);
             w.Write(EggGroup1);
             w.Write(EggGroup2);
             w.Write(Ability1);

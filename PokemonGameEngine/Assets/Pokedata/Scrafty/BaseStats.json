@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "MediumFast",
+  "BaseEXPYield": 171,
   "EggGroup1": "Field",
   "EggGroup2": "Dragon",
   "Ability1": "ShedSkin",

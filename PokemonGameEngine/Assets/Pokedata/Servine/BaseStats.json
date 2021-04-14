@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
   "GrowthRate": "MediumSlow",
+  "BaseEXPYield": 145,
   "EggGroup1": "Field",
   "EggGroup2": "Grass",
   "Ability1": "Overgrow",

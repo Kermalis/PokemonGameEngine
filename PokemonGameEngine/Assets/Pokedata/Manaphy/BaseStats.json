@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
   "GrowthRate": "Slow",
+  "BaseEXPYield": 270,
   "EggGroup1": "Water1",
   "EggGroup2": "Fairy",
   "Ability1": "Hydration",

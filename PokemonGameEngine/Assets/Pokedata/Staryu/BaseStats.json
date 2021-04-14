@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
   "GrowthRate": "Slow",
+  "BaseEXPYield": 68,
   "EggGroup1": "Water3",
   "EggGroup2": "Water3",
   "Ability1": "Illuminate",

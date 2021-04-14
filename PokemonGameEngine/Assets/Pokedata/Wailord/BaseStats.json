@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "Fluctuating",
+  "BaseEXPYield": 175,
   "EggGroup1": "Field",
   "EggGroup2": "Water2",
   "Ability1": "WaterVeil",

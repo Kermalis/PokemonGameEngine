@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "MediumFast",
+  "BaseEXPYield": 42,
   "EggGroup1": "Water1",
   "EggGroup2": "Field",
   "Ability1": "Damp",

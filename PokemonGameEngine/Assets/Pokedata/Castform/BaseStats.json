@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "MediumFast",
+  "BaseEXPYield": 147,
   "EggGroup1": "Fairy",
   "EggGroup2": "Amorphous",
   "Ability1": "Forecast",

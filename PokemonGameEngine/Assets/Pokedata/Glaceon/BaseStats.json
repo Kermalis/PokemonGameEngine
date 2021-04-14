@@ -11,6 +11,7 @@
   "BaseFriendship": 35,
   "GenderRatio": "M7_F1",
   "GrowthRate": "MediumFast",
+  "BaseEXPYield": 184,
   "EggGroup1": "Field",
   "EggGroup2": "Field",
   "Ability1": "SnowCloak",

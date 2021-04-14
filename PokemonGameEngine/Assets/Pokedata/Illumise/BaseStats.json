@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M0_F1",
   "GrowthRate": "Fluctuating",
+  "BaseEXPYield": 140,
   "EggGroup1": "Bug",
   "EggGroup2": "HumanLike",
   "Ability1": "Oblivious",

@@ -11,6 +11,7 @@
   "BaseFriendship": 35,
   "GenderRatio": "M0_F1",
   "GrowthRate": "Slow",
+  "BaseEXPYield": 179,
   "EggGroup1": "Flying",
   "EggGroup2": "Flying",
   "Ability1": "BigPecks",

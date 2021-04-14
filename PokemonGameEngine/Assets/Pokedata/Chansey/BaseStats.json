@@ -11,6 +11,7 @@
   "BaseFriendship": 140,
   "GenderRatio": "M0_F1",
   "GrowthRate": "Fast",
+  "BaseEXPYield": 395,
   "EggGroup1": "Fairy",
   "EggGroup2": "Fairy",
   "Ability1": "NaturalCure",

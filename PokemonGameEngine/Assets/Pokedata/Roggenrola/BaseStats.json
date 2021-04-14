@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "MediumSlow",
+  "BaseEXPYield": 56,
   "EggGroup1": "Mineral",
   "EggGroup2": "Mineral",
   "Ability1": "Sturdy",

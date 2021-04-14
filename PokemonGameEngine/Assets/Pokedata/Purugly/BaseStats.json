@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F3",
   "GrowthRate": "Fast",
+  "BaseEXPYield": 158,
   "EggGroup1": "Field",
   "EggGroup2": "Field",
   "Ability1": "ThickFat",

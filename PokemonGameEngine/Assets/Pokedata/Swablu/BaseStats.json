@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "Erratic",
+  "BaseEXPYield": 62,
   "EggGroup1": "Flying",
   "EggGroup2": "Dragon",
   "Ability1": "NaturalCure",

@@ -146,7 +146,7 @@ namespace Kermalis.PokemonDumper
                     // 0x1E-0x1F - form
                     // 0x20 - num forms
                     // 0x21 - color
-                    // 0x22-0x23 - base exp
+                    pkmn.BaseEXPYield = pokedata.ReadUInt16(0x22);
                     // 0x24-0x25 - height
                     pkmn.Weight = Math.Round(pokedata.ReadUInt16(0x26) * 0.1, 1);
                     // 0x28-0x35 - tmhm
@@ -186,6 +186,8 @@ namespace Kermalis.PokemonDumper
                 w.WriteValue(pkmn.GenderRatio.ToString());
                 w.WritePropertyName(nameof(Pokemon.GrowthRate));
                 w.WriteValue(pkmn.GrowthRate.ToString());
+                w.WritePropertyName(nameof(Pokemon.BaseEXPYield));
+                w.WriteValue(pkmn.BaseEXPYield);
                 w.WritePropertyName(nameof(Pokemon.EggGroup1));
                 w.WriteValue(pkmn.EggGroup1.ToString());
                 w.WritePropertyName(nameof(Pokemon.EggGroup2));

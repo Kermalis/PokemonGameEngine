@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "MediumSlow",
+  "BaseEXPYield": 70,
   "EggGroup1": "Field",
   "EggGroup2": "HumanLike",
   "Ability1": "InnerFocus",

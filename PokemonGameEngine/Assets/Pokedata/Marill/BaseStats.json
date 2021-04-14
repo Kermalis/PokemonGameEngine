@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "Fast",
+  "BaseEXPYield": 88,
   "EggGroup1": "Water1",
   "EggGroup2": "Fairy",
   "Ability1": "ThickFat",

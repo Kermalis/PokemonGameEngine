@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M3_F1",
   "GrowthRate": "MediumSlow",
+  "BaseEXPYield": 62,
   "EggGroup1": "HumanLike",
   "EggGroup2": "HumanLike",
   "Ability1": "Synchronize",

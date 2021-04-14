@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "Fluctuating",
+  "BaseEXPYield": 70,
   "EggGroup1": "Amorphous",
   "EggGroup2": "Amorphous",
   "Ability1": "Aftermath",

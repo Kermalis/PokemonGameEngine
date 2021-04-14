@@ -1097,9 +1097,6 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Everstone">
             <summary>No effect.</summary>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.ExpShare">
-            <summary>No effect.</summary>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.FavoredMail">
             <summary>No effect.</summary>
         </member>
@@ -1158,9 +1155,6 @@
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LuckIncense">
-            <summary>No effect.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.LuckyEgg">
             <summary>No effect.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEItem.Magmarizer">
@@ -1534,6 +1528,12 @@
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMove.MAX">
             <summary>Invalid move.</summary>
+        </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataProvider.GetEXPModifier(Kermalis.PokemonBattleEngine.Battle.PBEBattle)">
+            <summary>This is the boost to the EXP rate. In generation 5, Pass Powers boost the EXP rate.</summary>
+        </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataProvider.GetEXPTradeModifier(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon)">
+            <summary>In generation 5, this is 1 for ot, 1.5 for domestic trade, and 1.7 for international trade.</summary>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataProvider.GetCatchRateModifier(Kermalis.PokemonBattleEngine.Battle.PBEBattle)">
             <summary>This is the boost to the catch rate. In generation 5, Capture Powers boost the catch rate.</summary>

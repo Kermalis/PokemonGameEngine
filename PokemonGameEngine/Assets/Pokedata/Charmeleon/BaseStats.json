@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
   "GrowthRate": "MediumSlow",
+  "BaseEXPYield": 142,
   "EggGroup1": "Monster",
   "EggGroup2": "Dragon",
   "Ability1": "Blaze",

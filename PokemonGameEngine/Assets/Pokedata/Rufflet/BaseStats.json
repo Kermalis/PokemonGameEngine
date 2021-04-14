@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M1_F0",
   "GrowthRate": "Slow",
+  "BaseEXPYield": 70,
   "EggGroup1": "Flying",
   "EggGroup2": "Flying",
   "Ability1": "KeenEye",

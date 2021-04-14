@@ -11,6 +11,7 @@
   "BaseFriendship": 0,
   "GenderRatio": "M1_F1",
   "GrowthRate": "MediumFast",
+  "BaseEXPYield": 70,
   "EggGroup1": "Field",
   "EggGroup2": "HumanLike",
   "Ability1": "RunAway",

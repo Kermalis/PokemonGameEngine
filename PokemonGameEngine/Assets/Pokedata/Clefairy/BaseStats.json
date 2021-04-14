@@ -11,6 +11,7 @@
   "BaseFriendship": 140,
   "GenderRatio": "M1_F3",
   "GrowthRate": "Fast",
+  "BaseEXPYield": 113,
   "EggGroup1": "Fairy",
   "EggGroup2": "Fairy",
   "Ability1": "CuteCharm",

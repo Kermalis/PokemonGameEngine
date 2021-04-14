@@ -11,6 +11,7 @@
   "BaseFriendship": 70,
   "GenderRatio": "M0_F1",
   "GrowthRate": "MediumFast",
+  "BaseEXPYield": 172,
   "EggGroup1": "Monster",
   "EggGroup2": "Monster",
   "Ability1": "EarlyBird",

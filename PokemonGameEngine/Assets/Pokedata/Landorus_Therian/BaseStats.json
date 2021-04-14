@@ -11,6 +11,7 @@
   "BaseFriendship": 90,
   "GenderRatio": "M1_F0",
   "GrowthRate": "Slow",
+  "BaseEXPYield": 270,
   "EggGroup1": "Undiscovered",
   "EggGroup2": "Undiscovered",
   "Ability1": "Intimidate",
