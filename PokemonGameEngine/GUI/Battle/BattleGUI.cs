@@ -152,25 +152,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos, bool ally)
         {
-            Font font = Font.DefaultSmall;
-            SpritedBattlePokemon sPkmn = pos.SPkmn;
-            float x = pos.BarX;
-            float y = pos.BarY;
-            PBEBattlePokemon pkmn = sPkmn.Pkmn;
-            font.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.00f, pkmn.KnownNickname, Font.DefaultWhite);
-            string prefix = ally ? pkmn.HP.ToString() + "/" + pkmn.MaxHP.ToString() + " - " : string.Empty;
-            font.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.04f, prefix + pkmn.HPPercentage.ToString("P2"), Font.DefaultWhite);
-            font.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.08f, "Level " + pkmn.Level.ToString(), Font.DefaultWhite);
-            font.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.12f, "Status: " + pkmn.Status1.ToString(), Font.DefaultWhite);
-            PBEGender gender = pkmn.KnownGender;
-            if (gender != PBEGender.Genderless)
-            {
-                font.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y + 0.16f, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultMale : Font.DefaultFemale);
-            }
-            if (!ally && pkmn.IsWild && Game.Instance.Save.Pokedex.IsCaught(pkmn.KnownSpecies))
-            {
-                font.DrawString(bmpAddress, bmpWidth, bmpHeight, x + 0.02f, y + 0.16f, "Caught", Font.DefaultWhite);
-            }
+            pos.SPkmn.InfoBarSprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, pos.BarX, pos.BarY);
         }
 
         private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)

@@ -1,5 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
@@ -12,6 +14,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public PBEBattlePokemon Pkmn { get; }
         public Sprite Minisprite { get; private set; }
         public AnimatedSprite Sprite { get; private set; }
+        public Sprite InfoBarSprite { get; }
         private readonly bool _backSprite;
         private readonly bool _useKnownInfo;
 
@@ -21,6 +24,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             Pkmn = pkmn;
             _backSprite = backSprite;
             _useKnownInfo = useKnownInfo;
+            InfoBarSprite = new Sprite(100, 38);
             UpdateInfoBar();
             UpdateSprites(wildPos, wildPos is null);
             UpdateAnimationSpeed(); // Ensure the proper speed is set upon entering battle
@@ -59,9 +63,74 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
             }
         }
-        public void UpdateInfoBar()
+        public unsafe void UpdateInfoBar()
         {
-            // update render hp and status etc
+            fixed (uint* bmpAddress = InfoBarSprite.Bitmap)
+            {
+                RenderUtils.OverwriteRectangle(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, RenderUtils.Color(48, 48, 48, 128));
+                // Nickname
+                Font.DefaultSmall.DrawString(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, 2, 3, Pkmn.KnownNickname, Font.DefaultWhite);
+                // Gender
+                PBEGender gender = _useKnownInfo && !Pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? Pkmn.KnownGender : Pkmn.Gender;
+                if (gender != PBEGender.Genderless)
+                {
+                    Font.Default.DrawString(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, 51, -2, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultMale : Font.DefaultFemale);
+                }
+                // Level
+                const int lvX = 62;
+                Font.PartyNumbers.DrawString(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lvX, 3, "[LV]", Font.DefaultWhite);
+                Font.PartyNumbers.DrawString(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lvX + 12, 3, Pkmn.Level.ToString(), Font.DefaultWhite);
+                // Caught
+                if (_useKnownInfo && Pkmn.IsWild && Game.Instance.Save.Pokedex.IsCaught(Pkmn.KnownSpecies))
+                {
+                    Font.Default.DrawString(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, 2, 12, "*", Font.DefaultFemale);
+                }
+                // Status
+                PBEStatus1 status = Pkmn.Status1;
+                if (status != PBEStatus1.None)
+                {
+                    Font.DefaultSmall.DrawString(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, 30, 13, status.ToString(), Font.DefaultWhite);
+                }
+                // HP
+                if (!_useKnownInfo)
+                {
+                    string str = Pkmn.HP.ToString();
+                    Font.PartyNumbers.MeasureString(str, out int strW, out int _);
+                    Font.PartyNumbers.DrawString(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, 45 - strW, 28, str, Font.DefaultWhite);
+                    Font.PartyNumbers.DrawString(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, 46, 28, "/" + Pkmn.MaxHP, Font.DefaultWhite);
+                }
+
+                uint hpSides, hpMid;
+                if (Pkmn.HPPercentage <= 0.20)
+                {
+                    hpSides = RenderUtils.Color(148, 33, 49, 255);
+                    hpMid = RenderUtils.Color(255, 49, 66, 255);
+                }
+                else if (Pkmn.HPPercentage <= 0.50)
+                {
+                    hpSides = RenderUtils.Color(156, 99, 16, 255);
+                    hpMid = RenderUtils.Color(247, 181, 0, 255);
+                }
+                else
+                {
+                    hpSides = RenderUtils.Color(0, 140, 41, 255);
+                    hpMid = RenderUtils.Color(0, 255, 74, 255);
+                }
+                const int lineStartX = 10;
+                const int lineStartY = 24;
+                const int lineW = 80;
+                RenderUtils.FillRectangle(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lineStartX - 1, lineStartY - 1, lineW + 2, 5, RenderUtils.Color(49, 49, 49, 255));
+                RenderUtils.FillRectangle(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lineStartX, lineStartY, lineW, 3, RenderUtils.Color(33, 33, 33, 255));
+                double hpp = Pkmn.HPPercentage;
+                int theW = (int)(lineW * hpp);
+                if (theW == 0 && hpp > 0)
+                {
+                    theW = 1;
+                }
+                RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lineStartX, lineStartY, theW, hpSides);
+                RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lineStartX, lineStartY + 1, theW, hpMid);
+                RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lineStartX, lineStartY + 2, theW, hpSides);
+            }
         }
 
         public void UpdateAnimationSpeed()
