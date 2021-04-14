@@ -3,6 +3,7 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
 
@@ -24,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             Pkmn = pkmn;
             _backSprite = backSprite;
             _useKnownInfo = useKnownInfo;
-            InfoBarSprite = new Sprite(100, 38);
+            InfoBarSprite = new Sprite(100, useKnownInfo ? 30 : 42);
             UpdateInfoBar();
             UpdateSprites(wildPos, wildPos is null);
             UpdateAnimationSpeed(); // Ensure the proper speed is set upon entering battle
@@ -130,6 +131,33 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lineStartX, lineStartY, theW, hpSides);
                 RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lineStartX, lineStartY + 1, theW, hpMid);
                 RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lineStartX, lineStartY + 2, theW, hpSides);
+
+                // EXP
+                if (!_useKnownInfo)
+                {
+                    const int lineStartY2 = 38;
+                    RenderUtils.FillRectangle(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lineStartX - 1, lineStartY2 - 1, lineW + 2, 3, RenderUtils.Color(49, 49, 49, 255));
+                    RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lineStartX, lineStartY2, lineW, RenderUtils.Color(33, 33, 33, 255));
+                    double expp;
+                    if (Pkmn.Level == PkmnConstants.MaxLevel)
+                    {
+                        expp = 0;
+                    }
+                    else
+                    {
+                        PBEGrowthRate gr = new BaseStats(Pkmn.Species, Pkmn.RevertForm).GrowthRate;
+                        uint expPrev = EXPTables.GetEXPRequired(gr, Pkmn.Level);
+                        uint expNext = EXPTables.GetEXPRequired(gr, (byte)(Pkmn.Level + 1));
+                        uint expCur = Pkmn.EXP;
+                        expp = (double)(expCur - expPrev) / (expNext - expPrev);
+                    }
+                    theW = (int)(lineW * expp);
+                    if (theW == 0 && expp > 0)
+                    {
+                        theW = 1;
+                    }
+                    RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarSprite.Width, InfoBarSprite.Height, lineStartX, lineStartY2, theW, RenderUtils.Color(0, 160, 255, 255));
+                }
             }
         }
 
