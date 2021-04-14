@@ -75,11 +75,18 @@ namespace Kermalis.PokemonGameEngine.GUI
             Game.Instance.SetCallback(CB_FadeOutToBag);
             Game.Instance.SetRCallback(RCB_Fading);
         }
+        private unsafe void StartMenu_DebugPCSelected()
+        {
+            _fadeTransition = new FadeToColorTransition(20, 0);
+            Game.Instance.SetCallback(CB_FadeOutToPC);
+            Game.Instance.SetRCallback(RCB_Fading);
+        }
         private void SetupStartMenuChoices()
         {
             _startMenuChoices = new TextGUIChoices(0.15f, 0.05f, 0.1f, backCommand: CloseStartMenu, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
             _startMenuChoices.Add(new TextGUIChoice("Pokémon", StartMenu_DebugBagSelected));
             _startMenuChoices.Add(new TextGUIChoice("Bag", StartMenu_DebugBagSelected));
+            _startMenuChoices.Add(new TextGUIChoice("PC", StartMenu_DebugPCSelected));
             _startMenuChoices.Add(new TextGUIChoice("Close", CloseStartMenu));
         }
 
@@ -125,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             Game.Instance.SetRCallback(RCB_Fading);
         }
 
-        private unsafe void OnBagMenuClosed()
+        private unsafe void ReturnToStartMenuWithFadeIn()
         {
             ProcessDayTint(true); // Catch up time
             SetupStartMenuWindow();
@@ -193,7 +200,19 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _fadeTransition = null;
                 _startMenuWindow.Close();
                 _startMenuWindow = null;
-                new BagGUI(Game.Instance.Save.PlayerInventory, Game.Instance.Save.PlayerParty, OnBagMenuClosed);
+                new BagGUI(Game.Instance.Save.PlayerInventory, Game.Instance.Save.PlayerParty, ReturnToStartMenuWithFadeIn);
+            }
+        }
+        private void CB_FadeOutToPC()
+        {
+            Tileset.AnimationTick();
+            ProcessDayTint(false);
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                _startMenuWindow.Close();
+                _startMenuWindow = null;
+                new PCBoxesGUI(Game.Instance.Save.PCBoxes, Game.Instance.Save.PlayerParty, ReturnToStartMenuWithFadeIn);
             }
         }
         private void CB_FadeOutToBattle()

@@ -36,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 victini.Moveset[3].Move = PBEMove.VCreate;
                 GivePokemon(victini);
             }
-            for (int i = 0; i < 19; i++)
+            for (int i = 0; i < 44; i++)
             {
                 Debug_GiveRandomPokemon();
             }

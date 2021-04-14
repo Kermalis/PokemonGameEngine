@@ -10,8 +10,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public const int MaxLevel = 100;
 
         #region Boxes
-        public const int NumBoxes = 22;
-        public const int BoxCapacity = 30;
+        public const int NumBoxes = 27;
+        public const int BoxCapacity = 25;
         #endregion
 
         public static readonly PBESettings PBESettings;

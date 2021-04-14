@@ -11,8 +11,6 @@ namespace Kermalis.PokemonGameEngine.GUI
 {
     internal sealed class BagGUI
     {
-        public static BagGUI Instance { get; private set; }
-
         private readonly PlayerInventory _inv;
 
         private FadeColorTransition _fadeTransition;
@@ -44,7 +42,6 @@ namespace Kermalis.PokemonGameEngine.GUI
             _fadeTransition = new FadeFromColorTransition(20, 0);
             Game.Instance.SetCallback(CB_FadeInBag);
             Game.Instance.SetRCallback(RCB_Fading);
-            Instance = this;
         }
 
         private void LoadCashMoney()
@@ -89,7 +86,6 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _fadeTransition = null;
                 _onClosed.Invoke();
                 _onClosed = null;
-                Instance = null;
             }
         }
         private void CB_LogicTick()

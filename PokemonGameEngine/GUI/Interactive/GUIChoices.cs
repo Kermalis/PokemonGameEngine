@@ -93,6 +93,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                 c.IsSelected = true;
             }
         }
+        public virtual void Remove(T c)
+        {
+            _choices.Remove(c);
+            if (Selected >= _choices.Count)
+            {
+                Selected = _choices.Count - 1;
+            }
+            _choices[Selected].IsSelected = true;
+        }
+        public virtual void Clear()
+        {
+            _choices.Clear();
+            Selected = 0;
+        }
 
         public IEnumerator<T> GetEnumerator()
         {

@@ -46,6 +46,16 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             return IndexOf(null);
         }
 
+        public void Remove(BoxPokemon pkmn)
+        {
+            RemoveAt(IndexOf(pkmn));
+        }
+        public void RemoveAt(int index)
+        {
+            _pkmn[index] = null;
+            Count--;
+        }
+
         public IEnumerator<BoxPokemon> GetEnumerator()
         {
             return ((IEnumerable<BoxPokemon>)_pkmn).GetEnumerator();
