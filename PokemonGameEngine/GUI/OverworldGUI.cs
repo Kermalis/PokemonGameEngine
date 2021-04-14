@@ -85,7 +85,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private void SetupStartMenuWindow()
         {
-            _startMenuWindow = new Window(0.72f, 0.05f, 0.25f, 0.9f);
+            _startMenuWindow = new Window(0.72f, 0.05f, 0.25f, 0.9f, RenderUtils.Color(255, 255, 255, 255));
             RenderStartMenuChoicesOntoWindow();
         }
         private unsafe void RenderStartMenuChoicesOntoWindow()

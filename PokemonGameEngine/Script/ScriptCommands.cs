@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
@@ -292,7 +293,7 @@ namespace Kermalis.PokemonGameEngine.Script
             _reader.BaseStream.Position = returnOffset;
             if (_messageBox is null)
             {
-                _messageBox = new Window(0.00f, 0.79f, 1f, 0.17f);
+                _messageBox = new Window(0.00f, 0.79f, 1f, 0.17f, RenderUtils.Color(255, 255, 255, 255));
             }
             _stringPrinter?.Close();
             _stringPrinter = new StringPrinter(_messageBox, text, 0.05f, 0.01f, Font.Default, Font.DefaultDark);

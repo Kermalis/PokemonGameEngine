@@ -8,17 +8,19 @@ namespace Kermalis.PokemonGameEngine.GUI
     {
         private readonly float _x;
         private readonly float _y;
+        private readonly uint _backColor;
 
         public readonly Sprite Sprite;
 
-        public Window(float x, float y)
-            : this(x, y, Program.RenderWidth, Program.RenderHeight) { }
-        public Window(float x, float y, float w, float h)
-            : this(x, y, (int)(Program.RenderWidth * w), (int)(Program.RenderHeight * h)) { }
-        public Window(float x, float y, int pxWidth, int pxHeight)
+        public Window(float x, float y, uint backColor)
+            : this(x, y, Program.RenderWidth, Program.RenderHeight, backColor) { }
+        public Window(float x, float y, float w, float h, uint backColor)
+            : this(x, y, (int)(Program.RenderWidth * w), (int)(Program.RenderHeight * h), backColor) { }
+        public Window(float x, float y, int pxWidth, int pxHeight, uint backColor)
         {
             _x = x;
             _y = y;
+            _backColor = backColor;
             Sprite = new Sprite(pxWidth, pxHeight);
             ClearSprite();
             Game.Instance.Windows.Add(this);
@@ -26,15 +28,13 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public void ClearSprite()
         {
-            uint color = RenderUtils.Color(255, 255, 255, 255);
-            RenderUtils.OverwriteRectangle(Sprite, color);
+            RenderUtils.OverwriteRectangle(Sprite, _backColor);
         }
         public unsafe void ClearSprite(int x, int y, int width, int height)
         {
-            uint color = RenderUtils.Color(255, 255, 255, 255);
             void Clear(uint* bmpAddress, int bmpWidth, int bmpHeight)
             {
-                RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, width, height, color);
+                RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, width, height, _backColor);
             }
             Sprite.Draw(Clear);
         }
