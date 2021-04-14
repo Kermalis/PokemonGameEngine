@@ -1,8 +1,8 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Battle;
+using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.GUI.Transition;
-using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Script;
@@ -23,9 +23,11 @@ namespace Kermalis.PokemonGameEngine.GUI
         private IWarp _warpingTo;
 
         private Window _startMenuWindow;
+        private TextGUIChoices _startMenuChoices;
 
         private OverworldGUI()
         {
+            SetupStartMenuChoices();
             Instance = this;
         }
 
@@ -67,18 +69,37 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
-        private unsafe void SetupStartMenu()
+        private unsafe void StartMenu_DebugBagSelected()
         {
-            _startMenuWindow = new Window(0.65f, 0.05f, 0.3f, 0.9f);
+            _fadeTransition = new FadeToColorTransition(20, 0);
+            Game.Instance.SetCallback(CB_FadeOutToBag);
+            Game.Instance.SetRCallback(RCB_Fading);
+        }
+        private void SetupStartMenuChoices()
+        {
+            _startMenuChoices = new TextGUIChoices(0.15f, 0.05f, 0.1f, backCommand: CloseStartMenu, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _startMenuChoices.Add(new TextGUIChoice("Pokémon", StartMenu_DebugBagSelected));
+            _startMenuChoices.Add(new TextGUIChoice("Bag", StartMenu_DebugBagSelected));
+            _startMenuChoices.Add(new TextGUIChoice("Close", CloseStartMenu));
+        }
+
+        private void SetupStartMenuWindow()
+        {
+            _startMenuWindow = new Window(0.72f, 0.05f, 0.25f, 0.9f);
+            RenderStartMenuChoicesOntoWindow();
+        }
+        private unsafe void RenderStartMenuChoicesOntoWindow()
+        {
+            _startMenuWindow.ClearSprite();
             Sprite s = _startMenuWindow.Sprite;
             fixed (uint* bmpAddress = s.Bitmap)
             {
-                Font.Default.DrawString(bmpAddress, s.Width, s.Height, 5, 5, "Debug Bag", Font.DefaultDark);
+                _startMenuChoices.Render(bmpAddress, s.Width, s.Height);
             }
         }
         public void OpenStartMenu()
         {
-            SetupStartMenu();
+            SetupStartMenuWindow();
             Game.Instance.SetCallback(CB_StartMenu);
         }
         private void CloseStartMenu()
@@ -107,7 +128,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         private unsafe void OnBagMenuClosed()
         {
             ProcessDayTint(true); // Catch up time
-            SetupStartMenu();
+            SetupStartMenuWindow();
             _fadeTransition = new FadeFromColorTransition(20, 0);
             Game.Instance.SetCallback(CB_FadeInToStartMenu);
             Game.Instance.SetRCallback(RCB_Fading);
@@ -223,19 +244,15 @@ namespace Kermalis.PokemonGameEngine.GUI
                 ScriptLoader.LoadScript(script);
             }
         }
-        private unsafe void CB_StartMenu()
+        private void CB_StartMenu()
         {
             Tileset.AnimationTick();
             ProcessDayTint(false);
-            if (InputManager.IsPressed(Key.A))
+            int s = _startMenuChoices.Selected;
+            _startMenuChoices.HandleInputs();
+            if (s != _startMenuChoices.Selected)
             {
-                _fadeTransition = new FadeToColorTransition(20, 0);
-                Game.Instance.SetCallback(CB_FadeOutToBag);
-                Game.Instance.SetRCallback(RCB_Fading);
-            }
-            else if (InputManager.IsPressed(Key.B))
-            {
-                CloseStartMenu();
+                RenderStartMenuChoicesOntoWindow();
             }
         }
 

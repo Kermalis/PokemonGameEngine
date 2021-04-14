@@ -26,6 +26,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
 
     internal sealed class TextGUIChoices : GUIChoices<TextGUIChoice>
     {
+        public bool BottomAligned;
         public Font Font;
         public uint[] FontColors;
         public uint[] SelectedColors;
@@ -45,7 +46,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         {
             float y1 = Y * bmpHeight;
             float space = bmpHeight * Spacing;
-            bool bottomToTop = true;
             int count = _choices.Count;
             for (int i = 0; i < count; i++)
             {
@@ -64,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                     colors = c.DisabledColors ?? DisabledColors;
                 }
                 int y;
-                if (bottomToTop)
+                if (BottomAligned)
                 {
                     y = (int)(y1 - (space * (count - 1 - i)));
                 }
@@ -76,7 +76,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                 // Draw selection arrow
                 if (isSelected)
                 {
-                    font.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * (X - 0.05f)), y, "→", colors);
+                    string arrow = "→";
+                    font.MeasureString(arrow + ' ', out int arrowW, out _);
+                    font.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * X) - arrowW, y, arrow, colors);
                 }
             }
         }
