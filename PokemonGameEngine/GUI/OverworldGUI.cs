@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Transition;
+using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Script;
@@ -20,6 +21,8 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private FadeColorTransition _fadeTransition;
         private IWarp _warpingTo;
+
+        private Window _startMenuWindow;
 
         private OverworldGUI()
         {
@@ -64,12 +67,27 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
-        public unsafe void OpenStartMenu()
+        private unsafe void SetupStartMenu()
         {
-            _fadeTransition = new FadeToColorTransition(20, 0);
-            Game.Instance.SetCallback(CB_FadeOutToBag);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _startMenuWindow = new Window(0.65f, 0.05f, 0.3f, 0.9f);
+            Sprite s = _startMenuWindow.Sprite;
+            fixed (uint* bmpAddress = s.Bitmap)
+            {
+                Font.Default.DrawString(bmpAddress, s.Width, s.Height, 5, 5, "Debug Bag", Font.DefaultDark);
+            }
         }
+        public void OpenStartMenu()
+        {
+            SetupStartMenu();
+            Game.Instance.SetCallback(CB_StartMenu);
+        }
+        private void CloseStartMenu()
+        {
+            _startMenuWindow.Close();
+            _startMenuWindow = null;
+            Game.Instance.SetCallback(CB_LogicTick);
+        }
+
         public unsafe void StartBattle(PBEBattle battle, IReadOnlyList<Party> trainerParties)
         {
             Game.Instance.IsOnOverworld = false;
@@ -89,8 +107,9 @@ namespace Kermalis.PokemonGameEngine.GUI
         private unsafe void OnBagMenuClosed()
         {
             ProcessDayTint(true); // Catch up time
+            SetupStartMenu();
             _fadeTransition = new FadeFromColorTransition(20, 0);
-            Game.Instance.SetCallback(CB_FadeIn);
+            Game.Instance.SetCallback(CB_FadeInToStartMenu);
             Game.Instance.SetRCallback(RCB_Fading);
         }
         private unsafe void OnBattleEnded()
@@ -109,6 +128,18 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _fadeTransition = null;
                 Game.Instance.IsOnOverworld = true;
                 Game.Instance.SetCallback(CB_LogicTick);
+                Game.Instance.SetRCallback(RCB_RenderOverworld);
+            }
+        }
+        private unsafe void CB_FadeInToStartMenu()
+        {
+            Tileset.AnimationTick();
+            ProcessDayTint(false);
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                Game.Instance.IsOnOverworld = true;
+                Game.Instance.SetCallback(CB_StartMenu);
                 Game.Instance.SetRCallback(RCB_RenderOverworld);
             }
         }
@@ -139,6 +170,8 @@ namespace Kermalis.PokemonGameEngine.GUI
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
+                _startMenuWindow.Close();
+                _startMenuWindow = null;
                 new BagGUI(Game.Instance.Save.PlayerInventory, Game.Instance.Save.PlayerParty, OnBagMenuClosed);
             }
         }
@@ -188,6 +221,21 @@ namespace Kermalis.PokemonGameEngine.GUI
                 o.TalkedTo = false;
                 PlayerObj.Player.IsWaitingForObjToStartScript = false;
                 ScriptLoader.LoadScript(script);
+            }
+        }
+        private unsafe void CB_StartMenu()
+        {
+            Tileset.AnimationTick();
+            ProcessDayTint(false);
+            if (InputManager.IsPressed(Key.A))
+            {
+                _fadeTransition = new FadeToColorTransition(20, 0);
+                Game.Instance.SetCallback(CB_FadeOutToBag);
+                Game.Instance.SetRCallback(RCB_Fading);
+            }
+            else if (InputManager.IsPressed(Key.B))
+            {
+                CloseStartMenu();
             }
         }
 
