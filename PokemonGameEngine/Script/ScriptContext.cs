@@ -17,12 +17,12 @@ namespace Kermalis.PokemonGameEngine.Script
         private bool _waitMessageBox;
         private bool _waitBattle;
 
-        private readonly MessageBox _messageBox;
+        private StringPrinter _stringPrinter;
+        private Window _messageBox;
 
         public ScriptContext(EndianBinaryReader r)
         {
             _reader = r;
-            _messageBox = new MessageBox();
         }
 
         private bool ShouldLeaveLogicTick(bool update)
@@ -53,7 +53,7 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             if (_waitMessageBox)
             {
-                if (!_messageBox.IsClosed && !_messageBox.IsDone)
+                if (!_stringPrinter.IsDone)
                 {
                     stopRunning = true;
                 }

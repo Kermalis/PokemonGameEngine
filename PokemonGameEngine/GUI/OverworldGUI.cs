@@ -155,7 +155,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         private void CB_LogicTick()
         {
             Game.Instance.ProcessScripts();
-            Game.Instance.ProcessMessageBoxes();
+            Game.Instance.ProcessStringPrinters();
             Tileset.AnimationTick();
             ProcessDayTint(false);
 
@@ -204,6 +204,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 DayTint.Render(bmpAddress, bmpWidth, bmpHeight);
             }
+            Game.Instance.RenderWindows(bmpAddress, bmpWidth, bmpHeight);
         }
     }
 }

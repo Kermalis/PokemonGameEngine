@@ -16,7 +16,8 @@ namespace Kermalis.PokemonGameEngine.Core
         public StringBuffers StringBuffers { get; }
 
         public readonly List<ScriptContext> Scripts = new List<ScriptContext>();
-        public readonly List<MessageBox> MessageBoxes = new List<MessageBox>();
+        public readonly List<StringPrinter> StringPrinters = new List<StringPrinter>();
+        public readonly List<Window> Windows = new List<Window>();
 
         /// <summary>For use with Script command "AwaitBattle"</summary>
         public bool IsOnOverworld;
@@ -98,11 +99,11 @@ namespace Kermalis.PokemonGameEngine.Core
                 ctx.LogicTick();
             }
         }
-        public void ProcessMessageBoxes()
+        public void ProcessStringPrinters()
         {
-            foreach (MessageBox mb in MessageBoxes.ToArray())
+            foreach (StringPrinter s in StringPrinters.ToArray())
             {
-                mb.LogicTick();
+                s.LogicTick();
             }
         }
         public void LogicTick()
@@ -114,6 +115,14 @@ namespace Kermalis.PokemonGameEngine.Core
 
         #region Render Tick
 
+        public unsafe void RenderWindows(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            foreach (Window w in Windows)
+            {
+                w.Render(bmpAddress, bmpWidth, bmpHeight);
+            }
+        }
+
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight
 #if DEBUG
             , string topLeftMessage
@@ -121,11 +130,6 @@ namespace Kermalis.PokemonGameEngine.Core
             )
         {
             RCallback?.Invoke(bmpAddress, bmpWidth, bmpHeight);
-            // Render messagebox
-            foreach (MessageBox mb in MessageBoxes.ToArray())
-            {
-                mb.Render(bmpAddress, bmpWidth, bmpHeight);
-            }
 #if DEBUG
             if (topLeftMessage != null)
             {

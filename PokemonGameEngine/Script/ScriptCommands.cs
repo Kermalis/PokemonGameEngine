@@ -290,19 +290,23 @@ namespace Kermalis.PokemonGameEngine.Script
             long returnOffset = _reader.BaseStream.Position;
             string text = _reader.ReadStringNullTerminated(textOffset);
             _reader.BaseStream.Position = returnOffset;
-            _messageBox.SetText(text);
-            _messageBox.Open();
+            if (_messageBox is null)
+            {
+                _messageBox = new Window(0.00f, 0.79f, 1f, 0.17f);
+            }
+            _stringPrinter?.Close();
+            _stringPrinter = new StringPrinter(_messageBox, text, 0.05f, 0.01f, Font.Default, Font.DefaultDark);
         }
         private void AwaitMessageCommand()
         {
-            if (!_messageBox.IsClosed)
-            {
-                _waitMessageBox = true;
-            }
+            _waitMessageBox = true;
         }
         private void CloseMessageCommand()
         {
+            _stringPrinter.Close();
+            _stringPrinter = null;
             _messageBox.Close();
+            _messageBox = null;
         }
 
         private void SetLock(bool locked)
