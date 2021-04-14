@@ -27,10 +27,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         public void ClearSprite()
         {
             uint color = RenderUtils.Color(255, 255, 255, 255);
-            for (int i = 0; i < Sprite.Bitmap.Length; i++)
-            {
-                Sprite.Bitmap[i] = color;
-            }
+            RenderUtils.OverwriteRectangle(Sprite, color);
         }
         public unsafe void ClearSprite(int x, int y, int width, int height)
         {

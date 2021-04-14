@@ -117,6 +117,13 @@ namespace Kermalis.PokemonGameEngine.Render
         #endregion
 
         #region Rectangles
+        public static unsafe void OverwriteRectangle(ISprite sprite, uint color)
+        {
+            for (int i = 0; i < sprite.Bitmap.Length; i++)
+            {
+                sprite.Bitmap[i] = color;
+            }
+        }
         public static unsafe void OverwriteRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
         {
             for (int py = 0; py < bmpHeight; py++)
@@ -960,6 +967,11 @@ namespace Kermalis.PokemonGameEngine.Render
         public static uint Color(uint r, uint g, uint b, uint a)
         {
             return (a << 24) | (b << 16) | (g << 8) | r;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ColorNoA(uint r, uint g, uint b)
+        {
+            return (b << 16) | (g << 8) | r;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint GetR(uint color)
