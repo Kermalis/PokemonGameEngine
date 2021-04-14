@@ -36,11 +36,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     _positions[0] = new PkmnPosition[1]
                     {
-                        new PkmnPosition(0.1f, 0.3f, 0.40f, 0.95f) // Center
+                        new PkmnPosition(0.015f, 0.25f, 0.40f, 0.95f) // Center
                     };
                     _positions[1] = new PkmnPosition[1]
                     {
-                        new PkmnPosition(0.3f, 0.015f, 0.73f, 0.51f) // Center
+                        new PkmnPosition(0.10f, 0.015f, 0.73f, 0.51f) // Center
                     };
                     break;
                 }
@@ -48,13 +48,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     _positions[0] = new PkmnPosition[2]
                     {
-                        new PkmnPosition(0.05f, 0.3f, 0.25f, 0.92f), // Left
-                        new PkmnPosition(0.25f, 0.3f, 0.58f, 0.96f) // Right
+                        new PkmnPosition(0.015f, 0.25f, 0.25f, 0.92f), // Left
+                        new PkmnPosition(0.295f, 0.27f, 0.58f, 0.96f) // Right
                     };
                     _positions[1] = new PkmnPosition[2]
                     {
-                        new PkmnPosition(0.4f, 0.015f, 0.85f, 0.53f), // Left
-                        new PkmnPosition(0.2f, 0.015f, 0.63f, 0.52f) // Right
+                        new PkmnPosition(0.38f, 0.035f, 0.85f, 0.53f), // Left
+                        new PkmnPosition(0.10f, 0.015f, 0.63f, 0.52f) // Right
                     };
                     break;
                 }
@@ -62,15 +62,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     _positions[0] = new PkmnPosition[3]
                     {
-                        new PkmnPosition(0.025f, 0.3f, 0.12f, 0.96f), // Left
-                        new PkmnPosition(0.225f, 0.3f, 0.38f, 0.89f), // Center
-                        new PkmnPosition(0.425f, 0.3f, 0.7f, 0.94f) // Right
+                        new PkmnPosition(0.015f, 0.25f, 0.12f, 0.96f), // Left
+                        new PkmnPosition(0.295f, 0.27f, 0.38f, 0.89f), // Center
+                        new PkmnPosition(0.575f, 0.29f, 0.7f, 0.94f) // Right
                     };
                     _positions[1] = new PkmnPosition[3]
                     {
-                        new PkmnPosition(0.5f, 0.015f, 0.91f, 0.525f), // Left
-                        new PkmnPosition(0.3f, 0.015f, 0.75f, 0.55f), // Center
-                        new PkmnPosition(0.1f, 0.015f, 0.56f, 0.53f) // Right
+                        new PkmnPosition(0.66f, 0.055f, 0.91f, 0.525f), // Left
+                        new PkmnPosition(0.38f, 0.035f, 0.75f, 0.55f), // Center
+                        new PkmnPosition(0.10f, 0.015f, 0.56f, 0.53f) // Right
                     };
                     break;
                 }
@@ -78,15 +78,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     _positions[0] = new PkmnPosition[3]
                     {
-                        new PkmnPosition(0.025f, 0.3f, 0.06f, 0.99f), // Left
-                        new PkmnPosition(0.225f, 0.3f, 0.4f, 0.89f), // Center
-                        new PkmnPosition(0.425f, 0.3f, 0.88f, 1.025f) // Right
+                        new PkmnPosition(0.015f, 0.25f, 0.06f, 0.99f), // Left
+                        new PkmnPosition(0.295f, 0.27f, 0.4f, 0.89f), // Center
+                        new PkmnPosition(0.575f, 0.29f, 0.88f, 1.025f) // Right
                     };
                     _positions[1] = new PkmnPosition[3]
                     {
-                        new PkmnPosition(0.5f, 0.015f, 0.97f, 0.48f), // Left
-                        new PkmnPosition(0.3f, 0.015f, 0.75f, 0.55f), // Center
-                        new PkmnPosition(0.1f, 0.015f, 0.5f, 0.49f) // Right
+                        new PkmnPosition(0.66f, 0.055f, 0.97f, 0.48f), // Left
+                        new PkmnPosition(0.38f, 0.035f, 0.75f, 0.55f), // Center
+                        new PkmnPosition(0.10f, 0.015f, 0.5f, 0.49f) // Right
                     };
                     break;
                 }
