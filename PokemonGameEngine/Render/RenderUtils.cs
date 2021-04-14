@@ -117,10 +117,15 @@ namespace Kermalis.PokemonGameEngine.Render
         #endregion
 
         #region Rectangles
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void OverwriteRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
         {
-            OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
+            for (int py = 0; py < bmpHeight; py++)
+            {
+                for (int px = 0; px < bmpWidth; px++)
+                {
+                    *GetPixelAddress(bmpAddress, bmpWidth, px, py) = color;
+                }
+            }
         }
         public static unsafe void OverwriteRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
         {
