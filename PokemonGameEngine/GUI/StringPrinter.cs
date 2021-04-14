@@ -30,6 +30,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         private StringPrinterResult _result;
         private bool _pressedDone;
         public bool IsDone => _result == StringPrinterResult.Ended && _pressedDone;
+        public bool IsEnded => _result == StringPrinterResult.Ended;
 
         public StringPrinter(Window w, string str, float x, float y, Font font, uint[] fontColors)
             : this(w, str, (int)(Program.RenderWidth * x), (int)(Program.RenderHeight * y), font, fontColors) { }

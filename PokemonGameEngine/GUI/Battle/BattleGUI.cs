@@ -1,12 +1,11 @@
 ﻿using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
@@ -19,17 +18,23 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
     {
         public static BattleGUI Instance { get; private set; }
 
-        private const int WaitMilliseconds = 1750;
-        private const string ThreadName = "Battle Thread"; // TODO: Put this on LogicTick somehow so it can be locked with render thread
+        private const int AutoAdvanceTicks = Program.NumTicksPerSecond * 3; // 3 seconds
+        private const string ThreadName = "Battle Thread";
         private readonly Sprite _battleBackground;
 
         private Action _onClosed;
         private FadeColorTransition _fadeTransition;
 
         private readonly PBEBattle _battle;
+        private Thread _battleThread;
+        private bool _pauseBattleThread;
         public readonly SpritedBattlePokemonParty[] _spritedParties;
         private readonly PBETrainer _trainer;
-        private string _message;
+
+        private Window _stringWindow;
+        private StringPrinter _stringPrinter;
+        private int _autoAdvanceTimer;
+
         private ActionsGUI _actionsGUI;
 
         public BattleGUI(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties)
@@ -68,9 +73,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void SinglePlayerBattle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
         {
-            if (!ProcessPacket(packet))
+            ProcessPacket(packet);
+            if (_pauseBattleThread)
             {
-                Thread.Sleep(WaitMilliseconds);
+                try
+                {
+                    Thread.Sleep(Timeout.Infinite);
+                }
+                catch (ThreadInterruptedException) { }
             }
         }
         private void SinglePlayerBattle_OnStateChanged(PBEBattle battle)
@@ -95,14 +105,47 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     TransitionOut();
                     break;
                 }
-                case PBEBattleState.ReadyToRunSwitches: new Thread(battle.RunSwitches) { Name = ThreadName }.Start(); break;
-                case PBEBattleState.ReadyToRunTurn: new Thread(battle.RunTurn) { Name = ThreadName }.Start(); break;
+                case PBEBattleState.ReadyToRunSwitches:
+                {
+                    _battleThread = new Thread(battle.RunSwitches) { Name = ThreadName };
+                    _battleThread.Start();
+                    break;
+                }
+                case PBEBattleState.ReadyToRunTurn:
+                {
+                    _battleThread = new Thread(battle.RunTurn) { Name = ThreadName };
+                    _battleThread.Start();
+                    break;
+                }
             }
         }
 
-        private void AddMessage(string message)
+        private void AwakenBattleThread()
         {
-            _message = message;
+            _pauseBattleThread = false;
+            if (_battleThread.IsAlive)
+            {
+                _battleThread.Interrupt();
+            }
+        }
+
+        private void AddMessage(string message, bool staticMsg)
+        {
+            _stringPrinter?.Close();
+            _stringPrinter = null;
+            if (!(message is null))
+            {
+                _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite);
+                if (staticMsg)
+                {
+                    Game.Instance.SetCallback(CB_ReadOutStaticMessage);
+                }
+                else
+                {
+                    _pauseBattleThread = true;
+                    Game.Instance.SetCallback(CB_ReadOutMessage);
+                }
+            }
         }
 
         private unsafe void CB_FadeInBattle()
@@ -111,7 +154,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                new Thread(_battle.Begin) { Name = ThreadName }.Start();
+                _stringWindow = new Window(0, 0.79f, 1, 0.16f, RenderUtils.Color(49, 49, 49, 128));
+                _battleThread = new Thread(_battle.Begin) { Name = ThreadName };
+                _battleThread.Start();
                 Game.Instance.SetCallback(CB_LogicTick);
                 Game.Instance.SetRCallback(RCB_RenderTick);
             }
@@ -121,6 +166,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
+                _stringPrinter?.Close();
+                _stringPrinter = null;
+                _stringWindow.Close();
+                _stringWindow = null;
                 _onClosed.Invoke();
                 _onClosed = null;
                 if (_actionsGUI != null)
@@ -129,6 +178,29 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     _actionsGUI = null;
                 }
                 Instance = null;
+            }
+        }
+        private void CB_ReadOutMessage()
+        {
+            OverworldGUI.ProcessDayTint(false);
+            _stringPrinter.LogicTick();
+            if (_stringPrinter.IsEnded)
+            {
+                if (_stringPrinter.IsDone || ++_autoAdvanceTimer >= AutoAdvanceTicks)
+                {
+                    _autoAdvanceTimer = 0;
+                    AwakenBattleThread();
+                    Game.Instance.SetCallback(CB_LogicTick);
+                }
+            }
+        }
+        private void CB_ReadOutStaticMessage()
+        {
+            OverworldGUI.ProcessDayTint(false);
+            _stringPrinter.LogicTick();
+            if (_stringPrinter.IsEnded)
+            {
+                Game.Instance.SetCallback(CB_LogicTick);
             }
         }
         private void CB_LogicTick()
@@ -150,7 +222,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * pos.MonX) - (width / 2), (int)(bmpHeight * pos.MonY) - height, width, height);
         }
-        private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos, bool ally)
+        private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos)
         {
             pos.SPkmn.InfoBarSprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, pos.BarX, pos.BarY);
         }
@@ -162,8 +234,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            Font fontDefault = Font.Default;
-            uint[] defaultWhite = Font.DefaultWhite;
             _battleBackground.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
             void DoTeam(int i, bool info)
             {
@@ -174,7 +244,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         if (p.InfoVisible)
                         {
-                            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, p, ally);
+                            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, p);
                         }
                     }
                     else if (p.PkmnVisible)
@@ -194,11 +264,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             DoTeam(1, true);
             DoTeam(0, true);
 
-            string msg = _message;
-            if (msg != null)
+            if (_stringPrinter != null)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0, (int)(bmpHeight * 0.79f), bmpWidth, (int)(bmpHeight * 0.16f), RenderUtils.Color(49, 49, 49, 128));
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.10f), (int)(bmpHeight * 0.80f), msg, defaultWhite);
+                _stringWindow.Render(bmpAddress, bmpWidth, bmpHeight);
             }
 
             _actionsGUI?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
@@ -244,7 +312,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             else
             {
-                AddMessage($"What will {_actions[i].Nickname} do?");
+                AddMessage($"What will {_actions[i].Nickname} do?", true);
                 SpritedBattlePokemonParty party = _spritedParties[_trainer.Id];
                 _actionsGUI?.Dispose();
                 _actionsGUI = new ActionsGUI(this, party, party.SpritedParty[i].Pkmn);
@@ -279,14 +347,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             else
             {
-                AddMessage($"You must send in {_switchesRequired} Pokémon.");
+                AddMessage($"You must send in {_switchesRequired} Pokémon.", true);
                 //BattleView.Actions.DisplaySwitches();
             }
         }
         #endregion
 
         #region Packet Processing
-        private bool ProcessPacket(IPBEPacket packet)
+        private void ProcessPacket(IPBEPacket packet)
         {
             switch (packet)
             {
@@ -295,7 +363,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 case PBEIllusionPacket _:
                 case PBETransformPacket _:
                 case PBEBattlePacket _:
-                case PBETurnBeganPacket _: return true;
+                case PBETurnBeganPacket _: return;
                 case PBEActionsRequestPacket arp:
                 {
                     PBETrainer t = arp.Trainer;
@@ -307,7 +375,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         new Thread(t.CreateAIActions) { Name = ThreadName }.Start();
                     }
-                    return true;
+                    return;
                 }
                 case PBESwitchInRequestPacket sirp:
                 {
@@ -321,15 +389,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         new Thread(t.CreateAISwitches) { Name = ThreadName }.Start();
                     }
-                    return true;
+                    return;
                 }
                 case PBEFleeFailedPacket ffp:
                 {
                     PBETrainer t = ffp.PokemonTrainer;
                     if (t == _trainer)
                     {
-                        AddMessage("Couldn't get away!");
-                        return false;
+                        AddMessage("Couldn't get away!", false);
+                        return;
                     }
                     break; // Use default message otherwise
                 }
@@ -452,10 +520,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             string message = PBEBattle.GetDefaultMessage(_battle, packet, userTrainer: _trainer);
             if (string.IsNullOrEmpty(message))
             {
-                return true;
+                return;
             }
-            AddMessage(message);
-            return false;
+            AddMessage(message, false);
+            return;
         }
         #endregion
     }
