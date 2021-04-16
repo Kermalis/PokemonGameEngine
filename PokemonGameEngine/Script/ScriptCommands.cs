@@ -2,7 +2,6 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Pkmn;
-using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
@@ -35,7 +34,8 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.ClearFlag: ClearFlagCommand(); break;
                 case ScriptCommand.Warp: WarpCommand(); break;
                 case ScriptCommand.Message: MessageCommand(); break;
-                case ScriptCommand.AwaitMessage: AwaitMessageCommand(); break;
+                case ScriptCommand.AwaitMessageRead: AwaitMessageCommand(false); break;
+                case ScriptCommand.AwaitMessageComplete: AwaitMessageCommand(true); break;
                 case ScriptCommand.LockObj: LockObjCommand(); break;
                 case ScriptCommand.LockAllObjs: LockAllObjsCommand(); break;
                 case ScriptCommand.UnlockObj: UnlockObjCommand(); break;
@@ -66,6 +66,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.GetDaycareState: GetDaycareState(); break;
                 case ScriptCommand.StorePokemonInDaycare: StorePokemonInDaycare(); break;
                 case ScriptCommand.GetDaycareCompatibility: GetDaycareCompatibility(); break;
+                case ScriptCommand.YesNoChoice: YesNoChoiceCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -283,31 +284,6 @@ namespace Kermalis.PokemonGameEngine.Script
             int y = _reader.ReadInt32();
             byte elevation = (byte)ReadVarOrValue();
             OverworldGUI.Instance.TempWarp(new Warp(mapId, x, y, elevation));
-        }
-
-        private void MessageCommand()
-        {
-            uint textOffset = _reader.ReadUInt32();
-            long returnOffset = _reader.BaseStream.Position;
-            string text = _reader.ReadStringNullTerminated(textOffset);
-            _reader.BaseStream.Position = returnOffset;
-            if (_messageBox is null)
-            {
-                _messageBox = new Window(0.00f, 0.79f, 1f, 0.17f, RenderUtils.Color(255, 255, 255, 255));
-            }
-            _stringPrinter?.Close();
-            _stringPrinter = new StringPrinter(_messageBox, text, 0.05f, 0.01f, Font.Default, Font.DefaultDark);
-        }
-        private void AwaitMessageCommand()
-        {
-            _waitMessageBox = true;
-        }
-        private void CloseMessageCommand()
-        {
-            _stringPrinter.Close();
-            _stringPrinter = null;
-            _messageBox.Close();
-            _messageBox = null;
         }
 
         private void SetLock(bool locked)

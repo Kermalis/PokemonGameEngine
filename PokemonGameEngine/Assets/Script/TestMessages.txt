@@ -6,7 +6,7 @@ GoToIf Test_SetGroudonGone Var.Test1 C.Equal 0
 ClearFlag Flag.Test_GroudonVisible
 SetVar Var.Test_GroudonState 1
 Message TestText_GroudonActive
-AwaitMessage
+AwaitMessageComplete
 Call SeenCaughtMessage
 GoTo AwaitMessageUnlockAllEnd
 
@@ -14,7 +14,7 @@ GoTo AwaitMessageUnlockAllEnd
 SetFlag Flag.Test_GroudonVisible
 SetVar Var.Test_GroudonState 0
 Message TestText_GroudonHidden
-AwaitMessage
+AwaitMessageComplete
 Call SeenCaughtMessage
 GoTo AwaitMessageUnlockAllEnd
 
@@ -25,7 +25,7 @@ Message TestText_SeenCaught
 return
 
 #AwaitMessageUnlockAllEnd
-AwaitMessage
+AwaitMessageComplete
 CloseMessage
 UnlockAllObjs
 End

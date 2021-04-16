@@ -1,6 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI;
+using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,17 @@ namespace Kermalis.PokemonGameEngine.Script
         private bool _isDisposed;
         private ushort _delay;
         private Obj _waitMovementObj;
+
         private bool _waitMessageBox;
+        private bool _waitMessageComplete;
+
         private bool _waitBattle;
 
         private StringPrinter _stringPrinter;
         private Window _messageBox;
+
+        private TextGUIChoices _multichoice;
+        private Window _multichoiceWindow;
 
         public ScriptContext(EndianBinaryReader r)
         {
@@ -53,13 +60,29 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             if (_waitMessageBox)
             {
-                if (!_stringPrinter.IsDone)
+                if (_waitMessageComplete ? !_stringPrinter.IsDone : !_stringPrinter.IsEnded)
                 {
                     stopRunning = true;
                 }
                 else if (update)
                 {
                     _waitMessageBox = false;
+                }
+            }
+            if (_multichoiceWindow != null)
+            {
+                stopRunning = true;
+                if (update)
+                {
+                    int s = _multichoice.Selected;
+                    _multichoice.HandleInputs();
+                    if (!(_multichoiceWindow is null)) // Was not just closed
+                    {
+                        if (s != _multichoice.Selected)
+                        {
+                            RenderChoicesOntoWindow();
+                        }
+                    }
                 }
             }
             if (_waitBattle)

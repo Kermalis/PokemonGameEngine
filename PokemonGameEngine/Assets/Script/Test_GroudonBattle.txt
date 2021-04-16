@@ -5,7 +5,7 @@ AwaitObjMovement 0xFFFF
 Delay 20
 Message TestText_GroudonGyaoo
 Delay 40
-AwaitMessage
+AwaitMessageComplete
 CloseMessage
 WildBattle Species.Groudon Form.Shaymin 70 // TODO: Allow "0" as the form argument. Using Form.Shaymin since it equates to 0
 AwaitBattle
@@ -15,7 +15,7 @@ UnloadObj 0
 SetFlag Flag.Test_GroudonVisible
 SetVar Var.Test_GroudonState 0
 Message TestText_GroudonDefeat
-AwaitMessage
+AwaitMessageComplete
 CloseMessage
 UnlockAllObjs
 End

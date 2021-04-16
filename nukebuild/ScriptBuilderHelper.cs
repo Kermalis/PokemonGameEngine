@@ -50,7 +50,8 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.ClearFlag, new[] { typeof(Flag) } }, // Flag
         { ScriptCommand.Warp, new[] { typeof(string), typeof(int), typeof(int), typeof(byte) } }, // Map id, x, y, elevation
         { ScriptCommand.Message, new[] { typeof(void*) } }, // String data offset
-        { ScriptCommand.AwaitMessage, Array.Empty<Type>() },
+        { ScriptCommand.AwaitMessageRead, Array.Empty<Type>() },
+        { ScriptCommand.AwaitMessageComplete, Array.Empty<Type>() },
         { ScriptCommand.LockObj, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.UnlockObj, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.LockAllObjs, Array.Empty<Type>() },
@@ -81,6 +82,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.GetDaycareState, Array.Empty<Type>() },
         { ScriptCommand.StorePokemonInDaycare, Array.Empty<Type>() },
         { ScriptCommand.GetDaycareCompatibility, Array.Empty<Type>() },
+        { ScriptCommand.YesNoChoice, Array.Empty<Type>() },
     };
 
     static ScriptBuilderHelper()

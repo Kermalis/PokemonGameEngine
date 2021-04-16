@@ -58,7 +58,8 @@
         ClearFlag,
         Warp,
         Message,
-        AwaitMessage,
+        AwaitMessageRead,
+        AwaitMessageComplete,
         LockObj,
         UnlockObj,
         LockAllObjs,
@@ -89,5 +90,6 @@
         GetDaycareState,
         StorePokemonInDaycare,
         GetDaycareCompatibility,
+        YesNoChoice,
     }
 }

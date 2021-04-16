@@ -4,39 +4,47 @@ LookTowardsObj Var.LastTalked 0xFFFF
 GetDaycareState
 GoToIf Daycare_OneMon Var.SpecialVar_Result C.Equal 1 //DaycareState.OnePokemon
 GoToIf Daycare_TwoMon Var.SpecialVar_Result C.Equal 2 //DaycareState.OnePokemon
+Message DaycareText_CanITake
+AwaitMessageRead
+YesNoChoice
 SetVar Var.SpecialVar1 5
-Call Daycare_Test_StealPokemon
+GoToIf Daycare_Test_StealPokemon Var.SpecialVar_Result C.Equal 1
 CloseMessage
 UnlockAllObjs
 End
 
 #Daycare_OneMon
 Message DaycareText_GoodToSeeYou1
-AwaitMessage
+AwaitMessageComplete
+Message DaycareText_CanITake
+AwaitMessageRead
+YesNoChoice
 SetVar Var.SpecialVar1 4
-Call Daycare_Test_StealPokemon
+GoToIf Daycare_Test_StealPokemon Var.SpecialVar_Result C.Equal 1
 CloseMessage
 UnlockAllObjs
 End
 
 #Daycare_TwoMon
 Message DaycareText_GoodToSeeYou2
-AwaitMessage
+AwaitMessageComplete
 GetDaycareCompatibility
 CallIf Daycare_CompatMax Var.SpecialVar_Result C.Equal 70
 CallIf Daycare_CompatMed Var.SpecialVar_Result C.Equal 50
 CallIf Daycare_CompatMin Var.SpecialVar_Result C.Equal 20
 CallIf Daycare_CompatNone Var.SpecialVar_Result C.Equal 0
-AwaitMessage
+AwaitMessageComplete
 CloseMessage
 UnlockAllObjs
 End
 
 #Daycare_Test_StealPokemon
 Message DaycareText_Test_Take
-AwaitMessage
+AwaitMessageComplete
 StorePokemonInDaycare
-return
+CloseMessage
+UnlockAllObjs
+End
 
 #Daycare_CompatMax
 Message DaycareTest_CompatMax
@@ -61,9 +69,11 @@ is doing well."
 "Good to see you, your Pokémon\n
 are doing well."
 
+#DaycareText_CanITake
+"Can I take your Pokémon?"
+
 #DaycareText_Test_Take
-"Gonna take that last Pokémon\n
-against your will!"
+"Taking your last Pokémon."
 
 #DaycareTest_CompatMax
 "The two seem to get along very well!"
