@@ -170,13 +170,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _stringPrinter = null;
                 _stringWindow.Close();
                 _stringWindow = null;
+                _actionsGUI?.Dispose();
+                _actionsGUI = null;
                 _onClosed.Invoke();
                 _onClosed = null;
-                if (_actionsGUI != null)
-                {
-                    _actionsGUI.Dispose();
-                    _actionsGUI = null;
-                }
                 Instance = null;
             }
         }
@@ -315,7 +312,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 AddMessage($"What will {_actions[i].Nickname} do?", true);
                 SpritedBattlePokemonParty party = _spritedParties[_trainer.Id];
                 _actionsGUI?.Dispose();
-                _actionsGUI = new ActionsGUI(this, party, party.SpritedParty[i].Pkmn);
+                _actionsGUI = new ActionsGUI(this, party, _actions[i]);
             }
         }
         public void Flee()
@@ -330,6 +327,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public List<PBEFieldPosition> PositionStandBy { get; } = new List<PBEFieldPosition>(3);
         public void SwitchesLoop(bool begin)
         {
+            new Thread(_trainer.CreateAISwitches) { Name = ThreadName }.Start();
+            return;
             // TODO: LMAOOOOOOOOO
             if (begin)
             {
