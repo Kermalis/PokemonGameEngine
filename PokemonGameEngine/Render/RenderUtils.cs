@@ -35,18 +35,22 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return ((SDL.SDL_Surface*)surface)->h;
         }
-        private static unsafe IntPtr StreamToRWops(Stream stream)
+        private static unsafe IntPtr ResourceToRWops(string resource)
         {
-            byte[] bytes = new byte[stream.Length];
-            stream.Read(bytes, 0, bytes.Length);
+            byte[] bytes;
+            using (Stream stream = Utils.GetResourceStream(resource))
+            {
+                bytes = new byte[stream.Length];
+                stream.Read(bytes, 0, bytes.Length);
+            }
             fixed (byte* b = bytes)
             {
                 return SDL.SDL_RWFromMem(new IntPtr(b), bytes.Length);
             }
         }
-        public static unsafe void GetTextureData(Stream stream, out int width, out int height, out uint[] bitmap)
+        public static unsafe void GetTextureData(string resource, out int width, out int height, out uint[] bitmap)
         {
-            IntPtr rwops = StreamToRWops(stream);
+            IntPtr rwops = ResourceToRWops(resource);
             IntPtr surface = SDL_image.IMG_Load_RW(rwops, 1);
             surface = ConvertSurfaceFormat(surface);
             width = GetSurfaceWidth(surface);
@@ -62,10 +66,7 @@ namespace Kermalis.PokemonGameEngine.Render
         // Currently unused
         public static unsafe IntPtr LoadTexture_PNG(IntPtr renderer, string resource)
         {
-            using (Stream stream = Utils.GetResourceStream(resource))
-            {
-                return SDL_image.IMG_LoadTextureTyped_RW(renderer, StreamToRWops(stream), 1, "PNG");
-            }
+            return SDL_image.IMG_LoadTextureTyped_RW(renderer, ResourceToRWops(resource), 1, "PNG");
         }
         #endregion
 
@@ -82,24 +83,21 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public static unsafe uint[][] LoadBitmapSheet(string resource, int imageWidth, int imageHeight)
         {
-            using (Stream stream = Utils.GetResourceStream(resource))
+            GetTextureData(resource, out int sheetWidth, out int sheetHeight, out uint[] pixels);
+            fixed (uint* bmpAddress = pixels)
             {
-                GetTextureData(stream, out int sheetWidth, out int sheetHeight, out uint[] pixels);
-                fixed (uint* bmpAddress = pixels)
+                int numImagesX = sheetWidth / imageWidth;
+                int numImagesY = sheetHeight / imageHeight;
+                uint[][] imgs = new uint[numImagesX * numImagesY][];
+                int img = 0;
+                for (int sy = 0; sy < numImagesY; sy++)
                 {
-                    int numImagesX = sheetWidth / imageWidth;
-                    int numImagesY = sheetHeight / imageHeight;
-                    uint[][] imgs = new uint[numImagesX * numImagesY][];
-                    int img = 0;
-                    for (int sy = 0; sy < numImagesY; sy++)
+                    for (int sx = 0; sx < numImagesX; sx++)
                     {
-                        for (int sx = 0; sx < numImagesX; sx++)
-                        {
-                            imgs[img++] = GetBitmapUnchecked(bmpAddress, sheetWidth, sx * imageWidth, sy * imageHeight, imageWidth, imageHeight);
-                        }
+                        imgs[img++] = GetBitmapUnchecked(bmpAddress, sheetWidth, sx * imageWidth, sy * imageHeight, imageWidth, imageHeight);
                     }
-                    return imgs;
                 }
+                return imgs;
             }
         }
         public static unsafe uint[] GetBitmapUnchecked(uint* bmpAddress, int bmpWidth, int x, int y, int width, int height)
