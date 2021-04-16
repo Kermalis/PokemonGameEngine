@@ -269,6 +269,10 @@ namespace Kermalis.PokemonGameEngine.GUI
             ProcessDayTint(false);
             int s = _startMenuChoices.Selected;
             _startMenuChoices.HandleInputs();
+            if (_startMenuWindow is null)
+            {
+                return; // Was just closed
+            }
             if (s != _startMenuChoices.Selected)
             {
                 RenderStartMenuChoicesOntoWindow();

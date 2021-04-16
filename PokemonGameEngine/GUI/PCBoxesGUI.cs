@@ -20,6 +20,13 @@ namespace Kermalis.PokemonGameEngine.GUI
         private FadeColorTransition _fadeTransition;
         private Action _onClosed;
 
+        private Window _textChoicesWindow;
+        private TextGUIChoices _textChoices;
+        private Window _stringWindow;
+        private StringPrinter _stringPrinter;
+        private string _staticStringBackup;
+        private Game.MainCallback _stringReadCallback;
+
         private bool _isOnParty = false;
         private bool _partyVisible = false;
         private readonly PartyPkmnGUIChoices _partyChoices;
@@ -29,6 +36,8 @@ namespace Kermalis.PokemonGameEngine.GUI
         private int _selectedCol;
         private Sprite[] _selectedBoxMinis;
         private AnimatedSprite _selectedMainSprite;
+
+        #region Open & Close GUI
 
         public unsafe PCBoxesGUI(PCBoxes boxes, Party party, Action onClosed)
         {
@@ -45,18 +54,154 @@ namespace Kermalis.PokemonGameEngine.GUI
             Game.Instance.SetRCallback(RCB_Fading);
         }
 
-        private void BringUpPartyPkmnActions(PartyPokemon pkmn)
+        private unsafe void ClosePCMenu()
         {
+            _fadeTransition = new FadeToColorTransition(20, 0);
+            Game.Instance.SetCallback(CB_FadeOutPC);
+            Game.Instance.SetRCallback(RCB_Fading);
+        }
+
+        private unsafe void CB_FadeInPC()
+        {
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                Game.Instance.SetCallback(CB_LogicTick);
+                Game.Instance.SetRCallback(RCB_RenderTick);
+            }
+        }
+        private unsafe void CB_FadeOutPC()
+        {
+            if (_fadeTransition.IsDone)
+            {
+                DisposePartyChoices();
+                _fadeTransition = null;
+                _onClosed.Invoke();
+                _onClosed = null;
+            }
+        }
+
+        private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+        }
+
+        #endregion
+
+        private void Action_DepositPartyPkmn(PartyPokemon pkmn)
+        {
+            if (_party.Count == 1)
+            {
+                OverwriteStaticString("That's your last Pokémon!", CB_ReadOutMessageThenRestoreStaticBackup, CB_Choices);
+                return;
+            }
             int storedIn = _boxes.Add(pkmn);
             if (storedIn == -1)
             {
-                throw new Exception();
+                OverwriteStaticString("There's no space left in the PC!", CB_ReadOutMessageThenRestoreStaticBackup, CB_Choices);
+                return;
             }
+            // Success
             _party.Remove(pkmn);
             DisposePartyChoices();
             LoadPartyChoices();
+            if (_selectedBox == storedIn)
+            {
+                LoadBoxContents();
+            }
+            CloseChoices();
+            OverwriteStaticString(string.Format("{0} was stored in \"Box {1}\".", pkmn.Nickname, storedIn + 1), CB_ReadOutMessageThenCloseWindow, CB_LogicTick);
+        }
+        private void Action_WithdrawBoxPkmn(BoxPokemon pkmn)
+        {
+            if (_party.Count == PkmnConstants.PartyCapacity)
+            {
+                OverwriteStaticString("Your party is full!", CB_ReadOutMessageThenRestoreStaticBackup, CB_Choices);
+                return;
+            }
+            // Success
+            _party.Add(new PartyPokemon(pkmn));
+            _boxes[_selectedBox].Remove(pkmn);
+            DisposePartyChoices();
+            LoadPartyChoices();
             LoadBoxContents();
-            Console.WriteLine("{0} was stored in Box {1}", pkmn.Nickname, storedIn + 1);
+            CloseChoices();
+            OverwriteStaticString(string.Format("{0} was taken from \"Box {1}\".", pkmn.Nickname, _selectedBox + 1), CB_ReadOutMessageThenCloseWindow, CB_LogicTick);
+        }
+
+        private void BringUpPartyPkmnActions(PartyPokemon pkmn)
+        {
+            _textChoicesWindow = new Window(0.6f, 0.3f, 0.2f, 0.4f, RenderUtils.Color(255, 255, 255, 255));
+            _textChoices = new TextGUIChoices(0.2f, 0.05f, 0.2f, backCommand: CloseChoicesAndStringPrinterThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _textChoices.Add(new TextGUIChoice("Deposit", () => Action_DepositPartyPkmn(pkmn)));
+            _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesAndStringPrinterThenGoToLogicTick));
+            RenderChoicesOntoWindow();
+            string msg = string.Format("Do what with {0}?", pkmn.Nickname);
+            _staticStringBackup = msg;
+            CreateStringPrinterAndWindow(msg, true, CB_Choices);
+        }
+        private void BringUpBoxPkmnActions(BoxPokemon pkmn)
+        {
+            _textChoicesWindow = new Window(0.6f, 0.3f, 0.2f, 0.4f, RenderUtils.Color(255, 255, 255, 255));
+            _textChoices = new TextGUIChoices(0.2f, 0.05f, 0.2f, backCommand: CloseChoicesAndStringPrinterThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _textChoices.Add(new TextGUIChoice("Withdraw", () => Action_WithdrawBoxPkmn(pkmn)));
+            _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesAndStringPrinterThenGoToLogicTick));
+            RenderChoicesOntoWindow();
+            string msg = string.Format("Do what with {0}?", pkmn.Nickname);
+            _staticStringBackup = msg;
+            CreateStringPrinterAndWindow(msg, true, CB_Choices);
+        }
+        private void CloseChoices()
+        {
+            _textChoicesWindow.Close();
+            _textChoicesWindow = null;
+            _textChoices.Dispose();
+            _textChoices = null;
+        }
+        private void CloseChoicesAndStringPrinterThenGoToLogicTick()
+        {
+            CloseChoices();
+            CloseStringPrinterAndWindow();
+            Game.Instance.SetCallback(CB_LogicTick);
+        }
+        private unsafe void RenderChoicesOntoWindow()
+        {
+            _textChoicesWindow.ClearSprite();
+            Sprite s = _textChoicesWindow.Sprite;
+            fixed (uint* bmpAddress = s.Bitmap)
+            {
+                _textChoices.Render(bmpAddress, s.Width, s.Height);
+            }
+        }
+
+        private void CreateStringPrinterAndWindow(string message, bool isStaticMsg, Game.MainCallback doneCallback)
+        {
+            _stringWindow = new Window(0, 0.79f, 1, 0.16f, RenderUtils.Color(49, 49, 49, 192));
+            _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite);
+            _stringReadCallback = doneCallback;
+            if (isStaticMsg)
+            {
+                Game.Instance.SetCallback(CB_ReadOutStaticMessage);
+            }
+            else
+            {
+                Game.Instance.SetCallback(CB_ReadOutMessageThenCloseWindow);
+            }
+        }
+        private void OverwriteStaticString(string message, Game.MainCallback curCallback, Game.MainCallback doneCallback)
+        {
+            _stringPrinter.Close();
+            _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite);
+            _stringReadCallback = doneCallback;
+            Game.Instance.SetCallback(curCallback);
+        }
+        private void CloseStringPrinterAndWindow()
+        {
+            _stringPrinter.Close();
+            _stringPrinter = null;
+            _stringWindow.Close();
+            _stringWindow = null;
         }
 
         private BoxPokemon GetSelectedBoxPkmn()
@@ -100,37 +245,53 @@ namespace Kermalis.PokemonGameEngine.GUI
             _selectedMainSprite = SpriteUtils.GetPokemonSprite(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, false, false, pkmn.PID);
         }
 
-        private unsafe void CloseMenu()
+        private void CB_Choices()
         {
-            _fadeTransition = new FadeToColorTransition(20, 0);
-            Game.Instance.SetCallback(CB_FadeOutPC);
-            Game.Instance.SetRCallback(RCB_Fading);
-        }
-
-        private unsafe void CB_FadeInPC()
-        {
-            if (_fadeTransition.IsDone)
+            int s = _textChoices.Selected;
+            _textChoices.HandleInputs();
+            if (_textChoicesWindow is null)
             {
-                _fadeTransition = null;
-                Game.Instance.SetCallback(CB_LogicTick);
-                Game.Instance.SetRCallback(RCB_RenderTick);
+                return; // Was just closed
+            }
+            if (s != _textChoices.Selected)
+            {
+                RenderChoicesOntoWindow();
             }
         }
-        private unsafe void CB_FadeOutPC()
+        private void CB_ReadOutStaticMessage()
         {
-            if (_fadeTransition.IsDone)
+            _stringPrinter.LogicTick();
+            if (_stringPrinter.IsEnded)
             {
-                DisposePartyChoices();
-                _fadeTransition = null;
-                _onClosed.Invoke();
-                _onClosed = null;
+                Game.Instance.SetCallback(_stringReadCallback);
+                _stringReadCallback = null;
+            }
+        }
+        private void CB_ReadOutMessageThenCloseWindow()
+        {
+            _stringPrinter.LogicTick();
+            if (_stringPrinter.IsDone)
+            {
+                CloseStringPrinterAndWindow();
+                Game.Instance.SetCallback(_stringReadCallback);
+                _stringReadCallback = null;
+            }
+        }
+        private void CB_ReadOutMessageThenRestoreStaticBackup()
+        {
+            _stringPrinter.LogicTick();
+            if (_stringPrinter.IsDone)
+            {
+                OverwriteStaticString(_staticStringBackup, CB_ReadOutStaticMessage, _stringReadCallback);
+                _staticStringBackup = null;
+                // Don't set _stringReadCallback back to null because it's needed
             }
         }
         private void CB_LogicTick()
         {
             if (InputManager.IsPressed(Key.B))
             {
-                CloseMenu();
+                ClosePCMenu();
                 return;
             }
             if (_partyVisible && _isOnParty)
@@ -157,13 +318,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             if (InputManager.IsPressed(Key.A))
             {
-                BoxPokemon pkmn = GetSelectedBoxPkmn();
-                _party.Add(new PartyPokemon(pkmn));
-                _boxes[_selectedBox].Remove(pkmn);
-                DisposePartyChoices();
-                LoadPartyChoices();
-                LoadBoxContents();
-                Console.WriteLine("{0} was taken from Box {1}", pkmn.Nickname, _selectedBox + 1);
+                BringUpBoxPkmnActions(GetSelectedBoxPkmn());
             }
             if (InputManager.IsPressed(Key.R))
             {
@@ -226,11 +381,6 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
-        private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
-        {
-            RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-        }
         private unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             // Background
@@ -243,9 +393,15 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 _partyChoices.Render(bmpAddress, bmpWidth, bmpHeight);
             }
-            else if (_selectedMainSprite != null)
+            else
             {
-                _selectedMainSprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.24f) - (_selectedMainSprite.Width / 2), (int)(bmpHeight * 0.7f) - _selectedMainSprite.Height);
+                if (_selectedMainSprite != null)
+                {
+                    _selectedMainSprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.24f) - (_selectedMainSprite.Width / 2), (int)(bmpHeight * 0.6f) - _selectedMainSprite.Height);
+                }
+                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.015f, 0.62f,
+                    "Press L or R to swap boxes\nPress SELECT to toggle the party\n  choices on or off\nPress START to swap between\n  party and boxes",
+                    Font.DefaultDark);
             }
 
             // Draw boxes
@@ -277,6 +433,8 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, 0.48f, 1, RenderUtils.Color(0, 0, 0, 128));
             }
+
+            Game.Instance.RenderWindows(bmpAddress, bmpWidth, bmpHeight);
         }
     }
 }
