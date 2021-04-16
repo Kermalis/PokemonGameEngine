@@ -6,14 +6,14 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
-    internal sealed class SpriteSheet
+    internal sealed class ImageSheet
     {
         private static readonly Dictionary<string, uint> _sheetOffsets;
 
         private const string SheetsExtension = ".bin";
         private const string SheetsPath = "ObjSprites.";
         private const string SheetsFile = SheetsPath + "ObjSprites" + SheetsExtension;
-        static SpriteSheet()
+        static ImageSheet()
         {
             using (EndianBinaryReader r = GetReader())
             {
@@ -31,41 +31,41 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return new EndianBinaryReader(Utils.GetResourceStream(SheetsFile), encoding: EncodingType.UTF16);
         }
 
-        public readonly Sprite[] Sprites;
-        public readonly int SpriteWidth;
-        public readonly int SpriteHeight;
-        public readonly Sprite ShadowSprite;
+        public readonly Image[] Images;
+        public readonly int ImageWidth;
+        public readonly int ImageHeight;
+        public readonly Image ShadowImage;
         public readonly int ShadowXOffset;
         public readonly int ShadowYOffset;
 
-        private unsafe SpriteSheet(string id)
+        private unsafe ImageSheet(string id)
         {
             using (EndianBinaryReader r = GetReader())
             {
                 r.BaseStream.Position = _sheetOffsets[id];
-                Sprites = RenderUtils.LoadSpriteSheet(SheetsPath + r.ReadStringNullTerminated(), SpriteWidth = r.ReadInt32(), SpriteHeight = r.ReadInt32());
+                Images = RenderUtils.LoadImageSheet(SheetsPath + r.ReadStringNullTerminated(), ImageWidth = r.ReadInt32(), ImageHeight = r.ReadInt32());
                 ShadowXOffset = r.ReadInt32();
                 ShadowYOffset = r.ReadInt32();
-                ShadowSprite = new Sprite(r.ReadInt32(), r.ReadInt32());
-                ShadowSprite.Draw((uint* bmpAddress, int bmpWidth, int bmpHeight) =>
+                ShadowImage = new Image(r.ReadInt32(), r.ReadInt32());
+                ShadowImage.Draw((uint* bmpAddress, int bmpWidth, int bmpHeight) =>
                 {
                     RenderUtils.FillEllipse_Points(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth - 1, bmpHeight - 1, RenderUtils.Color(0, 0, 0, 160));
                 });
             }
         }
 
-        private static readonly Dictionary<string, WeakReference<SpriteSheet>> _loadedSheets = new Dictionary<string, WeakReference<SpriteSheet>>();
-        public static SpriteSheet LoadOrGet(string id)
+        private static readonly Dictionary<string, WeakReference<ImageSheet>> _loadedSheets = new Dictionary<string, WeakReference<ImageSheet>>();
+        public static ImageSheet LoadOrGet(string id)
         {
-            SpriteSheet s;
-            if (!_loadedSheets.TryGetValue(id, out WeakReference<SpriteSheet> w))
+            ImageSheet s;
+            if (!_loadedSheets.TryGetValue(id, out WeakReference<ImageSheet> w))
             {
-                s = new SpriteSheet(id);
-                _loadedSheets.Add(id, new WeakReference<SpriteSheet>(s));
+                s = new ImageSheet(id);
+                _loadedSheets.Add(id, new WeakReference<ImageSheet>(s));
             }
             else if (!w.TryGetTarget(out s))
             {
-                s = new SpriteSheet(id);
+                s = new ImageSheet(id);
                 w.SetTarget(s);
             }
             return s;

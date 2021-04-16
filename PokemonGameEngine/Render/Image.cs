@@ -5,13 +5,13 @@ using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
-    internal sealed class Sprite : ISprite
+    internal sealed class Image : IImage
     {
         public uint[] Bitmap { get; }
         public int Width { get; }
         public int Height { get; }
 
-        private Sprite(string resource)
+        private Image(string resource)
         {
             using (Stream stream = Utils.GetResourceStream(resource))
             {
@@ -21,34 +21,34 @@ namespace Kermalis.PokemonGameEngine.Render
                 Height = height;
             }
         }
-        public Sprite(int width, int height)
+        public Image(int width, int height)
         {
             Bitmap = new uint[width * height];
             Width = width;
             Height = height;
         }
-        public Sprite(uint[] bitmap, int spriteWidth, int spriteHeight)
+        public Image(uint[] bitmap, int width, int height)
         {
             Bitmap = bitmap;
-            Width = spriteWidth;
-            Height = spriteHeight;
+            Width = width;
+            Height = height;
         }
 
-        private static readonly Dictionary<string, WeakReference<Sprite>> _loadedSprites = new Dictionary<string, WeakReference<Sprite>>();
-        public static Sprite LoadOrGet(string resource)
+        private static readonly Dictionary<string, WeakReference<Image>> _loadedImages = new Dictionary<string, WeakReference<Image>>();
+        public static Image LoadOrGet(string resource)
         {
-            Sprite s;
-            if (!_loadedSprites.TryGetValue(resource, out WeakReference<Sprite> w))
+            Image i;
+            if (!_loadedImages.TryGetValue(resource, out WeakReference<Image> w))
             {
-                s = new Sprite(resource);
-                _loadedSprites.Add(resource, new WeakReference<Sprite>(s));
+                i = new Image(resource);
+                _loadedImages.Add(resource, new WeakReference<Image>(i));
             }
-            else if (!w.TryGetTarget(out s))
+            else if (!w.TryGetTarget(out i))
             {
-                s = new Sprite(resource);
-                w.SetTarget(s);
+                i = new Image(resource);
+                w.SetTarget(i);
             }
-            return s;
+            return i;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         private object _movementTypeArg;
 
         public EventObj(Map.Events.ObjEvent oe, Map map)
-            : base(oe.Id, oe.Sprite, new Position(oe))
+            : base(oe.Id, oe.ImageId, new Position(oe))
         {
             MovementType = oe.MovementType;
             InitMovementType();

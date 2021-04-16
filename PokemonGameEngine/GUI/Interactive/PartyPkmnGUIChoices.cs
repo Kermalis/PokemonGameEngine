@@ -12,9 +12,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         public bool IsDirty;
 
         private readonly PartyPokemon _pkmn;
-        private readonly Sprite _minisprite;
+        private readonly Image _mini;
 
-        private Sprite _drawn;
+        private Image _drawn;
         public override bool IsSelected
         {
             get => base.IsSelected;
@@ -32,14 +32,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             : base(command, isEnabled: isEnabled)
         {
             _pkmn = pkmn;
-            _minisprite = SpriteUtils.GetMinisprite(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny);
+            _mini = PokemonImageUtils.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny);
 
             IsDirty = true;
         }
 
         public void UpdateSize(int width, int height)
         {
-            _drawn = new Sprite(width, height);
+            _drawn = new Image(width, height);
             Draw();
         }
         public unsafe void Draw()
@@ -51,7 +51,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             uint backColor = IsSelected ? RenderUtils.Color(200, 200, 200, 255) : RenderUtils.Color(255, 255, 255, 255);
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth - 1, bmpHeight - 1, bmpHeight / 2, backColor);
 
-            _minisprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0f, -0.15f);
+            _mini.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0f, -0.15f);
 
             Font fontDefault = Font.Default;
             Font fontPartyNumbers = Font.PartyNumbers;

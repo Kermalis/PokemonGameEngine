@@ -78,7 +78,7 @@ namespace Kermalis.PokemonGameEngine.World
                 public byte Elevation { get; }
 
                 public readonly ushort Id;
-                public readonly string Sprite;
+                public readonly string ImageId;
                 public readonly ObjMovementType MovementType;
                 public readonly int MovementX;
                 public readonly int MovementY;
@@ -94,7 +94,7 @@ namespace Kermalis.PokemonGameEngine.World
                     Elevation = r.ReadByte();
 
                     Id = r.ReadUInt16();
-                    Sprite = r.ReadStringNullTerminated();
+                    ImageId = r.ReadStringNullTerminated();
                     MovementType = r.ReadEnum<ObjMovementType>();
                     MovementX = r.ReadInt32();
                     MovementY = r.ReadInt32();

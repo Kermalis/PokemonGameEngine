@@ -83,29 +83,29 @@
             (int X, int Y)[] coords = _spindaSpotCoordinates[frame];
 
             byte b = (byte)((pid >> 24) & 0xFF);
-            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Sprite.LoadOrGet("Sprites.SpindaSpot_RightEye.png"), coords[0], b, colors);
+            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Image.LoadOrGet("Sprites.SpindaSpot_RightEye.png"), coords[0], b, colors);
             b = (byte)((pid >> 16) & 0xFF);
-            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Sprite.LoadOrGet("Sprites.SpindaSpot_LeftEye.png"), coords[1], b, colors);
+            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Image.LoadOrGet("Sprites.SpindaSpot_LeftEye.png"), coords[1], b, colors);
             b = (byte)((pid >> 8) & 0xFF);
-            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Sprite.LoadOrGet("Sprites.SpindaSpot_RightEar.png"), coords[2], b, colors);
+            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Image.LoadOrGet("Sprites.SpindaSpot_RightEar.png"), coords[2], b, colors);
             b = (byte)(pid & 0xFF);
-            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Sprite.LoadOrGet("Sprites.SpindaSpot_LeftEar.png"), coords[3], b, colors);
+            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Image.LoadOrGet("Sprites.SpindaSpot_LeftEar.png"), coords[3], b, colors);
         }
-        public static unsafe void RenderSpindaSpots(AnimatedSprite sprite, uint pid, bool shiny)
+        public static unsafe void RenderSpindaSpots(AnimatedImage img, uint pid, bool shiny)
         {
-            var rightEye = Sprite.LoadOrGet("Sprites.SpindaSpot_RightEye.png");
-            var leftEye = Sprite.LoadOrGet("Sprites.SpindaSpot_LeftEye.png");
-            var rightEar = Sprite.LoadOrGet("Sprites.SpindaSpot_RightEar.png");
-            var leftEar = Sprite.LoadOrGet("Sprites.SpindaSpot_LeftEar.png");
+            var rightEye = Image.LoadOrGet("Sprites.SpindaSpot_RightEye.png");
+            var leftEye = Image.LoadOrGet("Sprites.SpindaSpot_LeftEye.png");
+            var rightEar = Image.LoadOrGet("Sprites.SpindaSpot_RightEar.png");
+            var leftEar = Image.LoadOrGet("Sprites.SpindaSpot_LeftEar.png");
             (uint color, uint replacement)[] colors = SpindaSpotColorsFromShininess(shiny);
 
-            for (int i = 0; i < sprite.NumFrames; i++)
+            for (int i = 0; i < img.NumFrames; i++)
             {
                 (int X, int Y)[] coords = _spindaSpotCoordinates[i];
-                fixed (uint* bmpAddress = sprite.GetFrameBitmap(i))
+                fixed (uint* bmpAddress = img.GetFrameBitmap(i))
                 {
-                    int bmpWidth = sprite.Width;
-                    int bmpHeight = sprite.Height;
+                    int bmpWidth = img.Width;
+                    int bmpHeight = img.Height;
 
                     byte b = (byte)((pid >> 24) & 0xFF);
                     RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, rightEye, coords[0], b, colors);
@@ -119,7 +119,7 @@
             }
         }
 
-        private static unsafe void RenderSpindaSpot(uint* bmpAddress, int bmpWidth, int bmpHeight, Sprite spot, (int X, int Y) center, byte data, (uint color, uint replacement)[] colors)
+        private static unsafe void RenderSpindaSpot(uint* bmpAddress, int bmpWidth, int bmpHeight, Image spot, (int X, int Y) center, byte data, (uint color, uint replacement)[] colors)
         {
             uint spotColor = Color(0, 255, 255, 255);
 

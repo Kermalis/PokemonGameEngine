@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonGameEngine.Render;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
@@ -99,7 +100,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             const bool hideNonOwned = true;
             return trainer != _trainer && hideNonOwned;
         }
-        private bool IsBackSprite(PBETeam team)
+        private bool IsBackImage(PBETeam team)
         {
             byte? owner = _trainer?.Team.Id;
             return team.Id == 0 ? owner != 1 : owner == 1; // Spectators/replays view from team 0's perspective
@@ -160,10 +161,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private void HidePokemon(PBEBattlePokemon pkmn, PBEFieldPosition oldPosition)
         {
             PkmnPosition pos = GetStuff(pkmn, oldPosition);
-            Render.AnimatedSprite sprite = pos.SPkmn.Sprite;
+            AnimatedImage img = pos.SPkmn.AnimImage;
             pos.InfoVisible = false;
             pos.PkmnVisible = false;
-            sprite.IsPaused = true;
+            img.IsPaused = true;
         }
         private void UpdatePokemon(PBEBattlePokemon pkmn, bool info, bool sprite)
         {

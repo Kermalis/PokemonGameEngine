@@ -43,7 +43,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             _font = font;
             _fontColors = fontColors;
 
-            _window.ClearSprite();
+            _window.ClearImage();
             Game.Instance.StringPrinters.Add(this);
         }
 
@@ -74,7 +74,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 {
                     if (IsPressed())
                     {
-                        _window.ClearSprite();
+                        _window.ClearImage();
                         _result = StringPrinterResult.EnoughChars;
                     }
                     break;
@@ -105,7 +105,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 _result = DrawNext(bmpAddress, bmpWidth, bmpHeight, speed);
             }
-            _window.Sprite.Draw(DrawString);
+            _window.Image.Draw(DrawString);
         }
         private unsafe StringPrinterResult DrawNext(uint* bmpAddress, int bmpWidth, int bmpHeight, int count)
         {

@@ -97,11 +97,11 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private unsafe void RenderStartMenuChoicesOntoWindow()
         {
-            _startMenuWindow.ClearSprite();
-            Sprite s = _startMenuWindow.Sprite;
-            fixed (uint* bmpAddress = s.Bitmap)
+            _startMenuWindow.ClearImage();
+            Image i = _startMenuWindow.Image;
+            fixed (uint* bmpAddress = i.Bitmap)
             {
-                _startMenuChoices.Render(bmpAddress, s.Width, s.Height);
+                _startMenuChoices.Render(bmpAddress, i.Width, i.Height);
             }
         }
         public void OpenStartMenu()

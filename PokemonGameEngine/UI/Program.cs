@@ -209,7 +209,7 @@ namespace Kermalis.PokemonGameEngine.UI
                     {
                         goto bottom;
                     }
-                    AnimatedSprite.UpdateCurrentFrameForAll(timePassed); // #48 - Prevent crash by placing inside of the lock
+                    AnimatedImage.UpdateCurrentFrameForAll(timePassed); // #48 - Prevent crash by placing inside of the lock
                     IntPtr s = _screen;
                     IntPtr r = _renderer;
                     SDL.SDL_LockTexture(s, IntPtr.Zero, out IntPtr pixels, out _);

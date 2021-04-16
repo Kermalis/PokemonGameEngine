@@ -20,7 +20,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private const int AutoAdvanceTicks = Program.NumTicksPerSecond * 3; // 3 seconds
         private const string ThreadName = "Battle Thread";
-        private readonly Sprite _battleBackground;
+        private readonly Image _battleBackground;
 
         private Action _onClosed;
         private FadeColorTransition _fadeTransition;
@@ -42,12 +42,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             _battle = battle;
             _trainer = battle.Trainers[0];
-            _battleBackground = Sprite.LoadOrGet($"GUI.Battle.Background.BG_{battle.BattleTerrain}_{battle.BattleFormat}.png");
+            _battleBackground = Image.LoadOrGet($"GUI.Battle.Background.BG_{battle.BattleTerrain}_{battle.BattleFormat}.png");
             _spritedParties = new SpritedBattlePokemonParty[battle.Trainers.Count];
             for (int i = 0; i < battle.Trainers.Count; i++)
             {
                 PBETrainer trainer = battle.Trainers[i];
-                _spritedParties[i] = new SpritedBattlePokemonParty(trainer.Party, trainerParties[i], IsBackSprite(trainer.Team), ShouldUseKnownInfo(trainer), this);
+                _spritedParties[i] = new SpritedBattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team), ShouldUseKnownInfo(trainer), this);
             }
             _onClosed = onClosed;
             battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
@@ -212,19 +212,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private unsafe void RenderPkmn(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos, bool ally)
         {
             SpritedBattlePokemon sPkmn = pos.SPkmn;
-            AnimatedSprite sprite = sPkmn.Sprite;
-            int width = sprite.Width;
-            int height = sprite.Height;
+            AnimatedImage img = sPkmn.AnimImage;
+            int width = img.Width;
+            int height = img.Height;
             if (ally)
             {
                 width *= 2;
                 height *= 2;
             }
-            sprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * pos.MonX) - (width / 2), (int)(bmpHeight * pos.MonY) - height, width, height);
+            img.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * pos.MonX) - (width / 2), (int)(bmpHeight * pos.MonY) - height, width, height);
         }
         private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos)
         {
-            pos.SPkmn.InfoBarSprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, pos.BarX, pos.BarY);
+            pos.SPkmn.InfoBarImg.DrawOn(bmpAddress, bmpWidth, bmpHeight, pos.BarX, pos.BarY);
         }
 
         private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)

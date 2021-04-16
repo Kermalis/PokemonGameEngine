@@ -34,8 +34,8 @@ namespace Kermalis.PokemonGameEngine.GUI
         private int _selectedBox;
         private int _selectedRow;
         private int _selectedCol;
-        private Sprite[] _selectedBoxMinis;
-        private AnimatedSprite _selectedMainSprite;
+        private Image[] _selectedBoxMinis;
+        private AnimatedImage _selectedMainImage;
 
         #region Open & Close GUI
 
@@ -167,11 +167,11 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private unsafe void RenderChoicesOntoWindow()
         {
-            _textChoicesWindow.ClearSprite();
-            Sprite s = _textChoicesWindow.Sprite;
-            fixed (uint* bmpAddress = s.Bitmap)
+            _textChoicesWindow.ClearImage();
+            Image i = _textChoicesWindow.Image;
+            fixed (uint* bmpAddress = i.Bitmap)
             {
-                _textChoices.Render(bmpAddress, s.Width, s.Height);
+                _textChoices.Render(bmpAddress, i.Width, i.Height);
             }
         }
 
@@ -223,7 +223,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void LoadBoxContents()
         {
-            _selectedBoxMinis = new Sprite[PkmnConstants.BoxCapacity];
+            _selectedBoxMinis = new Image[PkmnConstants.BoxCapacity];
             for (int i = 0; i < PkmnConstants.BoxCapacity; i++)
             {
                 BoxPokemon pkmn = _boxes[_selectedBox][i];
@@ -231,7 +231,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 {
                     continue;
                 }
-                _selectedBoxMinis[i] = SpriteUtils.GetMinisprite(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny);
+                _selectedBoxMinis[i] = PokemonImageUtils.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny);
             }
             LoadPkmnContents(GetSelectedBoxPkmn());
         }
@@ -239,10 +239,10 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             if (pkmn is null)
             {
-                _selectedMainSprite = null;
+                _selectedMainImage = null;
                 return;
             }
-            _selectedMainSprite = SpriteUtils.GetPokemonSprite(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, false, false, pkmn.PID);
+            _selectedMainImage = PokemonImageUtils.GetPokemonImage(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, false, false, pkmn.PID);
         }
 
         private void CB_Choices()
@@ -395,9 +395,9 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
             else
             {
-                if (_selectedMainSprite != null)
+                if (_selectedMainImage != null)
                 {
-                    _selectedMainSprite.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.24f) - (_selectedMainSprite.Width / 2), (int)(bmpHeight * 0.6f) - _selectedMainSprite.Height);
+                    _selectedMainImage.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.24f) - (_selectedMainImage.Width / 2), (int)(bmpHeight * 0.6f) - _selectedMainImage.Height);
                 }
                 Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.015f, 0.62f,
                     "Press L or R to swap boxes\nPress SELECT to toggle the party\n  choices on or off\nPress START to swap between\n  party and boxes",
@@ -416,7 +416,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 uint color = _selectedCol == y && _selectedRow == x ? RenderUtils.Color(0, 0, 0, 32) : RenderUtils.Color(0, 0, 0, 64);
                 RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, px, py, 38, 38, color);
 
-                Sprite mini = _selectedBoxMinis[i];
+                Image mini = _selectedBoxMinis[i];
                 if (mini is null)
                 {
                     continue;

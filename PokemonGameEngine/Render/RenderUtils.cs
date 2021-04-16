@@ -70,35 +70,35 @@ namespace Kermalis.PokemonGameEngine.Render
         #endregion
 
         #region Sheets
-        public static unsafe Sprite[] LoadSpriteSheet(string resource, int spriteWidth, int spriteHeight)
+        public static unsafe Image[] LoadImageSheet(string resource, int imageWidth, int imageHeight)
         {
-            uint[][] bitmaps = LoadBitmapSheet(resource, spriteWidth, spriteHeight);
-            var arr = new Sprite[bitmaps.Length];
+            uint[][] bitmaps = LoadBitmapSheet(resource, imageWidth, imageHeight);
+            var arr = new Image[bitmaps.Length];
             for (int i = 0; i < bitmaps.Length; i++)
             {
-                arr[i] = new Sprite(bitmaps[i], spriteWidth, spriteHeight);
+                arr[i] = new Image(bitmaps[i], imageWidth, imageHeight);
             }
             return arr;
         }
-        public static unsafe uint[][] LoadBitmapSheet(string resource, int spriteWidth, int spriteHeight)
+        public static unsafe uint[][] LoadBitmapSheet(string resource, int imageWidth, int imageHeight)
         {
             using (Stream stream = Utils.GetResourceStream(resource))
             {
                 GetTextureData(stream, out int sheetWidth, out int sheetHeight, out uint[] pixels);
                 fixed (uint* bmpAddress = pixels)
                 {
-                    int numSpritesX = sheetWidth / spriteWidth;
-                    int numSpritesY = sheetHeight / spriteHeight;
-                    uint[][] sprites = new uint[numSpritesX * numSpritesY][];
-                    int sprite = 0;
-                    for (int sy = 0; sy < numSpritesY; sy++)
+                    int numImagesX = sheetWidth / imageWidth;
+                    int numImagesY = sheetHeight / imageHeight;
+                    uint[][] imgs = new uint[numImagesX * numImagesY][];
+                    int img = 0;
+                    for (int sy = 0; sy < numImagesY; sy++)
                     {
-                        for (int sx = 0; sx < numSpritesX; sx++)
+                        for (int sx = 0; sx < numImagesX; sx++)
                         {
-                            sprites[sprite++] = GetBitmapUnchecked(bmpAddress, sheetWidth, sx * spriteWidth, sy * spriteHeight, spriteWidth, spriteHeight);
+                            imgs[img++] = GetBitmapUnchecked(bmpAddress, sheetWidth, sx * imageWidth, sy * imageHeight, imageWidth, imageHeight);
                         }
                     }
-                    return sprites;
+                    return imgs;
                 }
             }
         }
@@ -117,11 +117,11 @@ namespace Kermalis.PokemonGameEngine.Render
         #endregion
 
         #region Rectangles
-        public static unsafe void OverwriteRectangle(ISprite sprite, uint color)
+        public static unsafe void OverwriteRectangle(IImage img, uint color)
         {
-            for (int i = 0; i < sprite.Bitmap.Length; i++)
+            for (int i = 0; i < img.Bitmap.Length; i++)
             {
-                sprite.Bitmap[i] = color;
+                img.Bitmap[i] = color;
             }
         }
         public static unsafe void OverwriteRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
