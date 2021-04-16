@@ -60,7 +60,8 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             if (_waitMessageBox)
             {
-                if (_waitMessageComplete ? !_stringPrinter.IsDone : !_stringPrinter.IsEnded)
+                // If "AwaitMessage" are not the first to run this tick, they will not update and set _waitMessageBox to false
+                if (_stringPrinter != null && (_waitMessageComplete ? !_stringPrinter.IsDone : !_stringPrinter.IsEnded))
                 {
                     stopRunning = true;
                 }

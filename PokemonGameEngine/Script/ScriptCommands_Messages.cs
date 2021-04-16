@@ -27,6 +27,9 @@ namespace Kermalis.PokemonGameEngine.Script
         }
         private void CloseMessageCommand()
         {
+            // Set to false, since it's possible awaitmessage completely passes the "should stop running" check
+            // Avoids a crash
+            _waitMessageBox = false;
             _stringPrinter.Close();
             _stringPrinter = null;
             _messageBox.Close();
