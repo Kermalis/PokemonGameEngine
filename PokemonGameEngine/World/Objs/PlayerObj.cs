@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Script;
+using Kermalis.PokemonGameEngine.Sound;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
@@ -17,6 +18,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         private PlayerObj()
             : base(Overworld.PlayerId, "Player")
         {
+        }
+
+        protected override void OnMapChanged(Map oldMap, Map newMap)
+        {
+            SoundUtils.SetOverworldBGM(newMap.MapDetails.Music);
         }
 
         public override void LogicTick()

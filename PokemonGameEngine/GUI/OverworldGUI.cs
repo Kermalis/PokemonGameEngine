@@ -6,6 +6,7 @@ using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Script;
+using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System.Collections.Generic;
@@ -44,9 +45,10 @@ namespace Kermalis.PokemonGameEngine.GUI
             CameraObj.Camera.Map = map;
             map.Objs.Add(CameraObj.Camera);
             map.LoadObjEvents();
-            new OverworldGUI(); // Create
+            var gui = new OverworldGUI(); // Create
 
             ProcessDayTint(true);
+            gui.LoadMapMusic();
             Instance._fadeTransition = new FadeFromColorTransition(20, 0);
             Game.Instance.SetCallback(Instance.CB_FadeIn);
             Game.Instance.SetRCallback(Instance.RCB_Fading);
@@ -116,10 +118,11 @@ namespace Kermalis.PokemonGameEngine.GUI
             Game.Instance.SetCallback(CB_LogicTick);
         }
 
-        public unsafe void StartBattle(PBEBattle battle, IReadOnlyList<Party> trainerParties)
+        public unsafe void StartBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties)
         {
             Game.Instance.IsOnOverworld = false;
             new BattleGUI(battle, OnBattleEnded, trainerParties);
+            SoundUtils.SetBattleBGM(song);
             _fadeTransition = new SpiralTransition();
             Game.Instance.SetCallback(CB_FadeOutToBattle);
             Game.Instance.SetRCallback(RCB_Fading);
@@ -127,6 +130,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         public unsafe void TempWarp(IWarp warp)
         {
             _warpingTo = warp;
+            SoundUtils.SetOverworldBGM(Map.LoadOrGet(warp.DestMapId).MapDetails.Music);
             _fadeTransition = new FadeToColorTransition(20, 0);
             Game.Instance.SetCallback(CB_FadeOutToWarp);
             Game.Instance.SetRCallback(RCB_Fading);
@@ -145,6 +149,11 @@ namespace Kermalis.PokemonGameEngine.GUI
             _fadeTransition = new FadeFromColorTransition(20, 0);
             Game.Instance.SetCallback(CB_FadeIn);
             Game.Instance.SetRCallback(RCB_Fading);
+        }
+
+        private void LoadMapMusic()
+        {
+            SoundUtils.SetOverworldBGM(PlayerObj.Player.Map.MapDetails.Music);
         }
 
         private unsafe void CB_FadeIn()

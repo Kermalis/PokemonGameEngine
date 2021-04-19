@@ -27,6 +27,8 @@ namespace Kermalis.PokemonGameEngine.Core
         public uint CBState;
         public unsafe delegate void RenderCallback(uint* bmpAddress, int bmpWidth, int bmpHeight);
         public RenderCallback RCallback;
+        public delegate void SoundCallback();
+        public SoundCallback SCallback;
 
         public Game()
         {
@@ -40,7 +42,14 @@ namespace Kermalis.PokemonGameEngine.Core
         public void SetCallback(MainCallback callback)
         {
 #if DEBUG
-            System.Console.WriteLine("  Main Callback\t\t{0} . {1}", callback.Method.DeclaringType.Name, callback.Method);
+            if (callback is null)
+            {
+                System.Console.WriteLine("  Main Callback\t\tnull");
+            }
+            else
+            {
+                System.Console.WriteLine("  Main Callback\t\t{0} . {1}", callback.Method.DeclaringType.Name, callback.Method);
+            }
 #endif
             Callback = callback;
             CBState = 0;
@@ -48,9 +57,30 @@ namespace Kermalis.PokemonGameEngine.Core
         public void SetRCallback(RenderCallback callback)
         {
 #if DEBUG
-            System.Console.WriteLine("Render Callback\t\t{0} . {1}", callback.Method.DeclaringType.Name, callback.Method);
+            if (callback is null)
+            {
+                System.Console.WriteLine("Render Callback\t\tnull");
+            }
+            else
+            {
+                System.Console.WriteLine("Render Callback\t\t{0} . {1}", callback.Method.DeclaringType.Name, callback.Method);
+            }
 #endif
             RCallback = callback;
+        }
+        public void SetSCallback(SoundCallback callback)
+        {
+#if DEBUG
+                if (callback is null)
+                {
+                    System.Console.WriteLine(" Sound Callback\t\tnull");
+                }
+                else
+                {
+                    System.Console.WriteLine(" Sound Callback\t\t{0} . {1}", callback.Method.DeclaringType.Name, callback.Method);
+                }
+#endif
+            SCallback = callback;
         }
 
         private PBEBattleTerrain UpdateBattleSetting(Map.Layout.Block block)
@@ -63,11 +93,11 @@ namespace Kermalis.PokemonGameEngine.Core
                 isUnderwater: false);
             return terrain;
         }
-        private void CreateBattle(PBEBattle battle, IReadOnlyList<Party> trainerParties)
+        private void CreateBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties)
         {
-            OverworldGUI.Instance.StartBattle(battle, trainerParties);
+            OverworldGUI.Instance.StartBattle(battle, song, trainerParties);
         }
-        private void CreateWildBattle(Map map, Map.Layout.Block block, Party wildParty, PBEBattleFormat format)
+        private void CreateWildBattle(Map map, Map.Layout.Block block, Party wildParty, PBEBattleFormat format, Song song)
         {
             Save sav = Save;
             var me = new PBETrainerInfo(sav.PlayerParty, sav.OT.TrainerName, true, inventory: sav.PlayerInventory.ToPBEInventory());
@@ -75,19 +105,19 @@ namespace Kermalis.PokemonGameEngine.Core
             var wild = new PBEWildInfo(wildParty);
             PBEBattleTerrain terrain = UpdateBattleSetting(block);
             var battle = new PBEBattle(format, PkmnConstants.PBESettings, me, wild, battleTerrain: terrain, weather: Overworld.GetPBEWeatherFromMap(map));
-            CreateBattle(battle, trainerParties);
+            CreateBattle(battle, song, trainerParties);
         }
         // Temp - start a test wild battle
         public void TempCreateWildBattle(Map map, Map.Layout.Block block, EncounterTable.Encounter encounter)
         {
-            CreateWildBattle(map, block, new Party { new PartyPokemon(encounter) }, PBEBattleFormat.Single);
+            CreateWildBattle(map, block, new Party { new PartyPokemon(encounter) }, PBEBattleFormat.Single, Song.WildBattle);
         }
         // For scripted
         public void TempCreateWildBattle(PartyPokemon wildPkmn)
         {
             PlayerObj player = PlayerObj.Player;
             Map.Layout.Block block = player.GetBlock(out Map map);
-            CreateWildBattle(map, block, new Party { wildPkmn }, PBEBattleFormat.Single);
+            CreateWildBattle(map, block, new Party { wildPkmn }, PBEBattleFormat.Single, Song.LegendaryBattle);
         }
 
         #region Logic Tick
@@ -109,6 +139,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public void LogicTick()
         {
             Callback?.Invoke();
+            SCallback?.Invoke();
         }
 
         #endregion

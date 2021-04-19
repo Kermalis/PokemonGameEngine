@@ -5,6 +5,7 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World;
 using System;
@@ -66,6 +67,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private unsafe void TransitionOut()
         {
+            SoundUtils.FadeOutBattleBGMToOverworldBGM();
             _fadeTransition = new FadeToColorTransition(20, 0);
             Game.Instance.SetCallback(CB_FadeOutBattle);
             Game.Instance.SetRCallback(RCB_Fading);

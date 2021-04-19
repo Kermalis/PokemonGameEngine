@@ -1,8 +1,10 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.Util;
 using SDL2;
+using SoLoud;
 using System;
 using System.Threading;
 
@@ -43,8 +45,10 @@ namespace Kermalis.PokemonGameEngine.UI
 
         private Program()
         {
+            // Battle engine
             Utils.SetWorkingDirectory(string.Empty);
 
+            // SDL 2
             SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_GAMECONTROLLER);
             SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG);
 
@@ -53,6 +57,10 @@ namespace Kermalis.PokemonGameEngine.UI
 
             AttachFirstController();
 
+            // SoLoud - Init static constructor
+            SoundUtils.Init();
+
+            // Game
             new Game(); // Init game
             new Thread(LogicTick) { Name = "Logic Thread" }.Start();
             new Thread(RenderTick) { Name = "Render Thread" }.Start();
@@ -166,6 +174,8 @@ namespace Kermalis.PokemonGameEngine.UI
             {
                 ; // Wait for ticks to quit
             }
+
+            SoundUtils.DeInit();
 
             SDL.SDL_DestroyTexture(_screen);
             SDL.SDL_DestroyRenderer(_renderer);

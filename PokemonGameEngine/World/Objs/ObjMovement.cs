@@ -352,7 +352,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Pos.Y = block.Y;
             PrevPos.X += block.X - x;
             PrevPos.Y += block.Y - y;
+            OnMapChanged(curMap, map);
         }
+
+        protected virtual void OnMapChanged(Map oldMap, Map newMap) { }
 
         // TODO: Ledges, waterfall, etc
         public virtual bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)

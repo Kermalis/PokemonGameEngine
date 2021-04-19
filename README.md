@@ -27,6 +27,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Controller support
 * Animated sprites
 * Spinda spots ![Spindas](Spindas.gif)
+* Sound & Music
 
 ----
 ## To Do:
@@ -35,7 +36,6 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Saving
 * Trainers
 * Default menus
-* Sound/music
 * Bike/surf
 * Some movement behaviors (like ledges, spin tiles, waterfall, etc)
 
@@ -50,6 +50,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * [SDL2#](https://github.com/flibitijibibo/SDL2-CS)
 * [SimpleGIF](https://github.com/Kermalis/SimpleGIF)
 * [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)
+* [SoLoud](https://github.com/jarikomppa/soloud)
 
 ## MapEditor Uses:
 * [Avalonia](https://github.com/AvaloniaUI/Avalonia)

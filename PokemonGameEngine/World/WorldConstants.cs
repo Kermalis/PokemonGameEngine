@@ -214,9 +214,13 @@ namespace Kermalis.PokemonGameEngine.World
         Bridge_Cave_Encounter
     }
 
-    // TODO
     public enum Song : ushort
     {
         None,
+        Town1,
+        Route1,
+        Cave1,
+        WildBattle,
+        LegendaryBattle,
     }
 }
