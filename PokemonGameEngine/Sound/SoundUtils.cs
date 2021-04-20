@@ -26,8 +26,8 @@ namespace Kermalis.PokemonGameEngine.Sound
         private static readonly Dictionary<Song, (string resource, double loopPoint)> _songResources = new Dictionary<Song, (string, double)>
         {
             { Song.Town1, ("Sound.BGM.Town1.ogg", 0.48) },
-            { Song.Route1, ("Sound.BGM.Town1.ogg", 0.48) },//, ("Sound.BGM.Route1.ogg", 2.18) },
-            { Song.Cave1, ("Sound.BGM.Town1.ogg", 0.48) },//, ("Sound.BGM.Cave1.ogg", 0) },
+            { Song.Route1, ("Sound.BGM.Town1.ogg", 0.48) },//, ("Sound.BGM.Route1.ogg", 2.1818) },
+            { Song.Cave1, ("Sound.BGM.Cave1.ogg", 3.75) },
             { Song.WildBattle, ("Sound.BGM.Town1.ogg", 0.48) },//, ("Sound.BGM.WildBattle.ogg", 0) },
             { Song.LegendaryBattle, ("Sound.BGM.Town1.ogg", 0.48) },//, ("Sound.BGM.LegendaryBattle.ogg", 0) },
         };
@@ -147,6 +147,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             {
                 _soloud.stop(_overworldBGM.Handle);
                 _overworldBGM = SongToSound(_newOverworldBGM);
+                _newOverworldBGM = Song.None;
                 _overworldBGM.Handle = _soloud.playBackground(_overworldBGM.Wav);
                 Game.Instance.SetSCallback(null);
             }
