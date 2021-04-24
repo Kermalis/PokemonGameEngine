@@ -25,11 +25,11 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private static readonly Dictionary<Song, (string resource, double loopPoint)> _songResources = new Dictionary<Song, (string, double)>
         {
-            { Song.Town1, ("Sound.BGM.Town1.ogg", 0.48) },
-            { Song.Route1, ("Sound.BGM.Town1.ogg", 0.48) },//, ("Sound.BGM.Route1.ogg", 2.1818) },
-            { Song.Cave1, ("Sound.BGM.Cave1.ogg", 3.75) },
-            { Song.WildBattle, ("Sound.BGM.Town1.ogg", 0.48) },//, ("Sound.BGM.WildBattle.ogg", 0) },
-            { Song.LegendaryBattle, ("Sound.BGM.Town1.ogg", 0.48) },//, ("Sound.BGM.LegendaryBattle.ogg", 0) },
+            { Song.Town1, ("Sound.BGM.Town1.ogg", 60d/110*4*14) }, // 110BPM, 4/4, loop after 14 bars (30.5454~ seconds)
+            { Song.Route1, ("Sound.BGM.Town1.ogg", 60d/110*4*14) },//, ("Sound.BGM.Route1.ogg", 60d/220*4*2) }, // 220BPM, 4/4, loop after 2 bars (2.1818~ seconds)
+            { Song.Cave1, ("Sound.BGM.Cave1.ogg", 60d/128*4*2) }, // 128BPM, 4/4, loop after 2 bars (3.75 seconds)
+            { Song.WildBattle, ("Sound.BGM.Town1.ogg", 60d/110*4*14) },//, ("Sound.BGM.WildBattle.ogg", 0) },
+            { Song.LegendaryBattle, ("Sound.BGM.Town1.ogg", 60d/110*4*14) },//, ("Sound.BGM.LegendaryBattle.ogg", 0) },
         };
 
         private static readonly Soloud _soloud;
