@@ -24,6 +24,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         }
     }
 
+    // "Spacing" in this class represents absolute pixels
     internal sealed class TextGUIChoices : GUIChoices<TextGUIChoice>
     {
         public bool BottomAligned;
@@ -32,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         public uint[] SelectedColors;
         public uint[] DisabledColors;
 
-        public TextGUIChoices(float x, float y, float spacing, Action backCommand = null,
+        public TextGUIChoices(float x, float y, float spacing = 3, bool bottomAlign = false, Action backCommand = null,
             Font font = null, uint[] fontColors = null, uint[] selectedColors = null, uint[] disabledColors = null)
             : base(x, y, spacing, backCommand: backCommand)
         {
@@ -40,14 +41,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             FontColors = fontColors;
             SelectedColors = selectedColors;
             DisabledColors = disabledColors;
+            BottomAligned = bottomAlign;
         }
 
         public override unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             float y1 = Y * bmpHeight;
-            float space = bmpHeight * Spacing;
+            float y = y1;
+            float space = Spacing;
             int count = _choices.Count;
-            for (int i = 0; i < count; i++)
+            int i = BottomAligned ? count - 1 : 0;
+            while (true)
             {
                 TextGUIChoice c = _choices[i];
                 Font font = c.Font ?? Font;
@@ -63,23 +67,61 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                 {
                     colors = c.DisabledColors ?? DisabledColors;
                 }
-                int y;
-                if (BottomAligned)
-                {
-                    y = (int)(y1 - (space * (count - 1 - i)));
-                }
-                else
-                {
-                    y = (int)(y1 + (space * i));
-                }
-                font.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * X), y, c.Text, colors);
+                font.MeasureString("→ ", out int arrowW, out int textH);
+                int x = (int)(bmpWidth * X);
+                // If this is bottom align, we need to adjust the y
+                int iy = BottomAligned ? (int)y - textH : (int)y;
+                font.DrawString(bmpAddress, bmpWidth, bmpHeight, x + arrowW, iy, c.Text, colors);
                 // Draw selection arrow
                 if (isSelected)
                 {
-                    string arrow = "→";
-                    font.MeasureString(arrow + ' ', out int arrowW, out _);
-                    font.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * X) - arrowW, y, arrow, colors);
+                    font.DrawString(bmpAddress, bmpWidth, bmpHeight, x, iy, "→", colors);
                 }
+
+                if (BottomAligned)
+                {
+                    if (--i < 0)
+                    {
+                        break;
+                    }
+                    y = iy - space;
+                }
+                else
+                {
+                    if (++i >= count)
+                    {
+                        break;
+                    }
+                    y += textH + space;
+                }
+            }
+        }
+
+        public void GetSize(out int width, out int height)
+        {
+            width = 0;
+            height = 0;
+            float y = 0;
+            float space = Spacing;
+            int count = _choices.Count;
+            for (int i = 0; i < count; i++)
+            {
+                TextGUIChoice c = _choices[i];
+                Font font = c.Font ?? Font;
+                font.MeasureString(c.Text, out int textW, out int textH);
+                font.MeasureString("→ ", out int arrowW, out _);
+                int totalWidth = textW + arrowW;
+                if (totalWidth > width)
+                {
+                    width = totalWidth;
+                }
+                int totalHeight = textH + (int)y;
+                if (totalHeight > height)
+                {
+                    height = totalHeight;
+                }
+
+                y += textH + space;
             }
         }
     }

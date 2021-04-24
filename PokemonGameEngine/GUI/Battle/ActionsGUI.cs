@@ -40,11 +40,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _party = party;
             _pkmn = pkmn;
 
-            _fightChoices = new TextGUIChoices(0.8f, 0.7f, 0.06f,
-                font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled)
-            {
-                BottomAligned = true
-            };
+            _fightChoices = new TextGUIChoices(0.75f, 0.75f, bottomAlign: true,
+                font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled);
             _fightChoices.Add(new TextGUIChoice("Fight", FightChoice));
             bool enabled = pkmn.CanSwitchOut(); // Cannot switch out or use item if TempLockedMove exists
             Action command = enabled ? PokemonChoice : (Action)null;
@@ -81,11 +78,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 PBEBattleMoveset moves = _pkmn.Moves;
                 PBEMove[] usableMoves = _pkmn.GetUsableMoves();
-                _moveChoices = new TextGUIChoices(0.8f, 0.7f, 0.06f, backCommand: () => _state = ActionsState.ShowAll,
-                    font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled)
-                {
-                    BottomAligned = true
-                };
+                _moveChoices = new TextGUIChoices(0.75f, 0.75f, bottomAlign: true, backCommand: () => _state = ActionsState.ShowAll,
+                    font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled);
                 for (int i = 0; i < PkmnConstants.NumMoves; i++)
                 {
                     PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[i];

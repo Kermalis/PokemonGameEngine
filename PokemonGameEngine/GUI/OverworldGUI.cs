@@ -85,7 +85,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void SetupStartMenuChoices()
         {
-            _startMenuChoices = new TextGUIChoices(0.15f, 0.05f, 0.1f, backCommand: CloseStartMenu, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _startMenuChoices = new TextGUIChoices(0, 0, backCommand: CloseStartMenu, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
             _startMenuChoices.Add(new TextGUIChoice("Pokémon", StartMenu_DebugBagSelected));
             _startMenuChoices.Add(new TextGUIChoice("Bag", StartMenu_DebugBagSelected));
             _startMenuChoices.Add(new TextGUIChoice("PC", StartMenu_DebugPCSelected));
@@ -94,7 +94,8 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private void SetupStartMenuWindow()
         {
-            _startMenuWindow = new Window(0.72f, 0.05f, 0.25f, 0.9f, RenderUtils.Color(255, 255, 255, 255));
+            _startMenuChoices.GetSize(out int width, out int height);
+            _startMenuWindow = new Window(0.72f, 0.05f, width, height, RenderUtils.Color(255, 255, 255, 255));
             RenderStartMenuChoicesOntoWindow();
         }
         private unsafe void RenderStartMenuChoicesOntoWindow()

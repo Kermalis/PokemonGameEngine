@@ -132,10 +132,11 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private void BringUpPartyPkmnActions(PartyPokemon pkmn)
         {
-            _textChoicesWindow = new Window(0.6f, 0.3f, 0.2f, 0.4f, RenderUtils.Color(255, 255, 255, 255));
-            _textChoices = new TextGUIChoices(0.2f, 0.05f, 0.2f, backCommand: CloseChoicesAndStringPrinterThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesAndStringPrinterThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
             _textChoices.Add(new TextGUIChoice("Deposit", () => Action_DepositPartyPkmn(pkmn)));
             _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesAndStringPrinterThenGoToLogicTick));
+            _textChoices.GetSize(out int width, out int height);
+            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, RenderUtils.Color(255, 255, 255, 255));
             RenderChoicesOntoWindow();
             string msg = string.Format("Do what with {0}?", pkmn.Nickname);
             _staticStringBackup = msg;
@@ -143,10 +144,11 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void BringUpBoxPkmnActions(BoxPokemon pkmn)
         {
-            _textChoicesWindow = new Window(0.6f, 0.3f, 0.2f, 0.4f, RenderUtils.Color(255, 255, 255, 255));
-            _textChoices = new TextGUIChoices(0.2f, 0.05f, 0.2f, backCommand: CloseChoicesAndStringPrinterThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesAndStringPrinterThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
             _textChoices.Add(new TextGUIChoice("Withdraw", () => Action_WithdrawBoxPkmn(pkmn)));
             _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesAndStringPrinterThenGoToLogicTick));
+            _textChoices.GetSize(out int width, out int height);
+            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, RenderUtils.Color(255, 255, 255, 255));
             RenderChoicesOntoWindow();
             string msg = string.Format("Do what with {0}?", pkmn.Nickname);
             _staticStringBackup = msg;

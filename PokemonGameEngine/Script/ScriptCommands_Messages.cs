@@ -60,10 +60,11 @@ namespace Kermalis.PokemonGameEngine.Script
         }
         private void YesNoChoiceCommand()
         {
-            _multichoiceWindow = new Window(0.8f, 0.4f, 0.1f, 0.16f, RenderUtils.Color(255, 255, 255, 255));
-            _multichoice = new TextGUIChoices(0.35f, 0.05f, 0.5f, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _multichoice = new TextGUIChoices(0, 0, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
             _multichoice.Add(new TextGUIChoice("Yes", () => MultichoiceAction(1)));
             _multichoice.Add(new TextGUIChoice("No", () => MultichoiceAction(0)));
+            _multichoice.GetSize(out int width, out int height);
+            _multichoiceWindow = new Window(0.8f, 0.4f, width, height, RenderUtils.Color(255, 255, 255, 255));
             RenderChoicesOntoWindow();
         }
     }
