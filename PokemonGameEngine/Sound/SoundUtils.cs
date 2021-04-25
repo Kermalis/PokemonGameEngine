@@ -43,7 +43,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         public static void Init()
         {
-            _soloud.init(Soloud.CLIP_ROUNDOFF | Soloud.SDL2);
+            _soloud.init(Soloud.CLIP_ROUNDOFF, Soloud.SDL2);
         }
         public static void DeInit()
         {
