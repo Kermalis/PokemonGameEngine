@@ -91,5 +91,6 @@
         StorePokemonInDaycare,
         GetDaycareCompatibility,
         YesNoChoice,
+        IncrementGameStat,
     }
 }

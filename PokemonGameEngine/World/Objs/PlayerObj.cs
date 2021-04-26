@@ -150,7 +150,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 facing = FacingDirection.East;
             }
             bool run = InputManager.IsDown(Key.B);
+            Position oldP = Pos;
             Move(facing, run, false);
+            if (!oldP.IsSamePosition(Pos))
+            {
+                Game.Instance.Save.GameStats[GameStat.StepsTaken]++;
+            }
             _shouldRunTriggers = true;
         }
     }

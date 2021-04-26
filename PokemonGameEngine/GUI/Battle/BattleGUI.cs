@@ -97,6 +97,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     }
                     if (_battle.BattleResult == PBEBattleResult.WildCapture)
                     {
+                        Game.Instance.Save.GameStats[GameStat.PokemonCaptures]++;
                         PBETrainer wildTrainer = _battle.Teams[1].Trainers[0];
                         SpritedBattlePokemonParty sp = _spritedParties[wildTrainer.Id];
                         PBEBattlePokemon wildPkmn = wildTrainer.ActiveBattlers.Single();

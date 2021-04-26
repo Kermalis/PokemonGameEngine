@@ -7,6 +7,7 @@ namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Save
     {
+        public GameStats GameStats { get; }
         public Pokedex Pokedex { get; }
         public Flags Flags { get; }
         public Vars Vars { get; }
@@ -19,6 +20,7 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public Save()
         {
+            GameStats = new GameStats();
             Pokedex = new Pokedex();
             Flags = new Flags();
             Vars = new Vars();

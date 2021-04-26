@@ -96,6 +96,7 @@ namespace Kermalis.PokemonGameEngine.Core
         private void CreateBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties)
         {
             OverworldGUI.Instance.StartBattle(battle, song, trainerParties);
+            Save.GameStats[GameStat.TotalBattles]++;
         }
         private void CreateWildBattle(Map map, Map.Layout.Block block, Party wildParty, PBEBattleFormat format, Song song)
         {
@@ -106,6 +107,7 @@ namespace Kermalis.PokemonGameEngine.Core
             PBEBattleTerrain terrain = UpdateBattleSetting(block);
             var battle = new PBEBattle(format, PkmnConstants.PBESettings, me, wild, battleTerrain: terrain, weather: Overworld.GetPBEWeatherFromMap(map));
             CreateBattle(battle, song, trainerParties);
+            Save.GameStats[GameStat.WildBattles]++;
         }
         // Temp - start a test wild battle
         public void TempCreateWildBattle(Map map, Map.Layout.Block block, EncounterTable.Encounter encounter)

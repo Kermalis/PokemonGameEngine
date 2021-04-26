@@ -13,6 +13,7 @@ internal static class ScriptBuilderHelper
     {
         { typeof(DaycareState), "DaycareState." },
         { typeof(Flag), "Flag." },
+        { typeof(GameStat), "GameStat." },
         { typeof(ScriptConditional), "C." },
         { typeof(Var), VarPrefix },
         { typeof(PBEForm), "Form." },
@@ -83,6 +84,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.StorePokemonInDaycare, Array.Empty<Type>() },
         { ScriptCommand.GetDaycareCompatibility, Array.Empty<Type>() },
         { ScriptCommand.YesNoChoice, Array.Empty<Type>() },
+        { ScriptCommand.IncrementGameStat, new[] { typeof(GameStat) } }, // Game stat
     };
 
     static ScriptBuilderHelper()

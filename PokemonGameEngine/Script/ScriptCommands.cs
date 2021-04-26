@@ -67,6 +67,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.StorePokemonInDaycare: StorePokemonInDaycare(); break;
                 case ScriptCommand.GetDaycareCompatibility: GetDaycareCompatibility(); break;
                 case ScriptCommand.YesNoChoice: YesNoChoiceCommand(); break;
+                case ScriptCommand.IncrementGameStat: IncrementGameStat(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -430,6 +431,12 @@ namespace Kermalis.PokemonGameEngine.Script
         private void GetDaycareCompatibility()
         {
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = Game.Instance.Save.Daycare.GetCompatibility();
+        }
+
+        private void IncrementGameStat()
+        {
+            GameStat stat = ReadVarOrEnum<GameStat>();
+            Game.Instance.Save.GameStats[stat]++;
         }
     }
 }
