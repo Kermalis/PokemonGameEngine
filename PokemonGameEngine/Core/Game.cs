@@ -71,14 +71,14 @@ namespace Kermalis.PokemonGameEngine.Core
         public void SetSCallback(SoundCallback callback)
         {
 #if DEBUG
-                if (callback is null)
-                {
-                    System.Console.WriteLine(" Sound Callback\t\tnull");
-                }
-                else
-                {
-                    System.Console.WriteLine(" Sound Callback\t\t{0} . {1}", callback.Method.DeclaringType.Name, callback.Method);
-                }
+            if (callback is null)
+            {
+                System.Console.WriteLine(" Sound Callback\t\tnull");
+            }
+            else
+            {
+                System.Console.WriteLine(" Sound Callback\t\t{0} . {1}", callback.Method.DeclaringType.Name, callback.Method);
+            }
 #endif
             SCallback = callback;
         }
