@@ -53,21 +53,25 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _fightChoices.Add(new TextGUIChoice("Run", command, isEnabled: enabled));
         }
 
-        private void FightChoice()
+        private bool TryUseForcedMove()
         {
-            // Check if there's a move we must use
-            bool auto = false;
             if (_pkmn.IsForcedToStruggle())
             {
                 _pkmn.TurnAction = new PBETurnAction(_pkmn, PBEMove.Struggle, PBEBattleUtils.GetPossibleTargets(_pkmn, _pkmn.GetMoveTargets(PBEMove.Struggle))[0]);
-                auto = true;
+                return true;
             }
             else if (_pkmn.TempLockedMove != PBEMove.None)
             {
                 _pkmn.TurnAction = new PBETurnAction(_pkmn, _pkmn.TempLockedMove, _pkmn.TempLockedTargets);
-                auto = true;
+                return true;
             }
-            if (auto)
+            return false;
+        }
+
+        private void FightChoice()
+        {
+            // Check if there's a move we must use
+            if (TryUseForcedMove())
             {
                 _parent.ActionsLoop(false);
                 return;
