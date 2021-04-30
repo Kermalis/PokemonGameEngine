@@ -28,8 +28,10 @@ namespace Kermalis.PokemonGameEngine.Sound
             { Song.Town1, ("Sound.BGM.Town1.ogg", 60d/110*4*14) }, // 110BPM, 4/4, loop after 14 bars (30.5454~ seconds)
             { Song.Route1, ("Sound.BGM.Town1.ogg", 60d/110*4*14) },//, ("Sound.BGM.Route1.ogg", 60d/220*4*2) }, // 220BPM, 4/4, loop after 2 bars (2.1818~ seconds)
             { Song.Cave1, ("Sound.BGM.Cave1.ogg", 60d/128*4*2) }, // 128BPM, 4/4, loop after 2 bars (3.75 seconds)
-            { Song.WildBattle, ("Sound.BGM.Town1.ogg", 60d/110*4*14) },//, ("Sound.BGM.WildBattle.ogg", 0) },
-            { Song.LegendaryBattle, ("Sound.BGM.Town1.ogg", 60d/110*4*14) },//, ("Sound.BGM.LegendaryBattle.ogg", 0) },
+            { Song.WildBattle, ("Sound.BGM.TrainerBattle.ogg", 60d/270*4*40) },
+            { Song.TrainerBattle, ("Sound.BGM.TrainerBattle.ogg", 60d/270*4*40) }, // 270BPM, 4/4, loop after 40 bars (35.55~ seconds)
+            { Song.GymBattle, ("Sound.BGM.TrainerBattle.ogg", 60d/270*4*40) },
+            { Song.LegendaryBattle, ("Sound.BGM.TrainerBattle.ogg", 60d/270*4*40) },
         };
 
         private static readonly Soloud _soloud;
