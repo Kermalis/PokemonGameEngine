@@ -85,6 +85,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.GetDaycareCompatibility, Array.Empty<Type>() },
         { ScriptCommand.YesNoChoice, Array.Empty<Type>() },
         { ScriptCommand.IncrementGameStat, new[] { typeof(GameStat) } }, // Game stat
+        { ScriptCommand.PlayCry, new[] { typeof(PBESpecies), typeof(PBEForm) } }, // Species, form
     };
 
     static ScriptBuilderHelper()

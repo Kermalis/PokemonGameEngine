@@ -3,11 +3,12 @@ LockAllObjs
 MoveObj 0xFFFF TestMovement_FaceNorth
 AwaitObjMovement 0xFFFF
 Delay 20
+PlayCry Species.Groudon Form.Shaymin // TODO: Allow "0" as the form argument. Using Form.Shaymin since it equates to 0
 Message TestText_GroudonGyaoo
 Delay 40
 AwaitMessageComplete
 CloseMessage
-WildBattle Species.Groudon Form.Shaymin 70 // TODO: Allow "0" as the form argument. Using Form.Shaymin since it equates to 0
+WildBattle Species.Groudon Form.Shaymin 70 // TODO: Allow "0"
 AwaitBattle
 UnloadObj 0
 

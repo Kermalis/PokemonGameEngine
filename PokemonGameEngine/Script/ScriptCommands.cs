@@ -3,6 +3,7 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Scripts;
+using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
@@ -63,11 +64,12 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.LookTowardsObj: LookTowardsObjCommand(); break;
                 case ScriptCommand.BufferSeenCount: BufferSeenCountCommand(); break;
                 case ScriptCommand.BufferCaughtCount: BufferCaughtCountCommand(); break;
-                case ScriptCommand.GetDaycareState: GetDaycareState(); break;
-                case ScriptCommand.StorePokemonInDaycare: StorePokemonInDaycare(); break;
-                case ScriptCommand.GetDaycareCompatibility: GetDaycareCompatibility(); break;
+                case ScriptCommand.GetDaycareState: GetDaycareStateCommand(); break;
+                case ScriptCommand.StorePokemonInDaycare: StorePokemonInDaycareCommand(); break;
+                case ScriptCommand.GetDaycareCompatibility: GetDaycareCompatibilityCommand(); break;
                 case ScriptCommand.YesNoChoice: YesNoChoiceCommand(); break;
-                case ScriptCommand.IncrementGameStat: IncrementGameStat(); break;
+                case ScriptCommand.IncrementGameStat: IncrementGameStatCommand(); break;
+                case ScriptCommand.PlayCry: PlayCryCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -417,26 +419,33 @@ namespace Kermalis.PokemonGameEngine.Script
             _waitBattle = true;
         }
 
-        private void GetDaycareState()
+        private void GetDaycareStateCommand()
         {
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = (byte)Game.Instance.Save.Daycare.GetDaycareState();
         }
-        private void StorePokemonInDaycare()
+        private void StorePokemonInDaycareCommand()
         {
             int index = Game.Instance.Save.Vars[Var.SpecialVar1];
             PartyPokemon pkmn = Game.Instance.Save.PlayerParty[index];
             Game.Instance.Save.PlayerParty.Remove(pkmn);
             Game.Instance.Save.Daycare.StorePokemon(pkmn);
         }
-        private void GetDaycareCompatibility()
+        private void GetDaycareCompatibilityCommand()
         {
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = Game.Instance.Save.Daycare.GetCompatibility();
         }
 
-        private void IncrementGameStat()
+        private void IncrementGameStatCommand()
         {
             GameStat stat = ReadVarOrEnum<GameStat>();
             Game.Instance.Save.GameStats[stat]++;
+        }
+
+        private void PlayCryCommand()
+        {
+            PBESpecies species = ReadVarOrEnum<PBESpecies>();
+            PBEForm form = ReadVarOrEnum<PBEForm>();
+            SoundControl.Debug_PlayCry(species, form);
         }
     }
 }

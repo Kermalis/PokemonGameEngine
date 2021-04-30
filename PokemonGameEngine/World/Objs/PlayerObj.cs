@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         protected override void OnMapChanged(Map oldMap, Map newMap)
         {
-            SoundUtils.SetOverworldBGM(newMap.MapDetails.Music);
+            SoundControl.SetOverworldBGM(newMap.MapDetails.Music);
         }
 
         public override void LogicTick()

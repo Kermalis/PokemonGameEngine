@@ -58,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.UI
             AttachFirstController();
 
             // SoLoud - Init static constructor
-            SoundUtils.Init();
+            SoundControl.Init();
 
             // Game
             new Game(); // Init game
@@ -175,7 +175,7 @@ namespace Kermalis.PokemonGameEngine.UI
                 ; // Wait for ticks to quit
             }
 
-            SoundUtils.DeInit();
+            SoundControl.DeInit();
 
             SDL.SDL_DestroyTexture(_screen);
             SDL.SDL_DestroyRenderer(_renderer);

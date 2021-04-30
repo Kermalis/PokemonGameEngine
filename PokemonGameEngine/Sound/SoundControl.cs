@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonGameEngine.Core;
+﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Util;
 using Kermalis.PokemonGameEngine.World;
 using SoLoud;
@@ -8,7 +9,7 @@ using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Sound
 {
-    internal static class SoundUtils
+    internal static class SoundControl
     {
         private sealed class Sound
         {
@@ -19,6 +20,16 @@ namespace Kermalis.PokemonGameEngine.Sound
             public Sound(Song song, WavStream wav)
             {
                 Song = song;
+                Wav = wav;
+            }
+        }
+        private sealed class CrySound
+        {
+            public readonly Wav Wav;
+            public uint Handle;
+
+            public CrySound(Wav wav)
+            {
                 Wav = wav;
             }
         }
@@ -38,8 +49,9 @@ namespace Kermalis.PokemonGameEngine.Sound
         private static Sound _overworldBGM;
         private static Song _newOverworldBGM;
         private static Sound _battleBGM;
+        private static CrySound _testCry;
 
-        static SoundUtils()
+        static SoundControl()
         {
             _soloud = new Soloud();
         }
@@ -51,6 +63,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         {
             _soloud.deinit();
         }
+
         // Ideally we would want to be using wav.loadFile(), but I'm not sure if it's possible from C#
         private static unsafe Sound SongToSound(Song song)
         {
@@ -72,6 +85,36 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
             wav.setLooping(1);
             return new Sound(song, wav);
+        }
+        private static unsafe CrySound CryToSound(PBESpecies species, PBEForm form)
+        {
+            byte[] bytes;
+            using (Stream stream = Utils.GetResourceStream(GetCryResource(species, form)))
+            {
+                bytes = new byte[stream.Length];
+                stream.Read(bytes, 0, bytes.Length);
+            }
+            var wav = new Wav();
+            fixed (byte* b = bytes)
+            {
+                wav.loadMem(new IntPtr(b), (uint)bytes.Length, aCopy: 1);
+            }
+            return new CrySound(wav);
+        }
+
+        private static string GetCryResource(PBESpecies species, PBEForm form)
+        {
+            if (species == PBESpecies.Shaymin && form == PBEForm.Shaymin_Sky)
+            {
+                return "Sound.Cries.Shaymin_Sky.wav";
+            }
+            return "Sound.Cries." + species + ".wav";
+        }
+
+        public static void Debug_PlayCry(PBESpecies species, PBEForm form)
+        {
+            _testCry = CryToSound(species, form);
+            _testCry.Handle = _soloud.play(_testCry.Wav);
         }
 
         public static void SetOverworldBGM_NoFade(Song song)

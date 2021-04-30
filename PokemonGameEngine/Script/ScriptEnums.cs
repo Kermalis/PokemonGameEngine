@@ -92,5 +92,6 @@
         GetDaycareCompatibility,
         YesNoChoice,
         IncrementGameStat,
+        PlayCry,
     }
 }

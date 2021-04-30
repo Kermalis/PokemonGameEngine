@@ -67,7 +67,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private unsafe void TransitionOut()
         {
-            SoundUtils.FadeOutBattleBGMToOverworldBGM();
+            SoundControl.FadeOutBattleBGMToOverworldBGM();
             _fadeTransition = new FadeToColorTransition(20, 0);
             Game.Instance.SetCallback(CB_FadeOutBattle);
             Game.Instance.SetRCallback(RCB_Fading);
@@ -487,6 +487,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         PBEBattlePokemon pkmn = psip.Trainer.TryGetPokemon(info.Pokemon);
                         SetSeen(pkmn);
                         ShowPokemon(pkmn);
+                        SoundControl.Debug_PlayCry(pkmn.KnownSpecies, pkmn.KnownForm);
                     }
                     break;
                 }
@@ -504,6 +505,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         PBEBattlePokemon pkmn = trainer.TryGetPokemon(info.Pokemon);
                         SetSeen(pkmn);
                         ShowWildPokemon(pkmn);
+                        SoundControl.Debug_PlayCry(pkmn.KnownSpecies, pkmn.KnownForm);
                     }
                     break;
                 }

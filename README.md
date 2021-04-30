@@ -27,7 +27,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Controller support
 * Animated sprites
 * Spinda spots ![Spindas](Spindas.gif)
-* Sound & Music
+* Sound & Music, Cries
 
 ----
 ## To Do:

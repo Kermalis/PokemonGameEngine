@@ -123,7 +123,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             Game.Instance.IsOnOverworld = false;
             new BattleGUI(battle, OnBattleEnded, trainerParties);
-            SoundUtils.SetBattleBGM(song);
+            SoundControl.SetBattleBGM(song);
             _fadeTransition = new SpiralTransition();
             Game.Instance.SetCallback(CB_FadeOutToBattle);
             Game.Instance.SetRCallback(RCB_Fading);
@@ -131,7 +131,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         public unsafe void TempWarp(IWarp warp)
         {
             _warpingTo = warp;
-            SoundUtils.SetOverworldBGM(Map.LoadOrGet(warp.DestMapId).MapDetails.Music);
+            SoundControl.SetOverworldBGM(Map.LoadOrGet(warp.DestMapId).MapDetails.Music);
             _fadeTransition = new FadeToColorTransition(20, 0);
             Game.Instance.SetCallback(CB_FadeOutToWarp);
             Game.Instance.SetRCallback(RCB_Fading);
@@ -154,7 +154,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private void LoadMapMusic()
         {
-            SoundUtils.SetOverworldBGM(PlayerObj.Player.Map.MapDetails.Music);
+            SoundControl.SetOverworldBGM(PlayerObj.Player.Map.MapDetails.Music);
         }
 
         private unsafe void CB_FadeIn()
