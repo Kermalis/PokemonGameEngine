@@ -10,6 +10,9 @@ namespace Kermalis.PokemonGameEngine.Util
     {
         public const string SubstituteFrontResource = "Pkmn.STATUS2_Substitute_F.gif";
         public const string SubstituteBackResource = "Pkmn.STATUS2_Substitute_B.gif";
+        public const string EggFrontResource = "Pkmn.Egg_F.gif";
+        public const string EggBackResource = "Pkmn.Egg_B.gif";
+        public const string EggMiniResource = "Pkmn.Egg_Mini.png";
 
         static PokemonImageUtils()
         {
@@ -42,39 +45,45 @@ namespace Kermalis.PokemonGameEngine.Util
                 return (mini ? _femaleMiniLookup : _femaleVersionLookup).Contains(species);
             }
         }
-        public static Image GetMini(PBESpecies species, PBEForm form, PBEGender gender, bool shiny)
+        public static Image GetMini(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool isEgg)
         {
-            return Image.LoadOrGet(GetMiniResource(species, form, gender, shiny));
+            return Image.LoadOrGet(GetMiniResource(species, form, gender, shiny, isEgg));
         }
-        public static string GetMiniResource(PBESpecies species, PBEForm form, PBEGender gender, bool shiny)
+        public static string GetMiniResource(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool isEgg)
         {
+            if (isEgg)
+            {
+                return EggMiniResource;
+            }
             string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
             string genderStr = gender == PBEGender.Female && HasFemaleVersion(species, true) ? "_F" : string.Empty;
             return "Pkmn.PKMN_" + speciesStr + (shiny ? "_S" : string.Empty) + genderStr + ".png";
         }
-        public static AnimatedImage GetPokemonImage(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool backImage, bool behindSubstitute, uint pid)
+        public static AnimatedImage GetPokemonImage(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool backImage, bool behindSubstitute, uint pid, bool isEgg)
         {
-            bool doSpindaSpots = species == PBESpecies.Spinda && !backImage && !behindSubstitute;
-            var ret = new AnimatedImage(GetPokemonImageResource(species, form, gender, shiny, backImage, behindSubstitute), !doSpindaSpots);
+            bool doSpindaSpots = !isEgg && species == PBESpecies.Spinda && !backImage && !behindSubstitute;
+            var ret = new AnimatedImage(GetPokemonImageResource(species, form, gender, shiny, backImage, behindSubstitute, isEgg), !doSpindaSpots);
             if (doSpindaSpots)
             {
                 RenderUtils.RenderSpindaSpots(ret, pid, shiny);
             }
             return ret;
         }
-        public static string GetPokemonImageResource(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool backImage, bool behindSubstitute)
+        public static string GetPokemonImageResource(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool backImage, bool behindSubstitute, bool isEgg)
         {
             if (behindSubstitute)
             {
                 return backImage ? SubstituteBackResource : SubstituteFrontResource;
             }
-            else
+            if (isEgg)
             {
-                string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
-                string genderStr = gender == PBEGender.Female && HasFemaleVersion(species, false) ? "_F" : string.Empty;
-                string orientation = backImage ? "_B" : "_F";
-                return "Pkmn.PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif";
+                return backImage ? EggBackResource : EggFrontResource;
             }
+
+            string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
+            string genderStr = gender == PBEGender.Female && HasFemaleVersion(species, false) ? "_F" : string.Empty;
+            string orientation = backImage ? "_B" : "_F";
+            return "Pkmn.PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif";
         }
     }
 }

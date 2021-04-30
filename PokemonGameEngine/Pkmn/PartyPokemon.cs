@@ -49,6 +49,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public ushort Speed { get; private set; }
 
         public uint PID { get; private set; } // Currently only used for Spinda spots; has no other effect
+        public bool IsEgg { get; set; }
+
+        public bool PBEIgnore => IsEgg;
 
         public PartyPokemon(PBESpecies species, PBEForm form, byte level, OTInfo ot)
         {
@@ -80,11 +83,12 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Species = encounter.Species;
             Form = encounter.Form;
             var pData = new BaseStats(Species, Form);
-            Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             Nickname = PBELocalizedString.GetSpeciesName(Species).English;
             Shiny = PBEDataProvider.GlobalRandom.RandomShiny();
             Level = (byte)PBEDataProvider.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel);
             EXP = PBEDataProvider.Instance.GetEXPRequired(pData.GrowthRate, Level);
+            Ability = PBEDataProvider.GlobalRandom.RandomElement(pData.Abilities);
+            Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
             Moveset = new Moveset();
             EffortValues = new EVs();
@@ -97,6 +101,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public PartyPokemon(BoxPokemon other)
         {
             PID = other.PID;
+            IsEgg = other.IsEgg;
             OT = other.OT;
             Species = other.Species;
             Form = other.Form;
@@ -246,6 +251,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Level = pkmn.Level;
             EXP = pkmn.EXP;
             CalcStats();
+            UpdateTimeBasedForms(DateTime.Now);
         }
         public void UpdateFromBattle_Caught(PBEBattlePokemon pkmn)
         {
@@ -266,6 +272,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             {
                 HealFully();
             }
+            UpdateTimeBasedForms(DateTime.Now);
         }
     }
 }

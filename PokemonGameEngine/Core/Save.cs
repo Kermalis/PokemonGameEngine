@@ -40,7 +40,7 @@ namespace Kermalis.PokemonGameEngine.Core
             }
             for (int i = 0; i < 44; i++)
             {
-                Debug_GiveRandomPokemon();
+                Debug_GiveRandomPokemon(i == 0 || i == 35);
             }
             PlayerInventory = new PlayerInventory();
             PlayerInventory.Add(PBEItem.DuskBall, 995);
@@ -57,11 +57,20 @@ namespace Kermalis.PokemonGameEngine.Core
             Money = 473_123;
         }
 
-        private void Debug_GiveRandomPokemon()
+        private void Debug_GiveRandomPokemon(bool egg)
         {
             (PBESpecies species, PBEForm form) = PBEDataProvider.GlobalRandom.RandomSpecies(true);
-            var pkmn = new PartyPokemon(species, form, (byte)PBEDataProvider.GlobalRandom.RandomInt(PkmnConstants.MinLevel, PkmnConstants.MaxLevel), OT);
-            pkmn.Debug_RandomizeMoves();
+            byte level = egg ? (byte)1 : (byte)PBEDataProvider.GlobalRandom.RandomInt(PkmnConstants.MinLevel, PkmnConstants.MaxLevel);
+            var pkmn = new PartyPokemon(species, form, level, OT);
+            if (egg)
+            {
+                pkmn.Nickname = "Egg";
+                pkmn.IsEgg = true;
+            }
+            else
+            {
+                pkmn.Debug_RandomizeMoves();
+            }
             GivePokemon(pkmn);
         }
 

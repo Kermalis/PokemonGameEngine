@@ -1565,6 +1565,10 @@
         <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemonData.Weight">
             <summary>Weight in Kilograms</summary>
         </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemon.PBEIgnore">
+            <summary>This marks the Pokémon to be ignored by the battle engine. The Pokémon will be treated like an egg or fainted Pokémon.
+            Therefore, it won't be sent out, copied with Illusion, or count as a battler if the rest of the team faints.</summary>
+        </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemonTypes.Type1">
             <summary>The Pokémon's first type.</summary>
         </member>

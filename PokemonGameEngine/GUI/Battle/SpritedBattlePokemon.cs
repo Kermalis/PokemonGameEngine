@@ -41,9 +41,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         // Because new animated image is created
         public void UpdateSprites(PkmnPosition pos, bool paused)
         {
-            Mini = PokemonImageUtils.GetMini(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny);
+            Mini = PokemonImageUtils.GetMini(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, PartyPkmn.IsEgg);
             PBEStatus2 status2 = _useKnownInfo ? Pkmn.KnownStatus2 : Pkmn.Status2;
-            AnimImage = PokemonImageUtils.GetPokemonImage(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, _backImage, status2.HasFlag(PBEStatus2.Substitute), PartyPkmn.PID);
+            AnimImage = PokemonImageUtils.GetPokemonImage(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, _backImage, status2.HasFlag(PBEStatus2.Substitute), PartyPkmn.PID, PartyPkmn.IsEgg);
             AnimImage.IsPaused = paused;
             if (pos is null)
             {
@@ -146,8 +146,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     else
                     {
                         PBEGrowthRate gr = new BaseStats(Pkmn.Species, Pkmn.RevertForm).GrowthRate;
-                        uint expPrev = EXPTables.GetEXPRequired(gr, Pkmn.Level);
-                        uint expNext = EXPTables.GetEXPRequired(gr, (byte)(Pkmn.Level + 1));
+                        uint expPrev = PBEEXPTables.GetEXPRequired(gr, Pkmn.Level);
+                        uint expNext = PBEEXPTables.GetEXPRequired(gr, (byte)(Pkmn.Level + 1));
                         uint expCur = Pkmn.EXP;
                         expp = (double)(expCur - expPrev) / (expNext - expPrev);
                     }

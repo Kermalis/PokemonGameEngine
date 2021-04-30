@@ -233,7 +233,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 {
                     continue;
                 }
-                _selectedBoxMinis[i] = PokemonImageUtils.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny);
+                _selectedBoxMinis[i] = PokemonImageUtils.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.IsEgg);
             }
             LoadPkmnContents(GetSelectedBoxPkmn());
         }
@@ -244,7 +244,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _selectedMainImage = null;
                 return;
             }
-            _selectedMainImage = PokemonImageUtils.GetPokemonImage(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, false, false, pkmn.PID);
+            _selectedMainImage = PokemonImageUtils.GetPokemonImage(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, false, false, pkmn.PID, pkmn.IsEgg);
         }
 
         private void CB_Choices()

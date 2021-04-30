@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             : base(command, isEnabled: isEnabled)
         {
             _pkmn = pkmn;
-            _mini = PokemonImageUtils.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny);
+            _mini = PokemonImageUtils.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.IsEgg);
 
             IsDirty = true;
         }
@@ -54,10 +54,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             _mini.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0f, -0.15f);
 
             Font fontDefault = Font.Default;
-            Font fontPartyNumbers = Font.PartyNumbers;
             uint[] defaultDark = Font.DefaultDark;
 
             fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.2f, 0.01f, _pkmn.Nickname, defaultDark);
+
+            if (_pkmn.IsEgg)
+            {
+                return; // Eggs don't show the rest
+            }
+
+            Font fontPartyNumbers = Font.PartyNumbers;
             fontPartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.2f, 0.65f, _pkmn.HP + "/" + _pkmn.MaxHP, defaultDark);
             fontPartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.7f, 0.65f, "[LV] " + _pkmn.Level, defaultDark);
             PBEGender gender = _pkmn.Gender;
