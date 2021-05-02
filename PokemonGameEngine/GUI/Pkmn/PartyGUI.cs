@@ -44,6 +44,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             {
                 _members.Add(new PartyGUIMember(pkmn, _sprites));
             }
+            _members[0].SetBigBounce();
 
             _onClosed = onClosed;
             _fadeTransition = new FadeFromColorTransition(20, 0);
