@@ -19,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public readonly List<StringPrinter> StringPrinters = new List<StringPrinter>();
         public readonly List<Window> Windows = new List<Window>();
 
-        /// <summary>For use with Script command "AwaitBattle"</summary>
+        /// <summary>For use with Script command "AwaitReturnToField"</summary>
         public bool IsOnOverworld;
 
         public delegate void MainCallback();

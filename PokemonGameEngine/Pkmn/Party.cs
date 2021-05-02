@@ -24,6 +24,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             return -1;
         }
 
+        public int IndexOf(PartyPokemon pkmn)
+        {
+            return _slots.IndexOf(pkmn);
+        }
+
         public void Remove(PartyPokemon pkmn)
         {
             if (!_slots.Remove(pkmn))

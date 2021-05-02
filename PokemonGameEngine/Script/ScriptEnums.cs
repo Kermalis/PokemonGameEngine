@@ -81,7 +81,7 @@
         CallIfFlag,
         BufferSpeciesName,
         WildBattle,
-        AwaitBattle,
+        AwaitReturnToField,
         CloseMessage,
         UnloadObj,
         LookTowardsObj,
@@ -90,8 +90,11 @@
         GetDaycareState,
         StorePokemonInDaycare,
         GetDaycareCompatibility,
+        SelectDaycareMon,
         YesNoChoice,
         IncrementGameStat,
         PlayCry,
+        CountNonEggParty,
+        CountNonFaintedNonEggParty,
     }
 }

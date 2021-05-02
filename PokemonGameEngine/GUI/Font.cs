@@ -176,13 +176,13 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void DrawGlyph(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, int scale, Glyph glyph, uint[] fontColors)
+        public unsafe void DrawGlyphScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, int scale, Glyph glyph, uint[] fontColors)
         {
             int ix = (int)(x * bmpWidth);
             int iy = (int)(y * bmpHeight);
-            DrawGlyph(bmpAddress, bmpWidth, bmpHeight, ix, iy, scale, glyph, fontColors);
+            DrawGlyphScaled(bmpAddress, bmpWidth, bmpHeight, ix, iy, scale, glyph, fontColors);
         }
-        public unsafe void DrawGlyph(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int scale, Glyph glyph, uint[] fontColors)
+        public unsafe void DrawGlyphScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int scale, Glyph glyph, uint[] fontColors)
         {
             if (scale <= 1)
             {
@@ -236,13 +236,13 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, int scale, string str, uint[] fontColors)
+        public unsafe void DrawStringScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, int scale, string str, uint[] fontColors)
         {
             int ix = (int)(x * bmpWidth);
             int iy = (int)(y * bmpHeight);
-            DrawString(bmpAddress, bmpWidth, bmpHeight, ix, iy, scale, str, fontColors);
+            DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, ix, iy, scale, str, fontColors);
         }
-        public unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int scale, string str, uint[] fontColors)
+        public unsafe void DrawStringScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int scale, string str, uint[] fontColors)
         {
             if (scale <= 1)
             {
@@ -259,7 +259,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 Glyph glyph = GetGlyph(str, ref index, ref nextXOffset, ref nextYOffset, out _);
                 if (glyph != null)
                 {
-                    DrawGlyph(bmpAddress, bmpWidth, bmpHeight, curX, curY, scale, glyph, fontColors);
+                    DrawGlyphScaled(bmpAddress, bmpWidth, bmpHeight, curX, curY, scale, glyph, fontColors);
                 }
             }
         }

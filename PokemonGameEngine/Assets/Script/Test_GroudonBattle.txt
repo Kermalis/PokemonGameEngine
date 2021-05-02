@@ -9,7 +9,7 @@ Delay 40
 AwaitMessageComplete
 CloseMessage
 WildBattle Species.Groudon Form.Shaymin 70 // TODO: Allow "0"
-AwaitBattle
+AwaitReturnToField
 UnloadObj 0
 
 // Assume you defeat it for now.

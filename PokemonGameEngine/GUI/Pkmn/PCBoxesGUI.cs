@@ -7,7 +7,7 @@ using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
 using System;
 
-namespace Kermalis.PokemonGameEngine.GUI
+namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
     internal sealed class PCBoxesGUI
     {
@@ -389,7 +389,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             RenderUtils.ThreeColorBackground(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(215, 231, 230, 255), RenderUtils.Color(231, 163, 0, 255), RenderUtils.Color(242, 182, 32, 255));
 
             // PC
-            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.02f, 0.01f, 2, $"BOX {_selectedBox + 1}", Font.DefaultDark);
+            Font.Default.DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, 0.02f, 0.01f, 2, $"BOX {_selectedBox + 1}", Font.DefaultDark);
 
             if (_partyVisible)
             {

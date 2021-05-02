@@ -53,35 +53,35 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawOn(this IImage img, IImage otherImg, float x, float y, float width, float height)
+        public static unsafe void DrawScaledOn(this IImage img, IImage otherImg, float x, float y, float width, float height)
         {
             fixed (uint* otherBmpAddress = otherImg.Bitmap)
             {
-                img.DrawOn(otherBmpAddress, otherImg.Width, otherImg.Height, x, y, width, height);
+                img.DrawScaledOn(otherBmpAddress, otherImg.Width, otherImg.Height, x, y, width, height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawOn(this IImage img, IImage otherImg, int x, int y, int width, int height)
+        public static unsafe void DrawScaledOn(this IImage img, IImage otherImg, int x, int y, int width, int height)
         {
             fixed (uint* otherBmpAddress = otherImg.Bitmap)
             {
-                img.DrawOn(otherBmpAddress, otherImg.Width, otherImg.Height, x, y, width, height);
+                img.DrawScaledOn(otherBmpAddress, otherImg.Width, otherImg.Height, x, y, width, height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawOn(this IImage img, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, float x, float y, float width, float height)
+        public static unsafe void DrawScaledOn(this IImage img, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, float x, float y, float width, float height)
         {
             fixed (uint* bmpAddress = img.Bitmap)
             {
-                RenderUtils.DrawBitmap(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, width, height, bmpAddress, img.Width, img.Height);
+                RenderUtils.DrawBitmapScaled(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, width, height, bmpAddress, img.Width, img.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawOn(this IImage img, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, int x, int y, int width, int height)
+        public static unsafe void DrawScaledOn(this IImage img, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, int x, int y, int width, int height)
         {
             fixed (uint* bmpAddress = img.Bitmap)
             {
-                RenderUtils.DrawBitmap(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, width, height, bmpAddress, img.Width, img.Height);
+                RenderUtils.DrawBitmapScaled(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, width, height, bmpAddress, img.Width, img.Height);
             }
         }
     }

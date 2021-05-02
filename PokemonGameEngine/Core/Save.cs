@@ -32,6 +32,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 var victini = new PartyPokemon(PBESpecies.Victini, 0, 67, OT);
                 victini.Ability = PBEAbility.Compoundeyes;
                 victini.Item = PBEItem.Leftovers;
+                victini.Status1 = PokemonBattleEngine.Battle.PBEStatus1.BadlyPoisoned;
                 victini.Moveset[0].Move = PBEMove.Bounce;
                 victini.Moveset[1].Move = PBEMove.ZenHeadbutt;
                 victini.Moveset[2].Move = PBEMove.Surf;
@@ -69,6 +70,7 @@ namespace Kermalis.PokemonGameEngine.Core
             }
             else
             {
+                pkmn.Item = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.GetValidItems(pkmn.Species, pkmn.Form));
                 pkmn.Debug_RandomizeMoves();
             }
             GivePokemon(pkmn);

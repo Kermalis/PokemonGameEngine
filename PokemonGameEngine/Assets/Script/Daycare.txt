@@ -7,8 +7,7 @@ GoToIf Daycare_TwoMon Var.SpecialVar_Result C.Equal 2 //DaycareState.OnePokemon
 Message DaycareText_CanITake
 AwaitMessageRead
 YesNoChoice
-SetVar Var.SpecialVar1 5
-GoToIf Daycare_Test_StealPokemon Var.SpecialVar_Result C.Equal 1
+GoToIf Daycare_TryTake Var.SpecialVar_Result C.Equal 1
 CloseMessage
 UnlockAllObjs
 End
@@ -19,8 +18,7 @@ AwaitMessageComplete
 Message DaycareText_CanITake
 AwaitMessageRead
 YesNoChoice
-SetVar Var.SpecialVar1 4
-GoToIf Daycare_Test_StealPokemon Var.SpecialVar_Result C.Equal 1
+GoToIf Daycare_TryTake Var.SpecialVar_Result C.Equal 1
 CloseMessage
 UnlockAllObjs
 End
@@ -38,13 +36,30 @@ CloseMessage
 UnlockAllObjs
 End
 
-#Daycare_Test_StealPokemon
+#Daycare_TryTake
+CountNonFaintedNonEggParty
+GoToIf Daycare_CantTake Var.SpecialVar_Result C.Equal 1
 Message DaycareText_Test_Take
 AwaitMessageComplete
-StorePokemonInDaycare
+CloseMessage
+SelectDaycareMon
+CallIf Daycare_Store Var.SpecialVar_Result C.GreaterEqual 0
+UnlockAllObjs
+End
+
+#Daycare_CantTake
+Message DaycareText_CantTake
+AwaitMessageComplete
 CloseMessage
 UnlockAllObjs
 End
+
+#Daycare_Store
+StorePokemonInDaycare
+Message DaycareText_IWillRaise
+AwaitMessageComplete
+CloseMessage
+return
 
 #Daycare_CompatMax
 Message DaycareTest_CompatMax
@@ -73,7 +88,14 @@ are doing well."
 "Can I take your Pokémon?"
 
 #DaycareText_Test_Take
-"Taking your last Pokémon."
+"Which Pokémon should I take?"
+
+#DaycareText_CantTake
+"That's your last Pokémon, I can't\n
+take it."
+
+#DaycareText_IWillRaise
+"I'll raise your {BUF 0}."
 
 #DaycareTest_CompatMax
 "The two seem to get along very well!"

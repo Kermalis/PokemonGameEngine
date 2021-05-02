@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
+using Kermalis.PokemonGameEngine.GUI.Pkmn;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
@@ -9,6 +10,7 @@ using Kermalis.PokemonGameEngine.Script;
 using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
+using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.GUI
@@ -86,7 +88,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         private void SetupStartMenuChoices()
         {
             _startMenuChoices = new TextGUIChoices(0, 0, backCommand: CloseStartMenu, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
-            _startMenuChoices.Add(new TextGUIChoice("Pokémon", StartMenu_DebugBagSelected));
+            _startMenuChoices.Add(new TextGUIChoice("Pokémon", () => OpenPartyMenu(PartyGUI.Mode.PkmnMenu)));
             _startMenuChoices.Add(new TextGUIChoice("Bag", StartMenu_DebugBagSelected));
             _startMenuChoices.Add(new TextGUIChoice("PC", StartMenu_DebugPCSelected));
             _startMenuChoices.Add(new TextGUIChoice("Close", CloseStartMenu));
@@ -119,10 +121,30 @@ namespace Kermalis.PokemonGameEngine.GUI
             Game.Instance.SetCallback(CB_LogicTick);
         }
 
+        public unsafe void OpenPartyMenu(PartyGUI.Mode mode)
+        {
+            _fadeTransition = new FadeToColorTransition(20, 0);
+            switch (mode)
+            {
+                case PartyGUI.Mode.PkmnMenu:
+                {
+                    Game.Instance.SetCallback(CB_FadeOutToParty_PkmnMenu);
+                    break;
+                }
+                case PartyGUI.Mode.SelectDaycare:
+                {
+                    Game.Instance.IsOnOverworld = false;
+                    Game.Instance.SetCallback(CB_FadeOutToParty_SelectDaycare);
+                    break;
+                }
+                default: throw new Exception();
+            }
+            Game.Instance.SetRCallback(RCB_Fading);
+        }
         public unsafe void StartBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties)
         {
             Game.Instance.IsOnOverworld = false;
-            new BattleGUI(battle, OnBattleEnded, trainerParties);
+            new BattleGUI(battle, ReturnToFieldWithFadeIn, trainerParties);
             SoundControl.SetBattleBGM(song);
             _fadeTransition = new SpiralTransition();
             Game.Instance.SetCallback(CB_FadeOutToBattle);
@@ -145,7 +167,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             Game.Instance.SetCallback(CB_FadeInToStartMenu);
             Game.Instance.SetRCallback(RCB_Fading);
         }
-        private unsafe void OnBattleEnded()
+        private unsafe void ReturnToFieldWithFadeIn()
         {
             _fadeTransition = new FadeFromColorTransition(20, 0);
             Game.Instance.SetCallback(CB_FadeIn);
@@ -199,6 +221,28 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _fadeTransition = new FadeFromColorTransition(20, 0);
                 Game.Instance.SetCallback(CB_FadeIn);
                 Game.Instance.SetRCallback(RCB_Fading);
+            }
+        }
+        private void CB_FadeOutToParty_PkmnMenu()
+        {
+            Tileset.AnimationTick();
+            ProcessDayTint(false);
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                _startMenuWindow.Close();
+                _startMenuWindow = null;
+                new PartyGUI(Game.Instance.Save.PlayerParty, PartyGUI.Mode.PkmnMenu, ReturnToStartMenuWithFadeIn);
+            }
+        }
+        private void CB_FadeOutToParty_SelectDaycare()
+        {
+            Tileset.AnimationTick();
+            ProcessDayTint(false);
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                new PartyGUI(Game.Instance.Save.PlayerParty, PartyGUI.Mode.SelectDaycare, ReturnToFieldWithFadeIn);
             }
         }
         private void CB_FadeOutToBag()

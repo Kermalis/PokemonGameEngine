@@ -74,7 +74,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.CallIfFlag, new[] { typeof(void*), typeof(Flag), typeof(byte) } }, // Offset to jump to, flag, value
         { ScriptCommand.BufferSpeciesName, new[] { typeof(byte), typeof(PBESpecies) } }, // Buffer number, species
         { ScriptCommand.WildBattle, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte) } }, // Species, form, level
-        { ScriptCommand.AwaitBattle, Array.Empty<Type>() },
+        { ScriptCommand.AwaitReturnToField, Array.Empty<Type>() },
         { ScriptCommand.CloseMessage, Array.Empty<Type>() },
         { ScriptCommand.UnloadObj, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.LookTowardsObj, new[] { typeof(ushort), typeof(ushort) } }, // Id of looker, id of obj to look at
@@ -83,9 +83,12 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.GetDaycareState, Array.Empty<Type>() },
         { ScriptCommand.StorePokemonInDaycare, Array.Empty<Type>() },
         { ScriptCommand.GetDaycareCompatibility, Array.Empty<Type>() },
+        { ScriptCommand.SelectDaycareMon, Array.Empty<Type>() },
         { ScriptCommand.YesNoChoice, Array.Empty<Type>() },
         { ScriptCommand.IncrementGameStat, new[] { typeof(GameStat) } }, // Game stat
         { ScriptCommand.PlayCry, new[] { typeof(PBESpecies), typeof(PBEForm) } }, // Species, form
+        { ScriptCommand.CountNonEggParty, Array.Empty<Type>() },
+        { ScriptCommand.CountNonFaintedNonEggParty, Array.Empty<Type>() },
     };
 
     static ScriptBuilderHelper()

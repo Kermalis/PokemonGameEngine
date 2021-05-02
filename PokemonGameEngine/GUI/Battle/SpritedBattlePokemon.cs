@@ -120,7 +120,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 const int lineStartX = 10;
                 const int lineStartY = 24;
                 const int lineW = 80;
-                RenderUtils.FillRectangle(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX - 1, lineStartY - 1, lineW + 2, 5, RenderUtils.Color(49, 49, 49, 255));
+                RenderUtils.DrawRectangle(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX - 1, lineStartY - 1, lineW + 2, 5, RenderUtils.Color(49, 49, 49, 255));
                 RenderUtils.FillRectangle(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX, lineStartY, lineW, 3, RenderUtils.Color(33, 33, 33, 255));
                 double hpp = Pkmn.HPPercentage;
                 int theW = (int)(lineW * hpp);
@@ -136,7 +136,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 if (!_useKnownInfo)
                 {
                     const int lineStartY2 = 38;
-                    RenderUtils.FillRectangle(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX - 1, lineStartY2 - 1, lineW + 2, 3, RenderUtils.Color(49, 49, 49, 255));
+                    RenderUtils.DrawRectangle(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX - 1, lineStartY2 - 1, lineW + 2, 3, RenderUtils.Color(49, 49, 49, 255));
                     RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX, lineStartY2, lineW, RenderUtils.Color(33, 33, 33, 255));
                     double expp;
                     if (Pkmn.Level == PkmnConstants.MaxLevel)

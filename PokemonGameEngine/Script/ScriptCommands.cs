@@ -58,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.CallIfFlag: CallIfFlagCommand(); break;
                 case ScriptCommand.BufferSpeciesName: BufferSpeciesNameCommand(); break;
                 case ScriptCommand.WildBattle: WildBattleCommand(); break;
-                case ScriptCommand.AwaitBattle: AwaitBattleCommand(); break;
+                case ScriptCommand.AwaitReturnToField: AwaitReturnToFieldCommand(); break;
                 case ScriptCommand.CloseMessage: CloseMessageCommand(); break;
                 case ScriptCommand.UnloadObj: UnloadObjCommand(); break;
                 case ScriptCommand.LookTowardsObj: LookTowardsObjCommand(); break;
@@ -67,9 +67,12 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.GetDaycareState: GetDaycareStateCommand(); break;
                 case ScriptCommand.StorePokemonInDaycare: StorePokemonInDaycareCommand(); break;
                 case ScriptCommand.GetDaycareCompatibility: GetDaycareCompatibilityCommand(); break;
+                case ScriptCommand.SelectDaycareMon: SelectDaycareMonCommand(); break;
                 case ScriptCommand.YesNoChoice: YesNoChoiceCommand(); break;
                 case ScriptCommand.IncrementGameStat: IncrementGameStatCommand(); break;
                 case ScriptCommand.PlayCry: PlayCryCommand(); break;
+                case ScriptCommand.CountNonEggParty: CountNonEggPartyCommand(); break;
+                case ScriptCommand.CountNonFaintedNonEggParty: CountNonFaintedNonEggPartyCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -414,25 +417,9 @@ namespace Kermalis.PokemonGameEngine.Script
             var pkmn = new PartyPokemon(species, form, level, null);
             Game.Instance.TempCreateWildBattle(pkmn);
         }
-        private void AwaitBattleCommand()
+        private void AwaitReturnToFieldCommand()
         {
-            _waitBattle = true;
-        }
-
-        private void GetDaycareStateCommand()
-        {
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (byte)Game.Instance.Save.Daycare.GetDaycareState();
-        }
-        private void StorePokemonInDaycareCommand()
-        {
-            int index = Game.Instance.Save.Vars[Var.SpecialVar1];
-            PartyPokemon pkmn = Game.Instance.Save.PlayerParty[index];
-            Game.Instance.Save.PlayerParty.Remove(pkmn);
-            Game.Instance.Save.Daycare.StorePokemon(pkmn);
-        }
-        private void GetDaycareCompatibilityCommand()
-        {
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = Game.Instance.Save.Daycare.GetCompatibility();
+            _waitReturnToField = true;
         }
 
         private void IncrementGameStatCommand()
@@ -446,6 +433,31 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             PBEForm form = ReadVarOrEnum<PBEForm>();
             SoundControl.Debug_PlayCry(species, form);
+        }
+
+        private void CountNonEggPartyCommand()
+        {
+            short count = 0;
+            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
+            {
+                if (!p.IsEgg)
+                {
+                    count++;
+                }
+            }
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = count;
+        }
+        private void CountNonFaintedNonEggPartyCommand()
+        {
+            short count = 0;
+            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
+            {
+                if (!p.IsEgg && p.HP > 0)
+                {
+                    count++;
+                }
+            }
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = count;
         }
     }
 }

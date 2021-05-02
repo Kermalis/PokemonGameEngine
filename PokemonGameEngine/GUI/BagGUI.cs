@@ -126,7 +126,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             RenderUtils.ThreeColorBackground(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(215, 231, 230, 255), RenderUtils.Color(231, 163, 0, 255), RenderUtils.Color(242, 182, 32, 255));
 
             // BAG
-            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.02f, 0.01f, 2, "BAG", Font.DefaultDark);
+            Font.Default.DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, 0.02f, 0.01f, 2, "BAG", Font.DefaultDark);
 
             _partyChoices.Render(bmpAddress, bmpWidth, bmpHeight);
 

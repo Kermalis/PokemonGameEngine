@@ -113,8 +113,9 @@ namespace Kermalis.PokemonGameEngine.Render
             return arr;
         }
         #endregion
-
+        // TODO: DrawRectangle (with thickness)
         #region Rectangles
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void OverwriteRectangle(IImage img, uint color)
         {
             for (int i = 0; i < img.Bitmap.Length; i++)
@@ -134,7 +135,21 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public static unsafe void OverwriteRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
         {
-            // No line overwriting yet
+            if (height == 1)
+            {
+                if (width == 1)
+                {
+                    OverwriteChecked(bmpAddress, bmpWidth, bmpHeight, x, y, color);
+                    return;
+                }
+                OverwriteHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x, y, width, color);
+                return;
+            }
+            if (width == 1)
+            {
+                OverwriteVerticalLine_Height(bmpAddress, bmpWidth, bmpHeight, x, y, height, color);
+                return;
+            }
             for (int py = y; py < y + height; py++)
             {
                 if (py >= 0 && py < bmpHeight)
@@ -148,6 +163,80 @@ namespace Kermalis.PokemonGameEngine.Render
                     }
                 }
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
+        {
+            DrawRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint color)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            int iw = (int)(width * bmpWidth);
+            int ih = (int)(height * bmpHeight);
+            DrawRectangle(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, color);
+        }
+        public static unsafe void DrawRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
+        {
+            if (height == 1)
+            {
+                if (width == 1)
+                {
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, x, y, color);
+                    return;
+                }
+                DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x, y, width, color);
+                return;
+            }
+            if (width == 1)
+            {
+                DrawVerticalLine_Height(bmpAddress, bmpWidth, bmpHeight, x, y, height, color);
+                return;
+            }
+            // The two vert lines
+            DrawVerticalLine_Height(bmpAddress, bmpWidth, bmpHeight, x, y, height, color);
+            DrawVerticalLine_Height(bmpAddress, bmpWidth, bmpHeight, x + width - 1, y, height, color);
+            // The two hori lines (don't overlap the vert lines)
+            // This might overlap if the rect is very small (TODO)
+            DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y, width - 2, color);
+            DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y + height - 1, width - 2, color);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawRectangle_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, float x1, float y1, float x2, float y2, uint color)
+        {
+            int ix1 = (int)(x1 * bmpWidth);
+            int iy1 = (int)(y1 * bmpHeight);
+            int ix2 = (int)(x2 * bmpWidth);
+            int iy2 = (int)(y2 * bmpHeight);
+            DrawRectangle_Points(bmpAddress, bmpWidth, bmpHeight, ix1, iy1, ix2, iy2, color);
+        }
+        public static unsafe void DrawRectangle_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, uint color)
+        {
+            if (x1 == x2)
+            {
+                if (y1 == y2)
+                {
+                    DrawChecked(bmpAddress, bmpWidth, bmpHeight, x1, y1, color);
+                    return;
+                }
+                DrawVerticalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1, y1, y2, color);
+                return;
+            }
+            if (y1 == y2)
+            {
+                DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, color);
+                return;
+            }
+            // The two vert lines
+            DrawVerticalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1, y1, y2, color);
+            DrawVerticalLine_Points(bmpAddress, bmpWidth, bmpHeight, x2, y1, y2, color);
+            // This might overlap if the rect is very small (TODO)
+            // The two hori lines (don't overlap the vert lines)
+            DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1 + 1, y1, x2 - 1, color);
+            DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1 + 1, y2, x2 - 1, color);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -293,7 +382,7 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
             int ix = (int)(x * bmpWidth);
             int iy = (int)(y * bmpHeight);
@@ -301,27 +390,27 @@ namespace Kermalis.PokemonGameEngine.Render
             int ih = (int)(height * bmpHeight);
             fixed (uint* otherBmpAddress = otherBmp)
             {
-                DrawBitmap(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+                DrawBitmapScaled(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
             int ix = (int)(x * bmpWidth);
             int iy = (int)(y * bmpHeight);
             int iw = (int)(width * bmpWidth);
             int ih = (int)(height * bmpHeight);
-            DrawBitmap(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+            DrawBitmapScaled(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
             fixed (uint* otherBmpAddress = otherBmp)
             {
-                DrawBitmap(bmpAddress, bmpWidth, bmpHeight, x, y, width, height, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+                DrawBitmapScaled(bmpAddress, bmpWidth, bmpHeight, x, y, width, height, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
             }
         }
-        public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
             // Slight optimization
             if (width == otherBmpWidth && height == otherBmpHeight)
@@ -352,6 +441,65 @@ namespace Kermalis.PokemonGameEngine.Render
         #endregion
 
         #region Lines
+        public static unsafe void OverwriteHorizontalLine_Width(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, uint color)
+        {
+            if (y < 0 || y >= bmpHeight)
+            {
+                return;
+            }
+            int target = x + width;
+            for (int px = x; px < target; px++)
+            {
+                if (px >= 0 && px < bmpWidth)
+                {
+                    *GetPixelAddress(bmpAddress, bmpWidth, px, y) = color;
+                }
+            }
+        }
+        public static unsafe void OverwriteHorizontalLine_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y, int x2, uint color)
+        {
+            if (y < 0 || y >= bmpHeight)
+            {
+                return;
+            }
+            for (int px = x1; px <= x2; px++)
+            {
+                if (px >= 0 && px < bmpWidth)
+                {
+                    *GetPixelAddress(bmpAddress, bmpWidth, px, y) = color;
+                }
+            }
+        }
+        public static unsafe void OverwriteVerticalLine_Height(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int height, uint color)
+        {
+            if (x < 0 || x >= bmpWidth)
+            {
+                return;
+            }
+            int target = y + height;
+            for (int py = y; py < target; py++)
+            {
+                if (py >= 0 && py < bmpHeight)
+                {
+                    *GetPixelAddress(bmpAddress, bmpWidth, x, py) = color;
+                }
+            }
+        }
+        public static unsafe void OverwriteVerticalLine_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y1, int y2, uint color)
+        {
+            if (x < 0 || x >= bmpWidth)
+            {
+                return;
+            }
+            for (int py = y1; py <= y2; py++)
+            {
+                if (py >= 0 && py < bmpHeight)
+                {
+                    *GetPixelAddress(bmpAddress, bmpWidth, x, py) = color;
+                }
+            }
+        }
+
         public static unsafe void DrawHorizontalLine_Width(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, uint color)
         {
             if (y < 0 || y >= bmpHeight)
@@ -367,7 +515,6 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
-        // Includes x1 and x2
         public static unsafe void DrawHorizontalLine_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y, int x2, uint color)
         {
             if (y < 0 || y >= bmpHeight)
@@ -397,7 +544,6 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
-        // Includes y1 and y2
         public static unsafe void DrawVerticalLine_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y1, int y2, uint color)
         {
             if (x < 0 || x >= bmpWidth)
@@ -413,6 +559,8 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
         // Bresenham's line algorithm
+        // The following link has a way to do this with thick lines: https://github.com/ArminJo/STMF3-Discovery-Demos/blob/master/lib/graphics/src/thickLine.cpp
+        // I honestly don't understand any of it and don't need it now.
         public static unsafe void DrawLineLow(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, uint color)
         {
             int dx = x2 - x1;
@@ -956,6 +1104,14 @@ namespace Kermalis.PokemonGameEngine.Render
             if (y >= 0 && y < bmpHeight && x >= 0 && x < bmpWidth)
             {
                 DrawUnchecked(bmpAddress, bmpWidth, x, y, color);
+            }
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void OverwriteChecked(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint color)
+        {
+            if (y >= 0 && y < bmpHeight && x >= 0 && x < bmpWidth)
+            {
+                *GetPixelAddress(bmpAddress, bmpWidth, x, y) = color;
             }
         }
         #endregion

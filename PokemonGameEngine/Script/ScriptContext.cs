@@ -19,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private bool _waitMessageBox;
         private bool _waitMessageComplete;
 
-        private bool _waitBattle;
+        private bool _waitReturnToField;
 
         private StringPrinter _stringPrinter;
         private Window _messageBox;
@@ -86,7 +86,7 @@ namespace Kermalis.PokemonGameEngine.Script
                     }
                 }
             }
-            if (_waitBattle)
+            if (_waitReturnToField)
             {
                 if (!Game.Instance.IsOnOverworld)
                 {
@@ -94,7 +94,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 }
                 else if (update)
                 {
-                    _waitBattle = false;
+                    _waitReturnToField = false;
                 }
             }
             return stopRunning;
