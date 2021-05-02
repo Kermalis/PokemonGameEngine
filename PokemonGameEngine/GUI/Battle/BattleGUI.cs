@@ -95,6 +95,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         p.UpdateToParty(); // Copy our Pokémon back from battle, update teammates, update wild Pokémon
                     }
+                    Game.Instance.Save.PlayerInventory.FromPBEInventory(battle.Trainers[0].Inventory);
                     if (_battle.BattleResult == PBEBattleResult.WildCapture)
                     {
                         Game.Instance.Save.GameStats[GameStat.PokemonCaptures]++;

@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -71,6 +72,10 @@ namespace Kermalis.PokemonGameEngine.Item
         {
             _items.Add(slot);
         }
+        public void Remove(T slot)
+        {
+            _items.Remove(slot);
+        }
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -138,6 +143,31 @@ namespace Kermalis.PokemonGameEngine.Item
                 }
             }
             return list;
+        }
+        public void FromPBEInventory(PBEBattleInventory inv)
+        {
+            foreach (InventoryPouch<T> pouch in _pouches.Values)
+            {
+                if (pouch.PouchType == ItemPouchType.FreeSpace
+                    || pouch.PouchType == ItemPouchType.KeyItems
+                    || pouch.PouchType == ItemPouchType.Mail
+                    || pouch.PouchType == ItemPouchType.TMHMs)
+                {
+                    continue;
+                }
+                foreach (T slot in pouch)
+                {
+                    ushort qu = (ushort)inv[slot.Item].Quantity;
+                    if (qu != 0)
+                    {
+                        slot.Quantity = qu;
+                    }
+                    else
+                    {
+                        pouch.Remove(slot);
+                    }
+                }
+            }
         }
     }
 
