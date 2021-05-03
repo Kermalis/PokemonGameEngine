@@ -8,6 +8,7 @@
   "Type1": "Bug",
   "Type2": "Steel",
   "CatchRate": 45,
+  "EggCycles": 15,
   "BaseFriendship": 70,
   "GenderRatio": "M0_F1",
   "GrowthRate": "MediumFast",

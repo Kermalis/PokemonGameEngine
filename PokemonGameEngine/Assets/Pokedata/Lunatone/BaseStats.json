@@ -8,6 +8,7 @@
   "Type1": "Rock",
   "Type2": "Psychic",
   "CatchRate": 45,
+  "EggCycles": 25,
   "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
   "GrowthRate": "Fast",

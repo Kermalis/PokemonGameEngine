@@ -8,6 +8,7 @@
   "Type1": "Dragon",
   "Type2": "Psychic",
   "CatchRate": 3,
+  "EggCycles": 120,
   "BaseFriendship": 90,
   "GenderRatio": "M0_F1",
   "GrowthRate": "Slow",

@@ -8,6 +8,7 @@
   "Type1": "Bug",
   "Type2": "Flying",
   "CatchRate": 45,
+  "EggCycles": 15,
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "MediumFast",

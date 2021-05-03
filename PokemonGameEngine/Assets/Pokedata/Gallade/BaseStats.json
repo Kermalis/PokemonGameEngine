@@ -8,6 +8,7 @@
   "Type1": "Psychic",
   "Type2": "Fighting",
   "CatchRate": 45,
+  "EggCycles": 20,
   "BaseFriendship": 35,
   "GenderRatio": "M1_F0",
   "GrowthRate": "Slow",

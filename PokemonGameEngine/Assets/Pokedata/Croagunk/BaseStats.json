@@ -8,6 +8,7 @@
   "Type1": "Poison",
   "Type2": "Fighting",
   "CatchRate": 140,
+  "EggCycles": 10,
   "BaseFriendship": 100,
   "GenderRatio": "M1_F1",
   "GrowthRate": "MediumFast",

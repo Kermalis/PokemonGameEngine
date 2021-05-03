@@ -8,6 +8,7 @@
   "Type1": "Water",
   "Type2": "Dark",
   "CatchRate": 155,
+  "EggCycles": 15,
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "Fluctuating",

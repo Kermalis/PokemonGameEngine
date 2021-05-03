@@ -8,6 +8,7 @@
   "Type1": "Normal",
   "Type2": "Fighting",
   "CatchRate": 3,
+  "EggCycles": 120,
   "BaseFriendship": 100,
   "GenderRatio": "M0_F0",
   "GrowthRate": "Slow",

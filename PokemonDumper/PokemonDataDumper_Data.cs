@@ -71,6 +71,7 @@ namespace Kermalis.PokemonDumper
             public PBEGenderRatio GenderRatio;
             public PBEGrowthRate GrowthRate;
             public byte BaseFriendship;
+            public byte EggCycles;
             public ushort BaseEXPYield;
             public byte CatchRate;
             public byte FleeRate;
@@ -99,6 +100,7 @@ namespace Kermalis.PokemonDumper
                 GenderRatio = other.GenderRatio;
                 GrowthRate = other.GrowthRate;
                 BaseFriendship = other.BaseFriendship;
+                EggCycles = other.EggCycles;
                 BaseEXPYield = other.BaseEXPYield;
                 EggGroup1 = other.EggGroup1;
                 EggGroup2 = other.EggGroup2;
@@ -127,6 +129,7 @@ namespace Kermalis.PokemonDumper
                 GenderRatio = other.GenderRatio;
                 GrowthRate = other.GrowthRate;
                 BaseFriendship = other.BaseFriendship;
+                EggCycles = other.EggCycles;
                 BaseEXPYield = other.BaseEXPYield;
                 EggGroup1 = other.EggGroup1;
                 EggGroup2 = other.EggGroup2;

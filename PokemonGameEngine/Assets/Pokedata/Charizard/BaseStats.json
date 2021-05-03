@@ -8,6 +8,7 @@
   "Type1": "Fire",
   "Type2": "Flying",
   "CatchRate": 45,
+  "EggCycles": 20,
   "BaseFriendship": 70,
   "GenderRatio": "M7_F1",
   "GrowthRate": "MediumSlow",

@@ -8,6 +8,7 @@
   "Type1": "Grass",
   "Type2": "None",
   "CatchRate": 75,
+  "EggCycles": 20,
   "BaseFriendship": 70,
   "GenderRatio": "M0_F1",
   "GrowthRate": "MediumFast",

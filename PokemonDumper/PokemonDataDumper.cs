@@ -133,7 +133,7 @@ namespace Kermalis.PokemonDumper
                     // 0xE-0xF - Item2
                     // 0x10-0x11 - Item3
                     pkmn.GenderRatio = (PBEGenderRatio)pokedata.ReadByte(0x12);
-                    // 0x13 - hatch cycle
+                    pkmn.EggCycles = pokedata.ReadByte(0x13);
                     pkmn.BaseFriendship = pokedata.ReadByte(0x14);
                     pkmn.GrowthRate = (PBEGrowthRate)pokedata.ReadByte(0x15);
                     pkmn.EggGroup1 = (EggGroup)pokedata.ReadByte(0x16);
@@ -180,6 +180,8 @@ namespace Kermalis.PokemonDumper
                 w.WriteValue(pkmn.Type2.ToString());
                 w.WritePropertyName(nameof(Pokemon.CatchRate));
                 w.WriteValue(pkmn.CatchRate);
+                w.WritePropertyName(nameof(Pokemon.EggCycles));
+                w.WriteValue(pkmn.EggCycles);
                 w.WritePropertyName(nameof(Pokemon.BaseFriendship));
                 w.WriteValue(pkmn.BaseFriendship);
                 w.WritePropertyName(nameof(Pokemon.GenderRatio));

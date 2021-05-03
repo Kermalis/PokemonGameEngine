@@ -8,6 +8,7 @@
   "Type1": "Steel",
   "Type2": "Dragon",
   "CatchRate": 30,
+  "EggCycles": 120,
   "BaseFriendship": 0,
   "GenderRatio": "M0_F0",
   "GrowthRate": "Slow",

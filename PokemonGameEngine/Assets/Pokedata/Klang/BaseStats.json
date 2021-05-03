@@ -8,6 +8,7 @@
   "Type1": "Steel",
   "Type2": "None",
   "CatchRate": 60,
+  "EggCycles": 20,
   "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
   "GrowthRate": "MediumSlow",

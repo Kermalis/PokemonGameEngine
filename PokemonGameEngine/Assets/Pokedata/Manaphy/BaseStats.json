@@ -8,6 +8,7 @@
   "Type1": "Water",
   "Type2": "None",
   "CatchRate": 3,
+  "EggCycles": 10,
   "BaseFriendship": 70,
   "GenderRatio": "M0_F0",
   "GrowthRate": "Slow",

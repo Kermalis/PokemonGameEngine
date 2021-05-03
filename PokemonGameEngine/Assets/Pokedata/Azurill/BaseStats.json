@@ -8,6 +8,7 @@
   "Type1": "Normal",
   "Type2": "None",
   "CatchRate": 150,
+  "EggCycles": 10,
   "BaseFriendship": 70,
   "GenderRatio": "M1_F3",
   "GrowthRate": "Fast",

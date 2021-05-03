@@ -8,6 +8,7 @@
   "Type1": "Ghost",
   "Type2": "None",
   "CatchRate": 45,
+  "EggCycles": 25,
   "BaseFriendship": 35,
   "GenderRatio": "M1_F1",
   "GrowthRate": "Fast",

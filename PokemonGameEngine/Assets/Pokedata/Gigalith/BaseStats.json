@@ -8,6 +8,7 @@
   "Type1": "Rock",
   "Type2": "None",
   "CatchRate": 45,
+  "EggCycles": 15,
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "MediumSlow",

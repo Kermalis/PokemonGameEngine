@@ -8,6 +8,7 @@
   "Type1": "Ground",
   "Type2": "Rock",
   "CatchRate": 120,
+  "EggCycles": 20,
   "BaseFriendship": 70,
   "GenderRatio": "M1_F1",
   "GrowthRate": "Slow",

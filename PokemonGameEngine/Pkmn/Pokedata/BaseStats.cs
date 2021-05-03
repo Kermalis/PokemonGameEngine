@@ -15,6 +15,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         public PBEType Type2 { get; }
         public byte CatchRate { get; }
         public byte BaseFriendship { get; }
+        public byte EggCycles { get; }
         public PBEGenderRatio GenderRatio { get; }
         public PBEGrowthRate GrowthRate { get; }
         public ushort BaseEXPYield { get; }
@@ -43,6 +44,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
                 Type2 = r.ReadEnum<PBEType>();
                 CatchRate = r.ReadByte();
                 BaseFriendship = r.ReadByte();
+                EggCycles = r.ReadByte();
                 GenderRatio = r.ReadEnum<PBEGenderRatio>();
                 GrowthRate = r.ReadEnum<PBEGrowthRate>();
                 BaseEXPYield = r.ReadUInt16();

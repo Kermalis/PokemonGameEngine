@@ -8,6 +8,7 @@
   "Type1": "Dragon",
   "Type2": "Fire",
   "CatchRate": 45,
+  "EggCycles": 120,
   "BaseFriendship": 0,
   "GenderRatio": "M0_F0",
   "GrowthRate": "Slow",
