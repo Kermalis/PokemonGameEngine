@@ -280,7 +280,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 return;
             }
             PartyPokemon pPkmn = _spritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
-            Game.Instance.Save.Pokedex.SetSeen(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownGender, pPkmn.PID); // TODO: #49 (Spinda spots disguise)
+            Game.Instance.Save.Pokedex.SetSeen(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownGender, pkmn.KnownShiny, pPkmn.PID); // TODO: #49 (Spinda spots disguise)
         }
         private void UpdateAnimationSpeed(PBEBattlePokemon pkmn)
         {

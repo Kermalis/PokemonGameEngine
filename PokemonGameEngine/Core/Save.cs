@@ -78,7 +78,7 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public void GivePokemon(PartyPokemon pkmn)
         {
-            Pokedex.SetCaught(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.PID);
+            Pokedex.SetCaught(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.PID);
             // Try to add to party first, then pc boxes
             if (PlayerParty.Add(pkmn) == -1 && PCBoxes.Add(pkmn) == -1)
             {

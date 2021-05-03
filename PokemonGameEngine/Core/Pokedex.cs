@@ -17,6 +17,7 @@ namespace Kermalis.PokemonGameEngine.Core
 
             public bool Seen;
             public bool Caught;
+            public bool IsShiny;
 
             public Entry(PBESpecies species, PBEForm form, PBEGender gender)
             {
@@ -125,18 +126,26 @@ namespace Kermalis.PokemonGameEngine.Core
                 SpindaPID = pid;
             }
         }
-        public void SetSeen(PBESpecies species, PBEForm form, PBEGender gender, uint pid)
+        public void SetSeen(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, uint pid)
         {
             gender = GetGenderKey(species, gender);
             Entry en = _data[species][form][gender];
             SetSpindaPIDIfFirstSpinda(en, pid);
+            if (!en.Seen)
+            {
+                en.IsShiny = shiny;
+            }
             en.Seen = true;
         }
-        public void SetCaught(PBESpecies species, PBEForm form, PBEGender gender, uint pid)
+        public void SetCaught(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, uint pid)
         {
             gender = GetGenderKey(species, gender);
             Entry en = _data[species][form][gender];
             SetSpindaPIDIfFirstSpinda(en, pid);
+            if (!en.Seen)
+            {
+                en.IsShiny = shiny;
+            }
             en.Seen = true;
             en.Caught = true;
         }
