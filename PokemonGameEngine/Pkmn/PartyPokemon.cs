@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
+using Kermalis.PokemonGameEngine.Util;
 using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
     internal sealed class PartyPokemon : IPBEPartyPokemon
     {
         public OTInfo OT { get; set; }
+        public MapSection MetLocation { get; set; }
 
         public PBESpecies Species { get; set; }
         public PBEForm Form { get; set; }
@@ -21,6 +23,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public bool Shiny { get; set; }
         public byte Level { get; set; }
         public uint EXP { get; set; }
+        /// <summary>Remaining egg cycles if <see cref="IsEgg"/> is true.</summary>
         public byte Friendship { get; set; }
         public PBEItem CaughtBall { get; set; }
 
@@ -33,13 +36,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public byte SleepTurns { get; set; }
 
         public Moveset Moveset { get; set; }
-        IPBEMoveset IPBEPokemon.Moveset => Moveset;
-        IPBEPartyMoveset IPBEPartyPokemon.Moveset => Moveset;
 
         public EVs EffortValues { get; set; }
-        IPBEStatCollection IPBEPokemon.EffortValues => EffortValues;
         public IVs IndividualValues { get; set; }
-        IPBEReadOnlyStatCollection IPBEPokemon.IndividualValues => IndividualValues;
 
         public ushort MaxHP { get; private set; }
         public ushort Attack { get; private set; }
@@ -51,50 +50,40 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public uint PID { get; private set; } // Currently only used for Spinda spots; has no other effect
         public bool IsEgg { get; set; }
 
+        #region PBE
         public bool PBEIgnore => IsEgg;
+        IPBEStatCollection IPBEPokemon.EffortValues => EffortValues;
+        IPBEReadOnlyStatCollection IPBEPokemon.IndividualValues => IndividualValues;
+        IPBEMoveset IPBEPokemon.Moveset => Moveset;
+        IPBEPartyMoveset IPBEPartyPokemon.Moveset => Moveset;
+        #endregion
 
-        public PartyPokemon(PBESpecies species, PBEForm form, byte level, OTInfo ot)
+        #region Creation
+
+        private PartyPokemon(PBESpecies species, PBEForm form, byte level)
         {
-            RandomPID();
-            OT = ot;
-            var pData = new BaseStats(species, form);
             Species = species;
             Form = form;
-            Nickname = PBELocalizedString.GetSpeciesName(species).English;
-            Shiny = PBEDataProvider.GlobalRandom.RandomShiny();
             Level = level;
-            EXP = PBEDataProvider.Instance.GetEXPRequired(pData.GrowthRate, level);
-            Ability = PBEDataProvider.GlobalRandom.RandomElement(pData.Abilities);
-            Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
-            Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
-            Moveset = new Moveset();
-            EffortValues = new EVs();
-            IndividualValues = new IVs();
-            UpdateTimeBasedForms(DateTime.Now);
-            SetWildMoves();
-            CaughtBall = PBEItem.PokeBall;
-            SetDefaultFriendship(pData);
-            CalcStats(pData.Stats);
-            SetMaxHP();
         }
         public PartyPokemon(EncounterTable.Encounter encounter)
         {
             RandomPID();
             Species = encounter.Species;
             Form = encounter.Form;
-            var pData = new BaseStats(Species, Form);
-            Nickname = PBELocalizedString.GetSpeciesName(Species).English;
-            Shiny = PBEDataProvider.GlobalRandom.RandomShiny();
             Level = (byte)PBEDataProvider.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel);
-            EXP = PBEDataProvider.Instance.GetEXPRequired(pData.GrowthRate, Level);
-            Ability = PBEDataProvider.GlobalRandom.RandomElement(pData.Abilities);
-            Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
+            SetDefaultNickname();
+            Shiny = Utils.GetRandomShiny();
             Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
+            var pData = new BaseStats(Species, Form);
+            SetDefaultEXPForLevel(pData);
+            Ability = PBEDataProvider.GlobalRandom.RandomBool() ? pData.Ability1 : pData.Ability2;
+            Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             Moveset = new Moveset();
             EffortValues = new EVs();
             IndividualValues = new IVs();
             UpdateTimeBasedForms(DateTime.Now);
-            SetWildMoves();
+            SetDefaultMoves();
             CalcStats(pData.Stats);
             SetMaxHP();
         }
@@ -103,6 +92,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             PID = other.PID;
             IsEgg = other.IsEgg;
             OT = other.OT;
+            MetLocation = other.MetLocation;
             Species = other.Species;
             Form = other.Form;
             Nickname = other.Nickname;
@@ -122,6 +112,73 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             SetMaxHP();
         }
 
+        public static PartyPokemon CreatePlayerOwnedMon(PBESpecies species, PBEForm form, byte level)
+        {
+            var p = new PartyPokemon(species, form, level);
+            p.SetPlayerOT();
+            p.SetCurrentMetLocation();
+            p.SetDefaultNickname();
+            p.Shiny = Utils.GetRandomShiny();
+            var pData = new BaseStats(species, form);
+            p.SetDefaultFriendship(pData);
+            p.SetDefaultEXPForLevel(pData);
+            p.Ability = PBEDataProvider.GlobalRandom.RandomBool() ? pData.Ability1 : pData.Ability2;
+            p.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
+            p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
+            p.Moveset = new Moveset();
+            p.EffortValues = new EVs();
+            p.IndividualValues = new IVs();
+            p.UpdateTimeBasedForms(DateTime.Now);
+            p.SetDefaultMoves();
+            p.CaughtBall = PBEItem.PokeBall;
+            p.CalcStats(pData.Stats);
+            p.SetMaxHP();
+            return p;
+        }
+        public static PartyPokemon CreateWildMon(PBESpecies species, PBEForm form, byte level)
+        {
+            var p = new PartyPokemon(species, form, level);
+            p.SetDefaultNickname();
+            p.Shiny = Utils.GetRandomShiny();
+            p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
+            var pData = new BaseStats(species, form);
+            p.SetDefaultEXPForLevel(pData);
+            p.Ability = PBEDataProvider.GlobalRandom.RandomBool() ? pData.Ability1 : pData.Ability2;
+            p.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
+            p.Moveset = new Moveset();
+            p.EffortValues = new EVs();
+            p.IndividualValues = new IVs();
+            p.UpdateTimeBasedForms(DateTime.Now);
+            p.SetDefaultMoves();
+            p.SetDefaultFriendship(pData);
+            p.CalcStats(pData.Stats);
+            p.SetMaxHP();
+            return p;
+        }
+        public static PartyPokemon CreateDefaultEgg(PBESpecies species, PBEForm form)
+        {
+            var p = new PartyPokemon(species, form, PkmnConstants.EggHatchLevel);
+            p.IsEgg = true;
+            p.SetPlayerOT();
+            p.SetCurrentMetLocation();
+            p.Nickname = "Egg";
+            p.Shiny = Utils.GetRandomShiny();
+            var pData = new BaseStats(species, form);
+            p.SetDefaultEggCycles(pData);
+            p.SetDefaultEXPForLevel(pData);
+            p.Ability = PBEDataProvider.GlobalRandom.RandomBool() ? pData.Ability1 : pData.Ability2;
+            p.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
+            p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
+            p.Moveset = new Moveset();
+            p.EffortValues = new EVs();
+            p.IndividualValues = new IVs();
+            p.SetDefaultMoves();
+            p.CaughtBall = PBEItem.PokeBall;
+            return p;
+        }
+
+        #endregion
+
         private void RandomPID()
         {
             PID = (uint)PBEDataProvider.GlobalRandom.RandomInt();
@@ -129,6 +186,42 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         private void SetDefaultFriendship(BaseStats pData)
         {
             Friendship = pData.BaseFriendship;
+        }
+        private void SetDefaultEggCycles(BaseStats pData)
+        {
+            Friendship = pData.EggCycles;
+        }
+        private void SetCurrentMetLocation()
+        {
+            MetLocation = Overworld.GetCurrentLocation();
+        }
+        private void SetPlayerOT()
+        {
+            OT = Game.Instance.Save.OT;
+        }
+        private void SetDefaultNickname()
+        {
+            Nickname = PBELocalizedString.GetSpeciesName(Species).English;
+        }
+        /// <summary>Sets the moves to the last 4 moves the Pokémon would've learned by level-up.</summary>
+        private void SetDefaultMoves()
+        {
+            PBEMove[] moves = new LevelUpData(Species, Form).GetDefaultMoves(Level);
+            for (int i = 0; i < PkmnConstants.NumMoves; i++)
+            {
+                Moveset[i].Clear();
+            }
+            for (int i = 0; i < moves.Length; i++)
+            {
+                Moveset.MovesetSlot slot = Moveset[i];
+                slot.Move = moves[i];
+                slot.PPUps = 0;
+                slot.SetMaxPP();
+            }
+        }
+        private void SetDefaultEXPForLevel(BaseStats pData)
+        {
+            EXP = PBEDataProvider.Instance.GetEXPRequired(pData.GrowthRate, Level);
         }
 
         public void SetMaxHP()
@@ -181,21 +274,6 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 PBEMove move = PBEDataProvider.GlobalRandom.RandomElement(moves);
                 moves.Remove(move);
                 slot.Move = move;
-                slot.PPUps = 0;
-                slot.SetMaxPP();
-            }
-        }
-        private void SetWildMoves()
-        {
-            PBEMove[] moves = new LevelUpData(Species, Form).GetWildMoves(Level);
-            for (int i = 0; i < PkmnConstants.NumMoves; i++)
-            {
-                Moveset[i].Clear();
-            }
-            for (int i = 0; i < moves.Length; i++)
-            {
-                Moveset.MovesetSlot slot = Moveset[i];
-                slot.Move = moves[i];
                 slot.PPUps = 0;
                 slot.SetMaxPP();
             }
@@ -255,7 +333,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void UpdateFromBattle_Caught(PBEBattlePokemon pkmn)
         {
-            OT = Game.Instance.Save.OT;
+            SetPlayerOT();
+            SetCurrentMetLocation();
 
             CaughtBall = pkmn.CaughtBall;
             if (CaughtBall == PBEItem.FriendBall)
@@ -273,6 +352,16 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 HealFully();
             }
             UpdateTimeBasedForms(DateTime.Now);
+        }
+
+        public void HatchEgg()
+        {
+            Game.Instance.Save.GameStats[GameStat.HatchedEggs]++;
+            IsEgg = false;
+            Friendship = PkmnConstants.HatchFriendship;
+            SetDefaultNickname();
+            SetPlayerOT();
+            SetCurrentMetLocation();
         }
     }
 }

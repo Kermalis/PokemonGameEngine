@@ -25,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         }
 
         ///<summary>Get last 4 moves that can be learned by level up, with no repeats (such as Sketch)</summary>
-        public PBEMove[] GetWildMoves(byte level)
+        public PBEMove[] GetDefaultMoves(byte level)
         {
             return Moves.Where(t => t.Level <= level && PBEDataUtils.IsMoveUsable(t.Move))
                 .Select(t => t.Move).Distinct().Reverse().Take(PkmnConstants.NumMoves).ToArray();

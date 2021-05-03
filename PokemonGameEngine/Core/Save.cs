@@ -1,48 +1,47 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.World;
+using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
     internal sealed class Save
     {
-        public GameStats GameStats { get; }
-        public Pokedex Pokedex { get; }
-        public Flags Flags { get; }
-        public Vars Vars { get; }
-        public OTInfo OT { get; }
-        public PCBoxes PCBoxes { get; }
-        public Daycare Daycare { get; }
-        public Party PlayerParty { get; }
-        public PlayerInventory PlayerInventory { get; }
+        public GameStats GameStats { get; private set; }
+        public Pokedex Pokedex { get; private set; }
+        public Flags Flags { get; private set; }
+        public Vars Vars { get; private set; }
+        public OTInfo OT { get; private set; }
+        public PCBoxes PCBoxes { get; private set; }
+        public Daycare Daycare { get; private set; }
+        public Party PlayerParty { get; private set; }
+        public PlayerInventory PlayerInventory { get; private set; }
         public uint Money { get; private set; }
 
-        public Save()
+        private void InitPlayerWithDefaultLocation()
+        {
+            var map = Map.LoadOrGet(0);
+            const int x = 2;
+            const int y = 29;
+            PlayerObj.Player.Pos.X = x;
+            PlayerObj.Player.Pos.Y = y;
+            PlayerObj.Player.Map = map;
+            map.Objs.Add(PlayerObj.Player);
+            CameraObj.Camera.Pos = PlayerObj.Player.Pos;
+            CameraObj.Camera.Map = map;
+            map.Objs.Add(CameraObj.Camera);
+            map.LoadObjEvents();
+        }
+        public void Debug_Create()
         {
             GameStats = new GameStats();
             Pokedex = new Pokedex();
             Flags = new Flags();
             Vars = new Vars();
             OT = new OTInfo("Dawn", true);
-            PCBoxes = new PCBoxes();
-            Daycare = new Daycare();
-            PlayerParty = new Party();
-            {
-                var victini = new PartyPokemon(PBESpecies.Victini, 0, 67, OT);
-                victini.Ability = PBEAbility.Compoundeyes;
-                victini.Item = PBEItem.Leftovers;
-                victini.Status1 = PokemonBattleEngine.Battle.PBEStatus1.BadlyPoisoned;
-                victini.Moveset[0].Move = PBEMove.Bounce;
-                victini.Moveset[1].Move = PBEMove.ZenHeadbutt;
-                victini.Moveset[2].Move = PBEMove.Surf;
-                victini.Moveset[3].Move = PBEMove.VCreate;
-                GivePokemon(victini);
-            }
-            for (int i = 0; i < 44; i++)
-            {
-                Debug_GiveRandomPokemon(i == 0 || i == 35);
-            }
             PlayerInventory = new PlayerInventory();
             PlayerInventory.Add(PBEItem.DuskBall, 995);
             PlayerInventory.Add(PBEItem.RockyHelmet, 42);
@@ -55,21 +54,42 @@ namespace Kermalis.PokemonGameEngine.Core
             PlayerInventory.Add(PBEItem.AdamantOrb, 73);
             PlayerInventory.Add(PBEItem.DarkGem, 69);
             PlayerInventory.Add(PBEItem.FluffyTail, 888);
+            PlayerInventory.Add((PBEItem)631); // Oval charm and shiny charm
+            PlayerInventory.Add((PBEItem)632);
             Money = 473_123;
+            InitPlayerWithDefaultLocation();
+            PCBoxes = new PCBoxes();
+            Daycare = new Daycare();
+            PlayerParty = new Party();
+            {
+                var victini = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Victini, 0, 67);
+                victini.Ability = PBEAbility.Compoundeyes;
+                victini.Item = PBEItem.Leftovers;
+                victini.Status1 = PBEStatus1.BadlyPoisoned;
+                victini.Moveset[0].Move = PBEMove.Bounce;
+                victini.Moveset[1].Move = PBEMove.ZenHeadbutt;
+                victini.Moveset[2].Move = PBEMove.Surf;
+                victini.Moveset[3].Move = PBEMove.VCreate;
+                GivePokemon(victini);
+            }
+            for (int i = 0; i < 44; i++)
+            {
+                Debug_GiveRandomPokemon(i == 0 || i == 1 || i == 35);
+            }
         }
 
         private void Debug_GiveRandomPokemon(bool egg)
         {
             (PBESpecies species, PBEForm form) = PBEDataProvider.GlobalRandom.RandomSpecies(true);
-            byte level = egg ? (byte)1 : (byte)PBEDataProvider.GlobalRandom.RandomInt(PkmnConstants.MinLevel, PkmnConstants.MaxLevel);
-            var pkmn = new PartyPokemon(species, form, level, OT);
+            PartyPokemon pkmn;
             if (egg)
             {
-                pkmn.Nickname = "Egg";
-                pkmn.IsEgg = true;
+                pkmn = PartyPokemon.CreateDefaultEgg(species, form);
             }
             else
             {
+                byte level = (byte)PBEDataProvider.GlobalRandom.RandomInt(PkmnConstants.MinLevel, PkmnConstants.MaxLevel);
+                pkmn = PartyPokemon.CreatePlayerOwnedMon(species, form, level);
                 pkmn.Item = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.GetValidItems(pkmn.Species, pkmn.Form));
                 pkmn.Debug_RandomizeMoves();
             }

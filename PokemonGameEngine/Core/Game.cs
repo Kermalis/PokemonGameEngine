@@ -33,7 +33,8 @@ namespace Kermalis.PokemonGameEngine.Core
         public Game()
         {
             Instance = this;
-            Save = new Save(); // Load/initialize Save
+            Save = new Save();
+            Save.Debug_Create(); // Load/initialize Save
             StringBuffers = new StringBuffers();
 
             OverworldGUI.Debug_InitOverworldGUI();

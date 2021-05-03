@@ -1,4 +1,6 @@
-﻿using Kermalis.PokemonBattleEngine.Utils;
+﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using System;
@@ -12,8 +14,12 @@ namespace Kermalis.PokemonGameEngine.Core
         private const byte COMPAT_LOW = 20;
         private const byte COMPAT_MEDIUM = 50;
         private const byte COMPAT_MAX = 70;
+        private const byte COMPAT_OVALCHARM_LOW = 40;
+        private const byte COMPAT_OVALCHARM_MEDIUM = 80;
+        private const byte COMPAT_OVALCHARM_MAX = 88;
 
         private readonly List<DaycarePokemon> _pkmn = new List<DaycarePokemon>(2);
+        private byte _eggCycleCounter;
 
         public void IncrementStep()
         {
@@ -102,6 +108,58 @@ namespace Kermalis.PokemonGameEngine.Core
                 return COMPAT_LOW; // Dif species, same trainer
             }
             return COMPAT_MEDIUM; // Dif species, dif trainer
+        }
+        public byte GetCompatibility_OvalCharm()
+        {
+            bool hasCharm = Game.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][(PBEItem)631] != null; // 631 is Oval Charm
+            byte compat = GetCompatibility();
+            if (hasCharm)
+            {
+                switch (compat)
+                {
+                    case COMPAT_LOW: return COMPAT_OVALCHARM_LOW;
+                    case COMPAT_MEDIUM: return COMPAT_OVALCHARM_MEDIUM;
+                    case COMPAT_MAX: return COMPAT_OVALCHARM_MAX;
+                }
+            }
+            return compat;
+        }
+
+        // Egg hatch
+        private byte GetEggCyclesToSubtract()
+        {
+            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
+            {
+                if (p.IsEgg)
+                {
+                    continue;
+                }
+                PBEAbility a = p.Ability;
+                if (a == PBEAbility.FlameBody || a == PBEAbility.MagmaArmor)
+                {
+                    return 2;
+                }
+            }
+            return 1;
+        }
+        public void DoEggCycleStep()
+        {
+            if (_eggCycleCounter < byte.MaxValue)
+            {
+                _eggCycleCounter++;
+                return;
+            }
+
+            _eggCycleCounter = 0;
+            byte toRemove = GetEggCyclesToSubtract();
+            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
+            {
+                if (p.IsEgg && p.Friendship > 0)
+                {
+                    int result = p.Friendship - toRemove;
+                    p.Friendship = result < 0 ? (byte)0 : (byte)result;
+                }
+            }
         }
     }
 }

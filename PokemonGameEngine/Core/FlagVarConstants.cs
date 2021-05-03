@@ -51,6 +51,7 @@
         SpecialVar1,
         SpecialVar2,
         SpecialVar_Result,
+        Friendship_Step_Counter,
         MAX
     }
 }

@@ -287,7 +287,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             SpritedBattlePokemon sPkmn = _spritedParties[pkmn.Trainer.Id][pkmn];
             sPkmn.UpdateAnimationSpeed();
         }
-
+        private void UpdateFriendshipForFaint(PBEBattlePokemon pkmn)
+        {
+            byte oppLevel = pkmn.Team.OpposingTeam.ActiveBattlers.Max(p => p.Level);
+            PartyPokemon pp = _spritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
+            Friendship.Event e = oppLevel - pkmn.Level >= 30 ? Friendship.Event.Faint_GE30 : Friendship.Event.Faint_L30;
+            Friendship.AdjustFriendship(pp, e);
+            pkmn.Friendship = pp.Friendship;
+        }
 
         #region Actions
         private readonly List<PBEBattlePokemon> _actions = new List<PBEBattlePokemon>(3);
@@ -416,6 +423,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     PBEBattlePokemon pkmn = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
                     HidePokemon(pkmn, pfp.OldPosition);
+                    if (pkmn.Trainer == _trainer)
+                    {
+                        UpdateFriendshipForFaint(pkmn);
+                    }
                     break;
                 }
                 case PBEPkmnFormChangedPacket pfcp:

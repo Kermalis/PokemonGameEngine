@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.World;
 
 namespace Kermalis.PokemonGameEngine.Pkmn
 {
@@ -8,6 +9,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public bool IsEgg { get; }
         public uint PID { get; }
         public OTInfo OT { get; }
+        public MapSection MetLocation { get; }
 
         public PBESpecies Species { get; set; }
         public PBEForm Form { get; set; }
@@ -33,6 +35,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             IsEgg = other.IsEgg;
             PID = other.PID;
             OT = other.OT;
+            MetLocation = other.MetLocation;
             Species = other.Species;
             Form = other.Form;
             Gender = other.Gender;

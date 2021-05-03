@@ -36,17 +36,6 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public static unsafe void Debug_InitOverworldGUI()
         {
-            var map = Map.LoadOrGet(0);
-            const int x = 2;
-            const int y = 29;
-            PlayerObj.Player.Pos.X = x;
-            PlayerObj.Player.Pos.Y = y;
-            PlayerObj.Player.Map = map;
-            map.Objs.Add(PlayerObj.Player);
-            CameraObj.Camera.Pos = PlayerObj.Player.Pos;
-            CameraObj.Camera.Map = map;
-            map.Objs.Add(CameraObj.Camera);
-            map.LoadObjEvents();
             var gui = new OverworldGUI(); // Create
 
             ProcessDayTint(true);

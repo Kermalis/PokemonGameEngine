@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Input;
+using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Script;
 using Kermalis.PokemonGameEngine.Sound;
 
@@ -14,6 +15,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public override bool CanMoveWillingly => !IsWaitingForObjToStartScript && base.CanMoveWillingly;
 
         private bool _shouldRunTriggers;
+        private bool _changedPosition;
 
         private PlayerObj()
             : base(Overworld.PlayerId, "Player")
@@ -25,17 +27,21 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             SoundControl.SetOverworldBGM(newMap.MapDetails.Music);
         }
 
-        public override void LogicTick()
+        private bool CheckForThingsAfterMovement()
         {
-            if (!CanMoveWillingly)
+            if (!_shouldRunTriggers)
             {
-                return;
+                return false;
             }
-            // Check the current block after moving for a trigger or for the behavior
-            if (_shouldRunTriggers)
+
+            _shouldRunTriggers = false; // #12 - Do not return without setting to false, otherwise this will be checked many times in a row
+            bool moved = _changedPosition;
+            _changedPosition = false;
+
+            if (moved)
             {
-                _shouldRunTriggers = false; // #12 - Do not return before setting FinishedMoving to false
                 Position playerPos = Pos;
+
                 // ScriptTile
                 foreach (Map.Events.ScriptEvent se in Map.MapEvents.ScriptTiles)
                 {
@@ -45,24 +51,95 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                         if (script != string.Empty)
                         {
                             ScriptLoader.LoadScript(script);
-                            return;
+                            return true;
                         }
                     }
                 }
+
                 // Warp
                 foreach (Map.Events.WarpEvent warp in Map.MapEvents.Warps)
                 {
                     if (playerPos.IsSamePosition(warp))
                     {
                         OverworldGUI.Instance.TempWarp(warp);
-                        return;
+                        return true;
                     }
                 }
-                // Battle
-                if (Overworld.CheckForWildBattle(false))
+            }
+
+            // Battle
+            if (Overworld.CheckForWildBattle(false))
+            {
+                return true;
+            }
+
+            if (moved)
+            {
+                // Friendship
+                Friendship.UpdateFriendshipStep();
+
+                // Egg
+                Game.Instance.Save.Daycare.DoEggCycleStep();
+                // Hatch
+                foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
                 {
-                    return;
+                    if (p.IsEgg && p.Friendship == 0)
+                    {
+                        p.HatchEgg();
+                        // TODO: Egg script
+                        return true;
+                    }
                 }
+            }
+
+            return false;
+        }
+        private bool CheckForAInteraction()
+        {
+            if (!InputManager.IsPressed(Key.A))
+            {
+                return false;
+            }
+
+            // TODO: This does not consider sideways stairs or countertops when fetching the target block
+            // TODO: Stuff like surf and signs
+            // TODO: Block behaviors that start scripts (like bookshelves, tvs, and the PC)
+            Position p = Pos;
+            int x = p.X;
+            int y = p.Y;
+            switch (Facing)
+            {
+                case FacingDirection.South: y++; break;
+                case FacingDirection.Southwest: x--; y++; break;
+                case FacingDirection.Southeast: x++; y++; break;
+                case FacingDirection.North: y--; break;
+                case FacingDirection.Northwest: x--; y--; break;
+                case FacingDirection.Northeast: x++; y--; break;
+                case FacingDirection.West: x--; break;
+                case FacingDirection.East: x++; break;
+            }
+            Map.GetXYMap(x, y, out x, out y, out Map map);
+            //BlocksetBlockBehavior beh = map.GetBlock_InBounds(x, y).BlocksetBlock.Behavior;
+            foreach (EventObj o in map.GetObjs_InBounds(x, y, p.Elevation, this, false))
+            {
+                string script = o.Script;
+                if (script != string.Empty)
+                {
+                    OverworldGUI.Instance.SetInteractiveScript(o, script);
+                    return true;
+                }
+            }
+            return false;
+        }
+        public override void LogicTick()
+        {
+            if (!CanMoveWillingly)
+            {
+                return;
+            }
+            if (CheckForThingsAfterMovement())
+            {
+                return;
             }
 
             if (InputManager.IsPressed(Key.Start))
@@ -70,36 +147,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 OverworldGUI.Instance.OpenStartMenu();
                 return;
             }
-            if (InputManager.IsPressed(Key.A))
+            if (CheckForAInteraction())
             {
-                // TODO: This does not consider sideways stairs or countertops when fetching the target block
-                // TODO: Stuff like surf and signs
-                // TODO: Block behaviors that start scripts (like bookshelves, tvs, and the PC)
-                Position p = Pos;
-                int x = p.X;
-                int y = p.Y;
-                switch (Facing)
-                {
-                    case FacingDirection.South: y++; break;
-                    case FacingDirection.Southwest: x--; y++; break;
-                    case FacingDirection.Southeast: x++; y++; break;
-                    case FacingDirection.North: y--; break;
-                    case FacingDirection.Northwest: x--; y--; break;
-                    case FacingDirection.Northeast: x++; y--; break;
-                    case FacingDirection.West: x--; break;
-                    case FacingDirection.East: x++; break;
-                }
-                Map.GetXYMap(x, y, out x, out y, out Map map);
-                //BlocksetBlockBehavior beh = map.GetBlock_InBounds(x, y).BlocksetBlock.Behavior;
-                foreach (EventObj o in map.GetObjs_InBounds(x, y, p.Elevation, this, false))
-                {
-                    string script = o.Script;
-                    if (script != string.Empty)
-                    {
-                        OverworldGUI.Instance.SetInteractiveScript(o, script);
-                        return;
-                    }
-                }
+                return;
             }
 
             bool down = InputManager.IsDown(Key.Down);
@@ -155,6 +205,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             if (!oldP.IsSamePosition(Pos))
             {
                 Game.Instance.Save.GameStats[GameStat.StepsTaken]++;
+                _changedPosition = true;
             }
             _shouldRunTriggers = true;
         }

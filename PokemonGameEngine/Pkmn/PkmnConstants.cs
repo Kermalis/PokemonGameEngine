@@ -8,6 +8,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public const int NumMoves = 4;
         public const int MinLevel = 1;
         public const int MaxLevel = 100;
+        public const int EggHatchLevel = 1;
+        public const int HatchFriendship = 120;
 
         #region Boxes
         public const int NumBoxes = 27;

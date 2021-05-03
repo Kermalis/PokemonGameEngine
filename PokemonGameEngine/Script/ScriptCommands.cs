@@ -187,7 +187,7 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             byte level = (byte)ReadVarOrValue();
-            var pkmn = new PartyPokemon(species, 0, level, Game.Instance.Save.OT);
+            var pkmn = PartyPokemon.CreatePlayerOwnedMon(species, 0, level);
             Game.Instance.Save.GivePokemon(pkmn);
         }
         private void GivePokemonFormCommand()
@@ -195,7 +195,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
-            var pkmn = new PartyPokemon(species, form, level, Game.Instance.Save.OT);
+            var pkmn = PartyPokemon.CreatePlayerOwnedMon(species, form, level);
             Game.Instance.Save.GivePokemon(pkmn);
         }
         private void GivePokemonFormItemCommand()
@@ -204,7 +204,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
             PBEItem item = ReadVarOrEnum<PBEItem>();
-            var pkmn = new PartyPokemon(species, form, level, Game.Instance.Save.OT);
+            var pkmn = PartyPokemon.CreatePlayerOwnedMon(species, form, level);
             pkmn.Item = item;
             Game.Instance.Save.GivePokemon(pkmn);
         }
@@ -414,7 +414,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
-            var pkmn = new PartyPokemon(species, form, level, null);
+            var pkmn = PartyPokemon.CreateWildMon(species, form, level);
             Game.Instance.TempCreateWildBattle(pkmn);
         }
         private void AwaitReturnToFieldCommand()

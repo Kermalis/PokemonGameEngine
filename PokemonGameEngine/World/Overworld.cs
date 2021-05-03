@@ -9,6 +9,11 @@ namespace Kermalis.PokemonGameEngine.World
 {
     internal static partial class Overworld
     {
+        public static MapSection GetCurrentLocation()
+        {
+            return PlayerObj.Player.Map.MapDetails.Section;
+        }
+
         private static EncounterTable.Encounter RollEncounter(EncounterTable tbl, ushort combinedChance)
         {
             int r = PBEDataProvider.GlobalRandom.RandomInt(1, combinedChance);
