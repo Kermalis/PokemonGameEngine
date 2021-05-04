@@ -16,14 +16,21 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public void IncrementStep()
         {
-            // TODO: Exp level logic, learn new moves, etc
-            //LevelsGained++;
-
-            bool leveledUp = false;
-            if (!leveledUp)
+            if (Pkmn.Level >= PkmnConstants.MaxLevel)
             {
-                return;
+                return; // Cannot level up anymore
             }
+
+            var bs = new BaseStats(Pkmn.Species, Pkmn.Form);
+            PBEGrowthRate growthRate = bs.GrowthRate;
+            uint nextLevelAmt = PBEDataProvider.Instance.GetEXPRequired(growthRate, (byte)(Pkmn.Level + 1));
+            if (++Pkmn.EXP < nextLevelAmt)
+            {
+                return; // No level up
+            }
+            Pkmn.Level++;
+            _levelsGained++;
+
             // New move logic
             var lvlUpData = new LevelUpData(Pkmn.Species, Pkmn.Form);
             PBEMove[] newMoves = lvlUpData.GetNewMoves(Pkmn.Level).Reverse().Take(PkmnConstants.NumMoves).ToArray();
