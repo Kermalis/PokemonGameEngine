@@ -3,7 +3,8 @@ LockAllObjs
 LookTowardsObj Var.LastTalked 0xFFFF
 GetDaycareState
 GoToIf Daycare_OneMon Var.SpecialVar_Result C.Equal 1 //DaycareState.OnePokemon
-GoToIf Daycare_TwoMon Var.SpecialVar_Result C.Equal 2 //DaycareState.OnePokemon
+GoToIf Daycare_TwoMon Var.SpecialVar_Result C.Equal 2 //DaycareState.TwoPokemon
+GoToIf Daycare_EggWaiting Var.SpecialVar_Result C.Equal 3 //DaycareState.EggWaiting
 Message DaycareText_CanITake
 AwaitMessageRead
 YesNoChoice
@@ -36,6 +37,24 @@ CloseMessage
 UnlockAllObjs
 End
 
+#Daycare_EggWaiting
+Message DaycareText_MonHadEggOMG
+AwaitMessageRead
+YesNoChoice
+GoToIf Daycare_TryTakeEgg Var.SpecialVar_Result C.Equal 1
+DisposeDaycareEgg
+CloseMessage
+UnlockAllObjs
+End
+
+#Daycare_TryTakeEgg
+CountPlayerParty
+GoToIf Daycare_CantTakeEgg Var.SpecialVar_Result C.Equal 6
+GiveDaycareEgg
+CloseMessage
+UnlockAllObjs
+End
+
 #Daycare_TryTake
 CountNonFaintedNonEggParty
 GoToIf Daycare_CantTake Var.SpecialVar_Result C.Equal 1
@@ -49,6 +68,13 @@ End
 
 #Daycare_CantTake
 Message DaycareText_CantTake
+AwaitMessageComplete
+CloseMessage
+UnlockAllObjs
+End
+
+#Daycare_CantTakeEgg
+Message DaycareText_CantTakeEgg
 AwaitMessageComplete
 CloseMessage
 UnlockAllObjs
@@ -84,6 +110,10 @@ is doing well."
 "Good to see you, your Pokémon\n
 are doing well."
 
+#DaycareText_MonHadEggOMG
+"Your Pokémon had an Egg!\n
+Would you like it?"
+
 #DaycareText_CanITake
 "Can I take your Pokémon?"
 
@@ -93,6 +123,10 @@ are doing well."
 #DaycareText_CantTake
 "That's your last Pokémon, I can't\n
 take it."
+
+#DaycareText_CantTakeEgg
+"Your party has no room for this Egg,\n
+come back once you've made room."
 
 #DaycareText_IWillRaise
 "I'll raise your {BUF 0}."

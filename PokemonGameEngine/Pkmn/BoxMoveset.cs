@@ -11,6 +11,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             public PBEMove Move { get; set; }
             public byte PPUps { get; set; }
 
+            public BoxMovesetSlot() { }
             public BoxMovesetSlot(Moveset.MovesetSlot other)
             {
                 Move = other.Move;
@@ -29,6 +30,14 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public BoxMovesetSlot this[int index] => _slots[index];
         public int Count => _slots.Length;
 
+        public BoxMoveset()
+        {
+            _slots = new BoxMovesetSlot[PkmnConstants.NumMoves];
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                _slots[i] = new BoxMovesetSlot();
+            }
+        }
         public BoxMoveset(Moveset other)
         {
             _slots = new BoxMovesetSlot[PkmnConstants.NumMoves];
@@ -36,6 +45,22 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             {
                 _slots[i] = new BoxMovesetSlot(other[i]);
             }
+        }
+
+        public bool Contains(PBEMove move)
+        {
+            return IndexOf(move) != -1;
+        }
+        public int IndexOf(PBEMove move)
+        {
+            for (int i = 0; i < PkmnConstants.NumMoves; i++)
+            {
+                if (_slots[i].Move == move)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         ///<summary>Forgets the move on top, and moves all of the others up once. The last slot will be empty</summary>
@@ -54,14 +79,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public int GetFirstEmptySlot()
         {
-            for (int i = 0; i < PkmnConstants.NumMoves; i++)
-            {
-                if (_slots[i].Move == PBEMove.None)
-                {
-                    return i;
-                }
-            }
-            return -1;
+            return IndexOf(PBEMove.None);
         }
 
         IEnumerator<BoxMovesetSlot> IEnumerable<BoxMovesetSlot>.GetEnumerator()

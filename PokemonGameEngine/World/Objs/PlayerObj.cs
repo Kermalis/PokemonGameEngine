@@ -77,7 +77,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 // Friendship
                 Friendship.UpdateFriendshipStep();
-
+                // Daycare
+                Game.Instance.Save.Daycare.DoDaycareStep();
                 // Egg
                 Game.Instance.Save.Daycare.DoEggCycleStep();
                 // Hatch

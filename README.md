@@ -28,6 +28,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Animated sprites
 * Spinda spots ![Spindas](Spindas.gif)
 * Sound & Music, Cries
+* Daycare, Breeding, and Eggs
 
 ----
 ## To Do:

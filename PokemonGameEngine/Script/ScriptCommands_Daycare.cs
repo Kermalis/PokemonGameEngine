@@ -28,5 +28,13 @@ namespace Kermalis.PokemonGameEngine.Script
             OverworldGUI.Instance.OpenPartyMenu(PartyGUI.Mode.SelectDaycare);
             _waitReturnToField = true;
         }
+        private void GiveDaycareEggCommand()
+        {
+            Game.Instance.Save.Daycare.GiveEgg();
+        }
+        private void DisposeDaycareEggCommand()
+        {
+            Game.Instance.Save.Daycare.DisposeEgg();
+        }
     }
 }

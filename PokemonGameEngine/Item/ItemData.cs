@@ -12,5 +12,19 @@ namespace Kermalis.PokemonGameEngine.Item
             }
             return ItemPouchType.Items; // TODO
         }
+
+        public static PBEStat? GetPowerItemStat(PBEItem item)
+        {
+            switch (item)
+            {
+                case PBEItem.PowerAnklet: return PBEStat.Speed;
+                case PBEItem.PowerBand: return PBEStat.SpDefense;
+                case PBEItem.PowerBelt: return PBEStat.Defense;
+                case PBEItem.PowerBracer: return PBEStat.Attack;
+                case PBEItem.PowerLens: return PBEStat.SpAttack;
+                case PBEItem.PowerWeight: return PBEStat.HP;
+            }
+            return null;
+        }
     }
 }

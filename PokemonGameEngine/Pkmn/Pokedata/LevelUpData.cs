@@ -24,6 +24,18 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
             }
         }
 
+        public bool CanLearnMoveEventually(PBEMove move)
+        {
+            foreach ((PBEMove m, byte _) in Moves)
+            {
+                if (m == move)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         ///<summary>Get last 4 moves that can be learned by level up, with no repeats (such as Sketch)</summary>
         public PBEMove[] GetDefaultMoves(byte level)
         {

@@ -22,10 +22,13 @@ namespace Kermalis.PokemonGameEngine.Util
             WorkingDirectory = workingDirectory;
         }
 
+        public static bool HasShinyCharm()
+        {
+            return Game.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][(PBEItem)632] != null; // 632 is Shiny Charm
+        }
         public static bool GetRandomShiny()
         {
-            bool hasCharm = Game.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][(PBEItem)632] != null; // 632 is Shiny Charm
-            return PBEDataProvider.GlobalRandom.RandomBool(hasCharm ? 3 : 1, 8192);
+            return PBEDataProvider.GlobalRandom.RandomBool(HasShinyCharm() ? 3 : 1, 8192);
         }
     }
 }

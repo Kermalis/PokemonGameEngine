@@ -6,10 +6,10 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 {
     internal sealed class BoxPokemon : IPBESpeciesForm
     {
-        public bool IsEgg { get; }
-        public uint PID { get; }
-        public OTInfo OT { get; }
-        public MapSection MetLocation { get; }
+        public bool IsEgg { get; set; }
+        public uint PID { get; set; }
+        public OTInfo OT { get; set; }
+        public MapSection MetLocation { get; set; }
 
         public PBESpecies Species { get; set; }
         public PBEForm Form { get; set; }
@@ -30,6 +30,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public EVs EffortValues { get; set; }
         public IVs IndividualValues { get; set; }
 
+        public BoxPokemon() { }
         public BoxPokemon(PartyPokemon other)
         {
             IsEgg = other.IsEgg;

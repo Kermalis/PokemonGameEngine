@@ -3,8 +3,11 @@ using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
+using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
@@ -19,15 +22,9 @@ namespace Kermalis.PokemonGameEngine.Core
         private const byte COMPAT_OVALCHARM_MAX = 88;
 
         private readonly List<DaycarePokemon> _pkmn = new List<DaycarePokemon>(2);
+        private BoxPokemon _offspring;
+        private byte _offspringCounter;
         private byte _eggCycleCounter;
-
-        public void IncrementStep()
-        {
-            foreach (DaycarePokemon pkmn in _pkmn)
-            {
-                pkmn.IncrementStep();
-            }
-        }
 
         public void StorePokemon(PartyPokemon pkmn)
         {
@@ -38,10 +35,25 @@ namespace Kermalis.PokemonGameEngine.Core
 
             _pkmn.Add(new DaycarePokemon(pkmn));
         }
+        public void GiveEgg()
+        {
+            if (Game.Instance.Save.PlayerParty.Add(new PartyPokemon(_offspring)) == -1)
+            {
+                throw new Exception();
+            }
+            _offspring = null;
+        }
+        public void DisposeEgg()
+        {
+            _offspring = null;
+        }
 
         public DaycareState GetDaycareState()
         {
-            // TODO: Check for egg
+            if (_offspring != null)
+            {
+                return DaycareState.EggWaiting;
+            }
             switch (_pkmn.Count)
             {
                 case 0: return DaycareState.NoPokemon;
@@ -58,27 +70,40 @@ namespace Kermalis.PokemonGameEngine.Core
             {
                 return 0;
             }
-
-            BoxPokemon pkmn1 = _pkmn[0].Pkmn;
-            BoxPokemon pkmn2 = _pkmn[1].Pkmn;
-            var bs1 = new BaseStats(pkmn1.Species, pkmn1.Form);
-            var bs2 = new BaseStats(pkmn1.Species, pkmn1.Form);
+            BoxPokemon p0 = _pkmn[0].Pkmn;
+            BoxPokemon p1 = _pkmn[1].Pkmn;
+            return GetCompatibility(p0, p1);
+        }
+        public byte GetCompatibility_OvalCharm()
+        {
+            if (_pkmn.Count != 2)
+            {
+                return 0;
+            }
+            BoxPokemon p0 = _pkmn[0].Pkmn;
+            BoxPokemon p1 = _pkmn[1].Pkmn;
+            return GetCompatibility_OvalCharm(p0, p1);
+        }
+        private static byte GetCompatibility(BoxPokemon p0, BoxPokemon p1)
+        {
+            var bs0 = new BaseStats(p0.Species, p0.Form);
+            var bs1 = new BaseStats(p1.Species, p1.Form);
 
             // Check if can't breed
-            if (bs1.EggGroup1 == EggGroup.Undiscovered || bs2.EggGroup1 == EggGroup.Undiscovered)
+            if (bs0.EggGroup1 == EggGroup.Undiscovered || bs1.EggGroup1 == EggGroup.Undiscovered)
             {
                 return 0;
             }
             // Can't breed two dittos
-            if (bs1.EggGroup1 == EggGroup.Ditto && bs2.EggGroup1 == EggGroup.Ditto)
+            if (bs0.EggGroup1 == EggGroup.Ditto && bs1.EggGroup1 == EggGroup.Ditto)
             {
                 return 0;
             }
 
             // One ditto
-            if (bs1.EggGroup1 == EggGroup.Ditto || bs2.EggGroup1 == EggGroup.Ditto)
+            if (bs0.EggGroup1 == EggGroup.Ditto || bs1.EggGroup1 == EggGroup.Ditto)
             {
-                if (pkmn1.OT.Equals(pkmn2.OT))
+                if (p0.OT.Equals(p1.OT))
                 {
                     return COMPAT_LOW;
                 }
@@ -86,33 +111,33 @@ namespace Kermalis.PokemonGameEngine.Core
             }
 
             // No ditto
-            if (!pkmn1.Gender.IsOppositeGender(pkmn2.Gender))
+            if (!p0.Gender.IsOppositeGender(p1.Gender))
             {
                 return 0;
             }
-            if (!bs1.EggGroupsOverlap(bs2))
+            if (!bs0.EggGroupsOverlap(bs1))
             {
                 return 0;
             }
 
-            if (pkmn1.Species == pkmn2.Species)
+            if (p0.Species == p1.Species)
             {
-                if (pkmn1.OT.Equals(pkmn2.OT))
+                if (p0.OT.Equals(p1.OT))
                 {
                     return COMPAT_MEDIUM; // Same species, same trainer
                 }
                 return COMPAT_MAX; // Same species, dif trainer
             }
-            if (pkmn1.OT.Equals(pkmn2.OT))
+            if (p0.OT.Equals(p1.OT))
             {
                 return COMPAT_LOW; // Dif species, same trainer
             }
             return COMPAT_MEDIUM; // Dif species, dif trainer
         }
-        public byte GetCompatibility_OvalCharm()
+        private static byte GetCompatibility_OvalCharm(BoxPokemon p0, BoxPokemon p1)
         {
             bool hasCharm = Game.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][(PBEItem)631] != null; // 631 is Oval Charm
-            byte compat = GetCompatibility();
+            byte compat = GetCompatibility(p0, p1);
             if (hasCharm)
             {
                 switch (compat)
@@ -123,6 +148,293 @@ namespace Kermalis.PokemonGameEngine.Core
                 }
             }
             return compat;
+        }
+        private static int GetMainSpeciesParentIndex(BoxPokemon p0, BoxPokemon p1)
+        {
+            // Get the female
+            if (p0.Gender == PBEGender.Female)
+            {
+                return 0;
+            }
+            if (p1.Gender == PBEGender.Female)
+            {
+                return 1;
+            }
+            // No females, so get the non-Ditto parent (genderless can breed as well so don't check for a male)
+            if (p0.Species == PBESpecies.Ditto)
+            {
+                return 1;
+            }
+            return 0; // p1 is Ditto
+        }
+        private static (PBESpecies, PBEForm) GetOffspringSpecies(BoxPokemon mainParent)
+        {
+            // Determine form
+            PBEForm form;
+            switch (mainParent.Species)
+            {
+                case PBESpecies.Rotom: form = PBEForm.Rotom; break; // Rotom always hatch as base form
+                default: form = mainParent.Form; break; // Inherit form (Wormadam, Gastrodon, Basculin)
+            }
+
+            // Determine species
+            PBESpecies earliestSpecies = new EvolutionData(mainParent.Species, mainParent.Form).BabySpecies;
+            PBESpecies species = earliestSpecies;
+            void ApplyIncense(PBEItem incense, PBESpecies noIncenseSpecies)
+            {
+                if (mainParent.Item != incense)
+                {
+                    species = noIncenseSpecies;
+                }
+            }
+            void ApplySplitGender(PBESpecies m, PBESpecies f)
+            {
+                species = PBEDataProvider.GlobalRandom.RandomBool() ? m : f;
+            }
+            switch (earliestSpecies)
+            {
+                // Incense babies
+                case PBESpecies.Azurill: ApplyIncense(PBEItem.SeaIncense, PBESpecies.Marill); break;
+                case PBESpecies.Wynaut: ApplyIncense(PBEItem.LaxIncense, PBESpecies.Wobbuffet); break;
+                case PBESpecies.Budew: ApplyIncense(PBEItem.RoseIncense, PBESpecies.Roselia); break;
+                case PBESpecies.Chingling: ApplyIncense(PBEItem.PureIncense, PBESpecies.Chimecho); break;
+                case PBESpecies.Bonsly: ApplyIncense(PBEItem.RockIncense, PBESpecies.Sudowoodo); break;
+                case PBESpecies.MimeJr: ApplyIncense(PBEItem.OddIncense, PBESpecies.MrMime); break;
+                case PBESpecies.Happiny: ApplyIncense(PBEItem.LuckIncense, PBESpecies.Chansey); break;
+                case PBESpecies.Mantyke: ApplyIncense(PBEItem.WaveIncense, PBESpecies.Mantine); break;
+                case PBESpecies.Munchlax: ApplyIncense(PBEItem.FullIncense, PBESpecies.Snorlax); break;
+                // Split gender babies
+                case PBESpecies.Nidoran_F:
+                case PBESpecies.Nidoran_M: ApplySplitGender(PBESpecies.Nidoran_M, PBESpecies.Nidoran_F); break;
+                case PBESpecies.Illumise:
+                case PBESpecies.Volbeat: ApplySplitGender(PBESpecies.Volbeat, PBESpecies.Illumise); break;
+            }
+            return (species, form);
+        }
+
+        // Egg produce
+        private static int GetGenderedParentIndex(BoxPokemon p0, BoxPokemon p1, PBEGender g)
+        {
+            if (p0.Gender == g)
+            {
+                return 0;
+            }
+            if (p1.Gender == g)
+            {
+                return 1;
+            }
+            return -1;
+        }
+        private static void SetOffspringShininess(BoxPokemon p0, BoxPokemon p1, BoxPokemon o)
+        {
+            int chance = 1;
+            if (Utils.HasShinyCharm())
+            {
+                chance += 2;
+            }
+            // Masuda Method
+            if (p0.OT.Language != p1.OT.Language)
+            {
+                chance += 5;
+            }
+            o.Shiny = PBEDataProvider.GlobalRandom.RandomBool(chance, 8192);
+        }
+        private static void SetOffspringNature(BoxPokemon p0, BoxPokemon p1, BoxPokemon o)
+        {
+            bool e0 = p0.Item == PBEItem.Everstone;
+            bool e1 = p1.Item == PBEItem.Everstone;
+            if (!e0 && !e1)
+            {
+                o.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
+            }
+            else if (e0 && e1)
+            {
+                o.Nature = PBEDataProvider.GlobalRandom.RandomBool() ? p0.Nature : p1.Nature;
+            }
+            else if (e0 && !e1)
+            {
+                o.Nature = p0.Nature;
+            }
+            else // Only p1 has Everstone
+            {
+                o.Nature = p1.Nature;
+            }
+        }
+        private static PBEAbility GetInheritedAbility(BoxPokemon p0, BoxPokemon p1)
+        {
+            // 80% chance to pass female ability down if bred with a male
+            int femaleIdx = GetGenderedParentIndex(p0, p1, PBEGender.Female);
+            if (femaleIdx != -1)
+            {
+                int maleIdx = GetGenderedParentIndex(p0, p1, PBEGender.Male);
+                if (maleIdx != -1 && PBEDataProvider.GlobalRandom.RandomBool(4, 5))
+                {
+                    return (femaleIdx == 0 ? p0 : p1).Ability;
+                }
+            }
+            return PBEAbility.None;
+        }
+        private static void SetOffspringIVs(BoxPokemon p0, BoxPokemon p1, BoxPokemon o)
+        {
+            int RandomParent()
+            {
+                return PBEDataProvider.GlobalRandom.RandomInt(0, 1);
+            }
+            PBEStat RandomStat()
+            {
+                return (PBEStat)PBEDataProvider.GlobalRandom.RandomInt((int)PBEStat.HP, (int)PBEStat.Speed);
+            }
+            byte GetParentStat(int parent, PBEStat stat)
+            {
+                return (parent == 0 ? p0 : p1).IndividualValues.GetStat(stat);
+            }
+
+            byte?[] ivs = new byte?[6];
+            void CopyParentIV(int parent, PBEStat stat)
+            {
+                ivs[(int)stat] = GetParentStat(parent, stat);
+            }
+
+            PBEStat? p0PowerItem = ItemData.GetPowerItemStat(p0.Item);
+            PBEStat? p1PowerItem = ItemData.GetPowerItemStat(p1.Item);
+            if (!p0PowerItem.HasValue && !p1PowerItem.HasValue)
+            {
+                CopyParentIV(RandomParent(), RandomStat());
+            }
+            else if (p0PowerItem.HasValue && !p1PowerItem.HasValue)
+            {
+                CopyParentIV(0, p0PowerItem.Value);
+            }
+            else // Parent 1 has a power item
+            {
+                CopyParentIV(1, p1PowerItem.Value);
+            }
+            // Copy two more random stats
+            for (int i = 0; i < 2; i++)
+            {
+                PBEStat s;
+                do
+                {
+                    s = RandomStat();
+                } while (ivs[(int)s].HasValue);
+                CopyParentIV(RandomParent(), s);
+            }
+
+            o.IndividualValues = new IVs(ivs);
+        }
+        private static void SetOffspringMoves(BoxPokemon p0, BoxPokemon p1, BoxPokemon o)
+        {
+            var moveset = new BoxMoveset();
+            void AddMove(PBEMove move)
+            {
+                int empty = moveset.GetFirstEmptySlot();
+                if (empty != -1)
+                {
+                    moveset[empty].Move = move;
+                }
+                else
+                {
+                    moveset.ShiftMovesUp();
+                    moveset[PkmnConstants.NumMoves - 1].Move = move;
+                }
+            }
+            void AddMoves(IEnumerable<PBEMove> moves)
+            {
+                foreach (PBEMove m in moves)
+                {
+                    AddMove(m);
+                }
+            }
+
+            var levelUp = new LevelUpData(o.Species, o.Form);
+            // Default moves first
+            PBEMove[] defaultMoves = levelUp.GetDefaultMoves(PkmnConstants.EggHatchLevel);
+            AddMoves(defaultMoves);
+
+            // Add moves that the parents both know, that the offspring can learn by level up
+            IEnumerable<PBEMove> GetNonNoneMoves(BoxPokemon bp)
+            {
+                return bp.Moveset.Where(ms => ms.Move != PBEMove.None).Select(ms => ms.Move);
+            }
+            IEnumerable<PBEMove> shared = GetNonNoneMoves(p0).Intersect(GetNonNoneMoves(p1)).Where(m => levelUp.CanLearnMoveEventually(m));
+            AddMoves(shared);
+
+            // TODO: TMHM from father or genderless parent
+            int maleParent = GetGenderedParentIndex(p0, p1, PBEGender.Male);
+
+            // Egg moves from father
+            if (maleParent != -1)
+            {
+                IEnumerable<PBEMove> allEggMoves = EggMoves.GetEggMoves(o.Species, o.Form);
+                IEnumerable<PBEMove> eggMoves = allEggMoves.Where(em => p0.Moveset.Contains(em) || p1.Moveset.Contains(em));
+                AddMoves(eggMoves);
+            }
+
+            // Volt Tackle
+            if (o.Species == PBESpecies.Pichu && (p0.Item == PBEItem.LightBall || p1.Item == PBEItem.LightBall))
+            {
+                AddMove(PBEMove.VoltTackle);
+            }
+
+            o.Moveset = moveset;
+        }
+        private static BoxPokemon ProduceOffspring(BoxPokemon p0, BoxPokemon p1)
+        {
+            int mainParentIdx = GetMainSpeciesParentIndex(p0, p1);
+            BoxPokemon mainParent = mainParentIdx == 0 ? p0 : p1;
+            (PBESpecies species, PBEForm form) = GetOffspringSpecies(mainParent);
+
+            var o = new BoxPokemon();
+            o.PID = (uint)PBEDataProvider.GlobalRandom.RandomInt();
+            o.IsEgg = true;
+            o.Level = PkmnConstants.EggHatchLevel;
+            o.Nickname = "Egg";
+            o.Species = species;
+            o.Form = form;
+            o.EffortValues = new EVs();
+            o.CaughtBall = PBEItem.PokeBall;
+            o.OT = Game.Instance.Save.OT;
+            o.MetLocation = MapSection.TestMapC; // Egg met location
+            var pData = new BaseStats(species, form);
+            o.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
+            o.Friendship = pData.EggCycles;
+            o.EXP = PBEDataProvider.Instance.GetEXPRequired(pData.GrowthRate, PkmnConstants.EggHatchLevel);
+
+            SetOffspringShininess(p0, p1, o);
+            SetOffspringNature(p0, p1, o);
+            PBEAbility iAbility = GetInheritedAbility(p0, p1);
+            if (iAbility == PBEAbility.None)
+            {
+                o.Ability = PBEDataProvider.GlobalRandom.RandomBool() ? pData.Ability1 : pData.Ability2;
+            }
+            else
+            {
+                o.Ability = iAbility;
+            }
+            SetOffspringIVs(p0, p1, o);
+            SetOffspringMoves(p0, p1, o);
+            return o;
+        }
+        public void DoDaycareStep()
+        {
+            foreach (DaycarePokemon pkmn in _pkmn)
+            {
+                pkmn.IncrementStep();
+            }
+
+            if (_offspring is null && _pkmn.Count == 2 && ++_offspringCounter == byte.MaxValue)
+            {
+                BoxPokemon p0 = _pkmn[0].Pkmn;
+                BoxPokemon p1 = _pkmn[1].Pkmn;
+                byte compat = GetCompatibility_OvalCharm(p0, p1);
+                if (compat > 0 && PBEDataProvider.GlobalRandom.RandomBool(compat, 100))
+                {
+                    _offspring = ProduceOffspring(p0, p1);
+#if DEBUG
+                    Console.WriteLine("Egg produced at daycare");
+#endif
+                }
+            }
         }
 
         // Egg hatch

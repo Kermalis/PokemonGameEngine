@@ -91,10 +91,13 @@
         StorePokemonInDaycare,
         GetDaycareCompatibility,
         SelectDaycareMon,
+        GiveDaycareEgg,
+        DisposeDaycareEgg,
         YesNoChoice,
         IncrementGameStat,
         PlayCry,
         CountNonEggParty,
         CountNonFaintedNonEggParty,
+        CountPlayerParty,
     }
 }

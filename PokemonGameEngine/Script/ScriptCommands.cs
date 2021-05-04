@@ -68,11 +68,14 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.StorePokemonInDaycare: StorePokemonInDaycareCommand(); break;
                 case ScriptCommand.GetDaycareCompatibility: GetDaycareCompatibilityCommand(); break;
                 case ScriptCommand.SelectDaycareMon: SelectDaycareMonCommand(); break;
+                case ScriptCommand.GiveDaycareEgg: GiveDaycareEggCommand(); break;
+                case ScriptCommand.DisposeDaycareEgg: DisposeDaycareEggCommand(); break;
                 case ScriptCommand.YesNoChoice: YesNoChoiceCommand(); break;
                 case ScriptCommand.IncrementGameStat: IncrementGameStatCommand(); break;
                 case ScriptCommand.PlayCry: PlayCryCommand(); break;
                 case ScriptCommand.CountNonEggParty: CountNonEggPartyCommand(); break;
                 case ScriptCommand.CountNonFaintedNonEggParty: CountNonFaintedNonEggPartyCommand(); break;
+                case ScriptCommand.CountPlayerParty: CountPlayerPartyCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -458,6 +461,10 @@ namespace Kermalis.PokemonGameEngine.Script
                 }
             }
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = count;
+        }
+        private void CountPlayerPartyCommand()
+        {
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)Game.Instance.Save.PlayerParty.Count;
         }
     }
 }

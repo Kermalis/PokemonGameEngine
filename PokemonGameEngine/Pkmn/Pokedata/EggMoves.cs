@@ -1,23 +1,24 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Util;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
 {
     internal static class EggMoves
     {
-        public static PBEMove[] GetEggMoves(PBESpecies species, PBEForm form)
+        public static IEnumerable<PBEMove> GetEggMoves(PBESpecies species, PBEForm form)
         {
-            PBEMove[] ret;
+            PBEMove[] arr;
 
             string resource = "Pokedata." + PkmnOrderResolver.GetDirectoryName(species, form) + ".EggMoves.bin";
             using (var r = new EndianBinaryReader(Utils.GetResourceStream(resource)))
             {
-                ret = r.ReadEnums<PBEMove>(r.ReadByte());
+                arr = r.ReadEnums<PBEMove>(r.ReadByte());
             }
 
-            return ret.Where(m => PBEDataUtils.IsMoveUsable(m)).Distinct().ToArray(); // For now
+            return arr.Where(m => PBEDataUtils.IsMoveUsable(m)).Distinct(); // For now
         }
     }
 }

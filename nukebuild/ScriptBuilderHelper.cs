@@ -84,11 +84,14 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.StorePokemonInDaycare, Array.Empty<Type>() },
         { ScriptCommand.GetDaycareCompatibility, Array.Empty<Type>() },
         { ScriptCommand.SelectDaycareMon, Array.Empty<Type>() },
+        { ScriptCommand.GiveDaycareEgg, Array.Empty<Type>() },
+        { ScriptCommand.DisposeDaycareEgg, Array.Empty<Type>() },
         { ScriptCommand.YesNoChoice, Array.Empty<Type>() },
         { ScriptCommand.IncrementGameStat, new[] { typeof(GameStat) } }, // Game stat
         { ScriptCommand.PlayCry, new[] { typeof(PBESpecies), typeof(PBEForm) } }, // Species, form
         { ScriptCommand.CountNonEggParty, Array.Empty<Type>() },
         { ScriptCommand.CountNonFaintedNonEggParty, Array.Empty<Type>() },
+        { ScriptCommand.CountPlayerParty, Array.Empty<Type>() },
     };
 
     static ScriptBuilderHelper()
