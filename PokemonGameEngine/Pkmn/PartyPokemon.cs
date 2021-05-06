@@ -365,6 +365,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             // Burmy hatches as the same form as its mother, but if it was from Mothim & Ditto, it's plant cloak (form 0)
             // Deerling hatches as the current season
             UpdateTimeBasedForms(DateTime.Now);
+            CalcStats(); // Calc stats after form is set
+            SetMaxHP();
         }
     }
 }
