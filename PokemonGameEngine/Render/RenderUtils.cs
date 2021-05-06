@@ -1047,6 +1047,11 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return x < bmpWidth && x + w > 0 && y < bmpHeight && y + h > 0;
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetCoordinatesForCentering(int targetSize, int objSize, float pos)
+        {
+            return (int)(targetSize * pos) - (objSize / 2);
+        }
         #endregion
 
         #region Raw Drawing
