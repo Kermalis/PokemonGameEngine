@@ -382,7 +382,7 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        public static unsafe void DrawBitmapSized(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
             int ix = (int)(x * bmpWidth);
             int iy = (int)(y * bmpHeight);
@@ -390,27 +390,28 @@ namespace Kermalis.PokemonGameEngine.Render
             int ih = (int)(height * bmpHeight);
             fixed (uint* otherBmpAddress = otherBmp)
             {
-                DrawBitmapScaled(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+                DrawBitmapSized(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        public static unsafe void DrawBitmapSized(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
             int ix = (int)(x * bmpWidth);
             int iy = (int)(y * bmpHeight);
             int iw = (int)(width * bmpWidth);
             int ih = (int)(height * bmpHeight);
-            DrawBitmapScaled(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+            DrawBitmapSized(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        public static unsafe void DrawBitmapSized(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
             fixed (uint* otherBmpAddress = otherBmp)
             {
-                DrawBitmapScaled(bmpAddress, bmpWidth, bmpHeight, x, y, width, height, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+                DrawBitmapSized(bmpAddress, bmpWidth, bmpHeight, x, y, width, height, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
             }
         }
-        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawBitmapSized(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
             // Slight optimization
             if (width == otherBmpWidth && height == otherBmpHeight)
@@ -418,8 +419,52 @@ namespace Kermalis.PokemonGameEngine.Render
                 DrawBitmap(bmpAddress, bmpWidth, bmpHeight, x, y, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
                 return;
             }
-            float hScale = (float)height / otherBmpHeight;
             float wScale = (float)width / otherBmpWidth;
+            float hScale = (float)height / otherBmpHeight;
+            DrawBitmapSizedScaled(bmpAddress, bmpWidth, bmpHeight, x, y, width, height, wScale, hScale, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float wScale, float hScale, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            fixed (uint* otherBmpAddress = otherBmp)
+            {
+                DrawBitmapScaled(bmpAddress, bmpWidth, bmpHeight, ix, iy, wScale, hScale, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+            }
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float wScale, float hScale, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            DrawBitmapScaled(bmpAddress, bmpWidth, bmpHeight, ix, iy, wScale, hScale, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, float wScale, float hScale, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        {
+            fixed (uint* otherBmpAddress = otherBmp)
+            {
+                DrawBitmapScaled(bmpAddress, bmpWidth, bmpHeight, x, y, wScale, hScale, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+            }
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawBitmapScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, float wScale, float hScale, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        {
+            // Slight optimization
+            if (wScale == 1 && hScale == 1)
+            {
+                DrawBitmap(bmpAddress, bmpWidth, bmpHeight, x, y, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+                return;
+            }
+            int width = (int)(otherBmpWidth * wScale);
+            int height = (int)(otherBmpHeight * hScale);
+            DrawBitmapSizedScaled(bmpAddress, bmpWidth, bmpHeight, x, y, width, height, wScale, hScale, otherBmpAddress, otherBmpWidth, otherBmpHeight, xFlip: xFlip, yFlip: yFlip);
+        }
+
+        private static unsafe void DrawBitmapSizedScaled(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, float wScale, float hScale, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
+        {
             for (int cy = 0; cy < height; cy++)
             {
                 int py = yFlip ? (y + (height - 1 - cy)) : (y + cy);

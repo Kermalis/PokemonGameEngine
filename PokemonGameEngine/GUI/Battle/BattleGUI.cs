@@ -221,7 +221,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 width *= 2;
                 height *= 2;
             }
-            img.DrawScaledOn(bmpAddress, bmpWidth, bmpHeight, RenderUtils.GetCoordinatesForCentering(bmpWidth, width, pos.MonX), (int)(bmpHeight * pos.MonY) - height, width, height);
+            img.DrawSizedOn(bmpAddress, bmpWidth, bmpHeight, RenderUtils.GetCoordinatesForCentering(bmpWidth, width, pos.MonX), (int)(bmpHeight * pos.MonY) - height, width, height);
         }
         private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos)
         {
@@ -235,7 +235,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            _battleBackground.DrawScaledOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
+            _battleBackground.DrawSizedOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
             void DoTeam(int i, bool info)
             {
                 foreach (PkmnPosition p in _positions[i])
