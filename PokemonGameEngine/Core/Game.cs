@@ -24,7 +24,6 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public delegate void MainCallback();
         public MainCallback Callback;
-        public uint CBState;
         public unsafe delegate void RenderCallback(uint* bmpAddress, int bmpWidth, int bmpHeight);
         public RenderCallback RCallback;
         public delegate void SoundCallback();
@@ -53,7 +52,6 @@ namespace Kermalis.PokemonGameEngine.Core
             }
 #endif
             Callback = callback;
-            CBState = 0;
         }
         public void SetRCallback(RenderCallback callback)
         {
