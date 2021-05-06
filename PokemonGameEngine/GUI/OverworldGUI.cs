@@ -130,6 +130,13 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
             Game.Instance.SetRCallback(RCB_Fading);
         }
+        public unsafe void StartEggHatchScreen()
+        {
+            _fadeTransition = new FadeToColorTransition(20, 0);
+            Game.Instance.IsOnOverworld = false;
+            Game.Instance.SetCallback(CB_FadeOutToEggHatchScreen);
+            Game.Instance.SetRCallback(RCB_Fading);
+        }
         public unsafe void StartBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties)
         {
             Game.Instance.IsOnOverworld = false;
@@ -156,7 +163,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             Game.Instance.SetCallback(CB_FadeInToStartMenu);
             Game.Instance.SetRCallback(RCB_Fading);
         }
-        private unsafe void ReturnToFieldWithFadeIn()
+        public unsafe void ReturnToFieldWithFadeIn()
         {
             _fadeTransition = new FadeFromColorTransition(20, 0);
             Game.Instance.SetCallback(CB_FadeIn);
@@ -210,6 +217,16 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _fadeTransition = new FadeFromColorTransition(20, 0);
                 Game.Instance.SetCallback(CB_FadeIn);
                 Game.Instance.SetRCallback(RCB_Fading);
+            }
+        }
+        private void CB_FadeOutToEggHatchScreen()
+        {
+            Tileset.AnimationTick();
+            ProcessDayTint(false);
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                new EggHatchGUI();
             }
         }
         private void CB_FadeOutToParty_PkmnMenu()

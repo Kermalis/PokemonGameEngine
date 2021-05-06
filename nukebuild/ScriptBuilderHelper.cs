@@ -86,6 +86,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.SelectDaycareMon, Array.Empty<Type>() },
         { ScriptCommand.GiveDaycareEgg, Array.Empty<Type>() },
         { ScriptCommand.DisposeDaycareEgg, Array.Empty<Type>() },
+        { ScriptCommand.HatchEgg, Array.Empty<Type>() },
         { ScriptCommand.YesNoChoice, Array.Empty<Type>() },
         { ScriptCommand.IncrementGameStat, new[] { typeof(GameStat) } }, // Game stat
         { ScriptCommand.PlayCry, new[] { typeof(PBESpecies), typeof(PBEForm) } }, // Species, form

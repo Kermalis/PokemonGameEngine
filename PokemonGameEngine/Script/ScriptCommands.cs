@@ -70,6 +70,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.SelectDaycareMon: SelectDaycareMonCommand(); break;
                 case ScriptCommand.GiveDaycareEgg: GiveDaycareEggCommand(); break;
                 case ScriptCommand.DisposeDaycareEgg: DisposeDaycareEggCommand(); break;
+                case ScriptCommand.HatchEgg: HatchEggCommand(); break;
                 case ScriptCommand.YesNoChoice: YesNoChoiceCommand(); break;
                 case ScriptCommand.IncrementGameStat: IncrementGameStatCommand(); break;
                 case ScriptCommand.PlayCry: PlayCryCommand(); break;

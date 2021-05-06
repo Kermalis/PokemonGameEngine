@@ -36,5 +36,9 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             Game.Instance.Save.Daycare.DisposeEgg();
         }
+        private void HatchEggCommand()
+        {
+            OverworldGUI.Instance.StartEggHatchScreen();
+        }
     }
 }

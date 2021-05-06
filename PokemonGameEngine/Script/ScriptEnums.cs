@@ -93,6 +93,7 @@
         SelectDaycareMon,
         GiveDaycareEgg,
         DisposeDaycareEgg,
+        HatchEgg,
         YesNoChoice,
         IncrementGameStat,
         PlayCry,

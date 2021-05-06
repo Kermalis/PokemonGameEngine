@@ -82,12 +82,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 // Egg
                 Game.Instance.Save.Daycare.DoEggCycleStep();
                 // Hatch
-                foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
+                Party pp = Game.Instance.Save.PlayerParty;
+                for (short i = 0; i < pp.Count; i++)
                 {
+                    PartyPokemon p = pp[i];
                     if (p.IsEgg && p.Friendship == 0)
                     {
-                        p.HatchEgg();
-                        // TODO: Egg script
+                        Game.Instance.Save.Vars[Var.SpecialVar1] = i;
+                        ScriptLoader.LoadScript("Egg_Hatch");
                         return true;
                     }
                 }
