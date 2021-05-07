@@ -30,6 +30,16 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             base.Face(facing);
         }
 
+        protected virtual int GetImage(bool showMoving)
+        {
+            byte f = (byte)Facing;
+            if (!showMoving)
+            {
+                return f;
+            }
+            return _leg ? f + 8 : f + 16; // TODO: Fall-back to specific images if the target image doesn't exist
+        }
+
         // TODO: Water reflections, priority
         public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int startBlockX, int startBlockY, int startPixelX, int startPixelY)
         {
@@ -63,8 +73,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 float t = MovementTimer;
                 return t != 1 && t >= 0.6f;
             }
-            byte f = (byte)Facing;
-            int imgNum = ShowLegs() ? (_leg ? f + 8 : f + 16) : f; // TODO: Fall-back to specific images if the target images doesn't exist
+            int imgNum = GetImage(ShowLegs());
             s.Images[imgNum].DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y);
         }
     }
