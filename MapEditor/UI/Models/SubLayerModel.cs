@@ -47,7 +47,7 @@ namespace Kermalis.MapEditor.UI.Models
 
         internal static Blockset.Block.Tile GetTile(Blockset.Block block, byte eLayerNum, byte subLayerNum, int x, int y)
         {
-            List<Blockset.Block.Tile> layers = block.Tiles[y][x][eLayerNum];
+            List<Blockset.Block.Tile> layers = block.Tiles[eLayerNum][y][x];
             return layers.Count <= subLayerNum ? null : layers[subLayerNum];
         }
         internal static unsafe void UpdateBitmap(WriteableBitmap bitmap, Blockset.Block block, byte eLayerNum, byte subLayerNum)

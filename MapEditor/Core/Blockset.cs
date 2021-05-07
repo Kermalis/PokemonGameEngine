@@ -58,35 +58,31 @@ namespace Kermalis.MapEditor.Core
             public int Id;
 
             public BlocksetBlockBehavior Behavior;
-            public readonly List<Tile>[][][] Tiles;
+            public readonly List<Tile>[][][] Tiles; // Elevation,Y,X,SubLayers
 
             public Block(Blockset parent, int id, EndianBinaryReader r)
             {
                 Behavior = r.ReadEnum<BlocksetBlockBehavior>();
-                List<Tile>[] Read()
+                Tiles = new List<Tile>[Overworld.NumElevations][][];
+                for (byte e = 0; e < Overworld.NumElevations; e++)
                 {
-                    var eLayers = new List<Tile>[Overworld.NumElevations];
-                    for (byte e = 0; e < Overworld.NumElevations; e++)
+                    var arrE = new List<Tile>[Overworld.Block_NumTilesY][];
+                    for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                     {
-                        byte count = r.ReadByte();
-                        var subLayers = new List<Tile>(count);
-                        for (int i = 0; i < count; i++)
+                        var arrY = new List<Tile>[Overworld.Block_NumTilesX];
+                        for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                         {
-                            subLayers.Add(new Tile(r));
+                            byte count = r.ReadByte();
+                            var subLayers = new List<Tile>(count);
+                            for (int i = 0; i < count; i++)
+                            {
+                                subLayers.Add(new Tile(r));
+                            }
+                            arrY[x] = subLayers;
                         }
-                        eLayers[e] = subLayers;
+                        arrE[y] = arrY;
                     }
-                    return eLayers;
-                }
-                Tiles = new List<Tile>[Overworld.Block_NumTilesY][][];
-                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
-                {
-                    var arrY = new List<Tile>[Overworld.Block_NumTilesX][];
-                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
-                    {
-                        arrY[x] = Read();
-                    }
-                    Tiles[y] = arrY;
+                    Tiles[e] = arrE;
                 }
                 Parent = parent;
                 Id = id;
@@ -95,24 +91,20 @@ namespace Kermalis.MapEditor.Core
             {
                 Parent = parent;
                 Id = id;
-                List<Tile>[] Create()
+                Tiles = new List<Tile>[Overworld.NumElevations][][];
+                for (byte e = 0; e < Overworld.NumElevations; e++)
                 {
-                    var d = new List<Tile>[Overworld.NumElevations];
-                    for (byte e = 0; e < Overworld.NumElevations; e++)
+                    var arrE = new List<Tile>[Overworld.Block_NumTilesY][];
+                    for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                     {
-                        d[e] = new List<Tile>();
+                        var arrY = new List<Tile>[Overworld.Block_NumTilesX];
+                        for (int x = 0; x < Overworld.Block_NumTilesX; x++)
+                        {
+                            arrY[x] = new List<Tile>();
+                        }
+                        arrE[y] = arrY;
                     }
-                    return d;
-                }
-                Tiles = new List<Tile>[Overworld.Block_NumTilesY][][];
-                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
-                {
-                    var arrY = new List<Tile>[Overworld.Block_NumTilesX][];
-                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
-                    {
-                        arrY[x] = Create();
-                    }
-                    Tiles[y] = arrY;
+                    Tiles[e] = arrE;
                 }
             }
 
@@ -132,13 +124,14 @@ namespace Kermalis.MapEditor.Core
                         subLayers[t].Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty);
                     }
                 }
+                List<Tile>[][] arrE = Tiles[e];
                 for (int ly = 0; ly < Overworld.Block_NumTilesY; ly++)
                 {
-                    List<Tile>[][] arrY = Tiles[ly];
+                    List<Tile>[] arrY = arrE[ly];
                     int py = ly * Overworld.Tile_NumPixelsY;
                     for (int lx = 0; lx < Overworld.Block_NumTilesX; lx++)
                     {
-                        Draw(arrY[lx][e], x + (lx * Overworld.Tile_NumPixelsX), y + py);
+                        Draw(arrY[lx], x + (lx * Overworld.Tile_NumPixelsX), y + py);
                     }
                 }
             }
@@ -146,25 +139,22 @@ namespace Kermalis.MapEditor.Core
             public void Write(EndianBinaryWriter w)
             {
                 w.Write(Behavior);
-                void Write(List<Tile>[] eLayers)
+                for (byte e = 0; e < Overworld.NumElevations; e++)
                 {
-                    for (byte e = 0; e < Overworld.NumElevations; e++)
+                    List<Tile>[][] arrE = Tiles[e];
+                    for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                     {
-                        List<Tile> subLayers = eLayers[e];
-                        byte count = (byte)subLayers.Count;
-                        w.Write(count);
-                        for (int i = 0; i < count; i++)
+                        List<Tile>[] arrY = arrE[y];
+                        for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                         {
-                            subLayers[i].Write(w);
+                            List<Tile> subLayers = arrY[x];
+                            byte subCount = (byte)subLayers.Count;
+                            w.Write(subCount);
+                            for (int i = 0; i < subCount; i++)
+                            {
+                                subLayers[i].Write(w);
+                            }
                         }
-                    }
-                }
-                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
-                {
-                    List<Tile>[][] arrY = Tiles[y];
-                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
-                    {
-                        Write(arrY[x]);
                     }
                 }
             }
@@ -270,15 +260,15 @@ namespace Kermalis.MapEditor.Core
         }
         internal static void Clear(Block block)
         {
-            for (int y = 0; y < Overworld.Block_NumTilesY; y++)
+            for (byte e = 0; e < Overworld.NumElevations; e++)
             {
-                List<Block.Tile>[][] arrY = block.Tiles[y];
-                for (int x = 0; x < Overworld.Block_NumTilesX; x++)
+                List<Block.Tile>[][] arrE = block.Tiles[e];
+                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                 {
-                    List<Block.Tile>[] arrX = arrY[x];
-                    for (byte e = 0; e < Overworld.NumElevations; e++)
+                    List<Block.Tile>[] arrY = arrE[y];
+                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
-                        arrX[e].Clear();
+                        arrY[x].Clear();
                     }
                 }
             }

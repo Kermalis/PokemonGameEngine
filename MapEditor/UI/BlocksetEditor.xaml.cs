@@ -436,12 +436,13 @@ namespace Kermalis.MapEditor.UI
                 SelectedELayerIndex = 0;
             }
             byte e = (byte)_selectedELayerIndex;
+            List<Blockset.Block.Tile>[][] arrE = _selectedBlock.Tiles[e];
             for (int y = 0; y < Overworld.Block_NumTilesY; y++)
             {
-                List<Blockset.Block.Tile>[][] arrY = _selectedBlock.Tiles[y];
+                List<Blockset.Block.Tile>[] arrY = arrE[y];
                 for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                 {
-                    Count(arrY[x][e]);
+                    Count(arrY[x]);
                 }
             }
             if (num < Overworld.MaxSubLayers)

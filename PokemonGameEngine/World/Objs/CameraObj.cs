@@ -90,13 +90,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                                     RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, tx, ty, ttile.AnimBitmap ?? ttile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: tile.XFlip, yFlip: tile.YFlip);
                                 }
                             }
+                            Blockset.Block.Tile[][][] arrE = b.Tiles[e];
                             for (int by = 0; by < Overworld.Block_NumTilesY; by++)
                             {
-                                Blockset.Block.Tile[][][] arrY = b.Tiles[by];
+                                Blockset.Block.Tile[][] arrY = arrE[by];
                                 int ty = curPixelY + (by * Overworld.Tile_NumPixelsY);
                                 for (int bx = 0; bx < Overworld.Block_NumTilesX; bx++)
                                 {
-                                    Draw(arrY[bx][e], curPixelX + (bx * Overworld.Tile_NumPixelsX), ty);
+                                    Draw(arrY[bx], curPixelX + (bx * Overworld.Tile_NumPixelsX), ty);
                                 }
                             }
                         }

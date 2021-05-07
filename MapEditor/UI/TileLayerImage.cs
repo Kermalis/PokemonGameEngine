@@ -74,9 +74,8 @@ namespace Kermalis.MapEditor.UI
         private void SetTiles(int startX, int startY)
         {
             bool changed = false;
-            void Set(List<Blockset.Block.Tile>[] dict, Blockset.Block.Tile st)
+            void Set(List<Blockset.Block.Tile> subLayers, Blockset.Block.Tile st)
             {
-                List<Blockset.Block.Tile> subLayers = dict[_eLayerNum];
                 if (subLayers.Count <= _subLayerNum)
                 {
                     changed = true;
@@ -108,7 +107,7 @@ namespace Kermalis.MapEditor.UI
                             Blockset.Block.Tile st = arrY[x];
                             if (st.TilesetTile != null)
                             {
-                                Set(_block.Tiles[curY][curX], st);
+                                Set(_block.Tiles[_eLayerNum][curY][curX], st);
                             }
                         }
                     }
@@ -122,7 +121,7 @@ namespace Kermalis.MapEditor.UI
         }
         private void RemoveTile(int x, int y)
         {
-            List<Blockset.Block.Tile> subLayers = _block.Tiles[y][x][_eLayerNum];
+            List<Blockset.Block.Tile> subLayers = _block.Tiles[_eLayerNum][y][x];
             if (subLayers.Count > _subLayerNum)
             {
                 subLayers.RemoveAt(_subLayerNum);

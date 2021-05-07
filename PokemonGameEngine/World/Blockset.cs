@@ -26,43 +26,43 @@ namespace Kermalis.PokemonGameEngine.World
 
             public readonly Blockset Parent;
             public readonly BlocksetBlockBehavior Behavior;
-            public readonly Tile[][][][] Tiles; // Y,X,Elevation,Sublayers
+            public readonly Tile[][][][] Tiles; // Elevation,Y,X,Sublayers
 
             public Block(Blockset parent, EndianBinaryReader r)
             {
                 Behavior = r.ReadEnum<BlocksetBlockBehavior>();
-                Tile[][] Read()
+                Tile[] Read()
                 {
-                    var eLayers = new Tile[Overworld.NumElevations][];
-                    for (byte e = 0; e < Overworld.NumElevations; e++)
+                    byte count = r.ReadByte();
+                    Tile[] subLayers;
+                    if (count == 0)
                     {
-                        byte count = r.ReadByte();
-                        Tile[] subLayers;
-                        if (count == 0)
-                        {
-                            subLayers = Array.Empty<Tile>();
-                        }
-                        else
-                        {
-                            subLayers = new Tile[count];
-                            for (int i = 0; i < count; i++)
-                            {
-                                subLayers[i] = new Tile(r);
-                            }
-                        }
-                        eLayers[e] = subLayers;
+                        subLayers = Array.Empty<Tile>();
                     }
-                    return eLayers;
+                    else
+                    {
+                        subLayers = new Tile[count];
+                        for (int i = 0; i < count; i++)
+                        {
+                            subLayers[i] = new Tile(r);
+                        }
+                    }
+                    return subLayers;
                 }
-                Tiles = new Tile[Overworld.Block_NumTilesY][][][];
-                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
+                Tiles = new Tile[Overworld.NumElevations][][][];
+                for (byte e = 0; e < Overworld.NumElevations; e++)
                 {
-                    var arrY = new Tile[Overworld.Block_NumTilesX][][];
-                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
+                    var arrE = new Tile[Overworld.Block_NumTilesY][][];
+                    for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                     {
-                        arrY[x] = Read();
+                        var arrY = new Tile[Overworld.Block_NumTilesX][];
+                        for (int x = 0; x < Overworld.Block_NumTilesX; x++)
+                        {
+                            arrY[x] = Read();
+                        }
+                        arrE[y] = arrY;
                     }
-                    Tiles[y] = arrY;
+                    Tiles[e] = arrE;
                 }
                 Parent = parent;
             }
