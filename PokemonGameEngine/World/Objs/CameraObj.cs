@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
@@ -79,27 +78,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                         Map.Layout.Block block = cameraMap.GetBlock_CrossMap(blockX, blockY, out _);
                         if (block != null)
                         {
-                            Blockset.Block b = block.BlocksetBlock;
-                            void Draw(Blockset.Block.Tile[] subLayers, int tx, int ty)
-                            {
-                                int numSubLayers = subLayers.Length;
-                                for (int t = 0; t < numSubLayers; t++)
-                                {
-                                    Blockset.Block.Tile tile = subLayers[t];
-                                    Tileset.Tile ttile = tile.TilesetTile;
-                                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, tx, ty, ttile.AnimBitmap ?? ttile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: tile.XFlip, yFlip: tile.YFlip);
-                                }
-                            }
-                            Blockset.Block.Tile[][][] arrE = b.Tiles[e];
-                            for (int by = 0; by < Overworld.Block_NumTilesY; by++)
-                            {
-                                Blockset.Block.Tile[][] arrY = arrE[by];
-                                int ty = curPixelY + (by * Overworld.Tile_NumPixelsY);
-                                for (int bx = 0; bx < Overworld.Block_NumTilesX; bx++)
-                                {
-                                    Draw(arrY[bx], curPixelX + (bx * Overworld.Tile_NumPixelsX), ty);
-                                }
-                            }
+                            block.BlocksetBlock.Render(bmpAddress, bmpWidth, bmpHeight, e, curPixelX, curPixelY);
                         }
                         curPixelX += Overworld.Block_NumPixelsX;
                     }

@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
 using System;
 using System.Collections.Generic;
@@ -12,21 +13,28 @@ namespace Kermalis.PokemonGameEngine.World
         {
             public sealed class Tile
             {
-                public readonly bool XFlip;
-                public readonly bool YFlip;
-                public readonly Tileset.Tile TilesetTile;
+                private readonly bool _xFlip;
+                private readonly bool _yFlip;
+                private readonly Tileset.Tile _tilesetTile;
 
                 public Tile(EndianBinaryReader r)
                 {
-                    XFlip = r.ReadBoolean();
-                    YFlip = r.ReadBoolean();
-                    TilesetTile = Tileset.LoadOrGet(r.ReadInt32()).Tiles[r.ReadInt32()];
+                    _xFlip = r.ReadBoolean();
+                    _yFlip = r.ReadBoolean();
+                    _tilesetTile = Tileset.LoadOrGet(r.ReadInt32()).Tiles[r.ReadInt32()];
+                }
+
+                public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
+                {
+                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, x, y, _tilesetTile.AnimBitmap ?? _tilesetTile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: _xFlip, yFlip: _yFlip);
                 }
             }
 
-            public readonly Blockset Parent;
+#pragma warning disable IDE0052 // Remove unread private members
+            private readonly Blockset _parent; // Keeps Blockset reference alive
+#pragma warning restore IDE0052 // Remove unread private members
             public readonly BlocksetBlockBehavior Behavior;
-            public readonly Tile[][][][] Tiles; // Elevation,Y,X,Sublayers
+            private readonly Tile[][][][] _tiles; // Elevation,Y,X,Sublayers
 
             public Block(Blockset parent, EndianBinaryReader r)
             {
@@ -49,7 +57,7 @@ namespace Kermalis.PokemonGameEngine.World
                     }
                     return subLayers;
                 }
-                Tiles = new Tile[Overworld.NumElevations][][][];
+                _tiles = new Tile[Overworld.NumElevations][][][];
                 for (byte e = 0; e < Overworld.NumElevations; e++)
                 {
                     var arrE = new Tile[Overworld.Block_NumTilesY][][];
@@ -62,9 +70,28 @@ namespace Kermalis.PokemonGameEngine.World
                         }
                         arrE[y] = arrY;
                     }
-                    Tiles[e] = arrE;
+                    _tiles[e] = arrE;
                 }
-                Parent = parent;
+                _parent = parent;
+            }
+
+            public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight, byte elevation, int x, int y)
+            {
+                Tile[][][] arrE = _tiles[elevation];
+                for (int by = 0; by < Overworld.Block_NumTilesY; by++)
+                {
+                    Tile[][] arrY = arrE[by];
+                    int ty = y + (by * Overworld.Tile_NumPixelsY);
+                    for (int bx = 0; bx < Overworld.Block_NumTilesX; bx++)
+                    {
+                        Tile[] subLayers = arrY[bx];
+                        int tx = x + (bx * Overworld.Tile_NumPixelsX);
+                        for (int t = 0; t < subLayers.Length; t++)
+                        {
+                            subLayers[t].Render(bmpAddress, bmpWidth, bmpHeight, tx, ty);
+                        }
+                    }
+                }
             }
         }
 
