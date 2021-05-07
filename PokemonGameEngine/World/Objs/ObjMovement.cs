@@ -398,34 +398,31 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 if (otherPos.Y < myPos.Y)
                 {
-                    return FacingDirection.North;
+                    return FacingDirection.North; // x == x, y < y
                 }
-                return FacingDirection.South; // Default case if x and y are equal
+                return FacingDirection.South; // x == x, y == y
             }
-            else if (otherPos.Y == myPos.Y)
+            if (otherPos.Y == myPos.Y)
             {
                 if (otherPos.X < myPos.X)
                 {
-                    return FacingDirection.West;
+                    return FacingDirection.West; // x < x, y == y
                 }
-                return FacingDirection.East;
+                return FacingDirection.East; // x > x, y == y
             }
-            else if (otherPos.X < myPos.X)
+            if (otherPos.X < myPos.X)
             {
                 if (otherPos.Y < myPos.Y)
                 {
-                    return FacingDirection.Northwest;
+                    return FacingDirection.Northwest; // x < x, y < y
                 }
-                return FacingDirection.Southwest;
+                return FacingDirection.Southwest; // x < x, y > y
             }
-            else
+            if (otherPos.Y < myPos.Y)
             {
-                if (otherPos.Y < myPos.Y)
-                {
-                    return FacingDirection.Northeast;
-                }
-                return FacingDirection.Southeast;
+                return FacingDirection.Northeast; // x > x, y < y
             }
+            return FacingDirection.Southeast; // x > x, y > y
         }
 
         public void LookTowards(Obj other)
