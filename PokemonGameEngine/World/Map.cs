@@ -159,18 +159,14 @@ namespace Kermalis.PokemonGameEngine.World
             public sealed class Block
             {
                 public readonly Layout Parent;
-                public readonly int X;
-                public readonly int Y;
 
                 public readonly byte Elevations;
                 public readonly LayoutBlockPassage Passage;
                 public readonly Blockset.Block BlocksetBlock;
 
-                public Block(Layout parent, int x, int y, EndianBinaryReader r)
+                public Block(Layout parent, EndianBinaryReader r)
                 {
                     Parent = parent;
-                    X = x;
-                    Y = y;
 
                     Elevations = r.ReadByte();
                     Passage = r.ReadEnum<LayoutBlockPassage>();
@@ -205,7 +201,7 @@ namespace Kermalis.PokemonGameEngine.World
                         var arrY = new Block[BlocksWidth];
                         for (int x = 0; x < BlocksWidth; x++)
                         {
-                            arrY[x] = new Block(this, x, y, r);
+                            arrY[x] = new Block(this, r);
                         }
                         Blocks[y] = arrY;
                     }
@@ -223,7 +219,7 @@ namespace Kermalis.PokemonGameEngine.World
                             var arrY = new Block[BorderWidth];
                             for (int x = 0; x < BorderWidth; x++)
                             {
-                                arrY[x] = new Block(this, -1, -1, r);
+                                arrY[x] = new Block(this, r);
                             }
                             BorderBlocks[y] = arrY;
                         }
@@ -257,6 +253,9 @@ namespace Kermalis.PokemonGameEngine.World
             }
         }
 
+#if DEBUG
+        public readonly string Name;
+#endif
         public readonly Layout MapLayout;
         public readonly Details MapDetails;
         public readonly Connection[] Connections;
@@ -280,6 +279,9 @@ namespace Kermalis.PokemonGameEngine.World
                 Encounters = new EncounterGroups(r);
                 MapEvents = new Events(r);
             }
+#if DEBUG
+            Name = name;
+#endif
         }
 
         private const string MapPath = "Map.";
@@ -316,12 +318,9 @@ namespace Kermalis.PokemonGameEngine.World
             // If we're out of bounds, try to branch into a connection. If we don't find one, we meet at the bottom
             if (north || south || west || east)
             {
-                // TODO: How should connections retain map references? Answer: Visible maps/objs list
-                Connection[] connections = Connections;
-                int numConnections = connections.Length;
-                for (int i = 0; i < numConnections; i++)
+                for (int i = 0; i < Connections.Length; i++)
                 {
-                    Connection c = connections[i];
+                    Connection c = Connections[i];
                     switch (c.Dir)
                     {
                         case Connection.Direction.South:
@@ -382,7 +381,6 @@ namespace Kermalis.PokemonGameEngine.World
                         }
                     }
                 }
-
             }
             // If we are in bounds, return the current map
             // If we didn't find a connection, we are at the border, which counts as the current map
@@ -390,14 +388,10 @@ namespace Kermalis.PokemonGameEngine.World
             outY = y;
             outMap = this;
         }
-        public Layout.Block GetBlock_CrossMap(int x, int y, out Map outMap)
+        public Layout.Block GetBlock_CrossMap(int x, int y, out int outX, out int outY, out Map outMap)
         {
-            GetXYMap(x, y, out int outX, out int outY, out outMap);
+            GetXYMap(x, y, out outX, out outY, out outMap);
             return outMap.GetBlock_InBounds(outX, outY);
-        }
-        public Layout.Block GetBlock_CrossMap(int x, int y)
-        {
-            return GetBlock_CrossMap(x, y, out _);
         }
         public Layout.Block GetBlock_InBounds(int x, int y)
         {
@@ -433,7 +427,7 @@ namespace Kermalis.PokemonGameEngine.World
             return ml.BorderBlocks[y][x];
         }
 
-        public void LoadObjEvents()
+        private void LoadObjEvents()
         {
             Flags flags = Game.Instance.Save.Flags;
             foreach (Events.ObjEvent oe in MapEvents.Objs)
@@ -444,7 +438,7 @@ namespace Kermalis.PokemonGameEngine.World
                 }
             }
         }
-        public void UnloadObjEvents()
+        private void UnloadObjEvents()
         {
             foreach (Obj o in Objs)
             {
@@ -454,6 +448,21 @@ namespace Kermalis.PokemonGameEngine.World
                 }
             }
             Objs.Clear();
+        }
+
+        public void OnMapNowVisible()
+        {
+#if DEBUG
+            Console.WriteLine("Map \"{0}\" is now visible", Name);
+#endif
+            LoadObjEvents(); // Objs that are wider than 1 block that are at the edge of the map will "pop" into existence
+        }
+        public void OnMapNoLongerVisible()
+        {
+#if DEBUG
+            Console.WriteLine("Map \"{0}\" is no longer visible", Name);
+#endif
+            UnloadObjEvents(); // Objs that are wider than 1 block that are at the edge of the map will "pop" out of existence
         }
 
         // "exceptThisOne" is used so objs aren't checking if they collide with themselves

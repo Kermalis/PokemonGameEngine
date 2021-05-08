@@ -292,25 +292,24 @@ namespace Kermalis.PokemonGameEngine.GUI
             Tileset.AnimationTick();
             ProcessDayTint(false);
 
-            List<Obj> list = Obj.LoadedObjs;
-            int count = list.Count;
-            for (int i = 0; i < count; i++)
+            Obj[] arr = Obj.LoadedObjs.ToArray();
+            for (int i = 0; i < arr.Length; i++)
             {
-                Obj o = list[i];
-                if (o.ShouldUpdateMovement)
+                Obj o = arr[i];
+                if (Obj.LoadedObjs.Contains(o) && o.ShouldUpdateMovement)
                 {
                     o.UpdateMovement();
                 }
             }
-            for (int i = 0; i < count; i++)
+            arr = Obj.LoadedObjs.ToArray();
+            for (int i = 0; i < arr.Length; i++)
             {
-                Obj o = list[i];
-                if (o != CameraObj.CameraAttachedTo)
+                Obj o = arr[i];
+                if (Obj.LoadedObjs.Contains(o))
                 {
                     o.LogicTick();
                 }
             }
-            CameraObj.CameraAttachedTo?.LogicTick(); // This obj should logic tick last so map changing doesn't change LoadedObjs
 
             if (_interactiveScriptWaitingFor?.IsMoving == false)
             {

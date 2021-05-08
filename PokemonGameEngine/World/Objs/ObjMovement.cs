@@ -56,7 +56,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             // Current block - return false if we are blocked
             Position p = Pos;
-            Map.Layout.Block curBlock = Map.GetBlock_CrossMap(p.X, p.Y);
+            Map.Layout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrent)
             {
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             // Current block - return false if we are blocked
             Position p = Pos;
-            Map.Layout.Block curBlock = Map.GetBlock_CrossMap(p.X, p.Y);
+            Map.Layout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrent)
             {
@@ -124,7 +124,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             // Current block - return false if we are blocked
             Position p = Pos;
-            Map.Layout.Block curBlock = Map.GetBlock_CrossMap(p.X, p.Y);
+            Map.Layout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrentCardinal1 || curBehavior == blockedCurrentCardinal2 || curBehavior == blockedCurrentDiagonal)
             {
@@ -258,7 +258,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Position newPos = Pos;
             int newX = newPos.X;
             int newY = newPos.Y;
-            Map.Layout.Block upStairBlock = Map.GetBlock_CrossMap(newX, newY - 1);
+            Map.Layout.Block upStairBlock = Map.GetBlock_CrossMap(newX, newY - 1, out _, out _, out _);
             BlocksetBlockBehavior upStairBehavior = upStairBlock.BlocksetBlock.Behavior;
             if (upStairBehavior == upBehavior)
             {
@@ -266,7 +266,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 Pos.YOffset = StairYOffset;
                 return;
             }
-            Map.Layout.Block newBlock = Map.GetBlock_CrossMap(newX, newY);
+            Map.Layout.Block newBlock = Map.GetBlock_CrossMap(newX, newY, out _, out _, out _);
             BlocksetBlockBehavior newBehavior = newBlock.BlocksetBlock.Behavior;
             if (newBehavior == downBehavior)
             {
@@ -334,9 +334,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                     break;
                 }
             }
-            Map.Layout.Block block = GetBlock(out Map map);
-            Pos.Elevation = GetElevationIfMovedTo(Pos.Elevation, block.Elevations);
             Map curMap = Map;
+            int newX = Pos.X;
+            int newY = Pos.Y;
+            Map.Layout.Block block = curMap.GetBlock_CrossMap(newX, newY, out int outX, out int outY, out Map map);
+            Pos.Elevation = GetElevationIfMovedTo(Pos.Elevation, block.Elevations);
             if (map == curMap)
             {
                 return;
@@ -346,12 +348,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             map.Objs.Add(this);
             Map = map;
 
-            int x = Pos.X;
-            int y = Pos.Y;
-            Pos.X = block.X;
-            Pos.Y = block.Y;
-            PrevPos.X += block.X - x;
-            PrevPos.Y += block.Y - y;
+            Pos.X = outX;
+            Pos.Y = outY;
+            PrevPos.X += outX - newX;
+            PrevPos.Y += outY - newY;
             OnMapChanged(curMap, map);
         }
 
@@ -454,8 +454,23 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 // Scale from previous value to new value based on % of transition
                 return (int)(prevVisualOfs + (t * visualOfsScale));
             }
+            bool changed = false;
+            int old = ProgressX;
             ProgressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, Overworld.Block_NumPixelsX);
+            if (ProgressX != old)
+            {
+                changed = true;
+            }
+            old = ProgressY;
             ProgressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, Overworld.Block_NumPixelsY);
+            if (ProgressY != old)
+            {
+                changed = true;
+            }
+            if (changed)
+            {
+                OnPositionVisiblyChanged();
+            }
         }
         public void UpdateMovement()
         {
