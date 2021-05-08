@@ -6,11 +6,11 @@ Pokémon Game Engine is a C# game engine that is similar to the 2D Pokémon games.
 It uses [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine) for the battles.
 It can run on any platform, even phones! (With some work, contact me)
 
-![GamePreview](GamePreview.png)
-![BattlePreview](BattlePreview.gif)
-![GroudonPreview](GroudonPreview.gif)
-![DayNightPreview](DayNightPreview.gif)
-![MapEditorPreview](MapEditorPreview.png)
+![GamePreview](PreviewImages/Overworld.png)
+![BattlePreview](PreviewImages/Battle.gif)
+![GroudonPreview](PreviewImages/Groudon.gif)
+![DayNightPreview](PreviewImages/DayNight.gif)
+![MapEditorPreview](PreviewImages/MapEditor.png)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.
 [Check the wiki](https://github.com/Kermalis/PokemonGameEngine/wiki) if you're interested.
@@ -26,7 +26,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Tile animations
 * Controller support
 * Animated sprites
-* Spinda spots ![Spindas](Spindas.gif)
+* Spinda spots ![Spindas](PreviewImages/Spinda.gif)
 * Sound & Music, Cries
 * Daycare, Breeding, and Eggs
 * Game stats
@@ -34,7 +34,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 ----
 ## To Do:
 * Update the wiki as the engine grows
-* [Check the list](https://github.com/Kermalis/PokemonGameEngine/blob/master/TODO.txt)
+* [Check the list](TODO.txt)
 
 ----
 ## PokemonGameEngine Uses:
