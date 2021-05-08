@@ -1,0 +1,60 @@
+Main Mechanics:
+    Trainers
+    NewGame/Saving
+    Evolution & Shedinja
+    Map scripts
+    Withdrawing pkmn from daycare
+    Passing down tmhm moves to offspring
+    Burmy(/Giratina) areas
+    Item effects & registering an item
+    EVs
+    Badges
+    Pokerus
+
+GUIs:
+    Intro/Title/Continue/NewGame
+    Pokedex
+    Bag
+    Summary
+    Options
+    Trainer card
+    Switching in battles
+    Nickname screen (and for egg hatch)
+
+Encounters:
+    CompoundEyes
+    CuteCharm
+    Hustle, Pressure, VitalSpirit
+    Intimidate, KeenEye
+    MagnetPull, Static
+    SandVeil, SnowCloak
+    StickyHold, SuctionCups
+    Synchronize
+    Biking reduces the rate
+    Phenomena
+    Fishing
+
+Field Effects:
+    Spin tiles
+    Waterfall
+    Surf
+    Bike
+    Ledges
+    Reflections
+    Blocks that start scripts (bookshelves, tvs, PC, etc)
+    Countertops that forward the script (mart employees)
+
+Data Stuff:
+    Item pouches
+    Dump TMHM compatibility
+    Wild Pkmn with items
+
+Nice to have (no priority):
+    Changable tiles based on day/night
+    Different day tints based on season
+    Obj Following (#29)
+    Battle animation
+    Pass Powers
+
+Sounds cool but definitely not necessary at all:
+    Color lookup tables for day tints

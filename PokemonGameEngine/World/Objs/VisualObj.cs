@@ -40,7 +40,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return _leg ? f + 8 : f + 16; // TODO: Fall-back to specific images if the target image doesn't exist
         }
 
-        // TODO: Water reflections, priority
+        // TODO: Water reflections
         public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int blockX, int blockY, int startBlockPixelX, int startBlockPixelY)
         {
             int baseX = (blockX * Overworld.Block_NumPixelsX) + ProgressX + startBlockPixelX;

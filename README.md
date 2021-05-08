@@ -29,16 +29,12 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Spinda spots ![Spindas](Spindas.gif)
 * Sound & Music, Cries
 * Daycare, Breeding, and Eggs
+* Game stats
 
 ----
 ## To Do:
 * Update the wiki as the engine grows
-* Changable tiles based on day/night
-* Saving
-* Trainers
-* Default menus
-* Bike/surf
-* Some movement behaviors (like ledges, spin tiles, waterfall, etc)
+* [Check the list](https://github.com/Kermalis/PokemonGameEngine/TODO.txt)
 
 ----
 ## PokemonGameEngine Uses:
