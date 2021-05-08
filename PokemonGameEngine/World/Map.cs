@@ -159,18 +159,14 @@ namespace Kermalis.PokemonGameEngine.World
             public sealed class Block
             {
                 public readonly Layout Parent;
-                public readonly int X;
-                public readonly int Y;
 
                 public readonly byte Elevations;
                 public readonly LayoutBlockPassage Passage;
                 public readonly Blockset.Block BlocksetBlock;
 
-                public Block(Layout parent, int x, int y, EndianBinaryReader r)
+                public Block(Layout parent, EndianBinaryReader r)
                 {
                     Parent = parent;
-                    X = x;
-                    Y = y;
 
                     Elevations = r.ReadByte();
                     Passage = r.ReadEnum<LayoutBlockPassage>();
@@ -205,7 +201,7 @@ namespace Kermalis.PokemonGameEngine.World
                         var arrY = new Block[BlocksWidth];
                         for (int x = 0; x < BlocksWidth; x++)
                         {
-                            arrY[x] = new Block(this, x, y, r);
+                            arrY[x] = new Block(this, r);
                         }
                         Blocks[y] = arrY;
                     }
@@ -223,7 +219,7 @@ namespace Kermalis.PokemonGameEngine.World
                             var arrY = new Block[BorderWidth];
                             for (int x = 0; x < BorderWidth; x++)
                             {
-                                arrY[x] = new Block(this, -1, -1, r);
+                                arrY[x] = new Block(this, r);
                             }
                             BorderBlocks[y] = arrY;
                         }
@@ -312,82 +308,6 @@ namespace Kermalis.PokemonGameEngine.World
             return m;
         }
 
-        // Even though objs are loaded/unloaded based on the map being visible, finding coords of an obj relative to another map is tricky
-        // This is for finding where to render a VisualObj from an immediate map connection
-        // ^ So this will not find where to render one if it's >= 2 connections away, __even though the obj will be loaded__
-        // This will mess up if the other map is in multiple map connections (will return first one)
-        // ^ So the obj will not be drawn multiple times in an infinite hallway for example, even though the blocks will work
-        public bool GetXYRelativeToMap(int otherX, int otherY, Map otherMap, out int relX, out int relY)
-        {
-            if (otherMap == this)
-            {
-                relX = otherX;
-                relY = otherY;
-                return true;
-            }
-
-            Layout ml = MapLayout;
-            for (int i = 0; i < Connections.Length; i++)
-            {
-                Connection c = Connections[i];
-                switch (c.Dir)
-                {
-                    case Connection.Direction.South:
-                    {
-                        Map m = LoadOrGet(c.MapId);
-                        if (m == otherMap)
-                        {
-                            relX = otherX + c.Offset;
-                            relY = otherY + ml.BlocksHeight;
-                            return true;
-                        }
-                        break;
-                    }
-                    case Connection.Direction.North:
-                    {
-                        Map m = LoadOrGet(c.MapId);
-                        if (m == otherMap)
-                        {
-                            Layout l = m.MapLayout;
-                            relX = otherX + c.Offset;
-                            relY = otherY - l.BlocksHeight;
-                            return true;
-                        }
-                        break;
-                    }
-                    case Connection.Direction.West:
-                    {
-                        Map m = LoadOrGet(c.MapId);
-                        if (m == otherMap)
-                        {
-                            Layout l = m.MapLayout;
-                            relX = otherX - l.BlocksWidth;
-                            relY = otherY + c.Offset;
-                            return true;
-                        }
-                        break;
-                    }
-                    case Connection.Direction.East:
-                    {
-                        Map m = LoadOrGet(c.MapId);
-                        if (m == otherMap)
-                        {
-                            Layout l = m.MapLayout;
-                            relX = otherX + ml.BlocksWidth;
-                            relY = otherY + c.Offset;
-                            return true;
-                        }
-                        break;
-                    }
-                }
-            }
-
-            // Could not find
-            relX = 0;
-            relY = 0;
-            return false;
-        }
-
         public void GetXYMap(int x, int y, out int outX, out int outY, out Map outMap)
         {
             Layout ml = MapLayout;
@@ -468,14 +388,10 @@ namespace Kermalis.PokemonGameEngine.World
             outY = y;
             outMap = this;
         }
-        public Layout.Block GetBlock_CrossMap(int x, int y, out Map outMap)
+        public Layout.Block GetBlock_CrossMap(int x, int y, out int outX, out int outY, out Map outMap)
         {
-            GetXYMap(x, y, out int outX, out int outY, out outMap);
+            GetXYMap(x, y, out outX, out outY, out outMap);
             return outMap.GetBlock_InBounds(outX, outY);
-        }
-        public Layout.Block GetBlock_CrossMap(int x, int y)
-        {
-            return GetBlock_CrossMap(x, y, out _);
         }
         public Layout.Block GetBlock_InBounds(int x, int y)
         {
@@ -511,7 +427,7 @@ namespace Kermalis.PokemonGameEngine.World
             return ml.BorderBlocks[y][x];
         }
 
-        public void LoadObjEvents()
+        private void LoadObjEvents()
         {
             Flags flags = Game.Instance.Save.Flags;
             foreach (Events.ObjEvent oe in MapEvents.Objs)
@@ -522,7 +438,7 @@ namespace Kermalis.PokemonGameEngine.World
                 }
             }
         }
-        public void UnloadObjEvents()
+        private void UnloadObjEvents()
         {
             foreach (Obj o in Objs)
             {

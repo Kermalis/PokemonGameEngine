@@ -117,8 +117,8 @@ namespace Kermalis.PokemonGameEngine.Core
         public void TempCreateWildBattle(PartyPokemon wildPkmn)
         {
             PlayerObj player = PlayerObj.Player;
-            Map.Layout.Block block = player.GetBlock(out Map map);
-            CreateWildBattle(map, block, new Party { wildPkmn }, PBEBattleFormat.Single, Song.LegendaryBattle);
+            Map.Layout.Block block = player.GetBlock();
+            CreateWildBattle(player.Map, block, new Party { wildPkmn }, PBEBattleFormat.Single, Song.LegendaryBattle);
         }
 
         #region Logic Tick

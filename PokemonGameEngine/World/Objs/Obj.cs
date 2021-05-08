@@ -80,12 +80,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public Map.Layout.Block GetBlock()
         {
-            return GetBlock(out _);
-        }
-        public Map.Layout.Block GetBlock(out Map map)
-        {
             Position p = Pos;
-            return Map.GetBlock_CrossMap(p.X, p.Y, out map);
+            return Map.GetBlock_InBounds(p.X, p.Y);
         }
 
         public void Warp(IWarp warp)
@@ -94,7 +90,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             int x = warp.DestX;
             int y = warp.DestY;
             byte e = warp.DestElevation;
-            Map.Layout.Block block = map.GetBlock_CrossMap(x, y, out map); // GetBlock_CrossMap in case our warp is actually in a connection for some reason
+            Map.Layout.Block block = map.GetBlock_CrossMap(x, y, out int outX, out int outY, out map); // GetBlock_CrossMap in case our warp is actually in a connection for some reason
             // Facing is of the original direction unless the block behavior says otherwise
             // All QueuedScriptMovements will be run after the warp is complete
             switch (block.BlocksetBlock.Behavior)
@@ -108,13 +104,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 case BlocksetBlockBehavior.Warp_NoOccupancy_S:
                 {
                     Facing = FacingDirection.North;
-                    y--;
+                    outY--;
                     break;
                 }
             }
             UpdateMap(map);
-            Pos.X = x;
-            Pos.Y = y;
+            Pos.X = outX;
+            Pos.Y = outY;
             Pos.Elevation = e;
             PrevPos = Pos;
             if (CameraObj.CameraAttachedTo == this)

@@ -91,7 +91,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 for (int blockX = startBlockX; blockX < endBlockX; blockX++)
                 {
-                    cameraMap.GetBlock_CrossMap(blockX, blockY, out Map map);
+                    cameraMap.GetBlock_CrossMap(blockX, blockY, out _, out _, out Map map);
                     if (!newList.Contains(map))
                     {
                         newList.Add(map);
@@ -117,44 +117,81 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             VisibleMaps = newList;
         }
 
+        private static unsafe void RenderBlocks(uint* bmpAddress, int bmpWidth, int bmpHeight,
+            byte elevation, Map cameraMap, int startBlockX, int startBlockY, int endBlockX, int endBlockY, int startBlockPixelX, int startBlockPixelY)
+        {
+            int curPixelX = startBlockPixelX;
+            int curPixelY = startBlockPixelY;
+            for (int blockY = startBlockY; blockY < endBlockY; blockY++)
+            {
+                for (int blockX = startBlockX; blockX < endBlockX; blockX++)
+                {
+                    Map.Layout.Block block = cameraMap.GetBlock_CrossMap(blockX, blockY, out _, out _, out _);
+                    if (block != null) // No border would show pure black
+                    {
+                        block.BlocksetBlock.Render(bmpAddress, bmpWidth, bmpHeight, elevation, curPixelX, curPixelY);
+                    }
+                    curPixelX += Overworld.Block_NumPixelsX;
+                }
+                curPixelX = startBlockPixelX;
+                curPixelY += Overworld.Block_NumPixelsY;
+            }
+        }
+        private static unsafe void RenderObjs(uint* bmpAddress, int bmpWidth, int bmpHeight,
+            List<Obj> objs, byte elevation, Map cameraMap, int startBlockX, int startBlockY, int endBlockX, int endBlockY, int startBlockPixelX, int startBlockPixelY)
+        {
+            // Extra tolerance for wide/tall VisualObj
+            const int ToleranceW = 2;
+            const int ToleranceH = 2;
+            startBlockX -= ToleranceW;
+            endBlockX += ToleranceW;
+            startBlockPixelX -= ToleranceW * Overworld.Block_NumPixelsX;
+            startBlockY -= ToleranceH;
+            endBlockY += ToleranceH;
+            startBlockPixelY -= ToleranceH * Overworld.Block_NumPixelsY;
+
+            int curPixelX = startBlockPixelX;
+            int curPixelY = startBlockPixelY;
+            for (int blockY = startBlockY; blockY < endBlockY; blockY++)
+            {
+                for (int blockX = startBlockX; blockX < endBlockX; blockX++)
+                {
+                    cameraMap.GetXYMap(blockX, blockY, out int outX, out int outY, out Map map);
+                    for (int i = 0; i < objs.Count; i++)
+                    {
+                        Obj o = objs[i];
+                        if (!(o is VisualObj v) || v.Map != map)
+                        {
+                            continue;
+                        }
+                        // We don't need to check PrevPos to prevent it from popping in/out of existence
+                        // The tolerance covers enough pixels where we can confidently check Pos only
+                        // It'd only mess up if Pos and PrevPos were farther apart from each other than the tolerance
+                        Position p = v.Pos;
+                        if (p.Elevation == elevation && p.X == outX && p.Y == outY)
+                        {
+                            v.Draw(bmpAddress, bmpWidth, bmpHeight, blockX - startBlockX, blockY - startBlockY, startBlockPixelX, startBlockPixelY);
+                        }
+                    }
+                    curPixelX += Overworld.Block_NumPixelsX;
+                }
+                curPixelX = startBlockPixelX;
+                curPixelY += Overworld.Block_NumPixelsY;
+            }
+        }
         public static unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             Camera.GetVisibleBlocksVariables(bmpWidth, bmpHeight,
                 out Map cameraMap, out int startBlockX, out int startBlockY, out int endBlockX, out int endBlockY, out int startBlockPixelX, out int startBlockPixelY);
+
             List<Obj> objs = LoadedObjs;
-            int numObjs = objs.Count;
             // Loop each elevation
             for (byte e = 0; e < Overworld.NumElevations; e++)
             {
                 // Draw blocks
-                int curPixelX = startBlockPixelX;
-                int curPixelY = startBlockPixelY;
-                for (int blockY = startBlockY; blockY < endBlockY; blockY++)
-                {
-                    for (int blockX = startBlockX; blockX < endBlockX; blockX++)
-                    {
-                        Map.Layout.Block block = cameraMap.GetBlock_CrossMap(blockX, blockY);
-                        if (block != null)
-                        {
-                            block.BlocksetBlock.Render(bmpAddress, bmpWidth, bmpHeight, e, curPixelX, curPixelY);
-                        }
-                        curPixelX += Overworld.Block_NumPixelsX;
-                    }
-                    curPixelX = startBlockPixelX;
-                    curPixelY += Overworld.Block_NumPixelsY;
-                }
-
+                RenderBlocks(bmpAddress, bmpWidth, bmpHeight, e, cameraMap, startBlockX, startBlockY, endBlockX, endBlockY, startBlockPixelX, startBlockPixelY);
                 // Draw VisualObjs
-                // TODO: They will overlap each other regardless of y coordinate because of the order of the list
-                // TODO: Objs from other maps (rn they are put in wrong spots)
-                for (int i = 0; i < numObjs; i++)
-                {
-                    Obj o = objs[i];
-                    if (o.Pos.Elevation == e && o is VisualObj v)
-                    {
-                        v.Draw(bmpAddress, bmpWidth, bmpHeight, cameraMap, startBlockX, startBlockY, startBlockPixelX, startBlockPixelY);
-                    }
-                }
+                RenderObjs(bmpAddress, bmpWidth, bmpHeight, objs, e, cameraMap, startBlockX, startBlockY, endBlockX, endBlockY, startBlockPixelX, startBlockPixelY);
             }
         }
     }

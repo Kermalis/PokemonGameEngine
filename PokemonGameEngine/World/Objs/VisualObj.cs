@@ -41,15 +41,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
 
         // TODO: Water reflections, priority
-        public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, Map cameraMap, int startBlockX, int startBlockY, int startBlockPixelX, int startBlockPixelY)
+        public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int blockX, int blockY, int startBlockPixelX, int startBlockPixelY)
         {
-            Position pos = Pos;
-            if (!cameraMap.GetXYRelativeToMap(pos.X, pos.Y, Map, out int relX, out int relY))
-            {
-                return; // Could not find where to render
-            }
-            int baseX = ((relX - startBlockX) * Overworld.Block_NumPixelsX) + ProgressX + startBlockPixelX;
-            int baseY = ((relY - startBlockY) * Overworld.Block_NumPixelsY) + ProgressY + startBlockPixelY;
+            int baseX = (blockX * Overworld.Block_NumPixelsX) + ProgressX + startBlockPixelX;
+            int baseY = (blockY * Overworld.Block_NumPixelsY) + ProgressY + startBlockPixelY;
             // Calc img coords
             ImageSheet s = _sheet;
             int w = s.ImageWidth;

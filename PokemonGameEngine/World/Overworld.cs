@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.World
         public static bool CheckForWildBattle(bool ignoreAbilityOrItem)
         {
             PlayerObj player = PlayerObj.Player;
-            Map.Layout.Block block = player.GetBlock(out Map map);
+            Map.Layout.Block block = player.GetBlock();
             EncounterType t;
             switch (block.BlocksetBlock.Behavior)
             {
@@ -43,6 +43,7 @@ namespace Kermalis.PokemonGameEngine.World
                 case BlocksetBlockBehavior.Surf: t = EncounterType.Surf; break;
                 default: return false;
             }
+            Map map = player.Map;
             EncounterTable tbl = map.Encounters.GetEncounterTable(t);
             if (tbl is null)
             {
