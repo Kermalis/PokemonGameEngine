@@ -34,7 +34,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 ----
 ## To Do:
 * Update the wiki as the engine grows
-* [Check the list](https://github.com/Kermalis/PokemonGameEngine/TODO.txt)
+* [Check the list](https://github.com/Kermalis/PokemonGameEngine/blob/master/TODO.txt)
 
 ----
 ## PokemonGameEngine Uses:
