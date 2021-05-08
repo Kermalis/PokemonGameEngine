@@ -152,7 +152,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                     Obj o = objs[i];
                     if (o.Pos.Elevation == e && o is VisualObj v)
                     {
-                        v.Draw(bmpAddress, bmpWidth, bmpHeight, startBlockX, startBlockY, startBlockPixelX, startBlockPixelY);
+                        v.Draw(bmpAddress, bmpWidth, bmpHeight, cameraMap, startBlockX, startBlockY, startBlockPixelX, startBlockPixelY);
                     }
                 }
             }

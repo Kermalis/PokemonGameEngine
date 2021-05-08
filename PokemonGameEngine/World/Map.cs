@@ -312,6 +312,82 @@ namespace Kermalis.PokemonGameEngine.World
             return m;
         }
 
+        // Even though objs are loaded/unloaded based on the map being visible, finding coords of an obj relative to another map is tricky
+        // This is for finding where to render a VisualObj from an immediate map connection
+        // ^ So this will not find where to render one if it's >= 2 connections away, __even though the obj will be loaded__
+        // This will mess up if the other map is in multiple map connections (will return first one)
+        // ^ So the obj will not be drawn multiple times in an infinite hallway for example, even though the blocks will work
+        public bool GetXYRelativeToMap(int otherX, int otherY, Map otherMap, out int relX, out int relY)
+        {
+            if (otherMap == this)
+            {
+                relX = otherX;
+                relY = otherY;
+                return true;
+            }
+
+            Layout ml = MapLayout;
+            for (int i = 0; i < Connections.Length; i++)
+            {
+                Connection c = Connections[i];
+                switch (c.Dir)
+                {
+                    case Connection.Direction.South:
+                    {
+                        Map m = LoadOrGet(c.MapId);
+                        if (m == otherMap)
+                        {
+                            relX = otherX + c.Offset;
+                            relY = otherY + ml.BlocksHeight;
+                            return true;
+                        }
+                        break;
+                    }
+                    case Connection.Direction.North:
+                    {
+                        Map m = LoadOrGet(c.MapId);
+                        if (m == otherMap)
+                        {
+                            Layout l = m.MapLayout;
+                            relX = otherX + c.Offset;
+                            relY = otherY - l.BlocksHeight;
+                            return true;
+                        }
+                        break;
+                    }
+                    case Connection.Direction.West:
+                    {
+                        Map m = LoadOrGet(c.MapId);
+                        if (m == otherMap)
+                        {
+                            Layout l = m.MapLayout;
+                            relX = otherX - l.BlocksWidth;
+                            relY = otherY + c.Offset;
+                            return true;
+                        }
+                        break;
+                    }
+                    case Connection.Direction.East:
+                    {
+                        Map m = LoadOrGet(c.MapId);
+                        if (m == otherMap)
+                        {
+                            Layout l = m.MapLayout;
+                            relX = otherX + ml.BlocksWidth;
+                            relY = otherY + c.Offset;
+                            return true;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // Could not find
+            relX = 0;
+            relY = 0;
+            return false;
+        }
+
         public void GetXYMap(int x, int y, out int outX, out int outY, out Map outMap)
         {
             Layout ml = MapLayout;
@@ -322,11 +398,9 @@ namespace Kermalis.PokemonGameEngine.World
             // If we're out of bounds, try to branch into a connection. If we don't find one, we meet at the bottom
             if (north || south || west || east)
             {
-                Connection[] connections = Connections;
-                int numConnections = connections.Length;
-                for (int i = 0; i < numConnections; i++)
+                for (int i = 0; i < Connections.Length; i++)
                 {
-                    Connection c = connections[i];
+                    Connection c = Connections[i];
                     switch (c.Dir)
                     {
                         case Connection.Direction.South:
@@ -387,7 +461,6 @@ namespace Kermalis.PokemonGameEngine.World
                         }
                     }
                 }
-
             }
             // If we are in bounds, return the current map
             // If we didn't find a connection, we are at the border, which counts as the current map
@@ -466,14 +539,14 @@ namespace Kermalis.PokemonGameEngine.World
 #if DEBUG
             Console.WriteLine("Map \"{0}\" is now visible", Name);
 #endif
-            LoadObjEvents();
+            LoadObjEvents(); // Objs that are wider than 1 block that are at the edge of the map will "pop" into existence
         }
         public void OnMapNoLongerVisible()
         {
 #if DEBUG
             Console.WriteLine("Map \"{0}\" is no longer visible", Name);
 #endif
-            UnloadObjEvents();
+            UnloadObjEvents(); // Objs that are wider than 1 block that are at the edge of the map will "pop" out of existence
         }
 
         // "exceptThisOne" is used so objs aren't checking if they collide with themselves
