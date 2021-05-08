@@ -10,6 +10,12 @@ Main Mechanics:
     EVs
     Badges
     Pokerus
+    Level up moves mid-battle
+    EXP gain mid-battle
+    Heal locations/black out
+    Map
+    PC & Mart
+    Trades
 
 GUIs:
     Intro/Title/Continue/NewGame
@@ -43,6 +49,7 @@ Field Effects:
     Reflections
     Blocks that start scripts (bookshelves, tvs, PC, etc)
     Countertops that forward the script (mart employees)
+    Repels
 
 Data Stuff:
     Item pouches
@@ -55,6 +62,9 @@ Nice to have (no priority):
     Obj Following (#29)
     Battle animation
     Pass Powers
+    Move relearner & Move tutor
+    Feebas/Swarm/Roamer
 
 Sounds cool but definitely not necessary at all:
     Color lookup tables for day tints
+    Move/Item effect/data integration with battle engine (not needed because you can just clone and edit the battle engine to add these things and more, like new species/forms)
