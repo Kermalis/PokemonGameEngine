@@ -34,6 +34,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 ----
 ## To Do:
 * Update the wiki as the engine grows
+* Touch input devices support
 * [Check the list](TODO.txt)
 
 ----
