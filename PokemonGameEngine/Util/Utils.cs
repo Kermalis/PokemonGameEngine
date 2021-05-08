@@ -24,7 +24,7 @@ namespace Kermalis.PokemonGameEngine.Util
 
         public static bool HasShinyCharm()
         {
-            return Game.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][(PBEItem)632] != null; // 632 is Shiny Charm
+            return Game.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][ItemType.ShinyCharm] != null;
         }
         public static bool GetRandomShiny()
         {

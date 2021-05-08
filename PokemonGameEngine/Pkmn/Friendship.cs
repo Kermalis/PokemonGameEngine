@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.World;
 using System.Collections.Generic;
 
@@ -62,7 +63,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             int mod = _eventBonuses[e][friendshipLevel];
             if (mod > 0)
             {
-                if (pkmn.CaughtBall == PBEItem.LuxuryBall)
+                if (pkmn.CaughtBall == ItemType.LuxuryBall)
                 {
                     mod++;
                 }
@@ -70,7 +71,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 {
                     mod++;
                 }
-                if (pkmn.Item == PBEItem.SootheBell)
+                if (pkmn.Item == ItemType.SootheBell)
                 {
                     mod = (int)(mod * 1.5f);
                 }

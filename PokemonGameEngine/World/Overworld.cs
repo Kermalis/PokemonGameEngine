@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
@@ -56,7 +57,7 @@ namespace Kermalis.PokemonGameEngine.World
             {
                 PartyPokemon pkmn = Game.Instance.Save.PlayerParty[0];
                 PBEAbility abilityOfFirstInParty = pkmn.Ability;
-                PBEItem itemOfFirstInParty = pkmn.Item;
+                ItemType itemOfFirstInParty = pkmn.Item;
                 // TODO: CompoundEyes
                 // TODO: CuteCharm
                 // TODO: Hustle, Pressure, VitalSpirit
@@ -76,7 +77,7 @@ namespace Kermalis.PokemonGameEngine.World
                 }
                 switch (itemOfFirstInParty)
                 {
-                    case PBEItem.CleanseTag: chance = chance * 2 / 3; break; // Reduce by 1/3
+                    case ItemType.CleanseTag: chance = chance * 2 / 3; break; // Reduce by 1/3
                 }
             }
             if (!PBEDataProvider.GlobalRandom.RandomBool(chance, byte.MaxValue))

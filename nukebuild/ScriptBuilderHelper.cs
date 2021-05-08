@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Scripts;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.HealParty, Array.Empty<Type>() },
         { ScriptCommand.GivePokemon, new[] { typeof(PBESpecies), typeof(byte) } }, // Species, level
         { ScriptCommand.GivePokemonForm, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte) } }, // Species, form, level
-        { ScriptCommand.GivePokemonFormItem, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte), typeof(PBEItem) } }, // Species, form, level, item
+        { ScriptCommand.GivePokemonFormItem, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte), typeof(ItemType) } }, // Species, form, level, item
         { ScriptCommand.MoveObj, new[] { typeof(ushort), typeof(void*) } }, // Id, movement data offset
         { ScriptCommand.AwaitObjMovement, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.DetachCamera, Array.Empty<Type>() },

@@ -103,5 +103,15 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             throw new InvalidOperationException(); // By default I won't use these systems
         }
+
+        // Temporary crash prevention
+        public override IPBELocalizedString GetItemName(PBEItem item)
+        {
+            if (!Enum.IsDefined(typeof(PBEItem), item))
+            {
+                return base.GetItemName(PBEItem.None);
+            }
+            return base.GetItemName(item);
+        }
     }
 }

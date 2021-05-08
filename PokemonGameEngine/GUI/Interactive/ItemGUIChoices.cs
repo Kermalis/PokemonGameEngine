@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Item;
+﻿using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Render;
 using System;
 
@@ -14,7 +13,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         public ItemGUIChoice(InventorySlot slot, Action command, bool isEnabled = true)
             : base(command, isEnabled: isEnabled)
         {
-            _itemName = PBEDataProvider.Instance.GetItemName(slot.Item).English;
+            _itemName = ItemData.GetItemName(slot.Item);
             _quantityStr = "x" + slot.Quantity.ToString();
             Font.Default.MeasureString(_quantityStr, out _quantityWidth, out _);
         }

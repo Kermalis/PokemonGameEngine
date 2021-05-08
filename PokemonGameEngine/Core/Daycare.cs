@@ -136,7 +136,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         private static byte GetCompatibility_OvalCharm(BoxPokemon p0, BoxPokemon p1)
         {
-            bool hasCharm = Game.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][(PBEItem)631] != null; // 631 is Oval Charm
+            bool hasCharm = Game.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][ItemType.OvalCharm] != null;
             byte compat = GetCompatibility(p0, p1);
             if (hasCharm)
             {
@@ -180,7 +180,7 @@ namespace Kermalis.PokemonGameEngine.Core
             // Determine species
             PBESpecies earliestSpecies = new EvolutionData(mainParent.Species, mainParent.Form).BabySpecies;
             PBESpecies species = earliestSpecies;
-            void ApplyIncense(PBEItem incense, PBESpecies noIncenseSpecies)
+            void ApplyIncense(ItemType incense, PBESpecies noIncenseSpecies)
             {
                 if (mainParent.Item != incense)
                 {
@@ -194,15 +194,15 @@ namespace Kermalis.PokemonGameEngine.Core
             switch (earliestSpecies)
             {
                 // Incense babies
-                case PBESpecies.Azurill: ApplyIncense(PBEItem.SeaIncense, PBESpecies.Marill); break;
-                case PBESpecies.Wynaut: ApplyIncense(PBEItem.LaxIncense, PBESpecies.Wobbuffet); break;
-                case PBESpecies.Budew: ApplyIncense(PBEItem.RoseIncense, PBESpecies.Roselia); break;
-                case PBESpecies.Chingling: ApplyIncense(PBEItem.PureIncense, PBESpecies.Chimecho); break;
-                case PBESpecies.Bonsly: ApplyIncense(PBEItem.RockIncense, PBESpecies.Sudowoodo); break;
-                case PBESpecies.MimeJr: ApplyIncense(PBEItem.OddIncense, PBESpecies.MrMime); break;
-                case PBESpecies.Happiny: ApplyIncense(PBEItem.LuckIncense, PBESpecies.Chansey); break;
-                case PBESpecies.Mantyke: ApplyIncense(PBEItem.WaveIncense, PBESpecies.Mantine); break;
-                case PBESpecies.Munchlax: ApplyIncense(PBEItem.FullIncense, PBESpecies.Snorlax); break;
+                case PBESpecies.Azurill: ApplyIncense(ItemType.SeaIncense, PBESpecies.Marill); break;
+                case PBESpecies.Wynaut: ApplyIncense(ItemType.LaxIncense, PBESpecies.Wobbuffet); break;
+                case PBESpecies.Budew: ApplyIncense(ItemType.RoseIncense, PBESpecies.Roselia); break;
+                case PBESpecies.Chingling: ApplyIncense(ItemType.PureIncense, PBESpecies.Chimecho); break;
+                case PBESpecies.Bonsly: ApplyIncense(ItemType.RockIncense, PBESpecies.Sudowoodo); break;
+                case PBESpecies.MimeJr: ApplyIncense(ItemType.OddIncense, PBESpecies.MrMime); break;
+                case PBESpecies.Happiny: ApplyIncense(ItemType.LuckIncense, PBESpecies.Chansey); break;
+                case PBESpecies.Mantyke: ApplyIncense(ItemType.WaveIncense, PBESpecies.Mantine); break;
+                case PBESpecies.Munchlax: ApplyIncense(ItemType.FullIncense, PBESpecies.Snorlax); break;
                 // Split gender babies
                 case PBESpecies.Nidoran_F:
                 case PBESpecies.Nidoran_M: ApplySplitGender(PBESpecies.Nidoran_M, PBESpecies.Nidoran_F); break;
@@ -241,8 +241,8 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         private static void SetOffspringNature(BoxPokemon p0, BoxPokemon p1, BoxPokemon o)
         {
-            bool e0 = p0.Item == PBEItem.Everstone;
-            bool e1 = p1.Item == PBEItem.Everstone;
+            bool e0 = p0.Item == ItemType.Everstone;
+            bool e1 = p1.Item == ItemType.Everstone;
             if (!e0 && !e1)
             {
                 o.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
@@ -371,7 +371,7 @@ namespace Kermalis.PokemonGameEngine.Core
             }
 
             // Volt Tackle
-            if (o.Species == PBESpecies.Pichu && (p0.Item == PBEItem.LightBall || p1.Item == PBEItem.LightBall))
+            if (o.Species == PBESpecies.Pichu && (p0.Item == ItemType.LightBall || p1.Item == ItemType.LightBall))
             {
                 AddMove(PBEMove.VoltTackle);
             }
@@ -392,7 +392,7 @@ namespace Kermalis.PokemonGameEngine.Core
             o.Species = species;
             o.Form = form;
             o.EffortValues = new EVs();
-            o.CaughtBall = PBEItem.PokeBall;
+            o.CaughtBall = ItemType.PokeBall;
             o.OT = Game.Instance.Save.OT;
             o.MetLocation = MapSection.TestMapC; // Egg met location
             var pData = new BaseStats(species, form);

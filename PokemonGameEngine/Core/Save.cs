@@ -35,19 +35,20 @@ namespace Kermalis.PokemonGameEngine.Core
             Vars = new Vars();
             OT = new OTInfo("Dawn", true);
             PlayerInventory = new PlayerInventory();
-            PlayerInventory.Add(PBEItem.DuskBall, 995);
-            PlayerInventory.Add(PBEItem.RockyHelmet, 42);
-            PlayerInventory.Add(PBEItem.Leftovers, 473);
-            PlayerInventory.Add(PBEItem.Potion, 123);
-            PlayerInventory.Add(PBEItem.RedScarf, 230);
-            PlayerInventory.Add(PBEItem.PokeDoll, 130);
-            PlayerInventory.Add(PBEItem.XSpDef, 120);
-            PlayerInventory.Add(PBEItem.AirBalloon, 407);
-            PlayerInventory.Add(PBEItem.AdamantOrb, 73);
-            PlayerInventory.Add(PBEItem.DarkGem, 69);
-            PlayerInventory.Add(PBEItem.FluffyTail, 888);
-            PlayerInventory.Add((PBEItem)631); // Oval charm and shiny charm
-            PlayerInventory.Add((PBEItem)632);
+            PlayerInventory.Add(ItemType.DuskBall, 995);
+            PlayerInventory.Add(ItemType.RockyHelmet, 42);
+            PlayerInventory.Add(ItemType.Leftovers, 473);
+            PlayerInventory.Add(ItemType.Potion, 123);
+            PlayerInventory.Add(ItemType.RedScarf, 230);
+            PlayerInventory.Add(ItemType.PokeDoll, 130);
+            PlayerInventory.Add(ItemType.XSpDef, 120);
+            PlayerInventory.Add(ItemType.AirBalloon, 407);
+            PlayerInventory.Add(ItemType.AdamantOrb, 73);
+            PlayerInventory.Add(ItemType.DarkGem, 69);
+            PlayerInventory.Add(ItemType.FluffyTail, 888);
+            PlayerInventory.Add(ItemType.OvalCharm);
+            PlayerInventory.Add(ItemType.ShinyCharm);
+            ItemData.Debug_GiveAllTMHMs(PlayerInventory);
             Money = 473_123;
             InitPlayerWithDefaultLocation();
             PCBoxes = new PCBoxes();
@@ -58,7 +59,7 @@ namespace Kermalis.PokemonGameEngine.Core
             {
                 var victini = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Victini, 0, 67);
                 victini.Ability = PBEAbility.Compoundeyes;
-                victini.Item = PBEItem.Leftovers;
+                victini.Item = ItemType.Leftovers;
                 victini.Status1 = PBEStatus1.BadlyPoisoned;
                 victini.Moveset[0].Move = PBEMove.Bounce;
                 victini.Moveset[1].Move = PBEMove.ZenHeadbutt;
@@ -84,7 +85,7 @@ namespace Kermalis.PokemonGameEngine.Core
             {
                 byte level = (byte)PBEDataProvider.GlobalRandom.RandomInt(PkmnConstants.MinLevel, PkmnConstants.MaxLevel);
                 pkmn = PartyPokemon.CreatePlayerOwnedMon(species, form, level);
-                pkmn.Item = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.GetValidItems(pkmn.Species, pkmn.Form));
+                pkmn.Item = (ItemType)PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.GetValidItems(pkmn.Species, pkmn.Form));
                 pkmn.Debug_RandomizeMoves();
             }
             GivePokemon(pkmn);

@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
@@ -108,10 +109,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 13, status.ToString(), Font.DefaultWhite);
             }
             // Item
-            PBEItem item = _pkmn.Item;
-            if (item != PBEItem.None)
+            ItemType item = _pkmn.Item;
+            if (item != ItemType.None)
             {
-                Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 23, PBELocalizedString.GetItemName(item).English, Font.DefaultWhite);
+                Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 23, ItemData.GetItemName(item), Font.DefaultWhite);
             }
         }
 

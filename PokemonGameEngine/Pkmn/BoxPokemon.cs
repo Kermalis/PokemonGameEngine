@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.World;
 
 namespace Kermalis.PokemonGameEngine.Pkmn
@@ -20,9 +21,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public byte Level { get; set; }
         public uint EXP { get; set; }
         public byte Friendship { get; set; }
-        public PBEItem CaughtBall { get; set; }
+        public ItemType CaughtBall { get; set; }
 
-        public PBEItem Item { get; set; }
+        public ItemType Item { get; set; }
         public PBEAbility Ability { get; set; }
         public PBENature Nature { get; set; }
 

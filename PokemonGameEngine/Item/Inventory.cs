@@ -14,10 +14,10 @@ namespace Kermalis.PokemonGameEngine.Item
     {
         public const ushort MaxQuantity = 999;
 
-        public PBEItem Item;
+        public ItemType Item;
         public ushort Quantity;
 
-        public InventorySlot(PBEItem item, ushort quantity)
+        public InventorySlot(ItemType item, ushort quantity)
         {
             Item = item;
             Quantity = quantity;
@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.Item
     {
         public bool New;
 
-        public InventorySlotNew(PBEItem item, ushort quantity)
+        public InventorySlotNew(ItemType item, ushort quantity)
             : base(item, quantity)
         {
             New = true;
@@ -46,7 +46,7 @@ namespace Kermalis.PokemonGameEngine.Item
         private readonly List<T> _items;
 
         public T this[int index] => _items[index];
-        public T this[PBEItem item]
+        public T this[ItemType item]
         {
             get
             {
@@ -106,7 +106,7 @@ namespace Kermalis.PokemonGameEngine.Item
             }
         }
 
-        public abstract void Add(PBEItem item, ushort quantity = 1);
+        public abstract void Add(ItemType item, ushort quantity = 1);
 
         public bool ContainsKey(ItemPouchType key)
         {
@@ -139,7 +139,7 @@ namespace Kermalis.PokemonGameEngine.Item
                 }
                 foreach (T slot in pouch)
                 {
-                    list.Add((slot.Item, slot.Quantity));
+                    list.Add(((PBEItem)slot.Item, slot.Quantity));
                 }
             }
             return list;
@@ -157,7 +157,7 @@ namespace Kermalis.PokemonGameEngine.Item
                 }
                 foreach (T slot in pouch)
                 {
-                    ushort qu = (ushort)inv[slot.Item].Quantity;
+                    ushort qu = (ushort)inv[(PBEItem)slot.Item].Quantity;
                     if (qu != 0)
                     {
                         slot.Quantity = qu;
@@ -178,7 +178,7 @@ namespace Kermalis.PokemonGameEngine.Item
         {
         }
 
-        public override void Add(PBEItem item, ushort quantity = 1)
+        public override void Add(ItemType item, ushort quantity = 1)
         {
             if (quantity == 0)
             {
@@ -204,7 +204,7 @@ namespace Kermalis.PokemonGameEngine.Item
         {
         }
 
-        public override void Add(PBEItem item, ushort quantity = 1)
+        public override void Add(ItemType item, ushort quantity = 1)
         {
             if (quantity == 0)
             {

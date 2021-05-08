@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Util;
 using Kermalis.PokemonGameEngine.World;
@@ -25,9 +26,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public uint EXP { get; set; }
         /// <summary>Remaining egg cycles if <see cref="IsEgg"/> is true.</summary>
         public byte Friendship { get; set; }
-        public PBEItem CaughtBall { get; set; }
+        public ItemType CaughtBall { get; set; }
 
-        public PBEItem Item { get; set; }
+        public ItemType Item { get; set; }
         public PBEAbility Ability { get; set; }
         public PBENature Nature { get; set; }
 
@@ -52,6 +53,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         #region PBE
         public bool PBEIgnore => IsEgg;
+        PBEItem IPBEPokemon.CaughtBall => (PBEItem)CaughtBall;
+        PBEItem IPBEPokemon.Item => (PBEItem)Item;
         IPBEStatCollection IPBEPokemon.EffortValues => EffortValues;
         IPBEReadOnlyStatCollection IPBEPokemon.IndividualValues => IndividualValues;
         IPBEMoveset IPBEPokemon.Moveset => Moveset;
@@ -130,7 +133,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.IndividualValues = new IVs();
             p.UpdateTimeBasedForms(DateTime.Now);
             p.SetDefaultMoves();
-            p.CaughtBall = PBEItem.PokeBall;
+            p.CaughtBall = ItemType.PokeBall;
             p.CalcStats(pData.Stats);
             p.SetMaxHP();
             return p;
@@ -173,7 +176,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.EffortValues = new EVs();
             p.IndividualValues = new IVs();
             p.SetDefaultMoves();
-            p.CaughtBall = PBEItem.PokeBall;
+            p.CaughtBall = ItemType.PokeBall;
             return p;
         }
 
@@ -323,7 +326,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Moveset.UpdateFromBattle(pkmn.Moves);
             Form = pkmn.RevertForm;
             Friendship = pkmn.Friendship;
-            Item = pkmn.Item;
+            Item = (ItemType)pkmn.Item;
             Ability = pkmn.RevertAbility;
             EffortValues.CopyFrom(pkmn.EffortValues);
             Level = pkmn.Level;
@@ -336,8 +339,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             SetPlayerOT();
             SetCurrentMetLocation();
 
-            CaughtBall = pkmn.CaughtBall;
-            if (CaughtBall == PBEItem.FriendBall)
+            CaughtBall = (ItemType)pkmn.CaughtBall;
+            if (CaughtBall == ItemType.FriendBall)
             {
                 Friendship = 200;
             }
@@ -347,7 +350,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 SetDefaultFriendship(bs);
             }
 
-            if (CaughtBall == PBEItem.HealBall)
+            if (CaughtBall == ItemType.HealBall)
             {
                 HealFully();
             }

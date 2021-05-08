@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI;
+using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.Sound;
@@ -207,7 +208,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
-            PBEItem item = ReadVarOrEnum<PBEItem>();
+            ItemType item = ReadVarOrEnum<ItemType>();
             var pkmn = PartyPokemon.CreatePlayerOwnedMon(species, form, level);
             pkmn.Item = item;
             Game.Instance.Save.GivePokemon(pkmn);
