@@ -257,6 +257,9 @@ namespace Kermalis.PokemonGameEngine.World
             }
         }
 
+#if DEBUG
+        public readonly string Name;
+#endif
         public readonly Layout MapLayout;
         public readonly Details MapDetails;
         public readonly Connection[] Connections;
@@ -280,6 +283,9 @@ namespace Kermalis.PokemonGameEngine.World
                 Encounters = new EncounterGroups(r);
                 MapEvents = new Events(r);
             }
+#if DEBUG
+            Name = name;
+#endif
         }
 
         private const string MapPath = "Map.";
@@ -316,7 +322,6 @@ namespace Kermalis.PokemonGameEngine.World
             // If we're out of bounds, try to branch into a connection. If we don't find one, we meet at the bottom
             if (north || south || west || east)
             {
-                // TODO: How should connections retain map references? Answer: Visible maps/objs list
                 Connection[] connections = Connections;
                 int numConnections = connections.Length;
                 for (int i = 0; i < numConnections; i++)
@@ -454,6 +459,21 @@ namespace Kermalis.PokemonGameEngine.World
                 }
             }
             Objs.Clear();
+        }
+
+        public void OnMapNowVisible()
+        {
+#if DEBUG
+            Console.WriteLine("Map \"{0}\" is now visible", Name);
+#endif
+            LoadObjEvents();
+        }
+        public void OnMapNoLongerVisible()
+        {
+#if DEBUG
+            Console.WriteLine("Map \"{0}\" is no longer visible", Name);
+#endif
+            UnloadObjEvents();
         }
 
         // "exceptThisOne" is used so objs aren't checking if they collide with themselves

@@ -123,7 +123,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
         }
 
-        protected virtual void UpdateMap(Map newMap)
+        protected void UpdateMap(Map newMap)
         {
             Map curMap = Map;
             if (curMap != newMap)
@@ -152,8 +152,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return false;
         }
 
-        public virtual void LogicTick()
-        {
-        }
+        protected virtual void OnPositionVisiblyChanged() { }
+        public virtual void LogicTick() { }
     }
 }

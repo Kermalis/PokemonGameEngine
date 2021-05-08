@@ -454,8 +454,23 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 // Scale from previous value to new value based on % of transition
                 return (int)(prevVisualOfs + (t * visualOfsScale));
             }
+            bool changed = false;
+            int old = ProgressX;
             ProgressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, Overworld.Block_NumPixelsX);
+            if (ProgressX != old)
+            {
+                changed = true;
+            }
+            old = ProgressY;
             ProgressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, Overworld.Block_NumPixelsY);
+            if (ProgressY != old)
+            {
+                changed = true;
+            }
+            if (changed)
+            {
+                OnPositionVisiblyChanged();
+            }
         }
         public void UpdateMovement()
         {

@@ -24,16 +24,8 @@ namespace Kermalis.PokemonGameEngine.Core
         private void InitPlayerWithDefaultLocation()
         {
             var map = Map.LoadOrGet(0);
-            const int x = 2;
-            const int y = 29;
-            PlayerObj.Player.Pos.X = x;
-            PlayerObj.Player.Pos.Y = y;
-            PlayerObj.Player.Map = map;
-            map.Objs.Add(PlayerObj.Player);
-            CameraObj.Camera.Pos = PlayerObj.Player.Pos;
-            CameraObj.Camera.Map = map;
-            map.Objs.Add(CameraObj.Camera);
-            map.LoadObjEvents();
+            PlayerObj.Init(2, 29, map);
+            CameraObj.Init();
         }
         public void Debug_Create()
         {

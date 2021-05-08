@@ -41,12 +41,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
 
         // TODO: Water reflections, priority
-        public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int startBlockX, int startBlockY, int startPixelX, int startPixelY)
+        public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int startBlockX, int startBlockY, int startBlockPixelX, int startBlockPixelY)
         {
             Position pos = Pos;
-            int baseX = ((pos.X - startBlockX) * Overworld.Block_NumPixelsX) + ProgressX + startPixelX;
-            int baseY = ((pos.Y - startBlockY) * Overworld.Block_NumPixelsY) + ProgressY + startPixelY;
-            // Calc sprite coords
+            // TODO: get pos relative to camera pos and map
+            int baseX = ((pos.X - startBlockX) * Overworld.Block_NumPixelsX) + ProgressX + startBlockPixelX;
+            int baseY = ((pos.Y - startBlockY) * Overworld.Block_NumPixelsY) + ProgressY + startBlockPixelY;
+            // Calc img coords
             ImageSheet s = _sheet;
             int w = s.ImageWidth;
             int h = s.ImageHeight;
@@ -59,22 +60,19 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             int sx = baseX + s.ShadowXOffset; // Left align
             int sy = baseY + Overworld.Block_NumPixelsY + s.ShadowYOffset; // Bottom align (starts in block under)
 
-            if (!RenderUtils.IsInsideBitmap(bmpWidth, bmpHeight, x, y, w, h)
-                && !RenderUtils.IsInsideBitmap(bmpWidth, bmpHeight, sx, sy, sw, sh))
-            {
-                return; // Return if no pixel is inside of the bitmap
-            }
-
             // Draw shadow image
-            shadow.DrawOn(bmpAddress, bmpWidth, bmpHeight, sx, sy);
-            // Draw obj sprite
-            bool ShowLegs()
+            if (RenderUtils.IsInsideBitmap(bmpWidth, bmpHeight, sx, sy, sw, sh))
+            {
+                shadow.DrawOn(bmpAddress, bmpWidth, bmpHeight, sx, sy);
+            }
+            // Draw obj image
+            if (RenderUtils.IsInsideBitmap(bmpWidth, bmpHeight, x, y, w, h))
             {
                 float t = MovementTimer;
-                return t != 1 && t >= 0.6f;
+                bool showMoving = t != 1 && t >= 0.6f;
+                int imgNum = GetImage(showMoving);
+                s.Images[imgNum].DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y);
             }
-            int imgNum = GetImage(ShowLegs());
-            s.Images[imgNum].DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y);
         }
     }
 }

@@ -21,6 +21,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             : base(Overworld.PlayerId, "Player")
         {
         }
+        public static void Init(int x, int y, Map map)
+        {
+            Player.Pos.X = x;
+            Player.Pos.Y = y;
+            Player.Map = map;
+            map.Objs.Add(Player);
+        }
 
         protected override void OnMapChanged(Map oldMap, Map newMap)
         {
