@@ -292,8 +292,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             byte oppLevel = pkmn.Team.OpposingTeam.ActiveBattlers.Max(p => p.Level);
             PartyPokemon pp = _spritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
             Friendship.Event e = oppLevel - pkmn.Level >= 30 ? Friendship.Event.Faint_GE30 : Friendship.Event.Faint_L30;
-            Friendship.AdjustFriendship(pp, e);
-            pkmn.Friendship = pp.Friendship;
+            Friendship.AdjustFriendship(pkmn, pp, e);
+        }
+        private void UpdateFriendshipForLevelUp(PBEBattlePokemon pkmn)
+        {
+            PartyPokemon pp = _spritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
+            Friendship.AdjustFriendship(pkmn, pp, Friendship.Event.LevelUpBattle);
         }
 
         #region Actions

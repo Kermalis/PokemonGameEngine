@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.World;
@@ -46,15 +47,19 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             throw new Exception();
         }
 
-        public static void AdjustFriendship(PartyPokemon pkmn, Event e)
+        private static byte GetAdjustedFriendship(Event e, byte curFriendship, ItemType caughtBall, MapSection metLocation, ItemType item
+#if DEBUG
+            , string nickname
+#endif
+            )
         {
             if (e == Event.Walking && PBEDataProvider.GlobalRandom.RandomBool())
             {
-                return; // 50% chance walking boosts
+                return curFriendship; // 50% chance walking boosts
             }
 
             int friendshipLevel = 0;
-            int friendship = pkmn.Friendship;
+            int friendship = curFriendship;
             if (friendship >= 100)
             {
                 friendshipLevel++;
@@ -67,15 +72,15 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             int mod = GetEventBonuses(e)[friendshipLevel];
             if (mod > 0)
             {
-                if (pkmn.CaughtBall == ItemType.LuxuryBall)
+                if (caughtBall == ItemType.LuxuryBall)
                 {
                     mod++;
                 }
-                if (pkmn.MetLocation == Overworld.GetCurrentLocation())
+                if (metLocation == Overworld.GetCurrentLocation())
                 {
                     mod++;
                 }
-                if (pkmn.Item == ItemType.SootheBell)
+                if (item == ItemType.SootheBell)
                 {
                     mod = (int)(mod * 1.5f);
                 }
@@ -90,9 +95,25 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 friendship = byte.MaxValue;
             }
 #if DEBUG
-            System.Console.WriteLine("{0} friendship adjustment: {1}_{2}", pkmn.Nickname, e, mod);
+            Console.WriteLine("{0} friendship adjustment: {1}_{2}", nickname, e, mod);
 #endif
-            pkmn.Friendship = (byte)friendship;
+            return (byte)friendship;
+        }
+        public static void AdjustFriendship(PBEBattlePokemon bPkmn, PartyPokemon pkmn, Event e)
+        {
+            bPkmn.Friendship = GetAdjustedFriendship(e, bPkmn.Friendship, pkmn.CaughtBall, pkmn.MetLocation, (ItemType)bPkmn.Item
+#if DEBUG
+                , pkmn.Nickname
+#endif
+                );
+        }
+        public static void AdjustFriendship(PartyPokemon pkmn, Event e)
+        {
+            pkmn.Friendship = GetAdjustedFriendship(e, pkmn.Friendship, pkmn.CaughtBall, pkmn.MetLocation, pkmn.Item
+#if DEBUG
+                , pkmn.Nickname
+#endif
+                );
         }
 
         public static void UpdateFriendshipStep()
