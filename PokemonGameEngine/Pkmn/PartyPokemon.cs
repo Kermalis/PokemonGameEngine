@@ -35,6 +35,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public ushort HP { get; set; }
         public PBEStatus1 Status1 { get; set; }
         public byte SleepTurns { get; set; }
+        public Pokerus Pokerus { get; set; }
 
         public Moveset Moveset { get; set; }
 
@@ -53,6 +54,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         #region PBE
         public bool PBEIgnore => IsEgg;
+        bool IPBEPokemon.Pokerus => Pokerus.Exists;
         PBEItem IPBEPokemon.CaughtBall => (PBEItem)CaughtBall;
         PBEItem IPBEPokemon.Item => (PBEItem)Item;
         IPBEStatCollection IPBEPokemon.EffortValues => EffortValues;
@@ -72,6 +74,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public PartyPokemon(EncounterTable.Encounter encounter)
         {
             SetRandomPID();
+            SetEmptyPokerus();
             Species = encounter.Species;
             Form = encounter.Form;
             Level = (byte)PBEDataProvider.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel);
@@ -93,6 +96,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public PartyPokemon(BoxPokemon other)
         {
             PID = other.PID;
+            Pokerus = new Pokerus(other.Pokerus);
             IsEgg = other.IsEgg;
             OT = other.OT;
             MetLocation = other.MetLocation;
@@ -119,6 +123,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             var p = new PartyPokemon(species, form, level);
             p.SetRandomPID();
+            p.SetEmptyPokerus();
             p.SetPlayerOT();
             p.SetCurrentMetLocation();
             p.SetDefaultNickname();
@@ -143,6 +148,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             var p = new PartyPokemon(species, form, level);
             p.SetRandomPID();
+            p.SetEmptyPokerus();
             p.SetDefaultNickname();
             p.Shiny = Utils.GetRandomShiny();
             p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
@@ -164,6 +170,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             var p = new PartyPokemon(species, form, PkmnConstants.EggHatchLevel);
             p.SetRandomPID();
+            p.SetEmptyPokerus();
             p.IsEgg = true;
             p.SetPlayerOT();
             p.SetCurrentMetLocation();
@@ -186,9 +193,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             // Shedinja does not inherit: mail, item, nickname, markings, ribbons, status, ability, gender
             // TODO: Shedinja cannot gain any more HP evs after it's created
-            // TODO: Shedinja inherits pokerus
             var p = new PartyPokemon(PBESpecies.Shedinja, 0, nincada.Level);
             p.PID = nincada.PID;
+            p.Pokerus = new Pokerus(nincada.Pokerus);
             p.OT = nincada.OT;
             p.MetLocation = nincada.MetLocation;
             p.SetDefaultNickname();
@@ -229,6 +236,10 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         private void SetPlayerOT()
         {
             OT = Game.Instance.Save.OT;
+        }
+        private void SetEmptyPokerus()
+        {
+            Pokerus = new Pokerus(true);
         }
         private void SetDefaultNickname()
         {

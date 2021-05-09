@@ -386,6 +386,7 @@ namespace Kermalis.PokemonGameEngine.Core
 
             var o = new BoxPokemon();
             o.PID = (uint)PBEDataProvider.GlobalRandom.RandomInt();
+            o.Pokerus = new Pokerus(true);
             o.IsEgg = true;
             o.Level = PkmnConstants.EggHatchLevel;
             o.Nickname = "Egg";

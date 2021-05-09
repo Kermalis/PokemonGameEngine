@@ -8,7 +8,6 @@ Main Mechanics:
     Item effects & registering an item
     EVs
     Badges
-    Pokerus
     Level up moves mid-battle
     EXP gain mid-battle
     Heal locations/black out
@@ -16,6 +15,7 @@ Main Mechanics:
     PC & Mart
     Trades
     Location name plates on enter
+    Pokerus time decay
 
 GUIs:
     Intro/Title/Continue/NewGame

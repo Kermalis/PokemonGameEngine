@@ -31,6 +31,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Daycare, Breeding, and Eggs
 * Game stats
 * Evolution, Evolution cancelling, and Shedinja creation
+* Pokerus
 
 ----
 ## To Do:

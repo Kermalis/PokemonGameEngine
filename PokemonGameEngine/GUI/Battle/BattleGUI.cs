@@ -106,6 +106,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         pkmn.UpdateFromBattle_Caught(wildPkmn);
                         Game.Instance.Save.GivePokemon(pkmn);
                     }
+                    Pokerus.TryCreatePokerus(Game.Instance.Save.PlayerParty);
+                    Pokerus.TrySpreadPokerus(Game.Instance.Save.PlayerParty);
                     TransitionOut();
                     break;
                 }

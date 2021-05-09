@@ -23,6 +23,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public byte Friendship { get; set; }
         public ItemType CaughtBall { get; set; }
 
+        public Pokerus Pokerus { get; set; }
         public ItemType Item { get; set; }
         public PBEAbility Ability { get; set; }
         public PBENature Nature { get; set; }
@@ -36,6 +37,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             IsEgg = other.IsEgg;
             PID = other.PID;
+            Pokerus = new Pokerus(other.Pokerus);
             OT = other.OT;
             MetLocation = other.MetLocation;
             Species = other.Species;
