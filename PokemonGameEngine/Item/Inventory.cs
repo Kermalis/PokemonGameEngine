@@ -107,6 +107,54 @@ namespace Kermalis.PokemonGameEngine.Item
         }
 
         public abstract void Add(ItemType item, ushort quantity);
+        public bool HasItem(ItemType item, ushort quantity)
+        {
+            ItemPouchType pt = ItemData.GetPouchType(item);
+            InventoryPouch<T> pouch = this[pt];
+            T slot = pouch[item];
+            if (slot == null)
+            {
+                return false;
+            }
+            return slot.Quantity >= quantity;
+        }
+        public void Remove(ItemType item, ushort quantity)
+        {
+            ItemPouchType pt = ItemData.GetPouchType(item);
+            InventoryPouch<T> pouch = this[pt];
+            T slot = pouch[item];
+            if (slot == null || slot.Quantity < quantity)
+            {
+                throw new Exception();
+            }
+            if (slot.Quantity == quantity)
+            {
+                pouch.Remove(slot);
+            }
+            else
+            {
+                slot.Quantity -= quantity;
+            }
+        }
+        public bool TryRemove(ItemType item, ushort quantity)
+        {
+            ItemPouchType pt = ItemData.GetPouchType(item);
+            InventoryPouch<T> pouch = this[pt];
+            T slot = pouch[item];
+            if (slot == null || slot.Quantity < quantity)
+            {
+                return false;
+            }
+            if (slot.Quantity == quantity)
+            {
+                pouch.Remove(slot);
+            }
+            else
+            {
+                slot.Quantity -= quantity;
+            }
+            return true;
+        }
 
         public bool ContainsKey(ItemPouchType key)
         {
@@ -184,7 +232,8 @@ namespace Kermalis.PokemonGameEngine.Item
             {
                 throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be at least one.");
             }
-            InventoryPouch<InventorySlot> pouch = this[0];
+            ItemPouchType pt = ItemData.GetPouchType(item);
+            InventoryPouch<InventorySlot> pouch = this[pt];
             InventorySlot slot = pouch[item];
             if (slot == null)
             {

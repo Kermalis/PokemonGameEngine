@@ -182,6 +182,31 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.CaughtBall = ItemType.PokeBall;
             return p;
         }
+        public static PartyPokemon CreateShedinja(PartyPokemon nincada)
+        {
+            // Shedinja does not inherit: mail, item, nickname, markings, ribbons, status, ability, gender
+            // TODO: Shedinja cannot gain any more HP evs after it's created
+            // TODO: Shedinja inherits pokerus
+            var p = new PartyPokemon(PBESpecies.Shedinja, 0, nincada.Level);
+            p.PID = nincada.PID;
+            p.OT = nincada.OT;
+            p.MetLocation = nincada.MetLocation;
+            p.SetDefaultNickname();
+            p.Shiny = nincada.Shiny;
+            var pData = new BaseStats(p.Species, p.Form);
+            p.Friendship = nincada.Friendship;
+            p.EXP = nincada.EXP; // If Shedinja's growth rate were different from Nincada's, this wouldn't work
+            p.Ability = pData.Ability1; // Shedinja has its own ability
+            p.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio); // Shedinja is genderless, Nincada is not
+            p.Nature = nincada.Nature;
+            p.Moveset = new Moveset(nincada.Moveset);
+            p.EffortValues = new EVs(nincada.EffortValues);
+            p.IndividualValues = new IVs(nincada.IndividualValues);
+            p.CaughtBall = ItemType.PokeBall;
+            p.CalcStats(pData.Stats);
+            p.SetMaxHP();
+            return p;
+        }
 
         #endregion
 

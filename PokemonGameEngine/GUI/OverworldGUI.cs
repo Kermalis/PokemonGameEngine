@@ -164,18 +164,14 @@ namespace Kermalis.PokemonGameEngine.GUI
             Game.Instance.SetCallback(CB_FadeInToStartMenu);
             Game.Instance.SetRCallback(RCB_Fading);
         }
-        private unsafe void ReturnToFieldWithFadeInAfterEvolutionCheck()
+        public unsafe void ReturnToFieldWithFadeInAfterEvolutionCheck()
         {
-            tempLoop:
             (PartyPokemon, EvolutionData.EvoData)? pending = Evolution.GetNextPendingEvolution();
             if (pending.HasValue)
             {
                 (PartyPokemon pkmn, EvolutionData.EvoData evo) = pending.Value;
-                pkmn.Evolve(evo);
-                Console.WriteLine("{0} evolved", pkmn.Nickname);
-                goto tempLoop;
-                // TODO: cutscene
-                //return;
+                new EvolutionGUI(pkmn, evo);
+                return;
             }
             ReturnToFieldWithFadeIn();
         }

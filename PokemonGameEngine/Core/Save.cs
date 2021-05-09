@@ -44,7 +44,7 @@ namespace Kermalis.PokemonGameEngine.Core
             PlayerInventory.Add(ItemType.PokeDoll, 130);
             PlayerInventory.Add(ItemType.XSpDef, 120);
             PlayerInventory.Add(ItemType.AirBalloon, 407);
-            PlayerInventory.Add(ItemType.AdamantOrb, 73);
+            PlayerInventory.Add(ItemType.PokeBall, 73);
             PlayerInventory.Add(ItemType.DarkGem, 69);
             PlayerInventory.Add(ItemType.FluffyTail, 888);
             PlayerInventory.Add(ItemType.OvalCharm, 1);
@@ -59,7 +59,7 @@ namespace Kermalis.PokemonGameEngine.Core
             PlayerParty = new Party();
             {
                 // To test evolution
-                var evomon = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Wurmple, 0, 19);
+                var evomon = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Nincada, 0, 19);
                 evomon.Item = ItemType.Leftovers;
                 evomon.EXP = PBEEXPTables.GetEXPRequired(new BaseStats(evomon.Species, evomon.Form).GrowthRate, 20) - 5;
                 GivePokemon(evomon);

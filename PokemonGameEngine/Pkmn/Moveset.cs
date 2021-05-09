@@ -14,6 +14,12 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             public byte PPUps { get; set; }
 
             public MovesetSlot() { }
+            public MovesetSlot(MovesetSlot other)
+            {
+                Move = other.Move;
+                PPUps = other.PPUps;
+                PP = other.PP;
+            }
             public MovesetSlot(BoxMoveset.BoxMovesetSlot other)
             {
                 Move = other.Move;
@@ -53,6 +59,14 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             for (int i = 0; i < _slots.Length; i++)
             {
                 _slots[i] = new MovesetSlot();
+            }
+        }
+        public Moveset(Moveset other)
+        {
+            _slots = new MovesetSlot[PkmnConstants.NumMoves];
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                _slots[i] = new MovesetSlot(other[i]);
             }
         }
         public Moveset(BoxMoveset other)

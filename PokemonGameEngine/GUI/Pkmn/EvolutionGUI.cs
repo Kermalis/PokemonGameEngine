@@ -1,6 +1,8 @@
-﻿using Kermalis.PokemonGameEngine.Core;
+﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.UI;
@@ -8,20 +10,22 @@ using Kermalis.PokemonGameEngine.Util;
 
 namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
-    // TODO: Nickname
-    internal sealed class EggHatchGUI
+    // TODO: Move learn
+    internal sealed class EvolutionGUI
     {
         private enum State : byte
         {
             FadeIn,
-            AnEggIsHatchingMsg,
+            IsEvolvingMsg,
             FadeToWhite,
-            FadeToHatched,
-            PkmnHatchedMsg,
+            FadeToEvo,
+            EvolvedIntoMsg,
             FadeOut
         }
         private State _state;
         private readonly PartyPokemon _pkmn;
+        private readonly string _oldNickname;
+        private readonly EvolutionData.EvoData _evo;
 
         private FadeColorTransition _fadeTransition;
 
@@ -32,14 +36,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private int _imgX;
         private int _imgY;
 
-        public unsafe EggHatchGUI()
+        public unsafe EvolutionGUI(PartyPokemon pkmn, EvolutionData.EvoData evo)
         {
-            _pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar1]];
+            _pkmn = pkmn;
+            _evo = evo;
+            _oldNickname = pkmn.Nickname;
             LoadPkmnImage();
             _state = State.FadeIn;
             _fadeTransition = new FadeFromColorTransition(20, 0);
-            Game.Instance.SetCallback(CB_EggHatch);
-            Game.Instance.SetRCallback(RCB_EggHatch);
+            Game.Instance.SetCallback(CB_Evolution);
+            Game.Instance.SetRCallback(RCB_Evolution);
         }
 
         private void LoadPkmnImage()
@@ -58,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             return _stringPrinter.IsDone;
         }
 
-        private void CB_EggHatch()
+        private void CB_Evolution()
         {
             switch (_state)
             {
@@ -68,12 +74,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     {
                         _fadeTransition = null;
                         _stringWindow = new Window(0, 0.79f, 1, 0.16f, RenderUtils.Color(255, 255, 255, 255));
-                        CreateMessage("An egg is hatching!");
-                        _state = State.AnEggIsHatchingMsg;
+                        CreateMessage(string.Format("{0} is evolving!", _oldNickname));
+                        _state = State.IsEvolvingMsg;
                     }
                     return;
                 }
-                case State.AnEggIsHatchingMsg:
+                case State.IsEvolvingMsg:
                 {
                     if (ReadMessage())
                     {
@@ -89,25 +95,29 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     if (_fadeTransition.IsDone)
                     {
                         _fadeTransition = null;
-                        _pkmn.HatchEgg();
+                        if (_evo.Method == EvoMethod.Ninjask_LevelUp)
+                        {
+                            Evolution.TryCreateShedinja(_pkmn);
+                        }
+                        _pkmn.Evolve(_evo);
                         LoadPkmnImage();
                         _fadeTransition = new FadeFromColorTransition(60, RenderUtils.ColorNoA(200, 200, 200));
-                        _state = State.FadeToHatched;
+                        _state = State.FadeToEvo;
                     }
                     return;
                 }
-                case State.FadeToHatched:
+                case State.FadeToEvo:
                 {
                     if (_fadeTransition.IsDone)
                     {
                         _fadeTransition = null;
                         SoundControl.Debug_PlayCry(_pkmn.Species, _pkmn.Form);
-                        CreateMessage(string.Format("{0} hatched from the egg!", _pkmn.Nickname));
-                        _state = State.PkmnHatchedMsg;
+                        CreateMessage(string.Format("{0} evolved into {1}!", _oldNickname, PBELocalizedString.GetSpeciesName(_pkmn.Species).English));
+                        _state = State.EvolvedIntoMsg;
                     }
                     return;
                 }
-                case State.PkmnHatchedMsg:
+                case State.EvolvedIntoMsg:
                 {
                     if (ReadMessage())
                     {
@@ -125,14 +135,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     if (_fadeTransition.IsDone)
                     {
                         _fadeTransition = null;
-                        OverworldGUI.Instance.ReturnToFieldWithFadeIn();
+                        OverworldGUI.Instance.ReturnToFieldWithFadeInAfterEvolutionCheck();
                     }
                     return;
                 }
             }
         }
 
-        private unsafe void RCB_EggHatch(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_Evolution(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(30, 30, 30, 255));
 
@@ -142,14 +152,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             {
                 case State.FadeIn:
                 case State.FadeToWhite:
-                case State.FadeToHatched:
+                case State.FadeToEvo:
                 case State.FadeOut:
                 {
                     _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                     return;
                 }
-                case State.AnEggIsHatchingMsg:
-                case State.PkmnHatchedMsg:
+                case State.IsEvolvingMsg:
+                case State.EvolvedIntoMsg:
                 {
                     _stringWindow.Render(bmpAddress, bmpWidth, bmpHeight);
                     return;

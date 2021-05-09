@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.World;
@@ -135,6 +136,25 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 }
             }
             return null;
+        }
+
+        public static void TryCreateShedinja(PartyPokemon nincada)
+        {
+            Party party = Game.Instance.Save.PlayerParty;
+            if (party.Count >= PkmnConstants.PartyCapacity)
+            {
+                return;
+            }
+
+            PlayerInventory inv = Game.Instance.Save.PlayerInventory;
+            if (!inv.TryRemove(ItemType.PokeBall, 1))
+            {
+                return;
+            }
+
+            var shedinja = PartyPokemon.CreateShedinja(nincada);
+            party.Add(shedinja);
+            Game.Instance.Save.Pokedex.SetCaught(shedinja.Species, shedinja.Form, shedinja.Gender, shedinja.Shiny, shedinja.PID);
         }
     }
 }

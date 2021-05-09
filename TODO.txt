@@ -26,7 +26,7 @@ GUIs:
     Trainer card (with trainer card stars)
     Switching in battles
     Nickname screen (and for egg hatch)
-    Evolution cutscene (with shedinja creation)
+    Learn moves during evolution cutscene
 
 Encounters:
     CompoundEyes
