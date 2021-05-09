@@ -5,7 +5,7 @@ Main Mechanics:
     Map scripts
     Withdrawing pkmn from daycare
     Passing down tmhm moves to offspring
-    Burmy(/Giratina) areas
+    Burmy/Probopass/Magnezone/Leafeon/Glaceon(/Giratina) areas
     Item effects & registering an item
     EVs
     Badges
@@ -16,6 +16,7 @@ Main Mechanics:
     Map
     PC & Mart
     Trades
+    Location name plates on enter
 
 GUIs:
     Intro/Title/Continue/NewGame
@@ -23,7 +24,7 @@ GUIs:
     Bag
     Summary
     Options
-    Trainer card
+    Trainer card (with trainer card stars)
     Switching in battles
     Nickname screen (and for egg hatch)
 
@@ -60,7 +61,7 @@ Nice to have (no priority):
     Changable tiles based on day/night
     Different day tints based on season
     Obj Following (#29)
-    Battle animation
+    Attack animations
     Pass Powers
     Move relearner & Move tutor
     Feebas/Swarm/Roamer
@@ -68,3 +69,4 @@ Nice to have (no priority):
 Sounds cool but definitely not necessary at all:
     Color lookup tables for day tints
     Move/Item effect/data integration with battle engine (not needed because you can just clone and edit the battle engine to add these things and more, like new species/forms)
+    Battle sprite shadows with rotation (like gen 5)
