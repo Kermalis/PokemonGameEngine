@@ -48,7 +48,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public ushort SpDefense { get; private set; }
         public ushort Speed { get; private set; }
 
-        public uint PID { get; private set; } // Currently only used for Spinda spots; has no other effect
+        public uint PID { get; private set; } // Currently only used for Spinda spots and Wurmple evolution
         public bool IsEgg { get; set; }
 
         #region PBE
@@ -209,6 +209,10 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             Nickname = PBELocalizedString.GetSpeciesName(Species).English;
         }
+        private bool HasDefaultNickname()
+        {
+            return Nickname == PBELocalizedString.GetSpeciesName(Species).English;
+        }
         /// <summary>Sets the moves to the last 4 moves the Pokémon would've learned by level-up.</summary>
         private void SetDefaultMoves()
         {
@@ -242,6 +246,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             SpAttack = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.SpAttack, Nature, EffortValues.SpAttack, IndividualValues.SpAttack, Level, PkmnConstants.PBESettings);
             SpDefense = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.SpDefense, Nature, EffortValues.SpDefense, IndividualValues.SpDefense, Level, PkmnConstants.PBESettings);
             Speed = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.Speed, Nature, EffortValues.Speed, IndividualValues.Speed, Level, PkmnConstants.PBESettings);
+        }
+        private void CalcStatsAndAdjustHP(IPBEReadOnlyStatCollection baseStats)
+        {
+            ushort oldMaxHP = MaxHP;
+            CalcStats(baseStats);
+            int dif = MaxHP - oldMaxHP;
+            HP = (ushort)Math.Max(1, HP + dif);
         }
         public void CalcStats()
         {
@@ -289,6 +300,10 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             var bs = new BaseStats(Species, Form);
             CalcStats(bs.Stats);
+            UpdateAbilityIfCannotHave(bs);
+        }
+        private void UpdateAbilityIfCannotHave(BaseStats bs)
+        {
             if (!bs.Abilities.Contains(Ability))
             {
                 Ability = bs.Abilities[0];
@@ -373,6 +388,28 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             UpdateTimeBasedForms(DateTime.Now);
             CalcStats(); // Calc stats after form is set
             SetMaxHP();
+        }
+        public void Evolve(EvolutionData.EvoData evo)
+        {
+            Game.Instance.Save.GameStats[GameStat.EvolvedPokemon]++;
+            bool nicknameShouldUpdate = HasDefaultNickname();
+            Species = evo.Species;
+            Form = evo.Form;
+            if (nicknameShouldUpdate)
+            {
+                SetDefaultNickname();
+            }
+            var bs = new BaseStats(Species, Form);
+            UpdateAbilityIfCannotHave(bs);
+            // Calc stats after form is set
+            if (HP == 0)
+            {
+                CalcStats(bs.Stats); // Don't adjust current HP if it's fainted
+            }
+            else
+            {
+                CalcStatsAndAdjustHP(bs.Stats);
+            }
         }
     }
 }

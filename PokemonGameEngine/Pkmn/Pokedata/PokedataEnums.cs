@@ -19,8 +19,8 @@
         Silcoon_LevelUp, // (param = level)
         Cascoon_LevelUp, // (param = level)
         Ninjask_LevelUp, // (param = level)
-        Shedinja_LevelUp, // (param = level)
-        Beauty_LevelUp, // (param = beauty amount)
+        Shedinja_LevelUp, // (param = level) // I'm keeping this unused because it's not really necessary. Kept for compatibility with the dumper
+        Beauty_LevelUp, // (param = beauty amount) // Unused for now
         Male_Stone, // (param = item)
         Female_Stone, // (param = item)
         Item_Day_LevelUp, // (param = item)

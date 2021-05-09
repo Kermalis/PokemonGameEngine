@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
@@ -57,6 +58,12 @@ namespace Kermalis.PokemonGameEngine.Core
             Daycare.StorePokemon(PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Ditto, 0, 100));
             PlayerParty = new Party();
             {
+                // To test evolution
+                var evomon = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Wurmple, 0, 19);
+                evomon.Item = ItemType.Leftovers;
+                evomon.EXP = PBEEXPTables.GetEXPRequired(new BaseStats(evomon.Species, evomon.Form).GrowthRate, 20) - 5;
+                GivePokemon(evomon);
+                // To pummel
                 var victini = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Victini, 0, 67);
                 victini.Ability = PBEAbility.Compoundeyes;
                 victini.Item = ItemType.Leftovers;

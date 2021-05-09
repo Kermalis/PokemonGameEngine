@@ -64,6 +64,22 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             }
         }
 
+        public bool Contains(PBEMove move)
+        {
+            return IndexOf(move) != -1;
+        }
+        public int IndexOf(PBEMove move)
+        {
+            for (int i = 0; i < PkmnConstants.NumMoves; i++)
+            {
+                if (_slots[i].Move == move)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         public int GetFirstEmptySlot()
         {
             for (int i = 0; i < PkmnConstants.NumMoves; i++)

@@ -1,7 +1,6 @@
 Main Mechanics:
     Trainers
-    NewGame/Saving
-    Evolution & Shedinja
+    New Game/Saving
     Map scripts
     Withdrawing pkmn from daycare
     Passing down tmhm moves to offspring
@@ -27,6 +26,7 @@ GUIs:
     Trainer card (with trainer card stars)
     Switching in battles
     Nickname screen (and for egg hatch)
+    Evolution cutscene (with shedinja creation)
 
 Encounters:
     CompoundEyes

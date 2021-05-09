@@ -206,7 +206,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             for (int i = 0; i < Party.Count; i++)
             {
-                Party[i].UpdateFromBattle(SpritedParty[i].Pkmn);
+                PartyPokemon pp = Party[i];
+                byte oldLevel = pp.Level;
+                pp.UpdateFromBattle(SpritedParty[i].Pkmn);
+                if (oldLevel != pp.Level)
+                {
+                    EvolutionData.EvoData evo = Evolution.GetLevelUpEvolution(Party, pp);
+                    if (evo != null)
+                    {
+                        Evolution.AddPendingEvolution(pp, evo);
+                    }
+                }
             }
         }
     }

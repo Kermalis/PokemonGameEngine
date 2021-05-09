@@ -5,6 +5,7 @@ using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.GUI.Pkmn;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Script;
 using Kermalis.PokemonGameEngine.Sound;
@@ -140,7 +141,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         public unsafe void StartBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties)
         {
             Game.Instance.IsOnOverworld = false;
-            new BattleGUI(battle, ReturnToFieldWithFadeIn, trainerParties);
+            new BattleGUI(battle, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties);
             SoundControl.SetBattleBGM(song);
             _fadeTransition = new SpiralTransition();
             Game.Instance.SetCallback(CB_FadeOutToBattle);
@@ -162,6 +163,21 @@ namespace Kermalis.PokemonGameEngine.GUI
             _fadeTransition = new FadeFromColorTransition(20, 0);
             Game.Instance.SetCallback(CB_FadeInToStartMenu);
             Game.Instance.SetRCallback(RCB_Fading);
+        }
+        private unsafe void ReturnToFieldWithFadeInAfterEvolutionCheck()
+        {
+            tempLoop:
+            (PartyPokemon, EvolutionData.EvoData)? pending = Evolution.GetNextPendingEvolution();
+            if (pending.HasValue)
+            {
+                (PartyPokemon pkmn, EvolutionData.EvoData evo) = pending.Value;
+                pkmn.Evolve(evo);
+                Console.WriteLine("{0} evolved", pkmn.Nickname);
+                goto tempLoop;
+                // TODO: cutscene
+                //return;
+            }
+            ReturnToFieldWithFadeIn();
         }
         public unsafe void ReturnToFieldWithFadeIn()
         {
