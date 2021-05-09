@@ -165,11 +165,11 @@ namespace Kermalis.PokemonGameEngine.Item
         {
             for (int i = 0; i < NumTMs; i++)
             {
-                pi.Add(GetTMItem(i));
+                pi.Add(GetTMItem(i), 1);
             }
             for (int i = 0; i < NumHMs; i++)
             {
-                pi.Add(GetHMItem(i));
+                pi.Add(GetHMItem(i), 1);
             }
         }
 

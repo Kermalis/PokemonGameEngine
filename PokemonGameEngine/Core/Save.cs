@@ -47,8 +47,8 @@ namespace Kermalis.PokemonGameEngine.Core
             PlayerInventory.Add(ItemType.AdamantOrb, 73);
             PlayerInventory.Add(ItemType.DarkGem, 69);
             PlayerInventory.Add(ItemType.FluffyTail, 888);
-            PlayerInventory.Add(ItemType.OvalCharm);
-            PlayerInventory.Add(ItemType.ShinyCharm);
+            PlayerInventory.Add(ItemType.OvalCharm, 1);
+            PlayerInventory.Add(ItemType.ShinyCharm, 1);
             ItemData.Debug_GiveAllTMHMs(PlayerInventory);
             Money = 473_123;
             InitPlayerWithDefaultLocation();

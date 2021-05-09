@@ -106,7 +106,7 @@ namespace Kermalis.PokemonGameEngine.Item
             }
         }
 
-        public abstract void Add(ItemType item, ushort quantity = 1);
+        public abstract void Add(ItemType item, ushort quantity);
 
         public bool ContainsKey(ItemPouchType key)
         {
@@ -178,7 +178,7 @@ namespace Kermalis.PokemonGameEngine.Item
         {
         }
 
-        public override void Add(ItemType item, ushort quantity = 1)
+        public override void Add(ItemType item, ushort quantity)
         {
             if (quantity == 0)
             {
@@ -204,7 +204,7 @@ namespace Kermalis.PokemonGameEngine.Item
         {
         }
 
-        public override void Add(ItemType item, ushort quantity = 1)
+        public override void Add(ItemType item, ushort quantity)
         {
             if (quantity == 0)
             {
