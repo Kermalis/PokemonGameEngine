@@ -2,7 +2,7 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.World;
-using System.Collections.Generic;
+using System;
 
 namespace Kermalis.PokemonGameEngine.Pkmn
 {
@@ -25,22 +25,26 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             LeagueBattle
         }
 
-        private static readonly Dictionary<Event, sbyte[]> _eventBonuses = new Dictionary<Event, sbyte[]>
+        private static sbyte[] GetEventBonuses(Event e)
         {
-            { Event.Walking, new sbyte[3] { +2, +2, +1 } },
-            { Event.LevelUpBattle, new sbyte[3] { +5, +4, +3 } },
-            { Event.Vitamin, new sbyte[3] { +5, +3, +2 } },
-            { Event.Wing, new sbyte[3] { +3, +2, +1 } },
-            { Event.TMHM, new sbyte[3] { +1, +1, +0 } },
-            { Event.BattleItem, new sbyte[3] { +1, +1, +0 } },
-            { Event.Faint_L30, new sbyte[3] { -1, -1, -1 } },
-            { Event.Faint_GE30, new sbyte[3] { -5, -5, -10 } },
-            { Event.Powder, new sbyte[3] { -5, -5, -10 } },
-            { Event.EnergyRoot, new sbyte[3] { -10, -10, -15 } },
-            { Event.RevivalHerb, new sbyte[3] { -15, -15, -20 } },
-            { Event.FriendshipBerry, new sbyte[3] { +10, +5, +2 } },
-            { Event.LeagueBattle, new sbyte[3] { +5, +4, +3 } }
-        };
+            switch (e)
+            {
+                case Event.Walking: return new sbyte[3] { +2, +2, +1 };
+                case Event.LevelUpBattle: return new sbyte[3] { +5, +4, +3 };
+                case Event.Vitamin: return new sbyte[3] { +5, +3, +2 };
+                case Event.Wing: return new sbyte[3] { +3, +2, +1 };
+                case Event.TMHM: return new sbyte[3] { +1, +1, +0 };
+                case Event.BattleItem: return new sbyte[3] { +1, +1, +0 };
+                case Event.Faint_L30: return new sbyte[3] { -1, -1, -1 };
+                case Event.Faint_GE30: return new sbyte[3] { -5, -5, -10 };
+                case Event.Powder: return new sbyte[3] { -5, -5, -10 };
+                case Event.EnergyRoot: return new sbyte[3] { -10, -10, -15 };
+                case Event.RevivalHerb: return new sbyte[3] { -15, -15, -20 };
+                case Event.FriendshipBerry: return new sbyte[3] { +10, +5, +2 };
+                case Event.LeagueBattle: return new sbyte[3] { +5, +4, +3 };
+            }
+            throw new Exception();
+        }
 
         public static void AdjustFriendship(PartyPokemon pkmn, Event e)
         {
@@ -60,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 friendshipLevel++;
             }
 
-            int mod = _eventBonuses[e][friendshipLevel];
+            int mod = GetEventBonuses(e)[friendshipLevel];
             if (mod > 0)
             {
                 if (pkmn.CaughtBall == ItemType.LuxuryBall)
