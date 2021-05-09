@@ -65,6 +65,7 @@ Nice to have (no priority):
     Pass Powers
     Move relearner & Move tutor
     Feebas/Swarm/Roamer
+    Mail
 
 Sounds cool but definitely not necessary at all:
     Color lookup tables for day tints

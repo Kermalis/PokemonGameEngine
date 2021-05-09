@@ -16,7 +16,7 @@ namespace Kermalis.PokemonGameEngine.Core
     internal sealed class OTInfo
     {
         public ushort TrainerID;
-        public ushort SecretID;
+        public ushort SecretID; // Currently serves no purpose
         public string TrainerName;
         public bool TrainerIsFemale;
         public Language Language;
