@@ -71,7 +71,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public PartyPokemon(EncounterTable.Encounter encounter)
         {
-            RandomPID();
+            SetRandomPID();
             Species = encounter.Species;
             Form = encounter.Form;
             Level = (byte)PBEDataProvider.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel);
@@ -118,6 +118,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public static PartyPokemon CreatePlayerOwnedMon(PBESpecies species, PBEForm form, byte level)
         {
             var p = new PartyPokemon(species, form, level);
+            p.SetRandomPID();
             p.SetPlayerOT();
             p.SetCurrentMetLocation();
             p.SetDefaultNickname();
@@ -141,6 +142,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public static PartyPokemon CreateWildMon(PBESpecies species, PBEForm form, byte level)
         {
             var p = new PartyPokemon(species, form, level);
+            p.SetRandomPID();
             p.SetDefaultNickname();
             p.Shiny = Utils.GetRandomShiny();
             p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
@@ -161,6 +163,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public static PartyPokemon CreateDefaultEgg(PBESpecies species, PBEForm form)
         {
             var p = new PartyPokemon(species, form, PkmnConstants.EggHatchLevel);
+            p.SetRandomPID();
             p.IsEgg = true;
             p.SetPlayerOT();
             p.SetCurrentMetLocation();
@@ -182,7 +185,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         #endregion
 
-        private void RandomPID()
+        private void SetRandomPID()
         {
             PID = (uint)PBEDataProvider.GlobalRandom.RandomInt();
         }
