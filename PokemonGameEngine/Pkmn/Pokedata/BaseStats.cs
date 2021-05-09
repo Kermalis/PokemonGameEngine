@@ -74,5 +74,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
             return EggGroup1 == other.EggGroup1 || EggGroup1 == other.EggGroup2
                 || EggGroup2 == other.EggGroup1 || EggGroup2 == other.EggGroup2;
         }
+        public PBEAbility GetRandomNonHiddenAbility()
+        {
+            if (Ability2 == PBEAbility.None)
+            {
+                return Ability1;
+            }
+            return PBEDataProvider.GlobalRandom.RandomBool() ? Ability1 : Ability2;
+        }
     }
 }

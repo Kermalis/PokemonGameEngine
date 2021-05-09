@@ -405,7 +405,7 @@ namespace Kermalis.PokemonGameEngine.Core
             PBEAbility iAbility = GetInheritedAbility(p0, p1);
             if (iAbility == PBEAbility.None)
             {
-                o.Ability = PBEDataProvider.GlobalRandom.RandomBool() ? pData.Ability1 : pData.Ability2;
+                o.Ability = pData.GetRandomNonHiddenAbility();
             }
             else
             {
