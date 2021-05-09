@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Transition;
+using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
@@ -20,12 +21,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             FadeToWhite,
             FadeToEvo,
             EvolvedIntoMsg,
-            FadeOut
+            FadeOut,
+            CancelledMsg
         }
         private State _state;
         private readonly PartyPokemon _pkmn;
         private readonly string _oldNickname;
         private readonly EvolutionData.EvoData _evo;
+        private readonly bool _canCancel;
 
         private FadeColorTransition _fadeTransition;
 
@@ -41,6 +44,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _pkmn = pkmn;
             _evo = evo;
             _oldNickname = pkmn.Nickname;
+            _canCancel = Evolution.CanCancelEvolution(evo.Method);
             LoadPkmnImage();
             _state = State.FadeIn;
             _fadeTransition = new FadeFromColorTransition(20, 0);
@@ -62,6 +66,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             _stringPrinter.LogicTick();
             return _stringPrinter.IsDone;
+        }
+        private bool TryCancelEvolution()
+        {
+            return _canCancel && InputManager.IsPressed(Key.B);
         }
 
         private void CB_Evolution()
@@ -92,6 +100,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 }
                 case State.FadeToWhite:
                 {
+                    if (TryCancelEvolution())
+                    {
+                        _fadeTransition = null;
+                        CreateMessage(string.Format("{0} stopped evolving!", _oldNickname));
+                        _state = State.CancelledMsg;
+                        return;
+                    }
                     if (_fadeTransition.IsDone)
                     {
                         _fadeTransition = null;
@@ -139,6 +154,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     }
                     return;
                 }
+                case State.CancelledMsg:
+                {
+                    if (ReadMessage())
+                    {
+                        _stringPrinter.Close();
+                        _stringPrinter = null;
+                        _stringWindow.Close();
+                        _stringWindow = null;
+                        _fadeTransition = new FadeToColorTransition(20, 0);
+                        _state = State.FadeOut;
+                    }
+                    return;
+                }
             }
         }
 
@@ -160,6 +188,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 }
                 case State.IsEvolvingMsg:
                 case State.EvolvedIntoMsg:
+                case State.CancelledMsg:
                 {
                     _stringWindow.Render(bmpAddress, bmpWidth, bmpHeight);
                     return;

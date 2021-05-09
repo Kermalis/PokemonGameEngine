@@ -25,6 +25,10 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             return _pendingEvolutions.Dequeue();
         }
 
+        private static bool IsEverstone(PartyPokemon pkmn)
+        {
+            return pkmn.Item == ItemType.Everstone;
+        }
         private static bool IsNight(DateTime dt)
         {
             Month month = OverworldTime.GetMonth((Month)dt.Month);
@@ -37,6 +41,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         // TODO: NosepassMagneton_Location_LevelUp, Leafeon_Location_LevelUp, Glaceon_Location_LevelUp
         public static EvolutionData.EvoData GetLevelUpEvolution(Party party, PartyPokemon pkmn)
         {
+            if (IsEverstone(pkmn))
+            {
+                return null;
+            }
+
             bool isNight = IsNight(DateTime.Now);
 
             var data = new EvolutionData(pkmn.Species, pkmn.Form);
@@ -114,6 +123,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public static EvolutionData.EvoData GetTradeEvolution(PartyPokemon pkmn, PBESpecies otherSpecies)
         {
+            if (IsEverstone(pkmn))
+            {
+                return null;
+            }
+
             var data = new EvolutionData(pkmn.Species, pkmn.Form);
             foreach (EvolutionData.EvoData evo in data.Evolutions)
             {
@@ -136,6 +150,36 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 }
             }
             return null;
+        }
+
+        // Only level-up evolutions can be cancelled
+        public static bool CanCancelEvolution(EvoMethod method)
+        {
+            switch (method)
+            {
+                case EvoMethod.Friendship_LevelUp:
+                case EvoMethod.Friendship_Day_LevelUp:
+                case EvoMethod.Friendship_Night_LevelUp:
+                case EvoMethod.LevelUp:
+                case EvoMethod.ATK_GT_DEF_LevelUp:
+                case EvoMethod.ATK_EE_DEF_LevelUp:
+                case EvoMethod.ATK_LT_DEF_LevelUp:
+                case EvoMethod.Silcoon_LevelUp:
+                case EvoMethod.Cascoon_LevelUp:
+                case EvoMethod.Ninjask_LevelUp:
+                case EvoMethod.Shedinja_LevelUp:
+                case EvoMethod.Beauty_LevelUp:
+                case EvoMethod.Item_Day_LevelUp:
+                case EvoMethod.Item_Night_LevelUp:
+                case EvoMethod.Move_LevelUp:
+                case EvoMethod.PartySpecies_LevelUp:
+                case EvoMethod.Male_LevelUp:
+                case EvoMethod.Female_LevelUp:
+                case EvoMethod.NosepassMagneton_Location_LevelUp:
+                case EvoMethod.Leafeon_Location_LevelUp:
+                case EvoMethod.Glaceon_Location_LevelUp: return true;
+            }
+            return false;
         }
 
         public static void TryCreateShedinja(PartyPokemon nincada)

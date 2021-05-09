@@ -30,7 +30,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Sound & Music, Cries
 * Daycare, Breeding, and Eggs
 * Game stats
-* Evolution & Shedinja creation
+* Evolution, Evolution cancelling, and Shedinja creation
 
 ----
 ## To Do:
