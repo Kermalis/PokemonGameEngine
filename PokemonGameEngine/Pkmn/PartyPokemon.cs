@@ -269,16 +269,17 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         private void SetDefaultMoves()
         {
             PBEMove[] moves = new LevelUpData(Species, Form).GetDefaultMoves(Level);
-            for (int i = 0; i < PkmnConstants.NumMoves; i++)
-            {
-                Moveset[i].Clear();
-            }
-            for (int i = 0; i < moves.Length; i++)
+            int i;
+            for (i = 0; i < moves.Length; i++)
             {
                 Moveset.MovesetSlot slot = Moveset[i];
                 slot.Move = moves[i];
                 slot.PPUps = 0;
                 slot.SetMaxPP();
+            }
+            for (; i < PkmnConstants.NumMoves; i++)
+            {
+                Moveset[i].Clear();
             }
         }
         private void SetDefaultEXPForLevel(BaseStats bs)
@@ -336,11 +337,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public void Debug_RandomizeMoves()
         {
             var moves = new List<PBEMove>(new LevelUpData(Species, Form).Moves.Where(t => t.Level <= Level && PBEDataUtils.IsMoveUsable(t.Move)).Select(t => t.Move).Distinct());
-            for (int i = 0; i < PkmnConstants.NumMoves; i++)
-            {
-                Moveset[i].Clear();
-            }
-            for (int i = 0; i < PkmnConstants.NumMoves && moves.Count > 0; i++)
+            int i;
+            for (i = 0; i < PkmnConstants.NumMoves && moves.Count > 0; i++)
             {
                 Moveset.MovesetSlot slot = Moveset[i];
                 PBEMove move = PBEDataProvider.GlobalRandom.RandomElement(moves);
@@ -348,6 +346,10 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 slot.Move = move;
                 slot.PPUps = 0;
                 slot.SetMaxPP();
+            }
+            for (; i < PkmnConstants.NumMoves; i++)
+            {
+                Moveset[i].Clear();
             }
         }
 
