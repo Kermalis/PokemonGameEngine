@@ -49,14 +49,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             LoadBoxContents();
 
             _onClosed = onClosed;
-            _fadeTransition = new FadeFromColorTransition(20, 0);
+            _fadeTransition = new FadeFromColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeInPC);
             Game.Instance.SetRCallback(RCB_Fading);
         }
 
         private unsafe void ClosePCMenu()
         {
-            _fadeTransition = new FadeToColorTransition(20, 0);
+            _fadeTransition = new FadeToColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeOutPC);
             Game.Instance.SetRCallback(RCB_Fading);
         }
@@ -399,6 +399,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             {
                 if (_selectedMainImage != null)
                 {
+                    AnimatedImage.UpdateCurrentFrameForAll();
                     _selectedMainImage.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.24f) - (_selectedMainImage.Width / 2), (int)(bmpHeight * 0.6f) - _selectedMainImage.Height);
                 }
                 Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.015f, 0.62f,

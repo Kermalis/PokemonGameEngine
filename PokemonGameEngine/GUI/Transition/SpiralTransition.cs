@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.UI;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
@@ -8,8 +9,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
         // This will leave artifacts if NumBoxes is not cleanly divisible by the width and height of the screen
         // In the future we can have it draw bigger squares if it's not cleanly divisible (like, outside the bounds of the screen)
         private const int NumBoxes = 8;
+        private const int MillisecondsPerBox = 20;
 
+        private TimeSpan _cur;
         private int _counter;
+
+        public SpiralTransition()
+        {
+            _cur = new TimeSpan();
+        }
 
         private unsafe void SpiralTransitionLogic(uint* bmpAddress, int bmpWidth, int bmpHeight, int num)
         {
@@ -102,6 +110,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
 
         public unsafe override void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
+            if (!IsDone)
+            {
+                _cur += Program.RenderTimeSinceLastFrame;
+                _counter = (int)(_cur.TotalMilliseconds / MillisecondsPerBox);
+            }
             SpiralTransitionLogic(bmpAddress, bmpWidth, bmpHeight, _counter);
             if (!IsDone)
             {

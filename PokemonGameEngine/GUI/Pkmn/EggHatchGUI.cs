@@ -37,7 +37,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar1]];
             LoadPkmnImage();
             _state = State.FadeIn;
-            _fadeTransition = new FadeFromColorTransition(20, 0);
+            _fadeTransition = new FadeFromColorTransition(500, 0);
             Game.Instance.SetCallback(CB_EggHatch);
             Game.Instance.SetRCallback(RCB_EggHatch);
         }
@@ -79,7 +79,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     {
                         _stringPrinter.Close();
                         _stringPrinter = null;
-                        _fadeTransition = new FadeToColorTransition(60, RenderUtils.ColorNoA(200, 200, 200));
+                        _fadeTransition = new FadeToColorTransition(1_000, RenderUtils.ColorNoA(200, 200, 200));
                         _state = State.FadeToWhite;
                     }
                     return;
@@ -91,7 +91,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                         _fadeTransition = null;
                         _pkmn.HatchEgg();
                         LoadPkmnImage();
-                        _fadeTransition = new FadeFromColorTransition(60, RenderUtils.ColorNoA(200, 200, 200));
+                        _fadeTransition = new FadeFromColorTransition(1_000, RenderUtils.ColorNoA(200, 200, 200));
                         _state = State.FadeToHatched;
                     }
                     return;
@@ -115,7 +115,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                         _stringPrinter = null;
                         _stringWindow.Close();
                         _stringWindow = null;
-                        _fadeTransition = new FadeToColorTransition(20, 0);
+                        _fadeTransition = new FadeToColorTransition(500, 0);
                         _state = State.FadeOut;
                     }
                     return;
@@ -136,6 +136,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(30, 30, 30, 255));
 
+            AnimatedImage.UpdateCurrentFrameForAll();
             _img.DrawOn(bmpAddress, bmpWidth, bmpHeight, _imgX, _imgY);
 
             switch (_state)

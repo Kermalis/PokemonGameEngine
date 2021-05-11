@@ -60,7 +60,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public unsafe void FadeIn()
         {
             OverworldGUI.ProcessDayTint(true); // Catch up time
-            _fadeTransition = new FadeFromColorTransition(20, 0);
+            _fadeTransition = new FadeFromColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeInBattle);
             Game.Instance.SetRCallback(RCB_Fading);
         }
@@ -68,7 +68,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private unsafe void TransitionOut()
         {
             SoundControl.FadeOutBattleBGMToOverworldBGM();
-            _fadeTransition = new FadeToColorTransition(20, 0);
+            _fadeTransition = new FadeToColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeOutBattle);
             Game.Instance.SetRCallback(RCB_Fading);
         }
@@ -237,6 +237,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
+            AnimatedImage.UpdateCurrentFrameForAll();
             _battleBackground.DrawSizedOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
             void DoTeam(int i, bool info)
             {

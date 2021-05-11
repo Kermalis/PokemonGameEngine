@@ -39,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             LoadCashMoney();
 
             _onClosed = onClosed;
-            _fadeTransition = new FadeFromColorTransition(20, 0);
+            _fadeTransition = new FadeFromColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeInBag);
             Game.Instance.SetRCallback(RCB_Fading);
         }
@@ -65,7 +65,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private unsafe void CloseMenu()
         {
-            _fadeTransition = new FadeToColorTransition(20, 0);
+            _fadeTransition = new FadeToColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeOutBag);
             Game.Instance.SetRCallback(RCB_Fading);
         }

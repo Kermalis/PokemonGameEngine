@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
+using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World;
 using System;
 
@@ -44,7 +45,7 @@ namespace Kermalis.PokemonGameEngine.Core
             {
                 return true;
             }
-            DateTime time = DateTime.Now;
+            DateTime time = Program.LogicTickTime;
             Month month = OverworldTime.GetMonth((Month)time.Month);
             Season season = OverworldTime.GetSeason(month);
             int hour = OverworldTime.GetHour(time.Hour);

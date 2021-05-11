@@ -47,14 +47,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _members[0].SetBigBounce();
 
             _onClosed = onClosed;
-            _fadeTransition = new FadeFromColorTransition(20, 0);
+            _fadeTransition = new FadeFromColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeInParty);
             Game.Instance.SetRCallback(RCB_Fading);
         }
 
         private unsafe void ClosePartyMenu()
         {
-            _fadeTransition = new FadeToColorTransition(20, 0);
+            _fadeTransition = new FadeToColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeOutParty);
             Game.Instance.SetRCallback(RCB_Fading);
         }

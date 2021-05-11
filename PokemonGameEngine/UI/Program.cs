@@ -1,10 +1,8 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Input;
-using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.Util;
 using SDL2;
-using SoLoud;
 using System;
 using System.Threading;
 
@@ -33,6 +31,9 @@ namespace Kermalis.PokemonGameEngine.UI
 #if DEBUG
         public static readonly bool _showFPS = true;
 #endif
+        public static DateTime LogicTickTime { get; private set; }
+        public static DateTime RenderTickTime { get; private set; }
+        public static TimeSpan RenderTimeSinceLastFrame { get; private set; }
 
         private readonly object _threadLockObj = new object();
         private readonly IntPtr _window;
@@ -61,6 +62,7 @@ namespace Kermalis.PokemonGameEngine.UI
             SoundControl.Init();
 
             // Game
+            LogicTickTime = DateTime.Now; // Setting for DayTint static constructor
             new Game(); // Init game
             new Thread(LogicTick) { Name = "Logic Thread" }.Start();
             new Thread(RenderTick) { Name = "Render Thread" }.Start();
@@ -187,6 +189,7 @@ namespace Kermalis.PokemonGameEngine.UI
 
         private void LogicTick()
         {
+            DateTime lastTickTime = DateTime.Now;
             while (!_quit)
             {
                 lock (_threadLockObj)
@@ -195,8 +198,14 @@ namespace Kermalis.PokemonGameEngine.UI
                     {
                         goto bottom;
                     }
+                    LogicTickTime = DateTime.Now;
+                    if (LogicTickTime <= lastTickTime)
+                    {
+                        Console.WriteLine("Time went back!");
+                    }
                     Game.Instance.LogicTick();
                 }
+                lastTickTime = LogicTickTime;
                 Thread.Sleep(1_000 / NumTicksPerSecond);
             }
         bottom:
@@ -211,21 +220,27 @@ namespace Kermalis.PokemonGameEngine.UI
             DateTime lastRenderTime = DateTime.Now;
             while (!_quit)
             {
-                DateTime now = DateTime.Now;
-                TimeSpan timePassed = now.Subtract(lastRenderTime);
                 lock (_threadLockObj)
                 {
                     if (_quit)
                     {
                         goto bottom;
                     }
-                    AnimatedImage.UpdateCurrentFrameForAll(timePassed); // #48 - Prevent crash by placing inside of the lock
+                    RenderTickTime = DateTime.Now;
+                    if (RenderTickTime <= lastRenderTime)
+                    {
+                        RenderTimeSinceLastFrame = new TimeSpan(0, 0, 0, 0, 1_000 / MaxFPS);
+                    }
+                    else
+                    {
+                        RenderTimeSinceLastFrame = RenderTickTime.Subtract(lastRenderTime);
+                    }
                     IntPtr s = _screen;
                     IntPtr r = _renderer;
                     SDL.SDL_LockTexture(s, IntPtr.Zero, out IntPtr pixels, out _);
                     Game.Instance.RenderTick((uint*)pixels.ToPointer(), RenderWidth, RenderHeight
 #if DEBUG
-                        , _showFPS ? ((int)Math.Round(1_000 / timePassed.TotalMilliseconds)).ToString() : null
+                        , _showFPS ? ((int)Math.Round(1_000 / RenderTimeSinceLastFrame.TotalMilliseconds)).ToString() : null
 #endif
                         );
                     SDL.SDL_UnlockTexture(s);
@@ -233,7 +248,7 @@ namespace Kermalis.PokemonGameEngine.UI
                     SDL.SDL_RenderCopy(r, s, IntPtr.Zero, IntPtr.Zero);
                     SDL.SDL_RenderPresent(r);
                 }
-                lastRenderTime = now;
+                lastRenderTime = RenderTickTime;
                 time.Wait();
             }
         bottom:

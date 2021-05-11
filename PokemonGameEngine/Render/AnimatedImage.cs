@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonGameEngine.Util;
+﻿using Kermalis.PokemonGameEngine.UI;
+using Kermalis.PokemonGameEngine.Util;
 using Kermalis.SimpleGIF;
 using System;
 using System.Collections.Generic;
@@ -106,7 +107,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         private static readonly List<WeakReference<AnimatedImage>> _loadedAnimImages = new List<WeakReference<AnimatedImage>>();
 
-        private void UpdateCurrentFrame(TimeSpan timePassed)
+        private void UpdateCurrentFrame()
         {
             int curFrameIndex = _curFrameIndex;
             int curFrameDelay = _img.Frames[curFrameIndex].Delay;
@@ -115,7 +116,7 @@ namespace Kermalis.PokemonGameEngine.Render
                 IsPaused = true;
                 return; // This would only be reached if IsPaused is set to false manually
             }
-            TimeSpan timeRequired = _nextFrameTime.Subtract(timePassed);
+            TimeSpan timeRequired = _nextFrameTime.Subtract(Program.RenderTimeSinceLastFrame);
             long ms;
             for (ms = (long)timeRequired.TotalMilliseconds; ms <= 0; ms += (long)(curFrameDelay * SpeedModifier))
             {
@@ -144,7 +145,7 @@ namespace Kermalis.PokemonGameEngine.Render
             _curFrameIndex = curFrameIndex;
             _nextFrameTime = TimeSpan.FromMilliseconds(ms);
         }
-        public static void UpdateCurrentFrameForAll(TimeSpan timePassed)
+        public static void UpdateCurrentFrameForAll()
         {
             foreach (WeakReference<AnimatedImage> w in _loadedAnimImages)
             {
@@ -154,7 +155,7 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
                 if (!s.IsPaused)
                 {
-                    s.UpdateCurrentFrame(timePassed);
+                    s.UpdateCurrentFrame();
                 }
             }
         }

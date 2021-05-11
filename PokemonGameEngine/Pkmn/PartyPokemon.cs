@@ -3,6 +3,7 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
+using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.Util;
 using Kermalis.PokemonGameEngine.World;
 using System;
@@ -97,7 +98,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Moveset = new Moveset();
             EffortValues = new EVs();
             IndividualValues = new IVs();
-            UpdateTimeBasedForms(DateTime.Now);
+            UpdateTimeBasedForms();
             SetDefaultMoves();
             CalcStats(bs.Stats);
             SetMaxHP();
@@ -124,7 +125,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             IndividualValues = other.IndividualValues;
             CaughtBall = other.CaughtBall;
             Friendship = other.Friendship;
-            UpdateTimeBasedForms(DateTime.Now);
+            UpdateTimeBasedForms();
             CalcStats();
             SetMaxHP();
         }
@@ -148,7 +149,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.Moveset = new Moveset();
             p.EffortValues = new EVs();
             p.IndividualValues = new IVs();
-            p.UpdateTimeBasedForms(DateTime.Now);
+            p.UpdateTimeBasedForms();
             p.SetDefaultMoves();
             p.CaughtBall = ItemType.PokeBall;
             p.CalcStats(bs.Stats);
@@ -171,7 +172,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.Moveset = new Moveset();
             p.EffortValues = new EVs();
             p.IndividualValues = new IVs();
-            p.UpdateTimeBasedForms(DateTime.Now);
+            p.UpdateTimeBasedForms();
             p.SetDefaultMoves();
             p.SetDefaultFriendship(bs);
             p.CalcStats(bs.Stats);
@@ -360,8 +361,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Ability = bs.GetAbility(AbilType, Ability);
         }
         // TODO: Burmy areas. (Giratina would work similarly if you wanted, with an additional || for the orb)
-        public void UpdateTimeBasedForms(DateTime time)
+        public void UpdateTimeBasedForms()
         {
+            DateTime time = Program.LogicTickTime;
             Month month = OverworldTime.GetMonth((Month)time.Month);
             Season season = OverworldTime.GetSeason(month);
             int hour = OverworldTime.GetHour(time.Hour);
@@ -400,7 +402,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Level = pkmn.Level;
             EXP = pkmn.EXP;
             CalcStats();
-            UpdateTimeBasedForms(DateTime.Now);
+            UpdateTimeBasedForms();
         }
         public void UpdateFromBattle_Caught(PBEBattlePokemon pkmn)
         {
@@ -422,7 +424,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             {
                 HealFully();
             }
-            UpdateTimeBasedForms(DateTime.Now);
+            UpdateTimeBasedForms();
         }
 
         public void HatchEgg()
@@ -435,7 +437,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             SetCurrentMetLocation();
             // Burmy hatches as the same form as its mother, but if it was from Mothim & Ditto, it's plant cloak (form 0)
             // Deerling hatches as the current season
-            UpdateTimeBasedForms(DateTime.Now);
+            UpdateTimeBasedForms();
             CalcStats(); // Calc stats after form is set
             SetMaxHP();
         }

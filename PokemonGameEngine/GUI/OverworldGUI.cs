@@ -41,7 +41,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
             ProcessDayTint(true);
             gui.LoadMapMusic();
-            Instance._fadeTransition = new FadeFromColorTransition(20, 0);
+            Instance._fadeTransition = new FadeFromColorTransition(500, 0);
             Game.Instance.SetCallback(Instance.CB_FadeIn);
             Game.Instance.SetRCallback(Instance.RCB_Fading);
         }
@@ -65,13 +65,13 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private unsafe void StartMenu_DebugBagSelected()
         {
-            _fadeTransition = new FadeToColorTransition(20, 0);
+            _fadeTransition = new FadeToColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeOutToBag);
             Game.Instance.SetRCallback(RCB_Fading);
         }
         private unsafe void StartMenu_DebugPCSelected()
         {
-            _fadeTransition = new FadeToColorTransition(20, 0);
+            _fadeTransition = new FadeToColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeOutToPC);
             Game.Instance.SetRCallback(RCB_Fading);
         }
@@ -113,7 +113,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public unsafe void OpenPartyMenu(PartyGUI.Mode mode)
         {
-            _fadeTransition = new FadeToColorTransition(20, 0);
+            _fadeTransition = new FadeToColorTransition(500, 0);
             switch (mode)
             {
                 case PartyGUI.Mode.PkmnMenu:
@@ -133,7 +133,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         public unsafe void StartEggHatchScreen()
         {
-            _fadeTransition = new FadeToColorTransition(20, 0);
+            _fadeTransition = new FadeToColorTransition(500, 0);
             Game.Instance.IsOnOverworld = false;
             Game.Instance.SetCallback(CB_FadeOutToEggHatchScreen);
             Game.Instance.SetRCallback(RCB_Fading);
@@ -151,7 +151,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             _warpingTo = warp;
             SoundControl.SetOverworldBGM(Map.LoadOrGet(warp.DestMapId).MapDetails.Music);
-            _fadeTransition = new FadeToColorTransition(20, 0);
+            _fadeTransition = new FadeToColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeOutToWarp);
             Game.Instance.SetRCallback(RCB_Fading);
         }
@@ -160,7 +160,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             ProcessDayTint(true); // Catch up time
             SetupStartMenuWindow();
-            _fadeTransition = new FadeFromColorTransition(20, 0);
+            _fadeTransition = new FadeFromColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeInToStartMenu);
             Game.Instance.SetRCallback(RCB_Fading);
         }
@@ -177,7 +177,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         public unsafe void ReturnToFieldWithFadeIn()
         {
-            _fadeTransition = new FadeFromColorTransition(20, 0);
+            _fadeTransition = new FadeFromColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeIn);
             Game.Instance.SetRCallback(RCB_Fading);
         }
@@ -226,7 +226,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                     player.RunNextScriptMovement();
                 }
                 ProcessDayTint(true); // Catch up time
-                _fadeTransition = new FadeFromColorTransition(20, 0);
+                _fadeTransition = new FadeFromColorTransition(500, 0);
                 Game.Instance.SetCallback(CB_FadeIn);
                 Game.Instance.SetRCallback(RCB_Fading);
             }

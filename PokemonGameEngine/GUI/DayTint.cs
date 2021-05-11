@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World;
 using System;
 
@@ -49,7 +50,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private static void SetTintTime()
         {
-            DateTime time = DateTime.Now;
+            DateTime time = Program.LogicTickTime;
             _tintHour = OverworldTime.GetHour(time.Hour);
             _tintMinute = OverworldTime.GetMinute(time.Minute);
         }
@@ -63,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         public static void LogicTick(bool skipTransition)
         {
-            DateTime time = DateTime.Now;
+            DateTime time = Program.LogicTickTime;
             int realMinute = OverworldTime.GetMinute(time.Minute);
             int realHour = OverworldTime.GetHour(time.Hour);
             int tintHour;

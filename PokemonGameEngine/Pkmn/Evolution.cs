@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
+using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
@@ -29,11 +30,12 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             return pkmn.Item == ItemType.Everstone;
         }
-        private static bool IsNight(DateTime dt)
+        private static bool IsNight()
         {
-            Month month = OverworldTime.GetMonth((Month)dt.Month);
+            DateTime time = Program.LogicTickTime;
+            Month month = OverworldTime.GetMonth((Month)time.Month);
             Season season = OverworldTime.GetSeason(month);
-            int hour = OverworldTime.GetHour(dt.Hour);
+            int hour = OverworldTime.GetHour(time.Hour);
             return OverworldTime.GetTimeOfDay(season, hour) == TimeOfDay.Night;
         }
 
@@ -46,7 +48,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 return null;
             }
 
-            bool isNight = IsNight(DateTime.Now);
+            bool isNight = IsNight();
 
             var data = new EvolutionData(pkmn.Species, pkmn.Form);
             foreach (EvolutionData.EvoData evo in data.Evolutions)
@@ -94,7 +96,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public static EvolutionData.EvoData GetItemEvolution(PartyPokemon pkmn, ItemType item)
         {
-            bool isNight = IsNight(DateTime.Now);
+            bool isNight = IsNight();
 
             var data = new EvolutionData(pkmn.Species, pkmn.Form);
             foreach (EvolutionData.EvoData evo in data.Evolutions)
