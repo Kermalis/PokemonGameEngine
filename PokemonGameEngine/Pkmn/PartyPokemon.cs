@@ -11,6 +11,13 @@ using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.Pkmn
 {
+    internal enum AbilityType : byte
+    {
+        Ability1,
+        Ability2,
+        AbilityH,
+        NonStandard
+    }
     internal sealed class PartyPokemon : IPBEPartyPokemon
     {
         public OTInfo OT { get; set; }
@@ -29,6 +36,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public ItemType CaughtBall { get; set; }
 
         public ItemType Item { get; set; }
+        public AbilityType AbilType { get; private set; }
         public PBEAbility Ability { get; set; }
         public PBENature Nature { get; set; }
 
@@ -83,7 +91,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
             var pData = new BaseStats(Species, Form);
             SetDefaultEXPForLevel(pData);
-            Ability = pData.GetRandomNonHiddenAbility();
+            AbilType = pData.GetRandomNonHiddenAbilityType();
+            Ability = pData.GetAbility(AbilType, PBEAbility.None);
             Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             Moveset = new Moveset();
             EffortValues = new EVs();
@@ -106,6 +115,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Shiny = other.Shiny;
             Level = other.Level;
             EXP = other.EXP;
+            AbilType = other.AbilType;
             Ability = other.Ability;
             Gender = other.Gender;
             Nature = other.Nature;
@@ -131,7 +141,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             var pData = new BaseStats(species, form);
             p.SetDefaultFriendship(pData);
             p.SetDefaultEXPForLevel(pData);
-            p.Ability = pData.GetRandomNonHiddenAbility();
+            p.AbilType = pData.GetRandomNonHiddenAbilityType();
+            p.Ability = pData.GetAbility(p.AbilType, PBEAbility.None);
             p.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
             p.Moveset = new Moveset();
@@ -154,7 +165,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
             var pData = new BaseStats(species, form);
             p.SetDefaultEXPForLevel(pData);
-            p.Ability = pData.GetRandomNonHiddenAbility();
+            p.AbilType = pData.GetRandomNonHiddenAbilityType();
+            p.Ability = pData.GetAbility(p.AbilType, PBEAbility.None);
             p.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             p.Moveset = new Moveset();
             p.EffortValues = new EVs();
@@ -179,7 +191,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             var pData = new BaseStats(species, form);
             p.SetDefaultEggCycles(pData);
             p.SetDefaultEXPForLevel(pData);
-            p.Ability = pData.GetRandomNonHiddenAbility();
+            p.AbilType = pData.GetRandomNonHiddenAbilityType();
+            p.Ability = pData.GetAbility(p.AbilType, PBEAbility.None);
             p.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
             p.Moveset = new Moveset();
@@ -202,8 +215,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.Shiny = nincada.Shiny;
             var pData = new BaseStats(p.Species, p.Form);
             p.Friendship = nincada.Friendship;
-            p.EXP = nincada.EXP; // If Shedinja's growth rate were different from Nincada's, this wouldn't work
-            p.Ability = pData.Ability1; // Shedinja has its own ability
+            // If Shedinja's growth rate were different from Nincada's, this wouldn't work
+            // By design, no Pokémon can change into another that has a different growth rate
+            p.EXP = nincada.EXP;
+            p.AbilType = nincada.AbilType;
+            p.Ability = pData.GetAbility(p.AbilType, p.Ability);
             p.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio); // Shedinja is genderless, Nincada is not
             p.Nature = nincada.Nature;
             p.Moveset = new Moveset(nincada.Moveset);
@@ -283,12 +299,15 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             SpDefense = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.SpDefense, Nature, EffortValues.SpDefense, IndividualValues.SpDefense, Level, PkmnConstants.PBESettings);
             Speed = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.Speed, Nature, EffortValues.Speed, IndividualValues.Speed, Level, PkmnConstants.PBESettings);
         }
-        private void CalcStatsAndAdjustHP(IPBEReadOnlyStatCollection baseStats)
+        private void CalcStatsAndAdjustCurrentHP(IPBEReadOnlyStatCollection baseStats)
         {
             ushort oldMaxHP = MaxHP;
             CalcStats(baseStats);
-            int dif = MaxHP - oldMaxHP;
-            HP = (ushort)Math.Max(1, HP + dif);
+            // Don't adjust current HP if it's fainted
+            if (HP != 0 && MaxHP != oldMaxHP)
+            {
+                HP = (ushort)Math.Max(1, HP + (MaxHP - oldMaxHP));
+            }
         }
         public void CalcStats()
         {
@@ -335,15 +354,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         private void UpdateAbilityAndCalcStatsAfterFormChange()
         {
             var bs = new BaseStats(Species, Form);
-            CalcStats(bs.Stats);
-            UpdateAbilityIfCannotHave(bs);
-        }
-        private void UpdateAbilityIfCannotHave(BaseStats bs)
-        {
-            if (!bs.Abilities.Contains(Ability))
-            {
-                Ability = bs.Abilities[0];
-            }
+            CalcStatsAndAdjustCurrentHP(bs.Stats);
+            Ability = bs.GetAbility(AbilType, Ability);
         }
         // TODO: Burmy areas. (Giratina would work similarly if you wanted, with an additional || for the orb)
         public void UpdateTimeBasedForms(DateTime time)
@@ -435,17 +447,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             {
                 SetDefaultNickname();
             }
-            var bs = new BaseStats(Species, Form);
-            UpdateAbilityIfCannotHave(bs);
-            // Calc stats after form is set
-            if (HP == 0)
-            {
-                CalcStats(bs.Stats); // Don't adjust current HP if it's fainted
-            }
-            else
-            {
-                CalcStatsAndAdjustHP(bs.Stats);
-            }
+            UpdateAbilityAndCalcStatsAfterFormChange();
         }
     }
 }

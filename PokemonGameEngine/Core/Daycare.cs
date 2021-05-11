@@ -4,7 +4,6 @@ using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Util;
-using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -225,7 +224,7 @@ namespace Kermalis.PokemonGameEngine.Core
             }
             return -1;
         }
-        private static void SetOffspringShininess(BoxPokemon p0, BoxPokemon p1, BoxPokemon o)
+        private static bool GetOffspringShininess(BoxPokemon p0, BoxPokemon p1)
         {
             int chance = 1;
             if (Utils.HasShinyCharm())
@@ -237,30 +236,27 @@ namespace Kermalis.PokemonGameEngine.Core
             {
                 chance += 5;
             }
-            o.Shiny = PBEDataProvider.GlobalRandom.RandomBool(chance, 8192);
+            return PBEDataProvider.GlobalRandom.RandomBool(chance, 8192);
         }
-        private static void SetOffspringNature(BoxPokemon p0, BoxPokemon p1, BoxPokemon o)
+        private static PBENature GetOffspringNature(BoxPokemon p0, BoxPokemon p1)
         {
             bool e0 = p0.Item == ItemType.Everstone;
             bool e1 = p1.Item == ItemType.Everstone;
             if (!e0 && !e1)
             {
-                o.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
+                return PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
             }
-            else if (e0 && e1)
+            if (e0 && e1)
             {
-                o.Nature = PBEDataProvider.GlobalRandom.RandomBool() ? p0.Nature : p1.Nature;
+                return PBEDataProvider.GlobalRandom.RandomBool() ? p0.Nature : p1.Nature;
             }
-            else if (e0 && !e1)
+            if (e0 && !e1)
             {
-                o.Nature = p0.Nature;
+                return p0.Nature;
             }
-            else // Only p1 has Everstone
-            {
-                o.Nature = p1.Nature;
-            }
+            return p1.Nature; // Only p1 has Everstone
         }
-        private static PBEAbility GetInheritedAbility(BoxPokemon p0, BoxPokemon p1)
+        private static (AbilityType, PBEAbility) GetOffspringAbility(BoxPokemon p0, BoxPokemon p1, BaseStats bs)
         {
             // 80% chance to pass female ability down if bred with a male
             int femaleIdx = GetGenderedParentIndex(p0, p1, PBEGender.Female);
@@ -269,12 +265,15 @@ namespace Kermalis.PokemonGameEngine.Core
                 int maleIdx = GetGenderedParentIndex(p0, p1, PBEGender.Male);
                 if (maleIdx != -1 && PBEDataProvider.GlobalRandom.RandomBool(4, 5))
                 {
-                    return (femaleIdx == 0 ? p0 : p1).Ability;
+                    BoxPokemon f = femaleIdx == 0 ? p0 : p1;
+                    return (f.AbilType, bs.GetAbility(f.AbilType, f.Ability));
                 }
             }
-            return PBEAbility.None;
+            AbilityType type = bs.GetRandomNonHiddenAbilityType();
+            PBEAbility ability = bs.GetAbility(type, PBEAbility.None);
+            return (type, ability);
         }
-        private static void SetOffspringIVs(BoxPokemon p0, BoxPokemon p1, BoxPokemon o)
+        private static IVs GetOffspringIVs(BoxPokemon p0, BoxPokemon p1)
         {
             int RandomParent()
             {
@@ -320,9 +319,9 @@ namespace Kermalis.PokemonGameEngine.Core
                 CopyParentIV(RandomParent(), s);
             }
 
-            o.IndividualValues = new IVs(ivs);
+            return new IVs(ivs);
         }
-        private static void SetOffspringMoves(BoxPokemon p0, BoxPokemon p1, BoxPokemon o)
+        private static BoxMoveset GetOffspringMoves(BoxPokemon p0, BoxPokemon p1, PBESpecies species, PBEForm form)
         {
             var moveset = new BoxMoveset();
             void AddMove(PBEMove move)
@@ -346,7 +345,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 }
             }
 
-            var levelUp = new LevelUpData(o.Species, o.Form);
+            var levelUp = new LevelUpData(species, form);
             // Default moves first
             PBEMove[] defaultMoves = levelUp.GetDefaultMoves(PkmnConstants.EggHatchLevel);
             AddMoves(defaultMoves);
@@ -365,56 +364,36 @@ namespace Kermalis.PokemonGameEngine.Core
             // Egg moves from father
             if (maleParent != -1)
             {
-                IEnumerable<PBEMove> allEggMoves = EggMoves.GetEggMoves(o.Species, o.Form);
+                IEnumerable<PBEMove> allEggMoves = EggMoves.GetEggMoves(species, form);
                 IEnumerable<PBEMove> eggMoves = allEggMoves.Where(em => p0.Moveset.Contains(em) || p1.Moveset.Contains(em));
                 AddMoves(eggMoves);
             }
 
             // Volt Tackle
-            if (o.Species == PBESpecies.Pichu && (p0.Item == ItemType.LightBall || p1.Item == ItemType.LightBall))
+            if (species == PBESpecies.Pichu && (p0.Item == ItemType.LightBall || p1.Item == ItemType.LightBall))
             {
                 AddMove(PBEMove.VoltTackle);
             }
 
-            o.Moveset = moveset;
+            return moveset;
         }
         private static BoxPokemon ProduceOffspring(BoxPokemon p0, BoxPokemon p1)
         {
             int mainParentIdx = GetMainSpeciesParentIndex(p0, p1);
             BoxPokemon mainParent = mainParentIdx == 0 ? p0 : p1;
             (PBESpecies species, PBEForm form) = GetOffspringSpecies(mainParent);
+            var bs = new BaseStats(species, form);
 
-            var o = new BoxPokemon();
-            o.PID = (uint)PBEDataProvider.GlobalRandom.RandomInt();
-            o.Pokerus = new Pokerus(true);
-            o.IsEgg = true;
-            o.Level = PkmnConstants.EggHatchLevel;
-            o.Nickname = "Egg";
-            o.Species = species;
-            o.Form = form;
-            o.EffortValues = new EVs();
-            o.CaughtBall = ItemType.PokeBall;
-            o.OT = Game.Instance.Save.OT;
-            o.MetLocation = MapSection.TestMapC; // Egg met location
-            var pData = new BaseStats(species, form);
-            o.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
-            o.Friendship = pData.EggCycles;
-            o.EXP = PBEDataProvider.Instance.GetEXPRequired(pData.GrowthRate, PkmnConstants.EggHatchLevel);
-
-            SetOffspringShininess(p0, p1, o);
-            SetOffspringNature(p0, p1, o);
-            PBEAbility iAbility = GetInheritedAbility(p0, p1);
-            if (iAbility == PBEAbility.None)
-            {
-                o.Ability = pData.GetRandomNonHiddenAbility();
-            }
-            else
-            {
-                o.Ability = iAbility;
-            }
-            SetOffspringIVs(p0, p1, o);
-            SetOffspringMoves(p0, p1, o);
-            return o;
+            byte level = PkmnConstants.EggHatchLevel;
+            PBEGender gender = PBEDataProvider.GlobalRandom.RandomGender(bs.GenderRatio);
+            byte cycles = bs.EggCycles;
+            uint exp = PBEDataProvider.Instance.GetEXPRequired(bs.GrowthRate, level);
+            bool shiny = GetOffspringShininess(p0, p1);
+            PBENature nature = GetOffspringNature(p0, p1);
+            (AbilityType, PBEAbility) ability = GetOffspringAbility(p0, p1, bs);
+            IVs ivs = GetOffspringIVs(p0, p1);
+            BoxMoveset moves = GetOffspringMoves(p0, p1, species, form);
+            return BoxPokemon.CreateDaycareEgg(species, form, gender, cycles, level, exp, shiny, nature, ability, ivs, moves);
         }
         public void DoDaycareStep()
         {

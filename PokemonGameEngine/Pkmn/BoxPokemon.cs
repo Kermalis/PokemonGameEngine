@@ -25,6 +25,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public Pokerus Pokerus { get; set; }
         public ItemType Item { get; set; }
+        public AbilityType AbilType { get; private set; }
         public PBEAbility Ability { get; set; }
         public PBENature Nature { get; set; }
 
@@ -32,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public EVs EffortValues { get; set; }
         public IVs IndividualValues { get; set; }
 
-        public BoxPokemon() { }
+        private BoxPokemon() { }
         public BoxPokemon(PartyPokemon other)
         {
             IsEgg = other.IsEgg;
@@ -50,11 +51,39 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Friendship = other.Friendship;
             CaughtBall = other.CaughtBall;
             Item = other.Item;
+            AbilType = other.AbilType;
             Ability = other.Ability;
             Nature = other.Nature;
             Moveset = new BoxMoveset(other.Moveset);
             EffortValues = other.EffortValues;
             IndividualValues = other.IndividualValues;
+        }
+
+        public static BoxPokemon CreateDaycareEgg(PBESpecies species, PBEForm form, PBEGender gender, byte cycles, byte level, uint exp, bool shiny,
+            PBENature nature, (AbilityType Type, PBEAbility Abil) ability, IVs ivs, BoxMoveset moves)
+        {
+            var p = new BoxPokemon();
+            p.PID = (uint)PBEDataProvider.GlobalRandom.RandomInt();
+            p.Pokerus = new Pokerus(true);
+            p.IsEgg = true;
+            p.Level = level;
+            p.Nickname = "Egg";
+            p.Species = species;
+            p.Form = form;
+            p.EffortValues = new EVs();
+            p.CaughtBall = ItemType.PokeBall;
+            p.OT = Game.Instance.Save.OT;
+            p.MetLocation = MapSection.TestMapC; // Egg met location
+            p.Gender = gender;
+            p.Friendship = cycles;
+            p.EXP = exp;
+            p.Shiny = shiny;
+            p.Nature = nature;
+            p.AbilType = ability.Type;
+            p.Ability = ability.Abil;
+            p.IndividualValues = ivs;
+            p.Moveset = moves;
+            return p;
         }
     }
 }

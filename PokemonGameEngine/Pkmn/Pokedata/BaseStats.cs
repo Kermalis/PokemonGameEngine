@@ -1,6 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Util;
+using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
@@ -74,13 +75,24 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
             return EggGroup1 == other.EggGroup1 || EggGroup1 == other.EggGroup2
                 || EggGroup2 == other.EggGroup1 || EggGroup2 == other.EggGroup2;
         }
-        public PBEAbility GetRandomNonHiddenAbility()
+        public AbilityType GetRandomNonHiddenAbilityType()
         {
             if (Ability2 == PBEAbility.None)
             {
-                return Ability1;
+                return AbilityType.Ability1;
             }
-            return PBEDataProvider.GlobalRandom.RandomBool() ? Ability1 : Ability2;
+            return PBEDataProvider.GlobalRandom.RandomBool() ? AbilityType.Ability1 : AbilityType.Ability2;
+        }
+        public PBEAbility GetAbility(AbilityType type, PBEAbility cur)
+        {
+            switch (type)
+            {
+                case AbilityType.Ability1: return Ability1;
+                case AbilityType.Ability2: return Ability2 == PBEAbility.None ? Ability1 : Ability2;
+                case AbilityType.AbilityH: return AbilityH;
+                case AbilityType.NonStandard: return cur;
+            }
+            throw new Exception();
         }
     }
 }
