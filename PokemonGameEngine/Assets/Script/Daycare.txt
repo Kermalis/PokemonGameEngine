@@ -1,3 +1,10 @@
+.set LOCALID_PLAYER 0xFFFF
+
+.set COMPAT_NONE 0
+.set COMPAT_LOW 20
+.set COMPAT_MED 50
+.set COMPAT_MAX 70
+
 @Egg_Hatch
 LockAllObjs
 Message EggHatchText
@@ -10,7 +17,7 @@ End
 
 @Daycare_Start
 LockAllObjs
-LookTowardsObj Var.LastTalked 0xFFFF
+LookTowardsObj Var.LastTalked LOCALID_PLAYER
 GetDaycareState
 GoToIf Daycare_OneMon Var.SpecialVar_Result C.Equal DaycareState.OnePokemon
 GoToIf Daycare_TwoMon Var.SpecialVar_Result C.Equal DaycareState.TwoPokemon
@@ -38,10 +45,10 @@ End
 Message DaycareText_GoodToSeeYou2
 AwaitMessageComplete
 GetDaycareCompatibility
-CallIf Daycare_CompatMax Var.SpecialVar_Result C.Equal 70
-CallIf Daycare_CompatMed Var.SpecialVar_Result C.Equal 50
-CallIf Daycare_CompatMin Var.SpecialVar_Result C.Equal 20
-CallIf Daycare_CompatNone Var.SpecialVar_Result C.Equal 0
+CallIf Daycare_CompatMax Var.SpecialVar_Result C.Equal COMPAT_MAX
+CallIf Daycare_CompatMed Var.SpecialVar_Result C.Equal COMPAT_MED
+CallIf Daycare_CompatMin Var.SpecialVar_Result C.Equal COMPAT_LOW
+CallIf Daycare_CompatNone Var.SpecialVar_Result C.Equal COMPAT_NONE
 AwaitMessageComplete
 CloseMessage
 UnlockAllObjs

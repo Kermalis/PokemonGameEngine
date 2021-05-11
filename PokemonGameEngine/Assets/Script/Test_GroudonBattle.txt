@@ -1,7 +1,10 @@
+.set LOCALID_GROUDON 0
+.set LOCALID_PLAYER 0xFFFF
+
 @Test_GroudonBattle
 LockAllObjs
-MoveObj 0xFFFF TestMovement_FaceNorth
-AwaitObjMovement 0xFFFF
+MoveObj LOCALID_PLAYER TestMovement_FaceNorth
+AwaitObjMovement LOCALID_PLAYER
 Delay 20
 PlayCry Species.Groudon 0
 Message TestText_GroudonGyaoo
@@ -10,7 +13,7 @@ AwaitMessageComplete
 CloseMessage
 WildBattle Species.Groudon 0 70
 AwaitReturnToField
-UnloadObj 0
+UnloadObj LOCALID_GROUDON
 
 // Assume you defeat it for now.
 SetFlag Flag.Test_GroudonVisible

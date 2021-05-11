@@ -22,6 +22,7 @@ public sealed partial class Build
 
     private static readonly AbsolutePath ScriptPath = AssetPath / "Script";
     private static readonly AbsolutePath ScriptOutputPath = ScriptPath / "Scripts.bin";
+    private const string DefineChars = ".set";
     private const string CommentChars = "//";
     private const string LocalLabelChars = "#";
     private const string GlobalLabelChars = "@";
@@ -89,8 +90,11 @@ public sealed partial class Build
     private void ParseFile(string path)
     {
         string[] lines = File.ReadAllLines(path);
+        var _defines = new Dictionary<string, string>();
         bool readingLabel = false;
         bool globalLabel = false;
+        bool readingDefine = false;
+        string define1 = null;
         bool readingArg = false;
         bool readingCmd = false;
         bool readingText = false; // Text can span multiple lines and can include whitespace
@@ -122,11 +126,12 @@ public sealed partial class Build
                 {
                     str = str.Substring(0, str.Length - CommentChars.Length);
                     readingCmd = false;
+                    readingDefine = false;
                     readingArg = false;
                     curArg = -1;
                     break; // Stop reading from here
                 }
-                if (readingCmd || readingArg || readingLabel || readingText)
+                if (readingCmd || readingDefine || readingArg || readingLabel || readingText)
                 {
                     continue;
                 }
@@ -192,6 +197,14 @@ public sealed partial class Build
         {
             if (readingCmd)
             {
+                if (str.StartsWith(DefineChars))
+                {
+                    readingDefine = true;
+                    curArg = 0;
+                    readingCmd = false;
+                    str = string.Empty;
+                    return;
+                }
                 if (str.StartsWith(MovementPrefix))
                 {
                     str = str.Substring(MovementPrefix.Length);
@@ -219,20 +232,41 @@ public sealed partial class Build
                 _labels.Add(str, new Pair { Global = globalLabel, Offset = _writer.BaseStream.Position });
                 readingLabel = false;
                 str = string.Empty;
+                return;
             }
-            else if (readingArg)
+            if (readingDefine)
+            {
+                if (curArg == 0)
+                {
+                    define1 = str;
+                    curArg = 1;
+                    str = string.Empty;
+                }
+                else
+                {
+                    _defines.Add(define1, str);
+                    readingDefine = false;
+                    curArg = -1;
+                    define1 = null;
+                    str = string.Empty;
+                }
+                readingArg = false;
+                return;
+            }
+            if (readingArg)
             {
                 if (curArg >= cmdArgTypes.Length)
                 {
                     throw new Exception("Too many arguments");
                 }
-                WriteArg(cmdArgTypes[curArg++], str);
+                WriteArg(cmdArgTypes[curArg++], str, _defines);
                 if (curArg >= cmdArgTypes.Length)
                 {
                     curArg = -1;
                 }
                 readingArg = false;
                 str = string.Empty;
+                return;
             }
         }
     }
@@ -257,7 +291,7 @@ public sealed partial class Build
         }
         return false;
     }
-    private void WriteArg(Type argType, string str)
+    private void WriteArg(Type argType, string str, Dictionary<string, string> defines)
     {
         switch (argType.FullName)
         {
@@ -298,7 +332,7 @@ public sealed partial class Build
             // Write a defined value
             default:
             {
-                ParseAndWriteValue(str, argType);
+                ParseAndWriteValue(str, argType, defines);
                 break;
             }
         }
@@ -336,9 +370,19 @@ public sealed partial class Build
         _writer.Write('\0'); // Write null terminator
     }
     // Does not handle string type
-    private void ParseAndWriteValue(string str, Type targetType)
+    private void ParseAndWriteValue(string str, Type targetType, Dictionary<string, string> defines)
     {
         bool varAble = IsTypeVarAble(targetType);
+    top:
+        foreach (KeyValuePair<string, string> tup in defines)
+        {
+            if (str != tup.Key)
+            {
+                continue;
+            }
+            str = tup.Value;
+            goto top;
+        }
         foreach (KeyValuePair<Type, string> tup in ScriptBuilderHelper.EnumDefines)
         {
             string prefix = tup.Value;
@@ -353,7 +397,6 @@ public sealed partial class Build
             {
                 uint wVal = ushort.MaxValue + 1 + Convert.ToUInt32(Enum.Parse(typeof(Var), str));
                 _writer.Write(wVal);
-                Console.WriteLine("{0} - {1}", str, wVal);
                 return;
             }
 
