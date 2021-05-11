@@ -501,9 +501,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 case PBEPkmnSwitchInPacket psip:
                 {
+                    PBETrainer trainer = psip.Trainer;
                     foreach (PBEPkmnAppearedInfo info in psip.SwitchIns)
                     {
-                        PBEBattlePokemon pkmn = psip.Trainer.TryGetPokemon(info.Pokemon);
+                        PBEBattlePokemon pkmn = trainer.TryGetPokemon(info.Pokemon);
+                        if (info.IsDisguised)
+                        {
+                            SpritedBattlePokemonParty sp = _spritedParties[trainer.Id];
+                            sp[pkmn].UpdateDisguisedPID(sp);
+                        }
                         SetSeen(pkmn);
                         ShowPokemon(pkmn);
                         SoundControl.Debug_PlayCry(pkmn.KnownSpecies, pkmn.KnownForm);
@@ -522,6 +528,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     foreach (PBEPkmnAppearedInfo info in wpap.Pokemon)
                     {
                         PBEBattlePokemon pkmn = trainer.TryGetPokemon(info.Pokemon);
+                        if (info.IsDisguised)
+                        {
+                            SpritedBattlePokemonParty sp = _spritedParties[trainer.Id];
+                            sp[pkmn].UpdateDisguisedPID(sp);
+                        }
                         SetSeen(pkmn);
                         ShowWildPokemon(pkmn);
                         SoundControl.Debug_PlayCry(pkmn.KnownSpecies, pkmn.KnownForm);

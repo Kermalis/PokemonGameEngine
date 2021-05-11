@@ -13,6 +13,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
     {
         public PartyPokemon PartyPkmn { get; }
         public PBEBattlePokemon Pkmn { get; }
+        public uint DisguisedPID { get; set; }
         public Image Mini { get; private set; }
         public AnimatedImage AnimImage { get; private set; }
         public Image InfoBarImg { get; }
@@ -23,6 +24,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             PartyPkmn = pPkmn;
             Pkmn = pkmn;
+            DisguisedPID = pPkmn.PID; // By default, use our own PID (for example, wild disguised pkmn)
             _backImage = backImage;
             _useKnownInfo = useKnownInfo;
             InfoBarImg = new Image(100, useKnownInfo ? 30 : 42);
@@ -37,13 +39,23 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
+        public void UpdateDisguisedPID(SpritedBattlePokemonParty sParty)
+        {
+            if (Pkmn.Status2.HasFlag(PBEStatus2.Disguised))
+            {
+                PBEBattlePokemon p = Pkmn.GetPkmnWouldDisguiseAs();
+                DisguisedPID = p is null ? PartyPkmn.PID : sParty[p].PartyPkmn.PID;
+            }
+        }
+
         // Will cause double load for some cases (like status2 updating)
         // Because new animated image is created
         public void UpdateSprites(PkmnPosition pos, bool paused)
         {
             Mini = PokemonImageUtils.GetMini(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, PartyPkmn.IsEgg);
             PBEStatus2 status2 = _useKnownInfo ? Pkmn.KnownStatus2 : Pkmn.Status2;
-            AnimImage = PokemonImageUtils.GetPokemonImage(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, _backImage, status2.HasFlag(PBEStatus2.Substitute), PartyPkmn.PID, PartyPkmn.IsEgg);
+            AnimImage = PokemonImageUtils.GetPokemonImage(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, _backImage,
+                status2.HasFlag(PBEStatus2.Substitute), status2.HasFlag(PBEStatus2.Disguised) ? DisguisedPID : PartyPkmn.PID, PartyPkmn.IsEgg);
             AnimImage.IsPaused = paused;
             if (pos is null)
             {
