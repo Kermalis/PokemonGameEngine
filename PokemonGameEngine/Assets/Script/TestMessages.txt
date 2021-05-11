@@ -1,7 +1,7 @@
 @TestMessage
 LockAllObjs
-RandomizeVar Var.Test1 0 1
-GoToIf Test_SetGroudonGone Var.Test1 C.Equal 0
+YesNoChoice
+GoToIf Test_SetGroudonGone Var.SpecialVar_Result C.Equal 0
 
 ClearFlag Flag.Test_GroudonVisible
 SetVar Var.Test_GroudonState 1

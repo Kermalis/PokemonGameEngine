@@ -86,152 +86,6 @@ public sealed partial class Build
         }
     }
 
-    private bool WriteVarIfVar(string str)
-    {
-        if (str.StartsWith(ScriptBuilderHelper.VarPrefix))
-        {
-            str = str.Substring(ScriptBuilderHelper.VarPrefix.Length);
-            uint value = ushort.MaxValue + 1 + Convert.ToUInt32(Enum.Parse(typeof(Var), str));
-            _writer.Write(value);
-            return true;
-        }
-        return false;
-    }
-    private void WriteArg(Type argType, string str)
-    {
-        switch (argType.FullName)
-        {
-            // Byte and Short can use Vars as their arguments
-            case "System.Byte":
-            case "System.SByte":
-            case "System.Int16":
-            case "System.UInt16":
-            {
-                if (WriteVarIfVar(str))
-                {
-                    break;
-                }
-                else
-                {
-                    goto case "System.Int32";
-                }
-            }
-            // Write raw values
-            case "System.Int32":
-            case "System.UInt32": _writer.Write((int)ParseInt(str)); break;
-            case "System.Int64":
-            case "System.UInt64": _writer.Write(ParseInt(str)); break;
-            // Pointers
-            case "System.Void*":
-            {
-                _pointers.Add(new Pointer { Label = str, Offset = _writer.BaseStream.Position });
-                _writer.Write(0u); // Write a nullptr which we will update later
-                break;
-            }
-            // Write an ID like "Map.TestMapC" or "0"
-            case "System.String":
-            {
-                int index = str.IndexOf('.');
-                if (index == -1)
-                {
-                    // Fallback to an int
-                    _writer.Write((int)ParseInt(str));
-                    break;
-                }
-                index++; // Include the '.'
-                string prefix = str.Substring(0, index);
-                if (!ScriptBuilderHelper.StringDefines.TryGetValue(prefix, out IdList idList))
-                {
-                    throw new ArgumentOutOfRangeException(nameof(prefix));
-                }
-                str = str.Substring(index);
-                index = idList[str];
-                if (index == -1)
-                {
-                    throw new Exception($"\"{str}\" was not a valid string for \"{prefix}\"");
-                }
-                _writer.Write(index);
-                break;
-            }
-            // Write an enum like "Species.Bulbasaur" (can use var instead if the enum type is byte or short)
-            default:
-            {
-                if (!ScriptBuilderHelper.EnumDefines.TryGetValue(argType, out string prefix))
-                {
-                    throw new ArgumentOutOfRangeException(nameof(argType));
-                }
-                bool shouldWriteAsVarable;
-                if (argType.IsEquivalentTo(typeof(Var)))
-                {
-                    shouldWriteAsVarable = false;
-                }
-                else
-                {
-                    Type underlyingType = Enum.GetUnderlyingType(argType);
-                    switch (underlyingType.FullName)
-                    {
-                        case "System.Byte":
-                        case "System.SByte":
-                        case "System.Int16":
-                        case "System.UInt16": shouldWriteAsVarable = true; break;
-                        default: shouldWriteAsVarable = false; break;
-                    }
-                }
-                if (str.StartsWith(prefix))
-                {
-                    str = str.Substring(prefix.Length);
-                    object parsed = Enum.Parse(argType, str);
-                    if (shouldWriteAsVarable)
-                    {
-                        _writer.Write(Convert.ToUInt32(parsed)); // If the type is varable, write as a uint
-                    }
-                    else
-                    {
-                        _writer.Write((Enum)parsed);
-                    }
-                    break;
-                }
-                if (shouldWriteAsVarable && WriteVarIfVar(str)) // If type is varable, we must write a var
-                {
-                    break;
-                }
-                throw new Exception($"Failed to parse enum of type \"{argType}\"");
-            }
-        }
-    }
-    private void WriteString(string str)
-    {
-        int i = 0;
-        while (i < str.Length)
-        {
-            char c = str[i];
-            if (c == '\r')
-            {
-                i++;
-                continue; // Ignore carriage return
-            }
-            bool foundReplacement = false;
-            for (int m = 0; m < ScriptBuilderHelper.TextReplacements.Length; m++)
-            {
-                (string oldChars, string newChars) = ScriptBuilderHelper.TextReplacements[m];
-                int ol = oldChars.Length;
-                if (i + ol <= str.Length && str.Substring(i, ol) == oldChars)
-                {
-                    i += ol;
-                    foundReplacement = true;
-                    _writer.Write(newChars, false); // Write replacement without null terminator
-                    break;
-                }
-            }
-            if (!foundReplacement)
-            {
-                i++;
-                _writer.Write(c); // Write single char
-            }
-        }
-        _writer.Write('\0'); // Write null terminator
-    }
-
     private void ParseFile(string path)
     {
         string[] lines = File.ReadAllLines(path);
@@ -383,6 +237,158 @@ public sealed partial class Build
         }
     }
 
+    private static bool IsTypeVarAble(Type type)
+    {
+        if (type.IsEquivalentTo(typeof(Var)))
+        {
+            return false;
+        }
+
+        if (type.IsEnum)
+        {
+            type = Enum.GetUnderlyingType(type);
+        }
+        switch (type.FullName)
+        {
+            case "System.Byte":
+            case "System.SByte":
+            case "System.Int16":
+            case "System.UInt16": return true;
+        }
+        return false;
+    }
+    private void WriteArg(Type argType, string str)
+    {
+        switch (argType.FullName)
+        {
+            // Pointers
+            case "System.Void*":
+            {
+                _pointers.Add(new Pointer { Label = str, Offset = _writer.BaseStream.Position });
+                _writer.Write(0u); // Write a nullptr which we will update later
+                break;
+            }
+            // Write an ID like "Map.TestMapC" or "0"
+            case "System.String":
+            {
+                int index = str.IndexOf('.');
+                if (index == -1)
+                {
+                    // Fallback to an int
+                    _writer.Write((int)ParseInt(str));
+                    break;
+                }
+                index++; // Include the '.'
+                string prefix = str.Substring(0, index);
+                if (!ScriptBuilderHelper.StringDefines.TryGetValue(prefix, out IdList idList))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(prefix));
+                }
+                str = str.Substring(index);
+                index = idList[str];
+                if (index == -1)
+                {
+                    throw new Exception($"\"{str}\" was not a valid string for \"{prefix}\"");
+                }
+                _writer.Write(index);
+                break;
+            }
+            // Write an enum like "Species.Bulbasaur" (can use var instead if the enum type is byte or short)
+            // Write an int value like 0x400 or 400
+            // Write a defined value
+            default:
+            {
+                ParseAndWriteValue(str, argType);
+                break;
+            }
+        }
+    }
+    private void WriteString(string str)
+    {
+        int i = 0;
+        while (i < str.Length)
+        {
+            char c = str[i];
+            if (c == '\r')
+            {
+                i++;
+                continue; // Ignore carriage return
+            }
+            bool foundReplacement = false;
+            for (int m = 0; m < ScriptBuilderHelper.TextReplacements.Length; m++)
+            {
+                (string oldChars, string newChars) = ScriptBuilderHelper.TextReplacements[m];
+                int ol = oldChars.Length;
+                if (i + ol <= str.Length && str.Substring(i, ol) == oldChars)
+                {
+                    i += ol;
+                    foundReplacement = true;
+                    _writer.Write(newChars, false); // Write replacement without null terminator
+                    break;
+                }
+            }
+            if (!foundReplacement)
+            {
+                i++;
+                _writer.Write(c); // Write single char
+            }
+        }
+        _writer.Write('\0'); // Write null terminator
+    }
+    // Does not handle string type
+    private void ParseAndWriteValue(string str, Type targetType)
+    {
+        bool varAble = IsTypeVarAble(targetType);
+        foreach (KeyValuePair<Type, string> tup in ScriptBuilderHelper.EnumDefines)
+        {
+            string prefix = tup.Value;
+            if (!str.StartsWith(prefix))
+            {
+                continue;
+            }
+            str = str.Substring(prefix.Length);
+
+            Type type = tup.Key;
+            if (varAble && type.IsEquivalentTo(typeof(Var)))
+            {
+                uint wVal = ushort.MaxValue + 1 + Convert.ToUInt32(Enum.Parse(typeof(Var), str));
+                _writer.Write(wVal);
+                Console.WriteLine("{0} - {1}", str, wVal);
+                return;
+            }
+
+            WriteValue(Enum.Parse(type, str), targetType);
+            return;
+        }
+        // Did not find an enum value, so write just a parsed int value
+        WriteValue(ParseInt(str), targetType);
+    }
+    private void WriteValue(object value, Type targetType)
+    {
+        // Var should be written as its underlying type only
+        if (targetType.IsEquivalentTo(typeof(Var)))
+        {
+            _writer.Write((Var)Enum.ToObject(typeof(Var), value));
+            return;
+        }
+
+        if (targetType.IsEnum)
+        {
+            targetType = targetType.GetEnumUnderlyingType();
+        }
+        switch (targetType.FullName)
+        {
+            case "System.Byte":
+            case "System.SByte":
+            case "System.Int16":
+            case "System.UInt16":
+            case "System.Int32":
+            case "System.UInt32": _writer.Write(Convert.ToInt32(value)); break;
+            case "System.Int64":
+            case "System.UInt64": _writer.Write(Convert.ToInt64(value)); break;
+            default: throw new Exception();
+        }
+    }
     private static readonly CultureInfo _enUS = CultureInfo.GetCultureInfo("en-US");
     private long ParseInt(string value)
     {

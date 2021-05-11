@@ -12,9 +12,9 @@ End
 LockAllObjs
 LookTowardsObj Var.LastTalked 0xFFFF
 GetDaycareState
-GoToIf Daycare_OneMon Var.SpecialVar_Result C.Equal 1 //DaycareState.OnePokemon
-GoToIf Daycare_TwoMon Var.SpecialVar_Result C.Equal 2 //DaycareState.TwoPokemon
-GoToIf Daycare_EggWaiting Var.SpecialVar_Result C.Equal 3 //DaycareState.EggWaiting
+GoToIf Daycare_OneMon Var.SpecialVar_Result C.Equal DaycareState.OnePokemon
+GoToIf Daycare_TwoMon Var.SpecialVar_Result C.Equal DaycareState.TwoPokemon
+GoToIf Daycare_EggWaiting Var.SpecialVar_Result C.Equal DaycareState.EggWaiting
 Message DaycareText_CanITake
 AwaitMessageRead
 YesNoChoice

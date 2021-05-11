@@ -9,14 +9,13 @@ using System.Collections.Generic;
 // A command with a variable amount of arguments would need extra work, so that's your problem lmao [or just make it into multiple commands like I did with GivePokemon :)]
 internal static class ScriptBuilderHelper
 {
-    public const string VarPrefix = "Var.";
     public static readonly Dictionary<Type, string> EnumDefines = new Dictionary<Type, string>
     {
         { typeof(DaycareState), "DaycareState." },
         { typeof(Flag), "Flag." },
         { typeof(GameStat), "GameStat." },
         { typeof(ScriptConditional), "C." },
-        { typeof(Var), VarPrefix },
+        { typeof(Var), "Var." },
         { typeof(PBEForm), "Form." },
         { typeof(PBEItem), "Item." },
         { typeof(PBESpecies), "Species." }
