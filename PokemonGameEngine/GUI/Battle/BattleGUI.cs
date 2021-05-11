@@ -439,7 +439,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     PBEBattlePokemon pkmn = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
                     SetSeen(pkmn);
-                    UpdatePokemon(pkmn, false, true);
+                    UpdatePokemon(pkmn, true, true);
                     break;
                 }
                 case PBEPkmnHPChangedPacket phcp:
