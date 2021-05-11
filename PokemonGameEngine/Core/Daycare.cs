@@ -269,7 +269,7 @@ namespace Kermalis.PokemonGameEngine.Core
                     return (f.AbilType, bs.GetAbility(f.AbilType, f.Ability));
                 }
             }
-            AbilityType type = bs.GetRandomNonHiddenAbilityType();
+            AbilityType type = BaseStats.GetRandomNonHiddenAbilityType();
             PBEAbility ability = bs.GetAbility(type, PBEAbility.None);
             return (type, ability);
         }

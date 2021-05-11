@@ -91,7 +91,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
             var pData = new BaseStats(Species, Form);
             SetDefaultEXPForLevel(pData);
-            AbilType = pData.GetRandomNonHiddenAbilityType();
+            AbilType = BaseStats.GetRandomNonHiddenAbilityType();
             Ability = pData.GetAbility(AbilType, PBEAbility.None);
             Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             Moveset = new Moveset();
@@ -141,7 +141,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             var pData = new BaseStats(species, form);
             p.SetDefaultFriendship(pData);
             p.SetDefaultEXPForLevel(pData);
-            p.AbilType = pData.GetRandomNonHiddenAbilityType();
+            p.AbilType = BaseStats.GetRandomNonHiddenAbilityType();
             p.Ability = pData.GetAbility(p.AbilType, PBEAbility.None);
             p.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
@@ -165,7 +165,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
             var pData = new BaseStats(species, form);
             p.SetDefaultEXPForLevel(pData);
-            p.AbilType = pData.GetRandomNonHiddenAbilityType();
+            p.AbilType = BaseStats.GetRandomNonHiddenAbilityType();
             p.Ability = pData.GetAbility(p.AbilType, PBEAbility.None);
             p.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             p.Moveset = new Moveset();
@@ -191,7 +191,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             var pData = new BaseStats(species, form);
             p.SetDefaultEggCycles(pData);
             p.SetDefaultEXPForLevel(pData);
-            p.AbilType = pData.GetRandomNonHiddenAbilityType();
+            p.AbilType = BaseStats.GetRandomNonHiddenAbilityType();
             p.Ability = pData.GetAbility(p.AbilType, PBEAbility.None);
             p.Gender = PBEDataProvider.GlobalRandom.RandomGender(pData.GenderRatio);
             p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
