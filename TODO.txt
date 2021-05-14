@@ -17,6 +17,7 @@ Main Mechanics:
     Location name plates on enter
     Pokerus time decay
     Hidden items
+    Field moves
 
 GUIs:
     Intro/Title/Continue/NewGame
