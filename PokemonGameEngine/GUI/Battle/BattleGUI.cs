@@ -29,7 +29,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private readonly PBEBattle _battle;
         private Thread _battleThread;
         private bool _pauseBattleThread;
-        public readonly SpritedBattlePokemonParty[] _spritedParties;
+        public readonly SpritedBattlePokemonParty[] SpritedParties;
         private readonly PBETrainer _trainer;
 
         private Window _stringWindow;
@@ -44,11 +44,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _battle = battle;
             _trainer = battle.Trainers[0];
             _battleBackground = Image.LoadOrGet($"GUI.Battle.Background.BG_{battle.BattleTerrain}_{battle.BattleFormat}.png");
-            _spritedParties = new SpritedBattlePokemonParty[battle.Trainers.Count];
+            SpritedParties = new SpritedBattlePokemonParty[battle.Trainers.Count];
             for (int i = 0; i < battle.Trainers.Count; i++)
             {
                 PBETrainer trainer = battle.Trainers[i];
-                _spritedParties[i] = new SpritedBattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team), ShouldUseKnownInfo(trainer), this);
+                SpritedParties[i] = new SpritedBattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team), ShouldUseKnownInfo(trainer), this);
             }
             _onClosed = onClosed;
             battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
@@ -91,7 +91,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 case PBEBattleState.Ended:
                 {
-                    foreach (SpritedBattlePokemonParty p in _spritedParties)
+                    foreach (SpritedBattlePokemonParty p in SpritedParties)
                     {
                         p.UpdateToParty(); // Copy our Pokémon back from battle, update teammates, update wild Pokémon
                     }
@@ -100,7 +100,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         Game.Instance.Save.GameStats[GameStat.PokemonCaptures]++;
                         PBETrainer wildTrainer = _battle.Teams[1].Trainers[0];
-                        SpritedBattlePokemonParty sp = _spritedParties[wildTrainer.Id];
+                        SpritedBattlePokemonParty sp = SpritedParties[wildTrainer.Id];
                         PBEBattlePokemon wildPkmn = wildTrainer.ActiveBattlers.Single();
                         PartyPokemon pkmn = sp[wildPkmn].PartyPkmn;
                         pkmn.UpdateFromBattle_Caught(wildPkmn);
@@ -135,7 +135,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
-        private void AddMessage(string message, bool staticMsg)
+        public void AddMessage(string message, bool staticMsg)
         {
             _stringPrinter?.Close();
             _stringPrinter = null;
@@ -152,6 +152,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     Game.Instance.SetCallback(CB_ReadOutMessage);
                 }
             }
+        }
+        public void SetMessageWindowVisibility(bool invisible)
+        {
+            _stringWindow.IsInvisible = invisible;
         }
 
         private unsafe void CB_FadeInBattle()
@@ -203,13 +207,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _stringPrinter.LogicTick();
             if (_stringPrinter.IsEnded)
             {
-                Game.Instance.SetCallback(CB_LogicTick);
+                _actionsGUI.SetCallbacksForAllChoices();
             }
         }
         private void CB_LogicTick()
         {
             OverworldGUI.ProcessDayTint(false);
-            _actionsGUI?.LogicTick();
         }
 
         private unsafe void RenderPkmn(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos, bool ally)
@@ -235,7 +238,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
             _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
         }
-        private unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             AnimatedImage.UpdateCurrentFrameForAll();
             _battleBackground.DrawSizedOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
@@ -272,41 +275,44 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 _stringWindow.Render(bmpAddress, bmpWidth, bmpHeight);
             }
-
-            _actionsGUI?.RenderTick(bmpAddress, bmpWidth, bmpHeight);
         }
 
+        private void UpdateDisguisedPID(PBEBattlePokemon pkmn)
+        {
+            SpritedBattlePokemonParty sp = SpritedParties[pkmn.Trainer.Id];
+            sp[pkmn].UpdateDisguisedPID(sp);
+        }
         private void SetSeen(PBEBattlePokemon pkmn)
         {
             if (pkmn.Trainer == _trainer)
             {
                 return;
             }
-            PartyPokemon pPkmn = _spritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
-            Game.Instance.Save.Pokedex.SetSeen(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownGender, pkmn.KnownShiny, pPkmn.PID); // TODO: #49 (Spinda spots disguise)
+            SpritedBattlePokemon sPkmn = SpritedParties[pkmn.Trainer.Id][pkmn];
+            Game.Instance.Save.Pokedex.SetSeen(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownGender, pkmn.KnownShiny, sPkmn.DisguisedPID);
         }
         private void UpdateAnimationSpeed(PBEBattlePokemon pkmn)
         {
-            SpritedBattlePokemon sPkmn = _spritedParties[pkmn.Trainer.Id][pkmn];
+            SpritedBattlePokemon sPkmn = SpritedParties[pkmn.Trainer.Id][pkmn];
             sPkmn.UpdateAnimationSpeed();
         }
         private void UpdateFriendshipForFaint(PBEBattlePokemon pkmn)
         {
             byte oppLevel = pkmn.Team.OpposingTeam.ActiveBattlers.Max(p => p.Level);
-            PartyPokemon pp = _spritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
+            PartyPokemon pp = SpritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
             Friendship.Event e = oppLevel - pkmn.Level >= 30 ? Friendship.Event.Faint_GE30 : Friendship.Event.Faint_L30;
             Friendship.AdjustFriendship(pkmn, pp, e);
         }
         private void UpdateFriendshipForLevelUp(PBEBattlePokemon pkmn)
         {
-            PartyPokemon pp = _spritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
+            PartyPokemon pp = SpritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
             Friendship.AdjustFriendship(pkmn, pp, Friendship.Event.LevelUpBattle);
         }
 
         #region Actions
         private readonly List<PBEBattlePokemon> _actions = new List<PBEBattlePokemon>(3);
         public List<PBEBattlePokemon> StandBy { get; } = new List<PBEBattlePokemon>(3);
-        public void ActionsLoop(bool begin)
+        public unsafe void ActionsLoop(bool begin)
         {
             if (begin)
             {
@@ -323,14 +329,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 _actionsGUI.Dispose();
                 _actionsGUI = null;
+                Game.Instance.SetCallback(CB_LogicTick);
+                Game.Instance.SetRCallback(RCB_RenderTick);
                 new Thread(() => _trainer.SelectActionsIfValid(_actions.Select(p => p.TurnAction).ToArray())) { Name = ThreadName }.Start();
             }
             else
             {
                 AddMessage($"What will {_actions[i].Nickname} do?", true);
-                SpritedBattlePokemonParty party = _spritedParties[_trainer.Id];
+                SpritedBattlePokemonParty party = SpritedParties[_trainer.Id];
                 _actionsGUI?.Dispose();
-                _actionsGUI = new ActionsGUI(this, party, _actions[i]);
+                _actionsGUI = new ActionsGUI(party, _actions[i]);
             }
         }
         public void Flee()
@@ -469,6 +477,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                             {
                                 case PBEStatusAction.Ended:
                                 {
+                                    UpdateDisguisedPID(status2Receiver);
                                     SetSeen(status2Receiver);
                                     UpdatePokemon(status2Receiver, true, true);
                                     break;
@@ -505,11 +514,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     foreach (PBEPkmnAppearedInfo info in psip.SwitchIns)
                     {
                         PBEBattlePokemon pkmn = trainer.TryGetPokemon(info.Pokemon);
-                        if (info.IsDisguised)
-                        {
-                            SpritedBattlePokemonParty sp = _spritedParties[trainer.Id];
-                            sp[pkmn].UpdateDisguisedPID(sp);
-                        }
+                        UpdateDisguisedPID(pkmn);
                         SetSeen(pkmn);
                         ShowPokemon(pkmn);
                         SoundControl.Debug_PlayCry(pkmn.KnownSpecies, pkmn.KnownForm);
@@ -528,11 +533,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     foreach (PBEPkmnAppearedInfo info in wpap.Pokemon)
                     {
                         PBEBattlePokemon pkmn = trainer.TryGetPokemon(info.Pokemon);
-                        if (info.IsDisguised)
-                        {
-                            SpritedBattlePokemonParty sp = _spritedParties[trainer.Id];
-                            sp[pkmn].UpdateDisguisedPID(sp);
-                        }
+                        UpdateDisguisedPID(pkmn);
                         SetSeen(pkmn);
                         ShowWildPokemon(pkmn);
                         SoundControl.Debug_PlayCry(pkmn.KnownSpecies, pkmn.KnownForm);

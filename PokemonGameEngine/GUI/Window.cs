@@ -10,6 +10,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         private readonly float _y;
         private readonly uint _backColor;
 
+        public bool IsInvisible;
         public readonly Image Image;
 
         public Window(float x, float y, uint backColor)
@@ -41,6 +42,10 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
+            if (IsInvisible)
+            {
+                return;
+            }
             Image.DrawOn(bmpAddress, bmpWidth, bmpHeight, _x, _y);
         }
 

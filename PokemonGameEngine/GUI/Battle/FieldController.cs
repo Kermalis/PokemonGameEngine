@@ -133,7 +133,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void UpdatePokemon(PBEBattlePokemon pkmn, PkmnPosition pos, bool info, bool sprite)
         {
-            SpritedBattlePokemon sPkmn = _spritedParties[pkmn.Trainer.Id][pkmn];
+            SpritedBattlePokemon sPkmn = SpritedParties[pkmn.Trainer.Id][pkmn];
             if (info)
             {
                 sPkmn.UpdateInfoBar();

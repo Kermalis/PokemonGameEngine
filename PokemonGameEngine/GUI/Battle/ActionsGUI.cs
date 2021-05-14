@@ -1,6 +1,9 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
+using Kermalis.PokemonGameEngine.GUI.Pkmn;
+using Kermalis.PokemonGameEngine.GUI.Transition;
 //using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using System;
@@ -8,35 +11,19 @@ using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
-    // TODO: Switches (party menu)
-    // TODO: Switch-ins
+    // TODO: Switch replacements
     internal sealed class ActionsGUI : IDisposable
     {
-        private enum ActionsState : byte
-        {
-            ShowAll, // Fight bag run etc
-            Moves, // Show move selection for _pkmn
-            Party, // Show party menu
-            Targets, // Show move targets selection
-            FadeToParty,
-            FadeFromParty,
-        }
-
-        private readonly BattleGUI _parent;
         private readonly SpritedBattlePokemonParty _party;
         private readonly PBEBattlePokemon _pkmn;
 
-        private ActionsState _state;
-        /*private FadeFromColorTransition _fadeFromTransition;
-        private FadeToColorTransition _fadeToTransition;
-        private PartyMenuGUI _partyMenuGUI;*/
+        private FadeColorTransition _fadeTransition;
         private TargetsGUI _targetsGUI;
         private readonly TextGUIChoices _fightChoices;
         private TextGUIChoices _moveChoices;
 
-        public ActionsGUI(BattleGUI parent, SpritedBattlePokemonParty party, PBEBattlePokemon pkmn)
+        public ActionsGUI(SpritedBattlePokemonParty party, PBEBattlePokemon pkmn)
         {
-            _parent = parent;
             _party = party;
             _pkmn = pkmn;
 
@@ -53,6 +40,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _fightChoices.Add(new TextGUIChoice("Run", command, isEnabled: enabled));
         }
 
+        public unsafe void SetCallbacksForAllChoices()
+        {
+            Game.Instance.SetCallback(CB_All);
+            Game.Instance.SetRCallback(RCB_All);
+        }
+        private unsafe void SetCallbacksForMoves()
+        {
+            Game.Instance.SetCallback(CB_Moves);
+            Game.Instance.SetRCallback(RCB_Moves);
+        }
+
         private bool TryUseForcedMove()
         {
             if (_pkmn.IsForcedToStruggle())
@@ -67,22 +65,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             return false;
         }
-
-        private void FightChoice()
+        private void CreateMoveChoices()
         {
-            // Check if there's a move we must use
-            if (TryUseForcedMove())
-            {
-                _parent.ActionsLoop(false);
-                return;
-            }
-
-            // Create move choices if it's not already created
             if (_moveChoices is null)
             {
                 PBEBattleMoveset moves = _pkmn.Moves;
                 PBEMove[] usableMoves = _pkmn.GetUsableMoves();
-                _moveChoices = new TextGUIChoices(0.75f, 0.75f, bottomAlign: true, backCommand: () => _state = ActionsState.ShowAll,
+                _moveChoices = new TextGUIChoices(0.75f, 0.75f, bottomAlign: true, backCommand: SetCallbacksForAllChoices,
                     font: Font.Default, fontColors: Font.DefaultWhite, selectedColors: Font.DefaultSelected, disabledColors: Font.DefaultDisabled);
                 for (int i = 0; i < PkmnConstants.NumMoves; i++)
                 {
@@ -94,44 +83,38 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     _moveChoices.Add(new TextGUIChoice(text, command, isEnabled: enabled));
                 }
             }
-
-            // Show moves
-            _state = ActionsState.Moves;
         }
-        private void PokemonChoice()
+
+        private unsafe void FightChoice()
         {
-            /*void FadeToTransitionEnded()
+            // Check if there's a move we must use
+            if (TryUseForcedMove())
             {
-                _fadeToTransition = null;
-                void OnPartyMenuGUIClosed()
-                {
-                    void FadeFromTransitionEnded()
-                    {
-                        _fadeFromTransition = null;
-                        _state = ActionsState.ShowAll;
-                    }
-                    _fadeFromTransition = new FadeFromColorTransition(20, 0, FadeFromTransitionEnded);
-                    _state = ActionsState.FadeFromParty;
-                    _partyMenuGUI = null;
-                }
-                _partyMenuGUI = new PartyMenuGUI(_party, OnPartyMenuGUIClosed);
-                _state = ActionsState.Party;
+                BattleGUI.Instance.ActionsLoop(false);
+                return;
             }
-            _fadeToTransition = new FadeToColorTransition(20, 0, FadeToTransitionEnded);
-            _state = ActionsState.FadeToParty;*/
+
+            CreateMoveChoices();
+            SetCallbacksForMoves();
+        }
+        private unsafe void PokemonChoice()
+        {
+            _fadeTransition = new FadeToColorTransition(500, 0);
+            Game.Instance.SetCallback(CB_FadeToParty);
+            Game.Instance.SetRCallback(RCB_FadingParty);
         }
         private void BagChoice()
         {
             // Temporarily auto select
             _pkmn.TurnAction = new PBETurnAction(_pkmn, PBEItem.DuskBall);
-            _parent.ActionsLoop(false);
+            BattleGUI.Instance.ActionsLoop(false);
         }
         private void RunChoice()
         {
-            _parent.Flee();
+            BattleGUI.Instance.Flee();
         }
 
-        private void SelectMoveForTurn(PBEMove move)
+        private unsafe void SelectMoveForTurn(PBEMove move)
         {
             PBEMoveTarget possibleTargets = _pkmn.GetMoveTargets(move);
             if (_pkmn.Battle.BattleFormat == PBEBattleFormat.Single || _pkmn.Battle.BattleFormat == PBEBattleFormat.Rotation)
@@ -154,90 +137,113 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
                 }
                 _pkmn.TurnAction = new PBETurnAction(_pkmn, move, targets);
-                _parent.ActionsLoop(false);
+                BattleGUI.Instance.ActionsLoop(false);
             }
             else // Double / Triple
             {
                 void TargetSelected()
                 {
-                    _parent.ActionsLoop(false);
+                    BattleGUI.Instance.ActionsLoop(false);
                     _targetsGUI = null;
-                    // no need to change state since this'll get disposed in actionsloop
+                    // no need to change callbacks since this'll get disposed in actionsloop
                 }
                 void TargetCancelled()
                 {
-                    _state = ActionsState.Moves;
                     _targetsGUI = null;
+                    SetCallbacksForMoves();
                 }
-                _targetsGUI = new TargetsGUI(_pkmn, possibleTargets, move, _parent._spritedParties, TargetSelected, TargetCancelled);
-                _state = ActionsState.Targets;
+                _targetsGUI = new TargetsGUI(_pkmn, possibleTargets, move, BattleGUI.Instance.SpritedParties, TargetSelected, TargetCancelled);
+                Game.Instance.SetCallback(CB_Targets);
+                Game.Instance.SetRCallback(RCB_Targets);
             }
         }
 
-        public void LogicTick()
+        private unsafe void OnPartyClosed()
         {
-            switch (_state)
+            OverworldGUI.ProcessDayTint(true); // Catch up time
+            _fadeTransition = new FadeFromColorTransition(500, 0);
+            Game.Instance.SetCallback(CB_FadeFromParty);
+            short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];
+            if (result == -1) // No selection, display actions
             {
-                /*case ActionsState.Party:
-                {
-                    _partyMenuGUI.LogicTick();
-                    return;
-                }*/
-                case ActionsState.Moves:
-                {
-                    _moveChoices.HandleInputs();
-                    return;
-                }
-                case ActionsState.ShowAll:
-                {
-                    _fightChoices.HandleInputs();
-                    return;
-                }
-                case ActionsState.Targets:
-                {
-                    _targetsGUI.LogicTick();
-                    return;
-                }
+                Game.Instance.SetRCallback(RCB_FadingParty);
+            }
+            else
+            {
+                BattleGUI.Instance.AddMessage(null, false); // Clear message
+                Game.Instance.SetRCallback(RCB_FadingPartyNoChoices);
             }
         }
 
-        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private void CB_Moves()
         {
-            switch (_state)
+            OverworldGUI.ProcessDayTint(false);
+            _moveChoices.HandleInputs();
+        }
+        private void CB_Targets()
+        {
+            OverworldGUI.ProcessDayTint(false);
+            _targetsGUI.LogicTick();
+        }
+        private void CB_FadeToParty()
+        {
+            OverworldGUI.ProcessDayTint(false);
+            if (_fadeTransition.IsDone)
             {
-                /*case ActionsState.FadeToParty:
+                _fadeTransition = null;
+                BattleGUI.Instance.SetMessageWindowVisibility(true);
+                new PartyGUI(_party, PartyGUI.Mode.BattleSwitchIn, OnPartyClosed);
+            }
+        }
+        private void CB_FadeFromParty()
+        {
+            OverworldGUI.ProcessDayTint(false);
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];
+                BattleGUI.Instance.SetMessageWindowVisibility(false);
+                if (result == -1) // No selection, display actions
                 {
-                    _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
-                    _fadeToTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    return;
+                    SetCallbacksForAllChoices();
                 }
-                case ActionsState.Party:
+                else
                 {
-                    _partyMenuGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    return;
-                }
-                case ActionsState.FadeFromParty:
-                {
-                    _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
-                    _fadeFromTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    return;
-                }*/
-                case ActionsState.ShowAll:
-                {
-                    _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
-                    return;
-                }
-                case ActionsState.Moves:
-                {
-                    _moveChoices.Render(bmpAddress, bmpWidth, bmpHeight);
-                    return;
-                }
-                case ActionsState.Targets:
-                {
-                    _targetsGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                    return;
+                    _pkmn.TurnAction = new PBETurnAction(_pkmn, _party.BattleParty[result]);
+                    BattleGUI.Instance.ActionsLoop(false);
                 }
             }
+        }
+        private void CB_All()
+        {
+            OverworldGUI.ProcessDayTint(false);
+            _fightChoices.HandleInputs();
+        }
+
+        private unsafe void RCB_Moves(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            BattleGUI.Instance.RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            _moveChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+        }
+        private unsafe void RCB_Targets(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            BattleGUI.Instance.RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            _targetsGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+        }
+        private unsafe void RCB_FadingParty(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            RCB_All(bmpAddress, bmpWidth, bmpHeight);
+            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+        }
+        private unsafe void RCB_FadingPartyNoChoices(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            BattleGUI.Instance.RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+        }
+        private unsafe void RCB_All(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            BattleGUI.Instance.RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
         }
 
         public void Dispose()

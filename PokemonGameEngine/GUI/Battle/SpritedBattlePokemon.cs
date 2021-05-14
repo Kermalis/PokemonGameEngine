@@ -46,6 +46,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 PBEBattlePokemon p = Pkmn.GetPkmnWouldDisguiseAs();
                 DisguisedPID = p is null ? PartyPkmn.PID : sParty[p].PartyPkmn.PID;
             }
+            else
+            {
+                DisguisedPID = PartyPkmn.PID; // Set back to normal
+            }
         }
 
         // Will cause double load for some cases (like status2 updating)

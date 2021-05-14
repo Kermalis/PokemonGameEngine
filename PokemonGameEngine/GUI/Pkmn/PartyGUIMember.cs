@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Utils;
+using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
@@ -11,16 +12,37 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
     internal sealed class PartyGUIMember
     {
-        private readonly PartyPokemon _pkmn;
+        private readonly bool _usePartyPkmn;
+        private readonly bool _active;
+        private readonly PartyPokemon _partyPkmn;
+        private readonly SpritedBattlePokemon _battlePkmn;
         private readonly Sprite _mini;
         private readonly Image _background;
 
         public PartyGUIMember(PartyPokemon pkmn, List<Sprite> sprites)
         {
-            _pkmn = pkmn;
+            _usePartyPkmn = true;
+            _active = false;
+            _partyPkmn = pkmn;
             _mini = new Sprite()
             {
                 Image = PokemonImageUtils.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.IsEgg),
+                Y = Sprite_BounceDefY,
+                Callback = Sprite_Bounce,
+                Data = new Sprite_BounceData()
+            };
+            sprites.Add(_mini);
+            _background = new Image((UI.Program.RenderWidth / 2) - (UI.Program.RenderWidth / 20), (UI.Program.RenderHeight / 4) - (UI.Program.RenderHeight / 20));
+            UpdateBackground();
+        }
+        public PartyGUIMember(SpritedBattlePokemon pkmn, List<Sprite> sprites)
+        {
+            _usePartyPkmn = false;
+            _active = pkmn.Pkmn.FieldPosition != PBEFieldPosition.None;
+            _battlePkmn = pkmn;
+            _mini = new Sprite()
+            {
+                Image = pkmn.Mini,
                 Y = Sprite_BounceDefY,
                 Callback = Sprite_Bounce,
                 Data = new Sprite_BounceData()
@@ -83,17 +105,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private unsafe void DrawBackground(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(48, 48, 48, 128));
+            RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, _active ? RenderUtils.Color(255, 192, 60, 96) : RenderUtils.Color(48, 48, 48, 128));
             // Shadow
             RenderUtils.FillEllipse_Points(bmpAddress, bmpWidth, bmpHeight, 3, 34, 29, 39, RenderUtils.Color(0, 0, 0, 100));
             // Nickname
-            Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 2, 3, _pkmn.Nickname, Font.DefaultWhite);
-            if (_pkmn.IsEgg)
+            PartyPokemon p = _usePartyPkmn ? _partyPkmn : _battlePkmn.PartyPkmn;
+            Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 2, 3, p.Nickname, Font.DefaultWhite);
+            if (p.IsEgg)
             {
                 return;
             }
+            PBEBattlePokemon bPkmn = _usePartyPkmn ? null : _battlePkmn.Pkmn;
             // Gender
-            PBEGender gender = _pkmn.Gender;
+            PBEGender gender = p.Gender;
             if (gender != PBEGender.Genderless)
             {
                 Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, -2, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultMale : Font.DefaultFemale);
@@ -101,15 +125,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             // Level
             const int lvX = 72;
             Font.PartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, lvX, 3, "[LV]", Font.DefaultWhite);
-            Font.PartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, lvX + 12, 3, _pkmn.Level.ToString(), Font.DefaultWhite);
+            Font.PartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, lvX + 12, 3, (_usePartyPkmn ? p.Level : bPkmn.Level).ToString(), Font.DefaultWhite);
             // Status
-            PBEStatus1 status = _pkmn.Status1;
+            PBEStatus1 status = _usePartyPkmn ? p.Status1 : bPkmn.Status1;
             if (status != PBEStatus1.None)
             {
                 Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 13, status.ToString(), Font.DefaultWhite);
             }
             // Item
-            ItemType item = _pkmn.Item;
+            ItemType item = _usePartyPkmn ? p.Item : (ItemType)bPkmn.Item;
             if (item != ItemType.None)
             {
                 Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 23, ItemData.GetItemName(item), Font.DefaultWhite);

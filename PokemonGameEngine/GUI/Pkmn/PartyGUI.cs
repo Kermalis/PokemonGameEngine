@@ -1,4 +1,6 @@
-﻿using Kermalis.PokemonGameEngine.Core;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Input;
@@ -14,11 +16,41 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         public enum Mode : byte
         {
             PkmnMenu,
-            SelectDaycare
+            SelectDaycare,
+            BattleSwitchIn
+        }
+        private sealed class GamePartyData
+        {
+            public readonly Party Party;
+
+            public GamePartyData(Party party, List<PartyGUIMember> members, List<Sprite> sprites)
+            {
+                Party = party;
+                foreach (PartyPokemon pkmn in party)
+                {
+                    members.Add(new PartyGUIMember(pkmn, sprites));
+                }
+            }
+        }
+        private sealed class BattlePartyData
+        {
+            public readonly SpritedBattlePokemonParty Party;
+
+            public BattlePartyData(SpritedBattlePokemonParty party, List<PartyGUIMember> members, List<Sprite> sprites)
+            {
+                Party = party;
+                foreach (PBEBattlePokemon pkmn in party.BattleParty)
+                {
+                    SpritedBattlePokemon sPkmn = party[pkmn]; // Use battle party's order
+                    members.Add(new PartyGUIMember(sPkmn, sprites));
+                }
+            }
         }
 
         private readonly Mode _mode;
-        private readonly Party _party;
+        private readonly bool _useGamePartyData;
+        private readonly GamePartyData _gameParty;
+        private readonly BattlePartyData _battleParty;
         private readonly List<PartyGUIMember> _members;
         private readonly List<Sprite> _sprites;
 
@@ -37,14 +69,35 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         public unsafe PartyGUI(Party party, Mode mode, Action onClosed)
         {
             _mode = mode;
-            _party = party;
-            _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
+            _useGamePartyData = true;
             _sprites = new List<Sprite>();
-            foreach (PartyPokemon pkmn in party)
-            {
-                _members.Add(new PartyGUIMember(pkmn, _sprites));
-            }
+            _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
+            _gameParty = new GamePartyData(party, _members, _sprites);
             _members[0].SetBigBounce();
+
+            if (mode == Mode.SelectDaycare)
+            {
+                SetDefaultSelectionToNone();
+            }
+
+            _onClosed = onClosed;
+            _fadeTransition = new FadeFromColorTransition(500, 0);
+            Game.Instance.SetCallback(CB_FadeInParty);
+            Game.Instance.SetRCallback(RCB_Fading);
+        }
+        public unsafe PartyGUI(SpritedBattlePokemonParty party, Mode mode, Action onClosed)
+        {
+            _mode = mode;
+            _useGamePartyData = false;
+            _sprites = new List<Sprite>();
+            _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
+            _battleParty = new BattlePartyData(party, _members, _sprites);
+            _members[0].SetBigBounce();
+
+            if (mode == Mode.BattleSwitchIn)
+            {
+                SetDefaultSelectionToNone();
+            }
 
             _onClosed = onClosed;
             _fadeTransition = new FadeFromColorTransition(500, 0);
@@ -88,6 +141,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         #endregion
 
+        private int GetPartySize()
+        {
+            return _useGamePartyData ? _gameParty.Party.Count : _battleParty.Party.SpritedParty.Length;
+        }
         private int SelectionCoordsToPartyIndex(int col, int row)
         {
             if (row == -1)
@@ -95,7 +152,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 return -1;
             }
             int i = row * 2 + col;
-            if (i >= _party.Count)
+            if (i >= GetPartySize())
             {
                 return -1;
             }
@@ -114,15 +171,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _members[i].SetBigBounce();
             }
         }
+        private void SetDefaultSelectionToNone()
+        {
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = -1; // If you back out, the default selection is -1
+        }
 
-        private void Action_SelectPartyPkmn(PartyPokemon pkmn)
+        private void Action_SelectPartyPkmn(int index)
         {
             switch (_mode)
             {
                 case Mode.SelectDaycare:
+                case Mode.BattleSwitchIn:
                 {
-                    short index = (short)_party.IndexOf(pkmn);
-                    Game.Instance.Save.Vars[Var.SpecialVar_Result] = index;
+                    Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)index;
                     CloseChoices();
                     ClosePartyMenu();
                     return;
@@ -130,38 +191,56 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 default: throw new Exception();
             }
         }
-        private void Action_BringUpSummary(PartyPokemon pkmn)
+        private void Action_BringUpSummary(int index)
         {
 
         }
 
-        private void BringUpPkmnActions(PartyPokemon pkmn)
+        private void BringUpPkmnActions(int index)
         {
+            string nickname;
             _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
             switch (_mode)
             {
                 case Mode.PkmnMenu:
                 {
-                    _textChoices.Add(new TextGUIChoice("Summary", () => Action_BringUpSummary(pkmn)));
-                    _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesThenGoToLogicTick));
+                    PartyPokemon pkmn = _gameParty.Party[index];
+                    nickname = pkmn.Nickname;
+                    _textChoices.Add(new TextGUIChoice("Summary", () => Action_BringUpSummary(index)));
                     break;
                 }
                 case Mode.SelectDaycare:
                 {
-                    Game.Instance.Save.Vars[Var.SpecialVar_Result] = -1; // If you back out, the default selection is -1
+                    PartyPokemon pkmn = _gameParty.Party[index];
+                    nickname = pkmn.Nickname;
                     if (!pkmn.IsEgg)
                     {
-                        _textChoices.Add(new TextGUIChoice("Select", () => Action_SelectPartyPkmn(pkmn)));
+                        _textChoices.Add(new TextGUIChoice("Select", () => Action_SelectPartyPkmn(index)));
                     }
-                    _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesThenGoToLogicTick));
+                    _textChoices.Add(new TextGUIChoice("Summary", () => Action_BringUpSummary(index)));
+                    break;
+                }
+                case Mode.BattleSwitchIn:
+                {
+                    SpritedBattlePokemonParty party = _battleParty.Party;
+                    SpritedBattlePokemon sPkmn = party[party.BattleParty[index]];
+                    PartyPokemon pkmn = sPkmn.PartyPkmn;
+                    nickname = pkmn.Nickname;
+                    if (!pkmn.IsEgg && sPkmn.Pkmn.FieldPosition == PBEFieldPosition.None) // Cannot switch in if active already
+                    {
+                        _textChoices.Add(new TextGUIChoice("Switch In", () => Action_SelectPartyPkmn(index)));
+                    }
+                    _textChoices.Add(new TextGUIChoice("Summary", () => Action_BringUpSummary(index)));
                     break;
                 }
                 default: throw new Exception();
             }
+
+            _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesThenGoToLogicTick));
             _textChoices.GetSize(out int width, out int height);
             _textChoicesWindow = new Window(0.6f, 0.3f, width, height, RenderUtils.Color(255, 255, 255, 255));
             RenderChoicesOntoWindow();
-            _message = string.Format("Do what with {0}?", pkmn.Nickname);
+            _message = string.Format("Do what with {0}?", nickname);
             Game.Instance.SetCallback(CB_Choices);
         }
         private void CloseChoices()
@@ -213,7 +292,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 else
                 {
                     int i = SelectionCoordsToPartyIndex(_selectionX, _selectionY);
-                    BringUpPkmnActions(_party[i]);
+                    BringUpPkmnActions(i);
                 }
                 return;
             }
@@ -262,7 +341,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 int oldY = _selectionY;
                 if (oldY == -1)
                 {
-                    _selectionY = (_party.Count - 1) / 2;
+                    _selectionY = (GetPartySize() - 1) / 2;
                     UpdateBounces(_selectionX, oldY);
                 }
                 else if (oldY > 0)
