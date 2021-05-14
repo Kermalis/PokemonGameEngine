@@ -240,6 +240,64 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawThickRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int thickness, uint color)
+        {
+            DrawThickRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, thickness, color);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawThickRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, int thickness, uint color)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            int iw = (int)(width * bmpWidth);
+            int ih = (int)(height * bmpHeight);
+            DrawThickRectangle(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, thickness, color);
+        }
+        public static unsafe void DrawThickRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, int thickness, uint color)
+        {
+            if (thickness < 1)
+            {
+                return;
+            }
+            for (int i = 0; i < thickness; i++)
+            {
+                // The vert lines
+                DrawVerticalLine_Height(bmpAddress, bmpWidth, bmpHeight, x + i, y, height, color);
+                DrawVerticalLine_Height(bmpAddress, bmpWidth, bmpHeight, x + width - 1 - i, y, height, color);
+                // This might overlap if the rect is very small (TODO)
+                // The hori lines (don't overlap the vert lines)
+                DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + thickness, y + i, width - 1 - thickness, color);
+                DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + thickness, y + height - 1 - i, width - 1 - thickness, color);
+            }
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void DrawThickRectangle_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, float x1, float y1, float x2, float y2, int thickness, uint color)
+        {
+            int ix1 = (int)(x1 * bmpWidth);
+            int iy1 = (int)(y1 * bmpHeight);
+            int ix2 = (int)(x2 * bmpWidth);
+            int iy2 = (int)(y2 * bmpHeight);
+            DrawThickRectangle_Points(bmpAddress, bmpWidth, bmpHeight, ix1, iy1, ix2, iy2, thickness, color);
+        }
+        public static unsafe void DrawThickRectangle_Points(uint* bmpAddress, int bmpWidth, int bmpHeight, int x1, int y1, int x2, int y2, int thickness, uint color)
+        {
+            if (thickness < 1)
+            {
+                return;
+            }
+            for (int i = 0; i < thickness; i++)
+            {
+                // The vert lines
+                DrawVerticalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1 + i, y1, y2, color);
+                DrawVerticalLine_Points(bmpAddress, bmpWidth, bmpHeight, x2 - i, y1, y2, color);
+                // This might overlap if the rect is very small (TODO)
+                // The hori lines (don't overlap the vert lines)
+                DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1 + thickness, y1 + i, x2 - thickness, color);
+                DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, x1 + thickness, y2 - i, x2 - thickness, color);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void FillRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color)
         {
             FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, color);
