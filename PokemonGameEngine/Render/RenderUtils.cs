@@ -113,7 +113,6 @@ namespace Kermalis.PokemonGameEngine.Render
             return arr;
         }
         #endregion
-        // TODO: DrawRectangle (with thickness)
         #region Rectangles
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void OverwriteRectangle(IImage img, uint color)
