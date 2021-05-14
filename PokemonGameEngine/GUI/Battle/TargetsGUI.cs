@@ -21,20 +21,50 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private sealed class TargetInfo
         {
+            private readonly bool _ally;
             public bool Enabled;
             public SpritedBattlePokemon Pokemon;
             public bool LineRightVisible;
             public bool LineDownVisible;
 
             public PBETurnTarget Targets;
+
+            public TargetInfo(bool ally)
+            {
+                _ally = ally;
+            }
+
+            public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, bool selected)
+            {
+                uint enabledC = _ally ? RenderUtils.Color(125, 100, 230, 255) : RenderUtils.Color(248, 80, 50, 255);
+                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, 0.24f, 0.2f, enabledC);
+
+                if (Pokemon != null)
+                {
+                    Pokemon.Mini.DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y + 0.025f);
+
+                    Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, x + 0.075f, y + 0.05f, Pokemon.Pkmn.KnownNickname, Font.DefaultWhite);
+                }
+
+                if (selected)
+                {
+                    uint selectedC = _ally ? RenderUtils.Color(75, 60, 150, 255) : RenderUtils.Color(120, 30, 10, 255);
+                    RenderUtils.DrawThickRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, 0.24f, 0.2f, 2, selectedC);
+                }
+
+                if (!Enabled)
+                {
+                    RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, 0.24f, 0.2f, RenderUtils.Color(0, 0, 0, 150));
+                }
+            }
         }
 
-        private readonly TargetInfo _targetAllyLeft = new TargetInfo();
+        private readonly TargetInfo _targetAllyLeft = new TargetInfo(true);
         private readonly TargetInfo _targetAllyCenter;
-        private readonly TargetInfo _targetAllyRight = new TargetInfo();
-        private readonly TargetInfo _targetFoeLeft = new TargetInfo();
+        private readonly TargetInfo _targetAllyRight = new TargetInfo(true);
+        private readonly TargetInfo _targetFoeLeft = new TargetInfo(false);
         private readonly TargetInfo _targetFoeCenter;
-        private readonly TargetInfo _targetFoeRight = new TargetInfo();
+        private readonly TargetInfo _targetFoeRight = new TargetInfo(false);
 
         private readonly bool _centerTargetsVisible;
         private readonly PBEBattlePokemon _pkmn;
@@ -42,7 +72,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private readonly Action _selectAction;
         private readonly Action _cancelAction;
 
-        private readonly TargetSelection _selection;
+        private int _selectionX;
+        private int _selectionY;
+        private TargetSelection _selection;
 
         public TargetsGUI(PBEBattlePokemon pkmn, PBEMoveTarget possibleTargets, PBEMove move, SpritedBattlePokemonParty[] spritedParties,
             Action selectAction, Action cancelAction)
@@ -223,8 +255,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             else // Triple
             {
-                _targetAllyCenter = new TargetInfo { Pokemon = GetSprited(true, PBEFieldPosition.Center) };
-                _targetFoeCenter = new TargetInfo { Pokemon = GetSprited(false, PBEFieldPosition.Center) };
+                _targetAllyCenter = new TargetInfo(true) { Pokemon = GetSprited(true, PBEFieldPosition.Center) };
+                _targetFoeCenter = new TargetInfo(false) { Pokemon = GetSprited(false, PBEFieldPosition.Center) };
                 _centerTargetsVisible = true;
                 switch (possibleTargets)
                 {
@@ -537,111 +569,182 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
+        private TargetSelection GetSelection()
+        {
+            if (_selectionY == -1)
+            {
+                return TargetSelection.Back;
+            }
+            if (_selectionX == 0)
+            {
+                return _selectionY == 0 ? TargetSelection.FoeRight : TargetSelection.AllyLeft;
+            }
+            if (_centerTargetsVisible)
+            {
+                if (_selectionX == 1)
+                {
+                    return _selectionY == 0 ? TargetSelection.FoeCenter : TargetSelection.AllyCenter;
+                }
+                if (_selectionX == 2)
+                {
+                    return _selectionY == 0 ? TargetSelection.FoeLeft : TargetSelection.AllyRight;
+                }
+            }
+            else
+            {
+                if (_selectionX == 1)
+                {
+                    return _selectionY == 0 ? TargetSelection.FoeLeft : TargetSelection.AllyRight;
+                }
+            }
+            throw new Exception();
+        }
+        private void UpdateSelection()
+        {
+            _selection = GetSelection();
+        }
+
         public void LogicTick()
         {
-            bool down = InputManager.IsPressed(Key.Down);
-            bool up = InputManager.IsPressed(Key.Up);
-            bool left = InputManager.IsPressed(Key.Left);
-            bool right = InputManager.IsPressed(Key.Right);
-            bool a = InputManager.IsPressed(Key.A);
-            bool b = InputManager.IsPressed(Key.B);
-            if (!down && !up && !a && !b && !left && !right)
-            {
-                return;
-            }
-
             void Back()
             {
                 _cancelAction.Invoke();
             }
 
-            if (a)
+            if (InputManager.IsPressed(Key.A))
             {
-                PBETurnTarget targets;
+                TargetInfo ti;
                 switch (_selection)
                 {
-                    case TargetSelection.AllyLeft: targets = _targetAllyLeft.Targets; break;
-                    case TargetSelection.AllyCenter: targets = _targetAllyCenter.Targets; break;
-                    case TargetSelection.AllyRight: targets = _targetAllyRight.Targets; break;
-                    case TargetSelection.FoeLeft: targets = _targetFoeLeft.Targets; break;
-                    case TargetSelection.FoeCenter: targets = _targetFoeCenter.Targets; break;
-                    case TargetSelection.FoeRight: targets = _targetFoeRight.Targets; break;
+                    case TargetSelection.AllyLeft: ti = _targetAllyLeft; break;
+                    case TargetSelection.AllyCenter: ti = _targetAllyCenter; break;
+                    case TargetSelection.AllyRight: ti = _targetAllyRight; break;
+                    case TargetSelection.FoeLeft: ti = _targetFoeLeft; break;
+                    case TargetSelection.FoeCenter: ti = _targetFoeCenter; break;
+                    case TargetSelection.FoeRight: ti = _targetFoeRight; break;
                     default: Back(); return;
                 }
-                _pkmn.TurnAction = new PBETurnAction(_pkmn, _fightMove, targets);
-                _selectAction.Invoke();
+                if (ti.Enabled)
+                {
+                    _pkmn.TurnAction = new PBETurnAction(_pkmn, _fightMove, ti.Targets);
+                    _selectAction.Invoke();
+                }
                 return;
             }
-            if (b)
+            if (InputManager.IsPressed(Key.B))
             {
                 Back();
+                return;
+            }
+            if (InputManager.IsPressed(Key.Left))
+            {
+                if (_selectionX > 0)
+                {
+                    _selectionX--;
+                    UpdateSelection();
+                }
+                return;
+            }
+            if (InputManager.IsPressed(Key.Right))
+            {
+                int bounds = _centerTargetsVisible ? 2 : 1;
+                if (_selectionX < bounds)
+                {
+                    _selectionX++;
+                    UpdateSelection();
+                }
+                return;
+            }
+            if (InputManager.IsPressed(Key.Down))
+            {
+                if (_selectionY == 1)
+                {
+                    _selectionY = -1;
+                    UpdateSelection();
+                }
+                else if (_selectionY != -1)
+                {
+                    _selectionY++;
+                    UpdateSelection();
+                }
+                return;
+            }
+            if (InputManager.IsPressed(Key.Up))
+            {
+                if (_selectionY == -1)
+                {
+                    _selectionY = 1;
+                    UpdateSelection();
+                }
+                else if (_selectionY > 0)
+                {
+                    _selectionY--;
+                    UpdateSelection();
+                }
                 return;
             }
         }
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            uint enabledC = RenderUtils.Color(255, 0, 0, 255);
-            uint disabledC = RenderUtils.Color(0, 0, 255, 255);
-            uint lineC = RenderUtils.Color(0x9C, 0xAD, 0xF7, 255);
-            uint selectC = RenderUtils.Color(0, 255, 0, 96);
+            uint lineC = RenderUtils.Color(156, 173, 247, 255);
+            uint selectC = RenderUtils.Color(48, 180, 255, 200);
 
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(31, 31, 31, 31)); // Transparent background
-
-            if (_centerTargetsVisible)
-            {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.4f, 0.2f, 0.2f, 0.2f, _targetFoeCenter.Enabled ? enabledC : disabledC);
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.4f, 0.6f, 0.2f, 0.2f, _targetAllyCenter.Enabled ? enabledC : disabledC);
-            }
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.1f, 0.2f, 0.2f, 0.2f, _targetFoeRight.Enabled ? enabledC : disabledC);
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.7f, 0.2f, 0.2f, 0.2f, _targetFoeLeft.Enabled ? enabledC : disabledC);
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.1f, 0.6f, 0.2f, 0.2f, _targetAllyLeft.Enabled ? enabledC : disabledC);
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.7f, 0.6f, 0.2f, 0.2f, _targetAllyRight.Enabled ? enabledC : disabledC);
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.45f, 0.9f, 0.1f, 0.1f, RenderUtils.Color(50, 50, 50, 255)); // Back
+            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(31, 31, 31, 151)); // Transparent background
 
             #region Lines
             if (_targetFoeRight.LineDownVisible)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.15f, 0.4f, 0.1f, 0.2f, lineC);
+                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.14f, 0.3f, 0.1f, 0.4f, lineC);
             }
             if (_targetFoeLeft.LineDownVisible)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.75f, 0.4f, 0.1f, 0.2f, lineC);
+                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.76f, 0.3f, 0.1f, 0.4f, lineC);
             }
+            float w = _centerTargetsVisible ? 0.31f : 0.62f;
             if (_targetFoeRight.LineRightVisible)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.3f, 0.3f, 0.1f, 0.1f, lineC);
+                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.19f, 0.25f, w, 0.1f, lineC);
             }
             if (_targetAllyLeft.LineRightVisible)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.3f, 0.65f, 0.1f, 0.1f, lineC);
+                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.19f, 0.65f, w, 0.1f, lineC);
             }
             if (_centerTargetsVisible)
             {
                 if (_targetFoeCenter.LineDownVisible)
                 {
-                    RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.45f, 0.4f, 0.1f, 0.2f, lineC);
+                    RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.45f, 0.3f, 0.1f, 0.4f, lineC);
                 }
                 if (_targetFoeCenter.LineRightVisible)
                 {
-                    RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.6f, 0.3f, 0.1f, 0.1f, lineC);
+                    RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.25f, w, 0.1f, lineC);
                 }
                 if (_targetAllyCenter.LineRightVisible)
                 {
-                    RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.6f, 0.65f, 0.1f, 0.1f, lineC);
+                    RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.65f, w, 0.1f, lineC);
                 }
             }
             #endregion
 
-            switch (_selection)
+            if (_centerTargetsVisible)
             {
-                case TargetSelection.FoeLeft: RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.7f, 0.2f, 0.2f, 0.2f, selectC); break;
-                case TargetSelection.FoeCenter: RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.4f, 0.2f, 0.2f, 0.2f, selectC); break;
-                case TargetSelection.FoeRight: RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.1f, 0.2f, 0.2f, 0.2f, selectC); break;
-                case TargetSelection.AllyLeft: RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.1f, 0.6f, 0.2f, 0.2f, selectC); break;
-                case TargetSelection.AllyCenter: RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.4f, 0.6f, 0.2f, 0.2f, selectC); break;
-                case TargetSelection.AllyRight: RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.7f, 0.6f, 0.2f, 0.2f, selectC); break;
-                default: RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.45f, 0.9f, 0.1f, 0.1f, selectC); break;
+                _targetFoeCenter.Render(bmpAddress, bmpWidth, bmpHeight, 0.38f, 0.2f, _selection == TargetSelection.FoeCenter);
+                _targetAllyCenter.Render(bmpAddress, bmpWidth, bmpHeight, 0.38f, 0.6f, _selection == TargetSelection.AllyCenter);
+            }
+            _targetFoeRight.Render(bmpAddress, bmpWidth, bmpHeight, 0.07f, 0.2f, _selection == TargetSelection.FoeRight);
+            _targetFoeLeft.Render(bmpAddress, bmpWidth, bmpHeight, 0.69f, 0.2f, _selection == TargetSelection.FoeLeft);
+            _targetAllyLeft.Render(bmpAddress, bmpWidth, bmpHeight, 0.07f, 0.6f, _selection == TargetSelection.AllyLeft);
+            _targetAllyRight.Render(bmpAddress, bmpWidth, bmpHeight, 0.69f, 0.6f, _selection == TargetSelection.AllyRight);
+
+            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.45f, 0.9f, 0.1f, 0.1f, RenderUtils.Color(50, 50, 50, 255)); // Back
+            string str = "Back";
+            Font.Default.MeasureString(str, out int strW, out int strH);
+            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight,
+                RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, 0.5f), RenderUtils.GetCoordinatesForCentering(bmpHeight, strH, 0.95f), str, Font.DefaultWhite);
+            if (_selection == TargetSelection.Back)
+            {
+                RenderUtils.DrawRectangle(bmpAddress, bmpWidth, bmpHeight, 0.45f, 0.9f, 0.1f, 0.1f, selectC);
             }
         }
     }
