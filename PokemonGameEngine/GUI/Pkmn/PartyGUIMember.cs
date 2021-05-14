@@ -13,7 +13,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
     internal sealed class PartyGUIMember
     {
         private readonly bool _usePartyPkmn;
-        private readonly bool _active;
+        private readonly uint _color;
         private readonly PartyPokemon _partyPkmn;
         private readonly SpritedBattlePokemon _battlePkmn;
         private readonly Sprite _mini;
@@ -22,7 +22,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         public PartyGUIMember(PartyPokemon pkmn, List<Sprite> sprites)
         {
             _usePartyPkmn = true;
-            _active = false;
+            if (!pkmn.IsEgg && pkmn.HP == 0)
+            {
+                _color = GetFaintedColor();
+            }
+            else
+            {
+                _color = GetDefaultColor();
+            }
             _partyPkmn = pkmn;
             _mini = new Sprite()
             {
@@ -38,7 +45,22 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         public PartyGUIMember(SpritedBattlePokemon pkmn, List<Sprite> sprites)
         {
             _usePartyPkmn = false;
-            _active = pkmn.Pkmn.FieldPosition != PBEFieldPosition.None;
+            if (pkmn.Pkmn.FieldPosition != PBEFieldPosition.None)
+            {
+                _color = GetActiveColor();
+            }
+            else if (BattleGUI.Instance.StandBy.Contains(pkmn.Pkmn))
+            {
+                _color = GetStandByColor();
+            }
+            else if (!pkmn.PartyPkmn.IsEgg && pkmn.Pkmn.HP == 0)
+            {
+                _color = GetFaintedColor();
+            }
+            else
+            {
+                _color = GetDefaultColor();
+            }
             _battlePkmn = pkmn;
             _mini = new Sprite()
             {
@@ -105,7 +127,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private unsafe void DrawBackground(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
-            RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, _active ? RenderUtils.Color(255, 192, 60, 96) : RenderUtils.Color(48, 48, 48, 128));
+            RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, _color);
             // Shadow
             RenderUtils.FillEllipse_Points(bmpAddress, bmpWidth, bmpHeight, 3, 34, 29, 39, RenderUtils.Color(0, 0, 0, 100));
             // Nickname
@@ -138,6 +160,22 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             {
                 Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 23, ItemData.GetItemName(item), Font.DefaultWhite);
             }
+        }
+        private uint GetDefaultColor()
+        {
+            return RenderUtils.Color(48, 48, 48, 128);
+        }
+        private uint GetFaintedColor()
+        {
+            return RenderUtils.Color(120, 30, 60, 196);
+        }
+        private uint GetActiveColor()
+        {
+            return RenderUtils.Color(255, 192, 60, 96);
+        }
+        private uint GetStandByColor()
+        {
+            return RenderUtils.Color(125, 255, 195, 100);
         }
 
         public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, bool selected)

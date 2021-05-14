@@ -224,9 +224,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     SpritedBattlePokemonParty party = _battleParty.Party;
                     SpritedBattlePokemon sPkmn = party[party.BattleParty[index]];
+                    PBEBattlePokemon bPkmn = sPkmn.Pkmn;
                     PartyPokemon pkmn = sPkmn.PartyPkmn;
                     nickname = pkmn.Nickname;
-                    if (!pkmn.IsEgg && sPkmn.Pkmn.FieldPosition == PBEFieldPosition.None) // Cannot switch in if active already
+                    // Cannot switch in if active already or fainted, or in the switch stand by
+                    if (!pkmn.IsEgg && bPkmn.FieldPosition == PBEFieldPosition.None && bPkmn.HP > 0 && !BattleGUI.Instance.StandBy.Contains(bPkmn))
                     {
                         _textChoices.Add(new TextGUIChoice("Switch In", () => Action_SelectPartyPkmn(index)));
                     }

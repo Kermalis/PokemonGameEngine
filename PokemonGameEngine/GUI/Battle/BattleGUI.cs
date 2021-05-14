@@ -321,7 +321,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     pkmn.TurnAction = null;
                 }
                 _actions.Clear();
-                _actions.AddRange(_trainer.ActiveBattlers);
+                _actions.AddRange(_trainer.ActiveBattlersOrdered);
                 StandBy.Clear();
             }
             int i = _actions.FindIndex(p => p.TurnAction == null);
@@ -339,6 +339,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 SpritedBattlePokemonParty party = SpritedParties[_trainer.Id];
                 _actionsGUI?.Dispose();
                 _actionsGUI = new ActionsGUI(party, _actions[i]);
+                if (i != 0)
+                {
+                    Game.Instance.SetRCallback(RCB_RenderTick);
+                }
             }
         }
         public void Flee()
