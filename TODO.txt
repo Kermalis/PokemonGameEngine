@@ -68,6 +68,7 @@ Nice to have (no priority):
     Move relearner & Move tutor
     Feebas/Swarm/Roamer
     Mail
+    Ribbons
     Weather visuals
 
 Sounds cool but definitely not necessary at all:
