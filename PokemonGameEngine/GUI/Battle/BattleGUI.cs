@@ -196,6 +196,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 if (_stringPrinter.IsDone || ++_autoAdvanceTimer >= AutoAdvanceTicks)
                 {
                     _autoAdvanceTimer = 0;
+                    // TODO: Here we should branch off and do learning move logic
                     AwakenBattleThread();
                     Game.Instance.SetCallback(CB_LogicTick);
                 }
@@ -438,6 +439,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     MovePokemon(pkmn1, acp.Pokemon1OldPosition);
                     break;
                 }
+                case PBEPkmnEXPChangedPacket pecp:
+                {
+                    PBEBattlePokemon pokemon = pecp.PokemonTrainer.TryGetPokemon(pecp.Pokemon);
+                    if (pokemon.FieldPosition != PBEFieldPosition.None)
+                    {
+                        UpdatePokemon(pokemon, true, false);
+                    }
+                    break;
+                }
                 case PBEPkmnFaintedPacket pfp:
                 {
                     PBEBattlePokemon pkmn = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
@@ -460,6 +470,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     PBEBattlePokemon pkmn = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
                     UpdateAnimationSpeed(pkmn);
                     UpdatePokemon(pkmn, true, false);
+                    break;
+                }
+                case PBEPkmnLevelChangedPacket plcp:
+                {
+                    PBEBattlePokemon pokemon = plcp.PokemonTrainer.TryGetPokemon(plcp.Pokemon);
+                    if (pokemon.FieldPosition != PBEFieldPosition.None)
+                    {
+                        UpdatePokemon(pokemon, true, false);
+                    }
                     break;
                 }
                 case PBEStatus1Packet s1p:

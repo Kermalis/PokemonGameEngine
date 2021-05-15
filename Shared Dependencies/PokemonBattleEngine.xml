@@ -670,6 +670,9 @@
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.SpeedBoost_AbleToSpeedBoostThisTurn">
             <summary>True if the Pokémon was present at the start of the turn, which would allow <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.SpeedBoost"/> to activate.</summary>
         </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.LearnMove(Kermalis.PokemonBattleEngine.Data.PBEMove,System.Int32)">
+            <summary>For use with level ups. Does not send any packets.</summary>
+        </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.ApplyNaturalCure">
             <summary>Applies effects that occur on switching out or escaping such as <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.NaturalCure"/>.</summary>
         </member>
