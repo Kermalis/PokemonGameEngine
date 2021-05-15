@@ -328,10 +328,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             int i = _actions.FindIndex(p => p.TurnAction == null);
             if (i == -1)
             {
-                _actionsGUI.Dispose();
-                _actionsGUI = null;
-                Game.Instance.SetCallback(CB_LogicTick);
-                Game.Instance.SetRCallback(RCB_RenderTick);
+                RemoveActionsGUIAndSetCallbacks();
                 new Thread(() => _trainer.SelectActionsIfValid(_actions.Select(p => p.TurnAction).ToArray())) { Name = ThreadName }.Start();
             }
             else
@@ -340,6 +337,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 SpritedBattlePokemonParty party = SpritedParties[_trainer.Id];
                 _actionsGUI?.Dispose();
                 _actionsGUI = new ActionsGUI(party, _actions[i]);
+                // For i == 0, while the message is being read, the R callback is already RCB_RenderTick
+                // For i != 0, while the message is being read, the R callback is _actionsGUI.RCB_Targets, so we need to update it
                 if (i != 0)
                 {
                     Game.Instance.SetRCallback(RCB_RenderTick);
@@ -348,8 +347,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         public void Flee()
         {
-            _actionsGUI.Dispose();
-            _actionsGUI = null;
+            RemoveActionsGUIAndSetCallbacks();
             new Thread(() => _trainer.SelectFleeIfValid()) { Name = ThreadName }.Start();
         }
 
@@ -380,6 +378,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 AddMessage($"You must send in {_switchesRequired} Pokémon.", true);
                 //BattleView.Actions.DisplaySwitches();
             }
+        }
+
+        private unsafe void RemoveActionsGUIAndSetCallbacks()
+        {
+            _actionsGUI.Dispose();
+            _actionsGUI = null;
+            Game.Instance.SetCallback(CB_LogicTick);
+            Game.Instance.SetRCallback(RCB_RenderTick);
         }
         #endregion
 
