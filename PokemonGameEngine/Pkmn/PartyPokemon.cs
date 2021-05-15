@@ -393,7 +393,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             HP = pkmn.HP;
             Status1 = pkmn.Status1;
             SleepTurns = pkmn.SleepTurns;
-            Moveset.UpdateFromBattle(pkmn.Moves);
+            Moveset.UpdateFromBattle(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.TransformBackupMoves : pkmn.Moves);
             Form = pkmn.RevertForm;
             Friendship = pkmn.Friendship;
             Item = (ItemType)pkmn.Item;
@@ -404,6 +404,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             CalcStats();
             UpdateTimeBasedForms();
         }
+        // This is used after the above
         public void UpdateFromBattle_Caught(PBEBattlePokemon pkmn)
         {
             SetPlayerOT();
@@ -424,7 +425,6 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             {
                 HealFully();
             }
-            UpdateTimeBasedForms();
         }
 
         public void HatchEgg()
