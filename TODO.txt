@@ -4,30 +4,28 @@ Main Mechanics:
     Map scripts
     Withdrawing pkmn from daycare
     Passing down tmhm moves to offspring
-    Burmy/Probopass/Magnezone/Leafeon/Glaceon(/Giratina) areas
+    Burmy/Probopass/Magnezone/Leafeon/Glaceon[/Giratina] areas
     Item effects & registering an item
     EVs
     Badges
-    Level up moves mid-battle
-    EXP gain mid-battle
+    Level up moves mid-battle (need summary gui first)
     Heal locations/black out
-    Map
+    World Map
     PC & Mart
     Trades
     Location name plates on enter
     Pokerus time decay
     Hidden items
-    Field moves
 
 GUIs:
     Intro/Title/Continue/NewGame
     Pokedex
-    Bag (I like hgss one)
+    Bag (I like the hgss one)
     Summary
     Options
     Trainer card (with trainer card stars)
     Nickname screen (and for egg hatch)
-    Learn moves during evolution cutscene
+    Learn moves during evolution cutscene (need summary gui first)
 
 Encounters:
     CompoundEyes
@@ -48,10 +46,10 @@ Field Effects:
     Surf
     Bike
     Ledges
-    Reflections
     Blocks that start scripts (bookshelves, tvs, PC, etc)
     Countertops that forward the script (mart employees)
     Repels
+    Field moves
 
 Data Stuff:
     Item pouches
@@ -60,6 +58,7 @@ Data Stuff:
 
 Nice to have (no priority):
     Changable tiles based on day/night
+    Reflections on tiles
     Different day tints based on season
     Obj Following (#29)
     Attack animations
