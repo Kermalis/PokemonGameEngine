@@ -65,7 +65,7 @@ namespace Kermalis.PokemonGameEngine.UI
             LogicTickTime = DateTime.Now; // Setting for DayTint static constructor
             new Game(); // Init game
             new Thread(LogicTick) { Name = "Logic Thread" }.Start();
-            new Thread(RenderTick) { Name = "Render Thread" }.Start();
+            new Thread(RenderTick) { Name = "Render Thread", Priority = ThreadPriority.Highest }.Start();
         }
 
         private void CreateRendererAndScreen()
