@@ -26,7 +26,6 @@ GUIs:
     Summary
     Options
     Trainer card (with trainer card stars)
-    Switching in battles (replacing mon only)
     Nickname screen (and for egg hatch)
     Learn moves during evolution cutscene
 

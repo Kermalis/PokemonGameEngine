@@ -98,18 +98,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private bool ShouldUseKnownInfo(PBETrainer trainer)
         {
             const bool hideNonOwned = true;
-            return trainer != _trainer && hideNonOwned;
+            return trainer != Trainer && hideNonOwned;
         }
         private bool IsBackImage(PBETeam team)
         {
-            byte? owner = _trainer?.Team.Id;
+            byte? owner = Trainer?.Team.Id;
             return team.Id == 0 ? owner != 1 : owner == 1; // Spectators/replays view from team 0's perspective
         }
 
         internal PkmnPosition GetStuff(PBEBattlePokemon pkmn, PBEFieldPosition position)
         {
             int i;
-            switch (_battle.BattleFormat)
+            switch (Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
                 {
@@ -127,7 +127,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     i = position == PBEFieldPosition.Left ? 0 : position == PBEFieldPosition.Center ? 1 : 2;
                     break;
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(_battle.BattleFormat));
+                default: throw new ArgumentOutOfRangeException(nameof(Battle.BattleFormat));
             }
             return _positions[pkmn.Team.Id][i];
         }

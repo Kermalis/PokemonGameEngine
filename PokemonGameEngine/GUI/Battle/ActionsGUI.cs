@@ -11,7 +11,6 @@ using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
-    // TODO: Switch replacements
     // TODO: Disallow switching out if it's invalid (trapping effects. Currently not in PBE though. Temp-locked moves would just auto select instead of giving the switch option)
     internal sealed class ActionsGUI : IDisposable
     {

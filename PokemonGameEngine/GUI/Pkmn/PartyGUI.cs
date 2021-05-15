@@ -17,7 +17,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             PkmnMenu,
             SelectDaycare,
-            BattleSwitchIn
+            BattleSwitchIn,
+            BattleReplace
         }
         private sealed class GamePartyData
         {
@@ -48,6 +49,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
 
         private readonly Mode _mode;
+        private readonly bool _allowBack;
         private readonly bool _useGamePartyData;
         private readonly GamePartyData _gameParty;
         private readonly BattlePartyData _battleParty;
@@ -69,6 +71,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         public unsafe PartyGUI(Party party, Mode mode, Action onClosed)
         {
             _mode = mode;
+            _allowBack = true;
             _useGamePartyData = true;
             _sprites = new List<Sprite>();
             _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
@@ -88,6 +91,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         public unsafe PartyGUI(SpritedBattlePokemonParty party, Mode mode, Action onClosed)
         {
             _mode = mode;
+            _allowBack = mode != Mode.BattleReplace; // Disallow back for BattleReplace
             _useGamePartyData = false;
             _sprites = new List<Sprite>();
             _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
@@ -97,6 +101,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             if (mode == Mode.BattleSwitchIn)
             {
                 SetDefaultSelectionToNone();
+            }
+            else if (mode == Mode.BattleReplace)
+            {
+                SetBattleReplacementMessage();
             }
 
             _onClosed = onClosed;
@@ -176,6 +184,78 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = -1; // If you back out, the default selection is -1
         }
 
+        #region Battle replacement
+
+        private void SetBattleReplacementMessage()
+        {
+            _message = string.Format("You must send in {0} Pokémon.", BattleGUI.Instance.SwitchesRequired);
+        }
+        private static bool CanUsePositionForBattle(PBEFieldPosition pos)
+        {
+            return !BattleGUI.Instance.PositionStandBy.Contains(pos) && BattleGUI.Instance.Trainer.OwnsSpot(pos) && BattleGUI.Instance.Trainer.Team.TryGetPokemon(pos) == null;
+        }
+        private void SelectForBattleReplacement(PBEBattlePokemon pkmn, PBEFieldPosition pos)
+        {
+            CloseChoices();
+            BattleGUI.Instance.Switches.Add(new PBESwitchIn(pkmn, pos));
+            BattleGUI.Instance.StandBy.Add(pkmn);
+            BattleGUI.Instance.PositionStandBy.Add(pos);
+            if (--BattleGUI.Instance.SwitchesRequired == 0)
+            {
+                _message = null;
+                ClosePartyMenu();
+                return;
+            }
+
+            SetBattleReplacementMessage();
+            // Update standby color of the one we chose
+            for (int i = 0; i < _members.Count; i++)
+            {
+                if (_battleParty.Party.BattleParty[i] == pkmn)
+                {
+                    _members[i].UpdateColorAndRedraw();
+                    break;
+                }
+            }
+            Game.Instance.SetCallback(CB_LogicTick);
+        }
+        private void SetUpPositionQuery(int index, bool left, bool center, bool right)
+        {
+            SpritedBattlePokemonParty party = _battleParty.Party;
+            PBEBattlePokemon bPkmn = party.BattleParty[index];
+            SpritedBattlePokemon sPkmn = party[bPkmn];
+            PartyPokemon pkmn = sPkmn.PartyPkmn;
+            _message = string.Format("Send {0} where?", pkmn.Nickname);
+            CloseChoices();
+
+            void BackCommand()
+            {
+                CloseChoices();
+                BringUpPkmnActions(index);
+            }
+
+            _textChoices = new TextGUIChoices(0, 0, backCommand: BackCommand, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            if (left)
+            {
+                _textChoices.Add(new TextGUIChoice("Send Left", () => SelectForBattleReplacement(bPkmn, PBEFieldPosition.Left)));
+            }
+            if (center)
+            {
+                _textChoices.Add(new TextGUIChoice("Send Center", () => SelectForBattleReplacement(bPkmn, PBEFieldPosition.Center)));
+            }
+            if (right)
+            {
+                _textChoices.Add(new TextGUIChoice("Send Right", () => SelectForBattleReplacement(bPkmn, PBEFieldPosition.Right)));
+            }
+            _textChoices.Add(new TextGUIChoice("Cancel", BackCommand));
+            _textChoices.GetSize(out int width, out int height);
+            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, RenderUtils.Color(255, 255, 255, 255));
+            RenderChoicesOntoWindow();
+            Game.Instance.SetCallback(CB_Choices);
+        }
+
+        #endregion
+
         private void Action_SelectPartyPkmn(int index)
         {
             switch (_mode)
@@ -187,6 +267,61 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     CloseChoices();
                     ClosePartyMenu();
                     return;
+                }
+                case Mode.BattleReplace:
+                {
+                    SpritedBattlePokemonParty party = _battleParty.Party;
+                    PBEBattlePokemon bPkmn = party.BattleParty[index];
+                    switch (BattleGUI.Instance.Battle.BattleFormat)
+                    {
+                        case PBEBattleFormat.Single:
+                        {
+                            SelectForBattleReplacement(bPkmn, PBEFieldPosition.Center);
+                            return;
+                        }
+                        case PBEBattleFormat.Double:
+                        {
+                            bool left = CanUsePositionForBattle(PBEFieldPosition.Left);
+                            bool right = CanUsePositionForBattle(PBEFieldPosition.Right);
+                            if (left && !right)
+                            {
+                                SelectForBattleReplacement(bPkmn, PBEFieldPosition.Left);
+                                return;
+                            }
+                            if (!left && right)
+                            {
+                                SelectForBattleReplacement(bPkmn, PBEFieldPosition.Right);
+                                return;
+                            }
+                            SetUpPositionQuery(index, true, false, true);
+                            return;
+                        }
+                        case PBEBattleFormat.Triple:
+                        case PBEBattleFormat.Rotation:
+                        {
+                            bool left = CanUsePositionForBattle(PBEFieldPosition.Left);
+                            bool center = CanUsePositionForBattle(PBEFieldPosition.Center);
+                            bool right = CanUsePositionForBattle(PBEFieldPosition.Right);
+                            if (left && !center && !right)
+                            {
+                                SelectForBattleReplacement(bPkmn, PBEFieldPosition.Left);
+                                return;
+                            }
+                            if (!left && center && !right)
+                            {
+                                SelectForBattleReplacement(bPkmn, PBEFieldPosition.Center);
+                                return;
+                            }
+                            if (!left && !center && right)
+                            {
+                                SelectForBattleReplacement(bPkmn, PBEFieldPosition.Right);
+                                return;
+                            }
+                            SetUpPositionQuery(index, left, center, right);
+                            return;
+                        }
+                        default: throw new Exception();
+                    }
                 }
                 default: throw new Exception();
             }
@@ -206,7 +341,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     PartyPokemon pkmn = _gameParty.Party[index];
                     nickname = pkmn.Nickname;
-                    _textChoices.Add(new TextGUIChoice("Summary", () => Action_BringUpSummary(index)));
+                    _textChoices.Add(new TextGUIChoice("Check summary", () => Action_BringUpSummary(index)));
                     break;
                 }
                 case Mode.SelectDaycare:
@@ -217,14 +352,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     {
                         _textChoices.Add(new TextGUIChoice("Select", () => Action_SelectPartyPkmn(index)));
                     }
-                    _textChoices.Add(new TextGUIChoice("Summary", () => Action_BringUpSummary(index)));
+                    _textChoices.Add(new TextGUIChoice("Check summary", () => Action_BringUpSummary(index)));
                     break;
                 }
                 case Mode.BattleSwitchIn:
+                case Mode.BattleReplace: // Currently same logic
                 {
                     SpritedBattlePokemonParty party = _battleParty.Party;
-                    SpritedBattlePokemon sPkmn = party[party.BattleParty[index]];
-                    PBEBattlePokemon bPkmn = sPkmn.Pkmn;
+                    PBEBattlePokemon bPkmn = party.BattleParty[index];
+                    SpritedBattlePokemon sPkmn = party[bPkmn];
                     PartyPokemon pkmn = sPkmn.PartyPkmn;
                     nickname = pkmn.Nickname;
                     // Cannot switch in if active already or fainted, or in the switch stand by
@@ -232,7 +368,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     {
                         _textChoices.Add(new TextGUIChoice("Switch In", () => Action_SelectPartyPkmn(index)));
                     }
-                    _textChoices.Add(new TextGUIChoice("Summary", () => Action_BringUpSummary(index)));
+                    _textChoices.Add(new TextGUIChoice("Check summary", () => Action_BringUpSummary(index)));
                     break;
                 }
                 default: throw new Exception();
@@ -255,7 +391,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void CloseChoicesThenGoToLogicTick()
         {
             CloseChoices();
-            _message = null;
+            if (_mode == Mode.BattleReplace)
+            {
+                SetBattleReplacementMessage();
+            }
+            else
+            {
+                _message = null;
+            }
             Game.Instance.SetCallback(CB_LogicTick);
         }
         private unsafe void RenderChoicesOntoWindow()
@@ -289,7 +432,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             {
                 if (_selectionY == -1)
                 {
-                    ClosePartyMenu();
+                    if (_allowBack)
+                    {
+                        ClosePartyMenu();
+                    }
                 }
                 else
                 {
@@ -298,7 +444,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 }
                 return;
             }
-            if (InputManager.IsPressed(Key.B))
+            if (_allowBack && InputManager.IsPressed(Key.B))
             {
                 ClosePartyMenu();
                 return;
@@ -328,6 +474,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     if (SelectionCoordsToPartyIndex(_selectionX, oldY + 1) == -1)
                     {
+                        if (!_allowBack)
+                        {
+                            return;
+                        }
                         _selectionY = -1;
                     }
                     else
@@ -369,8 +519,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _members[i].Render(bmpAddress, bmpWidth, bmpHeight, x, y, col == _selectionX && row == _selectionY);
             }
 
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.8f, 0.5f, 0.2f, _selectionY == -1 ? RenderUtils.Color(96, 48, 48, 255) : RenderUtils.Color(48, 48, 48, 255));
-            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.8f, "Back", Font.DefaultWhite);
+            // Back button
+            if (_allowBack)
+            {
+                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.8f, 0.5f, 0.2f, _selectionY == -1 ? RenderUtils.Color(96, 48, 48, 255) : RenderUtils.Color(48, 48, 48, 255));
+                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.8f, "Back", Font.DefaultWhite);
+            }
 
             if (_message != null)
             {

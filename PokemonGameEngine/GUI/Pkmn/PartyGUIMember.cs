@@ -13,7 +13,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
     internal sealed class PartyGUIMember
     {
         private readonly bool _usePartyPkmn;
-        private readonly uint _color;
+        private uint _color;
         private readonly PartyPokemon _partyPkmn;
         private readonly SpritedBattlePokemon _battlePkmn;
         private readonly Sprite _mini;
@@ -22,15 +22,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         public PartyGUIMember(PartyPokemon pkmn, List<Sprite> sprites)
         {
             _usePartyPkmn = true;
-            if (!pkmn.IsEgg && pkmn.HP == 0)
-            {
-                _color = GetFaintedColor();
-            }
-            else
-            {
-                _color = GetDefaultColor();
-            }
             _partyPkmn = pkmn;
+            _color = GetColor();
             _mini = new Sprite()
             {
                 Image = PokemonImageUtils.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.IsEgg),
@@ -45,23 +38,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         public PartyGUIMember(SpritedBattlePokemon pkmn, List<Sprite> sprites)
         {
             _usePartyPkmn = false;
-            if (pkmn.Pkmn.FieldPosition != PBEFieldPosition.None)
-            {
-                _color = GetActiveColor();
-            }
-            else if (BattleGUI.Instance.StandBy.Contains(pkmn.Pkmn))
-            {
-                _color = GetStandByColor();
-            }
-            else if (!pkmn.PartyPkmn.IsEgg && pkmn.Pkmn.HP == 0)
-            {
-                _color = GetFaintedColor();
-            }
-            else
-            {
-                _color = GetDefaultColor();
-            }
             _battlePkmn = pkmn;
+            _color = GetColor();
             _mini = new Sprite()
             {
                 Image = pkmn.Mini,
@@ -161,19 +139,53 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 23, ItemData.GetItemName(item), Font.DefaultWhite);
             }
         }
-        private uint GetDefaultColor()
+
+        // We shouldn't be redrawing on the logic thread, but it currently doesn't matter
+        public void UpdateColorAndRedraw()
+        {
+            _color = GetColor();
+            UpdateBackground();
+        }
+        private uint GetColor()
+        {
+            if (_usePartyPkmn)
+            {
+                PartyPokemon pp = _partyPkmn;
+                if (!pp.IsEgg && pp.HP == 0)
+                {
+                    return GetFaintedColor();
+                }
+                return GetDefaultColor();
+            }
+
+            SpritedBattlePokemon s = _battlePkmn;
+            if (!s.PartyPkmn.IsEgg && s.Pkmn.HP == 0)
+            {
+                return GetFaintedColor();
+            }
+            if (s.Pkmn.FieldPosition != PBEFieldPosition.None)
+            {
+                return GetActiveColor();
+            }
+            if (BattleGUI.Instance.StandBy.Contains(s.Pkmn))
+            {
+                return GetStandByColor();
+            }
+            return GetDefaultColor();
+        }
+        private static uint GetDefaultColor()
         {
             return RenderUtils.Color(48, 48, 48, 128);
         }
-        private uint GetFaintedColor()
+        private static uint GetFaintedColor()
         {
             return RenderUtils.Color(120, 30, 60, 196);
         }
-        private uint GetActiveColor()
+        private static uint GetActiveColor()
         {
             return RenderUtils.Color(255, 192, 60, 96);
         }
-        private uint GetStandByColor()
+        private static uint GetStandByColor()
         {
             return RenderUtils.Color(125, 255, 195, 100);
         }
