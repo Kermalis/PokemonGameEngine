@@ -132,6 +132,15 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
             }
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void OverwriteRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, float width, float height, uint color)
+        {
+            int ix = (int)(x * bmpWidth);
+            int iy = (int)(y * bmpHeight);
+            int iw = (int)(width * bmpWidth);
+            int ih = (int)(height * bmpHeight);
+            OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, ix, iy, iw, ih, color);
+        }
         public static unsafe void OverwriteRectangle(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, int height, uint color)
         {
             if (height == 1)
