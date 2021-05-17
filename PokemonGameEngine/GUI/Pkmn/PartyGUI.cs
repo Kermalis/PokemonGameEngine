@@ -58,6 +58,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private FadeColorTransition _fadeTransition;
         private Action _onClosed;
+        private int _selectionForSummary;
 
         private Window _textChoicesWindow;
         private TextGUIChoices _textChoices;
@@ -119,6 +120,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             Game.Instance.SetCallback(CB_FadeOutParty);
             Game.Instance.SetRCallback(RCB_Fading);
         }
+        private unsafe void OnSummaryClosed()
+        {
+            _textChoicesWindow.IsInvisible = false;
+            _fadeTransition = new FadeFromColorTransition(500, 0);
+            Game.Instance.SetCallback(CB_FadeInThenGoToChoicesCB);
+            Game.Instance.SetRCallback(RCB_Fading);
+        }
 
         private unsafe void CB_FadeInParty()
         {
@@ -138,6 +146,30 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _fadeTransition = null;
                 _onClosed.Invoke();
                 _onClosed = null;
+            }
+        }
+        private unsafe void CB_FadeInThenGoToChoicesCB()
+        {
+            Sprite.DoCallbacks(_sprites);
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                Game.Instance.SetCallback(CB_Choices);
+                Game.Instance.SetRCallback(RCB_RenderTick);
+            }
+        }
+        private unsafe void CB_FadeOutToSummary()
+        {
+            Sprite.DoCallbacks(_sprites);
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                _textChoicesWindow.IsInvisible = true;
+                if (_useGamePartyData)
+                {
+                    new SummaryGUI(_gameParty.Party[_selectionForSummary], SummaryGUI.Mode.JustView, OnSummaryClosed);
+                }
+                // todo
             }
         }
 
@@ -326,9 +358,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 default: throw new Exception();
             }
         }
-        private void Action_BringUpSummary(int index)
+        private unsafe void Action_BringUpSummary(int index)
         {
-
+            _selectionForSummary = index;
+            _fadeTransition = new FadeToColorTransition(500, 0);
+            Game.Instance.SetCallback(CB_FadeOutToSummary);
+            Game.Instance.SetRCallback(RCB_Fading);
         }
 
         private void BringUpPkmnActions(int index)
