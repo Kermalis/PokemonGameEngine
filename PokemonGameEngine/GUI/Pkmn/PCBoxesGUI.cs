@@ -400,7 +400,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 if (_selectedMainImage != null)
                 {
                     AnimatedImage.UpdateCurrentFrameForAll();
-                    _selectedMainImage.DrawOn(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * 0.24f) - (_selectedMainImage.Width / 2), (int)(bmpHeight * 0.6f) - _selectedMainImage.Height);
+                    _selectedMainImage.DrawOn(bmpAddress, bmpWidth, bmpHeight,
+                        RenderUtils.GetCoordinatesForCentering(bmpWidth, _selectedMainImage.Width, 0.24f), RenderUtils.GetCoordinatesForEndAlign(bmpHeight, _selectedMainImage.Height, 0.6f));
                 }
                 Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.015f, 0.62f,
                     "Press L or R to swap boxes\nPress SELECT to toggle the party\n  choices on or off\nPress START to swap between\n  party and boxes",

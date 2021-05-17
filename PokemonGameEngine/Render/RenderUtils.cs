@@ -1163,6 +1163,11 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return (int)(targetSize * pos) - (objSize / 2);
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetCoordinatesForEndAlign(int targetSize, int objSize, float pos)
+        {
+            return (int)(targetSize * pos) - objSize;
+        }
         #endregion
 
         #region Raw Drawing

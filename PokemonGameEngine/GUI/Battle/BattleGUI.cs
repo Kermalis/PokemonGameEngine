@@ -257,7 +257,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 width *= 2;
                 height *= 2;
             }
-            img.DrawSizedOn(bmpAddress, bmpWidth, bmpHeight, RenderUtils.GetCoordinatesForCentering(bmpWidth, width, pos.MonX), (int)(bmpHeight * pos.MonY) - height, width, height);
+            img.DrawSizedOn(bmpAddress, bmpWidth, bmpHeight,
+                RenderUtils.GetCoordinatesForCentering(bmpWidth, width, pos.MonX), RenderUtils.GetCoordinatesForEndAlign(bmpHeight, height, pos.MonY), width, height);
         }
         private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos)
         {
