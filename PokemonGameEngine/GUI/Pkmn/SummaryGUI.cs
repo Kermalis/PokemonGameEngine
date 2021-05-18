@@ -232,7 +232,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             DateTime met = _currentPkmn.MetDate;
             MapSection loc = _currentPkmn.MetLocation;
             byte metLvl = _currentPkmn.MetLevel;
-            string characteristic = "A little quick tempered."; // TODO
+            string characteristic = Characteristic.GetCharacteristic(_currentPkmn.PID, _currentPkmn.IndividualValues) + '.';
             PBEFlavor? flavor = PBEDataUtils.GetLikedFlavor(nature);
 
             // Nature

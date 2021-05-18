@@ -60,7 +60,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public ushort SpDefense { get; private set; }
         public ushort Speed { get; private set; }
 
-        public uint PID { get; private set; } // Currently only used for Spinda spots and Wurmple evolution
+        public uint PID { get; private set; } // Currently only used for Spinda spots, characteristic, and Wurmple evolution
         public bool IsEgg { get; set; }
 
         #region PBE
