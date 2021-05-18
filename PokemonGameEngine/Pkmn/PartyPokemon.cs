@@ -23,6 +23,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
     {
         public OTInfo OT { get; set; }
         public MapSection MetLocation { get; set; }
+        public byte MetLevel { get; set; }
+        public DateTime MetDate { get; set; }
 
         public PBESpecies Species { get; set; }
         public PBEForm Form { get; set; }
@@ -212,6 +214,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.Pokerus = new Pokerus(nincada.Pokerus);
             p.OT = nincada.OT;
             p.MetLocation = nincada.MetLocation;
+            p.MetLevel = nincada.MetLevel;
+            p.MetDate = nincada.MetDate;
             p.SetDefaultNickname();
             p.Shiny = nincada.Shiny;
             var bs = new BaseStats(p.Species, p.Form);
@@ -249,6 +253,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         private void SetCurrentMetLocation()
         {
             MetLocation = Overworld.GetCurrentLocation();
+            MetLevel = Level;
+            MetDate = Program.LogicTickTime.Date;
         }
         private void SetPlayerOT()
         {
