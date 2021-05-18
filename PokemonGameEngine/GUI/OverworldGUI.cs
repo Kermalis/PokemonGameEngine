@@ -77,7 +77,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void SetupStartMenuChoices()
         {
-            _startMenuChoices = new TextGUIChoices(0, 0, backCommand: CloseStartMenu, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _startMenuChoices = new TextGUIChoices(0, 0, backCommand: CloseStartMenu, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
             _startMenuChoices.Add(new TextGUIChoice("Pokémon", () => OpenPartyMenu(PartyGUI.Mode.PkmnMenu)));
             _startMenuChoices.Add(new TextGUIChoice("Bag", StartMenu_DebugBagSelected));
             _startMenuChoices.Add(new TextGUIChoice("PC", StartMenu_DebugPCSelected));

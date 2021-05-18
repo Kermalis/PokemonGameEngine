@@ -60,7 +60,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void CreateMessage(string msg)
         {
-            _stringPrinter = new StringPrinter(_stringWindow, msg, 0.1f, 0.01f, Font.Default, Font.DefaultDark);
+            _stringPrinter = new StringPrinter(_stringWindow, msg, 0.1f, 0.01f, Font.Default, Font.DefaultDarkGray_I);
         }
         private bool ReadMessage()
         {

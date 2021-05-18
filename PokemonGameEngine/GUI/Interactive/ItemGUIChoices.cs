@@ -27,8 +27,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             }
             x1 += xOfs;
             x2 -= xOfs;
-            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, x1, y, _itemName, Font.DefaultDark);
-            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, x2 - _quantityWidth, y, _quantityStr, Font.DefaultDark);
+            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, x1, y, _itemName, Font.DefaultDarkGray_I);
+            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, x2 - _quantityWidth, y, _quantityStr, Font.DefaultDarkGray_I);
         }
     }
 

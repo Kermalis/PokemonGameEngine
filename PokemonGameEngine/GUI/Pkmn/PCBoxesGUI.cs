@@ -132,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private void BringUpPartyPkmnActions(PartyPokemon pkmn)
         {
-            _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesAndStringPrinterThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesAndStringPrinterThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
             _textChoices.Add(new TextGUIChoice("Deposit", () => Action_DepositPartyPkmn(pkmn)));
             _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesAndStringPrinterThenGoToLogicTick));
             _textChoices.GetSize(out int width, out int height);
@@ -144,7 +144,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void BringUpBoxPkmnActions(BoxPokemon pkmn)
         {
-            _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesAndStringPrinterThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesAndStringPrinterThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
             _textChoices.Add(new TextGUIChoice("Withdraw", () => Action_WithdrawBoxPkmn(pkmn)));
             _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesAndStringPrinterThenGoToLogicTick));
             _textChoices.GetSize(out int width, out int height);
@@ -180,7 +180,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void CreateStringPrinterAndWindow(string message, bool isStaticMsg, Game.MainCallback doneCallback)
         {
             _stringWindow = new Window(0, 0.79f, 1, 0.16f, RenderUtils.Color(49, 49, 49, 192));
-            _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite);
+            _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite1_I);
             _stringReadCallback = doneCallback;
             if (isStaticMsg)
             {
@@ -194,7 +194,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void OverwriteStaticString(string message, Game.MainCallback curCallback, Game.MainCallback doneCallback)
         {
             _stringPrinter.Close();
-            _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite);
+            _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite1_I);
             _stringReadCallback = doneCallback;
             Game.Instance.SetCallback(curCallback);
         }
@@ -389,7 +389,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             RenderUtils.ThreeColorBackground(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(215, 231, 230, 255), RenderUtils.Color(231, 163, 0, 255), RenderUtils.Color(242, 182, 32, 255));
 
             // PC
-            Font.Default.DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, 0.02f, 0.01f, 2, $"BOX {_selectedBox + 1}", Font.DefaultDark);
+            Font.Default.DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, 0.02f, 0.01f, 2, $"BOX {_selectedBox + 1}", Font.DefaultDarkGray_I);
 
             if (_partyVisible)
             {
@@ -405,7 +405,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 }
                 Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.015f, 0.62f,
                     "Press L or R to swap boxes\nPress SELECT to toggle the party\n  choices on or off\nPress START to swap between\n  party and boxes",
-                    Font.DefaultDark);
+                    Font.DefaultDarkGray_I);
             }
 
             // Draw boxes

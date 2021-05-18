@@ -266,7 +266,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 BringUpPkmnActions(index);
             }
 
-            _textChoices = new TextGUIChoices(0, 0, backCommand: BackCommand, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _textChoices = new TextGUIChoices(0, 0, backCommand: BackCommand, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
             if (left)
             {
                 _textChoices.Add(new TextGUIChoice("Send Left", () => SelectForBattleReplacement(bPkmn, PBEFieldPosition.Left)));
@@ -369,7 +369,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void BringUpPkmnActions(int index)
         {
             string nickname;
-            _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
             switch (_mode)
             {
                 case Mode.PkmnMenu:
@@ -558,13 +558,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             if (_allowBack)
             {
                 RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.8f, 0.5f, 0.2f, _selectionY == -1 ? RenderUtils.Color(96, 48, 48, 255) : RenderUtils.Color(48, 48, 48, 255));
-                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.8f, "Back", Font.DefaultWhite);
+                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.8f, "Back", Font.DefaultWhite1_I);
             }
 
             if (_message != null)
             {
                 RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0.8f, 0.5f, 0.2f, RenderUtils.Color(200, 200, 200, 255));
-                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0.8f, _message, Font.DefaultDark);
+                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0.8f, _message, Font.DefaultDarkGray_I);
             }
 
             Game.Instance.RenderWindows(bmpAddress, bmpWidth, bmpHeight);

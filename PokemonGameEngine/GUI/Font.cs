@@ -33,13 +33,18 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public static Font Default { get; }
         public static Font DefaultSmall { get; }
-        public static uint[] DefaultWhite { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(239, 239, 239, 255), RenderUtils.Color(132, 132, 132, 255) };
-        public static uint[] DefaultSelected { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(255, 224, 22, 255), RenderUtils.Color(188, 165, 16, 255) };
-        public static uint[] DefaultDisabled { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(133, 133, 141, 255), RenderUtils.Color(58, 50, 50, 255) };
-        public static uint[] DefaultDark { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(90, 82, 82, 255), RenderUtils.Color(165, 165, 173, 255) };
-        public static uint[] DefaultMale { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(115, 148, 255, 255), RenderUtils.Color(0, 0, 214, 255) };
-        public static uint[] DefaultFemale { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(255, 115, 115, 255), RenderUtils.Color(198, 0, 0, 255) };
         public static Font PartyNumbers { get; }
+        public static uint[] DefaultDisabled { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(133, 133, 141, 255), RenderUtils.Color(58, 50, 50, 255) };
+        // Standard colors
+        public static uint[] DefaultBlack_I { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(15, 25, 30, 255), RenderUtils.Color(170, 185, 185, 255) };
+        public static uint[] DefaultBlue_I { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(0, 110, 250, 255), RenderUtils.Color(120, 185, 230, 255) };
+        public static uint[] DefaultBlue_O { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(115, 148, 255, 255), RenderUtils.Color(0, 0, 214, 255) };
+        public static uint[] DefaultDarkGray_I { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(90, 82, 82, 255), RenderUtils.Color(165, 165, 173, 255) };
+        public static uint[] DefaultRed_I { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(230, 30, 15, 255), RenderUtils.Color(250, 170, 185, 255) };
+        public static uint[] DefaultRed_O { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(255, 115, 115, 255), RenderUtils.Color(198, 0, 0, 255) };
+        public static uint[] DefaultYellow_O { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(255, 224, 22, 255), RenderUtils.Color(188, 165, 16, 255) };
+        public static uint[] DefaultWhite1_I { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(239, 239, 239, 255), RenderUtils.Color(132, 132, 132, 255) };
+        public static uint[] DefaultWhite2_I { get; } = new uint[] { RenderUtils.Color(0, 0, 0, 0), RenderUtils.Color(250, 250, 250, 255), RenderUtils.Color(80, 80, 80, 255) };
 
         static Font()
         {

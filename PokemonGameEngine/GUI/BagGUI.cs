@@ -126,7 +126,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             RenderUtils.ThreeColorBackground(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(215, 231, 230, 255), RenderUtils.Color(231, 163, 0, 255), RenderUtils.Color(242, 182, 32, 255));
 
             // BAG
-            Font.Default.DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, 0.02f, 0.01f, 2, "BAG", Font.DefaultDark);
+            Font.Default.DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, 0.02f, 0.01f, 2, "BAG", Font.DefaultDarkGray_I);
 
             _partyChoices.Render(bmpAddress, bmpWidth, bmpHeight);
 
@@ -141,9 +141,9 @@ namespace Kermalis.PokemonGameEngine.GUI
             // Draw pouch name
             x1 = (int)(0.62f * bmpWidth);
             y1 = (int)(0.14f * bmpHeight);
-            Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, x1, y1, _curPouchName, Font.DefaultDark);
+            Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, x1, y1, _curPouchName, Font.DefaultDarkGray_I);
             // Draw cash money
-            Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, x2 - _cashMoneyWidth, y1, _cashMoney, Font.DefaultDark);
+            Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, x2 - _cashMoneyWidth, y1, _cashMoney, Font.DefaultDarkGray_I);
 
             // Draw item list
             _pouchChoices.Render(bmpAddress, bmpWidth, bmpHeight);

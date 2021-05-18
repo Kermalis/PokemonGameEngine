@@ -43,7 +43,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     Pokemon.Mini.DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y + 0.025f);
 
-                    Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, x + 0.075f, y + 0.05f, Pokemon.Pkmn.KnownNickname, Font.DefaultWhite);
+                    Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, x + 0.075f, y + 0.05f, Pokemon.Pkmn.KnownNickname, Font.DefaultWhite1_I);
                 }
 
                 if (selected)
@@ -741,7 +741,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             string str = "Back";
             Font.Default.MeasureString(str, out int strW, out int strH);
             Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight,
-                RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, 0.5f), RenderUtils.GetCoordinatesForCentering(bmpHeight, strH, 0.95f), str, Font.DefaultWhite);
+                RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, 0.5f), RenderUtils.GetCoordinatesForCentering(bmpHeight, strH, 0.95f), str, Font.DefaultWhite1_I);
             if (_selection == TargetSelection.Back)
             {
                 RenderUtils.DrawRectangle(bmpAddress, bmpWidth, bmpHeight, 0.45f, 0.9f, 0.1f, 0.1f, selectC);

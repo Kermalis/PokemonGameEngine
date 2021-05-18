@@ -18,7 +18,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 _messageBox = new Window(0.00f, 0.79f, 1f, 0.17f, RenderUtils.Color(255, 255, 255, 255));
             }
             _stringPrinter?.Close();
-            _stringPrinter = new StringPrinter(_messageBox, text, 0.05f, 0.01f, Font.Default, Font.DefaultDark);
+            _stringPrinter = new StringPrinter(_messageBox, text, 0.05f, 0.01f, Font.Default, Font.DefaultDarkGray_I);
         }
         private void AwaitMessageCommand(bool complete)
         {
@@ -60,7 +60,7 @@ namespace Kermalis.PokemonGameEngine.Script
         }
         private void YesNoChoiceCommand()
         {
-            _multichoice = new TextGUIChoices(0, 0, font: Font.Default, fontColors: Font.DefaultDark, selectedColors: Font.DefaultSelected);
+            _multichoice = new TextGUIChoices(0, 0, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
             _multichoice.Add(new TextGUIChoice("Yes", () => MultichoiceAction(1)));
             _multichoice.Add(new TextGUIChoice("No", () => MultichoiceAction(0)));
             _multichoice.GetSize(out int width, out int height);

@@ -54,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             _mini.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0f, -0.15f);
 
             Font fontDefault = Font.Default;
-            uint[] defaultDark = Font.DefaultDark;
+            uint[] defaultDark = Font.DefaultDarkGray_I;
 
             fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.2f, 0.01f, _pkmn.Nickname, defaultDark);
 
@@ -69,7 +69,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             PBEGender gender = _pkmn.Gender;
             if (gender != PBEGender.Genderless)
             {
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.7f, 0.01f, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultMale : Font.DefaultFemale);
+                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.7f, 0.01f, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultBlue_O : Font.DefaultRed_O);
             }
 
             RenderUtils.FillRectangle_Points(bmpAddress, bmpWidth, bmpHeight, 0.2f, 0.58f, 0.7f, 0.64f, RenderUtils.Color(99, 255, 99, 255));

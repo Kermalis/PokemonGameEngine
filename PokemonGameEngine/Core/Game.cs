@@ -165,7 +165,7 @@ namespace Kermalis.PokemonGameEngine.Core
 #if DEBUG
             if (topLeftMessage != null)
             {
-                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, topLeftMessage, Font.DefaultFemale);
+                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, topLeftMessage, Font.DefaultRed_O);
             }
 #endif
         }

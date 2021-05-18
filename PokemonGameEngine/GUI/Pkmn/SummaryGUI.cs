@@ -7,6 +7,7 @@ using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.World;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Pkmn
@@ -31,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
 
         private readonly Mode _mode;
-        private readonly Page _page;
+        private Page _page;
         private readonly PartyPokemon _currentPkmn;
 
         private FadeColorTransition _fadeTransition;
@@ -105,6 +106,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             bool egg = _currentPkmn.IsEgg;
             _pkmnImage = PokemonImageUtils.GetPokemonImage(species, form, gender, shiny, false, false, pid, egg);
         }
+        private void SwapPage(Page newPage)
+        {
+            _page = newPage;
+            UpdatePageImage();
+            Game.MainCallback cb;
+            switch (newPage)
+            {
+                case Page.Info: cb = CB_InfoPage; break;
+                case Page.Personal: cb = CB_PersonalPage; break;
+                default: throw new Exception();
+            }
+            Game.Instance.SetCallback(cb);
+        }
+
         private unsafe void UpdatePageImage()
         {
             _pageImage.Draw(DrawPage);
@@ -112,83 +127,148 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private unsafe void DrawPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {
             RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(0, 0, 0, 0));
-            Font.Default.DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, 0, 0, 2, _page.ToString(), Font.DefaultDark);
+            Font.Default.DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, 0, 0, 2, _page.ToString(), Font.DefaultBlack_I);
 
             switch (_page)
             {
-                case Page.Info:
-                {
-                    const float winX = 0.03f;
-                    const float winY = 0.15f;
-                    const float leftColX = winX + 0.02f;
-                    const float textStartY = winY + 0.05f;
-                    const float textSpacingY = 0.1f;
-                    const float rightColX = winX + 0.52f;
-                    const float rightColY = winY + 0.03f;
-                    const float rightColW = 0.4f;
-                    const float rightColH = 0.62f;
-                    const float winW = rightColX + rightColW + 0.02f - winX;
-                    const float winH = rightColY + rightColH + 0.03f - winY;
-                    const float rightColCenterX = rightColX + (rightColW / 2f);
-                    RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(128, 215, 135, 255));
-                    RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 10, RenderUtils.Color(200, 200, 200, 255));
+                case Page.Info: DrawInfoPage(bmpAddress, bmpWidth, bmpHeight); break;
+                case Page.Personal: DrawPersonalPage(bmpAddress, bmpWidth, bmpHeight); break;
+            }
+        }
+        private unsafe void DrawInfoPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            const float winX = 0.03f;
+            const float winY = 0.15f;
+            const float leftColX = winX + 0.02f;
+            const float textStartY = winY + 0.05f;
+            const float textSpacingY = 0.1f;
+            const float rightColX = winX + 0.52f;
+            const float rightColY = winY + 0.03f;
+            const float rightColW = 0.4f;
+            const float rightColH = 0.62f;
+            const float winW = rightColX + rightColW + 0.02f - winX;
+            const float winH = rightColY + rightColH + 0.03f - winY;
+            const float rightColCenterX = rightColX + (rightColW / 2f);
+            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(128, 215, 135, 255));
+            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 10, RenderUtils.Color(210, 210, 210, 255));
 
-                    Font leftColFont = Font.Default;
-                    uint[] leftColColors = Font.DefaultWhite;
-                    Font rightColFont = Font.Default;
-                    uint[] rightColColors = Font.DefaultDark;
+            Font leftColFont = Font.Default;
+            uint[] leftColColors = Font.DefaultWhite2_I;
+            Font rightColFont = Font.Default;
+            uint[] rightColColors = Font.DefaultBlack_I;
 
-                    void PlaceLeftCol(int i, string leftColStr)
-                    {
-                        float y = textStartY + (i * textSpacingY);
-                        leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, leftColX, y, leftColStr, leftColColors);
-                    }
-                    void PlaceRightCol(int i, string rightColStr, uint[] colors)
-                    {
-                        float y = textStartY + (i * textSpacingY);
-                        rightColFont.MeasureString(rightColStr, out int strW, out _);
-                        rightColFont.DrawString(bmpAddress, bmpWidth, bmpHeight,
-                            RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, rightColCenterX), (int)(bmpHeight * y), rightColStr, colors);
-                    }
+            void PlaceLeftCol(int i, string leftColStr)
+            {
+                float y = textStartY + (i * textSpacingY);
+                leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, leftColX, y, leftColStr, leftColColors);
+            }
+            void PlaceRightCol(int i, string rightColStr, uint[] colors)
+            {
+                float y = textStartY + (i * textSpacingY);
+                rightColFont.MeasureString(rightColStr, out int strW, out _);
+                rightColFont.DrawString(bmpAddress, bmpWidth, bmpHeight,
+                    RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, rightColCenterX), (int)(bmpHeight * y), rightColStr, colors);
+            }
 
-                    PlaceLeftCol(0, "Species");
-                    PlaceLeftCol(1, "Type(s)");
-                    PlaceLeftCol(2, "OT");
-                    PlaceLeftCol(3, "OT ID");
-                    PlaceLeftCol(4, "Exp. Points");
-                    PlaceLeftCol(5, "Exp. To Next Level");
+            PlaceLeftCol(0, "Species");
+            PlaceLeftCol(1, "Type(s)");
+            PlaceLeftCol(2, "OT");
+            PlaceLeftCol(3, "OT ID");
+            PlaceLeftCol(4, "Exp. Points");
+            PlaceLeftCol(5, "Exp. To Next Level");
 
-                    PBESpecies species = _currentPkmn.Species;
-                    PBEForm form = _currentPkmn.Form;
-                    var bs = new BaseStats(species, form);
-                    OTInfo ot = _currentPkmn.OT;
-                    uint exp = _currentPkmn.EXP;
-                    uint toNextLvl = _currentPkmn.Level >= PkmnConstants.MaxLevel ? 0 : PBEEXPTables.GetEXPRequired(bs.GrowthRate, (byte)(_currentPkmn.Level + 1)) - exp;
+            PBESpecies species = _currentPkmn.Species;
+            PBEForm form = _currentPkmn.Form;
+            var bs = new BaseStats(species, form);
+            OTInfo ot = _currentPkmn.OT;
+            uint exp = _currentPkmn.EXP;
+            uint toNextLvl = _currentPkmn.Level >= PkmnConstants.MaxLevel ? 0 : PBEEXPTables.GetEXPRequired(bs.GrowthRate, (byte)(_currentPkmn.Level + 1)) - exp;
 
-                    // Species
-                    string str = PBELocalizedString.GetSpeciesName(species).English;
-                    PlaceRightCol(0, str, rightColColors);
-                    // Types
-                    str = PBELocalizedString.GetTypeName(bs.Type1).English;
-                    if (bs.Type2 != PBEType.None)
-                    {
-                        str += ' ' + PBELocalizedString.GetTypeName(bs.Type2).English;
-                    }
-                    PlaceRightCol(1, str, rightColColors);
-                    // OT
-                    str = ot.TrainerName;
-                    PlaceRightCol(2, str, ot.TrainerIsFemale ? Font.DefaultFemale : Font.DefaultMale);
-                    // OT ID
-                    str = ot.TrainerID.ToString();
-                    PlaceRightCol(3, str, rightColColors);
-                    // Exp
-                    str = exp.ToString();
-                    PlaceRightCol(4, str, rightColColors);
-                    // To next level
-                    str = toNextLvl.ToString();
-                    PlaceRightCol(5, str, rightColColors);
-                    break;
-                }
+            // Species
+            string str = PBELocalizedString.GetSpeciesName(species).English;
+            PlaceRightCol(0, str, rightColColors);
+            // Types
+            str = PBELocalizedString.GetTypeName(bs.Type1).English;
+            if (bs.Type2 != PBEType.None)
+            {
+                str += ' ' + PBELocalizedString.GetTypeName(bs.Type2).English;
+            }
+            PlaceRightCol(1, str, rightColColors);
+            // OT
+            str = ot.TrainerName;
+            PlaceRightCol(2, str, ot.TrainerIsFemale ? Font.DefaultRed_I : Font.DefaultBlue_I);
+            // OT ID
+            str = ot.TrainerID.ToString();
+            PlaceRightCol(3, str, rightColColors);
+            // Exp
+            str = exp.ToString();
+            PlaceRightCol(4, str, rightColColors);
+            // To next level
+            str = toNextLvl.ToString();
+            PlaceRightCol(5, str, rightColColors);
+        }
+        private unsafe void DrawPersonalPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            const float winX = 0.08f;
+            const float winY = 0.15f;
+            const float leftColX = winX + 0.03f;
+            const float textStartY = winY + 0.05f;
+            const float textSpacingY = 0.1f;
+            const float winW = 0.75f - winX;
+            const float winH = 0.93f - winY;
+            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(145, 225, 225, 255));
+
+            Font leftColFont = Font.Default;
+            uint[] leftColColors = Font.DefaultBlack_I;
+            uint[] highlightColors = Font.DefaultRed_I;
+
+            void Place(int i, int xOff, string leftColStr, uint[] colors)
+            {
+                float y = textStartY + (i * textSpacingY);
+                leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * leftColX) + xOff, (int)(bmpHeight * y), leftColStr, colors);
+            }
+
+            PBENature nature = _currentPkmn.Nature;
+            DateTime met = _currentPkmn.MetDate;
+            MapSection loc = _currentPkmn.MetLocation;
+            byte metLvl = _currentPkmn.MetLevel;
+            string characteristic = "A little quick tempered."; // TODO
+            PBEFlavor? flavor = PBEDataUtils.GetLikedFlavor(nature);
+
+            // Nature
+            string str = PBELocalizedString.GetNatureName(nature).English + ' ';
+            Place(0, 0, str, highlightColors);
+            leftColFont.MeasureString(str, out int strW, out _);
+            str = "nature.";
+            Place(0, strW, str, leftColColors);
+            // Met date
+            str = met.ToString("MMMM dd, yyyy");
+            Place(1, 0, str, leftColColors);
+            // Met location
+            str = loc.ToString();
+            Place(2, 0, str, highlightColors);
+            // Met level
+            str = string.Format("Met at Level {0}.", metLvl);
+            Place(3, 0, str, leftColColors);
+            // Characteristic
+            str = characteristic;
+            Place(5, 0, str, leftColColors);
+            // Flavor
+            if (flavor.HasValue)
+            {
+                str = "Likes ";
+                Place(6, 0, str, leftColColors);
+                leftColFont.MeasureString(str, out strW, out _);
+                str = flavor.Value.ToString() + ' ';
+                Place(6, strW, str, highlightColors);
+                leftColFont.MeasureString(str, out int strW2, out _);
+                str = "food.";
+                Place(6, strW + strW2, str, leftColColors);
+            }
+            else
+            {
+                str = "Likes all food.";
+                Place(6, 0, str, leftColColors);
             }
         }
 
@@ -197,6 +277,24 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             if (InputManager.IsPressed(Key.B))
             {
                 CloseSummaryMenu();
+                return;
+            }
+            if (InputManager.IsPressed(Key.Right))
+            {
+                SwapPage(Page.Personal);
+                return;
+            }
+        }
+        private void CB_PersonalPage()
+        {
+            if (InputManager.IsPressed(Key.B))
+            {
+                CloseSummaryMenu();
+                return;
+            }
+            if (InputManager.IsPressed(Key.Left))
+            {
+                SwapPage(Page.Info);
                 return;
             }
         }
