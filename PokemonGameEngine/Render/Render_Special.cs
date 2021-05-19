@@ -1,4 +1,8 @@
-﻿namespace Kermalis.PokemonGameEngine.Render
+﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
+
+namespace Kermalis.PokemonGameEngine.Render
 {
     internal static partial class RenderUtils
     {
@@ -39,17 +43,17 @@
             }
         }
 
-        #region HP
+        #region HP & EXP
 
-        public static unsafe void HP_TripleLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, double percentage)
+        public static unsafe void HP_TripleLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, double percent)
         {
             uint hpSides, hpMid;
-            if (percentage <= 0.20)
+            if (percent <= 0.20)
             {
                 hpSides = Color(148, 33, 49, 255);
                 hpMid = Color(255, 49, 66, 255);
             }
-            else if (percentage <= 0.50)
+            else if (percent <= 0.50)
             {
                 hpSides = Color(156, 99, 16, 255);
                 hpMid = Color(247, 181, 0, 255);
@@ -61,14 +65,52 @@
             }
             DrawRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, width, 5, Color(49, 49, 49, 255));
             FillRectangle(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 1, width - 2, 3, Color(33, 33, 33, 255));
-            int theW = (int)((width - 2) * percentage);
-            if (theW == 0 && percentage > 0)
+            int theW = (int)((width - 2) * percent);
+            if (theW == 0 && percent > 0)
             {
                 theW = 1;
             }
             DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 1, theW, hpSides);
             DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 2, theW, hpMid);
             DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 3, theW, hpSides);
+        }
+
+        public static unsafe void EXP_SingleLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, uint exp, byte level, PBESpecies species, PBEForm form)
+        {
+            if (level >= PkmnConstants.MaxLevel)
+            {
+                EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, x, y, width, 0);
+                return;
+            }
+            PBEGrowthRate gr = new BaseStats(species, form).GrowthRate;
+            EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, x, y, width, exp, level, gr);
+        }
+        public static unsafe void EXP_SingleLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, uint exp, byte level, PBEGrowthRate gr)
+        {
+            double percent;
+            if (level >= PkmnConstants.MaxLevel)
+            {
+                percent = 0;
+            }
+            else
+            {
+                uint expPrev = PBEEXPTables.GetEXPRequired(gr, level);
+                uint expNext = PBEEXPTables.GetEXPRequired(gr, (byte)(level + 1));
+                uint expCur = exp;
+                percent = (double)(expCur - expPrev) / (expNext - expPrev);
+            }
+            EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, x, y, width, percent);
+        }
+        public static unsafe void EXP_SingleLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, double percent)
+        {
+            DrawRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, width, 3, Color(49, 49, 49, 255));
+            DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 1, width - 2, Color(33, 33, 33, 255));
+            int theW = (int)((width - 2) * percent);
+            if (theW == 0 && percent > 0)
+            {
+                theW = 1;
+            }
+            DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 1, theW, Color(0, 160, 255, 255));
         }
 
         #endregion

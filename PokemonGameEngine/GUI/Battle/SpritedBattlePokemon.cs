@@ -117,35 +117,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     Font.PartyNumbers.DrawString(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, 46, 28, "/" + Pkmn.MaxHP, Font.DefaultWhite1_I);
                 }
 
-                const int lineStartX = 10;
-                const int lineW = 80;
-                RenderUtils.HP_TripleLine(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX - 1, 23, lineW + 2, Pkmn.HPPercentage);
+                const int lineStartX = 9;
+                const int lineW = 82;
+                RenderUtils.HP_TripleLine(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX, 23, lineW, Pkmn.HPPercentage);
 
                 // EXP
                 if (!_useKnownInfo)
                 {
-                    const int lineStartY2 = 38;
-                    RenderUtils.DrawRectangle(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX - 1, lineStartY2 - 1, lineW + 2, 3, RenderUtils.Color(49, 49, 49, 255));
-                    RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX, lineStartY2, lineW, RenderUtils.Color(33, 33, 33, 255));
-                    double expp;
-                    if (Pkmn.Level == PkmnConstants.MaxLevel)
-                    {
-                        expp = 0;
-                    }
-                    else
-                    {
-                        PBEGrowthRate gr = new BaseStats(Pkmn.Species, Pkmn.RevertForm).GrowthRate;
-                        uint expPrev = PBEEXPTables.GetEXPRequired(gr, Pkmn.Level);
-                        uint expNext = PBEEXPTables.GetEXPRequired(gr, (byte)(Pkmn.Level + 1));
-                        uint expCur = Pkmn.EXP;
-                        expp = (double)(expCur - expPrev) / (expNext - expPrev);
-                    }
-                    int theW = (int)(lineW * expp);
-                    if (theW == 0 && expp > 0)
-                    {
-                        theW = 1;
-                    }
-                    RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX, lineStartY2, theW, RenderUtils.Color(0, 160, 255, 255));
+                    RenderUtils.EXP_SingleLine(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX, 37, lineW, Pkmn.EXP, Pkmn.Level, Pkmn.Species, Pkmn.RevertForm);
                 }
             }
         }
