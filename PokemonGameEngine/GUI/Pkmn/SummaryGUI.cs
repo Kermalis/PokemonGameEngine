@@ -141,16 +141,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             const float winX = 0.03f;
             const float winY = 0.15f;
+            const float winW = 0.97f - winX;
+            const float winH = 0.85f - winY;
             const float leftColX = winX + 0.02f;
             const float textStartY = winY + 0.05f;
             const float textSpacingY = 0.1f;
             const float rightColX = winX + 0.52f;
             const float rightColY = winY + 0.03f;
-            const float rightColW = 0.4f;
-            const float rightColH = 0.62f;
-            const float winW = rightColX + rightColW + 0.02f - winX;
-            const float winH = rightColY + rightColH + 0.03f - winY;
+            const float rightColW = 0.95f - rightColX;
+            const float rightColH = 0.82f - rightColY;
             const float rightColCenterX = rightColX + (rightColW / 2f);
+            int xpW = (int)(bmpWidth * 0.3f);
+            int xpX = RenderUtils.GetCoordinatesForCentering(bmpWidth, xpW, rightColCenterX);
+            int xpY = (int)(bmpHeight * 0.79f);
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(128, 215, 135, 255));
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 8, RenderUtils.Color(210, 210, 210, 255));
 
@@ -183,8 +186,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             PBEForm form = _currentPkmn.Form;
             var bs = new BaseStats(species, form);
             OTInfo ot = _currentPkmn.OT;
+            byte level = _currentPkmn.Level;
             uint exp = _currentPkmn.EXP;
-            uint toNextLvl = _currentPkmn.Level >= PkmnConstants.MaxLevel ? 0 : PBEEXPTables.GetEXPRequired(bs.GrowthRate, (byte)(_currentPkmn.Level + 1)) - exp;
+            uint toNextLvl;
+            if (level >= PkmnConstants.MaxLevel)
+            {
+                toNextLvl = 0;
+                RenderUtils.EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, xpX, xpY, xpW, 0);
+            }
+            else
+            {
+                PBEGrowthRate gr = bs.GrowthRate;
+                toNextLvl = PBEEXPTables.GetEXPRequired(gr, (byte)(level + 1)) - exp;
+                RenderUtils.EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, xpX, xpY, xpW, exp, level, gr);
+            }
 
             // Species
             string str = PBELocalizedString.GetSpeciesName(species).English;
@@ -277,6 +292,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             const float winX = 0.03f;
             const float winY = 0.15f;
+            const float winW = 0.97f - winX;
+            const float winH = 0.995f - winY;
             const float leftColX = winX + 0.02f;
             const float textStartY = winY + 0.03f;
             const float textStart2Y = winY + 0.15f;
@@ -285,8 +302,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float rightColY = winY + 0.02f;
             const float rightColW = 0.95f - rightColX;
             const float rightColH = 0.535f;
-            const float winW = 0.97f - winX;
-            const float winH = 0.995f - winY;
             const float rightColCenterX = rightColX + (rightColW / 2f);
             const float abilTextY = textStart2Y + (5.5f * textSpacingY);
             const float abilDescX = leftColX + 0.03f;
@@ -296,6 +311,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float abilY = abilTextY;
             const float abilW = 0.95f - abilX;
             const float abilH = 0.075f;
+            int hpW = (int)(bmpWidth * 0.3f);
+            int hpX = RenderUtils.GetCoordinatesForCentering(bmpWidth, hpW, rightColCenterX);
+            int hpY = (int)(bmpHeight * (winY + 0.11f));
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 12, RenderUtils.Color(135, 145, 250, 255));
             // Stats
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 8, RenderUtils.Color(210, 210, 210, 255));
@@ -354,6 +372,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             // HP
             string str = string.Format("{0}/{1}", hp, maxHP);
             PlaceRightCol(-2, str, rightColColors);
+            double percent = (double)hp / maxHP;
+            RenderUtils.HP_TripleLine(bmpAddress, bmpWidth, bmpHeight, hpX, hpY, hpW, percent);
             // Attack
             str = atk.ToString();
             PlaceRightCol(0, str, rightColColors);
