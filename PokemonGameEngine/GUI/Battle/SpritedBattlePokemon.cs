@@ -117,36 +117,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     Font.PartyNumbers.DrawString(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, 46, 28, "/" + Pkmn.MaxHP, Font.DefaultWhite1_I);
                 }
 
-                uint hpSides, hpMid;
-                if (Pkmn.HPPercentage <= 0.20)
-                {
-                    hpSides = RenderUtils.Color(148, 33, 49, 255);
-                    hpMid = RenderUtils.Color(255, 49, 66, 255);
-                }
-                else if (Pkmn.HPPercentage <= 0.50)
-                {
-                    hpSides = RenderUtils.Color(156, 99, 16, 255);
-                    hpMid = RenderUtils.Color(247, 181, 0, 255);
-                }
-                else
-                {
-                    hpSides = RenderUtils.Color(0, 140, 41, 255);
-                    hpMid = RenderUtils.Color(0, 255, 74, 255);
-                }
                 const int lineStartX = 10;
-                const int lineStartY = 24;
                 const int lineW = 80;
-                RenderUtils.DrawRectangle(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX - 1, lineStartY - 1, lineW + 2, 5, RenderUtils.Color(49, 49, 49, 255));
-                RenderUtils.FillRectangle(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX, lineStartY, lineW, 3, RenderUtils.Color(33, 33, 33, 255));
-                double hpp = Pkmn.HPPercentage;
-                int theW = (int)(lineW * hpp);
-                if (theW == 0 && hpp > 0)
-                {
-                    theW = 1;
-                }
-                RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX, lineStartY, theW, hpSides);
-                RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX, lineStartY + 1, theW, hpMid);
-                RenderUtils.DrawHorizontalLine_Width(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX, lineStartY + 2, theW, hpSides);
+                RenderUtils.HP_TripleLine(bmpAddress, InfoBarImg.Width, InfoBarImg.Height, lineStartX - 1, 23, lineW + 2, Pkmn.HPPercentage);
 
                 // EXP
                 if (!_useKnownInfo)
@@ -167,7 +140,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         uint expCur = Pkmn.EXP;
                         expp = (double)(expCur - expPrev) / (expNext - expPrev);
                     }
-                    theW = (int)(lineW * expp);
+                    int theW = (int)(lineW * expp);
                     if (theW == 0 && expp > 0)
                     {
                         theW = 1;
