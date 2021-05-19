@@ -41,7 +41,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private AnimatedImage _pkmnImage;
         private readonly Image _pageImage;
         private const float PageImageWidth = 0.55f;
-        private const float PageImageHeight = 0.9f;
+        private const float PageImageHeight = 0.95f;
 
         #region Open & Close GUI
 
@@ -115,6 +115,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             {
                 case Page.Info: cb = CB_InfoPage; break;
                 case Page.Personal: cb = CB_PersonalPage; break;
+                case Page.Stats: cb = CB_StatsPage; break;
                 default: throw new Exception();
             }
             Game.Instance.SetCallback(cb);
@@ -133,6 +134,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             {
                 case Page.Info: DrawInfoPage(bmpAddress, bmpWidth, bmpHeight); break;
                 case Page.Personal: DrawPersonalPage(bmpAddress, bmpWidth, bmpHeight); break;
+                case Page.Stats: DrawStatsPage(bmpAddress, bmpWidth, bmpHeight); break;
             }
         }
         private unsafe void DrawInfoPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
@@ -150,7 +152,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float winH = rightColY + rightColH + 0.03f - winY;
             const float rightColCenterX = rightColX + (rightColW / 2f);
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(128, 215, 135, 255));
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 10, RenderUtils.Color(210, 210, 210, 255));
+            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 8, RenderUtils.Color(210, 210, 210, 255));
 
             Font leftColFont = Font.Default;
             uint[] leftColColors = Font.DefaultWhite2_I;
@@ -271,6 +273,109 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 Place(6, 0, str, leftColColors);
             }
         }
+        private unsafe void DrawStatsPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            const float winX = 0.03f;
+            const float winY = 0.15f;
+            const float leftColX = winX + 0.02f;
+            const float textStartY = winY + 0.03f;
+            const float textStart2Y = winY + 0.15f;
+            const float textSpacingY = 0.08f;
+            const float rightColX = winX + 0.52f;
+            const float rightColY = winY + 0.02f;
+            const float rightColW = 0.95f - rightColX;
+            const float rightColH = 0.535f;
+            const float winW = 0.97f - winX;
+            const float winH = 0.995f - winY;
+            const float rightColCenterX = rightColX + (rightColW / 2f);
+            const float abilTextY = textStart2Y + (5.5f * textSpacingY);
+            const float abilDescX = leftColX + 0.03f;
+            const float abilDescY = textStart2Y + (6.6f * textSpacingY);
+            const float abilX = winX + 0.18f;
+            const float abilTextX = abilX + 0.03f;
+            const float abilY = abilTextY;
+            const float abilW = 0.95f - abilX;
+            const float abilH = 0.075f;
+            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 12, RenderUtils.Color(135, 145, 250, 255));
+            // Stats
+            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 8, RenderUtils.Color(210, 210, 210, 255));
+            // Abil
+            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, abilX, abilY, abilX + abilW, abilY + abilH, 5, RenderUtils.Color(210, 210, 210, 255));
+            // Abil desc
+            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, leftColX, abilDescY, 0.95f, 0.98f, 5, RenderUtils.Color(210, 210, 210, 255));
+
+            Font leftColFont = Font.Default;
+            uint[] leftColColors = Font.DefaultWhite2_I;
+            Font rightColFont = Font.Default;
+            uint[] rightColColors = Font.DefaultBlack_I;
+
+            void PlaceLeftCol(int i, string leftColStr)
+            {
+                float y;
+                if (i == -1)
+                {
+                    y = abilTextY;
+                }
+                else if (i == -2)
+                {
+                    y = textStartY;
+                }
+                else
+                {
+                    y = textStart2Y + (i * textSpacingY);
+                }
+                leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, leftColX, y, leftColStr, leftColColors);
+            }
+            void PlaceRightCol(int i, string rightColStr, uint[] colors)
+            {
+                float y = i == -2 ? textStartY : textStart2Y + (i * textSpacingY);
+                rightColFont.MeasureString(rightColStr, out int strW, out _);
+                rightColFont.DrawString(bmpAddress, bmpWidth, bmpHeight,
+                    RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, rightColCenterX), (int)(bmpHeight * y), rightColStr, colors);
+            }
+
+            PlaceLeftCol(-2, "HP");
+            PlaceLeftCol(0, "Attack");
+            PlaceLeftCol(1, "Defense");
+            PlaceLeftCol(2, "Special Attack");
+            PlaceLeftCol(3, "Special Defense");
+            PlaceLeftCol(4, "Speed");
+            PlaceLeftCol(-1, "Ability");
+
+            ushort hp = _currentPkmn.HP;
+            ushort maxHP = _currentPkmn.MaxHP;
+            ushort atk = _currentPkmn.Attack;
+            ushort def = _currentPkmn.Defense;
+            ushort spAtk = _currentPkmn.SpAttack;
+            ushort spDef = _currentPkmn.SpDefense;
+            ushort speed = _currentPkmn.Speed;
+            PBEAbility abil = _currentPkmn.Ability;
+
+            // HP
+            string str = string.Format("{0}/{1}", hp, maxHP);
+            PlaceRightCol(-2, str, rightColColors);
+            // Attack
+            str = atk.ToString();
+            PlaceRightCol(0, str, rightColColors);
+            // Defense
+            str = def.ToString();
+            PlaceRightCol(1, str, rightColColors);
+            // Sp. Attack
+            str = spAtk.ToString();
+            PlaceRightCol(2, str, rightColColors);
+            // Sp. Defense
+            str = spDef.ToString();
+            PlaceRightCol(3, str, rightColColors);
+            // Speed
+            str = speed.ToString();
+            PlaceRightCol(4, str, rightColColors);
+            // Ability
+            str = PBELocalizedString.GetAbilityName(abil).English;
+            rightColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, abilTextX, abilTextY, str, rightColColors);
+            // Ability desc
+            str = PBELocalizedString.GetAbilityDescription(abil).English;
+            leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, abilDescX, abilDescY, str, rightColColors);
+        }
 
         private void CB_InfoPage()
         {
@@ -295,6 +400,24 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             if (InputManager.IsPressed(Key.Left))
             {
                 SwapPage(Page.Info);
+                return;
+            }
+            if (InputManager.IsPressed(Key.Right))
+            {
+                SwapPage(Page.Stats);
+                return;
+            }
+        }
+        private void CB_StatsPage()
+        {
+            if (InputManager.IsPressed(Key.B))
+            {
+                CloseSummaryMenu();
+                return;
+            }
+            if (InputManager.IsPressed(Key.Left))
+            {
+                SwapPage(Page.Personal);
                 return;
             }
         }

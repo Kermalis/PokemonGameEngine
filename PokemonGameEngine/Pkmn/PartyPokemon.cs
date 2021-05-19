@@ -53,6 +53,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public EVs EffortValues { get; set; }
         public IVs IndividualValues { get; set; }
 
+        // Could probably get away with not needing these
         public ushort MaxHP { get; private set; }
         public ushort Attack { get; private set; }
         public ushort Defense { get; private set; }
