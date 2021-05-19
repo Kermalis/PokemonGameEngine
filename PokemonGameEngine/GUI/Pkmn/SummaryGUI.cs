@@ -144,16 +144,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float winW = 0.97f - winX;
             const float winH = 0.85f - winY;
             const float leftColX = winX + 0.02f;
-            const float textStartY = winY + 0.05f;
-            const float textSpacingY = 0.1f;
             const float rightColX = winX + 0.52f;
             const float rightColY = winY + 0.03f;
             const float rightColW = 0.95f - rightColX;
             const float rightColH = 0.82f - rightColY;
             const float rightColCenterX = rightColX + (rightColW / 2f);
+            const float textStartY = rightColY + 0.02f;
+            const float textSpacingY = 0.1f;
             int xpW = (int)(bmpWidth * 0.3f);
             int xpX = RenderUtils.GetCoordinatesForCentering(bmpWidth, xpW, rightColCenterX);
-            int xpY = (int)(bmpHeight * 0.79f);
+            int xpY = (int)(bmpHeight * (rightColY + 0.61f));
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(128, 215, 135, 255));
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 8, RenderUtils.Color(210, 210, 210, 255));
 
@@ -228,11 +228,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             const float winX = 0.08f;
             const float winY = 0.15f;
+            const float winW = 0.75f - winX;
+            const float winH = 0.93f - winY;
             const float leftColX = winX + 0.03f;
             const float textStartY = winY + 0.05f;
             const float textSpacingY = 0.1f;
-            const float winW = 0.75f - winX;
-            const float winH = 0.93f - winY;
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(145, 225, 225, 255));
 
             Font leftColFont = Font.Default;
@@ -295,14 +295,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float winW = 0.97f - winX;
             const float winH = 0.995f - winY;
             const float leftColX = winX + 0.02f;
-            const float textStartY = winY + 0.03f;
-            const float textStart2Y = winY + 0.15f;
-            const float textSpacingY = 0.08f;
             const float rightColX = winX + 0.52f;
             const float rightColY = winY + 0.02f;
             const float rightColW = 0.95f - rightColX;
             const float rightColH = 0.535f;
             const float rightColCenterX = rightColX + (rightColW / 2f);
+            const float textStartY = rightColY + 0.01f;
+            const float textStart2Y = rightColY + 0.13f;
+            const float textSpacingY = 0.08f;
             const float abilTextY = textStart2Y + (5.5f * textSpacingY);
             const float abilDescX = leftColX + 0.03f;
             const float abilDescY = textStart2Y + (6.6f * textSpacingY);
@@ -313,7 +313,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float abilH = 0.075f;
             int hpW = (int)(bmpWidth * 0.3f);
             int hpX = RenderUtils.GetCoordinatesForCentering(bmpWidth, hpW, rightColCenterX);
-            int hpY = (int)(bmpHeight * (winY + 0.11f));
+            int hpY = (int)(bmpHeight * (rightColY + 0.09f));
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 12, RenderUtils.Color(135, 145, 250, 255));
             // Stats
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 8, RenderUtils.Color(210, 210, 210, 255));
