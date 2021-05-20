@@ -34,6 +34,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private readonly Mode _mode;
         private Page _page;
         private readonly PartyPokemon _currentPkmn;
+        private int _selectingMove = -1;
 
         private FadeColorTransition _fadeTransition;
         private Action _onClosed;
@@ -116,6 +117,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 case Page.Info: cb = CB_InfoPage; break;
                 case Page.Personal: cb = CB_PersonalPage; break;
                 case Page.Stats: cb = CB_StatsPage; break;
+                case Page.Moves: cb = CB_MovesPage; break;
                 default: throw new Exception();
             }
             Game.Instance.SetCallback(cb);
@@ -135,6 +137,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 case Page.Info: DrawInfoPage(bmpAddress, bmpWidth, bmpHeight); break;
                 case Page.Personal: DrawPersonalPage(bmpAddress, bmpWidth, bmpHeight); break;
                 case Page.Stats: DrawStatsPage(bmpAddress, bmpWidth, bmpHeight); break;
+                case Page.Moves: DrawMovesPage(bmpAddress, bmpWidth, bmpHeight); break;
             }
         }
         private unsafe void DrawInfoPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
@@ -396,6 +399,85 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             str = PBELocalizedString.GetAbilityDescription(abil).English;
             leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, abilDescX, abilDescY, str, rightColColors);
         }
+        private unsafe void DrawMovesPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        {
+            const float winX = 0.08f;
+            const float winY = 0.15f;
+            const float winW = 0.75f - winX;
+            const float winH = 0.9f - winY;
+            const float moveColX = winX + 0.03f;
+            const float moveTextX = moveColX + 0.02f;
+            const float moveColW = 0.69f - winX;
+            const float itemSpacingY = winH / (PkmnConstants.NumMoves + 0.75f);
+            const float moveX = 0.21f;
+            const float moveY = 0.03f;
+            const float ppX = 0.12f;
+            const float ppNumX = 0.35f;
+            const float ppY = itemSpacingY / 2;
+            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(250, 128, 120, 255));
+
+            Font moveFont = Font.Default;
+            uint[] moveColors = Font.DefaultWhite2_I;
+            uint[] ppColors = Font.DefaultBlack_I;
+
+            void Place(int i, PBEMove move, int pp, int maxPP)
+            {
+                PBEMoveData mData = PBEMoveData.Data[move];
+                float x = moveTextX;
+                float y = winY + moveY + (i * itemSpacingY);
+                string str = PBELocalizedString.GetTypeName(mData.Type).English;
+                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y, str, moveColors);
+                x += moveX;
+                str = PBELocalizedString.GetMoveName(move).English;
+                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y, str, moveColors);
+                x = moveTextX + ppX;
+                y += ppY;
+                str = "PP";
+                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y, str, ppColors);
+                x = moveTextX + ppNumX;
+                str = string.Format("{0}/{1}", pp, maxPP);
+                moveFont.MeasureString(str, out int strW, out _);
+                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, x), (int)(bmpHeight * y), str, ppColors);
+
+                if (_selectingMove == i)
+                {
+                    DrawSelection(i);
+                }
+            }
+            void DrawSelection(int i)
+            {
+                float x = moveColX;
+                float y = winY + moveY + (i * itemSpacingY);
+                float w = moveColW;
+                float h = i == PkmnConstants.NumMoves ? itemSpacingY / 2 : itemSpacingY;
+                RenderUtils.DrawRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, x + w, y + h, 5, RenderUtils.Color(48, 180, 255, 200));
+            }
+
+            // Moves
+            Moveset moves = _currentPkmn.Moveset;
+            for (int m = 0; m < PkmnConstants.NumMoves; m++)
+            {
+                Moveset.MovesetSlot slot = moves[m];
+                PBEMove move = slot.Move;
+                if (move == PBEMove.None)
+                {
+                    continue;
+                }
+                int pp = slot.PP;
+                int maxPP = PBEDataUtils.CalcMaxPP(move, slot.PPUps, PkmnConstants.PBESettings);
+                Place(m, move, pp, maxPP);
+            }
+            // Cancel
+            if (_selectingMove != -1)
+            {
+                const float cancelY = winY + moveY + (PkmnConstants.NumMoves * itemSpacingY);
+                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, moveTextX, cancelY, "Cancel", moveColors);
+                if (_selectingMove == PkmnConstants.NumMoves)
+                {
+                    DrawSelection(PkmnConstants.NumMoves);
+                }
+            }
+        }
 
         private void CB_InfoPage()
         {
@@ -439,6 +521,69 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             {
                 SwapPage(Page.Personal);
                 return;
+            }
+            if (InputManager.IsPressed(Key.Right))
+            {
+                SwapPage(Page.Moves);
+                return;
+            }
+        }
+        private void CB_MovesPage()
+        {
+            if (_selectingMove != -1)
+            {
+                if (InputManager.IsPressed(Key.A))
+                {
+                    if (_selectingMove == PkmnConstants.NumMoves)
+                    {
+                        _selectingMove = -1;
+                        UpdatePageImage();
+                    }
+                    return;
+                }
+                if (InputManager.IsPressed(Key.B))
+                {
+                    _selectingMove = -1;
+                    UpdatePageImage();
+                    return;
+                }
+                if (InputManager.IsPressed(Key.Up))
+                {
+                    if (_selectingMove != 0)
+                    {
+                        _selectingMove--;
+                        UpdatePageImage();
+                    }
+                    return;
+                }
+                if (InputManager.IsPressed(Key.Down))
+                {
+                    if (_selectingMove != PkmnConstants.NumMoves)
+                    {
+                        _selectingMove++;
+                        UpdatePageImage();
+                    }
+                    return;
+                }
+            }
+            else
+            {
+                if (InputManager.IsPressed(Key.A))
+                {
+                    _selectingMove = 0;
+                    UpdatePageImage();
+                    return;
+                }
+                if (InputManager.IsPressed(Key.B))
+                {
+                    CloseSummaryMenu();
+                    return;
+                }
+                if (InputManager.IsPressed(Key.Left))
+                {
+                    SwapPage(Page.Stats);
+                    return;
+                }
             }
         }
 
