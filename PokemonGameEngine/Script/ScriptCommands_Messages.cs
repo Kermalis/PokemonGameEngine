@@ -36,15 +36,6 @@ namespace Kermalis.PokemonGameEngine.Script
             _messageBox = null;
         }
 
-        private unsafe void RenderChoicesOntoWindow()
-        {
-            _multichoiceWindow.ClearImage();
-            Image i = _multichoiceWindow.Image;
-            fixed (uint* bmpAddress = i.Bitmap)
-            {
-                _multichoice.Render(bmpAddress, i.Width, i.Height);
-            }
-        }
         private void CloseChoices()
         {
             _multichoiceWindow.Close();
@@ -53,19 +44,19 @@ namespace Kermalis.PokemonGameEngine.Script
             _multichoice = null;
         }
 
-        private void MultichoiceAction(short value)
+        private void YesNoAction(bool value)
+        {
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)(value ? 1 : 0);
+            CloseChoices();
+        }
+        /*private void MultichoiceAction(short value)
         {
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = value;
             CloseChoices();
-        }
+        }*/
         private void YesNoChoiceCommand()
         {
-            _multichoice = new TextGUIChoices(0, 0, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
-            _multichoice.Add(new TextGUIChoice("Yes", () => MultichoiceAction(1)));
-            _multichoice.Add(new TextGUIChoice("No", () => MultichoiceAction(0)));
-            _multichoice.GetSize(out int width, out int height);
-            _multichoiceWindow = new Window(0.8f, 0.4f, width, height, RenderUtils.Color(255, 255, 255, 255));
-            RenderChoicesOntoWindow();
+            TextGUIChoices.CreateStandardYesNoChoices(YesNoAction, out _multichoice, out _multichoiceWindow);
         }
     }
 }

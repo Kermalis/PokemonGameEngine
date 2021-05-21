@@ -81,7 +81,7 @@ namespace Kermalis.PokemonGameEngine.Script
                     {
                         if (s != _multichoice.Selected)
                         {
-                            RenderChoicesOntoWindow();
+                            _multichoice.RenderChoicesOntoWindow(_multichoiceWindow);
                         }
                     }
                 }

@@ -13,14 +13,16 @@ using System;
 namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
     // TODO: Eggs
-    // TODO: Different modes (like select a move)
     // TODO: Box mon, battle mon
     // TODO: Up/down
+    // TODO: Messages and confirm for learning moves
+    // TODO: Move descriptions & stats/new move PP
     internal sealed class SummaryGUI
     {
         public enum Mode : byte
         {
-            JustView
+            JustView,
+            LearnMove
         }
         private enum Page : byte
         {
@@ -34,6 +36,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private readonly Mode _mode;
         private Page _page;
         private readonly PartyPokemon _currentPkmn;
+        private readonly PBEMove _learningMove;
         private int _selectingMove = -1;
 
         private FadeColorTransition _fadeTransition;
@@ -46,10 +49,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         #region Open & Close GUI
 
-        public unsafe SummaryGUI(PartyPokemon pkmn, Mode mode, Action onClosed)
+        public unsafe SummaryGUI(PartyPokemon pkmn, Mode mode, Action onClosed, PBEMove learningMove = PBEMove.None)
         {
             _mode = mode;
-            _page = Page.Info;
+            if (mode == Mode.LearnMove)
+            {
+                SetSelectionVar(-1);
+                _page = Page.Moves;
+                _selectingMove = 0;
+                _learningMove = learningMove;
+            }
+            else
+            {
+                _page = Page.Info;
+            }
 
             _pageImage = new Image((int)(Program.RenderWidth * PageImageWidth), (int)(Program.RenderHeight * PageImageHeight));
 
@@ -75,7 +88,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                Game.Instance.SetCallback(CB_InfoPage);
+                SetProperCallback();
                 Game.Instance.SetRCallback(RCB_RenderTick);
             }
         }
@@ -107,12 +120,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             bool egg = _currentPkmn.IsEgg;
             _pkmnImage = PokemonImageUtils.GetPokemonImage(species, form, gender, shiny, false, false, pid, egg);
         }
-        private void SwapPage(Page newPage)
+        private void SetProperCallback()
         {
-            _page = newPage;
-            UpdatePageImage();
             Game.MainCallback cb;
-            switch (newPage)
+            switch (_page)
             {
                 case Page.Info: cb = CB_InfoPage; break;
                 case Page.Personal: cb = CB_PersonalPage; break;
@@ -121,6 +132,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 default: throw new Exception();
             }
             Game.Instance.SetCallback(cb);
+        }
+        private void SwapPage(Page newPage)
+        {
+            _page = newPage;
+            UpdatePageImage();
+            SetProperCallback();
+        }
+        private void SetSelectionVar(short index)
+        {
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = index;
         }
 
         private unsafe void UpdatePageImage()
@@ -414,6 +435,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float ppX = 0.12f;
             const float ppNumX = 0.35f;
             const float ppY = itemSpacingY / 2;
+            const float cancelY = winY + moveY + (PkmnConstants.NumMoves * itemSpacingY);
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(250, 128, 120, 255));
 
             Font moveFont = Font.Default;
@@ -439,13 +461,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 moveFont.MeasureString(str, out int strW, out _);
                 moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, x), (int)(bmpHeight * y), str, ppColors);
 
-                if (_selectingMove == i)
-                {
-                    DrawSelection(i);
-                }
+                DrawSelection(i);
             }
             void DrawSelection(int i)
             {
+                if (_selectingMove != i)
+                {
+                    return;
+                }
                 float x = moveColX;
                 float y = winY + moveY + (i * itemSpacingY);
                 float w = moveColW;
@@ -467,13 +490,26 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 int maxPP = PBEDataUtils.CalcMaxPP(move, slot.PPUps, PkmnConstants.PBESettings);
                 Place(m, move, pp, maxPP);
             }
-            // Cancel
-            if (_selectingMove != -1)
+
+            // Cancel or new move
+            if (_learningMove != PBEMove.None)
             {
-                const float cancelY = winY + moveY + (PkmnConstants.NumMoves * itemSpacingY);
-                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, moveTextX, cancelY, "Cancel", moveColors);
-                if (_selectingMove == PkmnConstants.NumMoves)
+                uint[] learnColors = Font.DefaultBlue_I;
+                PBEMoveData mData = PBEMoveData.Data[_learningMove];
+                float x = moveTextX;
+                string str = PBELocalizedString.GetTypeName(mData.Type).English;
+                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, x, cancelY, str, learnColors);
+                x += moveX;
+                str = PBELocalizedString.GetMoveName(_learningMove).English;
+                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, x, cancelY, str, learnColors);
+                DrawSelection(PkmnConstants.NumMoves);
+            }
+            else
+            {
+                if (_selectingMove != -1)
                 {
+                    string str = "Cancel";
+                    moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, moveTextX, cancelY, str, moveColors);
                     DrawSelection(PkmnConstants.NumMoves);
                 }
             }
@@ -534,10 +570,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             {
                 if (InputManager.IsPressed(Key.A))
                 {
-                    if (_selectingMove == PkmnConstants.NumMoves)
+                    if (_mode == Mode.LearnMove)
                     {
-                        _selectingMove = -1;
-                        UpdatePageImage();
+                        SetSelectionVar((short)_selectingMove);
+                        CloseSummaryMenu();
+                    }
+                    else
+                    {
+                        if (_selectingMove == PkmnConstants.NumMoves)
+                        {
+                            _selectingMove = -1;
+                            UpdatePageImage();
+                        }
                     }
                     return;
                 }

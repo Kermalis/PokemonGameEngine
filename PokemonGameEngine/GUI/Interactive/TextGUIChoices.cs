@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.PokemonGameEngine.Render;
+using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Interactive
 {
@@ -122,6 +123,25 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                 }
 
                 y += textH + space;
+            }
+        }
+
+        public static void CreateStandardYesNoChoices(Action<bool> clickAction, out TextGUIChoices choices, out Window window, float x = 0.8f, float y = 0.4f)
+        {
+            choices = new TextGUIChoices(0, 0, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
+            choices.Add(new TextGUIChoice("Yes", () => clickAction(true)));
+            choices.Add(new TextGUIChoice("No", () => clickAction(false)));
+            choices.GetSize(out int width, out int height);
+            window = new Window(x, y, width, height, RenderUtils.Color(255, 255, 255, 255));
+            choices.RenderChoicesOntoWindow(window);
+        }
+        public unsafe void RenderChoicesOntoWindow(Window window)
+        {
+            window.ClearImage();
+            Image i = window.Image;
+            fixed (uint* bmpAddress = i.Bitmap)
+            {
+                Render(bmpAddress, i.Width, i.Height);
             }
         }
     }

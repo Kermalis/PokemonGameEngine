@@ -81,7 +81,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             if (mode == Mode.SelectDaycare)
             {
-                SetDefaultSelectionToNone();
+                SetSelectionVar(-1);
             }
 
             _onClosed = onClosed;
@@ -101,7 +101,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             if (mode == Mode.BattleSwitchIn)
             {
-                SetDefaultSelectionToNone();
+                SetSelectionVar(-1);
             }
             else if (mode == Mode.BattleReplace)
             {
@@ -211,9 +211,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _members[i].SetBigBounce();
             }
         }
-        private void SetDefaultSelectionToNone()
+        private void SetSelectionVar(short index)
         {
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = -1; // If you back out, the default selection is -1
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = index;
         }
 
         #region Battle replacement
@@ -295,7 +295,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 case Mode.SelectDaycare:
                 case Mode.BattleSwitchIn:
                 {
-                    Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)index;
+                    SetSelectionVar((short)index);
                     CloseChoices();
                     ClosePartyMenu();
                     return;
