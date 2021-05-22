@@ -9,6 +9,7 @@ Main Mechanics:
     EVs
     Badges
     Level-up moves mid-battle
+    In-battle item selection (requires bag GUI)
     Heal locations/black out
     World Map
     PC & Mart
@@ -24,7 +25,8 @@ GUIs:
     Finish Summary GUI
     Options
     Trainer card (with trainer card stars)
-    Nickname screen (and for egg hatch)
+    Nickname GUI (and for egg hatch)
+    Caught pkmn scene (requires nickname GUI)
 
 Encounters:
     CompoundEyes
