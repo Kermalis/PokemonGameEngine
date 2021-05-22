@@ -181,6 +181,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private unsafe void CB_FadeOutBattle()
         {
+            OverworldGUI.ProcessDayTint(false);
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
