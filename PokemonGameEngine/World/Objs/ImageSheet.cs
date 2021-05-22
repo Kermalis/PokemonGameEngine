@@ -54,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
         }
 
-        private static readonly Dictionary<string, WeakReference<ImageSheet>> _loadedSheets = new Dictionary<string, WeakReference<ImageSheet>>();
+        private static readonly Dictionary<string, WeakReference<ImageSheet>> _loadedSheets = new();
         public static ImageSheet LoadOrGet(string id)
         {
             ImageSheet s;

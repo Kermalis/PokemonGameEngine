@@ -18,7 +18,7 @@ internal static class WorldBuilderHelper
         if (type.IsDefined(typeof(FlagsAttribute), false))
         {
             ulong value = 0;
-            foreach (TEnum flag in Enum.GetValues(type))
+            foreach (TEnum flag in Enum.GetValues<TEnum>())
             {
                 ulong ulFlag = Convert.ToUInt64(flag);
                 if (ulFlag != 0uL && j[flag.ToString()].Value<bool>())
@@ -26,7 +26,7 @@ internal static class WorldBuilderHelper
                     value |= ulFlag;
                 }
             }
-            return (TEnum)Enum.ToObject(typeof(TEnum), value);
+            return (TEnum)Enum.ToObject(type, value);
         }
         else
         {

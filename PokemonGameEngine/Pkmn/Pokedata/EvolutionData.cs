@@ -27,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
 
         public EvolutionData(PBESpecies species, PBEForm form)
         {
-            string resource = "Pokedata." + PkmnOrderResolver.GetDirectoryName(species, form) + ".Evolutions.bin";
+            string resource = "Pokedata." + Utils.GetPkmnDirectoryName(species, form) + ".Evolutions.bin";
             using (var r = new EndianBinaryReader(Utils.GetResourceStream(resource)))
             {
                 BabySpecies = r.ReadEnum<PBESpecies>();

@@ -81,9 +81,9 @@ namespace Kermalis.PokemonDumper
             public PBEAbility Ability1;
             public PBEAbility Ability2;
             public PBEAbility AbilityH;
-            public List<(PBEMove Move, byte Level)> LevelUpMoves = new List<(PBEMove, byte)>();
+            public List<(PBEMove Move, byte Level)> LevelUpMoves = new();
             public PBEMove[] EggMoves = Array.Empty<PBEMove>();
-            public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
+            public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new();
             public PBESpecies BabySpecies;
             public (EvoMethod Method, ushort Param, PBESpecies Species, PBEForm Form)[] Evolutions = new (EvoMethod, ushort, PBESpecies, PBEForm)[7];
 
@@ -168,7 +168,7 @@ namespace Kermalis.PokemonDumper
             PBEType.Dark
         };
 
-        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _b2w2SpeciesIndexToPBESpecies = new Dictionary<int, (PBESpecies, PBEForm)>
+        private static readonly Dictionary<int, (PBESpecies, PBEForm)> _b2w2SpeciesIndexToPBESpecies = new()
         {
             { 685, (PBESpecies.Deoxys, PBEForm.Deoxys_Attack) },
             { 686, (PBESpecies.Deoxys, PBEForm.Deoxys_Defense) },

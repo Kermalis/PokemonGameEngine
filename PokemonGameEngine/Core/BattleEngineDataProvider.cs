@@ -66,7 +66,7 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public override bool IsMoonBallFamily(PBESpecies species, PBEForm form)
         {
-            bool Check(EvolutionData data)
+            static bool Check(EvolutionData data)
             {
                 foreach (EvolutionData.EvoData e in data.Evolutions)
                 {

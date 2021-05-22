@@ -2,6 +2,7 @@
 using Nuke.Common.Execution;
 using Nuke.Common.IO;
 
+#pragma warning disable IDE0051 // Remove unused private members
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
 public sealed partial class Build : NukeBuild
@@ -41,3 +42,4 @@ public sealed partial class Build : NukeBuild
     .After(CleanPokedataOnly)
     .Executes(BuildPokedata);
 }
+#pragma warning restore IDE0051 // Remove unused private members

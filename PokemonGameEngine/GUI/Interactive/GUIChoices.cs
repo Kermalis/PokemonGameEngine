@@ -20,7 +20,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
 
     internal abstract class GUIChoices<T> : IEnumerable<T>, IDisposable where T : GUIChoice
     {
-        protected readonly List<T> _choices = new List<T>();
+        protected readonly List<T> _choices = new();
 
         public float X;
         public float Y;

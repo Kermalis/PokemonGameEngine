@@ -6,6 +6,7 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<RootNamespace></RootNamespace>
 		<IsPackable>False</IsPackable>
+		<NoWarn>CA1050</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

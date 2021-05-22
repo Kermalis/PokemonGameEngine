@@ -11,7 +11,7 @@ namespace Kermalis.PokemonGameEngine.Script
     internal sealed partial class ScriptContext : IDisposable
     {
         private readonly EndianBinaryReader _reader;
-        private readonly Stack<long> _callStack = new Stack<long>();
+        private readonly Stack<long> _callStack = new();
         private bool _isDisposed;
         private ushort _delay;
         private Obj _waitMovementObj;

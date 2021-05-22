@@ -7,7 +7,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 {
     internal sealed class Party : IPBEPartyPokemonCollection<PartyPokemon>, IPBEPartyPokemonCollection, IPBEPokemonCollection<PartyPokemon>, IPBEPokemonCollection
     {
-        private readonly List<PartyPokemon> _slots = new List<PartyPokemon>();
+        private readonly List<PartyPokemon> _slots = new(PkmnConstants.PartyCapacity);
 
         public PartyPokemon this[int index] => _slots[index];
         IPBEPartyPokemon IReadOnlyList<IPBEPartyPokemon>.this[int index] => _slots[index];

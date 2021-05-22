@@ -40,7 +40,7 @@ namespace Kermalis.MapEditor.Core
                 }
                 else
                 {
-                    Form = (PBEForm)Enum.Parse(typeof(PBEForm), strForm);
+                    Form = Enum.Parse<PBEForm>(strForm);
                 }
             }
 
@@ -94,7 +94,7 @@ namespace Kermalis.MapEditor.Core
 
         private static readonly string EncounterTablePath = Path.Combine(Program.AssetPath, "Encounter");
         public static IdList Ids { get; } = new IdList(Path.Combine(EncounterTablePath, "EncounterTableIds.txt"));
-        private static readonly Dictionary<int, WeakReference<EncounterTable>> _loadedEncounterTables = new Dictionary<int, WeakReference<EncounterTable>>();
+        private static readonly Dictionary<int, WeakReference<EncounterTable>> _loadedEncounterTables = new();
         internal static EncounterTable LoadOrGet(string name)
         {
             int id = Ids[name];

@@ -5,7 +5,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal class CameraObj : Obj
     {
-        public static readonly CameraObj Camera = new CameraObj();
+        public static readonly CameraObj Camera = new();
         public static int CameraOfsX;
         public static int CameraOfsY;
         public static Obj CameraAttachedTo;
@@ -160,7 +160,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                     for (int i = 0; i < objs.Count; i++)
                     {
                         Obj o = objs[i];
-                        if (!(o is VisualObj v) || v.Map != map)
+                        if (o is not VisualObj v || v.Map != map)
                         {
                             continue;
                         }

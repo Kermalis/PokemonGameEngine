@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public PlayerInventory PlayerInventory { get; private set; }
         public uint Money { get; private set; }
 
-        private void InitPlayerWithDefaultLocation()
+        private static void InitPlayerWithDefaultLocation()
         {
             var map = Map.LoadOrGet(0);
             PlayerObj.Init(2, 29, map);

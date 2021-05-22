@@ -47,8 +47,8 @@ namespace Kermalis.PokemonGameEngine.World
 
         private const string TilesetExtension = ".png";
         private const string TilesetPath = "Tileset.";
-        private static readonly IdList _ids = new IdList(TilesetPath + "TilesetIds.txt");
-        private static readonly Dictionary<int, WeakReference<Tileset>> _loadedTilesets = new Dictionary<int, WeakReference<Tileset>>();
+        private static readonly IdList _ids = new(TilesetPath + "TilesetIds.txt");
+        private static readonly Dictionary<int, WeakReference<Tileset>> _loadedTilesets = new();
         public static Tileset LoadOrGet(int id)
         {
             string name = _ids[id];
@@ -196,7 +196,7 @@ namespace Kermalis.PokemonGameEngine.World
             return new EndianBinaryReader(Utils.GetResourceStream(AnimationsFile), encoding: EncodingType.UTF16);
         }
 
-        private static readonly Dictionary<int, WeakReference<TileAnimation[]>> _loadedAnimations = new Dictionary<int, WeakReference<TileAnimation[]>>();
+        private static readonly Dictionary<int, WeakReference<TileAnimation[]>> _loadedAnimations = new();
         public static TileAnimation[] LoadOrGet(int tilesetId)
         {
             if (!_animationOffsets.TryGetValue(tilesetId, out uint[] offsets))

@@ -248,8 +248,7 @@ namespace Kermalis.PokemonGameEngine.Item
     internal sealed class PlayerInventory : Inventory<InventorySlotNew>
     {
         public PlayerInventory()
-            : base(Enum.GetValues(typeof(ItemPouchType)).Cast<ItemPouchType>()
-                  .Select(t => new InventoryPouch<InventorySlotNew>(t)).ToArray()) // All pouch types
+            : base(Enum.GetValues<ItemPouchType>().Select(t => new InventoryPouch<InventorySlotNew>(t)).ToArray()) // All pouch types
         {
         }
 

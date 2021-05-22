@@ -59,12 +59,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
-        private readonly TargetInfo _targetAllyLeft = new TargetInfo(true);
+        private readonly TargetInfo _targetAllyLeft = new(true);
         private readonly TargetInfo _targetAllyCenter;
-        private readonly TargetInfo _targetAllyRight = new TargetInfo(true);
-        private readonly TargetInfo _targetFoeLeft = new TargetInfo(false);
+        private readonly TargetInfo _targetAllyRight = new(true);
+        private readonly TargetInfo _targetFoeLeft = new(false);
         private readonly TargetInfo _targetFoeCenter;
-        private readonly TargetInfo _targetFoeRight = new TargetInfo(false);
+        private readonly TargetInfo _targetFoeRight = new(false);
 
         private readonly bool _centerTargetsVisible;
         private readonly PBEBattlePokemon _pkmn;

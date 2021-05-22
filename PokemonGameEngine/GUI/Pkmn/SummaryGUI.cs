@@ -122,7 +122,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void SetProperCallback()
         {
-            Game.MainCallback cb;
+            MainCallback cb;
             switch (_page)
             {
                 case Page.Info: cb = CB_InfoPage; break;
@@ -139,7 +139,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             UpdatePageImage();
             SetProperCallback();
         }
-        private void SetSelectionVar(short index)
+        private static void SetSelectionVar(short index)
         {
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = index;
         }

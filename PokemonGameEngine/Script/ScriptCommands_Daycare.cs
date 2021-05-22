@@ -7,11 +7,11 @@ namespace Kermalis.PokemonGameEngine.Script
 {
     internal sealed partial class ScriptContext
     {
-        private void GetDaycareStateCommand()
+        private static void GetDaycareStateCommand()
         {
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = (byte)Game.Instance.Save.Daycare.GetDaycareState();
         }
-        private void StorePokemonInDaycareCommand()
+        private static void StorePokemonInDaycareCommand()
         {
             int index = Game.Instance.Save.Vars[Var.SpecialVar_Result];
             PartyPokemon pkmn = Game.Instance.Save.PlayerParty[index];
@@ -19,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.Script
             Game.Instance.Save.Daycare.StorePokemon(pkmn);
             Game.Instance.StringBuffers.Buffers[0] = pkmn.Nickname;
         }
-        private void GetDaycareCompatibilityCommand()
+        private static void GetDaycareCompatibilityCommand()
         {
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = Game.Instance.Save.Daycare.GetCompatibility();
         }
@@ -28,15 +28,15 @@ namespace Kermalis.PokemonGameEngine.Script
             OverworldGUI.Instance.OpenPartyMenu(PartyGUI.Mode.SelectDaycare);
             _waitReturnToField = true;
         }
-        private void GiveDaycareEggCommand()
+        private static void GiveDaycareEggCommand()
         {
             Game.Instance.Save.Daycare.GiveEgg();
         }
-        private void DisposeDaycareEggCommand()
+        private static void DisposeDaycareEggCommand()
         {
             Game.Instance.Save.Daycare.DisposeEgg();
         }
-        private void HatchEggCommand()
+        private static void HatchEggCommand()
         {
             OverworldGUI.Instance.StartEggHatchScreen();
         }

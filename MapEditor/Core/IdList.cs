@@ -11,7 +11,7 @@ namespace Kermalis.MapEditor.Core
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         private readonly string _path;
-        private readonly List<string> _entries = new List<string>();
+        private readonly List<string> _entries = new();
 
         internal IdList(string path)
         {

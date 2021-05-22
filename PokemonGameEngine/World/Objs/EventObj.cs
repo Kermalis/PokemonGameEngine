@@ -68,19 +68,19 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
         }
 
-        private FacingDirection GetRandomDirection()
+        private static FacingDirection GetRandomDirection()
         {
             return (FacingDirection)PBEDataProvider.GlobalRandom.RandomInt(0, 7); // 8 directions
         }
-        private FacingDirection GetRandomDirection(IReadOnlyList<FacingDirection> dirs)
+        private static FacingDirection GetRandomDirection(IReadOnlyList<FacingDirection> dirs)
         {
             return PBEDataProvider.GlobalRandom.RandomElement(dirs);
         }
-        private FacingDirection GetRandomDirection(FacingDirection a, FacingDirection b)
+        private static FacingDirection GetRandomDirection(FacingDirection a, FacingDirection b)
         {
             return PBEDataProvider.GlobalRandom.RandomBool() ? a : b;
         }
-        private int GetRandomTimer()
+        private static int GetRandomTimer()
         {
             return PBEDataProvider.GlobalRandom.RandomInt(1 * Program.NumTicksPerSecond, 10 * Program.NumTicksPerSecond);
         }

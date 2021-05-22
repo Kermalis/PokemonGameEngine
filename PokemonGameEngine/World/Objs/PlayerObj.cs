@@ -9,7 +9,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal sealed class PlayerObj : VisualObj
     {
-        public static readonly PlayerObj Player = new PlayerObj();
+        public static readonly PlayerObj Player = new();
 
         public bool IsWaitingForObjToStartScript;
         public override bool CanMoveWillingly => !IsWaitingForObjToStartScript && base.CanMoveWillingly;

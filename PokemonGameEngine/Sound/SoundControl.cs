@@ -34,7 +34,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
         }
 
-        private static readonly Dictionary<Song, (string resource, double loopPoint)> _songResources = new Dictionary<Song, (string, double)>
+        private static readonly Dictionary<Song, (string resource, double loopPoint)> _songResources = new()
         {
             { Song.Town1, ("Sound.BGM.Town1.ogg", 60d/110*4*14) }, // 110BPM, 4/4, loop after 14 bars (30.5454~ seconds)
             { Song.Route1, ("Sound.BGM.Town1.ogg", 60d/110*4*14) },//, ("Sound.BGM.Route1.ogg", 60d/220*4*2) }, // 220BPM, 4/4, loop after 2 bars (2.1818~ seconds)

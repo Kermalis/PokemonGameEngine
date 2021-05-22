@@ -116,8 +116,8 @@ namespace Kermalis.PokemonGameEngine.World
 
         private const string BlocksetExtension = ".pgeblockset";
         private const string BlocksetPath = "Blockset.";
-        private static readonly IdList _ids = new IdList(BlocksetPath + "BlocksetIds.txt");
-        private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new Dictionary<int, WeakReference<Blockset>>();
+        private static readonly IdList _ids = new(BlocksetPath + "BlocksetIds.txt");
+        private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new();
         public static Blockset LoadOrGet(int id)
         {
             string name = _ids[id];

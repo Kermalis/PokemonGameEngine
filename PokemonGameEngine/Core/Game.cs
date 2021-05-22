@@ -8,6 +8,10 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
+    internal delegate void MainCallback();
+    internal unsafe delegate void RenderCallback(uint* bmpAddress, int bmpWidth, int bmpHeight);
+    internal delegate void SoundCallback();
+
     internal sealed class Game
     {
         public static Game Instance { get; private set; }
@@ -15,18 +19,15 @@ namespace Kermalis.PokemonGameEngine.Core
         public Save Save { get; }
         public StringBuffers StringBuffers { get; }
 
-        public readonly List<ScriptContext> Scripts = new List<ScriptContext>();
-        public readonly List<StringPrinter> StringPrinters = new List<StringPrinter>();
-        public readonly List<Window> Windows = new List<Window>();
+        public readonly List<ScriptContext> Scripts = new();
+        public readonly List<StringPrinter> StringPrinters = new();
+        public readonly List<Window> Windows = new();
 
         /// <summary>For use with Script command "AwaitReturnToField"</summary>
         public bool IsOnOverworld;
 
-        public delegate void MainCallback();
         public MainCallback Callback;
-        public unsafe delegate void RenderCallback(uint* bmpAddress, int bmpWidth, int bmpHeight);
         public RenderCallback RCallback;
-        public delegate void SoundCallback();
         public SoundCallback SCallback;
 
         public Game()
@@ -82,7 +83,7 @@ namespace Kermalis.PokemonGameEngine.Core
             SCallback = callback;
         }
 
-        private PBEBattleTerrain UpdateBattleSetting(Map.Layout.Block block)
+        private static PBEBattleTerrain UpdateBattleSetting(Map.Layout.Block block)
         {
             PBEBattleTerrain terrain = Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock);
             BattleEngineDataProvider.Instance.UpdateBattleSetting(isCave: terrain == PBEBattleTerrain.Cave,

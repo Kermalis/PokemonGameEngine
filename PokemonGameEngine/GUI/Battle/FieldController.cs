@@ -127,7 +127,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     i = position == PBEFieldPosition.Left ? 0 : position == PBEFieldPosition.Center ? 1 : 2;
                     break;
                 }
-                default: throw new ArgumentOutOfRangeException(nameof(Battle.BattleFormat));
+                default: throw new Exception();
             }
             return _positions[pkmn.Team.Id][i];
         }

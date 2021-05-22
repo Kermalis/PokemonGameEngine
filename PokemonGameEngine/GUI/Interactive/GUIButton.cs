@@ -14,7 +14,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
 
     internal class GUIButtons<T> : IEnumerable<T> where T : GUIButton
     {
-        private readonly List<T> _buttons = new List<T>();
+        private readonly List<T> _buttons = new();
 
         public void Add(T button)
         {

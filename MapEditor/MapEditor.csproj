@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net48;net5.0</TargetFrameworks>
+		<TargetFrameworks>net5.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Kermalis.MapEditor</RootNamespace>
 		<Authors>Kermalis</Authors>
@@ -28,11 +28,11 @@
 			<Link>PokemonBattleEngine.db</Link>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<PackageReference Include="Avalonia" Version="0.10.0" />
-		<PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
-		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
+		<PackageReference Include="Avalonia" Version="0.10.5" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.5" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.5" />
 		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.4" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.6" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
 		<Reference Include="PokemonBattleEngine">

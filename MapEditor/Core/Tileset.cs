@@ -70,13 +70,13 @@ namespace Kermalis.MapEditor.Core
         }
         ~Tileset()
         {
-            Dispose(false);
+            DisposeBitmap();
         }
 
         private const string TilesetExtension = ".png";
         private static readonly string TilesetPath = Path.Combine(Program.AssetPath, "Tileset");
         public static IdList Ids { get; } = new IdList(Path.Combine(TilesetPath, "TilesetIds.txt"));
-        private static readonly Dictionary<int, WeakReference<Tileset>> _loadedTilesets = new Dictionary<int, WeakReference<Tileset>>();
+        private static readonly Dictionary<int, WeakReference<Tileset>> _loadedTilesets = new();
         internal static Tileset LoadOrGet(string name)
         {
             int id = Ids[name];
@@ -113,14 +113,11 @@ namespace Kermalis.MapEditor.Core
 
         public void Dispose()
         {
-            Dispose(true);
+            DisposeBitmap();
+            GC.SuppressFinalize(this);
         }
-        private void Dispose(bool disposing)
+        private void DisposeBitmap()
         {
-            if (disposing)
-            {
-                GC.SuppressFinalize(this);
-            }
             Bitmap.Dispose();
         }
     }

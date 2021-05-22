@@ -3,6 +3,7 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.GUI.Pkmn;
+using Kermalis.PokemonGameEngine.GUI.Player;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
@@ -37,10 +38,10 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public static unsafe void Debug_InitOverworldGUI()
         {
-            var gui = new OverworldGUI(); // Create
+            _ = new OverworldGUI(); // Create
 
             ProcessDayTint(true);
-            gui.LoadMapMusic();
+            LoadMapMusic();
             Instance._fadeTransition = new FadeFromColorTransition(500, 0);
             Game.Instance.SetCallback(Instance.CB_FadeIn);
             Game.Instance.SetRCallback(Instance.RCB_Fading);
@@ -141,7 +142,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         public unsafe void StartBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties)
         {
             Game.Instance.IsOnOverworld = false;
-            new BattleGUI(battle, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties);
+            _ = new BattleGUI(battle, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties);
             SoundControl.SetBattleBGM(song);
             _fadeTransition = new SpiralTransition();
             Game.Instance.SetCallback(CB_FadeOutToBattle);
@@ -170,7 +171,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             if (pending.HasValue)
             {
                 (PartyPokemon pkmn, EvolutionData.EvoData evo) = pending.Value;
-                new EvolutionGUI(pkmn, evo);
+                _ = new EvolutionGUI(pkmn, evo);
                 return;
             }
             ReturnToFieldWithFadeIn();
@@ -182,7 +183,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             Game.Instance.SetRCallback(RCB_Fading);
         }
 
-        private void LoadMapMusic()
+        private static void LoadMapMusic()
         {
             SoundControl.SetOverworldBGM(PlayerObj.Player.Map.MapDetails.Music);
         }
@@ -238,7 +239,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                new EggHatchGUI();
+                _ = new EggHatchGUI();
             }
         }
         private void CB_FadeOutToParty_PkmnMenu()
@@ -250,7 +251,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _fadeTransition = null;
                 _startMenuWindow.Close();
                 _startMenuWindow = null;
-                new PartyGUI(Game.Instance.Save.PlayerParty, PartyGUI.Mode.PkmnMenu, ReturnToStartMenuWithFadeIn);
+                _ = new PartyGUI(Game.Instance.Save.PlayerParty, PartyGUI.Mode.PkmnMenu, ReturnToStartMenuWithFadeIn);
             }
         }
         private void CB_FadeOutToParty_SelectDaycare()
@@ -260,7 +261,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                new PartyGUI(Game.Instance.Save.PlayerParty, PartyGUI.Mode.SelectDaycare, ReturnToFieldWithFadeIn);
+                _ = new PartyGUI(Game.Instance.Save.PlayerParty, PartyGUI.Mode.SelectDaycare, ReturnToFieldWithFadeIn);
             }
         }
         private void CB_FadeOutToBag()
@@ -272,7 +273,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _fadeTransition = null;
                 _startMenuWindow.Close();
                 _startMenuWindow = null;
-                new BagGUI(Game.Instance.Save.PlayerInventory, Game.Instance.Save.PlayerParty, ReturnToStartMenuWithFadeIn);
+                _ = new BagGUI(Game.Instance.Save.PlayerInventory, Game.Instance.Save.PlayerParty, ReturnToStartMenuWithFadeIn);
             }
         }
         private void CB_FadeOutToPC()
@@ -284,7 +285,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _fadeTransition = null;
                 _startMenuWindow.Close();
                 _startMenuWindow = null;
-                new PCBoxesGUI(Game.Instance.Save.PCBoxes, Game.Instance.Save.PlayerParty, ReturnToStartMenuWithFadeIn);
+                _ = new PCBoxesGUI(Game.Instance.Save.PCBoxes, Game.Instance.Save.PlayerParty, ReturnToStartMenuWithFadeIn);
             }
         }
         private void CB_FadeOutToBattle()

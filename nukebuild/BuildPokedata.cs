@@ -17,7 +17,7 @@ internal static class PokedataBuilderHelper
         }
         else
         {
-            return (PBEForm)Enum.Parse(typeof(PBEForm), strForm);
+            return Enum.Parse<PBEForm>(strForm);
         }
     }
 }

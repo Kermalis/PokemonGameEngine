@@ -16,7 +16,7 @@ namespace Kermalis.PokemonGameEngine.Util
 
         static PokemonImageUtils()
         {
-            void Add(string resource, List<PBESpecies> list)
+            static void Add(string resource, List<PBESpecies> list)
             {
                 using (var reader = new StreamReader(Utils.GetResourceStream(resource)))
                 {
@@ -35,9 +35,9 @@ namespace Kermalis.PokemonGameEngine.Util
             Add("Pkmn.FemaleSpriteLookup.txt", _femaleVersionLookup);
         }
 
-        private static readonly object _femaleLookupLockObj = new object();
-        private static readonly List<PBESpecies> _femaleMiniLookup = new List<PBESpecies>();
-        private static readonly List<PBESpecies> _femaleVersionLookup = new List<PBESpecies>();
+        private static readonly object _femaleLookupLockObj = new();
+        private static readonly List<PBESpecies> _femaleMiniLookup = new();
+        private static readonly List<PBESpecies> _femaleVersionLookup = new();
         public static bool HasFemaleVersion(PBESpecies species, bool mini)
         {
             lock (_femaleLookupLockObj)

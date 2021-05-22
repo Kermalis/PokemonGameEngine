@@ -20,7 +20,7 @@ namespace Kermalis.MapEditor.UI
             StandardGrid.CreatePen();
             switch (ApplicationLifetime)
             {
-                case null: break;
+                case null: break; // Designer
                 case IClassicDesktopStyleApplicationLifetime desktop: desktop.MainWindow = new MainWindow(); break;
                 default: throw new PlatformNotSupportedException();
             }

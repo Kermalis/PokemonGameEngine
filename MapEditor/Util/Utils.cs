@@ -39,11 +39,11 @@ namespace Kermalis.MapEditor.Util
             c.Background = old;
         }
 
-        public static readonly Regex InvalidFileNameRegex = new Regex("[" + Regex.Escape(new string(Path.GetInvalidFileNameChars())) + "]");
+        public static readonly Regex InvalidFileNameRegex = new("[" + Regex.Escape(new string(Path.GetInvalidFileNameChars())) + "]");
 
         public static IEnumerable<TEnum> GetEnumValues<TEnum>() where TEnum : struct, Enum
         {
-            return Enum.GetValues(typeof(TEnum)).Cast<TEnum>().OrderBy(e => e.ToString());
+            return Enum.GetValues<TEnum>().OrderBy(e => e.ToString());
         }
 
         public static TEnum EnumValue<TEnum>(this JToken j) where TEnum : struct, Enum
@@ -53,7 +53,7 @@ namespace Kermalis.MapEditor.Util
             if (type.IsDefined(typeof(FlagsAttribute), false))
             {
                 ulong value = 0;
-                foreach (TEnum flag in Enum.GetValues(type))
+                foreach (TEnum flag in Enum.GetValues<TEnum>())
                 {
                     ulong ulFlag = Convert.ToUInt64(flag);
                     if (ulFlag != 0uL && j[flag.ToString()].Value<bool>())
@@ -61,12 +61,11 @@ namespace Kermalis.MapEditor.Util
                         value |= ulFlag;
                     }
                 }
-                return (TEnum)Enum.ToObject(typeof(TEnum), value);
+                return (TEnum)Enum.ToObject(type, value);
             }
             else
             {
-                return (TEnum)Enum.Parse(type, j.Value<string>()); // Must use this because of .net48
-                //return Enum.Parse<TEnum>(j.Value<string>());
+                return Enum.Parse<TEnum>(j.Value<string>());
             }
         }
         public static void WriteEnum<TEnum>(this JsonTextWriter w, TEnum value) where TEnum : struct, Enum
@@ -74,6 +73,7 @@ namespace Kermalis.MapEditor.Util
             // If it has the [Flags] attribute, write a series of bools
             if (typeof(TEnum).IsDefined(typeof(FlagsAttribute), false))
             {
+#pragma warning disable CA2248 // Provide correct 'enum' argument to 'Enum.HasFlag'
                 w.WriteStartObject();
                 foreach (TEnum flag in GetEnumValues<TEnum>())
                 {
@@ -84,6 +84,7 @@ namespace Kermalis.MapEditor.Util
                     }
                 }
                 w.WriteEndObject();
+#pragma warning restore CA2248 // Provide correct 'enum' argument to 'Enum.HasFlag'
             }
             else
             {

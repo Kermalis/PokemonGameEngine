@@ -6,7 +6,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal abstract partial class Obj
     {
-        public readonly Queue<ScriptMovement> QueuedScriptMovements = new Queue<ScriptMovement>();
+        public readonly Queue<ScriptMovement> QueuedScriptMovements = new();
 
         public void RunNextScriptMovement()
         {

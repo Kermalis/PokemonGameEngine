@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
@@ -42,13 +42,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         public override int GetHashCode()
         {
-            int hashCode = 5741937;
-            hashCode = hashCode * -1521134295 + TrainerID.GetHashCode();
-            hashCode = hashCode * -1521134295 + SecretID.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TrainerName);
-            hashCode = hashCode * -1521134295 + TrainerIsFemale.GetHashCode();
-            hashCode = hashCode * -1521134295 + Language.GetHashCode();
-            return hashCode;
+            return HashCode.Combine(TrainerID, SecretID, TrainerName, TrainerIsFemale, Language);
         }
     }
 }

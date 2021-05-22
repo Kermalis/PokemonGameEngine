@@ -137,7 +137,7 @@ namespace Kermalis.MapEditor.UI.Models
         {
             _opacityBrush = new SolidColorBrush(0x40000000);
         }
-        private IBrush GetOpacityMask(bool s)
+        private static IBrush GetOpacityMask(bool s)
         {
             return s ? null : _opacityBrush;
         }

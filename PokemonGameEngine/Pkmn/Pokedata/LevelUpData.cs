@@ -12,7 +12,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
 
         public LevelUpData(PBESpecies species, PBEForm form)
         {
-            string resource = "Pokedata." + PkmnOrderResolver.GetDirectoryName(species, form) + ".LevelUp.bin";
+            string resource = "Pokedata." + Utils.GetPkmnDirectoryName(species, form) + ".LevelUp.bin";
             using (var r = new EndianBinaryReader(Utils.GetResourceStream(resource)))
             {
                 byte count = r.ReadByte();

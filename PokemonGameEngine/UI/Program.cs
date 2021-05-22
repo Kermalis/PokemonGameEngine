@@ -35,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.UI
         public static DateTime RenderTickTime { get; private set; }
         public static TimeSpan RenderTimeSinceLastFrame { get; private set; }
 
-        private readonly object _threadLockObj = new object();
+        private readonly object _threadLockObj = new();
         private readonly IntPtr _window;
         private IntPtr _renderer;
         private IntPtr _screen;
@@ -63,7 +63,7 @@ namespace Kermalis.PokemonGameEngine.UI
 
             // Game
             LogicTickTime = DateTime.Now; // Setting for DayTint static constructor
-            new Game(); // Init game
+            _ = new Game(); // Init game
             new Thread(LogicTick) { Name = "Logic Thread" }.Start();
             new Thread(RenderTick) { Name = "Render Thread", Priority = ThreadPriority.Highest }.Start();
         }

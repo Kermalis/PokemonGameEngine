@@ -304,7 +304,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                         _textChoices = null;
                         _stringPrinter.Close();
                         _stringPrinter = null;
-                        new SummaryGUI(_pkmn, SummaryGUI.Mode.LearnMove, OnSummaryClosed, learningMove: _learningMoves.Peek());
+                        _ = new SummaryGUI(_pkmn, SummaryGUI.Mode.LearnMove, OnSummaryClosed, learningMove: _learningMoves.Peek());
                     }
                     return;
                 }

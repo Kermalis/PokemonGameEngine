@@ -57,7 +57,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             "Somewhat of a clown",
             "Quick to flee"
         };
-        private static readonly Dictionary<PBEStat, string[]> _dict = new Dictionary<PBEStat, string[]>
+        private static readonly Dictionary<PBEStat, string[]> _dict = new(6)
         {
             { PBEStat.HP, _hpStrs },
             { PBEStat.Attack, _attackStrs },

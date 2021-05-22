@@ -25,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private Window _stringWindow;
         private StringPrinter _stringPrinter;
         private string _staticStringBackup;
-        private Game.MainCallback _stringReadCallback;
+        private MainCallback _stringReadCallback;
 
         private bool _isOnParty = false;
         private bool _partyVisible = false;
@@ -177,7 +177,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
         }
 
-        private void CreateStringPrinterAndWindow(string message, bool isStaticMsg, Game.MainCallback doneCallback)
+        private void CreateStringPrinterAndWindow(string message, bool isStaticMsg, MainCallback doneCallback)
         {
             _stringWindow = new Window(0, 0.79f, 1, 0.16f, RenderUtils.Color(49, 49, 49, 192));
             _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite1_I);
@@ -191,7 +191,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 Game.Instance.SetCallback(CB_ReadOutMessageThenCloseWindow);
             }
         }
-        private void OverwriteStaticString(string message, Game.MainCallback curCallback, Game.MainCallback doneCallback)
+        private void OverwriteStaticString(string message, MainCallback curCallback, MainCallback doneCallback)
         {
             _stringPrinter.Close();
             _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite1_I);

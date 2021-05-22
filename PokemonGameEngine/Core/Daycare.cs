@@ -20,7 +20,7 @@ namespace Kermalis.PokemonGameEngine.Core
         private const byte COMPAT_OVALCHARM_MEDIUM = 80;
         private const byte COMPAT_OVALCHARM_MAX = 88;
 
-        private readonly List<DaycarePokemon> _pkmn = new List<DaycarePokemon>(2);
+        private readonly List<DaycarePokemon> _pkmn = new(2);
         private BoxPokemon _offspring;
         private byte _offspringCounter;
         private byte _eggCycleCounter;
@@ -418,7 +418,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
 
         // Egg hatch
-        private byte GetEggCyclesToSubtract()
+        private static byte GetEggCyclesToSubtract()
         {
             foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
             {

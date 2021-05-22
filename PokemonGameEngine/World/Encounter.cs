@@ -44,8 +44,8 @@ namespace Kermalis.PokemonGameEngine.World
         }
 
         private const string EncounterTablePath = "Encounter.";
-        private static readonly IdList _ids = new IdList(EncounterTablePath + "EncounterTableIds.txt");
-        private static readonly Dictionary<int, WeakReference<EncounterTable>> _loadedEncounterTables = new Dictionary<int, WeakReference<EncounterTable>>();
+        private static readonly IdList _ids = new(EncounterTablePath + "EncounterTableIds.txt");
+        private static readonly Dictionary<int, WeakReference<EncounterTable>> _loadedEncounterTables = new();
         public static EncounterTable LoadOrGet(int id)
         {
             string name = _ids[id];

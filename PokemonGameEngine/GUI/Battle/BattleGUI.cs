@@ -203,7 +203,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 _fadeTransition = null;
                 SetMessageWindowVisibility(true);
-                new PartyGUI(SpritedParties[Trainer.Id], PartyGUI.Mode.BattleReplace, OnPartyReplacementClosed);
+                _ = new PartyGUI(SpritedParties[Trainer.Id], PartyGUI.Mode.BattleReplace, OnPartyReplacementClosed);
             }
         }
         private unsafe void CB_FadeFromPartyReplacement()
@@ -247,7 +247,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             OverworldGUI.ProcessDayTint(false);
         }
 
-        private unsafe void RenderPkmn(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos, bool ally)
+        private static unsafe void RenderPkmn(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos, bool ally)
         {
             SpritedBattlePokemon sPkmn = pos.SPkmn;
             AnimatedImage img = sPkmn.AnimImage;
@@ -261,7 +261,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             img.DrawSizedOn(bmpAddress, bmpWidth, bmpHeight,
                 RenderUtils.GetCoordinatesForCentering(bmpWidth, width, pos.MonX), RenderUtils.GetCoordinatesForEndAlign(bmpHeight, height, pos.MonY), width, height);
         }
-        private unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos)
+        private static unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos)
         {
             pos.SPkmn.InfoBarImg.DrawOn(bmpAddress, bmpWidth, bmpHeight, pos.BarX, pos.BarY);
         }
@@ -343,8 +343,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
 
         #region Actions
-        private readonly List<PBEBattlePokemon> _actions = new List<PBEBattlePokemon>(3);
-        public List<PBEBattlePokemon> StandBy { get; } = new List<PBEBattlePokemon>(3);
+        private readonly List<PBEBattlePokemon> _actions = new(3);
+        public List<PBEBattlePokemon> StandBy { get; } = new(3);
         public unsafe void ActionsLoop(bool begin)
         {
             if (begin)
@@ -383,9 +383,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             new Thread(() => Trainer.SelectFleeIfValid()) { Name = ThreadName }.Start();
         }
 
-        public List<PBESwitchIn> Switches { get; } = new List<PBESwitchIn>(3);
+        public List<PBESwitchIn> Switches { get; } = new(3);
         public byte SwitchesRequired;
-        public List<PBEFieldPosition> PositionStandBy { get; } = new List<PBEFieldPosition>(3);
+        public List<PBEFieldPosition> PositionStandBy { get; } = new(3);
         private unsafe void SetUpBattleReplacementFade()
         {
             // TODO: Run from wild?

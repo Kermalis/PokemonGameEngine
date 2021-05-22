@@ -14,10 +14,10 @@ namespace Kermalis.PokemonGameEngine.Input
             public bool NonStickPressed;
         }
 
-        private static readonly Dictionary<Key, KeyDownData> _pressed = new Dictionary<Key, KeyDownData>();
+        private static readonly Dictionary<Key, KeyDownData> _pressed = new();
         static InputManager()
         {
-            foreach (Key k in Enum.GetValues(typeof(Key)))
+            foreach (Key k in Enum.GetValues<Key>())
             {
                 _pressed.Add(k, new KeyDownData());
             }

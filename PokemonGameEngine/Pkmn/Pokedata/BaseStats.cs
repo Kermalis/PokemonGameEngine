@@ -32,12 +32,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         private readonly List<PBEAbility> _abilities;
         public IReadOnlyList<PBEAbility> Abilities => _abilities;
 
+
         public BaseStats(PBESpecies species, PBEForm form)
         {
             Species = species;
             Form = form;
 
-            string resource = "Pokedata." + PkmnOrderResolver.GetDirectoryName(species, form) + ".BaseStats.bin";
+            string resource = "Pokedata." + Utils.GetPkmnDirectoryName(species, form) + ".BaseStats.bin";
             using (var r = new EndianBinaryReader(Utils.GetResourceStream(resource)))
             {
                 Stats = new PBEReadOnlyStatCollection(r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte());

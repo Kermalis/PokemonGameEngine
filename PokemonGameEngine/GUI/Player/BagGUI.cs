@@ -7,7 +7,7 @@ using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using System;
 
-namespace Kermalis.PokemonGameEngine.GUI
+namespace Kermalis.PokemonGameEngine.GUI.Player
 {
     internal sealed class BagGUI
     {

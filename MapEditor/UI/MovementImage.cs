@@ -22,8 +22,8 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly ElevationConverter _elevationConverter = new ElevationConverter();
-        private readonly PassageConverter _passageConverter = new PassageConverter();
+        private readonly ElevationConverter _elevationConverter = new();
+        private readonly PassageConverter _passageConverter = new();
 
         private bool _passageShown = true;
         public bool PassageShown

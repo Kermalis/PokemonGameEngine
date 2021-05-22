@@ -229,8 +229,8 @@ namespace Kermalis.PokemonGameEngine.World
 
             private const string LayoutExtension = ".pgelayout";
             private const string LayoutPath = "Layout.";
-            private static readonly IdList _ids = new IdList(LayoutPath + "LayoutIds.txt");
-            private static readonly Dictionary<int, WeakReference<Layout>> _loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
+            private static readonly IdList _ids = new(LayoutPath + "LayoutIds.txt");
+            private static readonly Dictionary<int, WeakReference<Layout>> _loadedLayouts = new();
             public static Layout LoadOrGet(int id)
             {
                 string name = _ids[id];
@@ -262,7 +262,7 @@ namespace Kermalis.PokemonGameEngine.World
         public readonly EncounterGroups Encounters;
         public readonly Events MapEvents;
 
-        public readonly List<Obj> Objs = new List<Obj>();
+        public readonly List<Obj> Objs = new();
 
         private Map(string name)
         {
@@ -285,8 +285,8 @@ namespace Kermalis.PokemonGameEngine.World
         }
 
         private const string MapPath = "Map.";
-        private static readonly IdList _ids = new IdList(MapPath + "MapIds.txt");
-        private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new Dictionary<int, WeakReference<Map>>();
+        private static readonly IdList _ids = new(MapPath + "MapIds.txt");
+        private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new();
         public static Map LoadOrGet(int id)
         {
             string name = _ids[id];
@@ -434,7 +434,7 @@ namespace Kermalis.PokemonGameEngine.World
             {
                 if (!flags[oe.Flag])
                 {
-                    new EventObj(oe, this);
+                    _ = new EventObj(oe, this);
                 }
             }
         }

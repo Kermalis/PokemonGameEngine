@@ -8,7 +8,7 @@ namespace Kermalis.MapEditor.UI
     {
         internal byte Elevations;
 
-        private int GetFlag(object parameter)
+        private static int GetFlag(object parameter)
         {
             return 1 << System.Convert.ToInt32(parameter);
         }

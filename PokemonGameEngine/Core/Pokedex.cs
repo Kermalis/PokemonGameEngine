@@ -57,11 +57,11 @@ namespace Kermalis.PokemonGameEngine.Core
             }
         }
 
-        private PBEGender GetGenderKey(PBESpecies species, PBEGender gender)
+        private static PBEGender GetGenderKey(PBESpecies species, PBEGender gender)
         {
             return PokemonImageUtils.HasFemaleVersion(species, false) ? gender : PBEGender.MAX;
         }
-        private PBEGender[] GetGenderKeys(PBESpecies species)
+        private static PBEGender[] GetGenderKeys(PBESpecies species)
         {
             if (PokemonImageUtils.HasFemaleVersion(species, false))
             {

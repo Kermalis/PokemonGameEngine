@@ -39,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.Render
                 RepeatCount = gif.RepeatCount;
             }
 
-            private static readonly Dictionary<string, WeakReference<Image>> _loadedImages = new Dictionary<string, WeakReference<Image>>();
+            private static readonly Dictionary<string, WeakReference<Image>> _loadedImages = new();
             public static Image LoadOrGet(string resource, bool useCache)
             {
                 Image i;
@@ -105,7 +105,7 @@ namespace Kermalis.PokemonGameEngine.Render
             _loadedAnimImages.Add(new WeakReference<AnimatedImage>(this));
         }
 
-        private static readonly List<WeakReference<AnimatedImage>> _loadedAnimImages = new List<WeakReference<AnimatedImage>>();
+        private static readonly List<WeakReference<AnimatedImage>> _loadedAnimImages = new();
 
         private void UpdateCurrentFrame()
         {

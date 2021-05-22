@@ -11,7 +11,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 {
     internal static class Evolution
     {
-        private static readonly Queue<(PartyPokemon, EvolutionData.EvoData)> _pendingEvolutions = new Queue<(PartyPokemon, EvolutionData.EvoData)>(PkmnConstants.PartyCapacity);
+        private static readonly Queue<(PartyPokemon, EvolutionData.EvoData)> _pendingEvolutions = new(PkmnConstants.PartyCapacity);
 
         public static void AddPendingEvolution(PartyPokemon pkmn, EvolutionData.EvoData evo)
         {

@@ -107,7 +107,7 @@ namespace Kermalis.PokemonGameEngine.Script
             short value1 = ReadVarOrValue();
             ScriptConditional cond = ReadVarOrEnum<ScriptConditional>();
             short value2 = ReadVarOrValue();
-            return cond.Match(value1, value2) ? offset : (uint?)null;
+            return cond.Match(value1, value2) ? offset : null;
         }
         private uint? IfFlag()
         {
@@ -183,7 +183,7 @@ namespace Kermalis.PokemonGameEngine.Script
             }
         }
 
-        private void HealPartyCommand()
+        private static void HealPartyCommand()
         {
             Game.Instance.Save.PlayerParty.HealFully();
         }
@@ -255,7 +255,7 @@ namespace Kermalis.PokemonGameEngine.Script
             looker.LookTowards(target);
         }
 
-        private void DetachCameraCommand()
+        private static void DetachCameraCommand()
         {
             CameraObj.CameraAttachedTo = null;
             // Camera should probably have properties that get its attachment or its own properties
@@ -312,18 +312,18 @@ namespace Kermalis.PokemonGameEngine.Script
             SetLock(false);
         }
 
-        private void SetAllLock(bool locked)
+        private static void SetAllLock(bool locked)
         {
             foreach (Obj o in Obj.LoadedObjs)
             {
                 o.IsLocked = locked;
             }
         }
-        private void LockAllObjsCommand()
+        private static void LockAllObjsCommand()
         {
             SetAllLock(true);
         }
-        private void UnlockAllObjsCommand()
+        private static void UnlockAllObjsCommand()
         {
             SetAllLock(false);
         }
@@ -440,7 +440,7 @@ namespace Kermalis.PokemonGameEngine.Script
             SoundControl.Debug_PlayCry(species, form);
         }
 
-        private void CountNonEggPartyCommand()
+        private static void CountNonEggPartyCommand()
         {
             short count = 0;
             foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
@@ -452,7 +452,7 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = count;
         }
-        private void CountNonFaintedNonEggPartyCommand()
+        private static void CountNonFaintedNonEggPartyCommand()
         {
             short count = 0;
             foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
@@ -464,7 +464,7 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = count;
         }
-        private void CountPlayerPartyCommand()
+        private static void CountPlayerPartyCommand()
         {
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)Game.Instance.Save.PlayerParty.Count;
         }

@@ -25,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
         }
 
-        public static readonly List<Obj> LoadedObjs = new List<Obj>(); // Only used by GetObj()
+        public static readonly List<Obj> LoadedObjs = new();
 
         public readonly ushort Id;
 

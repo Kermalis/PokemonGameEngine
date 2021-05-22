@@ -167,7 +167,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _textChoicesWindow.IsInvisible = true;
                 if (_useGamePartyData)
                 {
-                    new SummaryGUI(_gameParty.Party[_selectionForSummary], SummaryGUI.Mode.JustView, OnSummaryClosed);
+                    _ = new SummaryGUI(_gameParty.Party[_selectionForSummary], SummaryGUI.Mode.JustView, OnSummaryClosed);
                 }
                 // todo
             }
@@ -211,7 +211,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _members[i].SetBigBounce();
             }
         }
-        private void SetSelectionVar(short index)
+        private static void SetSelectionVar(short index)
         {
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = index;
         }

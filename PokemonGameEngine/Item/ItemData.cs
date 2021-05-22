@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Core;
 using System;
 
 namespace Kermalis.PokemonGameEngine.Item

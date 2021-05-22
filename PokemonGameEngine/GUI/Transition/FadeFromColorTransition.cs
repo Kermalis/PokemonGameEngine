@@ -6,7 +6,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
 {
     internal sealed class FadeFromColorTransition : FadeColorTransition
     {
-        private TimeSpan _cur, _end;
+        private TimeSpan _cur;
+        private readonly TimeSpan _end;
         private readonly uint _color;
 
         public FadeFromColorTransition(int totalMilliseconds, uint color)

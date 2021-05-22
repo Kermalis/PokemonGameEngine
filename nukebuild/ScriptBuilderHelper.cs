@@ -9,7 +9,7 @@ using System.Collections.Generic;
 // A command with a variable amount of arguments would need extra work, so that's your problem lmao [or just make it into multiple commands like I did with GivePokemon :)]
 internal static class ScriptBuilderHelper
 {
-    public static readonly Dictionary<Type, string> EnumDefines = new Dictionary<Type, string>
+    public static readonly Dictionary<Type, string> EnumDefines = new()
     {
         { typeof(DaycareState), "DaycareState." },
         { typeof(Flag), "Flag." },
@@ -20,19 +20,19 @@ internal static class ScriptBuilderHelper
         { typeof(PBEItem), "Item." },
         { typeof(PBESpecies), "Species." }
     };
-    public static readonly Dictionary<string, IdList> StringDefines = new Dictionary<string, IdList>
+    public static readonly Dictionary<string, IdList> StringDefines = new()
     {
         { "Map.", new IdList(Build.AssetPath / "Map" / "MapIds.txt") }
     };
-    public static readonly (string OldChars, string NewChars)[] TextReplacements = new (string OldChars, string NewChars)[]
+    public static readonly (string OldChars, string NewChars)[] TextReplacements = new[]
     {
         ("\\f", "\f"),
         ("\\n", "\n"),
         ("\\v", "\v"),
     };
 
-    public static readonly Array Commands = Enum.GetValues(typeof(ScriptCommand));
-    public static readonly Dictionary<ScriptCommand, Type[]> CommandArgs = new Dictionary<ScriptCommand, Type[]>
+    public static readonly ScriptCommand[] Commands = Enum.GetValues<ScriptCommand>();
+    public static readonly Dictionary<ScriptCommand, Type[]> CommandArgs = new()
     {
         { ScriptCommand.End, Array.Empty<Type>() },
         { ScriptCommand.GoTo, new[] { typeof(void*) } }, // Offset to go to

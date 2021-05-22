@@ -411,13 +411,13 @@ namespace Kermalis.MapEditor.Core
             }
             ~Layout()
             {
-                Dispose(false);
+                DisposeBitmaps();
             }
 
             private const string LayoutExtension = ".pgelayout";
             private static readonly string LayoutPath = Path.Combine(Program.AssetPath, "Layout");
             public static IdList Ids { get; } = new IdList(Path.Combine(LayoutPath, "LayoutIds.txt"));
-            private static readonly Dictionary<int, WeakReference<Layout>> _loadedLayouts = new Dictionary<int, WeakReference<Layout>>();
+            private static readonly Dictionary<int, WeakReference<Layout>> _loadedLayouts = new();
             public static Layout LoadOrGet(string name)
             {
                 int id = Ids[name];
@@ -541,7 +541,7 @@ namespace Kermalis.MapEditor.Core
                     DrawAll(borderBlocks, true);
                 }
             }
-            public static readonly List<Block> DrawList = new List<Block>(); // Save allocations
+            public static readonly List<Block> DrawList = new(); // Save allocations
             public unsafe void Draw(bool borderBlocks)
             {
                 List<Block> list = DrawList;
@@ -620,14 +620,11 @@ namespace Kermalis.MapEditor.Core
 
             public void Dispose()
             {
-                Dispose(true);
+                DisposeBitmaps();
+                GC.SuppressFinalize(this);
             }
-            private void Dispose(bool disposing)
+            private void DisposeBitmaps()
             {
-                if (disposing)
-                {
-                    GC.SuppressFinalize(this);
-                }
                 BlocksBitmap.Dispose();
                 BorderBlocksBitmap.Dispose();
             }
@@ -675,7 +672,7 @@ namespace Kermalis.MapEditor.Core
 
         private static readonly string MapPath = Path.Combine(Program.AssetPath, "Map");
         public static IdList Ids { get; } = new IdList(Path.Combine(MapPath, "MapIds.txt"));
-        private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new Dictionary<int, WeakReference<Map>>();
+        private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new();
         internal static Map LoadOrGet(string name)
         {
             int id = Ids[name];

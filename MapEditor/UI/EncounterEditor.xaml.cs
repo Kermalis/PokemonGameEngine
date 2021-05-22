@@ -177,7 +177,7 @@ namespace Kermalis.MapEditor.UI
             _grp.Groups.RemoveAt(_selectedGroup);
             UpdateGroups();
         }
-        public async void CreateEncounterTable()
+        public static async void CreateEncounterTable()
         {
             Window window = ((IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime).MainWindow;
             var dialog = new NewAssetDialog(EncounterTable.Ids);
@@ -186,7 +186,7 @@ namespace Kermalis.MapEditor.UI
             {
                 return;
             }
-            new EncounterTable(result);
+            _ = new EncounterTable(result);
             await MessageBox.Show($"An encounter table named \"{result}\" was created.", "Success!", MessageBox.MessageBoxButtons.Ok, owner: window);
         }
         public void SaveEncounterTable()

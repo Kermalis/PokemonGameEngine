@@ -7,7 +7,7 @@ namespace Kermalis.PokemonGameEngine.World
 {
     internal sealed class IdList
     {
-        private readonly List<string> _entries = new List<string>();
+        private readonly List<string> _entries = new();
 
         public IdList(string resource)
         {
@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.World
                         {
                             if (key == _entries[i])
                             {
-                                throw new ArgumentOutOfRangeException(nameof(key));
+                                throw new ArgumentException(nameof(key));
                             }
                         }
                         _entries.Add(key);

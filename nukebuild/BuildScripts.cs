@@ -29,8 +29,8 @@ public sealed partial class Build
     private const string MovementPrefix = "M.";
     private const string TextChars = "\"";
 
-    private readonly Dictionary<string, Pair> _labels = new Dictionary<string, Pair>();
-    private readonly List<Pointer> _pointers = new List<Pointer>();
+    private readonly Dictionary<string, Pair> _labels = new();
+    private readonly List<Pointer> _pointers = new();
     private EndianBinaryWriter _writer;
 
     private void CleanScripts()
@@ -208,7 +208,7 @@ public sealed partial class Build
                 if (str.StartsWith(MovementPrefix))
                 {
                     str = str.Substring(MovementPrefix.Length);
-                    _writer.Write((ScriptMovement)Enum.Parse(typeof(ScriptMovement), str));
+                    _writer.Write(Enum.Parse<ScriptMovement>(str));
                     readingCmd = false;
                     str = string.Empty;
                     return;
@@ -316,7 +316,7 @@ public sealed partial class Build
                 string prefix = str.Substring(0, index);
                 if (!ScriptBuilderHelper.StringDefines.TryGetValue(prefix, out IdList idList))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(prefix));
+                    throw new ArgumentOutOfRangeException(nameof(str));
                 }
                 str = str.Substring(index);
                 index = idList[str];
@@ -395,7 +395,7 @@ public sealed partial class Build
             Type type = tup.Key;
             if (varAble && type.IsEquivalentTo(typeof(Var)))
             {
-                uint wVal = ushort.MaxValue + 1 + Convert.ToUInt32(Enum.Parse(typeof(Var), str));
+                uint wVal = ushort.MaxValue + 1 + Convert.ToUInt32(Enum.Parse<Var>(str));
                 _writer.Write(wVal);
                 return;
             }

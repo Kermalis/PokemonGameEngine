@@ -43,5 +43,19 @@ namespace Kermalis.PokemonGameEngine.Util
         {
             return PBEDataProvider.GlobalRandom.RandomBool(HasShinyCharm() ? 3 : 1, 8192);
         }
+
+        public static string GetPkmnDirectoryName(PBESpecies species, PBEForm form)
+        {
+            string dir;
+            if (form == 0)
+            {
+                dir = species.ToString();
+            }
+            else
+            {
+                dir = PBEDataUtils.GetNameOfForm(species, form);
+            }
+            return dir;
+        }
     }
 }

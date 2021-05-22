@@ -67,23 +67,18 @@ namespace Kermalis.MapEditor.UI.Models
                 }
             }
         }
-        private bool _avaloniaIssue4048__Dumb_AF_TBH = true; // https://github.com/AvaloniaUI/Avalonia/issues/4048
         public int Form
         {
-            get => _avaloniaIssue4048__Dumb_AF_TBH ? -1 : (int)Encounter.Form;
+            get => (int)Encounter.Form;
             set
             {
+                // -1 is set but it's always followed by 0.
                 if (value == -1)
                 {
-                    _avaloniaIssue4048__Dumb_AF_TBH = true;
-                    OnPropertyChanged(nameof(Form));
+                    return;
                 }
-                else // Doesn't matter if the value is the same, we need to update the UI
-                {
-                    _avaloniaIssue4048__Dumb_AF_TBH = false;
-                    Encounter.Form = (PBEForm)value;
-                    OnPropertyChanged(nameof(Form));
-                }
+                Encounter.Form = (PBEForm)value;
+                OnPropertyChanged(nameof(Form));
             }
         }
         public IEnumerable<string> SelectableForms { get; private set; }

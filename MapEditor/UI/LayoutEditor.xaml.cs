@@ -15,9 +15,7 @@ namespace Kermalis.MapEditor.UI
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-#pragma warning disable IDE0069 // Disposable fields should be disposed
         private Blockset _blockset;
-#pragma warning restore IDE0069 // Disposable fields should be disposed
         private string _selectedBlockset;
         public string SelectedBlockset
         {

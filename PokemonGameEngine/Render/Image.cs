@@ -29,7 +29,7 @@ namespace Kermalis.PokemonGameEngine.Render
             Height = height;
         }
 
-        private static readonly Dictionary<string, WeakReference<Image>> _loadedImages = new Dictionary<string, WeakReference<Image>>();
+        private static readonly Dictionary<string, WeakReference<Image>> _loadedImages = new();
         public static Image LoadOrGet(string resource)
         {
             Image i;

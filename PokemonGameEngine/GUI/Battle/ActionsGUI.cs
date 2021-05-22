@@ -4,7 +4,6 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.GUI.Pkmn;
 using Kermalis.PokemonGameEngine.GUI.Transition;
-//using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using System;
 using System.Linq;
@@ -31,12 +30,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 font: Font.Default, fontColors: Font.DefaultWhite1_I, selectedColors: Font.DefaultYellow_O, disabledColors: Font.DefaultDisabled);
             _fightChoices.Add(new TextGUIChoice("Fight", FightChoice));
             bool enabled = pkmn.CanSwitchOut(); // Cannot switch out or use item if TempLockedMove exists
-            Action command = enabled ? PokemonChoice : (Action)null;
+            Action command = enabled ? PokemonChoice : null;
             _fightChoices.Add(new TextGUIChoice("Pokémon", command, isEnabled: enabled));
-            command = enabled ? BagChoice : (Action)null;
+            command = enabled ? BagChoice : null;
             _fightChoices.Add(new TextGUIChoice("Bag", command, isEnabled: enabled));
             enabled = pkmn.Trainer.ActiveBattlersOrdered.First() == pkmn && pkmn.Trainer.IsFleeValid() is null; // Only first Pokémon can "select" run
-            command = enabled ? RunChoice : (Action)null;
+            command = enabled ? RunChoice : null;
             _fightChoices.Add(new TextGUIChoice("Run", command, isEnabled: enabled));
         }
 
@@ -79,7 +78,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     PBEMove m = slot.Move;
                     string text = PBEDataProvider.Instance.GetMoveName(m).English;
                     bool enabled = Array.IndexOf(usableMoves, m) != -1;
-                    Action command = enabled ? () => SelectMoveForTurn(m) : (Action)null;
+                    Action command = enabled ? () => SelectMoveForTurn(m) : null;
                     _moveChoices.Add(new TextGUIChoice(text, command, isEnabled: enabled));
                 }
             }
@@ -134,7 +133,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     case PBEMoveTarget.Self:
                     case PBEMoveTarget.SelfOrAllySurrounding:
                     case PBEMoveTarget.SingleAllySurrounding: targets = PBETurnTarget.AllyCenter; break;
-                    default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                    default: throw new Exception();
                 }
                 _pkmn.TurnAction = new PBETurnAction(_pkmn, move, targets);
                 BattleGUI.Instance.ActionsLoop(false);
@@ -192,7 +191,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 _fadeTransition = null;
                 BattleGUI.Instance.SetMessageWindowVisibility(true);
-                new PartyGUI(_party, PartyGUI.Mode.BattleSwitchIn, OnPartyClosed);
+                _ = new PartyGUI(_party, PartyGUI.Mode.BattleSwitchIn, OnPartyClosed);
             }
         }
         private void CB_FadeFromParty()

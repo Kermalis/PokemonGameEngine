@@ -203,13 +203,13 @@ namespace Kermalis.MapEditor.Core
         }
         ~Blockset()
         {
-            Dispose(false);
+            DisposeBitmap();
         }
 
         private const string BlocksetExtension = ".pgeblockset";
         private static readonly string BlocksetPath = Path.Combine(Program.AssetPath, "Blockset");
         public static IdList Ids { get; } = new IdList(Path.Combine(BlocksetPath, "BlocksetIds.txt"));
-        private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new Dictionary<int, WeakReference<Blockset>>();
+        private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new();
         internal static Blockset LoadOrGet(string name)
         {
             int id = Ids[name];
@@ -407,14 +407,11 @@ namespace Kermalis.MapEditor.Core
 
         public void Dispose()
         {
-            Dispose(true);
+            DisposeBitmap();
+            GC.SuppressFinalize(this);
         }
-        private void Dispose(bool disposing)
+        private void DisposeBitmap()
         {
-            if (disposing)
-            {
-                GC.SuppressFinalize(this);
-            }
             Bitmap.Dispose();
         }
     }
