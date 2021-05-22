@@ -8,7 +8,6 @@ using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.Item
 {
-    // In C# 8.0, we can have an interface define a "Create" method which will reduce the need of having "Inventory" and "PlayerInventory" separate
     [DebuggerDisplay("Item={" + nameof(Item) + "}, Quantity={" + nameof(Quantity) + "}")]
     internal class InventorySlot
     {
@@ -23,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Item
             Quantity = quantity;
         }
 
-        public void Add(ushort quantity)
+        public virtual void Add(ushort quantity)
         {
             Quantity = (ushort)Math.Min(MaxQuantity, Quantity + quantity);
         }
@@ -88,7 +87,7 @@ namespace Kermalis.PokemonGameEngine.Item
     }
 
     [DebuggerDisplay("NumPouches={" + nameof(Count) + "}")]
-    internal abstract class Inventory<T> : IReadOnlyDictionary<ItemPouchType, InventoryPouch<T>> where T : InventorySlot
+    internal sealed class Inventory<T> : IReadOnlyDictionary<ItemPouchType, InventoryPouch<T>> where T : InventorySlot
     {
         private readonly Dictionary<ItemPouchType, InventoryPouch<T>> _pouches;
 
@@ -97,7 +96,7 @@ namespace Kermalis.PokemonGameEngine.Item
         public IEnumerable<InventoryPouch<T>> Values => _pouches.Values;
         public int Count => _pouches.Count;
 
-        protected Inventory(params InventoryPouch<T>[] pouches)
+        private Inventory(params InventoryPouch<T>[] pouches)
         {
             _pouches = new Dictionary<ItemPouchType, InventoryPouch<T>>(pouches.Length);
             foreach (InventoryPouch<T> p in pouches)
@@ -105,8 +104,44 @@ namespace Kermalis.PokemonGameEngine.Item
                 _pouches.Add(p.PouchType, p);
             }
         }
+        public static Inventory<T> CreateGenericInventory()
+        {
+            // One non-specific pouch
+            var pouch = new InventoryPouch<T>(ItemPouchType.FreeSpace);
+            return new Inventory<T>(pouch);
+        }
+        public static Inventory<T> CreatePlayerInventory()
+        {
+            // All pouch types
+            InventoryPouch<T>[] pouches = Enum.GetValues<ItemPouchType>().Select(t => new InventoryPouch<T>(t)).ToArray();
+            return new Inventory<T>(pouches);
+        }
 
-        public abstract void Add(ItemType item, ushort quantity);
+        public void Add(ItemType item, ushort quantity)
+        {
+            if (quantity == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be at least one.");
+            }
+            ItemPouchType pt = ItemData.GetPouchType(item);
+            if (!_pouches.ContainsKey(pt))
+            {
+                throw new ArgumentOutOfRangeException(nameof(item), "Item cannot be put in this inventory");
+            }
+            InventoryPouch<T> pouch = _pouches[pt];
+            T slot = pouch[item];
+            if (slot == null)
+            {
+                // Create new slot
+                object[] args = new object[2] { item, quantity };
+                slot = (T)Activator.CreateInstance(typeof(T), args);
+                pouch.Add(slot);
+            }
+            else
+            {
+                slot.Add(quantity);
+            }
+        }
         public bool HasItem(ItemType item, ushort quantity)
         {
             ItemPouchType pt = ItemData.GetPouchType(item);
@@ -215,59 +250,6 @@ namespace Kermalis.PokemonGameEngine.Item
                         pouch.Remove(slot);
                     }
                 }
-            }
-        }
-    }
-
-    internal sealed class Inventory : Inventory<InventorySlot>
-    {
-        public Inventory()
-            : base(new InventoryPouch<InventorySlot>(ItemPouchType.FreeSpace))
-        {
-        }
-
-        public override void Add(ItemType item, ushort quantity)
-        {
-            if (quantity == 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be at least one.");
-            }
-            ItemPouchType pt = ItemData.GetPouchType(item);
-            InventoryPouch<InventorySlot> pouch = this[pt];
-            InventorySlot slot = pouch[item];
-            if (slot == null)
-            {
-                pouch.Add(new InventorySlot(item, quantity));
-            }
-            else
-            {
-                slot.Add(quantity);
-            }
-        }
-    }
-    internal sealed class PlayerInventory : Inventory<InventorySlotNew>
-    {
-        public PlayerInventory()
-            : base(Enum.GetValues<ItemPouchType>().Select(t => new InventoryPouch<InventorySlotNew>(t)).ToArray()) // All pouch types
-        {
-        }
-
-        public override void Add(ItemType item, ushort quantity)
-        {
-            if (quantity == 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be at least one.");
-            }
-            ItemPouchType pt = ItemData.GetPouchType(item);
-            InventoryPouch<InventorySlotNew> pouch = this[pt];
-            InventorySlotNew slot = pouch[item];
-            if (slot == null)
-            {
-                pouch.Add(new InventorySlotNew(item, quantity));
-            }
-            else
-            {
-                slot.Add(quantity);
             }
         }
     }

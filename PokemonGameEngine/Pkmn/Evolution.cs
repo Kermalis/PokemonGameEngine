@@ -192,7 +192,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 return;
             }
 
-            PlayerInventory inv = Game.Instance.Save.PlayerInventory;
+            Inventory<InventorySlotNew> inv = Game.Instance.Save.PlayerInventory;
             if (!inv.TryRemove(ItemType.PokeBall, 1))
             {
                 return;

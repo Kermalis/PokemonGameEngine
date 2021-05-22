@@ -11,7 +11,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
 {
     internal sealed class BagGUI
     {
-        private readonly PlayerInventory _inv;
+        private readonly Inventory<InventorySlotNew> _inv;
 
         private FadeColorTransition _fadeTransition;
         private Action _onClosed;
@@ -25,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
         private string _cashMoney;
         private int _cashMoneyWidth;
 
-        public unsafe BagGUI(PlayerInventory inv, Party party, Action onClosed)
+        public unsafe BagGUI(Inventory<InventorySlotNew> inv, Party party, Action onClosed)
         {
             _inv = inv;
 

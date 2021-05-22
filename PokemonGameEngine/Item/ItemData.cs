@@ -160,7 +160,7 @@ namespace Kermalis.PokemonGameEngine.Item
         {
             return _hmMoves[GetHMIndex(item)];
         }
-        public static void Debug_GiveAllTMHMs(PlayerInventory pi)
+        public static void Debug_GiveAllTMHMs<T>(Inventory<T> pi) where T : InventorySlot
         {
             for (int i = 0; i < NumTMs; i++)
             {

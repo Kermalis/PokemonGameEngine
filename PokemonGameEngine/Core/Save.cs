@@ -19,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public PCBoxes PCBoxes { get; private set; }
         public Daycare Daycare { get; private set; }
         public Party PlayerParty { get; private set; }
-        public PlayerInventory PlayerInventory { get; private set; }
+        public Inventory<InventorySlotNew> PlayerInventory { get; private set; }
         public uint Money { get; private set; }
 
         private static void InitPlayerWithDefaultLocation()
@@ -35,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.Core
             Flags = new Flags();
             Vars = new Vars();
             OT = new OTInfo("Dawn", true);
-            PlayerInventory = new PlayerInventory();
+            PlayerInventory = Inventory<InventorySlotNew>.CreatePlayerInventory();
             PlayerInventory.Add(ItemType.DuskBall, 995);
             PlayerInventory.Add(ItemType.RockyHelmet, 42);
             PlayerInventory.Add(ItemType.Leftovers, 473);
