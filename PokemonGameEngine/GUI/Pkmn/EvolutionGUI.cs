@@ -24,21 +24,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             EvolvedIntoMsg,
             FadeOut,
             CancelledMsg,
-            LearningMove
-        }
-        private enum LearnMoveState : byte
-        {
-            WantsToLearnMoveMsg,
-            WantsToLearnMoveChoice,
-            FadeToSummary,
-            FadeFromSummary,
-            GiveUpLearningMsg,
-            GiveUpLearningChoice,
-            DidNotLearnMsg,
-            ForgotMsg
+            LearnMove_WantsToLearnMoveMsg,
+            LearnMove_WantsToLearnMoveChoice,
+            LearnMove_FadeToSummary,
+            LearnMove_FadeFromSummary,
+            LearnMove_GiveUpLearningMsg,
+            LearnMove_GiveUpLearningChoice,
+            LearnMove_DidNotLearnMsg,
+            LearnMove_ForgotMsg
         }
         private State _state;
-        private LearnMoveState _learnMoveState;
         private readonly PartyPokemon _pkmn;
         private readonly string _oldNickname;
         private readonly EvolutionData.EvoData _evo;
@@ -104,14 +99,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _fadeTransition = new FadeFromColorTransition(500, 0);
             Game.Instance.SetCallback(CB_Evolution);
             Game.Instance.SetRCallback(RCB_Evolution);
-            _learnMoveState = LearnMoveState.FadeFromSummary;
+            _state = State.LearnMove_FadeFromSummary;
         }
         private void ShouldLearnMoveAction(bool value)
         {
             if (value)
             {
                 _fadeTransition = new FadeToColorTransition(1_000, 0);
-                _learnMoveState = LearnMoveState.FadeToSummary;
+                _state = State.LearnMove_FadeToSummary;
             }
             else
             {
@@ -137,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 PBEMove move = _learningMoves.Dequeue(); // Remove from queue
                 string str = PBELocalizedString.GetMoveName(move).English;
                 CreateMessage(string.Format("{0} did not learn {1}.", _pkmn.Nickname, str));
-                _learnMoveState = LearnMoveState.DidNotLearnMsg;
+                _state = State.LearnMove_DidNotLearnMsg;
             }
             else
             {
@@ -160,7 +155,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             if (_learningMoves.Count != 0)
             {
-                _state = State.LearningMove;
                 SetWantsToLearnMove();
             }
             else
@@ -174,14 +168,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             PBEMove move = _learningMoves.Peek();
             string str = PBELocalizedString.GetMoveName(move).English;
             CreateMessage(string.Format("{0} wants to learn {1},\nbut {0} already knows {2} moves.\fForget a move and learn {1}?", _pkmn.Nickname, str, PkmnConstants.NumMoves));
-            _learnMoveState = LearnMoveState.WantsToLearnMoveMsg;
+            _state = State.LearnMove_WantsToLearnMoveMsg;
         }
         private void SetGiveUpLearningMove()
         {
             PBEMove move = _learningMoves.Peek();
             string str = PBELocalizedString.GetMoveName(move).English;
             CreateMessage(string.Format("Give up on learning {0}?", str));
-            _learnMoveState = LearnMoveState.GiveUpLearningMsg;
+            _state = State.LearnMove_GiveUpLearningMsg;
         }
         private void SetFadeOut()
         {
@@ -191,89 +185,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _state = State.FadeOut;
         }
 
-        private void HandleLearningMoves()
-        {
-            switch (_learnMoveState)
-            {
-                case LearnMoveState.WantsToLearnMoveMsg:
-                {
-                    if (ReadMessageEnded())
-                    {
-                        TextGUIChoices.CreateStandardYesNoChoices(ShouldLearnMoveAction, out _textChoices, out _textChoicesWindow);
-                        _learnMoveState = LearnMoveState.WantsToLearnMoveChoice;
-                    }
-                    return;
-                }
-                case LearnMoveState.WantsToLearnMoveChoice:
-                case LearnMoveState.GiveUpLearningChoice:
-                {
-                    HandleMultichoice();
-                    return;
-                }
-                case LearnMoveState.FadeToSummary:
-                {
-                    if (_fadeTransition.IsDone)
-                    {
-                        _fadeTransition = null;
-                        _stringWindow.IsInvisible = true;
-                        _textChoicesWindow.Close();
-                        _textChoicesWindow = null;
-                        _textChoices.Dispose();
-                        _textChoices = null;
-                        _stringPrinter.Close();
-                        _stringPrinter = null;
-                        new SummaryGUI(_pkmn, SummaryGUI.Mode.LearnMove, OnSummaryClosed, learningMove: _learningMoves.Peek());
-                    }
-                    return;
-                }
-                case LearnMoveState.FadeFromSummary:
-                {
-                    if (_fadeTransition.IsDone)
-                    {
-                        // Give up on learning
-                        if (_forgetMove == -1 || _forgetMove == PkmnConstants.NumMoves)
-                        {
-                            SetGiveUpLearningMove();
-                        }
-                        else
-                        {
-                            Moveset.MovesetSlot slot = _pkmn.Moveset[_forgetMove];
-                            PBEMove oldMove = slot.Move;
-                            string oldMoveStr = PBELocalizedString.GetMoveName(oldMove).English;
-                            PBEMove move = _learningMoves.Dequeue(); // Remove from queue
-                            string moveStr = PBELocalizedString.GetMoveName(move).English;
-                            slot.Move = move;
-                            PBEMoveData mData = PBEMoveData.Data[move];
-                            slot.PP = PBEDataUtils.CalcMaxPP(mData.PPTier, 0, PkmnConstants.PBESettings);
-                            slot.PPUps = 0;
-                            CreateMessage(string.Format("{0} forgot {1}\nand learned {2}!", _pkmn.Nickname, oldMoveStr, moveStr));
-                            _learnMoveState = LearnMoveState.ForgotMsg;
-                        }
-                    }
-                    return;
-                }
-                case LearnMoveState.GiveUpLearningMsg:
-                {
-                    if (ReadMessageEnded())
-                    {
-                        TextGUIChoices.CreateStandardYesNoChoices(ShouldGiveUpMoveAction, out _textChoices, out _textChoicesWindow);
-                        _learnMoveState = LearnMoveState.GiveUpLearningChoice;
-                    }
-                    return;
-                }
-                case LearnMoveState.DidNotLearnMsg:
-                case LearnMoveState.ForgotMsg:
-                {
-                    if (ReadMessage())
-                    {
-                        _stringPrinter.Close();
-                        _stringPrinter = null;
-                        CheckForLearnMoves();
-                    }
-                    return;
-                }
-            }
-        }
         private void CB_Evolution()
         {
             switch (_state)
@@ -365,9 +276,82 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     }
                     return;
                 }
-                case State.LearningMove:
+                // Learning moves
+                case State.LearnMove_WantsToLearnMoveMsg:
                 {
-                    HandleLearningMoves();
+                    if (ReadMessageEnded())
+                    {
+                        TextGUIChoices.CreateStandardYesNoChoices(ShouldLearnMoveAction, out _textChoices, out _textChoicesWindow);
+                        _state = State.LearnMove_WantsToLearnMoveChoice;
+                    }
+                    return;
+                }
+                case State.LearnMove_WantsToLearnMoveChoice:
+                case State.LearnMove_GiveUpLearningChoice:
+                {
+                    HandleMultichoice();
+                    return;
+                }
+                case State.LearnMove_FadeToSummary:
+                {
+                    if (_fadeTransition.IsDone)
+                    {
+                        _fadeTransition = null;
+                        _stringWindow.IsInvisible = true;
+                        _textChoicesWindow.Close();
+                        _textChoicesWindow = null;
+                        _textChoices.Dispose();
+                        _textChoices = null;
+                        _stringPrinter.Close();
+                        _stringPrinter = null;
+                        new SummaryGUI(_pkmn, SummaryGUI.Mode.LearnMove, OnSummaryClosed, learningMove: _learningMoves.Peek());
+                    }
+                    return;
+                }
+                case State.LearnMove_FadeFromSummary:
+                {
+                    if (_fadeTransition.IsDone)
+                    {
+                        // Give up on learning
+                        if (_forgetMove == -1 || _forgetMove == PkmnConstants.NumMoves)
+                        {
+                            SetGiveUpLearningMove();
+                        }
+                        else
+                        {
+                            Moveset.MovesetSlot slot = _pkmn.Moveset[_forgetMove];
+                            PBEMove oldMove = slot.Move;
+                            string oldMoveStr = PBELocalizedString.GetMoveName(oldMove).English;
+                            PBEMove move = _learningMoves.Dequeue(); // Remove from queue
+                            string moveStr = PBELocalizedString.GetMoveName(move).English;
+                            slot.Move = move;
+                            PBEMoveData mData = PBEMoveData.Data[move];
+                            slot.PP = PBEDataUtils.CalcMaxPP(mData.PPTier, 0, PkmnConstants.PBESettings);
+                            slot.PPUps = 0;
+                            CreateMessage(string.Format("{0} forgot {1}\nand learned {2}!", _pkmn.Nickname, oldMoveStr, moveStr));
+                            _state = State.LearnMove_ForgotMsg;
+                        }
+                    }
+                    return;
+                }
+                case State.LearnMove_GiveUpLearningMsg:
+                {
+                    if (ReadMessageEnded())
+                    {
+                        TextGUIChoices.CreateStandardYesNoChoices(ShouldGiveUpMoveAction, out _textChoices, out _textChoicesWindow);
+                        _state = State.LearnMove_GiveUpLearningChoice;
+                    }
+                    return;
+                }
+                case State.LearnMove_DidNotLearnMsg:
+                case State.LearnMove_ForgotMsg:
+                {
+                    if (ReadMessage())
+                    {
+                        _stringPrinter.Close();
+                        _stringPrinter = null;
+                        CheckForLearnMoves();
+                    }
                     return;
                 }
             }
@@ -386,6 +370,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 case State.FadeToWhite:
                 case State.FadeToEvo:
                 case State.FadeOut:
+                case State.LearnMove_FadeToSummary:
+                case State.LearnMove_FadeFromSummary:
                 {
                     _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
                     return;
@@ -393,36 +379,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 case State.IsEvolvingMsg:
                 case State.EvolvedIntoMsg:
                 case State.CancelledMsg:
+                case State.LearnMove_WantsToLearnMoveMsg:
+                case State.LearnMove_GiveUpLearningMsg:
+                case State.LearnMove_DidNotLearnMsg:
+                case State.LearnMove_ForgotMsg:
                 {
                     _stringWindow.Render(bmpAddress, bmpWidth, bmpHeight);
                     return;
                 }
-                case State.LearningMove:
+                case State.LearnMove_WantsToLearnMoveChoice:
+                case State.LearnMove_GiveUpLearningChoice:
                 {
-                    switch (_learnMoveState)
-                    {
-                        case LearnMoveState.FadeToSummary:
-                        case LearnMoveState.FadeFromSummary:
-                        {
-                            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-                            return;
-                        }
-                        case LearnMoveState.WantsToLearnMoveMsg:
-                        case LearnMoveState.GiveUpLearningMsg:
-                        case LearnMoveState.DidNotLearnMsg:
-                        case LearnMoveState.ForgotMsg:
-                        {
-                            _stringWindow.Render(bmpAddress, bmpWidth, bmpHeight);
-                            return;
-                        }
-                        case LearnMoveState.WantsToLearnMoveChoice:
-                        case LearnMoveState.GiveUpLearningChoice:
-                        {
-                            _stringWindow.Render(bmpAddress, bmpWidth, bmpHeight);
-                            _textChoicesWindow.Render(bmpAddress, bmpWidth, bmpHeight);
-                            return;
-                        }
-                    }
+                    _stringWindow.Render(bmpAddress, bmpWidth, bmpHeight);
+                    _textChoicesWindow.Render(bmpAddress, bmpWidth, bmpHeight);
                     return;
                 }
             }
