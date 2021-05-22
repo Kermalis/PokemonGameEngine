@@ -425,6 +425,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     }
                     else
                     {
+                        // If the team is wild, no flees are allowed by default
                         new Thread(t.CreateAIActions) { Name = ThreadName }.Start();
                     }
                     return;
