@@ -149,7 +149,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _stringPrinter = null;
             if (!(message is null))
             {
-                _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite1_I);
+                _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite_I);
                 if (staticMsg)
                 {
                     Game.Instance.SetCallback(CB_ReadOutStaticMessage);

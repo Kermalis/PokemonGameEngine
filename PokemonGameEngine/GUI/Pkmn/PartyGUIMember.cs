@@ -110,7 +110,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             RenderUtils.FillEllipse_Points(bmpAddress, bmpWidth, bmpHeight, 3, 34, 29, 39, RenderUtils.Color(0, 0, 0, 100));
             // Nickname
             PartyPokemon p = _usePartyPkmn ? _partyPkmn : _battlePkmn.PartyPkmn;
-            Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 2, 3, p.Nickname, Font.DefaultWhite1_I);
+            Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 2, 3, p.Nickname, Font.DefaultWhite_I);
             if (p.IsEgg)
             {
                 return;
@@ -124,19 +124,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
             // Level
             const int lvX = 72;
-            Font.PartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, lvX, 3, "[LV]", Font.DefaultWhite1_I);
-            Font.PartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, lvX + 12, 3, (_usePartyPkmn ? p.Level : bPkmn.Level).ToString(), Font.DefaultWhite1_I);
+            Font.PartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, lvX, 3, "[LV]", Font.DefaultWhite_I);
+            Font.PartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, lvX + 12, 3, (_usePartyPkmn ? p.Level : bPkmn.Level).ToString(), Font.DefaultWhite_I);
             // Status
             PBEStatus1 status = _usePartyPkmn ? p.Status1 : bPkmn.Status1;
             if (status != PBEStatus1.None)
             {
-                Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 13, status.ToString(), Font.DefaultWhite1_I);
+                Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 13, status.ToString(), Font.DefaultWhite_I);
             }
             // Item
             ItemType item = _usePartyPkmn ? p.Item : (ItemType)bPkmn.Item;
             if (item != ItemType.None)
             {
-                Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 23, ItemData.GetItemName(item), Font.DefaultWhite1_I);
+                Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 23, ItemData.GetItemName(item), Font.DefaultWhite_I);
             }
         }
 

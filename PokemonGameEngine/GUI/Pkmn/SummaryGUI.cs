@@ -182,7 +182,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 8, RenderUtils.Color(210, 210, 210, 255));
 
             Font leftColFont = Font.Default;
-            uint[] leftColColors = Font.DefaultWhite2_I;
+            uint[] leftColColors = Font.DefaultWhite_DarkerOutline_I;
             Font rightColFont = Font.Default;
             uint[] rightColColors = Font.DefaultBlack_I;
 
@@ -347,11 +347,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, leftColX, abilDescY, 0.95f, 0.98f, 5, RenderUtils.Color(210, 210, 210, 255));
 
             Font leftColFont = Font.Default;
-            uint[] leftColColors = Font.DefaultWhite2_I;
+            uint[] leftColColors = Font.DefaultWhite_DarkerOutline_I;
             Font rightColFont = Font.Default;
             uint[] rightColColors = Font.DefaultBlack_I;
+            uint[] boostedColors = Font.DefaultRed_Lighter_O;
+            uint[] dislikedColors = Font.DefaultCyan_O;
 
-            void PlaceLeftCol(int i, string leftColStr)
+            void PlaceLeftCol(int i, string leftColStr, bool boosted, bool disliked)
             {
                 float y;
                 if (i == -1)
@@ -366,7 +368,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     y = textStart2Y + (i * textSpacingY);
                 }
-                leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, leftColX, y, leftColStr, leftColColors);
+                uint[] colors;
+                if (boosted)
+                {
+                    colors = boostedColors;
+                }
+                else if (disliked)
+                {
+                    colors = dislikedColors;
+                }
+                else
+                {
+                    colors = leftColColors;
+                }
+                leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, leftColX, y, leftColStr, colors);
             }
             void PlaceRightCol(int i, string rightColStr, uint[] colors)
             {
@@ -376,14 +391,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, rightColCenterX), (int)(bmpHeight * y), rightColStr, colors);
             }
 
-            PlaceLeftCol(-2, "HP");
-            PlaceLeftCol(0, "Attack");
-            PlaceLeftCol(1, "Defense");
-            PlaceLeftCol(2, "Special Attack");
-            PlaceLeftCol(3, "Special Defense");
-            PlaceLeftCol(4, "Speed");
-            PlaceLeftCol(-1, "Ability");
-
             ushort hp = _currentPkmn.HP;
             ushort maxHP = _currentPkmn.MaxHP;
             ushort atk = _currentPkmn.Attack;
@@ -392,6 +399,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             ushort spDef = _currentPkmn.SpDefense;
             ushort speed = _currentPkmn.Speed;
             PBEAbility abil = _currentPkmn.Ability;
+            PBENature nature = _currentPkmn.Nature;
+            PBEStat? favored = nature.GetLikedStat();
+            PBEStat? disliked = nature.GetDislikedStat();
+
+            PlaceLeftCol(-2, "HP", false, false);
+            PlaceLeftCol(0, "Attack", favored == PBEStat.Attack, disliked == PBEStat.Attack);
+            PlaceLeftCol(1, "Defense", favored == PBEStat.Defense, disliked == PBEStat.Defense);
+            PlaceLeftCol(2, "Special Attack", favored == PBEStat.SpAttack, disliked == PBEStat.SpAttack);
+            PlaceLeftCol(3, "Special Defense", favored == PBEStat.SpDefense, disliked == PBEStat.SpDefense);
+            PlaceLeftCol(4, "Speed", favored == PBEStat.Speed, disliked == PBEStat.Speed);
+            PlaceLeftCol(-1, "Ability", false, false);
 
             // HP
             string str = string.Format("{0}/{1}", hp, maxHP);
@@ -439,7 +457,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(250, 128, 120, 255));
 
             Font moveFont = Font.Default;
-            uint[] moveColors = Font.DefaultWhite2_I;
+            uint[] moveColors = Font.DefaultWhite_DarkerOutline_I;
             uint[] ppColors = Font.DefaultBlack_I;
 
             void Place(int i, PBEMove move, int pp, int maxPP)

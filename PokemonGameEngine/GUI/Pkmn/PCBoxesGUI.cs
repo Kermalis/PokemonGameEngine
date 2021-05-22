@@ -180,7 +180,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void CreateStringPrinterAndWindow(string message, bool isStaticMsg, MainCallback doneCallback)
         {
             _stringWindow = new Window(0, 0.79f, 1, 0.16f, RenderUtils.Color(49, 49, 49, 192));
-            _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite1_I);
+            _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite_I);
             _stringReadCallback = doneCallback;
             if (isStaticMsg)
             {
@@ -194,7 +194,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void OverwriteStaticString(string message, MainCallback curCallback, MainCallback doneCallback)
         {
             _stringPrinter.Close();
-            _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite1_I);
+            _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite_I);
             _stringReadCallback = doneCallback;
             Game.Instance.SetCallback(curCallback);
         }
