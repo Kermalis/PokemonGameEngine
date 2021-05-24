@@ -82,7 +82,7 @@ namespace Kermalis.PokemonGameEngine.Render
                 EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, x, y, width, 0);
                 return;
             }
-            PBEGrowthRate gr = new BaseStats(species, form).GrowthRate;
+            PBEGrowthRate gr = BaseStats.Get(species, form, true).GrowthRate;
             EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, x, y, width, exp, level, gr);
         }
         public static unsafe void EXP_SingleLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, uint exp, byte level, PBEGrowthRate gr)

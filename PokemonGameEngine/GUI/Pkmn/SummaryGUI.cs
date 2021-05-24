@@ -208,7 +208,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             PBESpecies species = _currentPkmn.Species;
             PBEForm form = _currentPkmn.Form;
-            var bs = new BaseStats(species, form);
+            var bs = BaseStats.Get(species, form, true);
             OTInfo ot = _currentPkmn.OT;
             byte level = _currentPkmn.Level;
             uint exp = _currentPkmn.EXP;

@@ -83,29 +83,6 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Form = form;
             Level = level;
         }
-        public PartyPokemon(EncounterTable.Encounter encounter)
-        {
-            SetRandomPID();
-            SetEmptyPokerus();
-            Species = encounter.Species;
-            Form = encounter.Form;
-            Level = (byte)PBEDataProvider.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel);
-            SetDefaultNickname();
-            Shiny = Utils.GetRandomShiny();
-            Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
-            var bs = new BaseStats(Species, Form);
-            SetDefaultEXPForLevel(bs);
-            AbilType = BaseStats.GetRandomNonHiddenAbilityType();
-            Ability = bs.GetAbility(AbilType, PBEAbility.None);
-            Gender = PBEDataProvider.GlobalRandom.RandomGender(bs.GenderRatio);
-            Moveset = new Moveset();
-            EffortValues = new EVs();
-            IndividualValues = new IVs();
-            UpdateTimeBasedForms();
-            SetDefaultMoves();
-            CalcStats(bs.Stats);
-            SetMaxHP();
-        }
         public PartyPokemon(BoxPokemon other)
         {
             PID = other.PID;
@@ -142,7 +119,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.SetCurrentMetLocation();
             p.SetDefaultNickname();
             p.Shiny = Utils.GetRandomShiny();
-            var bs = new BaseStats(species, form);
+            var bs = BaseStats.Get(species, form, true);
             p.SetDefaultFriendship(bs);
             p.SetDefaultEXPForLevel(bs);
             p.AbilType = BaseStats.GetRandomNonHiddenAbilityType();
@@ -159,19 +136,18 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.SetMaxHP();
             return p;
         }
-        public static PartyPokemon CreateWildMon(PBESpecies species, PBEForm form, byte level)
+        public static PartyPokemon CreateWildMon(PBESpecies species, PBEForm form, byte level, PBEGender gender, PBENature nature, BaseStats bs)
         {
             var p = new PartyPokemon(species, form, level);
             p.SetRandomPID();
             p.SetEmptyPokerus();
             p.SetDefaultNickname();
             p.Shiny = Utils.GetRandomShiny();
-            p.Nature = PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
-            var bs = new BaseStats(species, form);
+            p.Nature = nature;
             p.SetDefaultEXPForLevel(bs);
             p.AbilType = BaseStats.GetRandomNonHiddenAbilityType();
             p.Ability = bs.GetAbility(p.AbilType, PBEAbility.None);
-            p.Gender = PBEDataProvider.GlobalRandom.RandomGender(bs.GenderRatio);
+            p.Gender = gender;
             p.Moveset = new Moveset();
             p.EffortValues = new EVs();
             p.IndividualValues = new IVs();
@@ -192,7 +168,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.SetCurrentMetLocation();
             p.Nickname = "Egg";
             p.Shiny = Utils.GetRandomShiny();
-            var bs = new BaseStats(species, form);
+            var bs = BaseStats.Get(species, form, true);
             p.SetDefaultEggCycles(bs);
             p.SetDefaultEXPForLevel(bs);
             p.AbilType = BaseStats.GetRandomNonHiddenAbilityType();
@@ -219,7 +195,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.MetDate = nincada.MetDate;
             p.SetDefaultNickname();
             p.Shiny = nincada.Shiny;
-            var bs = new BaseStats(p.Species, p.Form);
+            var bs = BaseStats.Get(p.Species, p.Form, true);
             p.Friendship = nincada.Friendship;
             // If Shedinja's growth rate were different from Nincada's, this wouldn't work
             // By design, no Pokémon can change into another that has a different growth rate
@@ -320,7 +296,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void CalcStats()
         {
-            CalcStats(new BaseStats(Species, Form).Stats);
+            CalcStats(BaseStats.Get(Species, Form, true).Stats);
         }
         public void HealStatus()
         {
@@ -363,7 +339,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         private void UpdateAbilityAndCalcStatsAfterFormChange()
         {
-            var bs = new BaseStats(Species, Form);
+            var bs = BaseStats.Get(Species, Form, true);
             CalcStatsAndAdjustCurrentHP(bs.Stats);
             Ability = bs.GetAbility(AbilType, Ability);
         }
@@ -424,7 +400,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             }
             else
             {
-                var bs = new BaseStats(Species, Form);
+                var bs = BaseStats.Get(Species, Form, true);
                 SetDefaultFriendship(bs);
             }
 

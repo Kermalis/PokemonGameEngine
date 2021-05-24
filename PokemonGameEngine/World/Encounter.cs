@@ -1,40 +1,47 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
+using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.World
 {
     // TODO: CompoundEyes
-    // TODO: CuteCharm
-    // TODO: Hustle, Pressure, VitalSpirit
-    // TODO: Intimidate, KeenEye
-    // TODO: MagnetPull, Static
-    // TODO: SandVeil, SnowCloak
     // TODO: StickyHold, SuctionCups
-    // TODO: Synchronize
     internal static class Encounter
     {
-        public static EncounterType? GetEncounterType(BlocksetBlockBehavior b)
+        private static bool TryGetEncounterType(BlocksetBlockBehavior behavior, out EncounterType type)
         {
-            switch (b)
+            switch (behavior)
             {
+                // Default
                 case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter:
                 case BlocksetBlockBehavior.Cave_Encounter:
-                case BlocksetBlockBehavior.Grass_Encounter: return EncounterType.Default;
-                case BlocksetBlockBehavior.Grass_SpecialEncounter: return EncounterType.DarkGrass;
-                case BlocksetBlockBehavior.Surf: return EncounterType.Surf;
+                case BlocksetBlockBehavior.Grass_Encounter: type = EncounterType.Default; return true;
+                // DarkGrass
+                case BlocksetBlockBehavior.Grass_SpecialEncounter: type = EncounterType.DarkGrass; return true;
+                // Surf
+                case BlocksetBlockBehavior.Surf: type = EncounterType.Surf; return true;
             }
-            return null;
+            type = default;
+            return false;
         }
 
-        private static EncounterTable.Encounter RollEncounter(EncounterTable tbl, ushort combinedChance)
+        // TODO: Determine battle music
+        private static Song GetWildBattleMusic()
+        {
+            return Song.WildBattle;
+        }
+
+        private static EncounterTable.Encounter RollEncounter(IEnumerable<EncounterTable.Encounter> tbl, ushort combinedChance)
         {
             int r = PBEDataProvider.GlobalRandom.RandomInt(1, combinedChance);
             int sum = 0;
-            foreach (EncounterTable.Encounter encounter in tbl.Encounters)
+            foreach (EncounterTable.Encounter encounter in tbl)
             {
                 sum += encounter.Chance;
                 if (r <= sum)
@@ -44,14 +51,37 @@ namespace Kermalis.PokemonGameEngine.World
             }
             throw new Exception("Miscalculation with encounter table data");
         }
+        private static EncounterTable.Encounter RollEncounterOfTypeIfPossible(EncounterTable.Encounter[] tbl, ushort combinedChance, PBEType type)
+        {
+            var typeEncounters = new List<EncounterTable.Encounter>(tbl.Length);
+            ushort typeChance = 0;
+
+            foreach (EncounterTable.Encounter encounter in tbl)
+            {
+                var bs = BaseStats.Get(encounter.Species, encounter.Form, false);
+                if (bs.HasType(type))
+                {
+                    typeEncounters.Add(encounter);
+                    typeChance += encounter.Chance;
+                }
+            }
+
+            if (typeEncounters.Count == 0)
+            {
+                return RollEncounter(tbl, combinedChance);
+            }
+            if (typeChance == 0)
+            {
+                return null;
+            }
+            return RollEncounter(typeEncounters, typeChance);
+        }
 
         // Some abilities & items affect the wild encounter rate
         // Biking lowers the rate by 20% (except for when using Rock Smash)
-        private static int GetAffectedChance(PartyPokemon leadPkmn, int chance, bool isBiking)
+        private static int GetAffectedChance(int chance, PBEAbility leadPkmnAbility, ItemType leadPkmnItem, bool isBiking, MapWeather weather)
         {
-            PBEAbility abilityOfFirstInParty = leadPkmn.Ability;
-            ItemType itemOfFirstInParty = leadPkmn.Item;
-            switch (abilityOfFirstInParty)
+            switch (leadPkmnAbility)
             {
                 case PBEAbility.ArenaTrap:
                 case PBEAbility.Illuminate:
@@ -59,8 +89,24 @@ namespace Kermalis.PokemonGameEngine.World
                 case PBEAbility.QuickFeet:
                 case PBEAbility.Stench:
                 case PBEAbility.WhiteSmoke: chance /= 2; break;
+                case PBEAbility.SandVeil:
+                {
+                    if (weather == MapWeather.Sandstorm)
+                    {
+                        chance /= 2;
+                    }
+                    break;
+                }
+                case PBEAbility.SnowCloak:
+                {
+                    if (weather == MapWeather.Snow_Hail)
+                    {
+                        chance /= 2;
+                    }
+                    break;
+                }
             }
-            switch (itemOfFirstInParty)
+            switch (leadPkmnItem)
             {
                 case ItemType.CleanseTag: chance = chance * 2 / 3; break; // Reduce by 1/3
             }
@@ -71,19 +117,123 @@ namespace Kermalis.PokemonGameEngine.World
             return chance;
         }
 
+        private static EncounterTable.Encounter GetAffectedEncounter(PBEAbility leadPkmnAbility, EncounterTable.Encounter[] tbl, ushort combinedChance)
+        {
+            // MagnetPull and Static have a 50% chance to activate
+            if (PBEDataProvider.GlobalRandom.RandomBool())
+            {
+                switch (leadPkmnAbility)
+                {
+                    case PBEAbility.MagnetPull: return RollEncounterOfTypeIfPossible(tbl, combinedChance, PBEType.Steel);
+                    case PBEAbility.Static: return RollEncounterOfTypeIfPossible(tbl, combinedChance, PBEType.Electric);
+                }
+            }
+            return RollEncounter(tbl, combinedChance);
+        }
+        private static bool ShouldCancelEncounter(PBEAbility leadPkmnAbility, byte leadPkmnLevel, byte encounterLevel)
+        {
+            // Intimidate and KeenEye have a 50% chance to cancel the encounter if the level would be 5 or more levels below
+            switch (leadPkmnAbility)
+            {
+                case PBEAbility.Intimidate:
+                case PBEAbility.KeenEye:
+                {
+                    if (leadPkmnLevel >= encounterLevel + 5 && PBEDataProvider.GlobalRandom.RandomBool())
+                    {
+                        return true;
+                    }
+                    break;
+                }
+            }
+            return false;
+        }
+        private static byte GetAffectedLevel(PBEAbility leadPkmnAbility, EncounterTable.Encounter encounter)
+        {
+            // Hustle, Pressure, and VitalSpirit have a 50% chance to make the encounter max level
+            switch (leadPkmnAbility)
+            {
+                case PBEAbility.Hustle:
+                case PBEAbility.Pressure:
+                case PBEAbility.VitalSpirit:
+                {
+                    if (PBEDataProvider.GlobalRandom.RandomBool())
+                    {
+                        return encounter.MaxLevel;
+                    }
+                    break;
+                }
+            }
+            // Return random level
+            return (byte)PBEDataProvider.GlobalRandom.RandomInt(encounter.MinLevel, encounter.MaxLevel);
+        }
+        private static PBEGender GetAffectedGender(PBEGender leadPkmnGender, PBEAbility leadPkmnAbility, PBEGenderRatio encounterGenderRatio)
+        {
+            // CuteCharm has a 66.6~% chance to force the encounter to be opposite gender
+            if (leadPkmnGender != PBEGender.Genderless && encounterGenderRatio != PBEGenderRatio.M0_F0
+                && leadPkmnAbility == PBEAbility.CuteCharm && PBEDataProvider.GlobalRandom.RandomBool(2, 3))
+            {
+                if (leadPkmnGender == PBEGender.Male)
+                {
+                    if (encounterGenderRatio != PBEGenderRatio.M1_F0)
+                    {
+                        return PBEGender.Female;
+                    }
+                }
+                else
+                {
+                    if (encounterGenderRatio != PBEGenderRatio.M0_F1)
+                    {
+                        return PBEGender.Male;
+                    }
+                }
+            }
+            return PBEDataProvider.GlobalRandom.RandomGender(encounterGenderRatio);
+        }
+        // Does not apply to roaming mon
+        private static PBENature GetAffectedNature(PBEAbility leadPkmnAbility, PBENature leadPkmnNature)
+        {
+            // Synchronize has a 50% chance to force the same nature
+            if (leadPkmnAbility == PBEAbility.Synchronize && PBEDataProvider.GlobalRandom.RandomBool())
+            {
+                return leadPkmnNature;
+            }
+            return PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
+        }
+
+        private static bool CreateWildPkmn(EncounterTable.Encounter[] tbl, ushort combinedChance, PartyPokemon leadPkmn, Party wildParty)
+        {
+            EncounterTable.Encounter encounter = GetAffectedEncounter(leadPkmn.Ability, tbl, combinedChance);
+            if (encounter is null)
+            {
+                return false;
+            }
+            byte level = GetAffectedLevel(leadPkmn.Ability, encounter);
+            // Check if we should cancel the encounter
+            if (ShouldCancelEncounter(leadPkmn.Ability, leadPkmn.Level, level))
+            {
+                return false;
+            }
+            PBESpecies species = encounter.Species;
+            PBEForm form = encounter.Form;
+            var bs = BaseStats.Get(species, form, true);
+            PBEGender gender = GetAffectedGender(leadPkmn.Gender, leadPkmn.Ability, bs.GenderRatio);
+            PBENature nature = GetAffectedNature(leadPkmn.Ability, leadPkmn.Nature);
+            wildParty.Add(PartyPokemon.CreateWildMon(species, form, level, gender, nature, bs));
+            return true;
+        }
+
         // TODO: Get IsBiking
         public static bool CheckForWildBattle(bool ignoreAbilityOrItemOrBike)
         {
             PlayerObj player = PlayerObj.Player;
             Map.Layout.Block block = player.GetBlock();
             BlocksetBlockBehavior blockBehavior = block.BlocksetBlock.Behavior;
-            EncounterType? t = GetEncounterType(blockBehavior);
-            if (!t.HasValue)
+            if (!TryGetEncounterType(blockBehavior, out EncounterType t))
             {
                 return false; // Return false if the block does not create battles
             }
             Map map = player.Map;
-            EncounterTable tbl = map.Encounters.GetEncounterTable(t.Value);
+            EncounterTable tbl = map.Encounters.GetEncounterTable(t);
             if (tbl is null)
             {
                 return false; // Return false if there are no encounters for this block on this map
@@ -94,11 +244,12 @@ namespace Kermalis.PokemonGameEngine.World
                 return false; // Return false if all of the encounters are disabled
             }
             PartyPokemon leadPkmn = Game.Instance.Save.PlayerParty[0];
+            MapWeather weather = map.MapDetails.Weather;
             int chance = tbl.ChanceOfPhenomenon;
             // This is an option because some encounters (like rock smash) do not use the ability to modify the rate
             if (!ignoreAbilityOrItemOrBike)
             {
-                chance = GetAffectedChance(leadPkmn, chance, false);
+                chance = GetAffectedChance(chance, leadPkmn.Ability, leadPkmn.Item, false, weather);
             }
             if (!PBEDataProvider.GlobalRandom.RandomBool(chance, byte.MaxValue))
             {
@@ -106,9 +257,41 @@ namespace Kermalis.PokemonGameEngine.World
             }
 
             // We passed all the checks, now we get an encounter
-            EncounterTable.Encounter encounter0 = RollEncounter(tbl, combinedChance);
-            Game.Instance.TempCreateWildBattle(map.MapDetails.Weather, blockBehavior, encounter0);
+            var wildParty = new Party();
+            int numWild;
+            PBEBattleFormat format;
+            if (t == EncounterType.DarkGrass)
+            {
+                numWild = 2;
+                format = PBEBattleFormat.Double;
+            }
+            else
+            {
+                numWild = 1;
+                format = PBEBattleFormat.Single;
+            }
+            for (int i = 0; i < numWild; i++)
+            {
+                if (!CreateWildPkmn(tbl.Encounters, combinedChance, leadPkmn, wildParty))
+                {
+                    return false; // Return false if an ability cancels the encounter
+                }
+            }
+            Game.Instance.CreateWildBattle(weather, blockBehavior, wildParty, format, GetWildBattleMusic());
             return true;
+        }
+
+        public static void CreateStaticWildBattle(PBESpecies species, PBEForm form, byte level)
+        {
+            PlayerObj player = PlayerObj.Player;
+            Map.Layout.Block block = player.GetBlock();
+            PartyPokemon leadPkmn = Game.Instance.Save.PlayerParty[0];
+            MapWeather weather = player.Map.MapDetails.Weather;
+            var bs = BaseStats.Get(species, form, true);
+            PBEGender gender = GetAffectedGender(leadPkmn.Gender, leadPkmn.Ability, bs.GenderRatio);
+            PBENature nature = GetAffectedNature(leadPkmn.Ability, leadPkmn.Nature);
+            var wildPkmn = PartyPokemon.CreateWildMon(species, form, level, gender, nature, bs);
+            Game.Instance.CreateWildBattle(weather, block.BlocksetBlock.Behavior, new Party { wildPkmn }, PBEBattleFormat.Single, Song.LegendaryBattle);
         }
     }
 }

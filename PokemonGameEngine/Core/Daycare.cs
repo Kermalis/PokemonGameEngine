@@ -85,8 +85,8 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         private static byte GetCompatibility(BoxPokemon p0, BoxPokemon p1)
         {
-            var bs0 = new BaseStats(p0.Species, p0.Form);
-            var bs1 = new BaseStats(p1.Species, p1.Form);
+            var bs0 = BaseStats.Get(p0.Species, p0.Form, true);
+            var bs1 = BaseStats.Get(p1.Species, p1.Form, true);
 
             // Check if can't breed
             if (bs0.EggGroup1 == EggGroup.Undiscovered || bs1.EggGroup1 == EggGroup.Undiscovered)
@@ -382,7 +382,7 @@ namespace Kermalis.PokemonGameEngine.Core
             int mainParentIdx = GetMainSpeciesParentIndex(p0, p1);
             BoxPokemon mainParent = mainParentIdx == 0 ? p0 : p1;
             (PBESpecies species, PBEForm form) = GetOffspringSpecies(mainParent);
-            var bs = new BaseStats(species, form);
+            var bs = BaseStats.Get(species, form, true);
 
             byte level = PkmnConstants.EggHatchLevel;
             PBEGender gender = PBEDataProvider.GlobalRandom.RandomGender(bs.GenderRatio);

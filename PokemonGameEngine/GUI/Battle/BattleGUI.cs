@@ -95,6 +95,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     foreach (SpritedBattlePokemonParty p in SpritedParties)
                     {
                         p.UpdateToParty(); // Copy our Pokémon back from battle, update teammates, update wild Pokémon
+                        // Could technically only update what we need (like caught mon, roaming mon, and following partners)
                     }
                     Game.Instance.Save.PlayerInventory.FromPBEInventory(Trainer.Inventory);
                     if (Battle.BattleResult == PBEBattleResult.WildCapture)

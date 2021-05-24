@@ -61,7 +61,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 // To test evolution
                 var evomon = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Nincada, 0, 19);
                 evomon.Item = ItemType.Leftovers;
-                evomon.EXP = PBEEXPTables.GetEXPRequired(new BaseStats(evomon.Species, evomon.Form).GrowthRate, 20) - 5;
+                evomon.EXP = PBEEXPTables.GetEXPRequired(BaseStats.Get(evomon.Species, evomon.Form, true).GrowthRate, 20) - 5;
                 GivePokemon(evomon);
                 // To pummel
                 var victini = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Victini, 0, 67);

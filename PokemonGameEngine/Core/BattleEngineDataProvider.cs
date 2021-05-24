@@ -98,7 +98,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         public override IPBEPokemonData GetPokemonData(PBESpecies species, PBEForm form, bool cache = true)
         {
-            return new BaseStats(species, form);
+            return BaseStats.Get(species, form, cache);
         }
         public override IPBEPokemonDataExtended GetPokemonDataExtended(PBESpecies species, PBEForm form, bool cache = true)
         {

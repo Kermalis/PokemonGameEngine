@@ -3,7 +3,6 @@ using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Script;
 using Kermalis.PokemonGameEngine.World;
-using Kermalis.PokemonGameEngine.World.Objs;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Core
@@ -98,7 +97,7 @@ namespace Kermalis.PokemonGameEngine.Core
             OverworldGUI.Instance.StartBattle(battle, song, trainerParties);
             Save.GameStats[GameStat.TotalBattles]++;
         }
-        private void CreateWildBattle(MapWeather mapWeather, BlocksetBlockBehavior blockBehavior, Party wildParty, PBEBattleFormat format, Song song)
+        public void CreateWildBattle(MapWeather mapWeather, BlocksetBlockBehavior blockBehavior, Party wildParty, PBEBattleFormat format, Song song)
         {
             Save sav = Save;
             var me = new PBETrainerInfo(sav.PlayerParty, sav.OT.TrainerName, true, inventory: sav.PlayerInventory.ToPBEInventory());
@@ -108,18 +107,6 @@ namespace Kermalis.PokemonGameEngine.Core
             var battle = new PBEBattle(format, PkmnConstants.PBESettings, me, wild, battleTerrain: terrain, weather: Overworld.GetPBEWeatherFromMap(mapWeather));
             CreateBattle(battle, song, trainerParties);
             Save.GameStats[GameStat.WildBattles]++;
-        }
-        // Temp - start a test wild battle
-        public void TempCreateWildBattle(MapWeather mapWeather, BlocksetBlockBehavior blockBehavior, EncounterTable.Encounter encounter)
-        {
-            CreateWildBattle(mapWeather, blockBehavior, new Party { new PartyPokemon(encounter) }, PBEBattleFormat.Single, Song.WildBattle);
-        }
-        // For scripted
-        public void TempCreateWildBattle(PartyPokemon wildPkmn)
-        {
-            PlayerObj player = PlayerObj.Player;
-            Map.Layout.Block block = player.GetBlock();
-            CreateWildBattle(player.Map.MapDetails.Weather, block.BlocksetBlock.Behavior, new Party { wildPkmn }, PBEBattleFormat.Single, Song.LegendaryBattle);
         }
 
         #region Logic Tick

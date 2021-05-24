@@ -30,16 +30,11 @@ GUIs:
 
 Encounters:
     CompoundEyes
-    CuteCharm
-    Hustle, Pressure, VitalSpirit
-    Intimidate, KeenEye
-    MagnetPull, Static
-    SandVeil, SnowCloak
     StickyHold, SuctionCups
-    Synchronize
     Biking reduces the rate
     Phenomena
     Fishing
+    Determine battle music
 
 Field Effects:
     Spin tiles

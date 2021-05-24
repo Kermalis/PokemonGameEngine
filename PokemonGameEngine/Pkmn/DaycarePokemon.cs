@@ -21,7 +21,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 return; // Cannot level up anymore
             }
 
-            var bs = new BaseStats(Pkmn.Species, Pkmn.Form);
+            var bs = BaseStats.Get(Pkmn.Species, Pkmn.Form, true);
             PBEGrowthRate growthRate = bs.GrowthRate;
             uint nextLevelAmt = PBEDataProvider.Instance.GetEXPRequired(growthRate, (byte)(Pkmn.Level + 1));
             if (++Pkmn.EXP < nextLevelAmt)

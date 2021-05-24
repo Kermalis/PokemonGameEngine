@@ -419,8 +419,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
-            var pkmn = PartyPokemon.CreateWildMon(species, form, level);
-            Game.Instance.TempCreateWildBattle(pkmn);
+            Encounter.CreateStaticWildBattle(species, form, level);
         }
         private void AwaitReturnToFieldCommand()
         {

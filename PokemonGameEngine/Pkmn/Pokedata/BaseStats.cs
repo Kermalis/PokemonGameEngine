@@ -32,8 +32,61 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         private readonly List<PBEAbility> _abilities;
         public IReadOnlyList<PBEAbility> Abilities => _abilities;
 
+        private const int CacheSize = 20;
+        private static readonly List<BaseStats> _cache = new(CacheSize);
 
-        public BaseStats(PBESpecies species, PBEForm form)
+        public static BaseStats Get(PBESpecies species, PBEForm form, bool cache)
+        {
+            int i;
+            BaseStats bs;
+            // Try to find in the cache first
+            for (i = 0; i < _cache.Count; i++)
+            {
+                bs = _cache[i];
+                if (bs.Species == species && bs.Form == form)
+                {
+                    if (i != _cache.Count - 1)
+                    {
+                        _cache.RemoveAt(i); // Remove from its position and put it at the end
+                        _cache.Add(bs);
+#if DEBUG
+                        Console.WriteLine("BaseStats cache - Moving {0}_{1} (from {2} to {3})", species, PBEDataUtils.GetNameOfForm(species, form), i, _cache.Count - 1);
+#endif
+                    }
+                    return bs;
+                }
+            }
+            // Did not find in the cache, so create it
+            bs = new BaseStats(species, form);
+            if (!cache)
+            {
+                return bs;
+            }
+            if (i < CacheSize - 1)
+            {
+                _cache.Add(bs); // Still room in the cache to add this at the end
+#if DEBUG
+                Console.WriteLine("BaseStats cache - Adding {0}_{1} ({2})", species, PBEDataUtils.GetNameOfForm(species, form), i);
+#endif
+            }
+            else
+            {
+#if DEBUG
+                BaseStats old = _cache[0];
+                PBESpecies oldSpecies = old.Species;
+                PBEForm oldForm = old.Form;
+#endif
+                _cache.RemoveAt(0); // Remove oldest and add to end
+                _cache.Add(bs);
+#if DEBUG
+                Console.WriteLine("BaseStats cache - Removing {0}_{1}", oldSpecies, PBEDataUtils.GetNameOfForm(oldSpecies, oldForm));
+                Console.WriteLine("BaseStats cache - Adding {0}_{1} ({2})", species, PBEDataUtils.GetNameOfForm(species, form), _cache.Count - 1);
+#endif
+            }
+            return bs;
+        }
+
+        private BaseStats(PBESpecies species, PBEForm form)
         {
             Species = species;
             Form = form;
