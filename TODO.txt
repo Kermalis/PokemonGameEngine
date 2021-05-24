@@ -74,3 +74,4 @@ Sounds cool but definitely not necessary at all:
     Color lookup tables for day tints
     Move/Item effect/data integration with battle engine (not needed because you can just clone and edit the battle engine to add these things and more, like new species/forms)
     Battle sprite shadows with rotation (like gen 5)
+    Chatot special cry

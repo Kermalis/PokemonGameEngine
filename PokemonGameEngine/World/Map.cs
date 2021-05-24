@@ -455,14 +455,14 @@ namespace Kermalis.PokemonGameEngine.World
 #if DEBUG
             Console.WriteLine("Map \"{0}\" is now visible", Name);
 #endif
-            LoadObjEvents(); // Objs that are wider than 1 block that are at the edge of the map will "pop" into existence
+            LoadObjEvents();
         }
         public void OnMapNoLongerVisible()
         {
 #if DEBUG
             Console.WriteLine("Map \"{0}\" is no longer visible", Name);
 #endif
-            UnloadObjEvents(); // Objs that are wider than 1 block that are at the edge of the map will "pop" out of existence
+            UnloadObjEvents();
         }
 
         // "exceptThisOne" is used so objs aren't checking if they collide with themselves
