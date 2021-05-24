@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
 
             // Battle
-            if (Overworld.CheckForWildBattle(false))
+            if (Encounter.CheckForWildBattle(false))
             {
                 return true;
             }
