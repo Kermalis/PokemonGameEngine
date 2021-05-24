@@ -83,13 +83,13 @@ namespace Kermalis.PokemonGameEngine.Core
             SCallback = callback;
         }
 
-        private static PBEBattleTerrain UpdateBattleSetting(Map.Layout.Block block)
+        private static PBEBattleTerrain UpdateBattleSetting(BlocksetBlockBehavior blockBehavior)
         {
-            PBEBattleTerrain terrain = Overworld.GetPBEBattleTerrainFromBlock(block.BlocksetBlock);
+            PBEBattleTerrain terrain = Overworld.GetPBEBattleTerrainFromBlock(blockBehavior);
             BattleEngineDataProvider.Instance.UpdateBattleSetting(isCave: terrain == PBEBattleTerrain.Cave,
-                isDarkGrass: block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Grass_SpecialEncounter,
+                isDarkGrass: blockBehavior == BlocksetBlockBehavior.Grass_SpecialEncounter,
                 isFishing: false,
-                isSurfing: block.BlocksetBlock.Behavior == BlocksetBlockBehavior.Surf,
+                isSurfing: blockBehavior == BlocksetBlockBehavior.Surf,
                 isUnderwater: false);
             return terrain;
         }
@@ -98,28 +98,28 @@ namespace Kermalis.PokemonGameEngine.Core
             OverworldGUI.Instance.StartBattle(battle, song, trainerParties);
             Save.GameStats[GameStat.TotalBattles]++;
         }
-        private void CreateWildBattle(Map map, Map.Layout.Block block, Party wildParty, PBEBattleFormat format, Song song)
+        private void CreateWildBattle(MapWeather mapWeather, BlocksetBlockBehavior blockBehavior, Party wildParty, PBEBattleFormat format, Song song)
         {
             Save sav = Save;
             var me = new PBETrainerInfo(sav.PlayerParty, sav.OT.TrainerName, true, inventory: sav.PlayerInventory.ToPBEInventory());
             var trainerParties = new Party[] { sav.PlayerParty, wildParty };
             var wild = new PBEWildInfo(wildParty);
-            PBEBattleTerrain terrain = UpdateBattleSetting(block);
-            var battle = new PBEBattle(format, PkmnConstants.PBESettings, me, wild, battleTerrain: terrain, weather: Overworld.GetPBEWeatherFromMap(map));
+            PBEBattleTerrain terrain = UpdateBattleSetting(blockBehavior);
+            var battle = new PBEBattle(format, PkmnConstants.PBESettings, me, wild, battleTerrain: terrain, weather: Overworld.GetPBEWeatherFromMap(mapWeather));
             CreateBattle(battle, song, trainerParties);
             Save.GameStats[GameStat.WildBattles]++;
         }
         // Temp - start a test wild battle
-        public void TempCreateWildBattle(Map map, Map.Layout.Block block, EncounterTable.Encounter encounter)
+        public void TempCreateWildBattle(MapWeather mapWeather, BlocksetBlockBehavior blockBehavior, EncounterTable.Encounter encounter)
         {
-            CreateWildBattle(map, block, new Party { new PartyPokemon(encounter) }, PBEBattleFormat.Single, Song.WildBattle);
+            CreateWildBattle(mapWeather, blockBehavior, new Party { new PartyPokemon(encounter) }, PBEBattleFormat.Single, Song.WildBattle);
         }
         // For scripted
         public void TempCreateWildBattle(PartyPokemon wildPkmn)
         {
             PlayerObj player = PlayerObj.Player;
             Map.Layout.Block block = player.GetBlock();
-            CreateWildBattle(player.Map, block, new Party { wildPkmn }, PBEBattleFormat.Single, Song.LegendaryBattle);
+            CreateWildBattle(player.Map.MapDetails.Weather, block.BlocksetBlock.Behavior, new Party { wildPkmn }, PBEBattleFormat.Single, Song.LegendaryBattle);
         }
 
         #region Logic Tick
