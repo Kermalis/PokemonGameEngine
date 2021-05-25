@@ -18,13 +18,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             _pendingEvolutions.Enqueue((pkmn, evo));
         }
-        public static (PartyPokemon, EvolutionData.EvoData)? GetNextPendingEvolution()
+        public static bool GetNextPendingEvolution(out (PartyPokemon, EvolutionData.EvoData) evo)
         {
-            if (_pendingEvolutions.Count == 0)
-            {
-                return null;
-            }
-            return _pendingEvolutions.Dequeue();
+            return _pendingEvolutions.TryDequeue(out evo);
         }
 
         private static bool IsEverstone(PartyPokemon pkmn)

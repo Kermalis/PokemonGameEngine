@@ -167,10 +167,9 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         public unsafe void ReturnToFieldWithFadeInAfterEvolutionCheck()
         {
-            (PartyPokemon, EvolutionData.EvoData)? pending = Evolution.GetNextPendingEvolution();
-            if (pending.HasValue)
+            if (Evolution.GetNextPendingEvolution(out (PartyPokemon, EvolutionData.EvoData) pending))
             {
-                (PartyPokemon pkmn, EvolutionData.EvoData evo) = pending.Value;
+                (PartyPokemon pkmn, EvolutionData.EvoData evo) = pending;
                 _ = new EvolutionGUI(pkmn, evo);
                 return;
             }
