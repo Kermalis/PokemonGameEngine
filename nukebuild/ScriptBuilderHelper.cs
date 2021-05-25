@@ -81,9 +81,11 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.BufferSeenCount, new[] { typeof(byte) } }, // Buffer number
         { ScriptCommand.BufferCaughtCount, new[] { typeof(byte) } }, // Buffer number
         { ScriptCommand.GetDaycareState, Array.Empty<Type>() },
+        { ScriptCommand.BufferDaycareMonNickname, new[] { typeof(byte), typeof(byte) } }, // Buffer number, Daycare index number
         { ScriptCommand.StorePokemonInDaycare, Array.Empty<Type>() },
         { ScriptCommand.GetDaycareCompatibility, Array.Empty<Type>() },
         { ScriptCommand.SelectDaycareMon, Array.Empty<Type>() },
+        { ScriptCommand.GetDaycareMonLevelsGained, new[] { typeof(byte) } }, // Daycare index number
         { ScriptCommand.GiveDaycareEgg, Array.Empty<Type>() },
         { ScriptCommand.DisposeDaycareEgg, Array.Empty<Type>() },
         { ScriptCommand.HatchEgg, Array.Empty<Type>() },

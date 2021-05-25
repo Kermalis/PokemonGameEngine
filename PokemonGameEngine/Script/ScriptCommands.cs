@@ -66,9 +66,11 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.BufferSeenCount: BufferSeenCountCommand(); break;
                 case ScriptCommand.BufferCaughtCount: BufferCaughtCountCommand(); break;
                 case ScriptCommand.GetDaycareState: GetDaycareStateCommand(); break;
+                case ScriptCommand.BufferDaycareMonNickname: BufferDaycareMonNicknameCommand(); break;
                 case ScriptCommand.StorePokemonInDaycare: StorePokemonInDaycareCommand(); break;
                 case ScriptCommand.GetDaycareCompatibility: GetDaycareCompatibilityCommand(); break;
                 case ScriptCommand.SelectDaycareMon: SelectDaycareMonCommand(); break;
+                case ScriptCommand.GetDaycareMonLevelsGained: GetDaycareMonLevelsGainedCommand(); break;
                 case ScriptCommand.GiveDaycareEgg: GiveDaycareEggCommand(); break;
                 case ScriptCommand.DisposeDaycareEgg: DisposeDaycareEggCommand(); break;
                 case ScriptCommand.HatchEgg: HatchEggCommand(); break;

@@ -54,8 +54,8 @@ namespace Kermalis.PokemonGameEngine.Core
             InitPlayerWithDefaultLocation();
             PCBoxes = new PCBoxes();
             Daycare = new Daycare();
-            Daycare.StorePokemon(PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Blissey, 0, 100));
-            Daycare.StorePokemon(PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Ditto, 0, 100));
+            Daycare.StorePokemon(PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Blissey, 0, 47));
+            Daycare.StorePokemon(PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Ditto, 0, 82));
             PlayerParty = new Party();
             {
                 // To test evolution

@@ -32,7 +32,22 @@ namespace Kermalis.PokemonGameEngine.Core
                 throw new Exception();
             }
 
-            _pkmn.Add(new DaycarePokemon(pkmn));
+            var mon = new DaycarePokemon(pkmn);
+#if DEBUG
+            if (mon.Pkmn.Level < PkmnConstants.MaxLevel - 2)
+            {
+                mon.Debug_LevelUpManually(2);
+            }
+#endif
+            _pkmn.Add(mon);
+        }
+        public string GetNickname(int index)
+        {
+            return _pkmn[index].Pkmn.Nickname;
+        }
+        public byte GetNumLevelsGained(int index)
+        {
+            return _pkmn[index].LevelsGained;
         }
         public void GiveEgg()
         {

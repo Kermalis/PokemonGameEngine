@@ -7,7 +7,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
     internal sealed class DaycarePokemon
     {
         public readonly BoxPokemon Pkmn;
-        private byte _levelsGained;
+        public byte LevelsGained;
 
         public DaycarePokemon(PartyPokemon pkmn)
         {
@@ -29,9 +29,28 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 return; // No level up
             }
             Pkmn.Level++;
-            _levelsGained++;
+            LevelsGained++;
+            TeachNewMoves();
+        }
 
-            // New move logic
+#if DEBUG
+        public void Debug_LevelUpManually(int numTimes)
+        {
+            var bs = BaseStats.Get(Pkmn.Species, Pkmn.Form, true);
+            PBEGrowthRate growthRate = bs.GrowthRate;
+            for (int i = 0; i < numTimes; i++)
+            {
+                uint nextLevelAmt = PBEDataProvider.Instance.GetEXPRequired(growthRate, (byte)(Pkmn.Level + 1));
+                Pkmn.EXP = nextLevelAmt;
+                Pkmn.Level++;
+                LevelsGained++;
+                TeachNewMoves();
+            }
+        }
+#endif
+
+        private void TeachNewMoves()
+        {
             var lvlUpData = new LevelUpData(Pkmn.Species, Pkmn.Form);
             PBEMove[] newMoves = lvlUpData.GetNewMoves(Pkmn.Level).Reverse().Take(PkmnConstants.NumMoves).ToArray();
             BoxMoveset moveset = Pkmn.Moveset;
@@ -51,7 +70,6 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 slot.Move = newMoves[i];
                 slot.PPUps = 0;
             }
-
         }
     }
 }

@@ -11,6 +11,13 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             Game.Instance.Save.Vars[Var.SpecialVar_Result] = (byte)Game.Instance.Save.Daycare.GetDaycareState();
         }
+        private void BufferDaycareMonNicknameCommand()
+        {
+            byte buf = (byte)ReadVarOrValue();
+            byte index = (byte)ReadVarOrValue();
+            string nickname = Game.Instance.Save.Daycare.GetNickname(index);
+            Game.Instance.StringBuffers.Buffers[buf] = nickname;
+        }
         private static void StorePokemonInDaycareCommand()
         {
             int index = Game.Instance.Save.Vars[Var.SpecialVar_Result];
@@ -27,6 +34,16 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             OverworldGUI.Instance.OpenPartyMenu(PartyGUI.Mode.SelectDaycare);
             _waitReturnToField = true;
+        }
+        private void GetDaycareMonLevelsGainedCommand()
+        {
+            byte index = (byte)ReadVarOrValue();
+            byte gained = Game.Instance.Save.Daycare.GetNumLevelsGained(index);
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = gained;
+            if (gained != 0)
+            {
+                Game.Instance.StringBuffers.Buffers[1] = string.Format("{0} level{1}", gained, gained == 1 ? string.Empty : 's');
+            }
         }
         private static void GiveDaycareEggCommand()
         {

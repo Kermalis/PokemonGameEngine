@@ -5,6 +5,9 @@
 .set COMPAT_MED 50
 .set COMPAT_MAX 70
 
+//TODO: I can raise one more would you like that?
+//TODO: Withdraw
+
 @Egg_Hatch
 LockAllObjs
 Message EggHatchText
@@ -22,43 +25,72 @@ GetDaycareState
 GoToIf Daycare_OneMon Var.SpecialVar_Result C.Equal DaycareState.OnePokemon
 GoToIf Daycare_TwoMon Var.SpecialVar_Result C.Equal DaycareState.TwoPokemon
 GoToIf Daycare_EggWaiting Var.SpecialVar_Result C.Equal DaycareState.EggWaiting
+//No mon in daycare, wanna deposit?
 Message DaycareText_CanITake
 AwaitMessageRead
 YesNoChoice
 GoToIf Daycare_TryTake Var.SpecialVar_Result C.Equal 1
+//Did not want to deposit
 CloseMessage
 UnlockAllObjs
 End
 
 #Daycare_OneMon
+//Greetings
 Message DaycareText_GoodToSeeYou1
 AwaitMessageComplete
+//Say levels gained
+SetVar Var.SpecialVar1 0
+Call Daycare_CheckLevelsGained
+//Wanna deposit?
 Message DaycareText_CanITake
 AwaitMessageRead
 YesNoChoice
 GoToIf Daycare_TryTake Var.SpecialVar_Result C.Equal 1
+//Wanna withdraw?
 CloseMessage
 UnlockAllObjs
 End
 
 #Daycare_TwoMon
+//Greetings
 Message DaycareText_GoodToSeeYou2
 AwaitMessageComplete
+//Say levels gained
+SetVar Var.SpecialVar1 0
+Call Daycare_CheckLevelsGained
+SetVar Var.SpecialVar1 1
+Call Daycare_CheckLevelsGained
+//State compatibility
 GetDaycareCompatibility
 CallIf Daycare_CompatMax Var.SpecialVar_Result C.Equal COMPAT_MAX
 CallIf Daycare_CompatMed Var.SpecialVar_Result C.Equal COMPAT_MED
 CallIf Daycare_CompatMin Var.SpecialVar_Result C.Equal COMPAT_LOW
 CallIf Daycare_CompatNone Var.SpecialVar_Result C.Equal COMPAT_NONE
 AwaitMessageComplete
+//Wanna withdraw?
 CloseMessage
 UnlockAllObjs
 End
 
+#Daycare_CheckLevelsGained
+GetDaycareMonLevelsGained Var.SpecialVar1
+CallIf Daycare_BufferLevelsGained Var.SpecialVar_Result C.Greater 0
+return
+
+#Daycare_BufferLevelsGained
+BufferDaycareMonNickname 0 Var.SpecialVar1
+Message DaycareText_MonGainedXLevels
+AwaitMessageComplete
+return
+
 #Daycare_EggWaiting
+//Ask if you want the egg
 Message DaycareText_MonHadEggOMG
 AwaitMessageRead
 YesNoChoice
 GoToIf Daycare_TryTakeEgg Var.SpecialVar_Result C.Equal 1
+//Did not want the egg
 DisposeDaycareEgg
 CloseMessage
 UnlockAllObjs
@@ -129,6 +161,9 @@ is doing well."
 #DaycareText_GoodToSeeYou2
 "Good to see you, your Pokémon\n
 are doing well."
+
+#DaycareText_MonGainedXLevels
+"Your {BUF 0} gained {BUF 1}."
 
 #DaycareText_MonHadEggOMG
 "Your Pokémon had an Egg!\n
