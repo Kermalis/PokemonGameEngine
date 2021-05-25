@@ -155,7 +155,23 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             if (_learningMoves.Count != 0)
             {
-                SetWantsToLearnMove();
+                int index = _pkmn.Moveset.GetFirstEmptySlot();
+                if (index == -1)
+                {
+                    SetWantsToLearnMove();
+                }
+                else
+                {
+                    Moveset.MovesetSlot slot = _pkmn.Moveset[index];
+                    PBEMove move = _learningMoves.Dequeue(); // Remove from queue
+                    string moveStr = PBELocalizedString.GetMoveName(move).English;
+                    slot.Move = move;
+                    PBEMoveData mData = PBEMoveData.Data[move];
+                    slot.PP = PBEDataUtils.CalcMaxPP(mData.PPTier, 0, PkmnConstants.PBESettings);
+                    slot.PPUps = 0;
+                    CreateMessage(string.Format("{0} learned {1}!", _pkmn.Nickname, moveStr));
+                    _state = State.LearnMove_ForgotMsg;
+                }
             }
             else
             {
