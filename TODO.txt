@@ -4,7 +4,7 @@ Main Mechanics:
     Map scripts
     Withdrawing pkmn from daycare
     Passing down tmhm moves to offspring
-    Burmy/Probopass/Magnezone/Leafeon/Glaceon[/Giratina] areas
+    Burmy/Giratina areas
     Item effects & registering an item
     EVs
     Badges

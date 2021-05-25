@@ -4,6 +4,7 @@ using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World;
+using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
 
@@ -38,9 +39,23 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             int hour = OverworldTime.GetHour(time.Hour);
             return OverworldTime.GetTimeOfDay(season, hour) == TimeOfDay.Night;
         }
+        private static bool IsNosepassMagnetonLocation()
+        {
+            MapSection mapSection = PlayerObj.Player.Map.MapDetails.Section;
+            return mapSection == MapSection.TestCave;
+        }
+        // TODO
+        private static bool IsLeafeonLocation()
+        {
+            return false;
+        }
+        // TODO
+        private static bool IsGlaceonLocation()
+        {
+            return false;
+        }
 
         // Ignores Shedinja_LevelUp & Beauty_LevelUp
-        // TODO: NosepassMagneton_Location_LevelUp, Leafeon_Location_LevelUp, Glaceon_Location_LevelUp
         public static EvolutionData.EvoData GetLevelUpEvolution(Party party, PartyPokemon pkmn)
         {
             if (IsEverstone(pkmn))
@@ -71,6 +86,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                     case EvoMethod.Move_LevelUp: isMatch = pkmn.Moveset.Contains((PBEMove)evo.Param); break;
                     case EvoMethod.Male_LevelUp: isMatch = pkmn.Level >= evo.Param && pkmn.Gender == PBEGender.Male; break;
                     case EvoMethod.Female_LevelUp: isMatch = pkmn.Level >= evo.Param && pkmn.Gender == PBEGender.Female; break;
+                    case EvoMethod.NosepassMagneton_Location_LevelUp: isMatch = IsNosepassMagnetonLocation(); break;
+                    case EvoMethod.Leafeon_Location_LevelUp: isMatch = IsLeafeonLocation(); break;
+                    case EvoMethod.Glaceon_Location_LevelUp: isMatch = IsGlaceonLocation(); break;
                     case EvoMethod.PartySpecies_LevelUp:
                     {
                         isMatch = false;

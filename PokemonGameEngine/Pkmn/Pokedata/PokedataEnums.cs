@@ -19,8 +19,13 @@
         Silcoon_LevelUp, // (param = level)
         Cascoon_LevelUp, // (param = level)
         Ninjask_LevelUp, // (param = level)
-        Shedinja_LevelUp, // (param = level) // I'm keeping this unused because it's not really necessary. Kept for compatibility with the dumper
-        Beauty_LevelUp, // (param = beauty amount) // Unused for now
+        // In the official games, Shedinja_LevelUp is never explicitly checked
+        // When Ninjask_LevelUp is checked, the game just grabs the next evolution in the table to get the species to create (Shedinja)
+        // I don't think the level is ever checked either
+        // I'm keeping it unused for this engine because it's not really necessary. Kept for compatibility with the dumper
+        Shedinja_LevelUp, // (param = level)
+        // Unused for now, since we don't have contest stats
+        Beauty_LevelUp, // (param = beauty amount)
         Male_Stone, // (param = item)
         Female_Stone, // (param = item)
         Item_Day_LevelUp, // (param = item)
