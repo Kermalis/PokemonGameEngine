@@ -11,7 +11,8 @@
     },
     "Section": "TestMapW",
     "Weather": "Normal",
-    "Music": "Route1"
+    "Music": "Route1",
+    "BurmyForm": "Burmy_Plant"
   },
   "Connections": [
     {

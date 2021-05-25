@@ -56,19 +56,19 @@ public sealed partial class Build
             SpAttack = j[nameof(SpAttack)].Value<byte>();
             SpDefense = j[nameof(SpDefense)].Value<byte>();
             Speed = j[nameof(Speed)].Value<byte>();
-            Type1 = j[nameof(Type1)].EnumValue<PBEType>();
-            Type2 = j[nameof(Type2)].EnumValue<PBEType>();
+            Type1 = j[nameof(Type1)].ReadEnumValue<PBEType>();
+            Type2 = j[nameof(Type2)].ReadEnumValue<PBEType>();
             CatchRate = j[nameof(CatchRate)].Value<byte>();
             BaseFriendship = j[nameof(BaseFriendship)].Value<byte>();
             EggCycles = j[nameof(EggCycles)].Value<byte>();
-            GenderRatio = j[nameof(GenderRatio)].EnumValue<PBEGenderRatio>();
-            GrowthRate = j[nameof(GrowthRate)].EnumValue<PBEGrowthRate>();
+            GenderRatio = j[nameof(GenderRatio)].ReadEnumValue<PBEGenderRatio>();
+            GrowthRate = j[nameof(GrowthRate)].ReadEnumValue<PBEGrowthRate>();
             BaseEXPYield = j[nameof(BaseEXPYield)].Value<ushort>();
-            EggGroup1 = j[nameof(EggGroup1)].EnumValue<EggGroup>();
-            EggGroup2 = j[nameof(EggGroup2)].EnumValue<EggGroup>();
-            Ability1 = j[nameof(Ability1)].EnumValue<PBEAbility>();
-            Ability2 = j[nameof(Ability2)].EnumValue<PBEAbility>();
-            AbilityH = j[nameof(AbilityH)].EnumValue<PBEAbility>();
+            EggGroup1 = j[nameof(EggGroup1)].ReadEnumValue<EggGroup>();
+            EggGroup2 = j[nameof(EggGroup2)].ReadEnumValue<EggGroup>();
+            Ability1 = j[nameof(Ability1)].ReadEnumValue<PBEAbility>();
+            Ability2 = j[nameof(Ability2)].ReadEnumValue<PBEAbility>();
+            AbilityH = j[nameof(AbilityH)].ReadEnumValue<PBEAbility>();
             FleeRate = j[nameof(FleeRate)].Value<byte>();
             Weight = j[nameof(Weight)].Value<double>();
         }
@@ -109,7 +109,7 @@ public sealed partial class Build
 
             public Evo(JToken j)
             {
-                Method = j[nameof(Method)].EnumValue<EvoMethod>();
+                Method = j[nameof(Method)].ReadEnumValue<EvoMethod>();
                 switch (Method)
                 {
                     case EvoMethod.Friendship_LevelUp:
@@ -145,21 +145,21 @@ public sealed partial class Build
                     case EvoMethod.Item_Day_LevelUp:
                     case EvoMethod.Item_Night_LevelUp:
                     {
-                        Param = (ushort)j["ItemRequired"].EnumValue<PBEItem>();
+                        Param = (ushort)j["ItemRequired"].ReadEnumValue<PBEItem>();
                         break;
                     }
                     case EvoMethod.Move_LevelUp:
                     {
-                        Param = (ushort)j["MoveRequired"].EnumValue<PBEMove>();
+                        Param = (ushort)j["MoveRequired"].ReadEnumValue<PBEMove>();
                         break;
                     }
                     case EvoMethod.PartySpecies_LevelUp:
                     {
-                        Param = (ushort)j["SpeciesRequired"].EnumValue<PBESpecies>();
+                        Param = (ushort)j["SpeciesRequired"].ReadEnumValue<PBESpecies>();
                         break;
                     }
                 }
-                Species = j[nameof(Species)].EnumValue<PBESpecies>();
+                Species = j[nameof(Species)].ReadEnumValue<PBESpecies>();
                 Form = j[nameof(Form)].FormValue();
             }
 
@@ -176,7 +176,7 @@ public sealed partial class Build
 
         public Evos(JToken j)
         {
-            BabySpecies = j[nameof(BabySpecies)].EnumValue<PBESpecies>();
+            BabySpecies = j[nameof(BabySpecies)].ReadEnumValue<PBESpecies>();
             var evos = (JArray)j[nameof(Evolutions)];
             int numEvos = evos.Count;
             Evolutions = new Evo[numEvos];
@@ -206,7 +206,7 @@ public sealed partial class Build
 
             public LevelUp(JToken j)
             {
-                Move = j[nameof(Move)].EnumValue<PBEMove>();
+                Move = j[nameof(Move)].ReadEnumValue<PBEMove>();
                 Level = j[nameof(Level)].Value<byte>();
             }
 
@@ -250,7 +250,7 @@ public sealed partial class Build
             EggMoves = new PBEMove[numMoves];
             for (int i = 0; i < numMoves; i++)
             {
-                EggMoves[i] = moves[i]["Move"].EnumValue<PBEMove>();
+                EggMoves[i] = moves[i]["Move"].ReadEnumValue<PBEMove>();
             }
         }
 

@@ -343,7 +343,22 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             CalcStatsAndAdjustCurrentHP(bs.Stats);
             Ability = bs.GetAbility(AbilType, Ability);
         }
-        // TODO: Burmy areas. (Giratina would work similarly if you wanted, with an additional || for the orb)
+        public void UpdateBurmyForm()
+        {
+            if (Species == PBESpecies.Burmy)
+            {
+                Form = Overworld.GetProperBurmyForm();
+                UpdateAbilityAndCalcStatsAfterFormChange();
+            }
+        }
+        public void UpdateGiratinaForm()
+        {
+            if (Species == PBESpecies.Giratina)
+            {
+                Form = Item == ItemType.GriseousOrb || Overworld.IsGiratinaLocation() ? PBEForm.Giratina_Origin : PBEForm.Giratina;
+                UpdateAbilityAndCalcStatsAfterFormChange();
+            }
+        }
         public void UpdateTimeBasedForms()
         {
             DateTime time = Program.LogicTickTime;
@@ -364,7 +379,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void UpdateShayminForm(TimeOfDay tod)
         {
-            if (tod == TimeOfDay.Night && Species == PBESpecies.Shaymin && Form == PBEForm.Shaymin_Sky)
+            if (Species == PBESpecies.Shaymin && Form == PBEForm.Shaymin_Sky
+                && (tod == TimeOfDay.Night || Status1 == PBEStatus1.Frozen))
             {
                 Form = PBEForm.Shaymin;
                 UpdateAbilityAndCalcStatsAfterFormChange();
@@ -385,6 +401,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             Level = pkmn.Level;
             EXP = pkmn.EXP;
             CalcStats();
+            UpdateBurmyForm();
             UpdateTimeBasedForms();
         }
         // This is used after the above

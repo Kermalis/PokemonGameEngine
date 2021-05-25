@@ -4,7 +4,6 @@ using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World;
-using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
 
@@ -37,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         private static bool IsNosepassMagnetonLocation()
         {
-            MapSection mapSection = PlayerObj.Player.Map.MapDetails.Section;
+            MapSection mapSection = Overworld.GetCurrentLocation();
             return mapSection == MapSection.TestCave;
         }
         // TODO

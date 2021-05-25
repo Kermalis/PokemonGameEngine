@@ -92,12 +92,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 case PBEBattleState.Ended:
                 {
-                    foreach (SpritedBattlePokemonParty p in SpritedParties)
+                    // Copy our Pokémon back from battle, update teammates, update wild Pokémon
+                    // Could technically only update what we need (like caught mon, roaming mon, and following partners)
+                    for (int i = 0; i < SpritedParties.Length; i++)
                     {
-                        p.UpdateToParty(); // Copy our Pokémon back from battle, update teammates, update wild Pokémon
-                        // Could technically only update what we need (like caught mon, roaming mon, and following partners)
+                        SpritedBattlePokemonParty p = SpritedParties[i];
+                        p.UpdateToParty(i == Trainer?.Id);
                     }
+                    // Update inventory
                     Game.Instance.Save.PlayerInventory.FromPBEInventory(Trainer.Inventory);
+                    // Do capture stuff (temporary)
                     if (Battle.BattleResult == PBEBattleResult.WildCapture)
                     {
                         Game.Instance.Save.GameStats[GameStat.PokemonCaptures]++;
@@ -108,8 +112,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         pkmn.UpdateFromBattle_Caught(wildPkmn);
                         Game.Instance.Save.GivePokemon(pkmn);
                     }
+                    // Pokerus
                     Pokerus.TryCreatePokerus(Game.Instance.Save.PlayerParty);
                     Pokerus.TrySpreadPokerus(Game.Instance.Save.PlayerParty);
+                    // Fade out (temporarily until capture screen exists)
                     TransitionOut();
                     break;
                 }

@@ -11,7 +11,8 @@
     },
     "Section": "TestCave",
     "Weather": "None",
-    "Music": "Cave1"
+    "Music": "Cave1",
+    "BurmyForm": "Burmy_Sandy"
   },
   "Connections": [],
   "Encounters": [

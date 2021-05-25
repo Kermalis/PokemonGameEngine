@@ -170,14 +170,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
-        public void UpdateToParty()
+        public void UpdateToParty(bool shouldCheckEvolution)
         {
             for (int i = 0; i < Party.Count; i++)
             {
                 PartyPokemon pp = Party[i];
                 byte oldLevel = pp.Level;
                 pp.UpdateFromBattle(SpritedParty[i].Pkmn);
-                if (oldLevel != pp.Level)
+                if (shouldCheckEvolution && oldLevel != pp.Level)
                 {
                     EvolutionData.EvoData evo = Evolution.GetLevelUpEvolution(Party, pp);
                     if (evo != null)

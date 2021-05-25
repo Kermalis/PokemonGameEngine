@@ -59,9 +59,9 @@ namespace Kermalis.PokemonGameEngine.Core
             PlayerParty = new Party();
             {
                 // To test evolution
-                var evomon = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Nincada, 0, 19);
+                var evomon = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Burmy, PBEForm.Burmy_Trash, 19);
                 evomon.Item = ItemType.Leftovers;
-                evomon.EXP = PBEEXPTables.GetEXPRequired(BaseStats.Get(evomon.Species, evomon.Form, true).GrowthRate, 20) - 5;
+                evomon.EXP = PBEEXPTables.GetEXPRequired(BaseStats.Get(evomon.Species, evomon.Form, true).GrowthRate, 20) - 1;
                 GivePokemon(evomon);
                 // To pummel
                 var victini = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Victini, 0, 67);
@@ -78,6 +78,8 @@ namespace Kermalis.PokemonGameEngine.Core
             {
                 Debug_GiveRandomPokemon(i == 0 || i == 1 || i == 35);
             }
+
+            Overworld.UpdateGiratinaForms(); // Not really necessary, including for debug though
         }
 
         private void Debug_GiveRandomPokemon(bool egg)

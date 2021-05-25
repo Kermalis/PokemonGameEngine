@@ -14,9 +14,11 @@ Main Mechanics:
     World Map
     PC & Mart
     Trades
-    Location name plates on enter
+    Location name plates on enter (requires task system)
     Pokerus time decay
     Hidden items
+    Ask if you'd like to flee a wild battle when your mon faints
+    Task system
 
 GUIs:
     Intro/Title/Continue/NewGame
@@ -32,7 +34,7 @@ Encounters:
     CompoundEyes
     StickyHold, SuctionCups
     Biking reduces the rate
-    Phenomena
+    Phenomena (requires task system)
     Fishing
     Determine battle music
 

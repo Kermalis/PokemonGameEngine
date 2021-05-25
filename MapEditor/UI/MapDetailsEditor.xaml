@@ -25,5 +25,9 @@
       <TextBlock Text="Map music:" />
       <ComboBox Items="{Binding SelectableSongs}" SelectedItem="{Binding Music}" />
     </StackPanel>
+    <StackPanel Spacing="5" Orientation="Horizontal">
+      <TextBlock Text="Burmy form:" />
+      <ComboBox Items="{Binding SelectableForms}" SelectedIndex="{Binding BurmyForm}" />
+    </StackPanel>
   </StackPanel>
 </UserControl>

@@ -1,4 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.Util;
@@ -37,6 +38,7 @@ namespace Kermalis.PokemonGameEngine.World
             public readonly MapSection Section;
             public readonly MapWeather Weather;
             public readonly Song Music;
+            public readonly PBEForm BurmyForm;
 
             public Details(EndianBinaryReader r)
             {
@@ -44,6 +46,7 @@ namespace Kermalis.PokemonGameEngine.World
                 Section = r.ReadEnum<MapSection>();
                 Weather = r.ReadEnum<MapWeather>();
                 Music = r.ReadEnum<Song>();
+                BurmyForm = r.ReadEnum<PBEForm>();
             }
         }
         public sealed class Events

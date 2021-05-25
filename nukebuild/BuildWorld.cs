@@ -11,27 +11,22 @@ using System.IO;
 
 internal static class WorldBuilderHelper
 {
-    public static TEnum EnumValue<TEnum>(this JToken j) where TEnum : struct, Enum
+    public static TEnum ReadEnumValue<TEnum>(this JToken j) where TEnum : struct, Enum
     {
-        Type type = typeof(TEnum);
-        // If it has the [Flags] attribute, read a series of bools
-        if (type.IsDefined(typeof(FlagsAttribute), false))
+        return Enum.Parse<TEnum>(j.Value<string>());
+    }
+    public static TEnum ReadFlagsEnumValue<TEnum>(this JToken j) where TEnum : struct, Enum
+    {
+        ulong value = 0;
+        foreach (TEnum flag in Enum.GetValues<TEnum>())
         {
-            ulong value = 0;
-            foreach (TEnum flag in Enum.GetValues<TEnum>())
+            ulong ulFlag = Convert.ToUInt64(flag);
+            if (ulFlag != 0uL && j[flag.ToString()].Value<bool>())
             {
-                ulong ulFlag = Convert.ToUInt64(flag);
-                if (ulFlag != 0uL && j[flag.ToString()].Value<bool>())
-                {
-                    value |= ulFlag;
-                }
+                value |= ulFlag;
             }
-            return (TEnum)Enum.ToObject(type, value);
         }
-        else
-        {
-            return Enum.Parse<TEnum>(j.Value<string>());
-        }
+        return (TEnum)Enum.ToObject(typeof(TEnum), value);
     }
 }
 
@@ -52,7 +47,7 @@ public sealed partial class Build
                 Chance = j[nameof(Chance)].Value<byte>();
                 MinLevel = j[nameof(MinLevel)].Value<byte>();
                 MaxLevel = j[nameof(MaxLevel)].Value<byte>();
-                Species = j[nameof(Species)].EnumValue<PBESpecies>();
+                Species = j[nameof(Species)].ReadEnumValue<PBESpecies>();
                 Form = j[nameof(Form)].FormValue();
             }
 
@@ -122,7 +117,7 @@ public sealed partial class Build
 
             public EncounterGroup(JToken j)
             {
-                Type = j[nameof(Type)].EnumValue<EncounterType>();
+                Type = j[nameof(Type)].ReadEnumValue<EncounterType>();
                 Table = j[nameof(Table)].Value<string>();
             }
 
@@ -171,7 +166,7 @@ public sealed partial class Build
 
         public Connection(JToken j)
         {
-            Direction = j[nameof(Direction)].EnumValue<Dir>();
+            Direction = j[nameof(Direction)].ReadEnumValue<Dir>();
             Map = j[nameof(Map)].Value<string>();
             Offset = j[nameof(Offset)].Value<int>();
         }
@@ -189,13 +184,15 @@ public sealed partial class Build
         private readonly MapSection Section;
         private readonly MapWeather Weather;
         private readonly Song Music;
+        private readonly PBEForm BurmyForm;
 
         public Details(JToken j)
         {
-            Flags = j[nameof(Flags)].EnumValue<MapFlags>();
-            Section = j[nameof(Section)].EnumValue<MapSection>();
-            Weather = j[nameof(Weather)].EnumValue<MapWeather>();
-            Music = j[nameof(Music)].EnumValue<Song>();
+            Flags = j[nameof(Flags)].ReadFlagsEnumValue<MapFlags>();
+            Section = j[nameof(Section)].ReadEnumValue<MapSection>();
+            Weather = j[nameof(Weather)].ReadEnumValue<MapWeather>();
+            Music = j[nameof(Music)].ReadEnumValue<Song>();
+            BurmyForm = j[nameof(BurmyForm)].ReadEnumValue<PBEForm>();
         }
 
         public void Write(EndianBinaryWriter w)
@@ -204,6 +201,7 @@ public sealed partial class Build
             w.Write(Section);
             w.Write(Weather);
             w.Write(Music);
+            w.Write(BurmyForm);
         }
     }
     private sealed class Events
@@ -267,13 +265,13 @@ public sealed partial class Build
 
                 Id = j[nameof(Id)].Value<ushort>();
                 Sprite = j[nameof(Sprite)].Value<string>();
-                MovementType = j[nameof(MovementType)].EnumValue<ObjMovementType>();
+                MovementType = j[nameof(MovementType)].ReadEnumValue<ObjMovementType>();
                 MovementX = j[nameof(MovementX)].Value<int>();
                 MovementY = j[nameof(MovementY)].Value<int>();
-                TrainerType = j[nameof(TrainerType)].EnumValue<TrainerType>();
+                TrainerType = j[nameof(TrainerType)].ReadEnumValue<TrainerType>();
                 TrainerSight = j[nameof(TrainerSight)].Value<byte>();
                 Script = j[nameof(Script)].Value<string>();
-                Flag = j[nameof(Flag)].EnumValue<Flag>();
+                Flag = j[nameof(Flag)].ReadEnumValue<Flag>();
             }
 
             public void Write(EndianBinaryWriter w)
@@ -310,9 +308,9 @@ public sealed partial class Build
                 Y = j[nameof(Y)].Value<int>();
                 Elevation = j[nameof(Elevation)].Value<byte>();
 
-                Var = j[nameof(Var)].EnumValue<Var>();
+                Var = j[nameof(Var)].ReadEnumValue<Var>();
                 VarValue = j[nameof(VarValue)].Value<short>();
-                VarConditional = j[nameof(VarConditional)].EnumValue<ScriptConditional>();
+                VarConditional = j[nameof(VarConditional)].ReadEnumValue<ScriptConditional>();
                 Script = j[nameof(Script)].Value<string>();
             }
 

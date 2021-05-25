@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.EndianBinaryIO;
 using Kermalis.MapEditor.Util;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
@@ -32,7 +33,7 @@ namespace Kermalis.MapEditor.Core
             internal Connection() { }
             internal Connection(JToken j)
             {
-                Direction = j[nameof(Direction)].EnumValue<Dir>();
+                Direction = j[nameof(Direction)].ReadEnumValue<Dir>();
                 Map = j[nameof(Map)].Value<string>();
                 Offset = j[nameof(Offset)].Value<int>();
             }
@@ -55,27 +56,31 @@ namespace Kermalis.MapEditor.Core
             public MapSection Section;
             public MapWeather Weather;
             public Song Music;
+            public PBEForm BurmyForm;
 
             public Details() { }
             public Details(JToken j)
             {
-                Flags = j[nameof(Flags)].EnumValue<MapFlags>();
-                Section = j[nameof(Section)].EnumValue<MapSection>();
-                Weather = j[nameof(Weather)].EnumValue<MapWeather>();
-                Music = j[nameof(Music)].EnumValue<Song>();
+                Flags = j[nameof(Flags)].ReadFlagsEnumValue<MapFlags>();
+                Section = j[nameof(Section)].ReadEnumValue<MapSection>();
+                Weather = j[nameof(Weather)].ReadEnumValue<MapWeather>();
+                Music = j[nameof(Music)].ReadEnumValue<Song>();
+                BurmyForm = j[nameof(BurmyForm)].ReadEnumValue<PBEForm>();
             }
 
             public void Write(JsonTextWriter w)
             {
                 w.WriteStartObject();
                 w.WritePropertyName(nameof(Flags));
-                w.WriteEnum(Flags);
+                w.WriteFlagsEnum(Flags);
                 w.WritePropertyName(nameof(Section));
                 w.WriteEnum(Section);
                 w.WritePropertyName(nameof(Weather));
                 w.WriteEnum(Weather);
                 w.WritePropertyName(nameof(Music));
                 w.WriteEnum(Music);
+                w.WritePropertyName(nameof(BurmyForm));
+                w.WriteValue(PBEDataUtils.GetNameOfForm(PBESpecies.Burmy, BurmyForm));
                 w.WriteEndObject();
             }
         }
@@ -155,13 +160,13 @@ namespace Kermalis.MapEditor.Core
 
                     Id = j[nameof(Id)].Value<ushort>();
                     Sprite = j[nameof(Sprite)].Value<string>();
-                    MovementType = j[nameof(MovementType)].EnumValue<ObjMovementType>();
+                    MovementType = j[nameof(MovementType)].ReadEnumValue<ObjMovementType>();
                     MovementX = j[nameof(MovementX)].Value<int>();
                     MovementY = j[nameof(MovementY)].Value<int>();
-                    TrainerType = j[nameof(TrainerType)].EnumValue<TrainerType>();
+                    TrainerType = j[nameof(TrainerType)].ReadEnumValue<TrainerType>();
                     TrainerSight = j[nameof(TrainerSight)].Value<byte>();
                     Script = j[nameof(Script)].Value<string>();
-                    Flag = j[nameof(Flag)].EnumValue<Flag>();
+                    Flag = j[nameof(Flag)].ReadEnumValue<Flag>();
                 }
 
                 public void Write(JsonTextWriter w)
@@ -216,9 +221,9 @@ namespace Kermalis.MapEditor.Core
                     Y = j[nameof(Y)].Value<int>();
                     Elevation = j[nameof(Elevation)].Value<byte>();
 
-                    Var = j[nameof(Var)].EnumValue<Var>();
+                    Var = j[nameof(Var)].ReadEnumValue<Var>();
                     VarValue = j[nameof(VarValue)].Value<short>();
-                    VarConditional = j[nameof(VarConditional)].EnumValue<ScriptConditional>();
+                    VarConditional = j[nameof(VarConditional)].ReadEnumValue<ScriptConditional>();
                     Script = j[nameof(Script)].Value<string>();
                 }
 

@@ -11,7 +11,8 @@
     },
     "Section": "TestMapC",
     "Weather": "Normal",
-    "Music": "Town1"
+    "Music": "Town1",
+    "BurmyForm": "Burmy_Plant"
   },
   "Connections": [
     {

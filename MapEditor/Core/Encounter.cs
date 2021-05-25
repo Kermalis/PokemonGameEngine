@@ -32,7 +32,7 @@ namespace Kermalis.MapEditor.Core
                 Chance = j[nameof(Chance)].Value<byte>();
                 MinLevel = j[nameof(MinLevel)].Value<byte>();
                 MaxLevel = j[nameof(MaxLevel)].Value<byte>();
-                Species = j[nameof(Species)].EnumValue<PBESpecies>();
+                Species = j[nameof(Species)].ReadEnumValue<PBESpecies>();
                 string strForm = j[nameof(Form)].Value<string>();
                 if (strForm == null)
                 {
@@ -176,7 +176,7 @@ namespace Kermalis.MapEditor.Core
             }
             public EncounterGroup(JToken j)
             {
-                Type = j[nameof(Type)].EnumValue<EncounterType>();
+                Type = j[nameof(Type)].ReadEnumValue<EncounterType>();
                 Table = EncounterTable.LoadOrGet(j[nameof(Table)].Value<string>());
             }
 

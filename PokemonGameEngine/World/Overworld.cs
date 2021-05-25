@@ -1,5 +1,11 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Sound;
+using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World.Objs;
+using System;
 
 namespace Kermalis.PokemonGameEngine.World
 {
@@ -8,6 +14,22 @@ namespace Kermalis.PokemonGameEngine.World
         public static MapSection GetCurrentLocation()
         {
             return PlayerObj.Player.Map.MapDetails.Section;
+        }
+        // TODO
+        public static bool IsGiratinaLocation()
+        {
+            return false;
+        }
+        public static PBEForm GetProperBurmyForm()
+        {
+            return PlayerObj.Player.Map.MapDetails.BurmyForm;
+        }
+        public static PBEForm GetProperDeerlingSawsbuckForm()
+        {
+            DateTime time = Program.LogicTickTime;
+            Month month = OverworldTime.GetMonth((Month)time.Month);
+            Season season = OverworldTime.GetSeason(month);
+            return season.ToDeerlingSawsbuckForm();
         }
 
         public static bool ShouldRenderDayTint()
@@ -51,6 +73,22 @@ namespace Kermalis.PokemonGameEngine.World
                 case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter: return true;
             }
             return false;
+        }
+
+        public static void DoEnteredMapThings(Map map)
+        {
+#if DEBUG
+            Console.WriteLine("Player is now on {0}", map.Name);
+#endif
+            SoundControl.SetOverworldBGM(map.MapDetails.Music);
+            UpdateGiratinaForms();
+        }
+        public static void UpdateGiratinaForms()
+        {
+            foreach (PartyPokemon pkmn in Game.Instance.Save.PlayerParty)
+            {
+                pkmn.UpdateGiratinaForm();
+            }
         }
     }
 }

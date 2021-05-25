@@ -2,6 +2,7 @@
 using Avalonia.Markup.Xaml;
 using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.World;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,6 +20,7 @@ namespace Kermalis.MapEditor.UI
         public static IEnumerable<MapSection> SelectableMapSections { get; } = Utils.GetEnumValues<MapSection>();
         public static IEnumerable<MapWeather> SelectableWeathers { get; } = Utils.GetEnumValues<MapWeather>();
         public static IEnumerable<Song> SelectableSongs { get; } = Utils.GetEnumValues<Song>();
+        public static IEnumerable<string> SelectableForms { get; } = Utils.GetOrderedFormStrings(PBEDataUtils.GetForms(PBESpecies.Burmy, false), PBESpecies.Burmy);
 
         public MapFlags Flags
         {
@@ -69,6 +71,18 @@ namespace Kermalis.MapEditor.UI
                 }
             }
         }
+        public int BurmyForm
+        {
+            get => _details is null ? 0 : (int)_details.BurmyForm;
+            set
+            {
+                if (value != -1 && value != (int)_details.BurmyForm)
+                {
+                    _details.BurmyForm = (PBEForm)value;
+                    OnPropertyChanged(nameof(BurmyForm));
+                }
+            }
+        }
 
         private Map.Details _details;
         private readonly MapFlagsConverter _converter;
@@ -89,6 +103,7 @@ namespace Kermalis.MapEditor.UI
             OnPropertyChanged(nameof(Section));
             OnPropertyChanged(nameof(Weather));
             OnPropertyChanged(nameof(Music));
+            OnPropertyChanged(nameof(BurmyForm));
         }
     }
 }

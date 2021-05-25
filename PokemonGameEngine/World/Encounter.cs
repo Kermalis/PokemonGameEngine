@@ -147,6 +147,18 @@ namespace Kermalis.PokemonGameEngine.World
             }
             return false;
         }
+        private static PBEForm GetAffectedForm(PBESpecies species, PBEForm form, EncounterType type)
+        {
+            switch (species)
+            {
+                // Burmy is always Plant cloak if it's from a honey tree
+                case PBESpecies.Burmy: return type == EncounterType.HoneyTree ? PBEForm.Burmy_Plant : Overworld.GetProperBurmyForm();
+                case PBESpecies.Deerling:
+                case PBESpecies.Sawsbuck: return Overworld.GetProperDeerlingSawsbuckForm();
+                case PBESpecies.Giratina: return Overworld.IsGiratinaLocation() ? PBEForm.Giratina_Origin : PBEForm.Giratina;
+            }
+            return form;
+        }
         private static byte GetAffectedLevel(PBEAbility leadPkmnAbility, EncounterTable.Encounter encounter)
         {
             // Hustle, Pressure, and VitalSpirit have a 50% chance to make the encounter max level
@@ -200,7 +212,7 @@ namespace Kermalis.PokemonGameEngine.World
             return PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
         }
 
-        private static bool CreateWildPkmn(EncounterTable.Encounter[] tbl, ushort combinedChance, PartyPokemon leadPkmn, Party wildParty)
+        private static bool CreateWildPkmn(EncounterType type, EncounterTable.Encounter[] tbl, ushort combinedChance, PartyPokemon leadPkmn, Party wildParty)
         {
             EncounterTable.Encounter encounter = GetAffectedEncounter(leadPkmn.Ability, tbl, combinedChance);
             if (encounter is null)
@@ -214,7 +226,7 @@ namespace Kermalis.PokemonGameEngine.World
                 return false;
             }
             PBESpecies species = encounter.Species;
-            PBEForm form = encounter.Form;
+            PBEForm form = GetAffectedForm(species, encounter.Form, type);
             var bs = BaseStats.Get(species, form, true);
             PBEGender gender = GetAffectedGender(leadPkmn.Gender, leadPkmn.Ability, bs.GenderRatio);
             PBENature nature = GetAffectedNature(leadPkmn.Ability, leadPkmn.Nature);
@@ -272,7 +284,7 @@ namespace Kermalis.PokemonGameEngine.World
             }
             for (int i = 0; i < numWild; i++)
             {
-                if (!CreateWildPkmn(tbl.Encounters, combinedChance, leadPkmn, wildParty))
+                if (!CreateWildPkmn(t, tbl.Encounters, combinedChance, leadPkmn, wildParty))
                 {
                     return false; // Return false if an ability cancels the encounter
                 }

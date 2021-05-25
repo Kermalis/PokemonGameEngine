@@ -3,7 +3,6 @@ using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Script;
-using Kermalis.PokemonGameEngine.Sound;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
@@ -31,7 +30,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         protected override void OnMapChanged(Map oldMap, Map newMap)
         {
-            SoundControl.SetOverworldBGM(newMap.MapDetails.Music);
+            Overworld.DoEnteredMapThings(newMap);
         }
 
         private bool CheckForThingsAfterMovement()

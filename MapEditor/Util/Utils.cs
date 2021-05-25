@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Platform;
+using Kermalis.PokemonBattleEngine.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -45,51 +46,47 @@ namespace Kermalis.MapEditor.Util
         {
             return Enum.GetValues<TEnum>().OrderBy(e => e.ToString());
         }
-
-        public static TEnum EnumValue<TEnum>(this JToken j) where TEnum : struct, Enum
+        public static string[] GetOrderedFormStrings(IReadOnlyList<PBEForm> strs, PBESpecies species)
         {
-            Type type = typeof(TEnum);
-            // If it has the [Flags] attribute, read a series of bools
-            if (type.IsDefined(typeof(FlagsAttribute), false))
+            return strs.OrderBy(f => f).Select(f => PBEDataProvider.Instance.GetFormName(species, f).FromPBECultureInfo()).ToArray();
+        }
+
+        public static TEnum ReadEnumValue<TEnum>(this JToken j) where TEnum : struct, Enum
+        {
+            return Enum.Parse<TEnum>(j.Value<string>());
+        }
+        public static TEnum ReadFlagsEnumValue<TEnum>(this JToken j) where TEnum : struct, Enum
+        {
+            ulong value = 0;
+            foreach (TEnum flag in Enum.GetValues<TEnum>())
             {
-                ulong value = 0;
-                foreach (TEnum flag in Enum.GetValues<TEnum>())
+                ulong ulFlag = Convert.ToUInt64(flag);
+                if (ulFlag != 0uL && j[flag.ToString()].Value<bool>())
                 {
-                    ulong ulFlag = Convert.ToUInt64(flag);
-                    if (ulFlag != 0uL && j[flag.ToString()].Value<bool>())
-                    {
-                        value |= ulFlag;
-                    }
+                    value |= ulFlag;
                 }
-                return (TEnum)Enum.ToObject(type, value);
             }
-            else
-            {
-                return Enum.Parse<TEnum>(j.Value<string>());
-            }
+            return (TEnum)Enum.ToObject(typeof(TEnum), value);
         }
         public static void WriteEnum<TEnum>(this JsonTextWriter w, TEnum value) where TEnum : struct, Enum
         {
-            // If it has the [Flags] attribute, write a series of bools
-            if (typeof(TEnum).IsDefined(typeof(FlagsAttribute), false))
+            w.WriteValue(value.ToString());
+        }
+        // If it has the [Flags] attribute, write a series of bools
+        public static void WriteFlagsEnum<TEnum>(this JsonTextWriter w, TEnum value) where TEnum : struct, Enum
+        {
+            w.WriteStartObject();
+            foreach (TEnum flag in GetEnumValues<TEnum>())
             {
-#pragma warning disable CA2248 // Provide correct 'enum' argument to 'Enum.HasFlag'
-                w.WriteStartObject();
-                foreach (TEnum flag in GetEnumValues<TEnum>())
+                if (Convert.ToUInt64(flag) != 0uL)
                 {
-                    if (Convert.ToUInt64(flag) != 0uL)
-                    {
-                        w.WritePropertyName(flag.ToString());
-                        w.WriteValue(value.HasFlag(flag));
-                    }
-                }
-                w.WriteEndObject();
+                    w.WritePropertyName(flag.ToString());
+#pragma warning disable CA2248 // Provide correct 'enum' argument to 'Enum.HasFlag'
+                    w.WriteValue(value.HasFlag(flag));
 #pragma warning restore CA2248 // Provide correct 'enum' argument to 'Enum.HasFlag'
+                }
             }
-            else
-            {
-                w.WriteValue(value.ToString());
-            }
+            w.WriteEndObject();
         }
     }
 }

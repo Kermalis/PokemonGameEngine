@@ -1,4 +1,5 @@
 ﻿using Kermalis.MapEditor.Core;
+using Kermalis.MapEditor.Util;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
@@ -104,7 +105,7 @@ namespace Kermalis.MapEditor.UI.Models
             else
             {
                 // Order by form id so the correct form index is chosen by UI
-                SelectableForms = forms.OrderBy(f => f).Select(f => PBEDataProvider.Instance.GetFormName(Encounter.Species, f).FromPBECultureInfo()).ToArray();
+                SelectableForms = Utils.GetOrderedFormStrings(forms, Encounter.Species);
                 FormsEnabled = true;
             }
             OnPropertyChanged(nameof(SelectableForms));
