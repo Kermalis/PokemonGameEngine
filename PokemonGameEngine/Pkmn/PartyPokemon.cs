@@ -90,6 +90,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             IsEgg = other.IsEgg;
             OT = other.OT;
             MetLocation = other.MetLocation;
+            MetLevel = other.MetLevel;
+            MetDate = other.MetDate;
             Species = other.Species;
             Form = other.Form;
             Nickname = other.Nickname;
