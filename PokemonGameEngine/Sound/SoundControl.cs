@@ -42,7 +42,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             { Song.WildBattle, ("Sound.BGM.TrainerBattle.ogg", 60d/270*4*40) },
             { Song.TrainerBattle, ("Sound.BGM.TrainerBattle.ogg", 60d/270*4*40) }, // 270BPM, 4/4, loop after 40 bars (35.55~ seconds)
             { Song.GymBattle, ("Sound.BGM.GymBattle.ogg", 60d/280*4*23) }, // 280BPM, 4/4, loop after 23 bars (19.714285714285~ seconds)
-            { Song.LegendaryBattle, ("Sound.BGM.TrainerBattle.ogg", 60d/270*4*40) },
+            { Song.LegendaryBattle, ("Sound.BGM.GymBattle.ogg", 60d/280*4*23) },
         };
 
         private static readonly Soloud _soloud;
