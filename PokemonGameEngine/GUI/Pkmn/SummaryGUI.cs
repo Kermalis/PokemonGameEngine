@@ -5,6 +5,7 @@ using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.Util;
 using Kermalis.PokemonGameEngine.World;
@@ -88,6 +89,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
+                SoundControl.Debug_PlayCry(_currentPkmn.Species, _currentPkmn.Form);
                 SetProperCallback();
                 Game.Instance.SetRCallback(RCB_RenderTick);
             }
