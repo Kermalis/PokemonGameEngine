@@ -60,6 +60,20 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
             bool isNight = IsNight();
 
+            // Cache attack and defense calcs for Tyrogue
+            ushort attack = 0;
+            ushort defense = 0;
+            void CalcAttackDefense()
+            {
+                if (attack != 0 && defense != 0)
+                {
+                    return;
+                }
+                var bs = BaseStats.Get(pkmn.Species, pkmn.Form, true);
+                attack = PBEDataUtils.CalculateStat(bs, PBEStat.Attack, pkmn.Nature, pkmn.EffortValues.Attack, pkmn.IndividualValues.Attack, pkmn.Level, PkmnConstants.PBESettings);
+                defense = PBEDataUtils.CalculateStat(bs, PBEStat.Defense, pkmn.Nature, pkmn.EffortValues.Defense, pkmn.IndividualValues.Defense, pkmn.Level, PkmnConstants.PBESettings);
+            }
+
             var data = new EvolutionData(pkmn.Species, pkmn.Form);
             foreach (EvolutionData.EvoData evo in data.Evolutions)
             {
@@ -71,9 +85,6 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                     case EvoMethod.Friendship_Night_LevelUp: isMatch = isNight && pkmn.Friendship >= evo.Param; break;
                     case EvoMethod.LevelUp:
                     case EvoMethod.Ninjask_LevelUp: isMatch = pkmn.Level >= evo.Param; break;
-                    case EvoMethod.ATK_GT_DEF_LevelUp: isMatch = pkmn.Level >= evo.Param && pkmn.Attack > pkmn.Defense; break;
-                    case EvoMethod.ATK_EE_DEF_LevelUp: isMatch = pkmn.Level >= evo.Param && pkmn.Attack == pkmn.Defense; break;
-                    case EvoMethod.ATK_LT_DEF_LevelUp: isMatch = pkmn.Level >= evo.Param && pkmn.Attack < pkmn.Defense; break;
                     case EvoMethod.Silcoon_LevelUp: isMatch = pkmn.Level >= evo.Param && ((pkmn.PID >> 0x10) % 10) <= 4; break;
                     case EvoMethod.Cascoon_LevelUp: isMatch = pkmn.Level >= evo.Param && ((pkmn.PID >> 0x10) % 10) > 4; break;
                     case EvoMethod.Item_Day_LevelUp: isMatch = !isNight && pkmn.Item == (ItemType)evo.Param; break;
@@ -84,6 +95,24 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                     case EvoMethod.NosepassMagneton_Location_LevelUp: isMatch = IsNosepassMagnetonLocation(); break;
                     case EvoMethod.Leafeon_Location_LevelUp: isMatch = IsLeafeonLocation(); break;
                     case EvoMethod.Glaceon_Location_LevelUp: isMatch = IsGlaceonLocation(); break;
+                    case EvoMethod.ATK_GT_DEF_LevelUp:
+                    {
+                        CalcAttackDefense();
+                        isMatch = pkmn.Level >= evo.Param && attack > defense;
+                        break;
+                    }
+                    case EvoMethod.ATK_EE_DEF_LevelUp:
+                    {
+                        CalcAttackDefense();
+                        isMatch = pkmn.Level >= evo.Param && attack == defense;
+                        break;
+                    }
+                    case EvoMethod.ATK_LT_DEF_LevelUp:
+                    {
+                        CalcAttackDefense();
+                        isMatch = pkmn.Level >= evo.Param && attack < defense;
+                        break;
+                    }
                     case EvoMethod.PartySpecies_LevelUp:
                     {
                         isMatch = false;

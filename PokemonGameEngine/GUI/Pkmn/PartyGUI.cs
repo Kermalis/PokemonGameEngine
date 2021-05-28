@@ -169,7 +169,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     _ = new SummaryGUI(_gameParty.Party[_selectionForSummary], SummaryGUI.Mode.JustView, OnSummaryClosed);
                 }
-                // todo
+                else
+                {
+                    SpritedBattlePokemonParty party = _battleParty.Party;
+                    PBEBattlePokemon bPkmn = party.BattleParty[_selectionForSummary];
+                    SpritedBattlePokemon sPkmn = party[bPkmn];
+                    _ = new SummaryGUI(sPkmn, SummaryGUI.Mode.JustView, OnSummaryClosed);
+                }
             }
         }
 

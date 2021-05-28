@@ -44,6 +44,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public PBENature Nature { get; set; }
 
         public ushort HP { get; set; }
+        public ushort MaxHP { get; private set; }
         public PBEStatus1 Status1 { get; set; }
         public byte SleepTurns { get; set; }
         public Pokerus Pokerus { get; set; }
@@ -52,14 +53,6 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public EVs EffortValues { get; set; }
         public IVs IndividualValues { get; set; }
-
-        // Could probably get away with not needing these
-        public ushort MaxHP { get; private set; }
-        public ushort Attack { get; private set; }
-        public ushort Defense { get; private set; }
-        public ushort SpAttack { get; private set; }
-        public ushort SpDefense { get; private set; }
-        public ushort Speed { get; private set; }
 
         public uint PID { get; private set; } // Currently only used for Spinda spots, characteristic, and Wurmple evolution
         public bool IsEgg { get; set; }
@@ -108,8 +101,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             CaughtBall = other.CaughtBall;
             Friendship = other.Friendship;
             UpdateTimeBasedForms();
-            CalcStats();
-            SetMaxHP();
+            CalcMaxHP();
+            SetHPToMaxHP();
         }
 
         public static PartyPokemon CreatePlayerOwnedMon(PBESpecies species, PBEForm form, byte level)
@@ -134,8 +127,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.UpdateTimeBasedForms();
             p.SetDefaultMoves();
             p.CaughtBall = ItemType.PokeBall;
-            p.CalcStats(bs.Stats);
-            p.SetMaxHP();
+            p.CalcMaxHP(bs.Stats);
+            p.SetHPToMaxHP();
             return p;
         }
         public static PartyPokemon CreateWildMon(PBESpecies species, PBEForm form, byte level, PBEGender gender, PBENature nature, BaseStats bs)
@@ -156,8 +149,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.UpdateTimeBasedForms();
             p.SetDefaultMoves();
             p.SetDefaultFriendship(bs);
-            p.CalcStats(bs.Stats);
-            p.SetMaxHP();
+            p.CalcMaxHP(bs.Stats);
+            p.SetHPToMaxHP();
             return p;
         }
         public static PartyPokemon CreateDefaultEgg(PBESpecies species, PBEForm form)
@@ -210,8 +203,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.EffortValues = new EVs(nincada.EffortValues);
             p.IndividualValues = new IVs(nincada.IndividualValues);
             p.CaughtBall = ItemType.PokeBall;
-            p.CalcStats(bs.Stats);
-            p.SetMaxHP();
+            p.CalcMaxHP(bs.Stats);
+            p.SetHPToMaxHP();
             return p;
         }
 
@@ -273,32 +266,27 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             EXP = PBEDataProvider.Instance.GetEXPRequired(bs.GrowthRate, Level);
         }
 
-        public void SetMaxHP()
+        public void SetHPToMaxHP()
         {
             HP = MaxHP;
         }
-        private void CalcStats(IPBEReadOnlyStatCollection baseStats)
+        private void CalcMaxHP(IPBEReadOnlyStatCollection baseStats)
         {
             MaxHP = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.HP, Nature, EffortValues.HP, IndividualValues.HP, Level, PkmnConstants.PBESettings);
-            Attack = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.Attack, Nature, EffortValues.Attack, IndividualValues.Attack, Level, PkmnConstants.PBESettings);
-            Defense = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.Defense, Nature, EffortValues.Defense, IndividualValues.Defense, Level, PkmnConstants.PBESettings);
-            SpAttack = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.SpAttack, Nature, EffortValues.SpAttack, IndividualValues.SpAttack, Level, PkmnConstants.PBESettings);
-            SpDefense = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.SpDefense, Nature, EffortValues.SpDefense, IndividualValues.SpDefense, Level, PkmnConstants.PBESettings);
-            Speed = PBEDataUtils.CalculateStat(Species, baseStats, PBEStat.Speed, Nature, EffortValues.Speed, IndividualValues.Speed, Level, PkmnConstants.PBESettings);
         }
-        private void CalcStatsAndAdjustCurrentHP(IPBEReadOnlyStatCollection baseStats)
+        private void CalcMaxHPAndAdjustHP(IPBEReadOnlyStatCollection baseStats)
         {
             ushort oldMaxHP = MaxHP;
-            CalcStats(baseStats);
+            CalcMaxHP(baseStats);
             // Don't adjust current HP if it's fainted
             if (HP != 0 && MaxHP != oldMaxHP)
             {
                 HP = (ushort)Math.Max(1, HP + (MaxHP - oldMaxHP));
             }
         }
-        public void CalcStats()
+        public void CalcMaxHP()
         {
-            CalcStats(BaseStats.Get(Species, Form, true).Stats);
+            CalcMaxHP(BaseStats.Get(Species, Form, true).Stats);
         }
         public void HealStatus()
         {
@@ -314,7 +302,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void HealFully()
         {
-            SetMaxHP();
+            SetHPToMaxHP();
             HealStatus();
             HealMoves();
         }
@@ -342,7 +330,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         private void UpdateAbilityAndCalcStatsAfterFormChange()
         {
             var bs = BaseStats.Get(Species, Form, true);
-            CalcStatsAndAdjustCurrentHP(bs.Stats);
+            CalcMaxHPAndAdjustHP(bs.Stats);
             Ability = bs.GetAbility(AbilType, Ability);
         }
         public void UpdateBurmyForm()
@@ -402,7 +390,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             EffortValues.CopyFrom(pkmn.EffortValues);
             Level = pkmn.Level;
             EXP = pkmn.EXP;
-            CalcStats();
+            CalcMaxHP();
             UpdateBurmyForm();
             UpdateTimeBasedForms();
         }
@@ -440,8 +428,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             // Burmy hatches as the same form as its mother, but if it was from Mothim & Ditto, it's plant cloak (form 0)
             // Deerling hatches as the current season
             UpdateTimeBasedForms();
-            CalcStats(); // Calc stats after form is set
-            SetMaxHP();
+            CalcMaxHP(); // Calc stats after form is set
+            SetHPToMaxHP();
         }
         public void Evolve(EvolutionData.EvoData evo)
         {

@@ -1,5 +1,7 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Pkmn;
@@ -14,7 +16,6 @@ using System;
 namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
     // TODO: Eggs
-    // TODO: Box mon, battle mon
     // TODO: Up/down
     // TODO: Messages and confirm for learning moves
     // TODO: Move descriptions & stats/new move PP
@@ -36,7 +37,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private readonly Mode _mode;
         private Page _page;
-        private readonly PartyPokemon _currentPkmn;
+        private readonly BoxPokemon _pcPkmn;
+        private readonly PartyPokemon _pPkmn;
+        private readonly SpritedBattlePokemon _bPkmn;
         private readonly PBEMove _learningMove;
         private int _selectingMove = -1;
 
@@ -50,7 +53,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         #region Open & Close GUI
 
-        public unsafe SummaryGUI(PartyPokemon pkmn, Mode mode, Action onClosed, PBEMove learningMove = PBEMove.None)
+        public unsafe SummaryGUI(object pkmn, Mode mode, Action onClosed, PBEMove learningMove = PBEMove.None)
         {
             _mode = mode;
             if (mode == Mode.LearnMove)
@@ -67,7 +70,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             _pageImage = new Image((int)(Program.RenderWidth * PageImageWidth), (int)(Program.RenderHeight * PageImageHeight));
 
-            _currentPkmn = pkmn;
+            if (pkmn is PartyPokemon pPkmn)
+            {
+                _pPkmn = pPkmn;
+            }
+            else if (pkmn is BoxPokemon pcPkmn)
+            {
+                _pcPkmn = pcPkmn;
+            }
+            else
+            {
+                _bPkmn = (SpritedBattlePokemon)pkmn;
+            }
             LoadPkmnImage();
             UpdatePageImage();
 
@@ -89,7 +103,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                SoundControl.Debug_PlayCry(_currentPkmn.Species, _currentPkmn.Form);
+                PlayPkmnCry();
                 SetProperCallback();
                 Game.Instance.SetRCallback(RCB_RenderTick);
             }
@@ -114,13 +128,65 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private void LoadPkmnImage()
         {
-            PBESpecies species = _currentPkmn.Species;
-            PBEForm form = _currentPkmn.Form;
-            PBEGender gender = _currentPkmn.Gender;
-            bool shiny = _currentPkmn.Shiny;
-            uint pid = _currentPkmn.PID;
-            bool egg = _currentPkmn.IsEgg;
+            PBESpecies species;
+            PBEForm form;
+            PBEGender gender;
+            bool shiny;
+            uint pid;
+            bool egg;
+            if (_pPkmn is not null)
+            {
+                species = _pPkmn.Species;
+                form = _pPkmn.Form;
+                gender = _pPkmn.Gender;
+                shiny = _pPkmn.Shiny;
+                pid = _pPkmn.PID;
+                egg = _pPkmn.IsEgg;
+            }
+            else if (_pcPkmn is not null)
+            {
+                species = _pcPkmn.Species;
+                form = _pcPkmn.Form;
+                gender = _pcPkmn.Gender;
+                shiny = _pcPkmn.Shiny;
+                pid = _pcPkmn.PID;
+                egg = _pcPkmn.IsEgg;
+            }
+            else
+            {
+                PartyPokemon pPkmn = _bPkmn.PartyPkmn;
+                PBEBattlePokemon bPkmn = _bPkmn.Pkmn;
+                species = pPkmn.Species;
+                form = bPkmn.RevertForm;
+                gender = pPkmn.Gender;
+                shiny = pPkmn.Shiny;
+                pid = pPkmn.PID;
+                egg = pPkmn.IsEgg;
+            }
             _pkmnImage = PokemonImageUtils.GetPokemonImage(species, form, gender, shiny, false, false, pid, egg);
+        }
+        private void PlayPkmnCry()
+        {
+            PBESpecies species;
+            PBEForm form;
+            if (_pPkmn is not null)
+            {
+                species = _pPkmn.Species;
+                form = _pPkmn.Form;
+            }
+            else if (_pcPkmn is not null)
+            {
+                species = _pcPkmn.Species;
+                form = _pcPkmn.Form;
+            }
+            else
+            {
+                PartyPokemon pPkmn = _bPkmn.PartyPkmn;
+                PBEBattlePokemon bPkmn = _bPkmn.Pkmn;
+                species = pPkmn.Species;
+                form = bPkmn.RevertForm;
+            }
+            SoundControl.Debug_PlayCry(species, form);
         }
         private void SetProperCallback()
         {
@@ -208,12 +274,39 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             PlaceLeftCol(4, "Exp. Points");
             PlaceLeftCol(5, "Exp. To Next Level");
 
-            PBESpecies species = _currentPkmn.Species;
-            PBEForm form = _currentPkmn.Form;
+            PBESpecies species;
+            PBEForm form;
+            OTInfo ot;
+            byte level;
+            uint exp;
+            if (_pPkmn is not null)
+            {
+                species = _pPkmn.Species;
+                form = _pPkmn.Form;
+                ot = _pPkmn.OT;
+                level = _pPkmn.Level;
+                exp = _pPkmn.EXP;
+            }
+            else if (_pcPkmn is not null)
+            {
+                species = _pcPkmn.Species;
+                form = _pcPkmn.Form;
+                ot = _pcPkmn.OT;
+                level = _pcPkmn.Level;
+                exp = _pcPkmn.EXP;
+            }
+            else
+            {
+                PartyPokemon pPkmn = _bPkmn.PartyPkmn;
+                PBEBattlePokemon bPkmn = _bPkmn.Pkmn;
+                species = pPkmn.Species;
+                form = bPkmn.RevertForm;
+                ot = pPkmn.OT;
+                level = bPkmn.Level;
+                exp = bPkmn.EXP;
+            }
+
             var bs = BaseStats.Get(species, form, true);
-            OTInfo ot = _currentPkmn.OT;
-            byte level = _currentPkmn.Level;
-            uint exp = _currentPkmn.EXP;
             uint toNextLvl;
             if (level >= PkmnConstants.MaxLevel)
             {
@@ -271,11 +364,42 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * leftColX) + xOff, (int)(bmpHeight * y), leftColStr, colors);
             }
 
-            PBENature nature = _currentPkmn.Nature;
-            DateTime met = _currentPkmn.MetDate;
-            MapSection loc = _currentPkmn.MetLocation;
-            byte metLvl = _currentPkmn.MetLevel;
-            string characteristic = Characteristic.GetCharacteristic(_currentPkmn.PID, _currentPkmn.IndividualValues) + '.';
+            PBENature nature;
+            DateTime met;
+            MapSection loc;
+            byte metLvl;
+            uint pid;
+            IVs ivs;
+            if (_pPkmn is not null)
+            {
+                nature = _pPkmn.Nature;
+                met = _pPkmn.MetDate;
+                loc = _pPkmn.MetLocation;
+                metLvl = _pPkmn.MetLevel;
+                pid = _pPkmn.PID;
+                ivs = _pPkmn.IndividualValues;
+            }
+            else if (_pcPkmn is not null)
+            {
+                nature = _pcPkmn.Nature;
+                met = _pcPkmn.MetDate;
+                loc = _pcPkmn.MetLocation;
+                metLvl = _pcPkmn.MetLevel;
+                pid = _pcPkmn.PID;
+                ivs = _pcPkmn.IndividualValues;
+            }
+            else
+            {
+                PartyPokemon pPkmn = _bPkmn.PartyPkmn;
+                nature = pPkmn.Nature;
+                met = pPkmn.MetDate;
+                loc = pPkmn.MetLocation;
+                metLvl = pPkmn.MetLevel;
+                pid = pPkmn.PID;
+                ivs = pPkmn.IndividualValues;
+            }
+
+            string characteristic = Characteristic.GetCharacteristic(pid, ivs) + '.';
             PBEFlavor? flavor = PBEDataUtils.GetLikedFlavor(nature);
 
             // Nature
@@ -393,15 +517,53 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, rightColCenterX), (int)(bmpHeight * y), rightColStr, colors);
             }
 
-            ushort hp = _currentPkmn.HP;
-            ushort maxHP = _currentPkmn.MaxHP;
-            ushort atk = _currentPkmn.Attack;
-            ushort def = _currentPkmn.Defense;
-            ushort spAtk = _currentPkmn.SpAttack;
-            ushort spDef = _currentPkmn.SpDefense;
-            ushort speed = _currentPkmn.Speed;
-            PBEAbility abil = _currentPkmn.Ability;
-            PBENature nature = _currentPkmn.Nature;
+            BaseStats bs;
+            PBEAbility abil;
+            PBENature nature;
+            IPBEStatCollection evs;
+            IVs ivs;
+            byte level;
+            ushort hp;
+            ushort maxHP;
+            if (_pPkmn is not null)
+            {
+                bs = BaseStats.Get(_pPkmn.Species, _pPkmn.Form, true);
+                abil = _pPkmn.Ability;
+                nature = _pPkmn.Nature;
+                evs = _pPkmn.EffortValues;
+                ivs = _pPkmn.IndividualValues;
+                level = _pPkmn.Level;
+                hp = _pPkmn.HP;
+                maxHP = _pPkmn.MaxHP;
+            }
+            else if (_pcPkmn is not null)
+            {
+                bs = BaseStats.Get(_pcPkmn.Species, _pcPkmn.Form, true);
+                abil = _pcPkmn.Ability;
+                nature = _pcPkmn.Nature;
+                evs = _pcPkmn.EffortValues;
+                ivs = _pcPkmn.IndividualValues;
+                level = _pcPkmn.Level;
+                hp = maxHP = PBEDataUtils.CalculateStat(bs, PBEStat.HP, nature, evs.GetStat(PBEStat.HP), ivs.HP, level, PkmnConstants.PBESettings);
+            }
+            else
+            {
+                PartyPokemon pPkmn = _bPkmn.PartyPkmn;
+                PBEBattlePokemon bPkmn = _bPkmn.Pkmn;
+                bs = BaseStats.Get(pPkmn.Species, bPkmn.RevertForm, true);
+                abil = pPkmn.Ability;
+                nature = pPkmn.Nature;
+                evs = bPkmn.EffortValues;
+                ivs = pPkmn.IndividualValues;
+                level = bPkmn.Level;
+                hp = bPkmn.HP;
+                maxHP = bPkmn.MaxHP;
+            }
+            ushort atk = PBEDataUtils.CalculateStat(bs, PBEStat.Attack, nature, evs.GetStat(PBEStat.Attack), ivs.Attack, level, PkmnConstants.PBESettings);
+            ushort def = PBEDataUtils.CalculateStat(bs, PBEStat.Defense, nature, evs.GetStat(PBEStat.Defense), ivs.Defense, level, PkmnConstants.PBESettings);
+            ushort spAtk = PBEDataUtils.CalculateStat(bs, PBEStat.SpAttack, nature, evs.GetStat(PBEStat.SpAttack), ivs.SpAttack, level, PkmnConstants.PBESettings);
+            ushort spDef = PBEDataUtils.CalculateStat(bs, PBEStat.SpDefense, nature, evs.GetStat(PBEStat.SpDefense), ivs.SpDefense, level, PkmnConstants.PBESettings);
+            ushort speed = PBEDataUtils.CalculateStat(bs, PBEStat.Speed, nature, evs.GetStat(PBEStat.Speed), ivs.Speed, level, PkmnConstants.PBESettings);
             PBEStat? favored = nature.GetLikedStat();
             PBEStat? disliked = nature.GetDislikedStat();
 
@@ -497,18 +659,53 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
 
             // Moves
-            Moveset moves = _currentPkmn.Moveset;
-            for (int m = 0; m < PkmnConstants.NumMoves; m++)
+            if (_pPkmn is not null)
             {
-                Moveset.MovesetSlot slot = moves[m];
-                PBEMove move = slot.Move;
-                if (move == PBEMove.None)
+                Moveset moves = _pPkmn.Moveset;
+                for (int m = 0; m < PkmnConstants.NumMoves; m++)
                 {
-                    continue;
+                    Moveset.MovesetSlot slot = moves[m];
+                    PBEMove move = slot.Move;
+                    if (move == PBEMove.None)
+                    {
+                        continue;
+                    }
+                    int pp = slot.PP;
+                    int maxPP = PBEDataUtils.CalcMaxPP(move, slot.PPUps, PkmnConstants.PBESettings);
+                    Place(m, move, pp, maxPP);
                 }
-                int pp = slot.PP;
-                int maxPP = PBEDataUtils.CalcMaxPP(move, slot.PPUps, PkmnConstants.PBESettings);
-                Place(m, move, pp, maxPP);
+            }
+            else if (_pcPkmn is not null)
+            {
+                BoxMoveset moves = _pcPkmn.Moveset;
+                for (int m = 0; m < PkmnConstants.NumMoves; m++)
+                {
+                    BoxMoveset.BoxMovesetSlot slot = moves[m];
+                    PBEMove move = slot.Move;
+                    if (move == PBEMove.None)
+                    {
+                        continue;
+                    }
+                    int maxPP = PBEDataUtils.CalcMaxPP(move, slot.PPUps, PkmnConstants.PBESettings);
+                    Place(m, move, maxPP, maxPP);
+                }
+            }
+            else
+            {
+                PBEBattlePokemon bPkmn = _bPkmn.Pkmn;
+                PBEBattleMoveset moves = bPkmn.Status2.HasFlag(PBEStatus2.Transformed) ? bPkmn.TransformBackupMoves : bPkmn.Moves;
+                for (int m = 0; m < PkmnConstants.NumMoves; m++)
+                {
+                    PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[m];
+                    PBEMove move = slot.Move;
+                    if (move == PBEMove.None)
+                    {
+                        continue;
+                    }
+                    int pp = slot.PP;
+                    int maxPP = slot.MaxPP;
+                    Place(m, move, pp, maxPP);
+                }
             }
 
             // Cancel or new move
