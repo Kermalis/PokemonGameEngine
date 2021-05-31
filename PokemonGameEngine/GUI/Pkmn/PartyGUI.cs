@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
@@ -7,7 +6,6 @@ using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
 
@@ -296,43 +294,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         #endregion
 
-        #region Field Moves
-
-        private void AddFieldMovesToActions(PartyPokemon pkmn, int index)
-        {
-            void Add(PBEMove move, Action command)
-            {
-                string str = PBELocalizedString.GetMoveName(move).English;
-                _textChoices.Add(new TextGUIChoice(str, command, fontColors: Font.DefaultBlue_I));
-            }
-
-            Moveset moves = pkmn.Moveset;
-            if (moves.Contains(PBEMove.Surf))
-            {
-                Add(PBEMove.Surf, () => Action_FieldSurf(index));
-            }
-        }
-        private void SetCantUseThatHere()
-        {
-            _message = "Can't use that here.";
-            Game.Instance.SetCallback(CB_CantUseFieldMove);
-        }
-
-        private void Action_FieldSurf(int index)
-        {
-            if (!PlayerObj.Player.CanUseSurfFromCurrentPosition())
-            {
-                SetCantUseThatHere();
-                return;
-            }
-            SetSelectionVar((short)index);
-            _onClosed = OverworldGUI.Instance.ReturnToFieldAndUseSurf;
-            CloseChoices();
-            ClosePartyMenu();
-        }
-
-        #endregion
-
         private void Action_SelectPartyPkmn(int index)
         {
             switch (_mode)
@@ -422,7 +383,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     PartyPokemon pkmn = _gameParty.Party[index];
                     nickname = pkmn.Nickname;
                     _textChoices.Add(new TextGUIChoice("Check summary", () => Action_BringUpSummary(index)));
-                    AddFieldMovesToActions(pkmn, index);
                     break;
                 }
                 case Mode.SelectDaycare:
@@ -505,18 +465,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             {
                 RenderChoicesOntoWindow();
             }
-        }
-        private void CB_CantUseFieldMove()
-        {
-            if (!InputManager.IsPressed(Key.A) && !InputManager.IsPressed(Key.B))
-            {
-                return;
-            }
-
-            int index = SelectionCoordsToPartyIndex(_selectionX, _selectionY);
-            // Assume Mode.PkmnMenu
-            _message = string.Format("Do what with {0}?", _gameParty.Party[index].Nickname);
-            Game.Instance.SetCallback(CB_Choices);
         }
         private void CB_LogicTick()
         {

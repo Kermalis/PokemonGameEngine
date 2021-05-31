@@ -234,6 +234,7 @@ namespace Kermalis.PokemonGameEngine.World
             return true;
         }
 
+        // TODO: Get IsBiking
         public static bool CheckForWildBattle(bool ignoreAbilityOrItemOrBike)
         {
             PlayerObj player = PlayerObj.Player;
@@ -260,7 +261,7 @@ namespace Kermalis.PokemonGameEngine.World
             // This is an option because some encounters (like rock smash) do not use the ability to modify the rate
             if (!ignoreAbilityOrItemOrBike)
             {
-                chance = GetAffectedChance(chance, leadPkmn.Ability, leadPkmn.Item, player.State == PlayerObjState.Biking, weather);
+                chance = GetAffectedChance(chance, leadPkmn.Ability, leadPkmn.Item, false, weather);
             }
             if (!PBEDataProvider.GlobalRandom.RandomBool(chance, byte.MaxValue))
             {

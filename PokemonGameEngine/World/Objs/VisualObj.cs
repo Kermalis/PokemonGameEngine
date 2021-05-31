@@ -4,7 +4,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal abstract class VisualObj : Obj
     {
-        protected bool _leg;
+        private bool _leg;
 
         private readonly ImageSheet _sheet;
 

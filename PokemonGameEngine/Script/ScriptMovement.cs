@@ -40,21 +40,5 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 default: throw new ArgumentOutOfRangeException();
             }
         }
-
-        public static ScriptMovement GetWalkMovement(FacingDirection facing)
-        {
-            switch (facing)
-            {
-                case FacingDirection.South: return ScriptMovement.Walk_S;
-                case FacingDirection.North: return ScriptMovement.Walk_N;
-                case FacingDirection.West: return ScriptMovement.Walk_W;
-                case FacingDirection.East: return ScriptMovement.Walk_E;
-                case FacingDirection.Southwest: return ScriptMovement.Walk_SW;
-                case FacingDirection.Southeast: return ScriptMovement.Walk_SE;
-                case FacingDirection.Northwest: return ScriptMovement.Walk_NW;
-                case FacingDirection.Northeast: return ScriptMovement.Walk_NE;
-                default: throw new ArgumentOutOfRangeException(nameof(facing));
-            }
-        }
     }
 }

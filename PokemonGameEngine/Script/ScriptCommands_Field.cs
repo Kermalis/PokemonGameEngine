@@ -108,10 +108,5 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             _waitReturnToField = true;
         }
-
-        private static void UseSurfCommand()
-        {
-            OverworldGUI.Instance.StartSurfTasks();
-        }
     }
 }

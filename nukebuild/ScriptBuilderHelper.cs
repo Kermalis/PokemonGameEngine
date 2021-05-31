@@ -74,7 +74,6 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.CallIf, new[] { typeof(void*), typeof(short), typeof(ScriptConditional), typeof(short) } }, // Offset to jump to, value1, condition, value2
         { ScriptCommand.CallIfFlag, new[] { typeof(void*), typeof(Flag), typeof(byte) } }, // Offset to jump to, flag, value
         { ScriptCommand.BufferSpeciesName, new[] { typeof(byte), typeof(PBESpecies) } }, // Buffer number, species
-        { ScriptCommand.BufferPartyMonNickname, new[] { typeof(byte), typeof(byte) } }, // Buffer number, party index
         { ScriptCommand.WildBattle, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte) } }, // Species, form, level
         { ScriptCommand.AwaitReturnToField, Array.Empty<Type>() },
         { ScriptCommand.CloseMessage, Array.Empty<Type>() },
@@ -83,7 +82,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.BufferSeenCount, new[] { typeof(byte) } }, // Buffer number
         { ScriptCommand.BufferCaughtCount, new[] { typeof(byte) } }, // Buffer number
         { ScriptCommand.GetDaycareState, Array.Empty<Type>() },
-        { ScriptCommand.BufferDaycareMonNickname, new[] { typeof(byte), typeof(byte) } }, // Buffer number, Daycare index
+        { ScriptCommand.BufferDaycareMonNickname, new[] { typeof(byte), typeof(byte) } }, // Buffer number, Daycare index number
         { ScriptCommand.StorePokemonInDaycare, Array.Empty<Type>() },
         { ScriptCommand.GetDaycareCompatibility, Array.Empty<Type>() },
         { ScriptCommand.SelectDaycareMon, Array.Empty<Type>() },
@@ -100,7 +99,6 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.CountBadges, Array.Empty<Type>() },
         { ScriptCommand.BufferBadges, new[] { typeof(byte) } }, // Buffer number
         { ScriptCommand.CheckPartyHasMove, new[] { typeof(PBEMove) } }, // Move
-        { ScriptCommand.UseSurf, Array.Empty<Type>() },
     };
 
     static ScriptBuilderHelper()
