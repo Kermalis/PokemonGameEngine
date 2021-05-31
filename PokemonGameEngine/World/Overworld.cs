@@ -97,18 +97,11 @@ namespace Kermalis.PokemonGameEngine.World
             for (int i = 0; i < party.Count; i++)
             {
                 PartyPokemon p = party[i];
-                if (p.IsEgg)
+                if (!p.IsEgg && p.Moveset.Contains(move))
                 {
-                    continue;
-                }
-                foreach (Moveset.MovesetSlot slot in p.Moveset)
-                {
-                    if (slot.Move == move)
-                    {
-                        pkmn = p;
-                        index = i;
-                        return true;
-                    }
+                    pkmn = p;
+                    index = i;
+                    return true;
                 }
             }
             pkmn = null;

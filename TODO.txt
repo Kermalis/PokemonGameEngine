@@ -40,14 +40,26 @@ Encounters:
 
 Field Effects:
     Spin tiles
-    Waterfall
-    Surf
     Bike
     Ledges
     Blocks that start scripts (bookshelves, tvs, PC, etc)
     Countertops that forward the script (mart employees)
     Repels
-    Field moves
+    Field moves:
+        Cut
+        Fly (requires world map and heal locations)
+        Surf
+        Strength
+        Flash
+        Dig
+        Teleport (requires heal locations)
+        Soft-Boiled
+        Waterfall
+        Rock Smash
+        Headbutt
+        Sweet Scent
+        Milk Drink
+        Dive
 
 Data Stuff:
     Item pouches
@@ -71,4 +83,4 @@ Sounds cool but definitely not necessary at all:
     Color lookup tables for day tints
     Move/Item effect/data integration with battle engine (not needed because you can just clone and edit the battle engine to add these things and more, like new species/forms)
     Battle sprite shadows with rotation (like gen 5)
-    Chatot special cry
+    Chatot special cry (if this is done, add it as a field move)
