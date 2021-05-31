@@ -21,6 +21,8 @@ namespace Kermalis.PokemonGameEngine.GUI
     {
         public static OverworldGUI Instance { get; private set; }
 
+        private readonly TaskList _tasks = new();
+
         private EventObj _interactiveScriptWaitingFor;
         private string _interactiveScript;
 
@@ -78,11 +80,11 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void SetupStartMenuChoices()
         {
-            _startMenuChoices = new TextGUIChoices(0, 0, backCommand: CloseStartMenu, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
+            _startMenuChoices = new TextGUIChoices(0, 0, backCommand: CloseStartMenuAndSetCB, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
             _startMenuChoices.Add(new TextGUIChoice("Pokémon", () => OpenPartyMenu(PartyGUI.Mode.PkmnMenu)));
             _startMenuChoices.Add(new TextGUIChoice("Bag", StartMenu_DebugBagSelected));
             _startMenuChoices.Add(new TextGUIChoice("PC", StartMenu_DebugPCSelected));
-            _startMenuChoices.Add(new TextGUIChoice("Close", CloseStartMenu));
+            _startMenuChoices.Add(new TextGUIChoice("Close", CloseStartMenuAndSetCB));
         }
 
         private void SetupStartMenuWindow()
@@ -105,7 +107,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             SetupStartMenuWindow();
             Game.Instance.SetCallback(CB_StartMenu);
         }
-        private void CloseStartMenu()
+        private void CloseStartMenuAndSetCB()
         {
             _startMenuWindow.Close();
             _startMenuWindow = null;
@@ -224,6 +226,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 if (player.QueuedScriptMovements.Count > 0)
                 {
                     player.RunNextScriptMovement();
+                    player.IsScriptMoving = true;
                 }
                 ProcessDayTint(true); // Catch up time
                 _fadeTransition = new FadeFromColorTransition(500, 0);
@@ -303,7 +306,9 @@ namespace Kermalis.PokemonGameEngine.GUI
             Game.Instance.ProcessStringPrinters();
             Tileset.AnimationTick();
             ProcessDayTint(false);
+            _tasks.RunTasks();
 
+            // We can eliminate the need for array alloc if we have Next and Prev like tasks
             Obj[] arr = Obj.LoadedObjs.ToArray();
             for (int i = 0; i < arr.Length; i++)
             {
@@ -349,6 +354,80 @@ namespace Kermalis.PokemonGameEngine.GUI
                 RenderStartMenuChoicesOntoWindow();
             }
         }
+
+        #region Surf
+
+        public unsafe void ReturnToFieldAndUseSurf()
+        {
+            _startMenuWindow?.Close();
+            _startMenuWindow = null;
+            foreach (Obj o in Obj.LoadedObjs)
+            {
+                o.IsLocked = true;
+            }
+            _fadeTransition = new FadeFromColorTransition(500, 0);
+            Game.Instance.SetCallback(CB_FadeInToUseSurf);
+            Game.Instance.SetRCallback(RCB_Fading);
+        }
+        private unsafe void CB_FadeInToUseSurf()
+        {
+            Tileset.AnimationTick();
+            ProcessDayTint(false);
+            if (_fadeTransition.IsDone)
+            {
+                _fadeTransition = null;
+                Game.Instance.IsOnOverworld = true;
+                StartSurfTasks();
+                Game.Instance.SetCallback(CB_LogicTick);
+                Game.Instance.SetRCallback(RCB_RenderOverworld);
+            }
+        }
+
+        public void StartSurfTasks()
+        {
+            PartyPokemon pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar_Result]];
+            _tasks.Add(Task_SurfInit, int.MaxValue, data: pkmn);
+            // TODO: Clear saved music, start surf music
+        }
+        private void Task_SurfInit(BackTask task)
+        {
+            var pkmn = (PartyPokemon)task.Data;
+            SoundControl.Debug_PlayCry(pkmn.Species, pkmn.Form);
+            task.Data = 0;
+            task.Action = Task_Surf_WaitCry;
+        }
+        private void Task_Surf_WaitCry(BackTask task)
+        {
+            int num = (int)task.Data;
+            if (num < 50)
+            {
+                task.Data = num + 1;
+            }
+            else
+            {
+                PlayerObj player = PlayerObj.Player;
+                player.State = PlayerObjState.Surfing;
+                player.QueuedScriptMovements.Enqueue(Obj.GetWalkMovement(player.Facing));
+                player.RunNextScriptMovement();
+                player.IsScriptMoving = true;
+                task.Action = Task_Surf_WaitMovement;
+            }
+        }
+        private void Task_Surf_WaitMovement(BackTask task)
+        {
+            if (PlayerObj.Player.IsMoving)
+            {
+                return;
+            }
+
+            foreach (Obj o in Obj.LoadedObjs)
+            {
+                o.IsLocked = false;
+            }
+            _tasks.Remove(task);
+        }
+
+        #endregion
 
         private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
         {

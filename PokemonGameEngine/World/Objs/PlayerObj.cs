@@ -6,9 +6,18 @@ using Kermalis.PokemonGameEngine.Script;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
+    internal enum PlayerObjState : byte
+    {
+        Walking,
+        Biking,
+        Surfing
+    }
+
     internal sealed class PlayerObj : VisualObj
     {
         public static readonly PlayerObj Player = new();
+
+        public PlayerObjState State;
 
         public bool IsWaitingForObjToStartScript;
         public override bool CanMoveWillingly => !IsWaitingForObjToStartScript && base.CanMoveWillingly;
@@ -22,6 +31,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
         public static void Init(int x, int y, Map map)
         {
+            Player.State = PlayerObjState.Walking;
             Player.Pos.X = x;
             Player.Pos.Y = y;
             Player.Map = map;
@@ -31,6 +41,16 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         protected override void OnMapChanged(Map oldMap, Map newMap)
         {
             Overworld.DoEnteredMapThings(newMap);
+        }
+        protected override bool CanSurf()
+        {
+            return State == PlayerObjState.Surfing;
+        }
+
+        public bool CanUseSurfFromCurrentPosition()
+        {
+            // Check if we can move to the target block (consider diagonally or a fence behavior)
+            return Overworld.IsSurfable(GetBlockFacing().BlocksetBlock.Behavior) && IsMovementLegal(Facing, true);
         }
 
         private bool CheckForThingsAfterMovement()
@@ -111,24 +131,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
 
             // TODO: This does not consider sideways stairs or countertops when fetching the target block
-            // TODO: Stuff like surf and signs
-            // TODO: Block behaviors that start scripts (like bookshelves, tvs, and the PC)
+            // TODO: Stuff like signs
+            // TODO: Can you move to the surf block legally?
+            // TODO: Don't activate surf script if we're surfing
+            // TODO: Don't allow surf if there's someone in the way (IsMovementLegal)
             Position p = Pos;
-            int x = p.X;
-            int y = p.Y;
-            switch (Facing)
-            {
-                case FacingDirection.South: y++; break;
-                case FacingDirection.Southwest: x--; y++; break;
-                case FacingDirection.Southeast: x++; y++; break;
-                case FacingDirection.North: y--; break;
-                case FacingDirection.Northwest: x--; y--; break;
-                case FacingDirection.Northeast: x++; y--; break;
-                case FacingDirection.West: x--; break;
-                case FacingDirection.East: x++; break;
-            }
+            Overworld.MoveCoords(Facing, p.X, p.Y, out int x, out int y);
             Map.GetXYMap(x, y, out x, out y, out Map map);
-            //BlocksetBlockBehavior beh = map.GetBlock_InBounds(x, y).BlocksetBlock.Behavior;
+            // Talk to someone on our elevation
             foreach (EventObj o in map.GetObjs_InBounds(x, y, p.Elevation, this, false))
             {
                 string script = o.Script;
@@ -137,6 +147,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                     OverworldGUI.Instance.SetInteractiveScript(o, script);
                     return true;
                 }
+            }
+            // Talk to block (like Surf)
+            BlocksetBlockBehavior beh = map.GetBlock_InBounds(x, y).BlocksetBlock.Behavior;
+            string scr = Overworld.GetBlockBehaviorScript(beh);
+            if (scr is not null)
+            {
+                ScriptLoader.LoadScript(scr);
+                return true;
             }
             return false;
         }
@@ -208,15 +226,27 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 facing = FacingDirection.East;
             }
-            bool run = InputManager.IsDown(Key.B);
-            Position oldP = Pos;
-            Move(facing, run, false);
-            if (!oldP.IsSamePosition(Pos))
+            bool run = State == PlayerObjState.Walking && InputManager.IsDown(Key.B);
+            if (Move(facing, run, false))
             {
                 Game.Instance.Save.GameStats[GameStat.StepsTaken]++;
                 _changedPosition = true;
             }
             _shouldRunTriggers = true;
+        }
+
+        protected override int GetImage(bool showMoving)
+        {
+            byte f = (byte)Facing;
+            if (State is PlayerObjState.Surfing or PlayerObjState.Biking)
+            {
+                return f + 24;
+            }
+            if (!showMoving)
+            {
+                return f;
+            }
+            return _leg ? f + 8 : f + 16;
         }
     }
 }

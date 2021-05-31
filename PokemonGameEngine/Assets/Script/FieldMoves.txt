@@ -1,0 +1,29 @@
+.set YES 1
+
+@Surf_Interaction
+    CheckPartyHasMove Move.Surf
+    GoToIf Surf_End Var.SpecialVar_Result C.Equal -1
+    LockAllObjs
+    Message SurfText_WannaUse
+    AwaitMessageRead
+    YesNoChoice
+    GoToIf Surf_Do Var.SpecialVar_Result C.Equal YES
+    CloseMessage
+    UnlockAllObjs
+#Surf_End
+    End
+
+@Surf_Do
+    BufferPartyMonNickname 0 Var.SpecialVar_Result
+    Message SurfText_UsedSurf
+    AwaitMessageComplete
+    CloseMessage
+    UseSurf
+    End
+
+// Text
+
+#SurfText_WannaUse
+    "Would you like to use Surf?"
+#SurfText_UsedSurf
+    "{BUF 0} used Surf!"

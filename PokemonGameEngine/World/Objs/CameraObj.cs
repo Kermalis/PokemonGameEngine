@@ -52,6 +52,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             return false;
         }
+        protected override bool CanSurf()
+        {
+            return true;
+        }
         protected override void OnPositionVisiblyChanged()
         {
             UpdateVisibleMaps();

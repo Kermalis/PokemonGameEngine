@@ -43,6 +43,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Map = map;
         }
 
+        protected override bool CanSurf()
+        {
+            return Overworld.IsSurfable(GetBlock().BlocksetBlock.Behavior); // Can only walk to other water blocks if we're on one
+        }
+
         private static readonly FacingDirection[] _allDirections = new FacingDirection[8] { FacingDirection.South, FacingDirection.North, FacingDirection.West, FacingDirection.East,
             FacingDirection.Southwest, FacingDirection.Southeast, FacingDirection.Northwest, FacingDirection.Northeast };
         private static readonly FacingDirection[] _southNorthDirections = new FacingDirection[2] { FacingDirection.South, FacingDirection.North };
@@ -92,6 +97,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 goto justFace;
             }
+            bool allowSurf = CanSurf();
             // Check if we are in range of our movement radius
             Position p = Pos;
             bool south = Math.Abs(p.Y + 1 - OriginY) <= MovementY;
@@ -100,35 +106,35 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             bool east = Math.Abs(p.X + 1 - OriginX) <= MovementX;
             // Filter out places we cannot go
             var list = new List<FacingDirection>(allowed);
-            if (list.Contains(FacingDirection.South) && (!south || !IsMovementLegal(FacingDirection.South)))
+            if (list.Contains(FacingDirection.South) && (!south || !IsMovementLegal(FacingDirection.South, allowSurf)))
             {
                 list.Remove(FacingDirection.South);
             }
-            if (list.Contains(FacingDirection.Southwest) && (!south || !west || !IsMovementLegal(FacingDirection.Southwest)))
+            if (list.Contains(FacingDirection.Southwest) && (!south || !west || !IsMovementLegal(FacingDirection.Southwest, allowSurf)))
             {
                 list.Remove(FacingDirection.Southwest);
             }
-            if (list.Contains(FacingDirection.Southeast) && (!south || !east || !IsMovementLegal(FacingDirection.Southeast)))
+            if (list.Contains(FacingDirection.Southeast) && (!south || !east || !IsMovementLegal(FacingDirection.Southeast, allowSurf)))
             {
                 list.Remove(FacingDirection.Southeast);
             }
-            if (list.Contains(FacingDirection.North) && (!north || !IsMovementLegal(FacingDirection.North)))
+            if (list.Contains(FacingDirection.North) && (!north || !IsMovementLegal(FacingDirection.North, allowSurf)))
             {
                 list.Remove(FacingDirection.North);
             }
-            if (list.Contains(FacingDirection.Northwest) && (!north || !west || !IsMovementLegal(FacingDirection.Northwest)))
+            if (list.Contains(FacingDirection.Northwest) && (!north || !west || !IsMovementLegal(FacingDirection.Northwest, allowSurf)))
             {
                 list.Remove(FacingDirection.Northwest);
             }
-            if (list.Contains(FacingDirection.Northeast) && (!north || !east || !IsMovementLegal(FacingDirection.Northeast)))
+            if (list.Contains(FacingDirection.Northeast) && (!north || !east || !IsMovementLegal(FacingDirection.Northeast, allowSurf)))
             {
                 list.Remove(FacingDirection.Northeast);
             }
-            if (list.Contains(FacingDirection.West) && (!west || !IsMovementLegal(FacingDirection.West)))
+            if (list.Contains(FacingDirection.West) && (!west || !IsMovementLegal(FacingDirection.West, allowSurf)))
             {
                 list.Remove(FacingDirection.West);
             }
-            if (list.Contains(FacingDirection.East) && (!east || !IsMovementLegal(FacingDirection.East)))
+            if (list.Contains(FacingDirection.East) && (!east || !IsMovementLegal(FacingDirection.East, allowSurf)))
             {
                 list.Remove(FacingDirection.East);
             }

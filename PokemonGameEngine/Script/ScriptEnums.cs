@@ -80,6 +80,7 @@
         CallIf,
         CallIfFlag,
         BufferSpeciesName,
+        BufferPartyMonNickname,
         WildBattle,
         AwaitReturnToField,
         CloseMessage,
@@ -104,6 +105,7 @@
         CountPlayerParty,
         CountBadges,
         BufferBadges,
-        CheckPartyHasMove
+        CheckPartyHasMove,
+        UseSurf,
     }
 }

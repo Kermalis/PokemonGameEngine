@@ -74,6 +74,23 @@ namespace Kermalis.PokemonGameEngine.World
             }
             return false;
         }
+        public static bool IsSurfable(BlocksetBlockBehavior behavior)
+        {
+            switch (behavior)
+            {
+                case BlocksetBlockBehavior.Surf:
+                case BlocksetBlockBehavior.Waterfall: return true;
+            }
+            return false;
+        }
+        public static string GetBlockBehaviorScript(BlocksetBlockBehavior behavior)
+        {
+            switch (behavior)
+            {
+                case BlocksetBlockBehavior.Surf: return "Surf_Interaction";
+            }
+            return null;
+        }
 
         public static void DoEnteredMapThings(Map map)
         {
@@ -108,5 +125,73 @@ namespace Kermalis.PokemonGameEngine.World
             index = -1;
             return false;
         }
+
+        #region Movement
+
+        public static void MoveCoords(FacingDirection dir, int x, int y, out int outX, out int outY)
+        {
+            switch (dir)
+            {
+                case FacingDirection.South:
+                {
+                    outX = x;
+                    outY = y + 1;
+                    break;
+                }
+                case FacingDirection.North:
+                {
+                    outX = x;
+                    outY = y - 1;
+                    break;
+                }
+                case FacingDirection.West:
+                {
+                    outX = x - 1;
+                    outY = y;
+                    break;
+                }
+                case FacingDirection.East:
+                {
+                    outX = x + 1;
+                    outY = y;
+                    break;
+                }
+                case FacingDirection.Southwest:
+                {
+                    outX = x - 1;
+                    outY = y + 1;
+                    break;
+                }
+                case FacingDirection.Southeast:
+                {
+                    outX = x + 1;
+                    outY = y + 1;
+                    break;
+                }
+                case FacingDirection.Northwest:
+                {
+                    outX = x - 1;
+                    outY = y - 1;
+                    break;
+                }
+                case FacingDirection.Northeast:
+                {
+                    outX = x + 1;
+                    outY = y - 1;
+                    break;
+                }
+                default: throw new ArgumentOutOfRangeException(nameof(dir));
+            }
+        }
+        public static byte GetElevationIfMovedTo(byte curElevation, byte targetElevations)
+        {
+            if (!targetElevations.HasElevation(curElevation))
+            {
+                return targetElevations.GetLowestElevation();
+            }
+            return curElevation;
+        }
+
+        #endregion
     }
 }
