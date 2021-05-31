@@ -102,5 +102,8 @@
         CountNonEggParty,
         CountNonFaintedNonEggParty,
         CountPlayerParty,
+        CountBadges,
+        BufferBadges,
+        CheckPartyHasMove
     }
 }

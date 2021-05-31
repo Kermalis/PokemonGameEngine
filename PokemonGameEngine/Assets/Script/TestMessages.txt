@@ -21,7 +21,8 @@ GoTo AwaitMessageUnlockAllEnd
 #SeenCaughtMessage
 BufferSeenCount 0
 BufferCaughtCount 1
-Message TestText_SeenCaught
+BufferBadges 2
+Message TestText_SeenCaughtBadges
 return
 
 #AwaitMessageUnlockAllEnd
@@ -35,7 +36,7 @@ End
 #TestText_GroudonActive
 "Groudon active."
 
-#TestText_SeenCaught
+#TestText_SeenCaughtBadges
 "You have seen {BUF 0} Pokémon.\v
 You have caught {BUF 1} Pokémon.\f
-Congratulations!"
+You have earned {BUF 2} badges."

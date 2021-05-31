@@ -95,6 +95,9 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.CountNonEggParty, Array.Empty<Type>() },
         { ScriptCommand.CountNonFaintedNonEggParty, Array.Empty<Type>() },
         { ScriptCommand.CountPlayerParty, Array.Empty<Type>() },
+        { ScriptCommand.CountBadges, Array.Empty<Type>() },
+        { ScriptCommand.BufferBadges, new[] { typeof(byte) } }, // Buffer number
+        { ScriptCommand.CheckPartyHasMove, new[] { typeof(PBEMove) } }, // Move
     };
 
     static ScriptBuilderHelper()

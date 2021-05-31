@@ -2,6 +2,14 @@
 {
     public enum Flag : byte
     {
+        Badge1,
+        Badge2,
+        Badge3,
+        Badge4,
+        Badge5,
+        Badge6,
+        Badge7,
+        Badge8,
         Test_GroudonVisible,
         Test1,
         Test2,

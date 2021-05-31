@@ -90,5 +90,30 @@ namespace Kermalis.PokemonGameEngine.World
                 pkmn.UpdateGiratinaForm();
             }
         }
+
+        public static bool GetNonEggPartyMonWithMove(PBEMove move, out PartyPokemon pkmn, out int index)
+        {
+            Party party = Game.Instance.Save.PlayerParty;
+            for (int i = 0; i < party.Count; i++)
+            {
+                PartyPokemon p = party[i];
+                if (p.IsEgg)
+                {
+                    continue;
+                }
+                foreach (Moveset.MovesetSlot slot in p.Moveset)
+                {
+                    if (slot.Move == move)
+                    {
+                        pkmn = p;
+                        index = i;
+                        return true;
+                    }
+                }
+            }
+            pkmn = null;
+            index = -1;
+            return false;
+        }
     }
 }

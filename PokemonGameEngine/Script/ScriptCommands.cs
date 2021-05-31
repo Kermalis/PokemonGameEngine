@@ -1,12 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.GUI;
-using Kermalis.PokemonGameEngine.Item;
-using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Scripts;
-using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.World;
-using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.IO;
 
@@ -80,6 +75,9 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.CountNonEggParty: CountNonEggPartyCommand(); break;
                 case ScriptCommand.CountNonFaintedNonEggParty: CountNonFaintedNonEggPartyCommand(); break;
                 case ScriptCommand.CountPlayerParty: CountPlayerPartyCommand(); break;
+                case ScriptCommand.CountBadges: CountBadgesCommand(); break;
+                case ScriptCommand.BufferBadges: BufferBadgesCommand(); break;
+                case ScriptCommand.CheckPartyHasMove: CheckPartyHasMoveCommand(); break;
                 default: throw new InvalidDataException();
             }
         }
@@ -185,94 +183,6 @@ namespace Kermalis.PokemonGameEngine.Script
             }
         }
 
-        private static void HealPartyCommand()
-        {
-            Game.Instance.Save.PlayerParty.HealFully();
-        }
-
-        private void GivePokemonCommand()
-        {
-            PBESpecies species = ReadVarOrEnum<PBESpecies>();
-            byte level = (byte)ReadVarOrValue();
-            var pkmn = PartyPokemon.CreatePlayerOwnedMon(species, 0, level);
-            Game.Instance.Save.GivePokemon(pkmn);
-        }
-        private void GivePokemonFormCommand()
-        {
-            PBESpecies species = ReadVarOrEnum<PBESpecies>();
-            PBEForm form = ReadVarOrEnum<PBEForm>();
-            byte level = (byte)ReadVarOrValue();
-            var pkmn = PartyPokemon.CreatePlayerOwnedMon(species, form, level);
-            Game.Instance.Save.GivePokemon(pkmn);
-        }
-        private void GivePokemonFormItemCommand()
-        {
-            PBESpecies species = ReadVarOrEnum<PBESpecies>();
-            PBEForm form = ReadVarOrEnum<PBEForm>();
-            byte level = (byte)ReadVarOrValue();
-            ItemType item = ReadVarOrEnum<ItemType>();
-            var pkmn = PartyPokemon.CreatePlayerOwnedMon(species, form, level);
-            pkmn.Item = item;
-            Game.Instance.Save.GivePokemon(pkmn);
-        }
-
-        private void MoveObjCommand()
-        {
-            ushort id = (ushort)ReadVarOrValue();
-            uint offset = _reader.ReadUInt32();
-            long returnOffset = _reader.BaseStream.Position;
-            _reader.BaseStream.Position = offset;
-            var obj = Obj.GetObj(id);
-            while (true)
-            {
-                ScriptMovement m = _reader.ReadEnum<ScriptMovement>();
-                if (m == ScriptMovement.End)
-                {
-                    break;
-                }
-                obj.QueuedScriptMovements.Enqueue(m);
-            }
-            _reader.BaseStream.Position = returnOffset;
-            obj.IsScriptMoving = true;
-        }
-        private void UnloadObjCommand()
-        {
-            ushort id = (ushort)ReadVarOrValue();
-            var obj = Obj.GetObj(id);
-            Obj.LoadedObjs.Remove(obj);
-            obj.Map.Objs.Remove(obj);
-        }
-        private void AwaitObjMovementCommand()
-        {
-            ushort id = (ushort)ReadVarOrValue();
-            var obj = Obj.GetObj(id);
-            _waitMovementObj = obj;
-        }
-        private void LookTowardsObjCommand()
-        {
-            ushort id1 = (ushort)ReadVarOrValue();
-            ushort id2 = (ushort)ReadVarOrValue();
-            var looker = Obj.GetObj(id1);
-            var target = Obj.GetObj(id2);
-            looker.LookTowards(target);
-        }
-
-        private static void DetachCameraCommand()
-        {
-            CameraObj.CameraAttachedTo = null;
-            // Camera should probably have properties that get its attachment or its own properties
-            // Instead of using CameraCopyMovement()
-            // Map changing will be tougher though
-            //CameraObj.Camera.IsScriptMoving = false;
-        }
-        private void AttachCameraCommand()
-        {
-            ushort id = (ushort)ReadVarOrValue();
-            var obj = Obj.GetObj(id);
-            CameraObj.CameraAttachedTo = obj;
-            CameraObj.CameraCopyMovement();
-        }
-
         private void DelayCommand()
         {
             ushort delay = (ushort)ReadVarOrValue();
@@ -288,46 +198,6 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             Flag flag = ReadVarOrEnum<Flag>();
             Game.Instance.Save.Flags[flag] = false;
-        }
-
-        private void WarpCommand()
-        {
-            int mapId = _reader.ReadInt32();
-            int x = _reader.ReadInt32();
-            int y = _reader.ReadInt32();
-            byte elevation = (byte)ReadVarOrValue();
-            OverworldGUI.Instance.TempWarp(new Warp(mapId, x, y, elevation));
-        }
-
-        private void SetLock(bool locked)
-        {
-            ushort id = (ushort)ReadVarOrValue();
-            var obj = Obj.GetObj(id);
-            obj.IsLocked = locked;
-        }
-        private void LockObjCommand()
-        {
-            SetLock(true);
-        }
-        private void UnlockObjCommand()
-        {
-            SetLock(false);
-        }
-
-        private static void SetAllLock(bool locked)
-        {
-            foreach (Obj o in Obj.LoadedObjs)
-            {
-                o.IsLocked = locked;
-            }
-        }
-        private static void LockAllObjsCommand()
-        {
-            SetAllLock(true);
-        }
-        private static void UnlockAllObjsCommand()
-        {
-            SetAllLock(false);
         }
 
         private void SetVarCommand()
@@ -399,12 +269,6 @@ namespace Kermalis.PokemonGameEngine.Script
             Game.Instance.Save.Vars[var] = value;
         }
 
-        private void BufferSpeciesNameCommand()
-        {
-            byte buffer = (byte)ReadVarOrValue();
-            PBESpecies species = ReadVarOrEnum<PBESpecies>();
-            Game.Instance.StringBuffers.Buffers[buffer] = PBEDataProvider.Instance.GetSpeciesName(species).English;
-        }
         private void BufferSeenCountCommand()
         {
             byte buffer = (byte)ReadVarOrValue();
@@ -423,10 +287,6 @@ namespace Kermalis.PokemonGameEngine.Script
             byte level = (byte)ReadVarOrValue();
             Encounter.CreateStaticWildBattle(species, form, level);
         }
-        private void AwaitReturnToFieldCommand()
-        {
-            _waitReturnToField = true;
-        }
 
         private void IncrementGameStatCommand()
         {
@@ -434,40 +294,14 @@ namespace Kermalis.PokemonGameEngine.Script
             Game.Instance.Save.GameStats[stat]++;
         }
 
-        private void PlayCryCommand()
+        private static void CountBadgesCommand()
         {
-            PBESpecies species = ReadVarOrEnum<PBESpecies>();
-            PBEForm form = ReadVarOrEnum<PBEForm>();
-            SoundControl.Debug_PlayCry(species, form);
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)Game.Instance.Save.Flags.GetNumBadges();
         }
-
-        private static void CountNonEggPartyCommand()
+        private void BufferBadgesCommand()
         {
-            short count = 0;
-            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
-            {
-                if (!p.IsEgg)
-                {
-                    count++;
-                }
-            }
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = count;
-        }
-        private static void CountNonFaintedNonEggPartyCommand()
-        {
-            short count = 0;
-            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
-            {
-                if (!p.IsEgg && p.HP > 0)
-                {
-                    count++;
-                }
-            }
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = count;
-        }
-        private static void CountPlayerPartyCommand()
-        {
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)Game.Instance.Save.PlayerParty.Count;
+            byte buffer = (byte)ReadVarOrValue();
+            Game.Instance.StringBuffers.Buffers[buffer] = Game.Instance.Save.Flags.GetNumBadges().ToString();
         }
     }
 }
