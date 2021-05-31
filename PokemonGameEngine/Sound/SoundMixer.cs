@@ -38,7 +38,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         {
             int numSamples = len / (2 * sizeof(short)); // 2 Channels
             Array.Clear(_buffer, 0, numSamples * 2);
-            _test.Mix(_buffer, numSamples);
+            _test.MixS16(_buffer, numSamples);
 
             // Marshal copy is at least twice as fast as sdl memset
             Marshal.Copy(_buffer, 0, stream, numSamples * 2);
