@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Util;
 using SDL2;
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Kermalis.PokemonGameEngine.Sound
@@ -23,8 +22,8 @@ namespace Kermalis.PokemonGameEngine.Sound
             spec.format = SDL.AUDIO_S16;
             spec.channels = 2;
             spec.samples = 4096;
-            spec.callback = Test;
-            _test = new SoundChannel(new WaveFileData(Utils.GetResourceStream("Sound.BGM.GymBattle.wav")));
+            spec.callback = MixAudio;
+            _test = new SoundChannel(new WaveFileData(Utils.GetResourceStream("Sound.BGM.Town1.wav")));
             _audioDevice = SDL.SDL_OpenAudioDevice(null, 0, ref spec, out _audioSpec, 0);
             _buffer = new short[_audioSpec.samples * 2];
             SDL.SDL_PauseAudioDevice(_audioDevice, 0); // Start playing
@@ -34,10 +33,11 @@ namespace Kermalis.PokemonGameEngine.Sound
             SDL.SDL_CloseAudioDevice(_audioDevice);
         }
 
-        public static unsafe void Test(IntPtr userdata, IntPtr stream, int len)
+        private static void MixAudio(IntPtr userdata, IntPtr stream, int len)
         {
             int numSamples = len / (2 * sizeof(short)); // 2 Channels
             Array.Clear(_buffer, 0, numSamples * 2);
+
             _test.MixS16(_buffer, numSamples);
 
             // Marshal copy is at least twice as fast as sdl memset

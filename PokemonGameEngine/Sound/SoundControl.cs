@@ -36,11 +36,11 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private static readonly Dictionary<Song, (string resource, double loopPoint)> _songResources = new()
         {
-            { Song.Town1, ("Sound.BGM.Town1.ogg", 60d/110*4*14) }, // 110BPM, 4/4, loop after 14 bars (30.5454~ seconds)
-            { Song.Route1, ("Sound.BGM.Town1.ogg", 60d/110*4*14) },//, ("Sound.BGM.Route1.ogg", 60d/220*4*2) }, // 220BPM, 4/4, loop after 2 bars (2.1818~ seconds)
-            { Song.Cave1, ("Sound.BGM.Cave1.ogg", 60d/128*4*2) }, // 128BPM, 4/4, loop after 2 bars (3.75 seconds)
-            { Song.WildBattle, ("Sound.BGM.TrainerBattle.ogg", 60d/270*4*40) },
-            { Song.TrainerBattle, ("Sound.BGM.TrainerBattle.ogg", 60d/270*4*40) }, // 270BPM, 4/4, loop after 40 bars (35.55~ seconds)
+            { Song.Town1, ("Sound.BGM.Town1.wav", 60d/110*4*14) }, // 110BPM, 4/4, loop after 14 bars (30.5454~ seconds)
+            { Song.Route1, ("Sound.BGM.Town1.wav", 60d/110*4*14) },//, ("Sound.BGM.Route1.ogg", 60d/220*4*2) }, // 220BPM, 4/4, loop after 2 bars (2.1818~ seconds)
+            { Song.Cave1, ("Sound.BGM.Cave1.wav", 60d/128*4*2) }, // 128BPM, 4/4, loop after 2 bars (3.75 seconds)
+            { Song.WildBattle, ("Sound.BGM.TrainerBattle.wav", 60d/270*4*40) },
+            { Song.TrainerBattle, ("Sound.BGM.TrainerBattle.wav", 60d/270*4*40) }, // 270BPM, 4/4, loop after 40 bars (35.55~ seconds)
             { Song.GymBattle, ("Sound.BGM.GymBattle.wav", 60d/280*4*23) }, // 280BPM, 4/4, loop after 23 bars (19.714285714285~ seconds)
             { Song.LegendaryBattle, ("Sound.BGM.GymBattle.wav", 60d/280*4*23) },
         };
