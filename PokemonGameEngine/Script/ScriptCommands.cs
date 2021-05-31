@@ -98,7 +98,7 @@ namespace Kermalis.PokemonGameEngine.Script
         }
         private short ReadVarOrValue()
         {
-            return Game.Instance.Save.Vars.GetVarOrValue(_reader.ReadUInt32());
+            return Game.Instance.Save.Vars.GetVarOrValue(_reader.ReadInt32());
         }
 
         private uint? IfVar()

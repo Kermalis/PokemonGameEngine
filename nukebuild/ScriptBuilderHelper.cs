@@ -18,6 +18,7 @@ internal static class ScriptBuilderHelper
         { typeof(Var), "Var." },
         { typeof(PBEForm), "Form." },
         { typeof(PBEItem), "Item." },
+        { typeof(PBEMove), "Move." },
         { typeof(PBESpecies), "Species." }
     };
     public static readonly Dictionary<string, IdList> StringDefines = new()

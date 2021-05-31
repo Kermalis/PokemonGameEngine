@@ -81,9 +81,9 @@ namespace Kermalis.PokemonGameEngine.Core
             w.Write(_values);
         }
 
-        public short GetVarOrValue(uint value)
+        public short GetVarOrValue(int value)
         {
-            return value <= ushort.MaxValue ? (short)value : _values[value - (ushort.MaxValue + 1)];
+            return value is >= short.MinValue and <= short.MaxValue ? (short)value : _values[value - (ushort.MaxValue + 1)];
         }
     }
 }
