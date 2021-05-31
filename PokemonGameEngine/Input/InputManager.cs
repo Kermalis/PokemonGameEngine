@@ -8,10 +8,13 @@ namespace Kermalis.PokemonGameEngine.Input
     {
         private sealed class KeyDownData
         {
-            public bool PressChecked;
-            public ulong PressTime;
+            // Updated in real time
             public bool StickPressed;
             public bool NonStickPressed;
+            // Updated every logic tick
+            public bool IsNew; // True if this key was not active the previous tick but now is
+            public ulong PressTime; // The amount of ticks this key has been active
+            public bool IsActive; // True if the key is active
         }
 
         private static readonly Dictionary<Key, KeyDownData> _pressed = new();
@@ -23,26 +26,29 @@ namespace Kermalis.PokemonGameEngine.Input
             }
         }
 
+        // Updating the real time presses
         public static void OnAxis(SDL.SDL_Event e)
         {
             const ushort Deadzone = ushort.MaxValue / 4;
             void Do(Key less, Key more)
             {
+                KeyDownData pLess = _pressed[less];
+                KeyDownData pMore = _pressed[more];
                 short val = e.caxis.axisValue;
                 if (val < -Deadzone)
                 {
-                    DoTheDown(more, false, true);
-                    DoTheDown(less, true, true);
+                    pLess.StickPressed = true;
+                    pMore.StickPressed = false;
                 }
                 else if (val > Deadzone)
                 {
-                    DoTheDown(less, false, true);
-                    DoTheDown(more, true, true);
+                    pLess.StickPressed = false;
+                    pMore.StickPressed = true;
                 }
                 else
                 {
-                    DoTheDown(less, false, true);
-                    DoTheDown(more, false, true);
+                    pLess.StickPressed = false;
+                    pMore.StickPressed = false;
                 }
             }
             switch ((SDL.SDL_GameControllerAxis)e.caxis.axis)
@@ -71,7 +77,9 @@ namespace Kermalis.PokemonGameEngine.Input
                 case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK: key = Key.Select; break;
                 default: return;
             }
-            DoTheDown(key, down, false);
+
+            KeyDownData p = _pressed[key];
+            p.NonStickPressed = down;
         }
         public static void OnKeyDown(SDL.SDL_Event e, bool down)
         {
@@ -92,40 +100,40 @@ namespace Kermalis.PokemonGameEngine.Input
                 case SDL.SDL_Keycode.SDLK_RSHIFT: key = Key.Select; break;
                 default: return;
             }
-            DoTheDown(key, down, false);
-        }
-        private static void DoTheDown(Key key, bool down, bool stick)
-        {
+
             KeyDownData p = _pressed[key];
-            if (down)
+            p.NonStickPressed = down;
+        }
+
+        public static void LogicTick()
+        {
+            foreach (KeyValuePair<Key, KeyDownData> kvp in _pressed)
             {
-                if (stick)
+                KeyDownData p = kvp.Value;
+                bool active = p.NonStickPressed || p.StickPressed;
+                // Was active last tick
+                if (p.IsActive)
                 {
-                    p.StickPressed = true;
+                    p.IsNew = false;
+                    if (active)
+                    {
+                        p.PressTime++;
+                    }
+                    else
+                    {
+                        p.IsActive = false;
+                        p.PressTime = 0;
+                    }
                 }
+                // Not active last tick
                 else
                 {
-                    p.NonStickPressed = true;
-                }
-                p.PressTime++;
-            }
-            else
-            {
-                bool other;
-                if (stick)
-                {
-                    p.StickPressed = false;
-                    other = p.NonStickPressed;
-                }
-                else
-                {
-                    p.NonStickPressed = false;
-                    other = p.StickPressed;
-                }
-                if (!other)
-                {
-                    p.PressChecked = false;
-                    p.PressTime = 0;
+                    if (active)
+                    {
+                        p.IsNew = true;
+                        p.IsActive = true;
+                        p.PressTime = 0;
+                    }
                 }
             }
         }
@@ -133,33 +141,25 @@ namespace Kermalis.PokemonGameEngine.Input
         public static bool IsPressed(Key key)
         {
             KeyDownData p = _pressed[key];
-            bool ret = !p.PressChecked && p.PressTime != 0;
-            if (ret)
-            {
-                p.PressChecked = true;
-            }
-            return ret;
+            return p.IsActive && p.IsNew;
         }
-        public static bool IsDown(Key key)
+        public static bool IsDown(Key key, uint downTime = 0)
         {
             KeyDownData p = _pressed[key];
-            bool ret = p.PressTime != 0;
-            if (ret)
-            {
-                p.PressChecked = true;
-            }
-            return ret;
+            return p.IsActive && p.PressTime >= downTime;
         }
 
-        // For debugging
-        public static string GetKeys()
+#if DEBUG
+        public static string Debug_GetKeys()
         {
             string s = string.Empty;
             foreach (KeyValuePair<Key, KeyDownData> kvp in _pressed)
             {
-                s += kvp.Key.ToString() + ": " + kvp.Value.PressTime.ToString() + Environment.NewLine;
+                KeyDownData p = kvp.Value;
+                s += string.Format("{0,-15}{1}{2}", kvp.Key, p.IsActive ? p.PressTime : null, Environment.NewLine);
             }
             return s;
         }
+#endif
     }
 }

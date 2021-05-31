@@ -203,6 +203,7 @@ namespace Kermalis.PokemonGameEngine.UI
                     {
                         Console.WriteLine("Time went back!");
                     }
+                    InputManager.LogicTick();
                     Game.Instance.LogicTick();
                 }
                 lastTickTime = LogicTickTime;
@@ -240,7 +241,8 @@ namespace Kermalis.PokemonGameEngine.UI
                     SDL.SDL_LockTexture(s, IntPtr.Zero, out IntPtr pixels, out _);
                     Game.Instance.RenderTick((uint*)pixels.ToPointer(), RenderWidth, RenderHeight
 #if DEBUG
-                        , _showFPS ? ((int)Math.Round(1_000 / RenderTimeSinceLastFrame.TotalMilliseconds)).ToString() : null
+                        //, InputManager.Debug_GetKeys(), GUI.Font.DefaultSmall, GUI.Font.DefaultWhite_DarkerOutline_I
+                        , _showFPS ? ((int)Math.Round(1_000 / RenderTimeSinceLastFrame.TotalMilliseconds)).ToString() : null, GUI.Font.Default, GUI.Font.DefaultRed_O
 #endif
                         );
                     SDL.SDL_UnlockTexture(s);

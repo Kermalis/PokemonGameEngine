@@ -145,15 +145,15 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight
 #if DEBUG
-            , string topLeftMessage
+            , string topLeftMessage, Font messageFont, uint[] messageColors
 #endif
             )
         {
             RCallback?.Invoke(bmpAddress, bmpWidth, bmpHeight);
 #if DEBUG
-            if (topLeftMessage != null)
+            if (topLeftMessage is not null)
             {
-                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, topLeftMessage, Font.DefaultRed_O);
+                messageFont.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, topLeftMessage, messageColors);
             }
 #endif
         }
