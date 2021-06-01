@@ -27,11 +27,11 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Controller support
 * Animated sprites
 * Spinda spots ![Spindas](PreviewImages/Spinda.gif)
-* Sound & Music, Cries
+* Custom sound engine and music (also supports Pokémon cries)
 * Daycare, Breeding, and Eggs
 * Game stats
 * Evolution, Evolution cancelling, and Shedinja creation
-* Pokerus
+* Pokérus
 
 ----
 ## To Do:
