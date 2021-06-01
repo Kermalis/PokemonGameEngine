@@ -50,7 +50,6 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * [SDL2#](https://github.com/flibitijibibo/SDL2-CS)
 * [SimpleGIF](https://github.com/Kermalis/SimpleGIF)
 * [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)
-* [SoLoud](https://github.com/jarikomppa/soloud)
 
 ## MapEditor Uses:
 * [Avalonia](https://github.com/AvaloniaUI/Avalonia)

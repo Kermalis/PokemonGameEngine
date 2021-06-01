@@ -58,15 +58,14 @@ namespace Kermalis.PokemonGameEngine.UI
 
             AttachFirstController();
 
-            // SoLoud - Init static constructor
-            //SoundControl.Init();
+            // Init SDL Audio
+            SoundMixer.Init();
 
             // Game
             LogicTickTime = DateTime.Now; // Setting for DayTint static constructor
             _ = new Game(); // Init game
             new Thread(LogicTick) { Name = "Logic Thread" }.Start();
             new Thread(RenderTick) { Name = "Render Thread", Priority = ThreadPriority.Highest }.Start();
-            new Thread(SoundMixer.Init) { Name = "Sound Thread", Priority = ThreadPriority.AboveNormal }.Start();
         }
 
         private void CreateRendererAndScreen()

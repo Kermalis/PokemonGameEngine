@@ -5,6 +5,7 @@ using Kermalis.PokemonGameEngine.UI;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Util
 {
@@ -24,6 +25,11 @@ namespace Kermalis.PokemonGameEngine.Util
             WorkingDirectory = workingDirectory;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetProgress(TimeSpan end, TimeSpan cur)
+        {
+            return (double)((decimal)(cur - end).Ticks / end.Ticks) + 1;
+        }
         public static double GetAnimationProgress(TimeSpan end, ref TimeSpan cur)
         {
             cur += Program.RenderTimeSinceLastFrame;
@@ -31,8 +37,7 @@ namespace Kermalis.PokemonGameEngine.Util
             {
                 return 1;
             }
-            double p = (double)((decimal)(cur - end).Ticks / end.Ticks) + 1;
-            return p;
+            return GetProgress(end, cur);
         }
 
         public static bool HasShinyCharm()

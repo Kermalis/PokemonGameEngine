@@ -4,6 +4,15 @@ namespace Kermalis.PokemonGameEngine.Sound
 {
     internal sealed class SoundChannel
     {
+        private const bool CheckPause = false; // Not needed because tasks are not parallel right now
+
+        public SoundChannel Next;
+        public SoundChannel Prev;
+
+        public bool IsPaused;
+        public float EffectVolume = 1f;
+        public float Volume = 1f;
+
         private readonly WaveFileData _data;
 
         private float _interPos;
@@ -15,6 +24,15 @@ namespace Kermalis.PokemonGameEngine.Sound
             _data = data;
             _offset = _data.DataStart;
             _trailOffset = _data.DataEnd;
+        }
+
+        private float GetLeftVol()
+        {
+            return EffectVolume * Volume;
+        }
+        private float GetRightVol()
+        {
+            return EffectVolume * Volume;
         }
 
         #region S16 Mixing
@@ -79,15 +97,15 @@ namespace Kermalis.PokemonGameEngine.Sound
         {
             _data.Stream.Position = offset;
             short samp = _data.Reader.ReadInt16();
-            MixS16Samples(buffer, index, samp);
-            MixS16Samples(buffer, index + 1, samp);
+            MixS16Samples(buffer, index, (short)(samp * GetLeftVol()));
+            MixS16Samples(buffer, index + 1, (short)(samp * GetRightVol()));
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void MixS16Samples_Stereo(short[] buffer, int index, long offset)
         {
             _data.Stream.Position = offset;
-            MixS16Samples(buffer, index, _data.Reader.ReadInt16());
-            MixS16Samples(buffer, index + 1, _data.Reader.ReadInt16());
+            MixS16Samples(buffer, index, (short)(_data.Reader.ReadInt16() * GetLeftVol()));
+            MixS16Samples(buffer, index + 1, (short)(_data.Reader.ReadInt16() * GetRightVol()));
         }
 
         private void MixS16_Mono_NoLoop(short[] buffer, int numSamples)
@@ -96,6 +114,10 @@ namespace Kermalis.PokemonGameEngine.Sound
             int bufPos = 0;
             do
             {
+                if (CheckPause && IsPaused)
+                {
+                    return;
+                }
                 MixS16Samples_Mono(buffer, bufPos, _offset);
 
                 _interPos += interStep;
@@ -106,6 +128,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 
                 if (_offset >= _data.DataEnd)
                 {
+                    SoundMixer.StopSound(this);
                     return;
                 }
 
@@ -118,6 +141,10 @@ namespace Kermalis.PokemonGameEngine.Sound
             int bufPos = 0;
             do
             {
+                if (CheckPause && IsPaused)
+                {
+                    return;
+                }
                 MixS16Samples_Stereo(buffer, bufPos, _offset);
 
                 _interPos += interStep;
@@ -128,6 +155,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 
                 if (_offset >= _data.DataEnd)
                 {
+                    SoundMixer.StopSound(this);
                     return;
                 }
 
@@ -140,6 +168,10 @@ namespace Kermalis.PokemonGameEngine.Sound
             int bufPos = 0;
             do
             {
+                if (CheckPause && IsPaused)
+                {
+                    return;
+                }
                 MixS16Samples_Mono(buffer, bufPos, _offset);
 
                 _interPos += interStep;
@@ -171,6 +203,10 @@ namespace Kermalis.PokemonGameEngine.Sound
             int bufPos = 0;
             do
             {
+                if (CheckPause && IsPaused)
+                {
+                    return;
+                }
                 MixS16Samples_Stereo(buffer, bufPos, _offset);
 
                 _interPos += interStep;
