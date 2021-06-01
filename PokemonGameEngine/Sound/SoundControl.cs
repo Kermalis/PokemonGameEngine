@@ -45,13 +45,13 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private static Sound _overworldBGM;
         private static Sound _battleBGM;
-        //private static CrySound _testCry;
+        private static CrySound _testCry;
 
         public static void DeInit()
         {
             _overworldBGM?.Dispose();
             _battleBGM?.Dispose();
-            //_testCry?.Dispose();
+            _testCry?.Dispose();
         }
 
         private static unsafe CrySound CryToSound(PBESpecies species, PBEForm form)
@@ -90,11 +90,10 @@ namespace Kermalis.PokemonGameEngine.Sound
             throw new ArgumentOutOfRangeException(nameof(song));
         }
 
-        // TODO: PCM8
         public static void Debug_PlayCry(PBESpecies species, PBEForm form)
         {
-            //_testCry = CryToSound(species, form);
-            //_testCry.Handle = SoundMixer.StartSound(_testCry.Wav);
+            _testCry = CryToSound(species, form);
+            _testCry.Handle = SoundMixer.StartSound(_testCry.Wav);
         }
 
         public static void SetOverworldBGM_NoFade(Song song)
