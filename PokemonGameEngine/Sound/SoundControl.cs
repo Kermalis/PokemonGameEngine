@@ -45,7 +45,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private static Sound _overworldBGM;
         private static Sound _battleBGM;
-        private static CrySound _testCry;
+        private static CrySound _testCry; // TODO: Cry system + actually dispose cries
 
         public static void DeInit()
         {
