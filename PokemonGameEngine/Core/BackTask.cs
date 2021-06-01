@@ -145,6 +145,19 @@
             task = default;
             return false;
         }
+        public bool TryGetTaskWithTag(object tag, out BackTask task)
+        {
+            for (BackTask t = First; t is not null; t = t.Next)
+            {
+                if (t.Tag == tag)
+                {
+                    task = t;
+                    return true;
+                }
+            }
+            task = default;
+            return false;
+        }
     }
 
     internal sealed class BackTask
