@@ -9,7 +9,6 @@ namespace Kermalis.PokemonGameEngine.Core
 {
     internal delegate void MainCallback();
     internal unsafe delegate void RenderCallback(uint* bmpAddress, int bmpWidth, int bmpHeight);
-    internal delegate void SoundCallback();
 
     internal sealed class Game
     {
@@ -27,7 +26,6 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public MainCallback Callback;
         public RenderCallback RCallback;
-        public SoundCallback SCallback;
 
         public Game()
         {
@@ -66,20 +64,6 @@ namespace Kermalis.PokemonGameEngine.Core
             }
 #endif
             RCallback = callback;
-        }
-        public void SetSCallback(SoundCallback callback)
-        {
-#if DEBUG
-            if (callback is null)
-            {
-                System.Console.WriteLine(" Sound Callback\t\tnull");
-            }
-            else
-            {
-                System.Console.WriteLine(" Sound Callback\t\t{0} . {1}", callback.Method.DeclaringType.Name, callback.Method);
-            }
-#endif
-            SCallback = callback;
         }
 
         private static PBEBattleTerrain UpdateBattleSetting(BlocksetBlockBehavior blockBehavior)
@@ -128,7 +112,6 @@ namespace Kermalis.PokemonGameEngine.Core
         public void LogicTick()
         {
             Callback?.Invoke();
-            SCallback?.Invoke();
         }
 
         #endregion

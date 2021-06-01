@@ -50,7 +50,7 @@ namespace Kermalis.PokemonGameEngine.UI
             Utils.SetWorkingDirectory(string.Empty);
 
             // SDL 2
-            SDL.SDL_Init(SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_GAMECONTROLLER);
+            SDL.SDL_Init(SDL.SDL_INIT_AUDIO | SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_GAMECONTROLLER);
             SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG);
 
             _window = SDL.SDL_CreateWindow("Pokémon Game Engine", SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED, RenderWidth, RenderHeight, SDL.SDL_WindowFlags.SDL_WINDOW_RESIZABLE);
@@ -58,8 +58,8 @@ namespace Kermalis.PokemonGameEngine.UI
 
             AttachFirstController();
 
-            // SoLoud - Init static constructor
-            SoundControl.Init();
+            // Init SDL Audio
+            SoundMixer.Init();
 
             // Game
             LogicTickTime = DateTime.Now; // Setting for DayTint static constructor
@@ -177,7 +177,7 @@ namespace Kermalis.PokemonGameEngine.UI
                 ; // Wait for ticks to quit
             }
 
-            SoundControl.DeInit();
+            SoundMixer.DeInit();
 
             SDL.SDL_DestroyTexture(_screen);
             SDL.SDL_DestroyRenderer(_renderer);
