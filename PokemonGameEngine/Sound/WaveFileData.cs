@@ -1,7 +1,6 @@
 ﻿//This file is adapted from NAudio (https://github.com/naudio/NAudio) which uses the MIT license
 using Kermalis.EndianBinaryIO;
 using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Sound
@@ -20,6 +19,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         public readonly short Channels;
         public readonly int SampleRate;
+        public readonly short BitsPerSample;
 
         public readonly bool DoesLoop;
         public readonly long LoopStart;
@@ -110,10 +110,10 @@ namespace Kermalis.PokemonGameEngine.Sound
                     SampleRate = r.ReadInt32();
                     _ = r.ReadInt32(); //averageBytesPerSecond
                     _ = r.ReadInt16(); // blockAlign
-                    short bitsPerSample = r.ReadInt16();
-                    if (bitsPerSample != 16)
+                    BitsPerSample = r.ReadInt16();
+                    if (BitsPerSample is not 8 and not 16)
                     {
-                        throw new InvalidDataException("Only PCM16 is supported");
+                        throw new InvalidDataException("Only PCM8 and PCM16 are supported");
                     }
                     if (formatChunkLength > 16)
                     {
@@ -162,8 +162,11 @@ namespace Kermalis.PokemonGameEngine.Sound
                         LoopEnd = r.ReadUInt32(); // 4 - loop end
                         _ = r.ReadUInt32(); // 4 - fraction (0)
                         _ = r.ReadUInt32(); // 4 - play count (0)
-                        LoopStart = DataStart + (LoopStart * 2 * sizeof(short));
-                        LoopEnd = DataStart + (LoopEnd * 2 * sizeof(short));
+
+                        // Adjust loop positions from samples to file offset
+                        int i = Channels * (BitsPerSample == 8 ? sizeof(byte) : sizeof(short));
+                        LoopStart = DataStart + (LoopStart * i);
+                        LoopEnd = DataStart + (LoopEnd * i);
                     }
                 }
                 else // Skip other chunks
