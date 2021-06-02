@@ -141,39 +141,38 @@ namespace Kermalis.PokemonGameEngine.Sound
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int MixU16Samples(int a, int b)
         {
-            const int magic = short.MaxValue + 1;
             int m;
-            if ((a < magic) || (b < magic))
+            if ((a <= short.MaxValue) || (b <= short.MaxValue))
             {
-                m = a * b / magic;
+                m = (a * b) >> 15; // ">> 15" is the same as "/ (short.MaxValue+1)"
             }
-            else
+            else // Two large values
             {
-                m = (2 * (a + b)) - (a * b / magic) - (magic * 2);
+                m = (2 * (a + b)) - ((a * b) >> 15) - (ushort.MaxValue + 1);
             }
 
-            if (m == magic * 2)
+            if (m > ushort.MaxValue)
             {
-                m--;
+                m = ushort.MaxValue;
             }
             return m;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void MixS16Samples(short[] buffer, int index, short sample)
+        private static void MixS16Samples(short[] buffer, int index, short sample, float vol)
         {
             const int magic = short.MaxValue + 1;
             int a = buffer[index] + magic; // Convert a to u16
-            int b = sample + magic; // Convert b to u16
+            int b = (int)(sample * vol) + magic; // Convert b to u16
             int m = MixU16Samples(a, b);
             m -= magic; // Convert back to s16
             buffer[index] = (short)m;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void MixU8AndS16Sample(short[] buffer, int index, byte sample)
+        private static void MixU8AndS16Sample(short[] buffer, int index, byte sample, float vol)
         {
             const int magic = short.MaxValue + 1;
             int a = buffer[index] + magic; // Convert a to u16
-            int b = sample * 257; // Convert b to u16
+            int b = (int)(sample * 257 * vol); // Convert b to u16
             int m = MixU16Samples(a, b);
             m -= magic; // Convert back to s16
             buffer[index] = (short)m;
@@ -184,15 +183,15 @@ namespace Kermalis.PokemonGameEngine.Sound
         {
             r.BaseStream.Position = offset;
             byte samp = r.ReadByte();
-            MixU8AndS16Sample(buffer, index, (byte)(samp * leftVol));
-            MixU8AndS16Sample(buffer, index + 1, (byte)(samp * rightVol));
+            MixU8AndS16Sample(buffer, index, samp, leftVol);
+            MixU8AndS16Sample(buffer, index + 1, samp, rightVol);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void MixU8Samples_Stereo(short[] buffer, int index, EndianBinaryReader r, long offset, float leftVol, float rightVol)
         {
             r.BaseStream.Position = offset;
-            MixU8AndS16Sample(buffer, index, (byte)(r.ReadByte() * leftVol));
-            MixU8AndS16Sample(buffer, index + 1, (byte)(r.ReadByte() * rightVol));
+            MixU8AndS16Sample(buffer, index, r.ReadByte(), leftVol);
+            MixU8AndS16Sample(buffer, index + 1, r.ReadByte(), rightVol);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -200,15 +199,15 @@ namespace Kermalis.PokemonGameEngine.Sound
         {
             r.BaseStream.Position = offset;
             short samp = r.ReadInt16();
-            MixS16Samples(buffer, index, (short)(samp * leftVol));
-            MixS16Samples(buffer, index + 1, (short)(samp * rightVol));
+            MixS16Samples(buffer, index, samp, leftVol);
+            MixS16Samples(buffer, index + 1, samp, rightVol);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void MixS16Samples_Stereo(short[] buffer, int index, EndianBinaryReader r, long offset, float leftVol, float rightVol)
         {
             r.BaseStream.Position = offset;
-            MixS16Samples(buffer, index, (short)(r.ReadInt16() * leftVol));
-            MixS16Samples(buffer, index + 1, (short)(r.ReadInt16() * rightVol));
+            MixS16Samples(buffer, index, r.ReadInt16(), leftVol);
+            MixS16Samples(buffer, index + 1, r.ReadInt16(), rightVol);
         }
 
         #endregion
