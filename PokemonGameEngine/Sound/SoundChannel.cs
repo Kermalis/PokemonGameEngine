@@ -36,6 +36,62 @@
             return EffectVolume * Volume * rAmp;
         }
 
+        public void MixF32(float[] buffer, int numSamples)
+        {
+            float leftVol = GetLeftVol();
+            float rightVol = GetRightVol();
+            if (_data.DoesLoop)
+            {
+                if (_data.Channels == 1)
+                {
+                    if (_data.BitsPerSample == 8)
+                    {
+                        MixU8_Mono_Loop(buffer, numSamples, leftVol, rightVol);
+                    }
+                    else
+                    {
+                        MixS16_Mono_Loop(buffer, numSamples, leftVol, rightVol);
+                    }
+                }
+                else
+                {
+                    if (_data.BitsPerSample == 8)
+                    {
+                        MixU8_Stereo_Loop(buffer, numSamples, leftVol, rightVol);
+                    }
+                    else
+                    {
+                        MixS16_Stereo_Loop(buffer, numSamples, leftVol, rightVol);
+                    }
+                }
+            }
+            else
+            {
+                if (_data.Channels == 1)
+                {
+                    if (_data.BitsPerSample == 8)
+                    {
+                        MixU8_Mono_NoLoop(buffer, numSamples, leftVol, rightVol);
+                    }
+                    else
+                    {
+                        MixS16_Mono_NoLoop(buffer, numSamples, leftVol, rightVol);
+                    }
+                }
+                else
+                {
+                    if (_data.BitsPerSample == 8)
+                    {
+                        MixU8_Stereo_NoLoop(buffer, numSamples, leftVol, rightVol);
+                    }
+                    else
+                    {
+                        MixS16_Stereo_NoLoop(buffer, numSamples, leftVol, rightVol);
+                    }
+                }
+            }
+        }
+
         #region U8 Mixing
 
         private void MixU8_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
@@ -187,62 +243,6 @@
         #endregion
 
         #region S16 Mixing
-
-        public void MixF32(float[] buffer, int numSamples)
-        {
-            float leftVol = GetLeftVol();
-            float rightVol = GetRightVol();
-            if (_data.DoesLoop)
-            {
-                if (_data.Channels == 1)
-                {
-                    if (_data.BitsPerSample == 8)
-                    {
-                        MixU8_Mono_Loop(buffer, numSamples, leftVol, rightVol);
-                    }
-                    else
-                    {
-                        MixS16_Mono_Loop(buffer, numSamples, leftVol, rightVol);
-                    }
-                }
-                else
-                {
-                    if (_data.BitsPerSample == 8)
-                    {
-                        MixU8_Stereo_Loop(buffer, numSamples, leftVol, rightVol);
-                    }
-                    else
-                    {
-                        MixS16_Stereo_Loop(buffer, numSamples, leftVol, rightVol);
-                    }
-                }
-            }
-            else
-            {
-                if (_data.Channels == 1)
-                {
-                    if (_data.BitsPerSample == 8)
-                    {
-                        MixU8_Mono_NoLoop(buffer, numSamples, leftVol, rightVol);
-                    }
-                    else
-                    {
-                        MixS16_Mono_NoLoop(buffer, numSamples, leftVol, rightVol);
-                    }
-                }
-                else
-                {
-                    if (_data.BitsPerSample == 8)
-                    {
-                        MixU8_Stereo_NoLoop(buffer, numSamples, leftVol, rightVol);
-                    }
-                    else
-                    {
-                        MixS16_Stereo_NoLoop(buffer, numSamples, leftVol, rightVol);
-                    }
-                }
-            }
-        }
 
         private void MixS16_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {

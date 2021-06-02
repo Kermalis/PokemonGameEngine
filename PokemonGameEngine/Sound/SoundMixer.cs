@@ -1,5 +1,4 @@
-﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonGameEngine.Util;
+﻿using Kermalis.PokemonGameEngine.Util;
 using SDL2;
 using System;
 using System.Runtime.CompilerServices;
@@ -16,7 +15,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         private static SDL.SDL_AudioSpec _audioSpec;
         private static float[] _buffer;
 
-        private static SoundChannel ChannelList;
+        private static SoundChannel _channelList;
         private static DateTime _lastRenderTime;
         public static TimeSpan TimeSinceLastRender;
 
@@ -42,28 +41,28 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         public static void StartSound(SoundChannel c)
         {
-            if (ChannelList is null)
+            if (_channelList is null)
             {
-                ChannelList = c;
+                _channelList = c;
             }
             else
             {
-                SoundChannel old = ChannelList;
-                ChannelList = c;
+                SoundChannel old = _channelList;
+                _channelList = c;
                 old.Prev = c;
                 c.Next = old;
             }
         }
         public static void StopSound(SoundChannel c)
         {
-            if (c == ChannelList)
+            if (c == _channelList)
             {
                 SoundChannel next = c.Next;
                 if (next is not null)
                 {
                     next.Prev = null;
                 }
-                ChannelList = next;
+                _channelList = next;
             }
             else
             {
@@ -157,7 +156,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             int numSamples = len / (2 * sizeof(float)); // 2 Channels
             Array.Clear(_buffer, 0, numSamples * 2);
 
-            for (SoundChannel c = ChannelList; c is not null; c = c.Next)
+            for (SoundChannel c = _channelList; c is not null; c = c.Next)
             {
                 if (!c.IsPaused)
                 {
@@ -180,6 +179,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static float MixF32Samples(float a, float b)
         {
+            // Apply clipping
             float r = a + b;
             if (r > 1)
             {
@@ -206,38 +206,6 @@ namespace Kermalis.PokemonGameEngine.Sound
             float b = sample / 255f * vol;
             float m = MixF32Samples(a, b);
             buffer[index] = m;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MixU8Samples_Mono(float[] buffer, int index, EndianBinaryReader r, long offset, float leftVol, float rightVol)
-        {
-            r.BaseStream.Position = offset;
-            byte samp = r.ReadByte();
-            MixU8AndF32Sample(buffer, index, samp, leftVol);
-            MixU8AndF32Sample(buffer, index + 1, samp, rightVol);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MixU8Samples_Stereo(float[] buffer, int index, EndianBinaryReader r, long offset, float leftVol, float rightVol)
-        {
-            r.BaseStream.Position = offset;
-            MixU8AndF32Sample(buffer, index, r.ReadByte(), leftVol);
-            MixU8AndF32Sample(buffer, index + 1, r.ReadByte(), rightVol);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MixS16Samples_Mono(float[] buffer, int index, EndianBinaryReader r, long offset, float leftVol, float rightVol)
-        {
-            r.BaseStream.Position = offset;
-            short samp = r.ReadInt16();
-            MixS16AndF32Sample(buffer, index, samp, leftVol);
-            MixS16AndF32Sample(buffer, index + 1, samp, rightVol);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MixS16Samples_Stereo(float[] buffer, int index, EndianBinaryReader r, long offset, float leftVol, float rightVol)
-        {
-            r.BaseStream.Position = offset;
-            MixS16AndF32Sample(buffer, index, r.ReadInt16(), leftVol);
-            MixS16AndF32Sample(buffer, index + 1, r.ReadInt16(), rightVol);
         }
 
         #endregion
