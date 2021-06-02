@@ -102,6 +102,45 @@ namespace Kermalis.PokemonGameEngine.Sound
             return GetFadeVolume(p, from, to);
         }
 
+#if DEBUG
+        // Draws bars in the console
+        public static void Debug_DrawAudio()
+        {
+            short peakL = short.MinValue;
+            short peakR = short.MinValue;
+            for (int i = 0; i < _buffer.Length / 2; i++)
+            {
+                short l = _buffer[i * 2];
+                short r = _buffer[i * 2 + 1];
+                if (l > peakL)
+                {
+                    peakL = l;
+                }
+                if (r > peakR)
+                {
+                    peakR = r;
+                }
+            }
+
+            string str;
+            void Str(short peak)
+            {
+                const int numBars = 200;
+                str = string.Empty;
+                float num = (peak + 32768) / (65535f / numBars);
+                for (int i = 0; i < num; i++)
+                {
+                    str += '|';
+                }
+                str = str.PadRight(numBars);
+            }
+            Str(peakL);
+            Console.WriteLine("L: {0}\t[{1}]", peakL.ToString("D5").PadLeft(6), str);
+            Str(peakR);
+            Console.WriteLine("R: {0}\t[{1}]\n", peakR.ToString("D5").PadLeft(6), str);
+        }
+#endif
+
         private static void MixAudio(IntPtr userdata, IntPtr stream, int len)
         {
             DateTime renderTime = DateTime.Now;
@@ -125,6 +164,10 @@ namespace Kermalis.PokemonGameEngine.Sound
                     c.MixS16(_buffer, numSamples);
                 }
             }
+
+#if DEBUG
+            //Debug_DrawAudio();
+#endif
 
             // Marshal copy is at least twice as fast as sdl memset
             Marshal.Copy(_buffer, 0, stream, numSamples * 2);
