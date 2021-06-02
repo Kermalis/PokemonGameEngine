@@ -1,5 +1,6 @@
 ﻿namespace Kermalis.PokemonGameEngine.Sound
 {
+    internal delegate void SoundStoppedFunc(SoundChannel c);
     internal sealed class SoundChannel
     {
         private const bool CheckPause = false; // Not needed because tasks are not parallel right now
@@ -11,8 +12,9 @@
         public float EffectVolume = 1f;
         public float Volume = 1f;
         //public float Panpot = 0f; // -1 left, 0 center, +1 right
+        public SoundStoppedFunc OnStopped;
 
-        private readonly WaveFileData _data;
+        public readonly WaveFileData Data;
 
         private float _interPos;
         private long _offset;
@@ -20,9 +22,9 @@
 
         public SoundChannel(WaveFileData data)
         {
-            _data = data;
-            _offset = _data.DataStart;
-            _trailOffset = _data.DataEnd;
+            Data = data;
+            _offset = Data.DataStart;
+            _trailOffset = Data.DataEnd;
         }
 
         private float GetLeftVol()
@@ -40,11 +42,11 @@
         {
             float leftVol = GetLeftVol();
             float rightVol = GetRightVol();
-            if (_data.DoesLoop)
+            if (Data.DoesLoop)
             {
-                if (_data.Channels == 1)
+                if (Data.Channels == 1)
                 {
-                    if (_data.BitsPerSample == 8)
+                    if (Data.BitsPerSample == 8)
                     {
                         MixU8_Mono_Loop(buffer, numSamples, leftVol, rightVol);
                     }
@@ -55,7 +57,7 @@
                 }
                 else
                 {
-                    if (_data.BitsPerSample == 8)
+                    if (Data.BitsPerSample == 8)
                     {
                         MixU8_Stereo_Loop(buffer, numSamples, leftVol, rightVol);
                     }
@@ -67,9 +69,9 @@
             }
             else
             {
-                if (_data.Channels == 1)
+                if (Data.Channels == 1)
                 {
-                    if (_data.BitsPerSample == 8)
+                    if (Data.BitsPerSample == 8)
                     {
                         MixU8_Mono_NoLoop(buffer, numSamples, leftVol, rightVol);
                     }
@@ -80,7 +82,7 @@
                 }
                 else
                 {
-                    if (_data.BitsPerSample == 8)
+                    if (Data.BitsPerSample == 8)
                     {
                         MixU8_Stereo_NoLoop(buffer, numSamples, leftVol, rightVol);
                     }
@@ -96,7 +98,7 @@
 
         private void MixU8_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -105,8 +107,8 @@
                     return;
                 }
 
-                _data.Stream.Position = _offset;
-                int samp = _data.Reader.ReadByte();
+                Data.Stream.Position = _offset;
+                int samp = Data.Reader.ReadByte();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -116,9 +118,9 @@
                 SoundMixer.MixU8AndF32Sample(buffer, bufPos, samp, leftVol);
                 SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, samp, rightVol);
 
-                if (_offset >= _data.DataEnd)
+                if (_offset >= Data.DataEnd)
                 {
-                    SoundMixer.StopSound(this);
+                    SoundMixer.StopChannel(this);
                     return;
                 }
 
@@ -127,7 +129,7 @@
         }
         private void MixU8_Stereo_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -136,9 +138,9 @@
                     return;
                 }
 
-                _data.Stream.Position = _offset;
-                int sampL = _data.Reader.ReadByte();
-                int sampR = _data.Reader.ReadByte();
+                Data.Stream.Position = _offset;
+                int sampL = Data.Reader.ReadByte();
+                int sampR = Data.Reader.ReadByte();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -149,9 +151,9 @@
                 SoundMixer.MixU8AndF32Sample(buffer, bufPos, sampL, leftVol);
                 SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
 
-                if (_offset >= _data.DataEnd)
+                if (_offset >= Data.DataEnd)
                 {
-                    SoundMixer.StopSound(this);
+                    SoundMixer.StopChannel(this);
                     return;
                 }
 
@@ -160,7 +162,7 @@
         }
         private void MixU8_Mono_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -169,8 +171,8 @@
                     return;
                 }
 
-                _data.Stream.Position = _offset;
-                int samp = _data.Reader.ReadByte();
+                Data.Stream.Position = _offset;
+                int samp = Data.Reader.ReadByte();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -178,20 +180,20 @@
                 _offset += posDelta;
 
                 // Add trail
-                if (_trailOffset < _data.DataEnd)
+                if (_trailOffset < Data.DataEnd)
                 {
-                    _data.Stream.Position = _trailOffset;
-                    samp += _data.Reader.ReadByte();
+                    Data.Stream.Position = _trailOffset;
+                    samp += Data.Reader.ReadByte();
                     _trailOffset += posDelta;
                 }
 
                 SoundMixer.MixU8AndF32Sample(buffer, bufPos, samp, leftVol);
                 SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, samp, rightVol);
 
-                if (_offset >= _data.LoopEnd)
+                if (_offset >= Data.LoopEnd)
                 {
-                    _offset = _data.LoopStart;
-                    _trailOffset = _data.LoopEnd;
+                    _offset = Data.LoopStart;
+                    _trailOffset = Data.LoopEnd;
                 }
 
                 bufPos += 2;
@@ -199,7 +201,7 @@
         }
         private void MixU8_Stereo_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -208,9 +210,9 @@
                     return;
                 }
 
-                _data.Stream.Position = _offset;
-                int sampL = _data.Reader.ReadByte();
-                int sampR = _data.Reader.ReadByte();
+                Data.Stream.Position = _offset;
+                int sampL = Data.Reader.ReadByte();
+                int sampR = Data.Reader.ReadByte();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -219,21 +221,21 @@
                 _offset += posDelta;
 
                 // Add trail
-                if (_trailOffset < _data.DataEnd)
+                if (_trailOffset < Data.DataEnd)
                 {
-                    _data.Stream.Position = _trailOffset;
-                    sampL += _data.Reader.ReadByte();
-                    sampR += _data.Reader.ReadByte();
+                    Data.Stream.Position = _trailOffset;
+                    sampL += Data.Reader.ReadByte();
+                    sampR += Data.Reader.ReadByte();
                     _trailOffset += posDelta;
                 }
 
                 SoundMixer.MixU8AndF32Sample(buffer, bufPos, sampL, leftVol);
                 SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
 
-                if (_offset >= _data.LoopEnd)
+                if (_offset >= Data.LoopEnd)
                 {
-                    _offset = _data.LoopStart;
-                    _trailOffset = _data.LoopEnd;
+                    _offset = Data.LoopStart;
+                    _trailOffset = Data.LoopEnd;
                 }
 
                 bufPos += 2;
@@ -246,7 +248,7 @@
 
         private void MixS16_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -255,8 +257,8 @@
                     return;
                 }
 
-                _data.Stream.Position = _offset;
-                int samp = _data.Reader.ReadInt16();
+                Data.Stream.Position = _offset;
+                int samp = Data.Reader.ReadInt16();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -267,9 +269,9 @@
                 SoundMixer.MixS16AndF32Sample(buffer, bufPos, samp, leftVol);
                 SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, samp, rightVol);
 
-                if (_offset >= _data.DataEnd)
+                if (_offset >= Data.DataEnd)
                 {
-                    SoundMixer.StopSound(this);
+                    SoundMixer.StopChannel(this);
                     return;
                 }
 
@@ -278,7 +280,7 @@
         }
         private void MixS16_Stereo_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -287,9 +289,9 @@
                     return;
                 }
 
-                _data.Stream.Position = _offset;
-                int sampL = _data.Reader.ReadInt16();
-                int sampR = _data.Reader.ReadInt16();
+                Data.Stream.Position = _offset;
+                int sampL = Data.Reader.ReadInt16();
+                int sampR = Data.Reader.ReadInt16();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -300,9 +302,9 @@
                 SoundMixer.MixS16AndF32Sample(buffer, bufPos, sampL, leftVol);
                 SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
 
-                if (_offset >= _data.DataEnd)
+                if (_offset >= Data.DataEnd)
                 {
-                    SoundMixer.StopSound(this);
+                    SoundMixer.StopChannel(this);
                     return;
                 }
 
@@ -311,7 +313,7 @@
         }
         private void MixS16_Mono_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -320,8 +322,8 @@
                     return;
                 }
 
-                _data.Stream.Position = _offset;
-                int samp = _data.Reader.ReadInt16();
+                Data.Stream.Position = _offset;
+                int samp = Data.Reader.ReadInt16();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -330,20 +332,20 @@
                 _offset += posDelta;
 
                 // Add trail
-                if (_trailOffset < _data.DataEnd)
+                if (_trailOffset < Data.DataEnd)
                 {
-                    _data.Stream.Position = _trailOffset;
-                    samp += _data.Reader.ReadInt16();
+                    Data.Stream.Position = _trailOffset;
+                    samp += Data.Reader.ReadInt16();
                     _trailOffset += posDelta;
                 }
 
                 SoundMixer.MixS16AndF32Sample(buffer, bufPos, samp, leftVol);
                 SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, samp, rightVol);
 
-                if (_offset >= _data.LoopEnd)
+                if (_offset >= Data.LoopEnd)
                 {
-                    _offset = _data.LoopStart;
-                    _trailOffset = _data.LoopEnd;
+                    _offset = Data.LoopStart;
+                    _trailOffset = Data.LoopEnd;
                 }
 
                 bufPos += 2;
@@ -351,7 +353,7 @@
         }
         private void MixS16_Stereo_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -360,9 +362,9 @@
                     return;
                 }
 
-                _data.Stream.Position = _offset;
-                int sampL = _data.Reader.ReadInt16();
-                int sampR = _data.Reader.ReadInt16();
+                Data.Stream.Position = _offset;
+                int sampL = Data.Reader.ReadInt16();
+                int sampR = Data.Reader.ReadInt16();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -371,21 +373,21 @@
                 _offset += posDelta;
 
                 // Add trail
-                if (_trailOffset < _data.DataEnd)
+                if (_trailOffset < Data.DataEnd)
                 {
-                    _data.Stream.Position = _trailOffset;
-                    sampL += _data.Reader.ReadInt16();
-                    sampR += _data.Reader.ReadInt16();
+                    Data.Stream.Position = _trailOffset;
+                    sampL += Data.Reader.ReadInt16();
+                    sampR += Data.Reader.ReadInt16();
                     _trailOffset += posDelta;
                 }
 
                 SoundMixer.MixS16AndF32Sample(buffer, bufPos, sampL, leftVol);
                 SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
 
-                if (_offset >= _data.LoopEnd)
+                if (_offset >= Data.LoopEnd)
                 {
-                    _offset = _data.LoopStart;
-                    _trailOffset = _data.LoopEnd;
+                    _offset = Data.LoopStart;
+                    _trailOffset = Data.LoopEnd;
                 }
 
                 bufPos += 2;

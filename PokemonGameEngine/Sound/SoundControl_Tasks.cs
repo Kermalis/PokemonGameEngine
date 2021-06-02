@@ -55,19 +55,19 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
             else if (s != _overworldBGM.Song) // Don't change if it's the current song
             {
-                var data = new TaskData_FadeSongToSong(s, _overworldBGM.Handle, milliseconds, from, to);
+                var data = new TaskData_FadeSongToSong(s, _overworldBGM.Channel, milliseconds, from, to);
                 _tasks.Add(Task_FadeOverworldBGMAndStartNewSong, int.MaxValue, data: data);
             }
         }
         private static void CreateFadeOverworldBGMTask(int milliseconds, float from, float to)
         {
-            var data = new TaskData_Fade(_overworldBGM.Handle, milliseconds, from, to);
+            var data = new TaskData_Fade(_overworldBGM.Channel, milliseconds, from, to);
             _tasks.Add(Task_Fade, int.MaxValue, data: data);
         }
 
         private static void CreateFadeBattleBGMToOverworldBGMTask()
         {
-            var data = new TaskData_Fade(_battleBGM.Handle, 1_000, 1f, 0f);
+            var data = new TaskData_Fade(_battleBGM.Channel, 1_000, 1f, 0f);
             _tasks.Add(Task_FadeBattleBGMToOverworldBGM, int.MaxValue, data: data);
         }
 
@@ -77,8 +77,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             float vol = data.Update();
             if (vol == data.To)
             {
-                SoundMixer.StopSound(_overworldBGM.Handle);
-                _overworldBGM.Dispose();
+                SoundMixer.StopChannel(_overworldBGM.Channel);
                 if (data.Song == Song.None)
                 {
                     _overworldBGM = null;
@@ -86,11 +85,10 @@ namespace Kermalis.PokemonGameEngine.Sound
                 else
                 {
                     _overworldBGM = SongToSound(data.Song);
-                    _overworldBGM.Handle = new SoundChannel(_overworldBGM.Wav);
-                    SoundMixer.StartSound(_overworldBGM.Handle);
+                    _overworldBGM.Channel = new SoundChannel(_overworldBGM.Wav);
+                    SoundMixer.AddChannel(_overworldBGM.Channel);
                 }
                 _tasks.Remove(task);
-                return;
             }
         }
 
@@ -100,19 +98,18 @@ namespace Kermalis.PokemonGameEngine.Sound
             float vol = data.Update();
             if (vol == data.To)
             {
-                SoundMixer.StopSound(_battleBGM.Handle);
-                _battleBGM.Dispose();
+                SoundMixer.StopChannel(_battleBGM.Channel);
                 _battleBGM = null;
-                if (_overworldBGM is not null)
+                if (_overworldBGM is null)
                 {
-                    data = new TaskData_Fade(_overworldBGM.Handle, 1_000, 0f, 1f);
-                    task.Data = data;
-                    task.Action = Task_Fade;
-                    _overworldBGM.Handle.IsPaused = false;
+                    _tasks.Remove(task);
                     return;
                 }
-                _tasks.Remove(task);
-                return;
+                // Create overworld bgm fade
+                data = new TaskData_Fade(_overworldBGM.Channel, 1_000, 0f, 1f);
+                task.Data = data;
+                task.Action = Task_Fade;
+                _overworldBGM.Channel.IsPaused = false;
             }
         }
 
@@ -123,7 +120,6 @@ namespace Kermalis.PokemonGameEngine.Sound
             if (vol == data.To)
             {
                 _tasks.Remove(task);
-                return;
             }
         }
     }

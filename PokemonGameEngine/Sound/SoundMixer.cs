@@ -34,12 +34,11 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         public static void DeInit()
         {
-            SoundControl.DeInit();
             SDL.SDL_CloseAudioDevice(_audioDevice);
             SDL.SDL_AudioQuit();
         }
 
-        public static void StartSound(SoundChannel c)
+        public static void AddChannel(SoundChannel c)
         {
             if (_channelList is null)
             {
@@ -53,7 +52,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                 c.Next = old;
             }
         }
-        public static void StopSound(SoundChannel c)
+        public static void StopChannel(SoundChannel c)
         {
             if (c == _channelList)
             {
@@ -74,6 +73,8 @@ namespace Kermalis.PokemonGameEngine.Sound
                 }
                 prev.Next = next;
             }
+            c.Data.DeductReference(); // Dispose wav if it's not being shared
+            c.OnStopped?.Invoke(c);
         }
 
         public static double GetFadeProgress(TimeSpan end, ref TimeSpan cur)
