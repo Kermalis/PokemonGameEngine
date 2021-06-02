@@ -192,7 +192,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             return r;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void MixS16AndF32Sample(float[] buffer, int index, short sample, float vol)
+        public static void MixS16AndF32Sample(float[] buffer, int index, int sample, float vol)
         {
             float a = buffer[index];
             float b = (sample + 32768) / 65535f * vol;
@@ -200,7 +200,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             buffer[index] = m;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void MixU8AndF32Sample(float[] buffer, int index, byte sample, float vol)
+        public static void MixU8AndF32Sample(float[] buffer, int index, int sample, float vol)
         {
             float a = buffer[index];
             float b = sample / 255f * vol;

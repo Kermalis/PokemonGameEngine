@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Kermalis.PokemonGameEngine.Sound
+﻿namespace Kermalis.PokemonGameEngine.Sound
 {
     internal sealed class SoundChannel
     {
@@ -40,17 +38,6 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         #region U8 Mixing
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void MixU8Samples_Mono(float[] buffer, int index, long offset, float leftVol, float rightVol)
-        {
-            SoundMixer.MixU8Samples_Mono(buffer, index, _data.Reader, offset, leftVol, rightVol);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void MixU8Samples_Stereo(float[] buffer, int index, long offset, float leftVol, float rightVol)
-        {
-            SoundMixer.MixU8Samples_Stereo(buffer, index, _data.Reader, offset, leftVol, rightVol);
-        }
-
         private void MixU8_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
             float interStep = _data.SampleRate * SoundMixer.SampleRateReciprocal;
@@ -61,12 +48,17 @@ namespace Kermalis.PokemonGameEngine.Sound
                 {
                     return;
                 }
-                MixU8Samples_Mono(buffer, bufPos, _offset, leftVol, rightVol);
+
+                _data.Stream.Position = _offset;
+                int samp = _data.Reader.ReadByte();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
                 _interPos -= posDelta;
                 _offset += posDelta;
+
+                SoundMixer.MixU8AndF32Sample(buffer, bufPos, samp, leftVol);
+                SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, samp, rightVol);
 
                 if (_offset >= _data.DataEnd)
                 {
@@ -87,13 +79,19 @@ namespace Kermalis.PokemonGameEngine.Sound
                 {
                     return;
                 }
-                MixU8Samples_Stereo(buffer, bufPos, _offset, leftVol, rightVol);
+
+                _data.Stream.Position = _offset;
+                int sampL = _data.Reader.ReadByte();
+                int sampR = _data.Reader.ReadByte();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
                 _interPos -= posDelta;
                 posDelta *= 2;
                 _offset += posDelta;
+
+                SoundMixer.MixU8AndF32Sample(buffer, bufPos, sampL, leftVol);
+                SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
 
                 if (_offset >= _data.DataEnd)
                 {
@@ -114,7 +112,9 @@ namespace Kermalis.PokemonGameEngine.Sound
                 {
                     return;
                 }
-                MixU8Samples_Mono(buffer, bufPos, _offset, leftVol, rightVol);
+
+                _data.Stream.Position = _offset;
+                int samp = _data.Reader.ReadByte();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -124,9 +124,13 @@ namespace Kermalis.PokemonGameEngine.Sound
                 // Add trail
                 if (_trailOffset < _data.DataEnd)
                 {
-                    MixU8Samples_Mono(buffer, bufPos, _trailOffset, leftVol, rightVol);
+                    _data.Stream.Position = _trailOffset;
+                    samp += _data.Reader.ReadByte();
                     _trailOffset += posDelta;
                 }
+
+                SoundMixer.MixU8AndF32Sample(buffer, bufPos, samp, leftVol);
+                SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, samp, rightVol);
 
                 if (_offset >= _data.LoopEnd)
                 {
@@ -147,7 +151,10 @@ namespace Kermalis.PokemonGameEngine.Sound
                 {
                     return;
                 }
-                MixU8Samples_Stereo(buffer, bufPos, _offset, leftVol, rightVol);
+
+                _data.Stream.Position = _offset;
+                int sampL = _data.Reader.ReadByte();
+                int sampR = _data.Reader.ReadByte();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -158,9 +165,14 @@ namespace Kermalis.PokemonGameEngine.Sound
                 // Add trail
                 if (_trailOffset < _data.DataEnd)
                 {
-                    MixU8Samples_Stereo(buffer, bufPos, _trailOffset, leftVol, rightVol);
+                    _data.Stream.Position = _trailOffset;
+                    sampL += _data.Reader.ReadByte();
+                    sampR += _data.Reader.ReadByte();
                     _trailOffset += posDelta;
                 }
+
+                SoundMixer.MixU8AndF32Sample(buffer, bufPos, sampL, leftVol);
+                SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
 
                 if (_offset >= _data.LoopEnd)
                 {
@@ -232,17 +244,6 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void MixS16Samples_Mono(float[] buffer, int index, long offset, float leftVol, float rightVol)
-        {
-            SoundMixer.MixS16Samples_Mono(buffer, index, _data.Reader, offset, leftVol, rightVol);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void MixS16Samples_Stereo(float[] buffer, int index, long offset, float leftVol, float rightVol)
-        {
-            SoundMixer.MixS16Samples_Stereo(buffer, index, _data.Reader, offset, leftVol, rightVol);
-        }
-
         private void MixS16_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
             float interStep = _data.SampleRate * SoundMixer.SampleRateReciprocal;
@@ -253,13 +254,18 @@ namespace Kermalis.PokemonGameEngine.Sound
                 {
                     return;
                 }
-                MixS16Samples_Mono(buffer, bufPos, _offset, leftVol, rightVol);
+
+                _data.Stream.Position = _offset;
+                int samp = _data.Reader.ReadInt16();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
                 _interPos -= posDelta;
                 posDelta *= sizeof(short);
                 _offset += posDelta;
+
+                SoundMixer.MixS16AndF32Sample(buffer, bufPos, samp, leftVol);
+                SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, samp, rightVol);
 
                 if (_offset >= _data.DataEnd)
                 {
@@ -280,13 +286,19 @@ namespace Kermalis.PokemonGameEngine.Sound
                 {
                     return;
                 }
-                MixS16Samples_Stereo(buffer, bufPos, _offset, leftVol, rightVol);
+
+                _data.Stream.Position = _offset;
+                int sampL = _data.Reader.ReadInt16();
+                int sampR = _data.Reader.ReadInt16();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
                 _interPos -= posDelta;
                 posDelta *= sizeof(short) * 2;
                 _offset += posDelta;
+
+                SoundMixer.MixS16AndF32Sample(buffer, bufPos, sampL, leftVol);
+                SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
 
                 if (_offset >= _data.DataEnd)
                 {
@@ -307,7 +319,9 @@ namespace Kermalis.PokemonGameEngine.Sound
                 {
                     return;
                 }
-                MixS16Samples_Mono(buffer, bufPos, _offset, leftVol, rightVol);
+
+                _data.Stream.Position = _offset;
+                int samp = _data.Reader.ReadInt16();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -318,9 +332,13 @@ namespace Kermalis.PokemonGameEngine.Sound
                 // Add trail
                 if (_trailOffset < _data.DataEnd)
                 {
-                    MixS16Samples_Mono(buffer, bufPos, _trailOffset, leftVol, rightVol);
+                    _data.Stream.Position = _trailOffset;
+                    samp += _data.Reader.ReadInt16();
                     _trailOffset += posDelta;
                 }
+
+                SoundMixer.MixS16AndF32Sample(buffer, bufPos, samp, leftVol);
+                SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, samp, rightVol);
 
                 if (_offset >= _data.LoopEnd)
                 {
@@ -341,7 +359,10 @@ namespace Kermalis.PokemonGameEngine.Sound
                 {
                     return;
                 }
-                MixS16Samples_Stereo(buffer, bufPos, _offset, leftVol, rightVol);
+
+                _data.Stream.Position = _offset;
+                int sampL = _data.Reader.ReadInt16();
+                int sampR = _data.Reader.ReadInt16();
 
                 _interPos += interStep;
                 int posDelta = (int)_interPos;
@@ -352,9 +373,14 @@ namespace Kermalis.PokemonGameEngine.Sound
                 // Add trail
                 if (_trailOffset < _data.DataEnd)
                 {
-                    MixS16Samples_Stereo(buffer, bufPos, _trailOffset, leftVol, rightVol);
+                    _data.Stream.Position = _trailOffset;
+                    sampL += _data.Reader.ReadInt16();
+                    sampR += _data.Reader.ReadInt16();
                     _trailOffset += posDelta;
                 }
+
+                SoundMixer.MixS16AndF32Sample(buffer, bufPos, sampL, leftVol);
+                SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
 
                 if (_offset >= _data.LoopEnd)
                 {
