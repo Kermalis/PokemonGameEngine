@@ -86,7 +86,8 @@ namespace Kermalis.PokemonGameEngine.Sound
                 else
                 {
                     _overworldBGM = SongToSound(data.Song);
-                    _overworldBGM.Handle = SoundMixer.StartSound(_overworldBGM.Wav);
+                    _overworldBGM.Handle = new SoundChannel(_overworldBGM.Wav);
+                    SoundMixer.StartSound(_overworldBGM.Handle);
                 }
                 _tasks.Remove(task);
                 return;

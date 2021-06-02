@@ -93,7 +93,8 @@ namespace Kermalis.PokemonGameEngine.Sound
         public static void Debug_PlayCry(PBESpecies species, PBEForm form)
         {
             _testCry = CryToSound(species, form);
-            _testCry.Handle = SoundMixer.StartSound(_testCry.Wav);
+            _testCry.Handle = new SoundChannel(_testCry.Wav) { Volume = 0.75f }; // TODO: (#62) Volume causes popping if the volume drags up/down the mix
+            SoundMixer.StartSound(_testCry.Handle);
         }
 
         public static void SetOverworldBGM_NoFade(Song song)
@@ -103,14 +104,16 @@ namespace Kermalis.PokemonGameEngine.Sound
                 SoundMixer.StopSound(_overworldBGM.Handle);
             }
             _overworldBGM = SongToSound(song);
-            _overworldBGM.Handle = SoundMixer.StartSound(_overworldBGM.Wav);
+            _overworldBGM.Handle = new SoundChannel(_overworldBGM.Wav);
+            SoundMixer.StartSound(_overworldBGM.Handle);
         }
         public static void SetOverworldBGM(Song song)
         {
             if (_overworldBGM is null)
             {
                 _overworldBGM = SongToSound(song);
-                _overworldBGM.Handle = SoundMixer.StartSound(_overworldBGM.Wav);
+                _overworldBGM.Handle = new SoundChannel(_overworldBGM.Wav);
+                SoundMixer.StartSound(_overworldBGM.Handle);
                 return;
             }
             // Fade if the song is different
@@ -129,7 +132,8 @@ namespace Kermalis.PokemonGameEngine.Sound
                 _overworldBGM.Handle.IsPaused = true;
             }
             _battleBGM = SongToSound(song);
-            _battleBGM.Handle = SoundMixer.StartSound(_battleBGM.Wav);
+            _battleBGM.Handle = new SoundChannel(_battleBGM.Wav);
+            SoundMixer.StartSound(_battleBGM.Handle);
         }
 
         // Called every time SoundMixer mixes

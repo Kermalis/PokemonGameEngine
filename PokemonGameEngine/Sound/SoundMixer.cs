@@ -40,9 +40,8 @@ namespace Kermalis.PokemonGameEngine.Sound
             SDL.SDL_AudioQuit();
         }
 
-        public static SoundChannel StartSound(WaveFileData data)
+        public static void StartSound(SoundChannel c)
         {
-            var c = new SoundChannel(data);
             if (ChannelList is null)
             {
                 ChannelList = c;
@@ -54,7 +53,6 @@ namespace Kermalis.PokemonGameEngine.Sound
                 old.Prev = c;
                 c.Next = old;
             }
-            return c;
         }
         public static void StopSound(SoundChannel c)
         {
