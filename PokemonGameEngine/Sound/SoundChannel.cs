@@ -115,8 +115,8 @@
                 _interPos -= posDelta;
                 _offset += posDelta;
 
-                SoundMixer.MixU8AndF32Sample(buffer, bufPos, samp, leftVol);
-                SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, samp, rightVol);
+                buffer[bufPos] += SoundMixer.U8ToF32(samp, leftVol);
+                buffer[bufPos + 1] += SoundMixer.U8ToF32(samp, rightVol);
 
                 if (_offset >= Data.DataEnd)
                 {
@@ -148,8 +148,8 @@
                 posDelta *= 2;
                 _offset += posDelta;
 
-                SoundMixer.MixU8AndF32Sample(buffer, bufPos, sampL, leftVol);
-                SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
+                buffer[bufPos] += SoundMixer.U8ToF32(sampL, leftVol);
+                buffer[bufPos + 1] += SoundMixer.U8ToF32(sampR, rightVol);
 
                 if (_offset >= Data.DataEnd)
                 {
@@ -187,8 +187,8 @@
                     _trailOffset += posDelta;
                 }
 
-                SoundMixer.MixU8AndF32Sample(buffer, bufPos, samp, leftVol);
-                SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, samp, rightVol);
+                buffer[bufPos] += SoundMixer.U8ToF32(samp, leftVol);
+                buffer[bufPos + 1] += SoundMixer.U8ToF32(samp, rightVol);
 
                 if (_offset >= Data.LoopEnd)
                 {
@@ -229,8 +229,8 @@
                     _trailOffset += posDelta;
                 }
 
-                SoundMixer.MixU8AndF32Sample(buffer, bufPos, sampL, leftVol);
-                SoundMixer.MixU8AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
+                buffer[bufPos] += SoundMixer.U8ToF32(sampL, leftVol);
+                buffer[bufPos + 1] += SoundMixer.U8ToF32(sampR, rightVol);
 
                 if (_offset >= Data.LoopEnd)
                 {
@@ -266,8 +266,8 @@
                 posDelta *= sizeof(short);
                 _offset += posDelta;
 
-                SoundMixer.MixS16AndF32Sample(buffer, bufPos, samp, leftVol);
-                SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, samp, rightVol);
+                buffer[bufPos] += SoundMixer.S16ToF32(samp, leftVol);
+                buffer[bufPos + 1] += SoundMixer.S16ToF32(samp, rightVol);
 
                 if (_offset >= Data.DataEnd)
                 {
@@ -299,8 +299,8 @@
                 posDelta *= sizeof(short) * 2;
                 _offset += posDelta;
 
-                SoundMixer.MixS16AndF32Sample(buffer, bufPos, sampL, leftVol);
-                SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
+                buffer[bufPos] += SoundMixer.S16ToF32(sampL, leftVol);
+                buffer[bufPos + 1] += SoundMixer.S16ToF32(sampR, rightVol);
 
                 if (_offset >= Data.DataEnd)
                 {
@@ -339,8 +339,8 @@
                     _trailOffset += posDelta;
                 }
 
-                SoundMixer.MixS16AndF32Sample(buffer, bufPos, samp, leftVol);
-                SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, samp, rightVol);
+                buffer[bufPos] += SoundMixer.S16ToF32(samp, leftVol);
+                buffer[bufPos + 1] += SoundMixer.S16ToF32(samp, rightVol);
 
                 if (_offset >= Data.LoopEnd)
                 {
@@ -381,8 +381,8 @@
                     _trailOffset += posDelta;
                 }
 
-                SoundMixer.MixS16AndF32Sample(buffer, bufPos, sampL, leftVol);
-                SoundMixer.MixS16AndF32Sample(buffer, bufPos + 1, sampR, rightVol);
+                buffer[bufPos] += SoundMixer.S16ToF32(sampL, leftVol);
+                buffer[bufPos + 1] += SoundMixer.S16ToF32(sampR, rightVol);
 
                 if (_offset >= Data.LoopEnd)
                 {

@@ -76,7 +76,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         public static void Debug_PlayCry(PBESpecies species, PBEForm form)
         {
             _testCry = CryToSound(species, form);
-            _testCry.Handle = new SoundChannel(_testCry.Wav) { Volume = 0.25f }; // TODO: (#62) Volume causes popping if the volume drags up/down the mix
+            _testCry.Handle = new SoundChannel(_testCry.Wav) { Volume = 0.5f };
             SoundMixer.AddChannel(_testCry.Handle);
         }
 

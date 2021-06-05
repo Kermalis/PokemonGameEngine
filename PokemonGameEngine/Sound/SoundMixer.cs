@@ -104,10 +104,11 @@ namespace Kermalis.PokemonGameEngine.Sound
 
 #if DEBUG
         // Draws bars in the console
+        // TODO: How do we actually draw f32 audio?
         public static void Debug_DrawAudio()
         {
-            float peakL = 0f;
-            float peakR = 0f;
+            float peakL = -1f;
+            float peakR = -1f;
             for (int i = 0; i < _buffer.Length / 2; i++)
             {
                 float l = _buffer[i * 2];
@@ -127,7 +128,19 @@ namespace Kermalis.PokemonGameEngine.Sound
             {
                 const int numBars = 200;
                 str = string.Empty;
-                float num = peak * numBars;
+                float num;
+                if (peak <= -1)
+                {
+                    num = 0;
+                }
+                else if (peak >= 1)
+                {
+                    num = numBars;
+                }
+                else
+                {
+                    num = (peak + 1) / 2 * numBars;
+                }
                 for (int i = 0; i < num; i++)
                 {
                     str += '|';
@@ -140,6 +153,10 @@ namespace Kermalis.PokemonGameEngine.Sound
             Console.WriteLine("R: {0:0.000}\t[{1}]\n", peakR, str);
         }
 #endif
+
+        // F32 audio can legally be above 1f and below -1f
+        // That's also true for audio sources, since you can lower the volume and still result with the "original" audio
+        // So there's no clipping applied and all mixing is applied with +, while volume is applied with *
 
         private static void MixAudio(IntPtr userdata, IntPtr stream, int len)
         {
@@ -178,35 +195,14 @@ namespace Kermalis.PokemonGameEngine.Sound
         #region Mixing Math
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float MixF32Samples(float a, float b)
+        public static float U8ToF32(int sample, float vol)
         {
-            // Apply clipping
-            float r = a + b;
-            if (r > 1)
-            {
-                r = 1;
-            }
-            else if (r < 0)
-            {
-                r = 0;
-            }
-            return r;
+            return (sample - 128) / 128f * vol;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MixS16AndF32Sample(float[] buffer, int index, int sample, float vol)
+        public static float S16ToF32(int sample, float vol)
         {
-            float a = buffer[index];
-            float b = (sample + 32768) / 65535f * vol;
-            float m = MixF32Samples(a, b);
-            buffer[index] = m;
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MixU8AndF32Sample(float[] buffer, int index, int sample, float vol)
-        {
-            float a = buffer[index];
-            float b = sample / 255f * vol;
-            float m = MixF32Samples(a, b);
-            buffer[index] = m;
+            return sample / 32768f * vol;
         }
 
         #endregion
