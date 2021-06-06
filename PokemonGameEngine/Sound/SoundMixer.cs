@@ -105,23 +105,41 @@ namespace Kermalis.PokemonGameEngine.Sound
 
 #if DEBUG
         // Draws bars in the console
-        // TODO: How do we actually draw f32 audio?
         public static void Debug_DrawAudio()
         {
-            float peakL = -1f;
-            float peakR = -1f;
+            static float AdjustPeak(float inPeak, float value)
+            {
+                if (inPeak == 0)
+                {
+                    return value;
+                }
+                if (value == 0)
+                {
+                    return inPeak;
+                }
+                // Positive value
+                if (value > 0)
+                {
+                    if (inPeak > 0)
+                    {
+                        return value > inPeak ? value : inPeak; // Positive peak
+                    }
+                    return -value < inPeak ? value : inPeak; // Negative peak
+                }
+                // Negative value
+                if (inPeak > 0)
+                {
+                    return -value > inPeak ? value : inPeak; // Positive peak
+                }
+                return value < inPeak ? value : inPeak; // Negative peak
+            }
+
+            float peakL = 0f;
+            float peakR = 0f;
             for (int i = 0; i < _buffer.Length / 2; i++)
             {
-                float l = _buffer[i * 2];
-                float r = _buffer[i * 2 + 1];
-                if (l > peakL)
-                {
-                    peakL = l;
-                }
-                if (r > peakR)
-                {
-                    peakR = r;
-                }
+                peakL = AdjustPeak(peakL, _buffer[i * 2]);
+                peakR = AdjustPeak(peakR, _buffer[i * 2 + 1]);
             }
 
             string str;
@@ -129,18 +147,15 @@ namespace Kermalis.PokemonGameEngine.Sound
             {
                 const int numBars = 200;
                 str = string.Empty;
+                float absPeak = Math.Abs(peak);
                 float num;
-                if (peak <= -1)
-                {
-                    num = 0;
-                }
-                else if (peak >= 1)
+                if (absPeak >= 1)
                 {
                     num = numBars;
                 }
                 else
                 {
-                    num = (peak + 1) / 2 * numBars;
+                    num = absPeak * numBars;
                 }
                 for (int i = 0; i < num; i++)
                 {
@@ -149,9 +164,9 @@ namespace Kermalis.PokemonGameEngine.Sound
                 str = str.PadRight(numBars);
             }
             Str(peakL);
-            Console.WriteLine("L: {0:0.000}\t[{1}]", peakL, str);
+            Console.WriteLine("L: {0}\t[{1}]", peakL.ToString("0.000").PadLeft(6), str);
             Str(peakR);
-            Console.WriteLine("R: {0:0.000}\t[{1}]\n", peakR, str);
+            Console.WriteLine("R: {0}\t[{1}]\n", peakR.ToString("0.000").PadLeft(6), str);
         }
 #endif
 
