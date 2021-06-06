@@ -101,9 +101,9 @@ namespace Kermalis.PokemonGameEngine.Sound
                         throw new InvalidDataException("Invalid WaveFormat Structure");
                     }
                     WaveFormatEncoding format = Reader.ReadEnum<WaveFormatEncoding>();
-                    if (format != WaveFormatEncoding.PCM)
+                    if (format is not WaveFormatEncoding.PCM and not WaveFormatEncoding.IeeeFloat)
                     {
-                        throw new InvalidDataException("Only PCM is supported");
+                        throw new InvalidDataException("Only PCM8, PCM16, and IEEE32 are supported");
                     }
                     Channels = Reader.ReadInt16();
                     if (Channels is not 1 and not 2)
@@ -114,9 +114,10 @@ namespace Kermalis.PokemonGameEngine.Sound
                     _ = Reader.ReadInt32(); //averageBytesPerSecond
                     _ = Reader.ReadInt16(); // blockAlign
                     BitsPerSample = Reader.ReadInt16();
-                    if (BitsPerSample is not 8 and not 16)
+                    if ((format == WaveFormatEncoding.PCM && BitsPerSample is not 8 and not 16)
+                        || (format == WaveFormatEncoding.IeeeFloat && BitsPerSample != 32))
                     {
-                        throw new InvalidDataException("Only PCM8 and PCM16 are supported");
+                        throw new InvalidDataException("Only PCM8, PCM16, and IEEE32 are supported");
                     }
                     if (formatChunkLength > 16)
                     {
@@ -167,7 +168,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                         _ = Reader.ReadUInt32(); // 4 - play count (0)
 
                         // Adjust loop positions from samples to file offset
-                        int i = Channels * (BitsPerSample == 8 ? sizeof(byte) : sizeof(short));
+                        int i = Channels * (BitsPerSample / 8);
                         LoopStart = DataStart + (LoopStart * i);
                         LoopEnd = DataStart + (LoopEnd * i);
                     }
