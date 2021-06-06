@@ -101,7 +101,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     if (_fadeTransition.IsDone)
                     {
                         _fadeTransition = null;
-                        SoundControl.Debug_PlayCry(_pkmn.Species, _pkmn.Form);
+                        SoundControl.PlayCry(_pkmn.Species, _pkmn.Form);
                         CreateMessage(string.Format("{0} hatched from the egg!", _pkmn.Nickname));
                         _state = State.PkmnHatchedMsg;
                     }

@@ -11,7 +11,9 @@
         public bool IsPaused;
         public float EffectVolume = 1f;
         public float Volume = 1f;
-        //public float Panpot = 0f; // -1 left, 0 center, +1 right
+        /// <summary>-1 left, 0 center, +1 right</summary>
+        public float Panpot = 0f;
+        /// <summary>Callback for the sound stopping. This thread is not the Logic Thread</summary>
         public SoundStoppedFunc OnStopped;
 
         public readonly WaveFileData Data;
@@ -29,12 +31,12 @@
 
         private float GetLeftVol()
         {
-            float lAmp = 1;// 1 - (Panpot / 2 + 0.5f);
+            float lAmp = 1 - (Panpot / 2 + 0.5f);
             return EffectVolume * Volume * lAmp;
         }
         private float GetRightVol()
         {
-            float rAmp = 1;// Panpot / 2 + 0.5f;
+            float rAmp = Panpot / 2 + 0.5f;
             return EffectVolume * Volume * rAmp;
         }
 

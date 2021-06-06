@@ -65,13 +65,13 @@ Data Stuff:
     Wild Pkmn with items
 
 Sound:
-    Panpot
     Wait for a cry (some sort of cry system)
     Fade BGM when in a menu
     Random cries in the overworld (task system)
     Fanfares
     Surf music logic
     Saving music to load next time
+    Distort cries for fainted/low HP
 
 Nice to have (no priority):
     Changable tiles based on day/night

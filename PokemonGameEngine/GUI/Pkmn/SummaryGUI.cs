@@ -186,7 +186,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 species = pPkmn.Species;
                 form = bPkmn.RevertForm;
             }
-            SoundControl.Debug_PlayCry(species, form);
+            SoundControl.PlayCry(species, form);
         }
         private void SetProperCallback()
         {

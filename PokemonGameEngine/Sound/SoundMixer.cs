@@ -75,6 +75,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
             c.Data.DeductReference(); // Dispose wav if it's not being shared
             c.OnStopped?.Invoke(c);
+            c.OnStopped = null;
         }
 
         public static double GetFadeProgress(TimeSpan end, ref TimeSpan cur)
