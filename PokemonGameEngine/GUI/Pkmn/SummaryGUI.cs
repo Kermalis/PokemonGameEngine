@@ -169,24 +169,40 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             PBESpecies species;
             PBEForm form;
+            double hpPercentage;
             if (_pPkmn is not null)
             {
+                if (_pPkmn.IsEgg)
+                {
+                    return;
+                }
                 species = _pPkmn.Species;
                 form = _pPkmn.Form;
+                hpPercentage = _pPkmn.HP / _pPkmn.MaxHP;
             }
             else if (_pcPkmn is not null)
             {
+                if (_pcPkmn.IsEgg)
+                {
+                    return;
+                }
                 species = _pcPkmn.Species;
                 form = _pcPkmn.Form;
+                hpPercentage = 1;
             }
             else
             {
                 PartyPokemon pPkmn = _bPkmn.PartyPkmn;
+                if (pPkmn.IsEgg)
+                {
+                    return;
+                }
                 PBEBattlePokemon bPkmn = _bPkmn.Pkmn;
                 species = pPkmn.Species;
                 form = bPkmn.RevertForm;
+                hpPercentage = bPkmn.HPPercentage;
             }
-            SoundControl.PlayCry(species, form);
+            SoundControl.PlayCry(species, form, hpPercentage);
         }
         private void SetProperCallback()
         {

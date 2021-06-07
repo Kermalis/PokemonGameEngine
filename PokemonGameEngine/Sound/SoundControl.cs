@@ -73,6 +73,15 @@ namespace Kermalis.PokemonGameEngine.Sound
             throw new ArgumentOutOfRangeException(nameof(song));
         }
 
+        public static int GetCryPitch(double hpPercentage)
+        {
+            return (int)((1 - hpPercentage) * -192); // 1/4 of -768; so -0.25 semitones for a fainted mon
+        }
+
+        public static void PlayCry(PBESpecies species, PBEForm form, double hpPercentage, float vol = 0.5f, float pan = 0f, SoundStoppedFunc onStopped = null)
+        {
+            PlayCry(species, form, vol: vol, pan: pan, pitch: GetCryPitch(hpPercentage), onStopped: onStopped);
+        }
         public static void PlayCry(PBESpecies species, PBEForm form, float vol = 0.5f, float pan = 0f, int pitch = 0, SoundStoppedFunc onStopped = null)
         {
             _testCry = CryToSound(species, form);
