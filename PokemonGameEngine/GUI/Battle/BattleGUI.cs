@@ -348,9 +348,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             PartyPokemon pp = SpritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
             Friendship.AdjustFriendship(pkmn, pp, Friendship.Event.LevelUpBattle);
         }
+        private static void PlayCry(PBEBattlePokemon pkmn)
+        {
+            SoundControl.PlayCry(pkmn.KnownSpecies, pkmn.KnownForm, pan: GetCryPanpot(pkmn), pitch: GetCryPitch(pkmn));
+        }
         private static float GetCryPanpot(PBEBattlePokemon pkmn)
         {
             return pkmn.Team.Id == 0 ? -0.35f : 0.35f;
+        }
+        private static int GetCryPitch(PBEBattlePokemon pkmn)
+        {
+            return (int)((1 - pkmn.HPPercentage) * -384); // Half of -768; so -0.5 semitones for a fainted mon
         }
 
         #region Actions
@@ -491,7 +499,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         UpdateFriendshipForFaint(pkmn);
                     }
-                    SoundControl.PlayCry(pkmn.KnownSpecies, pkmn.KnownForm, pan: GetCryPanpot(pkmn)); // TODO: Distort
+                    PlayCry(pkmn);
                     break;
                 }
                 case PBEPkmnFormChangedPacket pfcp:
@@ -577,7 +585,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         UpdateDisguisedPID(pkmn);
                         SetSeen(pkmn);
                         ShowPokemon(pkmn);
-                        SoundControl.PlayCry(pkmn.KnownSpecies, pkmn.KnownForm, pan: GetCryPanpot(pkmn));
+                        PlayCry(pkmn);
                     }
                     break;
                 }
@@ -596,7 +604,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         UpdateDisguisedPID(pkmn);
                         SetSeen(pkmn);
                         ShowWildPokemon(pkmn);
-                        SoundControl.PlayCry(pkmn.KnownSpecies, pkmn.KnownForm, pan: GetCryPanpot(pkmn));
+                        PlayCry(pkmn);
                     }
                     break;
                 }

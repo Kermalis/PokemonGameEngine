@@ -73,10 +73,11 @@ namespace Kermalis.PokemonGameEngine.Sound
             throw new ArgumentOutOfRangeException(nameof(song));
         }
 
-        public static void PlayCry(PBESpecies species, PBEForm form, float vol = 0.5f, float pan = 0f, SoundStoppedFunc onStopped = null)
+        public static void PlayCry(PBESpecies species, PBEForm form, float vol = 0.5f, float pan = 0f, int pitch = 0, SoundStoppedFunc onStopped = null)
         {
             _testCry = CryToSound(species, form);
             _testCry.Handle = new SoundChannel(_testCry.Wav) { Volume = vol, Panpot = pan, OnStopped = onStopped };
+            _testCry.Handle.SetPitch(pitch);
             SoundMixer.AddChannel(_testCry.Handle);
         }
 

@@ -71,7 +71,6 @@ Sound:
     Fanfares
     Surf music logic
     Saving music to load next time
-    Distort cries for fainted/low HP
 
 Nice to have (no priority):
     Changable tiles based on day/night

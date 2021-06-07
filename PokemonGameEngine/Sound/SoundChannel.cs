@@ -22,6 +22,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         public readonly WaveFileData Data;
 
         // Playback
+        private float _freq;
         private float _interPos;
         private long _offset;
         private long _trailOffset;
@@ -37,8 +38,16 @@ namespace Kermalis.PokemonGameEngine.Sound
         public SoundChannel(WaveFileData data)
         {
             Data = data;
-            _offset = Data.DataStart;
-            _trailOffset = Data.DataEnd;
+            _freq = data.SampleRate;
+            _offset = data.DataStart;
+            _trailOffset = data.DataEnd;
+        }
+
+        public void SetPitch(int pitch)
+        {
+            // (float)Math.Pow(2, ((Key - 60) / 12f) + (pitch / 768f))
+            // If we had a key we'd use the above. Instead we're emulating base key
+            _freq = Data.SampleRate * (float)Math.Pow(2, pitch / 768f);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -155,7 +164,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private void MixU8_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -186,7 +195,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixU8_Stereo_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -219,7 +228,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixU8_Mono_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -258,7 +267,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixU8_Stereo_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -305,7 +314,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private void MixS16_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -337,7 +346,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixS16_Stereo_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -370,7 +379,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixS16_Mono_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -410,7 +419,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixS16_Stereo_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -457,7 +466,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private void MixF32_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -489,7 +498,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixF32_Stereo_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -522,7 +531,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixF32_Mono_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
@@ -562,7 +571,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixF32_Stereo_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = Data.SampleRate * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SampleRateReciprocal;
             int bufPos = 0;
             do
             {
