@@ -11,26 +11,11 @@ namespace Kermalis.PokemonGameEngine.Sound
         private class TaskData_Fade
         {
             public readonly SoundChannel Handle;
-            public TimeSpan CurTime;
-            public readonly TimeSpan EndTime;
-            public readonly float From;
-            public readonly float To;
 
             public TaskData_Fade(SoundChannel handle, int milliseconds, float from, float to)
             {
-                handle.EffectVolume = from;
                 Handle = handle;
-                CurTime = new TimeSpan();
-                EndTime = TimeSpan.FromMilliseconds(milliseconds);
-                From = from;
-                To = to;
-            }
-
-            public float Update()
-            {
-                float vol = SoundMixer.UpdateFade(From, To, EndTime, ref CurTime);
-                Handle.EffectVolume = vol;
-                return vol;
+                handle.BeginFade(milliseconds, from, to);
             }
         }
         private class TaskData_FadeSongToSong : TaskData_Fade
@@ -52,17 +37,13 @@ namespace Kermalis.PokemonGameEngine.Sound
             {
                 var data = (TaskData_FadeSongToSong)existing.Data;
                 data.Song = s;
+                data.Handle.BeginFade(milliseconds, from, to); // Update the fade
             }
             else if (s != _overworldBGM.Song) // Don't change if it's the current song
             {
                 var data = new TaskData_FadeSongToSong(s, _overworldBGM.Channel, milliseconds, from, to);
                 _tasks.Add(Task_FadeOverworldBGMAndStartNewSong, int.MaxValue, data: data);
             }
-        }
-        private static void CreateFadeOverworldBGMTask(int milliseconds, float from, float to)
-        {
-            var data = new TaskData_Fade(_overworldBGM.Channel, milliseconds, from, to);
-            _tasks.Add(Task_Fade, int.MaxValue, data: data);
         }
 
         private static void CreateFadeBattleBGMToOverworldBGMTask()
@@ -74,8 +55,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         private static void Task_FadeOverworldBGMAndStartNewSong(BackTask task)
         {
             var data = (TaskData_FadeSongToSong)task.Data;
-            float vol = data.Update();
-            if (vol == data.To)
+            if (!data.Handle.IsFading)
             {
                 SoundMixer.StopChannel(_overworldBGM.Channel);
                 if (data.Song == Song.None)
@@ -95,30 +75,16 @@ namespace Kermalis.PokemonGameEngine.Sound
         private static void Task_FadeBattleBGMToOverworldBGM(BackTask task)
         {
             var data = (TaskData_Fade)task.Data;
-            float vol = data.Update();
-            if (vol == data.To)
+            if (!data.Handle.IsFading)
             {
                 SoundMixer.StopChannel(_battleBGM.Channel);
                 _battleBGM = null;
-                if (_overworldBGM is null)
+                if (_overworldBGM is not null)
                 {
-                    _tasks.Remove(task);
-                    return;
+                    // Create overworld bgm fade
+                    _overworldBGM.Channel.BeginFade(1_000, 0f, 1f);
+                    _overworldBGM.Channel.IsPaused = false;
                 }
-                // Create overworld bgm fade
-                data = new TaskData_Fade(_overworldBGM.Channel, 1_000, 0f, 1f);
-                task.Data = data;
-                task.Action = Task_Fade;
-                _overworldBGM.Channel.IsPaused = false;
-            }
-        }
-
-        private static void Task_Fade(BackTask task)
-        {
-            var data = (TaskData_Fade)task.Data;
-            float vol = data.Update();
-            if (vol == data.To)
-            {
                 _tasks.Remove(task);
             }
         }

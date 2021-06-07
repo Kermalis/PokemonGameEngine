@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Util;
-using SDL2;
+﻿using SDL2;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -14,6 +13,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         private static uint _audioDevice;
         private static SDL.SDL_AudioSpec _audioSpec;
         private static float[] _buffer;
+        private static float[] _tempBuffer;
 
         private static SoundChannel _channelList;
         private static DateTime _lastRenderTime;
@@ -28,7 +28,9 @@ namespace Kermalis.PokemonGameEngine.Sound
             spec.samples = 4096;
             spec.callback = MixAudio;
             _audioDevice = SDL.SDL_OpenAudioDevice(null, 0, ref spec, out _audioSpec, 0);
-            _buffer = new float[_audioSpec.samples * 2];
+            int len = _audioSpec.samples * 2;
+            _buffer = new float[len];
+            _tempBuffer = new float[len];
             SDL.SDL_PauseAudioDevice(_audioDevice, 0); // Start playing
             _lastRenderTime = DateTime.Now;
         }
@@ -76,31 +78,6 @@ namespace Kermalis.PokemonGameEngine.Sound
             c.Data.DeductReference(); // Dispose wav if it's not being shared
             c.OnStopped?.Invoke(c);
             c.OnStopped = null;
-        }
-
-        public static double GetFadeProgress(TimeSpan end, ref TimeSpan cur)
-        {
-            cur += TimeSinceLastRender;
-            if (cur >= end)
-            {
-                return 1;
-            }
-            return Utils.GetProgress(end, cur);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float GetFadeVolume(double progress, float from, float to)
-        {
-            return (float)(from + ((to - from) * progress));
-        }
-        public static float UpdateFade(float from, float to, TimeSpan end, ref TimeSpan cur)
-        {
-            cur += TimeSinceLastRender;
-            if (cur >= end)
-            {
-                return to;
-            }
-            double p = Utils.GetProgress(end, cur);
-            return GetFadeVolume(p, from, to);
         }
 
 #if DEBUG
@@ -187,14 +164,29 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
             SoundControl.SoundLogicTick(); // Run sound tasks
 
-            int numSamples = len / (2 * sizeof(float)); // 2 Channels
-            Array.Clear(_buffer, 0, numSamples * 2);
+            int numSamplesTotal = len / sizeof(float);
+            int numSamplesPerChannel = numSamplesTotal / 2; // 2 Channels
+            Array.Clear(_buffer, 0, numSamplesTotal);
 
             for (SoundChannel c = _channelList; c is not null; c = c.Next)
             {
-                if (!c.IsPaused)
+                if (c.IsPaused)
                 {
-                    c.MixF32(_buffer, numSamples);
+                    continue;
+                }
+                if (c.IsFading)
+                {
+                    Array.Clear(_tempBuffer, 0, numSamplesTotal);
+                    c.MixF32(_tempBuffer, numSamplesPerChannel);
+                    c.ApplyFade(_tempBuffer, numSamplesPerChannel);
+                    for (int i = 0; i < numSamplesTotal; i++)
+                    {
+                        _buffer[i] += _tempBuffer[i];
+                    }
+                }
+                else
+                {
+                    c.MixF32(_buffer, numSamplesPerChannel);
                 }
             }
 
@@ -203,7 +195,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 #endif
 
             // Marshal copy is at least twice as fast as sdl memset
-            Marshal.Copy(_buffer, 0, stream, numSamples * 2);
+            Marshal.Copy(_buffer, 0, stream, numSamplesTotal);
 
             _lastRenderTime = renderTime;
         }

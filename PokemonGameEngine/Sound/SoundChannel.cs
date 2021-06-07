@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Kermalis.PokemonGameEngine.Util;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Sound
 {
@@ -11,7 +13,6 @@ namespace Kermalis.PokemonGameEngine.Sound
         public SoundChannel Prev;
 
         public bool IsPaused;
-        public float EffectVolume = 1f;
         public float Volume = 1f;
         /// <summary>-1 left, 0 center, +1 right</summary>
         public float Panpot = 0f;
@@ -20,9 +21,18 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         public readonly WaveFileData Data;
 
+        // Playback
         private float _interPos;
         private long _offset;
         private long _trailOffset;
+
+        // Fade
+        public bool IsFading;
+        private TimeSpan _fadeCurTime;
+        private TimeSpan _fadeEndTime;
+        private float _fadeCurVolume;
+        private float _fadeFrom;
+        private float _fadeTo;
 
         public SoundChannel(WaveFileData data)
         {
@@ -35,13 +45,13 @@ namespace Kermalis.PokemonGameEngine.Sound
         private float GetLeftVol()
         {
             float lAmp = 1 - (Panpot / 2 + 0.5f);
-            return EffectVolume * Volume * lAmp;
+            return Volume * lAmp;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private float GetRightVol()
         {
             float rAmp = Panpot / 2 + 0.5f;
-            return EffectVolume * Volume * rAmp;
+            return Volume * rAmp;
         }
 
         public void MixF32(float[] buffer, int numSamples)
@@ -91,6 +101,55 @@ namespace Kermalis.PokemonGameEngine.Sound
                 }
             }
         }
+
+        #region Fade
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private float GetFadeVolume(double progress)
+        {
+            return (float)(_fadeFrom + ((_fadeTo - _fadeFrom) * progress));
+        }
+
+        public void BeginFade(int milliseconds, float from, float to)
+        {
+            if (IsFading)
+            {
+                _fadeFrom = _fadeCurVolume;
+                _fadeEndTime = TimeSpan.FromMilliseconds(milliseconds) - _fadeCurTime;
+            }
+            else
+            {
+                _fadeFrom = from;
+                _fadeCurVolume = from;
+                _fadeEndTime = TimeSpan.FromMilliseconds(milliseconds);
+                IsFading = true;
+            }
+            _fadeCurTime = new TimeSpan();
+            _fadeTo = to;
+        }
+        public void ApplyFade(float[] buffer, int numSamples)
+        {
+            float fromVol = _fadeCurVolume;
+            _fadeCurTime += SoundMixer.TimeSinceLastRender;
+            double progress = Utils.GetProgress(_fadeEndTime, _fadeCurTime);
+            float toVol = GetFadeVolume(progress);
+            float step = (toVol - fromVol) / numSamples;
+            float level = fromVol;
+            for (int j = 0; j < numSamples; j++)
+            {
+                buffer[j * 2] *= level;
+                buffer[(j * 2) + 1] *= level;
+                level += step;
+            }
+            _fadeCurVolume = toVol;
+            if (progress >= 1) // Fade is finished
+            {
+                Volume = toVol;
+                IsFading = false;
+            }
+        }
+
+        #endregion
 
         #region U8 Mixing
 
