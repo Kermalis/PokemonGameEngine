@@ -51,7 +51,7 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             PBEForm form = ReadVarOrEnum<PBEForm>();
-            SoundControl.Debug_PlayCry(species, form);
+            SoundControl.PlayCry(species, form);
         }
 
         private static void CountNonEggPartyCommand()

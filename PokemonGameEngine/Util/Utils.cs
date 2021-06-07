@@ -28,6 +28,10 @@ namespace Kermalis.PokemonGameEngine.Util
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double GetProgress(TimeSpan end, TimeSpan cur)
         {
+            if (cur >= end)
+            {
+                return 1;
+            }
             return (double)((decimal)(cur - end).Ticks / end.Ticks) + 1;
         }
         public static double GetAnimationProgress(TimeSpan end, ref TimeSpan cur)

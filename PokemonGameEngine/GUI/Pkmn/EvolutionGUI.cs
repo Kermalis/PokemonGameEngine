@@ -255,7 +255,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     if (_fadeTransition.IsDone)
                     {
                         _fadeTransition = null;
-                        SoundControl.Debug_PlayCry(_pkmn.Species, _pkmn.Form);
+                        SoundControl.PlayCry(_pkmn.Species, _pkmn.Form);
                         CreateMessage(string.Format("{0} evolved into {1}!", _oldNickname, PBELocalizedString.GetSpeciesName(_pkmn.Species).English));
                         _state = State.EvolvedIntoMsg;
                     }

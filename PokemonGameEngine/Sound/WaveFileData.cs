@@ -1,6 +1,8 @@
 ﻿//This file is adapted from NAudio (https://github.com/naudio/NAudio) which uses the MIT license
 using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonGameEngine.Util;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Sound
@@ -28,16 +30,17 @@ namespace Kermalis.PokemonGameEngine.Sound
         public readonly Stream Stream;
         public readonly EndianBinaryReader Reader;
 
-        public WaveFileData(Stream stream)
+        private WaveFileData(string resource)
         {
-            Stream = stream;
-            var r = new EndianBinaryReader(stream);
-            Reader = r;
+            _resource = resource;
+            _numReferences = 1;
+            Stream = Utils.GetResourceStream(resource);
+            Reader = new EndianBinaryReader(Stream);
 
             DataStart = -1;
             long dataChunkLength = 0;
 
-            string header = r.ReadString(4, false);
+            string header = Reader.ReadString(4, false);
             bool isRf64 = false;
             if (header == "RF64")
             {
@@ -47,9 +50,9 @@ namespace Kermalis.PokemonGameEngine.Sound
             {
                 throw new FormatException("Not a WAVE file - no RIFF header");
             }
-            long riffSize = r.ReadUInt32(); // Read the file size (minus 8 bytes)
+            long riffSize = Reader.ReadUInt32(); // Read the file size (minus 8 bytes)
 
-            if (r.ReadString(4, false) != "WAVE")
+            if (Reader.ReadString(4, false) != "WAVE")
             {
                 throw new FormatException("Not a WAVE file - no WAVE header");
             }
@@ -57,34 +60,34 @@ namespace Kermalis.PokemonGameEngine.Sound
             /// http://tech.ebu.ch/docs/tech/tech3306-2009.pdf
             if (isRf64)
             {
-                if (r.ReadString(4, false) != "ds64")
+                if (Reader.ReadString(4, false) != "ds64")
                 {
                     throw new FormatException("Invalid RF64 WAV file - No ds64 chunk found");
                 }
-                int chunkSize = r.ReadInt32();
-                riffSize = r.ReadInt64();
-                dataChunkLength = r.ReadInt64();
-                _ = r.ReadInt64(); // sampleCount
-                stream.Position += chunkSize - 24;
+                int chunkSize = Reader.ReadInt32();
+                riffSize = Reader.ReadInt64();
+                dataChunkLength = Reader.ReadInt64();
+                _ = Reader.ReadInt64(); // sampleCount
+                Stream.Position += chunkSize - 24;
             }
 
             // sometimes a file has more data than is specified after the RIFF header
-            long stopPosition = Math.Min(riffSize + 8, stream.Length);
+            long stopPosition = Math.Min(riffSize + 8, Stream.Length);
 
             // this -8 is so we can be sure that there are at least 8 bytes for a chunk id and length
-            while (stream.Position <= stopPosition - 8)
+            while (Stream.Position <= stopPosition - 8)
             {
-                string chunkIdentifier = r.ReadString(4, false);
-                uint chunkLength = r.ReadUInt32();
+                string chunkIdentifier = Reader.ReadString(4, false);
+                uint chunkLength = Reader.ReadUInt32();
                 if (chunkIdentifier == "data")
                 {
-                    DataStart = stream.Position;
+                    DataStart = Stream.Position;
                     if (!isRf64) // We already know the dataChunkLength if this is an RF64 file
                     {
                         dataChunkLength = chunkLength;
                     }
                     DataEnd = DataStart + dataChunkLength;
-                    stream.Position += chunkLength;
+                    Stream.Position += chunkLength;
                 }
                 else if (chunkIdentifier == "fmt ")
                 {
@@ -97,27 +100,28 @@ namespace Kermalis.PokemonGameEngine.Sound
                     {
                         throw new InvalidDataException("Invalid WaveFormat Structure");
                     }
-                    WaveFormatEncoding format = r.ReadEnum<WaveFormatEncoding>();
-                    if (format != WaveFormatEncoding.PCM)
+                    WaveFormatEncoding format = Reader.ReadEnum<WaveFormatEncoding>();
+                    if (format is not WaveFormatEncoding.PCM and not WaveFormatEncoding.IeeeFloat)
                     {
-                        throw new InvalidDataException("Only PCM is supported");
+                        throw new InvalidDataException("Only PCM8, PCM16, and IEEE32 are supported");
                     }
-                    Channels = r.ReadInt16();
+                    Channels = Reader.ReadInt16();
                     if (Channels is not 1 and not 2)
                     {
                         throw new InvalidDataException("Only mono and stereo are supported");
                     }
-                    SampleRate = r.ReadInt32();
-                    _ = r.ReadInt32(); //averageBytesPerSecond
-                    _ = r.ReadInt16(); // blockAlign
-                    BitsPerSample = r.ReadInt16();
-                    if (BitsPerSample is not 8 and not 16)
+                    SampleRate = Reader.ReadInt32();
+                    _ = Reader.ReadInt32(); //averageBytesPerSecond
+                    _ = Reader.ReadInt16(); // blockAlign
+                    BitsPerSample = Reader.ReadInt16();
+                    if ((format == WaveFormatEncoding.PCM && BitsPerSample is not 8 and not 16)
+                        || (format == WaveFormatEncoding.IeeeFloat && BitsPerSample != 32))
                     {
-                        throw new InvalidDataException("Only PCM8 and PCM16 are supported");
+                        throw new InvalidDataException("Only PCM8, PCM16, and IEEE32 are supported");
                     }
                     if (formatChunkLength > 16)
                     {
-                        short extraSize = r.ReadInt16();
+                        short extraSize = Reader.ReadInt16();
                         if (extraSize != formatChunkLength - 18)
                         {
 #if DEBUG
@@ -127,7 +131,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                         }
                         if (extraSize > 0)
                         {
-                            r.BaseStream.Position += extraSize;
+                            Reader.BaseStream.Position += extraSize;
                         }
                     }
                 }
@@ -137,14 +141,14 @@ namespace Kermalis.PokemonGameEngine.Sound
                     {
                         throw new InvalidDataException("Unsupported sample chunk size");
                     }
-                    _ = r.ReadUInt32(); // 4 - manufacturer (0)
-                    _ = r.ReadUInt32(); // 4 - product (0)
-                    _ = r.ReadUInt32(); // 4 - sample period (0x5161)
-                    _ = r.ReadUInt32(); // 4 - midi unity note (60)
-                    _ = r.ReadUInt32(); // 4 - midi pitch fraction (0)
-                    _ = r.ReadUInt32(); // 4 - SMPTE format (0)
-                    _ = r.ReadUInt32(); // 4 - SMPTE offset (0)
-                    uint numLoops = r.ReadUInt32(); // 4 - num sample loops (1)
+                    _ = Reader.ReadUInt32(); // 4 - manufacturer (0)
+                    _ = Reader.ReadUInt32(); // 4 - product (0)
+                    _ = Reader.ReadUInt32(); // 4 - sample period (0x5161)
+                    _ = Reader.ReadUInt32(); // 4 - midi unity note (60)
+                    _ = Reader.ReadUInt32(); // 4 - midi pitch fraction (0)
+                    _ = Reader.ReadUInt32(); // 4 - SMPTE format (0)
+                    _ = Reader.ReadUInt32(); // 4 - SMPTE offset (0)
+                    uint numLoops = Reader.ReadUInt32(); // 4 - num sample loops (1)
                     if (numLoops is not 0 and not 1)
                     {
                         throw new InvalidDataException("Unsupported number of loop points");
@@ -153,25 +157,25 @@ namespace Kermalis.PokemonGameEngine.Sound
                     {
                         DoesLoop = true;
                     }
-                    _ = r.ReadUInt32(); // 4 - sampler data (0)
+                    _ = Reader.ReadUInt32(); // 4 - sampler data (0)
                     if (DoesLoop)
                     {
-                        _ = r.ReadUInt32(); // 4 - cue point ID (0x20000)
-                        _ = r.ReadUInt32(); // 4 - type (0x400 for FL Studio, 0 for Edison)
-                        LoopStart = r.ReadUInt32(); // 4 - loop start
-                        LoopEnd = r.ReadUInt32(); // 4 - loop end
-                        _ = r.ReadUInt32(); // 4 - fraction (0)
-                        _ = r.ReadUInt32(); // 4 - play count (0)
+                        _ = Reader.ReadUInt32(); // 4 - cue point ID (0x20000)
+                        _ = Reader.ReadUInt32(); // 4 - type (0x400 for FL Studio, 0 for Edison)
+                        LoopStart = Reader.ReadUInt32(); // 4 - loop start
+                        LoopEnd = Reader.ReadUInt32(); // 4 - loop end
+                        _ = Reader.ReadUInt32(); // 4 - fraction (0)
+                        _ = Reader.ReadUInt32(); // 4 - play count (0)
 
                         // Adjust loop positions from samples to file offset
-                        int i = Channels * (BitsPerSample == 8 ? sizeof(byte) : sizeof(short));
+                        int i = Channels * (BitsPerSample / 8);
                         LoopStart = DataStart + (LoopStart * i);
                         LoopEnd = DataStart + (LoopEnd * i);
                     }
                 }
                 else // Skip other chunks
                 {
-                    stream.Position += chunkLength;
+                    Stream.Position += chunkLength;
                 }
 
                 // All Chunks have to be word aligned.
@@ -179,9 +183,9 @@ namespace Kermalis.PokemonGameEngine.Sound
                 // "If the chunk size is an odd number of bytes, a pad byte with value zero is
                 //  written after ckData. Word aligning improves access speed (for chunks resident in memory)
                 //  and maintains compatibility with EA IFF. The ckSize value does not include the pad byte."
-                if (((chunkLength % 2) != 0) && (r.PeekByte() == 0))
+                if (((chunkLength % 2) != 0) && (Reader.PeekByte() == 0))
                 {
-                    stream.Position++;
+                    Stream.Position++;
                 }
             }
 
@@ -194,5 +198,35 @@ namespace Kermalis.PokemonGameEngine.Sound
                 throw new FormatException("Invalid WAV file - No data chunk found");
             }
         }
+
+        #region Cache
+
+        private readonly string _resource;
+        private int _numReferences;
+        private static readonly Dictionary<string, WaveFileData> _dataCache = new();
+
+        public static WaveFileData Get(string resource)
+        {
+            if (_dataCache.TryGetValue(resource, out WaveFileData data))
+            {
+                data._numReferences++;
+            }
+            else
+            {
+                data = new WaveFileData(resource);
+                _dataCache.Add(resource, data);
+            }
+            return data;
+        }
+        public void DeductReference()
+        {
+            if (--_numReferences <= 0)
+            {
+                Stream.Dispose();
+                _dataCache.Remove(_resource);
+            }
+        }
+
+        #endregion
     }
 }

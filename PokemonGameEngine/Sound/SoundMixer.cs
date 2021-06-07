@@ -1,6 +1,4 @@
-﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonGameEngine.Util;
-using SDL2;
+﻿using SDL2;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -14,9 +12,10 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private static uint _audioDevice;
         private static SDL.SDL_AudioSpec _audioSpec;
-        private static short[] _buffer;
+        private static float[] _buffer;
+        private static float[] _tempBuffer;
 
-        private static SoundChannel ChannelList;
+        private static SoundChannel _channelList;
         private static DateTime _lastRenderTime;
         public static TimeSpan TimeSinceLastRender;
 
@@ -24,46 +23,47 @@ namespace Kermalis.PokemonGameEngine.Sound
         {
             var spec = new SDL.SDL_AudioSpec();
             spec.freq = SampleRate;
-            spec.format = SDL.AUDIO_S16;
+            spec.format = SDL.AUDIO_F32;
             spec.channels = 2;
             spec.samples = 4096;
             spec.callback = MixAudio;
             _audioDevice = SDL.SDL_OpenAudioDevice(null, 0, ref spec, out _audioSpec, 0);
-            _buffer = new short[_audioSpec.samples * 2];
+            int len = _audioSpec.samples * 2;
+            _buffer = new float[len];
+            _tempBuffer = new float[len];
             SDL.SDL_PauseAudioDevice(_audioDevice, 0); // Start playing
             _lastRenderTime = DateTime.Now;
         }
         public static void DeInit()
         {
-            SoundControl.DeInit();
             SDL.SDL_CloseAudioDevice(_audioDevice);
             SDL.SDL_AudioQuit();
         }
 
-        public static void StartSound(SoundChannel c)
+        public static void AddChannel(SoundChannel c)
         {
-            if (ChannelList is null)
+            if (_channelList is null)
             {
-                ChannelList = c;
+                _channelList = c;
             }
             else
             {
-                SoundChannel old = ChannelList;
-                ChannelList = c;
+                SoundChannel old = _channelList;
+                _channelList = c;
                 old.Prev = c;
                 c.Next = old;
             }
         }
-        public static void StopSound(SoundChannel c)
+        public static void StopChannel(SoundChannel c)
         {
-            if (c == ChannelList)
+            if (c == _channelList)
             {
                 SoundChannel next = c.Next;
                 if (next is not null)
                 {
                     next.Prev = null;
                 }
-                ChannelList = next;
+                _channelList = next;
             }
             else
             {
@@ -75,59 +75,65 @@ namespace Kermalis.PokemonGameEngine.Sound
                 }
                 prev.Next = next;
             }
-        }
-
-        public static double GetFadeProgress(TimeSpan end, ref TimeSpan cur)
-        {
-            cur += TimeSinceLastRender;
-            if (cur >= end)
-            {
-                return 1;
-            }
-            return Utils.GetProgress(end, cur);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float GetFadeVolume(double progress, float from, float to)
-        {
-            return (float)(from + ((to - from) * progress));
-        }
-        public static float UpdateFade(float from, float to, TimeSpan end, ref TimeSpan cur)
-        {
-            cur += TimeSinceLastRender;
-            if (cur >= end)
-            {
-                return to;
-            }
-            double p = Utils.GetProgress(end, cur);
-            return GetFadeVolume(p, from, to);
+            c.Data.DeductReference(); // Dispose wav if it's not being shared
+            c.OnStopped?.Invoke(c);
+            c.OnStopped = null;
         }
 
 #if DEBUG
         // Draws bars in the console
         public static void Debug_DrawAudio()
         {
-            short peakL = short.MinValue;
-            short peakR = short.MinValue;
+            static float AdjustPeak(float inPeak, float value)
+            {
+                if (inPeak == 0)
+                {
+                    return value;
+                }
+                if (value == 0)
+                {
+                    return inPeak;
+                }
+                // Positive value
+                if (value > 0)
+                {
+                    if (inPeak > 0)
+                    {
+                        return value > inPeak ? value : inPeak; // Positive peak
+                    }
+                    return -value < inPeak ? value : inPeak; // Negative peak
+                }
+                // Negative value
+                if (inPeak > 0)
+                {
+                    return -value > inPeak ? value : inPeak; // Positive peak
+                }
+                return value < inPeak ? value : inPeak; // Negative peak
+            }
+
+            float peakL = 0f;
+            float peakR = 0f;
             for (int i = 0; i < _buffer.Length / 2; i++)
             {
-                short l = _buffer[i * 2];
-                short r = _buffer[i * 2 + 1];
-                if (l > peakL)
-                {
-                    peakL = l;
-                }
-                if (r > peakR)
-                {
-                    peakR = r;
-                }
+                peakL = AdjustPeak(peakL, _buffer[i * 2]);
+                peakR = AdjustPeak(peakR, _buffer[i * 2 + 1]);
             }
 
             string str;
-            void Str(short peak)
+            void Str(float peak)
             {
                 const int numBars = 200;
                 str = string.Empty;
-                float num = (peak + 32768) / (65535f / numBars);
+                float absPeak = Math.Abs(peak);
+                float num;
+                if (absPeak >= 1)
+                {
+                    num = numBars;
+                }
+                else
+                {
+                    num = absPeak * numBars;
+                }
                 for (int i = 0; i < num; i++)
                 {
                     str += '|';
@@ -135,11 +141,15 @@ namespace Kermalis.PokemonGameEngine.Sound
                 str = str.PadRight(numBars);
             }
             Str(peakL);
-            Console.WriteLine("L: {0}\t[{1}]", peakL.ToString("D5").PadLeft(6), str);
+            Console.WriteLine("L: {0}\t[{1}]", peakL.ToString("0.000").PadLeft(6), str);
             Str(peakR);
-            Console.WriteLine("R: {0}\t[{1}]\n", peakR.ToString("D5").PadLeft(6), str);
+            Console.WriteLine("R: {0}\t[{1}]\n", peakR.ToString("0.000").PadLeft(6), str);
         }
 #endif
+
+        // F32 audio can legally be above 1f and below -1f
+        // That's also true for audio sources, since you can lower the volume and still result with the "original" audio
+        // So there's no clipping applied and all mixing is applied with +, while volume is applied with *
 
         private static void MixAudio(IntPtr userdata, IntPtr stream, int len)
         {
@@ -154,101 +164,53 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
             SoundControl.SoundLogicTick(); // Run sound tasks
 
-            int numSamples = len / (2 * sizeof(short)); // 2 Channels
-            Array.Clear(_buffer, 0, numSamples * 2);
+            int numSamplesTotal = len / sizeof(float);
+            int numSamplesPerChannel = numSamplesTotal / 2; // 2 Channels
+            Array.Clear(_buffer, 0, numSamplesTotal);
 
-            for (SoundChannel c = ChannelList; c is not null; c = c.Next)
+            for (SoundChannel c = _channelList; c is not null; c = c.Next)
             {
-                if (!c.IsPaused)
+                if (c.IsPaused)
                 {
-                    c.MixS16(_buffer, numSamples);
+                    continue;
+                }
+                if (c.IsFading)
+                {
+                    Array.Clear(_tempBuffer, 0, numSamplesTotal);
+                    c.MixF32(_tempBuffer, numSamplesPerChannel);
+                    c.ApplyFade(_tempBuffer, numSamplesPerChannel);
+                    for (int i = 0; i < numSamplesTotal; i++)
+                    {
+                        _buffer[i] += _tempBuffer[i];
+                    }
+                }
+                else
+                {
+                    c.MixF32(_buffer, numSamplesPerChannel);
                 }
             }
 
 #if DEBUG
-            //Debug_DrawAudio();
+            Debug_DrawAudio();
 #endif
 
             // Marshal copy is at least twice as fast as sdl memset
-            Marshal.Copy(_buffer, 0, stream, numSamples * 2);
+            Marshal.Copy(_buffer, 0, stream, numSamplesTotal);
 
             _lastRenderTime = renderTime;
         }
 
         #region Mixing Math
 
-        // https://stackoverflow.com/a/25102339
-        // This can be adapted for s8 as well (and for unsigned if the += and -= are removed)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int MixU16Samples(int a, int b)
+        public static float U8ToF32(int sample, float vol)
         {
-            int m;
-            if ((a <= short.MaxValue) || (b <= short.MaxValue))
-            {
-                m = (a * b) >> 15; // ">> 15" is the same as "/ (short.MaxValue+1)"
-            }
-            else // Two large values
-            {
-                m = (2 * (a + b)) - ((a * b) >> 15) - (ushort.MaxValue + 1);
-            }
-
-            if (m > ushort.MaxValue)
-            {
-                m = ushort.MaxValue;
-            }
-            return m;
+            return (sample - 128) / 128f * vol;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void MixS16Samples(short[] buffer, int index, short sample, float vol)
+        public static float S16ToF32(int sample, float vol)
         {
-            const int magic = short.MaxValue + 1;
-            int a = buffer[index] + magic; // Convert a to u16
-            int b = (int)(sample * vol) + magic; // Convert b to u16
-            int m = MixU16Samples(a, b);
-            m -= magic; // Convert back to s16
-            buffer[index] = (short)m;
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void MixU8AndS16Sample(short[] buffer, int index, byte sample, float vol)
-        {
-            const int magic = short.MaxValue + 1;
-            int a = buffer[index] + magic; // Convert a to u16
-            int b = (int)(sample * 257 * vol); // Convert b to u16
-            int m = MixU16Samples(a, b);
-            m -= magic; // Convert back to s16
-            buffer[index] = (short)m;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MixU8Samples_Mono(short[] buffer, int index, EndianBinaryReader r, long offset, float leftVol, float rightVol)
-        {
-            r.BaseStream.Position = offset;
-            byte samp = r.ReadByte();
-            MixU8AndS16Sample(buffer, index, samp, leftVol);
-            MixU8AndS16Sample(buffer, index + 1, samp, rightVol);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MixU8Samples_Stereo(short[] buffer, int index, EndianBinaryReader r, long offset, float leftVol, float rightVol)
-        {
-            r.BaseStream.Position = offset;
-            MixU8AndS16Sample(buffer, index, r.ReadByte(), leftVol);
-            MixU8AndS16Sample(buffer, index + 1, r.ReadByte(), rightVol);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MixS16Samples_Mono(short[] buffer, int index, EndianBinaryReader r, long offset, float leftVol, float rightVol)
-        {
-            r.BaseStream.Position = offset;
-            short samp = r.ReadInt16();
-            MixS16Samples(buffer, index, samp, leftVol);
-            MixS16Samples(buffer, index + 1, samp, rightVol);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void MixS16Samples_Stereo(short[] buffer, int index, EndianBinaryReader r, long offset, float leftVol, float rightVol)
-        {
-            r.BaseStream.Position = offset;
-            MixS16Samples(buffer, index, r.ReadInt16(), leftVol);
-            MixS16Samples(buffer, index + 1, r.ReadInt16(), rightVol);
+            return sample / 32768f * vol;
         }
 
         #endregion
