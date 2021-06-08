@@ -9,6 +9,11 @@ namespace Kermalis.PokemonGameEngine.Script
 {
     internal sealed partial class ScriptContext
     {
+        private void OnCryFinished(SoundChannel _)
+        {
+            _waitCry = false;
+        }
+
         private static void HealPartyCommand()
         {
             Game.Instance.Save.PlayerParty.HealFully();
@@ -57,7 +62,11 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             PBEForm form = ReadVarOrEnum<PBEForm>();
-            SoundControl.Debug_PlayCry(species, form);
+            SoundControl.PlayCry(species, form, onStopped: OnCryFinished);
+        }
+        private void AwaitCryCommand()
+        {
+            _waitCry = true;
         }
 
         private static void CountNonEggPartyCommand()

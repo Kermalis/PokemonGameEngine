@@ -5,6 +5,7 @@ namespace Kermalis.PokemonGameEngine.Core
     internal sealed class StringBuffers
     {
         private const int NumBuffers = 5; // 5 buffers, can change to however many you want
+        private static readonly Regex _regex = new(@"\{BUF\s(\d+)\}");
 
         public readonly string[] Buffers = new string[NumBuffers];
 
@@ -22,7 +23,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         public string ApplyBuffers(string input)
         {
-            return Regex.Replace(input, @"\{BUF\s(\d+)\}", MatchEvaluator);
+            return _regex.Replace(input, MatchEvaluator);
         }
     }
 }

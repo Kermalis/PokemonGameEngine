@@ -20,6 +20,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private bool _waitMessageComplete;
 
         private bool _waitReturnToField;
+        private bool _waitCry;
 
         private StringPrinter _stringPrinter;
         private Window _messageBox;
@@ -38,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.Script
             {
                 return true;
             }
-            bool stopRunning = false;
+            bool stopRunning = _waitCry; // Wait cry needs no logic
             if (_delay != 0)
             {
                 if (update)
@@ -47,7 +48,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 }
                 stopRunning = true;
             }
-            if (_waitMovementObj != null)
+            if (_waitMovementObj is not null)
             {
                 if (_waitMovementObj.IsMoving)
                 {
@@ -61,7 +62,7 @@ namespace Kermalis.PokemonGameEngine.Script
             if (_waitMessageBox)
             {
                 // If "AwaitMessage" are not the first to run this tick, they will not update and set _waitMessageBox to false
-                if (_stringPrinter != null && (_waitMessageComplete ? !_stringPrinter.IsDone : !_stringPrinter.IsEnded))
+                if (_stringPrinter is not null && (_waitMessageComplete ? !_stringPrinter.IsDone : !_stringPrinter.IsEnded))
                 {
                     stopRunning = true;
                 }
@@ -70,14 +71,14 @@ namespace Kermalis.PokemonGameEngine.Script
                     _waitMessageBox = false;
                 }
             }
-            if (_multichoiceWindow != null)
+            if (_multichoiceWindow is not null)
             {
                 stopRunning = true;
                 if (update)
                 {
                     int s = _multichoice.Selected;
                     _multichoice.HandleInputs();
-                    if (!(_multichoiceWindow is null)) // Was not just closed
+                    if (_multichoiceWindow is not null) // Was not just closed
                     {
                         if (s != _multichoice.Selected)
                         {

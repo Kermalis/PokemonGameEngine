@@ -348,6 +348,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             PartyPokemon pp = SpritedParties[pkmn.Trainer.Id][pkmn].PartyPkmn;
             Friendship.AdjustFriendship(pkmn, pp, Friendship.Event.LevelUpBattle);
         }
+        private static void PlayCry(PBEBattlePokemon pkmn)
+        {
+            SoundControl.PlayCry(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.HPPercentage, pan: GetCryPanpot(pkmn));
+        }
+        private static float GetCryPanpot(PBEBattlePokemon pkmn)
+        {
+            return pkmn.Team.Id == 0 ? -0.35f : 0.35f;
+        }
 
         #region Actions
         private readonly List<PBEBattlePokemon> _actions = new(3);
@@ -487,6 +495,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         UpdateFriendshipForFaint(pkmn);
                     }
+                    PlayCry(pkmn);
                     break;
                 }
                 case PBEPkmnFormChangedPacket pfcp:
@@ -572,7 +581,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         UpdateDisguisedPID(pkmn);
                         SetSeen(pkmn);
                         ShowPokemon(pkmn);
-                        SoundControl.Debug_PlayCry(pkmn.KnownSpecies, pkmn.KnownForm);
+                        PlayCry(pkmn);
                     }
                     break;
                 }
@@ -591,7 +600,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         UpdateDisguisedPID(pkmn);
                         SetSeen(pkmn);
                         ShowWildPokemon(pkmn);
-                        SoundControl.Debug_PlayCry(pkmn.KnownSpecies, pkmn.KnownForm);
+                        PlayCry(pkmn);
                     }
                     break;
                 }
