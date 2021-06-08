@@ -43,6 +43,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Map = map;
         }
 
+        // Do not implement "IsSurfing" because we do not care about OnDismount
         protected override bool CanSurf()
         {
             return Overworld.IsSurfable(GetBlock().BlocksetBlock.Behavior); // Can only walk to other water blocks if we're on one

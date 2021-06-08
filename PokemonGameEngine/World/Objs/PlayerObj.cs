@@ -42,7 +42,15 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             Overworld.DoEnteredMapThings(newMap);
         }
+        protected override void OnDismountFromWater()
+        {
+            State = PlayerObjState.Walking;
+        }
         protected override bool CanSurf()
+        {
+            return State == PlayerObjState.Surfing;
+        }
+        protected override bool IsSurfing()
         {
             return State == PlayerObjState.Surfing;
         }

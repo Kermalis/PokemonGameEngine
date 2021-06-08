@@ -119,10 +119,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Pos.Y = outY;
             Pos.Elevation = e;
             PrevPos = Pos;
-            if (CameraObj.CameraAttachedTo == this)
-            {
-                CameraObj.CameraCopyMovement();
-            }
+            CameraObj.CopyMovementIfAttachedTo(this);
         }
 
         protected void UpdateMap(Map newMap)

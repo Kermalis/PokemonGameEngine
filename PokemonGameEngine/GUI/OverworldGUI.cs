@@ -409,6 +409,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 player.QueuedScriptMovements.Enqueue(Obj.GetWalkMovement(player.Facing));
                 player.RunNextScriptMovement();
                 player.IsScriptMoving = true;
+                CameraObj.CopyMovementIfAttachedTo(player);
                 task.Action = Task_Surf_WaitMovement;
             }
         }

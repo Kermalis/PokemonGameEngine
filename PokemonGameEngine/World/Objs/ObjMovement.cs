@@ -349,12 +349,18 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
 
         protected virtual void OnMapChanged(Map oldMap, Map newMap) { }
+        protected virtual void OnDismountFromWater() { }
 
         protected abstract bool CanSurf();
+        protected virtual bool IsSurfing()
+        {
+            return false;
+        }
 
         // TODO: Ledges, waterfall, etc
         public virtual bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
         {
+            bool surfing = IsSurfing();
             IsMovingSelf = true;
             MovementTimer = 0;
             Facing = facing;
@@ -365,9 +371,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 MovementSpeed = run ? RunningMovementSpeed : NormalMovementSpeed;
                 ApplyMovement(facing);
                 UpdateXYProgress();
-                if (CameraObj.CameraAttachedTo == this)
+                CameraObj.CopyMovementIfAttachedTo(this);
+                if (surfing && !Overworld.IsSurfable(GetBlock().BlocksetBlock.Behavior))
                 {
-                    CameraObj.CameraCopyMovement();
+                    OnDismountFromWater();
                 }
             }
             else
