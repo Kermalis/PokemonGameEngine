@@ -83,6 +83,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Position p = Pos;
             return Map.GetBlock_InBounds(p.X, p.Y);
         }
+        public Map.Layout.Block GetBlockFacing()
+        {
+            Position p = Pos;
+            Overworld.MoveCoords(Facing, p.X, p.Y, out int newX, out int newY);
+            return Map.GetBlock_CrossMap(newX, newY, out _, out _, out _);
+        }
 
         public void Warp(IWarp warp)
         {
@@ -113,10 +119,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Pos.Y = outY;
             Pos.Elevation = e;
             PrevPos = Pos;
-            if (CameraObj.CameraAttachedTo == this)
-            {
-                CameraObj.CameraCopyMovement();
-            }
+            CameraObj.CopyMovementIfAttachedTo(this);
         }
 
         protected void UpdateMap(Map newMap)

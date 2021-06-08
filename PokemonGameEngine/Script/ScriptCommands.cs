@@ -53,6 +53,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.CallIf: CallIfCommand(); break;
                 case ScriptCommand.CallIfFlag: CallIfFlagCommand(); break;
                 case ScriptCommand.BufferSpeciesName: BufferSpeciesNameCommand(); break;
+                case ScriptCommand.BufferPartyMonNickname: BufferPartyMonNicknameCommand(); break;
                 case ScriptCommand.WildBattle: WildBattleCommand(); break;
                 case ScriptCommand.AwaitReturnToField: AwaitReturnToFieldCommand(); break;
                 case ScriptCommand.CloseMessage: CloseMessageCommand(); break;
@@ -79,6 +80,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.CountBadges: CountBadgesCommand(); break;
                 case ScriptCommand.BufferBadges: BufferBadgesCommand(); break;
                 case ScriptCommand.CheckPartyHasMove: CheckPartyHasMoveCommand(); break;
+                case ScriptCommand.UseSurf: UseSurfCommand(); break;
                 default: throw new InvalidDataException();
             }
         }

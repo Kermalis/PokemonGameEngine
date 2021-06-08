@@ -26,6 +26,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             UpdateVisibleMaps();
         }
 
+        public static void CopyMovementIfAttachedTo(Obj obj)
+        {
+            if (CameraAttachedTo == obj)
+            {
+                CameraCopyMovement();
+            }
+        }
         public static void CameraCopyMovement()
         {
             CameraObj c = Camera;
@@ -51,6 +58,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public override bool CollidesWithOthers()
         {
             return false;
+        }
+        protected override bool CanSurf()
+        {
+            return true;
         }
         protected override void OnPositionVisiblyChanged()
         {

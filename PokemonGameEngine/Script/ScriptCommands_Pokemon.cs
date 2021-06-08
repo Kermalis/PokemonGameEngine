@@ -51,6 +51,12 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             Game.Instance.StringBuffers.Buffers[buffer] = PBEDataProvider.Instance.GetSpeciesName(species).English;
         }
+        private void BufferPartyMonNicknameCommand()
+        {
+            byte buffer = (byte)ReadVarOrValue();
+            byte index = (byte)ReadVarOrValue();
+            Game.Instance.StringBuffers.Buffers[buffer] = Game.Instance.Save.PlayerParty[index].Nickname;
+        }
 
         private void PlayCryCommand()
         {
