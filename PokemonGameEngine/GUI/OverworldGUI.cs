@@ -392,7 +392,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         private void Task_SurfInit(BackTask task)
         {
             var pkmn = (PartyPokemon)task.Data;
-            SoundControl.Debug_PlayCry(pkmn.Species, pkmn.Form);
+            SoundControl.PlayCry(pkmn.Species, pkmn.Form);
             task.Data = 0;
             task.Action = Task_Surf_WaitCry;
         }
