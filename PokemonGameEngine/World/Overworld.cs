@@ -11,6 +11,8 @@ namespace Kermalis.PokemonGameEngine.World
 {
     internal static partial class Overworld
     {
+        public const string SurfScript = "Surf_Interaction";
+
         public static MapSection GetCurrentLocation()
         {
             return PlayerObj.Player.Map.MapDetails.Section;
@@ -87,7 +89,7 @@ namespace Kermalis.PokemonGameEngine.World
         {
             switch (behavior)
             {
-                case BlocksetBlockBehavior.Surf: return "Surf_Interaction";
+                case BlocksetBlockBehavior.Surf: return SurfScript;
             }
             return null;
         }

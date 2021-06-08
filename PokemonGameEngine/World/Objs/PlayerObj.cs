@@ -133,7 +133,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             // TODO: This does not consider sideways stairs or countertops when fetching the target block
             // TODO: Stuff like signs
             // TODO: Can you move to the surf block legally?
-            // TODO: Don't activate surf script if we're surfing
             // TODO: Don't allow surf if there's someone in the way (IsMovementLegal)
             Position p = Pos;
             Overworld.MoveCoords(Facing, p.X, p.Y, out int x, out int y);
@@ -151,7 +150,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             // Talk to block (like Surf)
             BlocksetBlockBehavior beh = map.GetBlock_InBounds(x, y).BlocksetBlock.Behavior;
             string scr = Overworld.GetBlockBehaviorScript(beh);
-            if (scr is not null)
+            // Disallow the surf script if we're surfing
+            if (scr is not null && !(scr == Overworld.SurfScript && State == PlayerObjState.Surfing))
             {
                 ScriptLoader.LoadScript(scr);
                 return true;
