@@ -46,7 +46,6 @@ Field Effects:
     Field moves:
         Cut
         Fly (requires world map and heal locations)
-        Surf
         Strength
         Flash
         Dig
