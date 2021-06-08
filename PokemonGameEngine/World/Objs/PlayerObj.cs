@@ -3,6 +3,7 @@ using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Script;
+using System;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
@@ -53,12 +54,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         protected override bool IsSurfing()
         {
             return State == PlayerObjState.Surfing;
-        }
-
-        public bool CanUseSurfFromCurrentPosition()
-        {
-            // Check if we can move to the target block (consider diagonally or a fence behavior)
-            return Overworld.IsSurfable(GetBlockFacing().BlocksetBlock.Behavior) && IsMovementLegal(Facing, true);
         }
 
         private bool CheckForThingsAfterMovement()
@@ -129,41 +124,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
             }
 
-            return false;
-        }
-        private bool CheckForAInteraction()
-        {
-            if (!InputManager.IsPressed(Key.A))
-            {
-                return false;
-            }
-
-            // TODO: This does not consider sideways stairs or countertops when fetching the target block
-            // TODO: Stuff like signs
-            // TODO: Can you move to the surf block legally?
-            // TODO: Don't allow surf if there's someone in the way (IsMovementLegal)
-            Position p = Pos;
-            Overworld.MoveCoords(Facing, p.X, p.Y, out int x, out int y);
-            Map.GetXYMap(x, y, out x, out y, out Map map);
-            // Talk to someone on our elevation
-            foreach (EventObj o in map.GetObjs_InBounds(x, y, p.Elevation, this, false))
-            {
-                string script = o.Script;
-                if (script != string.Empty)
-                {
-                    OverworldGUI.Instance.SetInteractiveScript(o, script);
-                    return true;
-                }
-            }
-            // Talk to block (like Surf)
-            BlocksetBlockBehavior beh = map.GetBlock_InBounds(x, y).BlocksetBlock.Behavior;
-            string scr = Overworld.GetBlockBehaviorScript(beh);
-            // Disallow the surf script if we're surfing
-            if (scr is not null && !(scr == Overworld.SurfScript && State == PlayerObjState.Surfing))
-            {
-                ScriptLoader.LoadScript(scr);
-                return true;
-            }
             return false;
         }
         public override void LogicTick()
@@ -256,5 +216,235 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             return _leg ? f + 8 : f + 16;
         }
+
+        #region Interaction
+
+        public bool CanUseSurfFromCurrentPosition()
+        {
+            if (State == PlayerObjState.Surfing)
+            {
+                return false; // Cannot use surf if we're surfing
+            }
+            Position p = Pos;
+            if (!IsInteractionLegal(Facing, Map, p.X, p.Y, out int x, out int y, out Map map))
+            {
+                return false; // Can only use surf if we can reach an interaction
+            }
+            if (!Overworld.IsSurfable(map.GetBlock_InBounds(x, y).BlocksetBlock.Behavior))
+            {
+                return false; // Can only surf on water
+            }
+            if (!IsMovementLegal(Facing, true))
+            {
+                return false; // Cannot surf if we're blocked diagonally
+            }
+            return true;
+        }
+        private bool CanLoadInteractionScript(string script, bool isSurfing)
+        {
+            if (script is null)
+            {
+                return false;
+            }
+            if (script == Overworld.SurfScript)
+            {
+                if (isSurfing)
+                {
+                    return false; // Disallow the surf script if we're surfing already
+                }
+                if (!IsMovementLegal(Facing, true))
+                {
+                    return false; // Disallow surf interaction if we're blocked diagonally
+                }
+            }
+            return true;
+        }
+
+        private bool CheckForAInteraction()
+        {
+            if (!InputManager.IsPressed(Key.A))
+            {
+                return false;
+            }
+
+            // TODO: This does not consider sideways stairs or countertops when fetching the target block
+            // TODO: Stuff like signs
+            Position p = Pos;
+            if (!IsInteractionLegal(Facing, Map, p.X, p.Y, out int x, out int y, out Map map))
+            {
+                return false;
+            }
+
+            // Talk to someone on our elevation
+            foreach (EventObj o in map.GetObjs_InBounds(x, y, p.Elevation, this, false))
+            {
+                string script = o.Script;
+                if (script != string.Empty)
+                {
+                    OverworldGUI.Instance.SetInteractiveScript(o, script);
+                    return true;
+                }
+            }
+
+            // Talk to block (like Surf)
+            BlocksetBlockBehavior beh = map.GetBlock_InBounds(x, y).BlocksetBlock.Behavior;
+            string scr = Overworld.GetBlockBehaviorScript(beh);
+            if (CanLoadInteractionScript(scr, State == PlayerObjState.Surfing))
+            {
+                ScriptLoader.LoadScript(scr);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool IsInteractionLegal(FacingDirection facing, Map map, int x, int y, out int outX, out int outY, out Map outMap)
+        {
+            switch (facing)
+            {
+                case FacingDirection.South:
+                {
+                    return CanInteract_Cardinal(map, x, y,
+                        x, y + 1, BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_N,
+                        out outX, out outY, out outMap);
+                }
+                case FacingDirection.North:
+                {
+                    return CanInteract_Cardinal(map, x, y,
+                        x, y - 1, BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_S,
+                        out outX, out outY, out outMap);
+                }
+                case FacingDirection.West:
+                {
+                    return CanInteract_Cardinal(map, x, y,
+                        x - 1, y, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_E,
+                        out outX, out outY, out outMap);
+                }
+                case FacingDirection.East:
+                {
+                    return CanInteract_Cardinal(map, x, y,
+                        x + 1, y, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_W,
+                        out outX, out outY, out outMap);
+                }
+                case FacingDirection.Southwest:
+                {
+                    return CanInteract_Diagonal(map, x, y,
+                        x - 1, y + 1, LayoutBlockPassage.SoutheastPassage, x - 1, y, LayoutBlockPassage.NorthwestPassage, x, y + 1,
+                        BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_SW,
+                        BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_NE,
+                        BlocksetBlockBehavior.Blocked_SE, BlocksetBlockBehavior.Blocked_NW,
+                        out outX, out outY, out outMap);
+                }
+                case FacingDirection.Southeast:
+                {
+                    return CanInteract_Diagonal(map, x, y,
+                        x + 1, y + 1, LayoutBlockPassage.SouthwestPassage, x + 1, y, LayoutBlockPassage.NortheastPassage, x, y + 1,
+                        BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_SE,
+                        BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_NW,
+                        BlocksetBlockBehavior.Blocked_SW, BlocksetBlockBehavior.Blocked_NE,
+                        out outX, out outY, out outMap);
+                }
+                case FacingDirection.Northwest:
+                {
+                    return CanInteract_Diagonal(map, x, y,
+                        x - 1, y - 1, LayoutBlockPassage.NortheastPassage, x - 1, y, LayoutBlockPassage.SouthwestPassage, x, y - 1,
+                        BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_NW,
+                        BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_SE,
+                        BlocksetBlockBehavior.Blocked_NE, BlocksetBlockBehavior.Blocked_SW,
+                        out outX, out outY, out outMap);
+                }
+                case FacingDirection.Northeast:
+                {
+                    return CanInteract_Diagonal(map, x, y,
+                        x + 1, y - 1, LayoutBlockPassage.NorthwestPassage, x + 1, y, LayoutBlockPassage.SoutheastPassage, x, y - 1,
+                        BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_NE,
+                        BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_SW,
+                        BlocksetBlockBehavior.Blocked_NW, BlocksetBlockBehavior.Blocked_SE,
+                        out outX, out outY, out outMap);
+                }
+                default: throw new ArgumentOutOfRangeException(nameof(facing));
+            }
+        }
+
+        // South/North/West/East
+        private static bool CanInteract_Cardinal(Map curMap, int curX, int curY,
+            int targetX, int targetY, BlocksetBlockBehavior blockedCurrent, BlocksetBlockBehavior blockedTarget,
+            out int outX, out int outY, out Map outMap)
+        {
+            // Current block - return false if we are blocked
+            Map.Layout.Block curBlock = curMap.GetBlock_InBounds(curX, curY);
+            BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
+            if (curBehavior == blockedCurrent)
+            {
+                outX = default;
+                outY = default;
+                outMap = default;
+                return false;
+            }
+            // Target block - return false if we are blocked
+            curMap.GetXYMap(targetX, targetY, out outX, out outY, out outMap);
+            Map.Layout.Block targetBlock = outMap.GetBlock_InBounds(outX, outY);
+            BlocksetBlockBehavior targetBehavior = targetBlock.BlocksetBlock.Behavior;
+            if (targetBehavior == blockedTarget)
+            {
+                return false;
+            }
+            return true;
+        }
+        // Southwest/Southeast/Northwest/Northeast
+        private static bool CanInteract_Diagonal(Map curMap, int curX, int curY,
+            int targetX, int targetY, LayoutBlockPassage neighbor1Passage, int neighbor1X, int neighbor1Y, LayoutBlockPassage neighbor2Passage, int neighbor2X, int neighbor2Y,
+            BlocksetBlockBehavior blockedCurrentCardinal1, BlocksetBlockBehavior blockedCurrentCardinal2, BlocksetBlockBehavior blockedCurrentDiagonal,
+            BlocksetBlockBehavior blockedTargetCardinal1, BlocksetBlockBehavior blockedTargetCardinal2, BlocksetBlockBehavior blockedTargetDiagonal,
+            BlocksetBlockBehavior blockedNeighbor1, BlocksetBlockBehavior blockedNeighbor2,
+            out int outX, out int outY, out Map outMap)
+        {
+            // Current block - return false if we are blocked
+            Map.Layout.Block curBlock = curMap.GetBlock_InBounds(curX, curY);
+            BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
+            if (curBehavior == blockedCurrentCardinal1 || curBehavior == blockedCurrentCardinal2 || curBehavior == blockedCurrentDiagonal)
+            {
+                outX = default;
+                outY = default;
+                outMap = default;
+                return false;
+            }
+            // Target block - return false if we are blocked
+            curMap.GetXYMap(targetX, targetY, out outX, out outY, out outMap);
+            Map.Layout.Block targetBlock = outMap.GetBlock_InBounds(outX, outY);
+            BlocksetBlockBehavior targetBehavior = targetBlock.BlocksetBlock.Behavior;
+            if (targetBehavior == blockedTargetCardinal1 || targetBehavior == blockedTargetCardinal2 || targetBehavior == blockedTargetDiagonal)
+            {
+                return false;
+            }
+            // Target's neighbors - check if we can interact through them diagonally
+            if (!CanInteractThroughDiagonally(curMap, neighbor1X, neighbor1Y, neighbor1Passage, blockedCurrentCardinal1, blockedTargetCardinal2, blockedNeighbor1)
+                || !CanInteractThroughDiagonally(curMap, neighbor2X, neighbor2Y, neighbor2Passage, blockedTargetCardinal1, blockedCurrentCardinal2, blockedNeighbor2))
+            {
+                return false;
+            }
+            return true;
+        }
+        private static bool CanInteractThroughDiagonally(Map map, int x, int y, LayoutBlockPassage diagonalPassage,
+            BlocksetBlockBehavior blockedCardinal1, BlocksetBlockBehavior blockedCardinal2, BlocksetBlockBehavior blockedDiagonal)
+        {
+            // Get the x/y/map of the block
+            map.GetXYMap(x, y, out int outX, out int outY, out Map outMap);
+            Map.Layout.Block block = outMap.GetBlock_InBounds(outX, outY);
+            // Check occupancy permission
+            if ((block.Passage & diagonalPassage) == 0)
+            {
+                return false;
+            }
+            // Check block behaviors
+            BlocksetBlockBehavior blockBehavior = block.BlocksetBlock.Behavior;
+            if (blockBehavior == blockedCardinal1 || blockBehavior == blockedCardinal2 || blockBehavior == blockedDiagonal)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
     }
 }
