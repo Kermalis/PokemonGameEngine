@@ -391,19 +391,18 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void Task_SurfInit(BackTask task)
         {
+            void OnCryFinished(SoundChannel _)
+            {
+                task.Data = true;
+            }
             var pkmn = (PartyPokemon)task.Data;
-            SoundControl.PlayCry(pkmn.Species, pkmn.Form);
-            task.Data = 0;
+            SoundControl.PlayCry(pkmn.Species, pkmn.Form, onStopped: OnCryFinished);
+            task.Data = false;
             task.Action = Task_Surf_WaitCry;
         }
         private void Task_Surf_WaitCry(BackTask task)
         {
-            int num = (int)task.Data;
-            if (num < 50)
-            {
-                task.Data = num + 1;
-            }
-            else
+            if ((bool)task.Data)
             {
                 PlayerObj player = PlayerObj.Player;
                 player.State = PlayerObjState.Surfing;
