@@ -93,6 +93,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.YesNoChoice, Array.Empty<Type>() },
         { ScriptCommand.IncrementGameStat, new[] { typeof(GameStat) } }, // Game stat
         { ScriptCommand.PlayCry, new[] { typeof(PBESpecies), typeof(PBEForm) } }, // Species, form
+        { ScriptCommand.AwaitCry, Array.Empty<Type>() },
         { ScriptCommand.CountNonEggParty, Array.Empty<Type>() },
         { ScriptCommand.CountNonFaintedNonEggParty, Array.Empty<Type>() },
         { ScriptCommand.CountPlayerParty, Array.Empty<Type>() },

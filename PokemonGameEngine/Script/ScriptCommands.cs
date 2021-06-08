@@ -72,6 +72,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.YesNoChoice: YesNoChoiceCommand(); break;
                 case ScriptCommand.IncrementGameStat: IncrementGameStatCommand(); break;
                 case ScriptCommand.PlayCry: PlayCryCommand(); break;
+                case ScriptCommand.AwaitCry: AwaitCryCommand(); break;
                 case ScriptCommand.CountNonEggParty: CountNonEggPartyCommand(); break;
                 case ScriptCommand.CountNonFaintedNonEggParty: CountNonFaintedNonEggPartyCommand(); break;
                 case ScriptCommand.CountPlayerParty: CountPlayerPartyCommand(); break;

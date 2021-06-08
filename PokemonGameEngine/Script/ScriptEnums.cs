@@ -99,6 +99,7 @@
         YesNoChoice,
         IncrementGameStat,
         PlayCry,
+        AwaitCry,
         CountNonEggParty,
         CountNonFaintedNonEggParty,
         CountPlayerParty,

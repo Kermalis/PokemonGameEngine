@@ -8,7 +8,8 @@ AwaitObjMovement LOCALID_PLAYER
 Delay 20
 PlayCry Species.Groudon 0
 Message TestText_GroudonGyaoo
-Delay 40
+AwaitCry
+Delay 10
 AwaitMessageComplete
 CloseMessage
 WildBattle Species.Groudon 0 70

@@ -65,7 +65,6 @@ Data Stuff:
     Wild Pkmn with items
 
 Sound:
-    Wait for a cry (some sort of cry system)
     Fade BGM when in a menu
     Random cries in the overworld (task system)
     Fanfares
