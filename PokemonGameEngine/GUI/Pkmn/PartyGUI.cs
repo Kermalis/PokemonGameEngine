@@ -26,7 +26,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             public readonly Party Party;
 
-            public GamePartyData(Party party, List<PartyGUIMember> members, List<Sprite> sprites)
+            public GamePartyData(Party party, List<PartyGUIMember> members, SpriteList sprites)
             {
                 Party = party;
                 foreach (PartyPokemon pkmn in party)
@@ -39,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             public readonly SpritedBattlePokemonParty Party;
 
-            public BattlePartyData(SpritedBattlePokemonParty party, List<PartyGUIMember> members, List<Sprite> sprites)
+            public BattlePartyData(SpritedBattlePokemonParty party, List<PartyGUIMember> members, SpriteList sprites)
             {
                 Party = party;
                 foreach (PBEBattlePokemon pkmn in party.BattleParty)
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private readonly GamePartyData _gameParty;
         private readonly BattlePartyData _battleParty;
         private readonly List<PartyGUIMember> _members;
-        private readonly List<Sprite> _sprites;
+        private readonly SpriteList _sprites;
 
         private FadeColorTransition _fadeTransition;
         private Action _onClosed;
@@ -76,7 +76,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _mode = mode;
             _allowBack = true;
             _useGamePartyData = true;
-            _sprites = new List<Sprite>();
+            _sprites = new();
             _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
             _gameParty = new GamePartyData(party, _members, _sprites);
             _members[0].SetBigBounce();
@@ -96,7 +96,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _mode = mode;
             _allowBack = mode != Mode.BattleReplace; // Disallow back for BattleReplace
             _useGamePartyData = false;
-            _sprites = new List<Sprite>();
+            _sprites = new();
             _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
             _battleParty = new BattlePartyData(party, _members, _sprites);
             _members[0].SetBigBounce();
@@ -132,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private unsafe void CB_FadeInParty()
         {
-            Sprite.DoCallbacks(_sprites);
+            _sprites.DoCallbacks();
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
@@ -142,7 +142,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private unsafe void CB_FadeOutParty()
         {
-            Sprite.DoCallbacks(_sprites);
+            _sprites.DoCallbacks();
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
@@ -152,7 +152,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private unsafe void CB_FadeInThenGoToChoicesCB()
         {
-            Sprite.DoCallbacks(_sprites);
+            _sprites.DoCallbacks();
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
@@ -162,7 +162,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private unsafe void CB_FadeOutToSummary()
         {
-            Sprite.DoCallbacks(_sprites);
+            _sprites.DoCallbacks();
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
@@ -494,7 +494,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private void CB_Choices()
         {
-            Sprite.DoCallbacks(_sprites);
+            _sprites.DoCallbacks();
             int s = _textChoices.Selected;
             _textChoices.HandleInputs();
             if (_textChoicesWindow is null)
@@ -520,7 +520,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void CB_LogicTick()
         {
-            Sprite.DoCallbacks(_sprites);
+            _sprites.DoCallbacks();
             if (InputManager.IsPressed(Key.A))
             {
                 if (_selectionY == -1)

@@ -6,7 +6,6 @@ using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
-using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
@@ -19,7 +18,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private readonly Sprite _mini;
         private readonly Image _background;
 
-        public PartyGUIMember(PartyPokemon pkmn, List<Sprite> sprites)
+        public PartyGUIMember(PartyPokemon pkmn, SpriteList sprites)
         {
             _usePartyPkmn = true;
             _partyPkmn = pkmn;
@@ -35,7 +34,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _background = new Image((UI.Program.RenderWidth / 2) - (UI.Program.RenderWidth / 20), (UI.Program.RenderHeight / 4) - (UI.Program.RenderHeight / 20));
             UpdateBackground();
         }
-        public PartyGUIMember(SpritedBattlePokemon pkmn, List<Sprite> sprites)
+        public PartyGUIMember(SpritedBattlePokemon pkmn, SpriteList sprites)
         {
             _usePartyPkmn = false;
             _battlePkmn = pkmn;
