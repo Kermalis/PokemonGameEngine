@@ -45,10 +45,7 @@ public sealed partial class Build
         using (var ms = new MemoryStream())
         using (_writer = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
         {
-            foreach (AbsolutePath file in ScriptPath.GlobFiles("*.txt"))
-            {
-                ParseFile(file);
-            }
+            ParseDir(ScriptPath);
             using (var fw = new EndianBinaryWriter(File.Create(ScriptOutputPath), encoding: EncodingType.UTF16))
             {
                 // Compute start offset of script data
@@ -87,6 +84,17 @@ public sealed partial class Build
         }
     }
 
+    private void ParseDir(AbsolutePath dir)
+    {
+        foreach (AbsolutePath file in dir.GlobFiles("*.txt"))
+        {
+            ParseFile(file);
+        }
+        foreach (string d in Directory.GetDirectories(dir))
+        {
+            ParseDir((AbsolutePath)d);
+        }
+    }
     private void ParseFile(string path)
     {
         string[] lines = File.ReadAllLines(path);
