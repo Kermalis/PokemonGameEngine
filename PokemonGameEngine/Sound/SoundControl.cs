@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         public static int GetCryPitch(double hpPercentage)
         {
-            return (int)((1 - hpPercentage) * -192); // 1/4 of -768; so -0.25 semitones for a fainted mon
+            return (int)((1 - hpPercentage) * -96); // 1/8 of -768; so -0.125 semitones for a fainted mon
         }
 
         public static void PlayCry(PBESpecies species, PBEForm form, double hpPercentage, float vol = 0.5f, float pan = 0f, SoundStoppedFunc onStopped = null)
