@@ -55,6 +55,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.BufferSpeciesName: BufferSpeciesNameCommand(); break;
                 case ScriptCommand.BufferPartyMonNickname: BufferPartyMonNicknameCommand(); break;
                 case ScriptCommand.WildBattle: WildBattleCommand(); break;
+                case ScriptCommand.TrainerBattle_Single_NoContinue: TrainerBattle_Single_NoContinueCommand(); break;
                 case ScriptCommand.AwaitReturnToField: AwaitReturnToFieldCommand(); break;
                 case ScriptCommand.CloseMessage: CloseMessageCommand(); break;
                 case ScriptCommand.UnloadObj: UnloadObjCommand(); break;

@@ -18,8 +18,10 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private bool _waitMessageBox;
         private bool _waitMessageComplete;
+        private Action _onWaitMessageFinished;
 
         private bool _waitReturnToField;
+        private Action _onWaitReturnToFieldFinished;
         private bool _waitCry;
 
         private StringPrinter _stringPrinter;
@@ -69,6 +71,12 @@ namespace Kermalis.PokemonGameEngine.Script
                 else if (update)
                 {
                     _waitMessageBox = false;
+                    _onWaitMessageFinished?.Invoke();
+                    _onWaitMessageFinished = null;
+                    if (_isDisposed)
+                    {
+                        return true;
+                    }
                 }
             }
             if (_multichoiceWindow is not null)
@@ -96,6 +104,12 @@ namespace Kermalis.PokemonGameEngine.Script
                 else if (update)
                 {
                     _waitReturnToField = false;
+                    _onWaitReturnToFieldFinished?.Invoke();
+                    _onWaitReturnToFieldFinished = null;
+                    if (_isDisposed)
+                    {
+                        return true;
+                    }
                 }
             }
             return stopRunning;
@@ -117,6 +131,8 @@ namespace Kermalis.PokemonGameEngine.Script
                 _isDisposed = true;
                 Game.Instance.Scripts.Remove(this);
                 _reader.Dispose();
+                _onWaitMessageFinished = null;
+                _onWaitReturnToFieldFinished = null;
             }
         }
     }

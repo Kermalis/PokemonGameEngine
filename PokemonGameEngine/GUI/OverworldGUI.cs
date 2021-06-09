@@ -10,6 +10,7 @@ using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Script;
 using Kermalis.PokemonGameEngine.Sound;
+using Kermalis.PokemonGameEngine.Trainer;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
@@ -141,10 +142,10 @@ namespace Kermalis.PokemonGameEngine.GUI
             Game.Instance.SetCallback(CB_FadeOutToEggHatchScreen);
             Game.Instance.SetRCallback(RCB_Fading);
         }
-        public unsafe void StartBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties)
+        public unsafe void StartBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties, TrainerClass c = default, string defeatText = null)
         {
             Game.Instance.IsOnOverworld = false;
-            _ = new BattleGUI(battle, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties);
+            _ = new BattleGUI(battle, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties, trainerClass: c, trainerDefeatText: defeatText);
             SoundControl.SetBattleBGM(song);
             _fadeTransition = new SpiralTransition();
             Game.Instance.SetCallback(CB_FadeOutToBattle);

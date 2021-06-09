@@ -81,9 +81,9 @@
         "MovementType": "Walk_EastThenReturn",
         "MovementX": 21,
         "MovementY": 0,
-        "TrainerType": "None",
-        "TrainerSight": 0,
-        "Script": "TestScript",
+        "TrainerType": "Normal",
+        "TrainerSight": 3,
+        "Script": "TestMapC_Trainer2",
         "Flag": "MAX"
       },
       {
@@ -137,9 +137,9 @@
         "MovementType": "Walk_WestThenReturn",
         "MovementX": 21,
         "MovementY": 0,
-        "TrainerType": "None",
-        "TrainerSight": 0,
-        "Script": "TestScript",
+        "TrainerType": "Normal",
+        "TrainerSight": 3,
+        "Script": "TestMapC_Trainer1",
         "Flag": "MAX"
       },
       {

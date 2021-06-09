@@ -82,6 +82,7 @@
         BufferSpeciesName,
         BufferPartyMonNickname,
         WildBattle,
+        TrainerBattle_Single_NoContinue,
         AwaitReturnToField,
         CloseMessage,
         UnloadObj,

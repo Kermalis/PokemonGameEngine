@@ -76,6 +76,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.BufferSpeciesName, new[] { typeof(byte), typeof(PBESpecies) } }, // Buffer number, species
         { ScriptCommand.BufferPartyMonNickname, new[] { typeof(byte), typeof(byte) } }, // Buffer number, party index
         { ScriptCommand.WildBattle, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte) } }, // Species, form, level
+        { ScriptCommand.TrainerBattle_Single_NoContinue, new[] { typeof(Flag), typeof(void*), typeof(void*) } }, // Trainer, intro text, defeat text
         { ScriptCommand.AwaitReturnToField, Array.Empty<Type>() },
         { ScriptCommand.CloseMessage, Array.Empty<Type>() },
         { ScriptCommand.UnloadObj, new[] { typeof(ushort) } }, // Id

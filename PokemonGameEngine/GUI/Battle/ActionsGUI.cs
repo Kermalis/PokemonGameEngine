@@ -34,7 +34,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _fightChoices.Add(new TextGUIChoice("Pokémon", command, isEnabled: enabled));
             command = enabled ? BagChoice : null;
             _fightChoices.Add(new TextGUIChoice("Bag", command, isEnabled: enabled));
-            enabled = pkmn.Trainer.ActiveBattlersOrdered.First() == pkmn && pkmn.Trainer.IsFleeValid() is null; // Only first Pokémon can "select" run
+            enabled = pkmn.Battle.BattleType == PBEBattleType.Wild && pkmn.Trainer.ActiveBattlersOrdered.First() == pkmn && pkmn.Trainer.IsFleeValid() is null; // Only first Pokémon can "select" run
             command = enabled ? RunChoice : null;
             _fightChoices.Add(new TextGUIChoice("Run", command, isEnabled: enabled));
         }
@@ -169,7 +169,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             else
             {
-                BattleGUI.Instance.AddMessage(null, false); // Clear message
+                BattleGUI.Instance.ClearMessage();
                 Game.Instance.SetRCallback(RCB_FadingPartyNoChoices);
             }
         }

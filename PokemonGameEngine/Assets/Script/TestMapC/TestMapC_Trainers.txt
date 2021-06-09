@@ -1,0 +1,31 @@
+@TestMapC_Trainer1
+    TrainerBattle_Single_NoContinue Flag.Trainer1 TestMapC_Trainer1Intro TestMapC_Trainer1Defeated
+    LockAllObjs
+    Message TestMapC_Trainer1PostBattle
+    AwaitMessageComplete
+    CloseMessage
+    UnlockAllObjs
+    End
+
+@TestMapC_Trainer2
+    TrainerBattle_Single_NoContinue Flag.Trainer2 TestMapC_Trainer2Intro TestMapC_Trainer2Defeated
+    LockAllObjs
+    Message TestMapC_Trainer2PostBattle
+    AwaitMessageComplete
+    CloseMessage
+    UnlockAllObjs
+    End
+
+#TestMapC_Trainer1Intro
+    "I'm not that tough!"
+#TestMapC_Trainer1Defeated
+    "I suck..."
+#TestMapC_Trainer1PostBattle
+    "Go fight the other person."
+
+#TestMapC_Trainer2Intro
+    "This is a test!"
+#TestMapC_Trainer2Defeated
+    "You defeated me!"
+#TestMapC_Trainer2PostBattle
+    "You're testing me!"
