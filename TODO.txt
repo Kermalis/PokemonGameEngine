@@ -68,6 +68,7 @@ Sound:
     Fanfares
     Surf music logic
     Encounter music logic (and battle script commands without encounter music)
+    Victory music logic
     Saving music to load next time
 
 Nice to have (no priority):
