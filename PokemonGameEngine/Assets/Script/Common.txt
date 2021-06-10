@@ -1,0 +1,5 @@
+#Common_AwaitMessageUnlockAllEnd
+    AwaitMessageComplete
+    CloseMessage
+    UnlockAllObjs
+    End

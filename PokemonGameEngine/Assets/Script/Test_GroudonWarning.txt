@@ -1,17 +1,18 @@
 @Test_GroudonWarning
-LockAllObjs
-LookTowardsObj Var.LastTalked 0xFFFF
-GoToIfFlag Test_GroudonWarningMessage Flag.Test_GroudonVisible 0
+    LockAllObjs
+    LookLastTalkedTowardsPlayer
+    GoToIfFlag Test_GroudonWarningMessage Flag.Test_GroudonVisible 0
 
-Message TestText_GroudonGone
-GoTo AwaitMessageUnlockAllEnd
+    Message TestText_GroudonGone
+    GoTo Common_AwaitMessageUnlockAllEnd
 
 #Test_GroudonWarningMessage
-Message TestText_GroudonWarning
-GoTo AwaitMessageUnlockAllEnd
+    Message TestText_GroudonWarning
+    GoTo Common_AwaitMessageUnlockAllEnd
 
 #TestText_GroudonWarning
-"Legend has it that a vicious beast lives\n
+    "Legend has it that a vicious beast lives\n
 deep at the heart of this cave."
+
 #TestText_GroudonGone
-"The legends of this cave were true!"
+    "The legends of this cave were true!"

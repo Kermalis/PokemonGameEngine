@@ -76,11 +76,13 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.BufferSpeciesName, new[] { typeof(byte), typeof(PBESpecies) } }, // Buffer number, species
         { ScriptCommand.BufferPartyMonNickname, new[] { typeof(byte), typeof(byte) } }, // Buffer number, party index
         { ScriptCommand.WildBattle, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte) } }, // Species, form, level
-        { ScriptCommand.TrainerBattle_Single_NoContinue, new[] { typeof(Flag), typeof(void*), typeof(void*) } }, // Trainer, intro text, defeat text
+        { ScriptCommand.TrainerBattle, new[] { typeof(Flag), typeof(void*), typeof(void*) } }, // Trainer, intro text, defeat text
+        { ScriptCommand.TrainerBattle_Continue, new[] { typeof(Flag), typeof(void*), typeof(void*), typeof(void*) } }, // Trainer, intro text, defeat text, continue script
         { ScriptCommand.AwaitReturnToField, Array.Empty<Type>() },
         { ScriptCommand.CloseMessage, Array.Empty<Type>() },
         { ScriptCommand.UnloadObj, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.LookTowardsObj, new[] { typeof(ushort), typeof(ushort) } }, // Id of looker, id of obj to look at
+        { ScriptCommand.LookLastTalkedTowardsPlayer, Array.Empty<Type>() },
         { ScriptCommand.BufferSeenCount, new[] { typeof(byte) } }, // Buffer number
         { ScriptCommand.BufferCaughtCount, new[] { typeof(byte) } }, // Buffer number
         { ScriptCommand.GetDaycareState, Array.Empty<Type>() },

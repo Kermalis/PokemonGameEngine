@@ -2,34 +2,36 @@
 .set LOCALID_PLAYER 0xFFFF
 
 @Test_GroudonBattle
-LockAllObjs
-MoveObj LOCALID_PLAYER TestMovement_FaceNorth
-AwaitObjMovement LOCALID_PLAYER
-Delay 20
-PlayCry Species.Groudon 0
-Message TestText_GroudonGyaoo
-AwaitCry
-Delay 10
-AwaitMessageComplete
-CloseMessage
-WildBattle Species.Groudon 0 70
-AwaitReturnToField
-UnloadObj LOCALID_GROUDON
+    LockAllObjs
+    MoveObj LOCALID_PLAYER TestMovement_FaceNorth
+    AwaitObjMovement LOCALID_PLAYER
+    Delay 20
+    PlayCry Species.Groudon 0
+    Message TestText_GroudonGyaoo
+    AwaitCry
+    Delay 10
+    AwaitMessageComplete
+    CloseMessage
+    WildBattle Species.Groudon 0 70
+    AwaitReturnToField
+    UnloadObj LOCALID_GROUDON
 
 // Assume you defeat it for now.
-SetFlag Flag.Test_GroudonVisible
-SetVar Var.Test_GroudonState 0
-Message TestText_GroudonDefeat
-AwaitMessageComplete
-CloseMessage
-UnlockAllObjs
-End
+    SetFlag Flag.Test_GroudonVisible
+    SetVar Var.Test_GroudonState 0
+    Message TestText_GroudonDefeat
+    GoTo Common_AwaitMessageUnlockAllEnd
+
+// Text
 
 #TestText_GroudonGyaoo
-"GYAOOOOOOOOOOOOOOOOOHHH!!!"
+    "GYAOOOOOOOOOOOOOOOOOHHH!!!"
+
 #TestText_GroudonDefeat
-"Groudon retreated!"
+    "Groudon retreated!"
+
+// Movements
 
 #TestMovement_FaceNorth
-M.Face_N
-M.End
+    M.Face_N
+    M.End

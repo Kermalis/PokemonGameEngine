@@ -1,31 +1,41 @@
 @TestMapC_Trainer1
-    TrainerBattle_Single_NoContinue Flag.Trainer1 TestMapC_Trainer1Intro TestMapC_Trainer1Defeated
+    TrainerBattle Flag.Trainer1 TestMapC_Text_Trainer1Intro TestMapC_Text_Trainer1Defeat
     LockAllObjs
-    Message TestMapC_Trainer1PostBattle
-    AwaitMessageComplete
-    CloseMessage
-    UnlockAllObjs
-    End
+    LookLastTalkedTowardsPlayer
+    Message TestMapC_Text_Trainer1PostBattle
+    GoTo Common_AwaitMessageUnlockAllEnd
 
 @TestMapC_Trainer2
-    TrainerBattle_Single_NoContinue Flag.Trainer2 TestMapC_Trainer2Intro TestMapC_Trainer2Defeated
+    TrainerBattle_Continue Flag.Trainer2 TestMapC_Text_Trainer2Intro TestMapC_Text_Trainer2Defeat TestMapC_Trainer2Defeated
     LockAllObjs
-    Message TestMapC_Trainer2PostBattle
-    AwaitMessageComplete
-    CloseMessage
-    UnlockAllObjs
-    End
+    LookLastTalkedTowardsPlayer
+    Message TestMapC_Text_Trainer2PostBattle
+    GoTo Common_AwaitMessageUnlockAllEnd
 
-#TestMapC_Trainer1Intro
+#TestMapC_Trainer2Defeated
+    Message TestMapC_Text_Trainer2Defeated
+    GoTo Common_AwaitMessageUnlockAllEnd
+
+// Text
+
+#TestMapC_Text_Trainer1Intro
     "I'm not that tough!"
-#TestMapC_Trainer1Defeated
+
+#TestMapC_Text_Trainer1Defeat
     "I suck..."
-#TestMapC_Trainer1PostBattle
+
+#TestMapC_Text_Trainer1PostBattle
     "Go fight the other person."
 
-#TestMapC_Trainer2Intro
+#TestMapC_Text_Trainer2Intro
     "This is a test!"
-#TestMapC_Trainer2Defeated
+
+#TestMapC_Text_Trainer2Defeat
     "You defeated me!"
-#TestMapC_Trainer2PostBattle
+
+#TestMapC_Text_Trainer2Defeated
+    "This script command allows for\n
+scripts to continue after."
+
+#TestMapC_Text_Trainer2PostBattle
     "You're testing me!"

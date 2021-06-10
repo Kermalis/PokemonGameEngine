@@ -142,6 +142,7 @@ namespace Kermalis.PokemonGameEngine.World
     // It is very simple to add movements, and they can be as complex as you like
     public enum ObjMovementType : byte
     {
+        None,
         Face_South,
         Face_Southwest,
         Face_Southeast,

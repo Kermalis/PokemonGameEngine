@@ -207,7 +207,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public override void LogicTick()
         {
             // Do not run tick if timer is -1 or we cannot move
-            if (!CanMoveWillingly)
+            if (!CanMoveWillingly || MovementType == ObjMovementType.None)
             {
                 return;
             }

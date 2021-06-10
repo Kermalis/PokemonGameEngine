@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonGameEngine.Scripts;
+﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Scripts;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
@@ -153,5 +154,15 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         protected virtual void OnPositionVisiblyChanged() { }
         public virtual void LogicTick() { }
+
+        public static void FaceLastTalkedTowardsPlayer()
+        {
+            ushort id = (ushort)Game.Instance.Save.Vars[Var.LastTalked];
+            if (id != Overworld.PlayerId)
+            {
+                Obj looker = GetObj(id);
+                looker.LookTowards(PlayerObj.Player);
+            }
+        }
     }
 }

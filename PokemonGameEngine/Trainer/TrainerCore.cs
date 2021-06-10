@@ -52,7 +52,7 @@ namespace Kermalis.PokemonGameEngine.Trainer
             }
             else
             {
-                p = PartyPokemon.CreateWildMon(PBESpecies.Arceus, PBEForm.Arceus_Dragon, 70, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Arceus, PBEForm.Arceus_Dragon, true));
+                p = PartyPokemon.CreateWildMon(PBESpecies.Arceus, PBEForm.Arceus_Dragon, 50, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Arceus, PBEForm.Arceus_Dragon, true));
             }
             ret.Add(p);
             return ret;
@@ -70,11 +70,12 @@ namespace Kermalis.PokemonGameEngine.Trainer
             string name = trainer == Flag.Trainer1 ? "Candice" : "Saw Con"; // TODO
             Party enemyParty = Debug_CreateParty(trainer == Flag.Trainer1); // TODO
             (PBEItem, uint)[] inv = null; // TODO
+            PBEBattleFormat format = PBEBattleFormat.Single; // TODO
 
             var enemyInfo = new PBETrainerInfo(enemyParty, string.Format("{0} {1}", GetTrainerClassName(tc), name), false, inventory: inv);
             var parties = new Party[] { Game.Instance.Save.PlayerParty, enemyParty };
             Song song = GetTrainerClassSong(tc);
-            Game.Instance.CreateTrainerBattle_1v1(weather, behavior, parties, enemyInfo, PBEBattleFormat.Single, song, tc, defeatText);
+            Game.Instance.CreateTrainerBattle_1v1(weather, behavior, parties, enemyInfo, format, song, tc, defeatText);
         }
     }
 }
