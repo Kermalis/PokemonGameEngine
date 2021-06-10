@@ -261,8 +261,8 @@ namespace Kermalis.PokemonGameEngine.GUI
             int index = 0;
             while (index < str.Length)
             {
-                int curX = (x + nextXOffset) * scale;
-                int curY = (y + nextYOffset) * scale;
+                int curX = x + (nextXOffset * scale);
+                int curY = y + (nextYOffset * scale);
                 Glyph glyph = GetGlyph(str, ref index, ref nextXOffset, ref nextYOffset, out _);
                 if (glyph != null)
                 {
