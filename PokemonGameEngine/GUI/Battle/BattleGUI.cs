@@ -75,6 +75,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 var sprite = new Sprite
                 {
                     Image = img,
+                    DrawMethod = RenderUtils.Sprite_DrawWithShadow,
                     X = RenderUtils.GetCoordinatesForCentering(Program.RenderWidth, img.Width, 0.73f),
                     Y = RenderUtils.GetCoordinatesForEndAlign(Program.RenderHeight, img.Height, 0.51f)
                 };

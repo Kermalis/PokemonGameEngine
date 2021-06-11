@@ -1,62 +1,119 @@
-﻿using System;
+﻿// This file is adapted from SDL
+// https://github.com/spurious/SDL-mirror/blob/master/src/render/software/SDL_rotate.c
+// https://github.com/spurious/SDL-mirror/blob/master/src/render/software/SDL_render_sw.c
+using System;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
-    // https://github.com/spurious/SDL-mirror/blob/master/src/render/software/SDL_rotate.c
-    // https://github.com/spurious/SDL-mirror/blob/master/src/render/software/SDL_render_sw.c
     internal static partial class RenderUtils
     {
+        // TODO: XFLIP YFLIP
         #region 90 degree multiples
 
-        public static unsafe void DrawBitmapRotated90CW(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight)
+        public static unsafe void OverwriteBitmapRotated90CW(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
         {
-            for (int cy = 0; cy < otherBmpWidth; cy++)
+            for (int cy = 0; cy < srcW; cy++)
             {
                 int py = y + cy;
-                if (py >= 0 && py < bmpHeight)
+                if (py >= 0 && py < dstH)
                 {
-                    for (int cx = 0; cx < otherBmpHeight; cx++)
+                    for (int cx = 0; cx < srcH; cx++)
                     {
                         int px = x + cx;
-                        if (px >= 0 && px < bmpWidth)
+                        if (px >= 0 && px < dstW)
                         {
-                            DrawUnchecked(bmpAddress, bmpWidth, px, py, *GetPixelAddress(otherBmpAddress, otherBmpWidth, cy, otherBmpHeight - cx - 1));
+                            *GetPixelAddress(dst, dstW, px, py) = src.Invoke(cy, srcH - cx - 1);
                         }
                     }
                 }
             }
         }
-        public static unsafe void DrawBitmapRotated180CW(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight)
+        public static unsafe void OverwriteBitmapRotated180CW(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
         {
-            for (int cy = 0; cy < otherBmpHeight; cy++)
+            for (int cy = 0; cy < srcH; cy++)
             {
                 int py = y + cy;
-                if (py >= 0 && py < bmpHeight)
+                if (py >= 0 && py < dstH)
                 {
-                    for (int cx = 0; cx < otherBmpWidth; cx++)
+                    for (int cx = 0; cx < srcW; cx++)
                     {
                         int px = x + cx;
-                        if (px >= 0 && px < bmpWidth)
+                        if (px >= 0 && px < dstW)
                         {
-                            DrawUnchecked(bmpAddress, bmpWidth, px, py, *GetPixelAddress(otherBmpAddress, otherBmpWidth, otherBmpWidth - cx - 1, otherBmpHeight - cy - 1));
+                            *GetPixelAddress(dst, dstW, px, py) = src.Invoke(srcW - cx - 1, srcH - cy - 1);
                         }
                     }
                 }
             }
         }
-        public static unsafe void DrawBitmapRotated270CW(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight)
+        public static unsafe void OverwriteBitmapRotated270CW(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
         {
-            for (int cy = 0; cy < otherBmpWidth; cy++)
+            for (int cy = 0; cy < srcW; cy++)
             {
                 int py = y + cy;
-                if (py >= 0 && py < bmpHeight)
+                if (py >= 0 && py < dstH)
                 {
-                    for (int cx = 0; cx < otherBmpHeight; cx++)
+                    for (int cx = 0; cx < srcH; cx++)
                     {
                         int px = x + cx;
-                        if (px >= 0 && px < bmpWidth)
+                        if (px >= 0 && px < dstW)
                         {
-                            DrawUnchecked(bmpAddress, bmpWidth, px, py, *GetPixelAddress(otherBmpAddress, otherBmpWidth, otherBmpWidth - cy - 1, cx));
+                            *GetPixelAddress(dst, dstW, px, py) = src.Invoke(srcW - cy - 1, cx);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static unsafe void DrawBitmapRotated90CW(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
+        {
+            for (int cy = 0; cy < srcW; cy++)
+            {
+                int py = y + cy;
+                if (py >= 0 && py < dstH)
+                {
+                    for (int cx = 0; cx < srcH; cx++)
+                    {
+                        int px = x + cx;
+                        if (px >= 0 && px < dstW)
+                        {
+                            DrawUnchecked(dst, dstW, px, py, src.Invoke(cy, srcH - cx - 1));
+                        }
+                    }
+                }
+            }
+        }
+        public static unsafe void DrawBitmapRotated180CW(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
+        {
+            for (int cy = 0; cy < srcH; cy++)
+            {
+                int py = y + cy;
+                if (py >= 0 && py < dstH)
+                {
+                    for (int cx = 0; cx < srcW; cx++)
+                    {
+                        int px = x + cx;
+                        if (px >= 0 && px < dstW)
+                        {
+                            DrawUnchecked(dst, dstW, px, py, src.Invoke(srcW - cx - 1, srcH - cy - 1));
+                        }
+                    }
+                }
+            }
+        }
+        public static unsafe void DrawBitmapRotated270CW(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
+        {
+            for (int cy = 0; cy < srcW; cy++)
+            {
+                int py = y + cy;
+                if (py >= 0 && py < dstH)
+                {
+                    for (int cx = 0; cx < srcH; cx++)
+                    {
+                        int px = x + cx;
+                        if (px >= 0 && px < dstW)
+                        {
+                            DrawUnchecked(dst, dstW, px, py, src.Invoke(srcW - cy - 1, cx));
                         }
                     }
                 }
@@ -65,69 +122,21 @@ namespace Kermalis.PokemonGameEngine.Render
 
         #endregion
 
-        #region Arbitrary degrees
+        #region Arbitrary number of degrees
 
-        // Computes source pointer X/Y increments for a rotation that's a multiple of 90 degrees.
-        private static unsafe void ComputeSourceIncrements90(int srcW, int srcH, int angle90, bool xFlip, bool yFlip,
-            out int incX, out int incY, out int signX, out int signY)
-        {
-            int p = yFlip ? -srcW : srcW;
-            int b = 1;
-            if (xFlip)
-            {
-                b = -b;
-            }
-            switch (angle90)
-            {
-                case 0: incX = b; incY = p - (srcW * b); signX = 1; signY = 1; break; // 0
-                case 1: incX = -p; incY = b - (-p * srcH); signX = 1; signY = -1; break; // 90
-                case 2: incX = -b; incY = (-srcW * -b) - p; signX = -1; signY = -1; break; // 180
-                default: incX = p; incY = (-p * srcH) - b; signX = -1; signY = 1; break; // 270
-            }
-            if (xFlip)
-            {
-                signX = -signX;
-            }
-            if (yFlip)
-            {
-                signY = -signY;
-            }
-        }
-
-        // Performs a relatively fast rotation/flip when the angle is a multiple of 90 degrees.
-        private static unsafe void TransformSurface90(uint* src, int srcW, int srcH, uint* dst, int dstW, int dstH,
+        private static unsafe void TransformSurface90(PixelSupplier src, int srcW, int srcH, uint* dst, int dstW, int dstH,
             int angle90, bool xFlip, bool yFlip)
         {
-            ComputeSourceIncrements90(srcW, srcH, angle90, xFlip, yFlip, out int incX, out int incY, out int signX, out int signY);
-            if (signX < 0)
+            switch (angle90)
             {
-                src += srcW - 1;
-            }
-            if (signY < 0)
-            {
-                src += (srcH - 1) * srcW;
-            }
-
-            for (int dy = 0; dy < dstH; dy++)
-            {
-                if (incX == 1)
-                {
-                    Buffer.MemoryCopy(src, dst, dstW * sizeof(uint), dstW * sizeof(uint));
-                    src += dstW;
-                    dst += dstW;
-                }
-                else
-                {
-                    for (uint* de = dst + dstW; dst != de; src += incX, dst++)
-                    {
-                        *dst = *src;
-                    }
-                }
-                src += incY;
+                case 0: OverwriteBitmap(dst, dstW, dstH, 0, 0, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip); break; // 0
+                case 1: OverwriteBitmapRotated90CW(dst, dstW, dstH, 0, 0, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip); break; // 90
+                case 2: OverwriteBitmapRotated180CW(dst, dstW, dstH, 0, 0, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip); break; // 190
+                default: OverwriteBitmapRotated270CW(dst, dstW, dstH, 0, 0, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip); break; // 270
             }
         }
 
-        private static unsafe void TransformSurface(uint* src, int srcW, int srcH, uint* dst, int dstW, int dstH,
+        private static unsafe void TransformSurface(PixelSupplier src, int srcW, int srcH, uint* dst, int dstW, int dstH,
             int centerX, int centerY, int isin, int icos, bool xFlip, bool yFlip, bool smooth)
         {
             int xd = (srcW - dstW) << 15; // << 15 is *32768
@@ -159,14 +168,10 @@ namespace Kermalis.PokemonGameEngine.Render
                         if ((dx > -1) && (dy > -1) && (dx < (srcW - 1)) && (dy < (srcH - 1)))
                         {
                             // Get 4 pixels
-                            uint* sp = GetPixelAddress(src, srcW, dx, dy);
-                            uint c00 = *sp;
-                            sp++;
-                            uint c01 = *sp;
-                            sp += srcW;
-                            uint c11 = *sp;
-                            sp--;
-                            uint c10 = *sp;
+                            uint c00 = src.Invoke(dx, dy);
+                            uint c01 = src.Invoke(dx + 1, dy);
+                            uint c10 = src.Invoke(dx, dy + 1);
+                            uint c11 = src.Invoke(dx + 1, dy + 1);
                             if (xFlip)
                             {
                                 uint cswap = c00; c00 = c01; c01 = cswap;
@@ -238,7 +243,7 @@ namespace Kermalis.PokemonGameEngine.Render
                             {
                                 dy = sh - dy;
                             }
-                            *dst = *GetPixelAddress(src, srcW, dx, dy);
+                            *dst = src.Invoke(dx, dy);
                         }
                         sdx += icos;
                         sdy += isin;
@@ -295,7 +300,7 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
 
-        private static unsafe uint[] RotateSurface(uint* src, int srcW, int srcH, double angle, int centerX, int centerY, bool smooth, bool xFlip, bool yFlip,
+        private static unsafe uint[] RotateSurface(PixelSupplier src, int srcW, int srcH, double angle, int centerX, int centerY, bool smooth, bool xFlip, bool yFlip,
             int dstW, int dstH, double cAngle, double sAngle)
         {
             uint[] dstArray = new uint[dstW * (dstH + 2)]; // 2 is extra tolerance space for some rotations
@@ -323,18 +328,23 @@ namespace Kermalis.PokemonGameEngine.Render
             return dstArray;
         }
 
-        public static unsafe void DrawRotatedBitmap(uint* dst, int dstW, int dstH, int x, int y, uint* src, int srcW, int srcH, double angle, bool xFlip = false, bool yFlip = false, bool smooth = false)
+        public static unsafe uint[] CreateRotatedBitmap(PixelSupplier src, int srcW, int srcH, double angle,
+            out int rotWidth, out int rotHeight, out double cAngle, out double sAngle,
+            bool xFlip = false, bool yFlip = false, bool smooth = false)
         {
-            CalcSurfaceSize(srcW, srcH, angle, out int dstWidth, out int dstHeight, out double cAngle, out double sAngle);
-            uint[] rotated = RotateSurface(src, srcW, srcH, angle, dstWidth / 2, dstHeight / 2, smooth, xFlip, yFlip, dstWidth, dstHeight, cAngle, sAngle);
-
-            DrawBitmap(dst, dstW, dstH, x, y, rotated, dstWidth, dstHeight);
+            CalcSurfaceSize(srcW, srcH, angle, out rotWidth, out rotHeight, out cAngle, out sAngle);
+            return RotateSurface(src, srcW, srcH, angle, rotWidth / 2, rotHeight / 2, smooth, xFlip, yFlip, rotWidth, rotHeight, cAngle, sAngle);
         }
 
-        public static unsafe void DrawRotatedBitmap_Centered(uint* dst, int dstW, int dstH, int x, int y, uint* src, int srcW, int srcH, double angle, bool xFlip = false, bool yFlip = false, bool smooth = false)
+        public static unsafe void DrawRotatedBitmap(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, double angle, bool xFlip = false, bool yFlip = false, bool smooth = false)
         {
-            CalcSurfaceSize(srcW, srcH, angle, out int dstWidth, out int dstHeight, out double cAngle, out double sAngle);
-            uint[] rotated = RotateSurface(src, srcW, srcH, angle, dstWidth / 2, dstHeight / 2, smooth, xFlip, yFlip, dstWidth, dstHeight, cAngle, sAngle);
+            uint[] rotated = CreateRotatedBitmap(src, srcW, srcH, angle, out int rotWidth, out int rotHeight, out _, out _, xFlip: xFlip, yFlip: yFlip, smooth: smooth);
+
+            DrawBitmap(dst, dstW, dstH, x, y, rotated, rotWidth, rotHeight);
+        }
+        public static unsafe void DrawRotatedBitmap_Centered(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, double angle, bool xFlip = false, bool yFlip = false, bool smooth = false)
+        {
+            uint[] rotated = CreateRotatedBitmap(src, srcW, srcH, angle, out int rotWidth, out int rotHeight, out double cAngle, out double sAngle, xFlip: xFlip, yFlip: yFlip, smooth: smooth);
 
             double centerX = srcW / 2;
             double centerY = srcH / 2;
@@ -371,7 +381,7 @@ namespace Kermalis.PokemonGameEngine.Render
             x = (int)Math.Min(Math.Min(p1x, p2x), Math.Min(p3x, p4x));
             y = (int)Math.Min(Math.Min(p1y, p2y), Math.Min(p3y, p4y));
 
-            DrawBitmap(dst, dstW, dstH, x, y, rotated, dstWidth, dstHeight);
+            DrawBitmap(dst, dstW, dstH, x, y, rotated, rotWidth, rotHeight);
         }
 
         #endregion

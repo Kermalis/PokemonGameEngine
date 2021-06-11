@@ -8,6 +8,7 @@ It can run on any platform, even phones! (With some work, contact me)
 
 ![GamePreview](PreviewImages/Overworld.png)
 ![BattlePreview](PreviewImages/Battle.gif)
+![ShadowsPreview](PreviewImages/Shadows.gif)
 ![GroudonPreview](PreviewImages/Groudon.gif)
 ![DayNightPreview](PreviewImages/DayNight.gif)
 ![MapEditorPreview](PreviewImages/MapEditor.png)
@@ -25,7 +26,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Day & Night Cycle
 * Tile animations
 * Controller support
-* Animated sprites
+* Animated sprites with shadow support
 * Spinda spots ![Spindas](PreviewImages/Spinda.gif)
 * Custom sound engine and music (also supports Pokémon cries)
 * Daycare, Breeding, and Eggs

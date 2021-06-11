@@ -114,5 +114,37 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         #endregion
+
+        public static unsafe void Sprite_DrawWithShadow(Sprite s, uint* dst, int dstW, int dstH, int xOffset = 0, int yOffset = 0)
+        {
+            if (s.IsInvisible)
+            {
+                return;
+            }
+
+            fixed (uint* src = s.Image.Bitmap)
+            {
+                DrawBitmapWithShadow(dst, dstW, dstH, s.X + xOffset, s.Y + yOffset, src, s.Image.Width, s.Image.Height);
+            }
+        }
+        public static unsafe PixelSupplier MakeShadowSupplier(uint* src, int srcW)
+        {
+            return (x, y) =>
+            {
+                uint color = *GetPixelAddress(src, srcW, x, y);
+                return color != 0 ? Color(0, 0, 0, 160) : color;
+            };
+        }
+        public static unsafe void DrawBitmapWithShadow(uint* dst, int dstW, int dstH, int x, int y, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
+        {
+            PixelSupplier pixSupplyShadow = MakeShadowSupplier(src, srcW);
+            uint[] rotated = CreateRotatedBitmap(pixSupplyShadow, srcW, srcH, 15, out int rotWidth, out int rotHeight, out _, out _, xFlip: xFlip, yFlip: yFlip, smooth: true);
+            int shadowW = (int)(rotWidth * 0.93f);
+            int shadowH = (int)(rotHeight * 0.5f);
+            int shadowX = x + (srcW / 16);
+            int shadowY = y + srcH - shadowH - 2 + (shadowH / 16);
+            DrawBitmapSized(dst, dstW, dstH, shadowX, shadowY, shadowW, shadowH, rotated, rotWidth, rotHeight);
+            DrawBitmap(dst, dstW, dstH, x, y, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
+        }
     }
 }

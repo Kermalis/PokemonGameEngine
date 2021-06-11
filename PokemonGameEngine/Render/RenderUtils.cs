@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
+    internal delegate uint PixelSupplier(int x, int y);
+
     // https://stackoverflow.com/questions/24771828/algorithm-for-creating-rounded-corners-in-a-polygon
     // ^^ This could be cool, not sure if we'd need it yet though
     internal static partial class RenderUtils
@@ -403,6 +405,26 @@ namespace Kermalis.PokemonGameEngine.Render
         #endregion
 
         #region Bitmaps
+
+        public static unsafe void OverwriteBitmap(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
+        {
+            for (int cy = 0; cy < srcH; cy++)
+            {
+                int py = yFlip ? (y + (srcH - 1 - cy)) : (y + cy);
+                if (py >= 0 && py < dstH)
+                {
+                    for (int cx = 0; cx < srcW; cx++)
+                    {
+                        int px = xFlip ? (x + (srcW - 1 - cx)) : (x + cx);
+                        if (px >= 0 && px < dstW)
+                        {
+                            *GetPixelAddress(dst, dstW, px, py) = src.Invoke(cx, cy);
+                        }
+                    }
+                }
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DrawBitmap(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, uint[] otherBmp, int otherBmpWidth, int otherBmpHeight, bool xFlip = false, bool yFlip = false)
         {
@@ -1148,9 +1170,14 @@ namespace Kermalis.PokemonGameEngine.Render
 
         #region Utilities
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe uint* GetPixelAddress(uint* bmpAddress, int bmpWidth, int x, int y)
+        public static unsafe PixelSupplier MakeBitmapSupplier(uint* src, int srcW)
         {
-            return bmpAddress + x + (y * bmpWidth);
+            return (x, y) => *GetPixelAddress(src, srcW, x, y);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe uint* GetPixelAddress(uint* src, int srcW, int x, int y)
+        {
+            return src + x + (y * srcW);
         }
         /// <summary>Returns true if any pixel is inside of the target bitmap.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

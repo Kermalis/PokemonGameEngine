@@ -84,7 +84,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void Sprite_TrainerGoAway(Sprite sprite)
         {
-            if ((sprite.X += 10) >= Program.RenderWidth)
+            if ((sprite.X += Program.RenderWidth / 64) >= Program.RenderWidth)
             {
                 sprite.Callback = null;
                 _sprites.Remove(sprite);
