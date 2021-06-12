@@ -138,11 +138,11 @@ namespace Kermalis.PokemonGameEngine.Render
         public static void DrawBitmapWithShadow(uint* dst, int dstW, int dstH, int x, int y, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
         {
             PixelSupplier pixSupplyShadow = MakeShadowSupplier(src, srcW);
-            uint[] rotated = CreateRotatedBitmap(pixSupplyShadow, srcW, srcH, 15, out int rotWidth, out int rotHeight, out _, out _, xFlip: xFlip, yFlip: yFlip, smooth: true);
-            int shadowW = (int)(rotWidth * 0.93f);
-            int shadowH = (int)(rotHeight * 0.5f);
-            int shadowX = x + (srcW / 16);
-            int shadowY = y + srcH - shadowH - 2 + (shadowH / 16);
+            uint[] rotated = CreateRotatedBitmap(pixSupplyShadow, srcW, srcH, 5, out int rotWidth, out int rotHeight, out _, out _, xFlip: xFlip, yFlip: yFlip, smooth: true);
+            int shadowW = (int)(rotWidth * 0.95f);
+            int shadowH = (int)(rotHeight * 0.6f);
+            int shadowX = x + (int)(srcW * 0.035f);
+            int shadowY = y + srcH - shadowH - (int)(srcH * 0.04f);
             DrawBitmapSized(dst, dstW, dstH, shadowX, shadowY, shadowW, shadowH, rotated, rotWidth, rotHeight);
             DrawBitmap(dst, dstW, dstH, x, y, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
         }
