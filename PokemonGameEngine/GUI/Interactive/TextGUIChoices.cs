@@ -45,9 +45,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             BottomAligned = bottomAlign;
         }
 
-        public override unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public override unsafe void Render(uint* dst, int dstW, int dstH)
         {
-            float y1 = Y * bmpHeight;
+            float y1 = Y * dstH;
             float y = y1;
             float space = Spacing;
             int count = _choices.Count;
@@ -69,14 +69,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                     colors = c.DisabledColors ?? DisabledColors;
                 }
                 font.MeasureString("→ ", out int arrowW, out int textH);
-                int x = (int)(bmpWidth * X);
+                int x = (int)(dstW * X);
                 // If this is bottom align, we need to adjust the y
                 int iy = BottomAligned ? (int)y - textH : (int)y;
-                font.DrawString(bmpAddress, bmpWidth, bmpHeight, x + arrowW, iy, c.Text, colors);
+                font.DrawString(dst, dstW, dstH, x + arrowW, iy, c.Text, colors);
                 // Draw selection arrow
                 if (isSelected)
                 {
-                    font.DrawString(bmpAddress, bmpWidth, bmpHeight, x, iy, "→", colors);
+                    font.DrawString(dst, dstW, dstH, x, iy, "→", colors);
                 }
 
                 if (BottomAligned)
@@ -132,16 +132,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             choices.Add(new TextGUIChoice("Yes", () => clickAction(true)));
             choices.Add(new TextGUIChoice("No", () => clickAction(false)));
             choices.GetSize(out int width, out int height);
-            window = new Window(x, y, width, height, RenderUtils.Color(255, 255, 255, 255));
+            window = new Window(x, y, width, height, Renderer.Color(255, 255, 255, 255));
             choices.RenderChoicesOntoWindow(window);
         }
         public unsafe void RenderChoicesOntoWindow(Window window)
         {
             window.ClearImage();
             Image i = window.Image;
-            fixed (uint* bmpAddress = i.Bitmap)
+            fixed (uint* dst = i.Bitmap)
             {
-                Render(bmpAddress, i.Width, i.Height);
+                Render(dst, i.Width, i.Height);
             }
         }
     }

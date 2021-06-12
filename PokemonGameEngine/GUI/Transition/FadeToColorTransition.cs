@@ -17,15 +17,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             _color = color;
         }
 
-        public unsafe override void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe override void Render(uint* dst, int dstW, int dstH)
         {
             if (IsDone)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.SetA(_color, 0xFF));
+                Renderer.FillRectangle(dst, dstW, dstH, Renderer.SetA(_color, 0xFF));
                 return;
             }
             double progress = Utils.GetAnimationProgress(_end, ref _cur);
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.SetA(_color, (uint)(progress * 0xFF)));
+            Renderer.FillRectangle(dst, dstW, dstH, Renderer.SetA(_color, (uint)(progress * 0xFF)));
 
             if (!IsDone && progress >= 1)
             {

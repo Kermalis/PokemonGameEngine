@@ -29,24 +29,24 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public void ClearImage()
         {
-            RenderUtils.OverwriteRectangle(Image, _backColor);
+            Renderer.OverwriteRectangle(Image, _backColor);
         }
         public unsafe void ClearImage(int x, int y, int width, int height)
         {
-            void Clear(uint* bmpAddress, int bmpWidth, int bmpHeight)
+            void Clear(uint* dst, int dstW, int dstH)
             {
-                RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, width, height, _backColor);
+                Renderer.OverwriteRectangle(dst, dstW, dstH, x, y, width, height, _backColor);
             }
             Image.Draw(Clear);
         }
 
-        public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe void Render(uint* dst, int dstW, int dstH)
         {
             if (IsInvisible)
             {
                 return;
             }
-            Image.DrawOn(bmpAddress, bmpWidth, bmpHeight, _x, _y);
+            Image.DrawOn(dst, dstW, dstH, _x, _y);
         }
 
         public void Close()

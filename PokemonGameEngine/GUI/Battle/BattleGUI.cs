@@ -75,9 +75,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 var sprite = new Sprite
                 {
                     Image = img,
-                    DrawMethod = RenderUtils.Sprite_DrawWithShadow,
-                    X = RenderUtils.GetCoordinatesForCentering(Program.RenderWidth, img.Width, 0.73f),
-                    Y = RenderUtils.GetCoordinatesForEndAlign(Program.RenderHeight, img.Height, 0.51f)
+                    DrawMethod = Renderer.Sprite_DrawWithShadow,
+                    X = Renderer.GetCoordinatesForCentering(Program.RenderWidth, img.Width, 0.73f),
+                    Y = Renderer.GetCoordinatesForEndAlign(Program.RenderHeight, img.Height, 0.51f)
                 };
                 _sprites.Add(sprite);
             }
@@ -205,7 +205,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                _stringWindow = new Window(0, 0.79f, 1, 0.16f, RenderUtils.Color(49, 49, 49, 128));
+                _stringWindow = new Window(0, 0.79f, 1, 0.16f, Renderer.Color(49, 49, 49, 128));
                 OnFadeInFinished();
                 Game.Instance.SetCallback(CB_LogicTick);
                 Game.Instance.SetRCallback(RCB_RenderTick);
@@ -257,7 +257,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _sprites.DoCallbacks();
         }
 
-        private static unsafe void RenderPkmn(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos, bool ally)
+        private static unsafe void RenderPkmn(uint* dst, int dstW, int dstH, PkmnPosition pos, bool ally)
         {
             SpritedBattlePokemon sPkmn = pos.SPkmn;
             AnimatedImage img = sPkmn.AnimImage;
@@ -268,23 +268,23 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 width *= 2;
                 height *= 2;
             }
-            img.DrawSizedOn(bmpAddress, bmpWidth, bmpHeight,
-                RenderUtils.GetCoordinatesForCentering(bmpWidth, width, pos.MonX), RenderUtils.GetCoordinatesForEndAlign(bmpHeight, height, pos.MonY), width, height);
+            img.DrawSizedOn(dst, dstW, dstH,
+                Renderer.GetCoordinatesForCentering(dstW, width, pos.MonX), Renderer.GetCoordinatesForEndAlign(dstH, height, pos.MonY), width, height);
         }
-        private static unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos)
+        private static unsafe void RenderPkmnInfo(uint* dst, int dstW, int dstH, PkmnPosition pos)
         {
-            pos.SPkmn.InfoBarImg.DrawOn(bmpAddress, bmpWidth, bmpHeight, pos.BarX, pos.BarY);
+            pos.SPkmn.InfoBarImg.DrawOn(dst, dstW, dstH, pos.BarX, pos.BarY);
         }
 
-        private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_Fading(uint* dst, int dstW, int dstH)
         {
-            RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            RCB_RenderTick(dst, dstW, dstH);
+            _fadeTransition.Render(dst, dstW, dstH);
         }
-        public unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe void RCB_RenderTick(uint* dst, int dstW, int dstH)
         {
             AnimatedImage.UpdateCurrentFrameForAll();
-            _battleBackground.DrawSizedOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
+            _battleBackground.DrawSizedOn(dst, dstW, dstH, 0, 0, dstW, dstH);
             void DoTeam(int i, bool info)
             {
                 foreach (PkmnPosition p in _positions[i])
@@ -294,23 +294,23 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         if (p.InfoVisible)
                         {
-                            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, p);
+                            RenderPkmnInfo(dst, dstW, dstH, p);
                         }
                     }
                     else if (p.PkmnVisible)
                     {
-                        RenderPkmn(bmpAddress, bmpWidth, bmpHeight, p, ally);
+                        RenderPkmn(dst, dstW, dstH, p, ally);
                     }
                 }
             }
             DoTeam(1, false);
             DoTeam(0, false);
 
-            _sprites.DrawAll(bmpAddress, bmpWidth, bmpHeight);
+            _sprites.DrawAll(dst, dstW, dstH);
 
             if (Overworld.ShouldRenderDayTint())
             {
-                DayTint.Render(bmpAddress, bmpWidth, bmpHeight);
+                DayTint.Render(dst, dstW, dstH);
             }
 
             DoTeam(1, true);
@@ -318,7 +318,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
             if (_stringPrinter != null)
             {
-                _stringWindow.Render(bmpAddress, bmpWidth, bmpHeight);
+                _stringWindow.Render(dst, dstW, dstH);
             }
         }
 

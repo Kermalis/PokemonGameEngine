@@ -83,7 +83,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             }
         }
 
-        public abstract unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight);
+        public abstract unsafe void Render(uint* dst, int dstW, int dstH);
 
         public virtual void Add(T c)
         {

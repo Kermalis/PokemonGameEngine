@@ -1,6 +1,6 @@
 ﻿namespace Kermalis.PokemonGameEngine.Render
 {
-    internal static partial class RenderUtils
+    internal static unsafe partial class Renderer
     {
         #region Spot Coordinates
         // First pair is right eye, second is left eye, third is right ear, fourth is left ear
@@ -69,7 +69,7 @@
         };
         #endregion
 
-        private static unsafe (uint color, uint replacement)[] SpindaSpotColorsFromShininess(bool shiny)
+        private static (uint color, uint replacement)[] SpindaSpotColorsFromShininess(bool shiny)
         {
             uint color1 = Color(230, 214, 165, 255);
             uint color1Replacement = shiny ? Color(165, 206, 16, 255) : Color(239, 82, 74, 255);
@@ -77,21 +77,21 @@
             uint color2Replacement = shiny ? Color(123, 156, 0, 255) : Color(189, 74, 49, 255);
             return new[] { (color1, color1Replacement), (color2, color2Replacement) };
         }
-        public static unsafe void RenderSpindaSpots(uint* bmpAddress, int bmpWidth, int bmpHeight, int frame, uint pid, bool shiny)
+        public static void RenderSpindaSpots(uint* dst, int dstW, int dstH, int frame, uint pid, bool shiny)
         {
             (uint color, uint replacement)[] colors = SpindaSpotColorsFromShininess(shiny);
             (int X, int Y)[] coords = _spindaSpotCoordinates[frame];
 
             byte b = (byte)((pid >> 24) & 0xFF);
-            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Image.LoadOrGet("Sprites.SpindaSpot_RightEye.png"), coords[0], b, colors);
+            RenderSpindaSpot(dst, dstW, dstH, Image.LoadOrGet("Sprites.SpindaSpot_RightEye.png"), coords[0], b, colors);
             b = (byte)((pid >> 16) & 0xFF);
-            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Image.LoadOrGet("Sprites.SpindaSpot_LeftEye.png"), coords[1], b, colors);
+            RenderSpindaSpot(dst, dstW, dstH, Image.LoadOrGet("Sprites.SpindaSpot_LeftEye.png"), coords[1], b, colors);
             b = (byte)((pid >> 8) & 0xFF);
-            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Image.LoadOrGet("Sprites.SpindaSpot_RightEar.png"), coords[2], b, colors);
+            RenderSpindaSpot(dst, dstW, dstH, Image.LoadOrGet("Sprites.SpindaSpot_RightEar.png"), coords[2], b, colors);
             b = (byte)(pid & 0xFF);
-            RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, Image.LoadOrGet("Sprites.SpindaSpot_LeftEar.png"), coords[3], b, colors);
+            RenderSpindaSpot(dst, dstW, dstH, Image.LoadOrGet("Sprites.SpindaSpot_LeftEar.png"), coords[3], b, colors);
         }
-        public static unsafe void RenderSpindaSpots(AnimatedImage img, uint pid, bool shiny)
+        public static void RenderSpindaSpots(AnimatedImage img, uint pid, bool shiny)
         {
             var rightEye = Image.LoadOrGet("Sprites.SpindaSpot_RightEye.png");
             var leftEye = Image.LoadOrGet("Sprites.SpindaSpot_LeftEye.png");
@@ -102,58 +102,58 @@
             for (int i = 0; i < img.NumFrames; i++)
             {
                 (int X, int Y)[] coords = _spindaSpotCoordinates[i];
-                fixed (uint* bmpAddress = img.GetFrameBitmap(i))
+                fixed (uint* dst = img.GetFrameBitmap(i))
                 {
-                    int bmpWidth = img.Width;
-                    int bmpHeight = img.Height;
+                    int dstW = img.Width;
+                    int dstH = img.Height;
 
                     byte b = (byte)((pid >> 24) & 0xFF);
-                    RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, rightEye, coords[0], b, colors);
+                    RenderSpindaSpot(dst, dstW, dstH, rightEye, coords[0], b, colors);
                     b = (byte)((pid >> 16) & 0xFF);
-                    RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, leftEye, coords[1], b, colors);
+                    RenderSpindaSpot(dst, dstW, dstH, leftEye, coords[1], b, colors);
                     b = (byte)((pid >> 8) & 0xFF);
-                    RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, rightEar, coords[2], b, colors);
+                    RenderSpindaSpot(dst, dstW, dstH, rightEar, coords[2], b, colors);
                     b = (byte)(pid & 0xFF);
-                    RenderSpindaSpot(bmpAddress, bmpWidth, bmpHeight, leftEar, coords[3], b, colors);
+                    RenderSpindaSpot(dst, dstW, dstH, leftEar, coords[3], b, colors);
                 }
             }
         }
 
-        private static unsafe void RenderSpindaSpot(uint* bmpAddress, int bmpWidth, int bmpHeight, Image spot, (int X, int Y) center, byte data, (uint color, uint replacement)[] colors)
+        private static void RenderSpindaSpot(uint* dst, int dstW, int dstH, Image spot, (int X, int Y) center, byte data, (uint color, uint replacement)[] colors)
         {
             uint spotColor = Color(0, 255, 255, 255);
 
             int spotX = data & 0xF;
             int spotY = (data >> 4) & 0xF;
-            fixed (uint* spotBmpAddress = spot.Bitmap)
+            fixed (uint* src = spot.Bitmap)
             {
                 for (int py = 0; py < spot.Height; py++)
                 {
                     int bmpY = center.Y - 8 + spotY + py;
-                    if (bmpY < 0 || bmpY >= bmpHeight)
+                    if (bmpY < 0 || bmpY >= dstH)
                     {
                         continue;
                     }
                     for (int px = 0; px < spot.Width; px++)
                     {
                         int bmpX = center.X - 8 + spotX + px;
-                        if (bmpX < 0 || bmpX >= bmpWidth)
+                        if (bmpX < 0 || bmpX >= dstW)
                         {
                             continue;
                         }
-                        uint* spotPixelAddress = GetPixelAddress(spotBmpAddress, spot.Width, px, py);
-                        if (*spotPixelAddress != spotColor)
+                        uint* srcPix = GetPixelAddress(src, spot.Width, px, py);
+                        if (*srcPix != spotColor)
                         {
                             continue;
                         }
-                        uint* bmpPixelAddress = GetPixelAddress(bmpAddress, bmpWidth, bmpX, bmpY);
-                        uint curColor = *bmpPixelAddress;
+                        uint* dstPix = GetPixelAddress(dst, dstW, bmpX, bmpY);
+                        uint curColor = *dstPix;
                         for (int i = 0; i < colors.Length; i++)
                         {
                             (uint color, uint replacement) = colors[i];
                             if (curColor == color)
                             {
-                                *bmpPixelAddress = replacement;
+                                *dstPix = replacement;
                                 break;
                             }
                         }

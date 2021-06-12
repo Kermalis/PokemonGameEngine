@@ -118,10 +118,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
         }
 
-        private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_Fading(uint* dst, int dstW, int dstH)
         {
-            RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            RCB_RenderTick(dst, dstW, dstH);
+            _fadeTransition.Render(dst, dstW, dstH);
         }
 
         #endregion
@@ -232,20 +232,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             _pageImage.Draw(DrawPage);
         }
-        private unsafe void DrawPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void DrawPage(uint* dst, int dstW, int dstH)
         {
-            RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(0, 0, 0, 0));
-            Font.Default.DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, 0, 0, 2, _page.ToString(), Font.DefaultBlack_I);
+            Renderer.OverwriteRectangle(dst, dstW, dstH, Renderer.Color(0, 0, 0, 0));
+            Font.Default.DrawStringScaled(dst, dstW, dstH, 0, 0, 2, _page.ToString(), Font.DefaultBlack_I);
 
             switch (_page)
             {
-                case Page.Info: DrawInfoPage(bmpAddress, bmpWidth, bmpHeight); break;
-                case Page.Personal: DrawPersonalPage(bmpAddress, bmpWidth, bmpHeight); break;
-                case Page.Stats: DrawStatsPage(bmpAddress, bmpWidth, bmpHeight); break;
-                case Page.Moves: DrawMovesPage(bmpAddress, bmpWidth, bmpHeight); break;
+                case Page.Info: DrawInfoPage(dst, dstW, dstH); break;
+                case Page.Personal: DrawPersonalPage(dst, dstW, dstH); break;
+                case Page.Stats: DrawStatsPage(dst, dstW, dstH); break;
+                case Page.Moves: DrawMovesPage(dst, dstW, dstH); break;
             }
         }
-        private unsafe void DrawInfoPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void DrawInfoPage(uint* dst, int dstW, int dstH)
         {
             const float winX = 0.03f;
             const float winY = 0.15f;
@@ -259,11 +259,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float rightColCenterX = rightColX + (rightColW / 2f);
             const float textStartY = rightColY + 0.02f;
             const float textSpacingY = 0.1f;
-            int xpW = (int)(bmpWidth * 0.3f);
-            int xpX = RenderUtils.GetCoordinatesForCentering(bmpWidth, xpW, rightColCenterX);
-            int xpY = (int)(bmpHeight * (rightColY + 0.61f));
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(128, 215, 135, 255));
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 8, RenderUtils.Color(210, 210, 210, 255));
+            int xpW = (int)(dstW * 0.3f);
+            int xpX = Renderer.GetCoordinatesForCentering(dstW, xpW, rightColCenterX);
+            int xpY = (int)(dstH * (rightColY + 0.61f));
+            Renderer.FillRoundedRectangle(dst, dstW, dstH, winX, winY, winX + winW, winY + winH, 15, Renderer.Color(128, 215, 135, 255));
+            Renderer.FillRoundedRectangle(dst, dstW, dstH, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 8, Renderer.Color(210, 210, 210, 255));
 
             Font leftColFont = Font.Default;
             uint[] leftColColors = Font.DefaultWhite_DarkerOutline_I;
@@ -273,14 +273,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             void PlaceLeftCol(int i, string leftColStr)
             {
                 float y = textStartY + (i * textSpacingY);
-                leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, leftColX, y, leftColStr, leftColColors);
+                leftColFont.DrawString(dst, dstW, dstH, leftColX, y, leftColStr, leftColColors);
             }
             void PlaceRightCol(int i, string rightColStr, uint[] colors)
             {
                 float y = textStartY + (i * textSpacingY);
                 rightColFont.MeasureString(rightColStr, out int strW, out _);
-                rightColFont.DrawString(bmpAddress, bmpWidth, bmpHeight,
-                    RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, rightColCenterX), (int)(bmpHeight * y), rightColStr, colors);
+                rightColFont.DrawString(dst, dstW, dstH,
+                    Renderer.GetCoordinatesForCentering(dstW, strW, rightColCenterX), (int)(dstH * y), rightColStr, colors);
             }
 
             PlaceLeftCol(0, "Species");
@@ -327,13 +327,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             if (level >= PkmnConstants.MaxLevel)
             {
                 toNextLvl = 0;
-                RenderUtils.EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, xpX, xpY, xpW, 0);
+                Renderer.EXP_SingleLine(dst, dstW, dstH, xpX, xpY, xpW, 0);
             }
             else
             {
                 PBEGrowthRate gr = bs.GrowthRate;
                 toNextLvl = PBEEXPTables.GetEXPRequired(gr, (byte)(level + 1)) - exp;
-                RenderUtils.EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, xpX, xpY, xpW, exp, level, gr);
+                Renderer.EXP_SingleLine(dst, dstW, dstH, xpX, xpY, xpW, exp, level, gr);
             }
 
             // Species
@@ -359,7 +359,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             str = toNextLvl.ToString();
             PlaceRightCol(5, str, rightColColors);
         }
-        private unsafe void DrawPersonalPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void DrawPersonalPage(uint* dst, int dstW, int dstH)
         {
             const float winX = 0.08f;
             const float winY = 0.15f;
@@ -368,7 +368,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float leftColX = winX + 0.03f;
             const float textStartY = winY + 0.05f;
             const float textSpacingY = 0.1f;
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(145, 225, 225, 255));
+            Renderer.FillRoundedRectangle(dst, dstW, dstH, winX, winY, winX + winW, winY + winH, 15, Renderer.Color(145, 225, 225, 255));
 
             Font leftColFont = Font.Default;
             uint[] leftColColors = Font.DefaultBlack_I;
@@ -377,7 +377,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             void Place(int i, int xOff, string leftColStr, uint[] colors)
             {
                 float y = textStartY + (i * textSpacingY);
-                leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, (int)(bmpWidth * leftColX) + xOff, (int)(bmpHeight * y), leftColStr, colors);
+                leftColFont.DrawString(dst, dstW, dstH, (int)(dstW * leftColX) + xOff, (int)(dstH * y), leftColStr, colors);
             }
 
             PBENature nature;
@@ -454,7 +454,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 Place(6, 0, str, leftColColors);
             }
         }
-        private unsafe void DrawStatsPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void DrawStatsPage(uint* dst, int dstW, int dstH)
         {
             const float winX = 0.03f;
             const float winY = 0.15f;
@@ -477,16 +477,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float abilY = abilTextY;
             const float abilW = 0.95f - abilX;
             const float abilH = 0.075f;
-            int hpW = (int)(bmpWidth * 0.3f);
-            int hpX = RenderUtils.GetCoordinatesForCentering(bmpWidth, hpW, rightColCenterX);
-            int hpY = (int)(bmpHeight * (rightColY + 0.09f));
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 12, RenderUtils.Color(135, 145, 250, 255));
+            int hpW = (int)(dstW * 0.3f);
+            int hpX = Renderer.GetCoordinatesForCentering(dstW, hpW, rightColCenterX);
+            int hpY = (int)(dstH * (rightColY + 0.09f));
+            Renderer.FillRoundedRectangle(dst, dstW, dstH, winX, winY, winX + winW, winY + winH, 12, Renderer.Color(135, 145, 250, 255));
             // Stats
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 8, RenderUtils.Color(210, 210, 210, 255));
+            Renderer.FillRoundedRectangle(dst, dstW, dstH, rightColX, rightColY, rightColX + rightColW, rightColY + rightColH, 8, Renderer.Color(210, 210, 210, 255));
             // Abil
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, abilX, abilY, abilX + abilW, abilY + abilH, 5, RenderUtils.Color(210, 210, 210, 255));
+            Renderer.FillRoundedRectangle(dst, dstW, dstH, abilX, abilY, abilX + abilW, abilY + abilH, 5, Renderer.Color(210, 210, 210, 255));
             // Abil desc
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, leftColX, abilDescY, 0.95f, 0.98f, 5, RenderUtils.Color(210, 210, 210, 255));
+            Renderer.FillRoundedRectangle(dst, dstW, dstH, leftColX, abilDescY, 0.95f, 0.98f, 5, Renderer.Color(210, 210, 210, 255));
 
             Font leftColFont = Font.Default;
             uint[] leftColColors = Font.DefaultWhite_DarkerOutline_I;
@@ -523,14 +523,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     colors = leftColColors;
                 }
-                leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, leftColX, y, leftColStr, colors);
+                leftColFont.DrawString(dst, dstW, dstH, leftColX, y, leftColStr, colors);
             }
             void PlaceRightCol(int i, string rightColStr, uint[] colors)
             {
                 float y = i == -2 ? textStartY : textStart2Y + (i * textSpacingY);
                 rightColFont.MeasureString(rightColStr, out int strW, out _);
-                rightColFont.DrawString(bmpAddress, bmpWidth, bmpHeight,
-                    RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, rightColCenterX), (int)(bmpHeight * y), rightColStr, colors);
+                rightColFont.DrawString(dst, dstW, dstH,
+                    Renderer.GetCoordinatesForCentering(dstW, strW, rightColCenterX), (int)(dstH * y), rightColStr, colors);
             }
 
             BaseStats bs;
@@ -595,7 +595,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             string str = string.Format("{0}/{1}", hp, maxHP);
             PlaceRightCol(-2, str, rightColColors);
             double percent = (double)hp / maxHP;
-            RenderUtils.HP_TripleLine(bmpAddress, bmpWidth, bmpHeight, hpX, hpY, hpW, percent);
+            Renderer.HP_TripleLine(dst, dstW, dstH, hpX, hpY, hpW, percent);
             // Attack
             str = atk.ToString();
             PlaceRightCol(0, str, rightColColors);
@@ -613,12 +613,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             PlaceRightCol(4, str, rightColColors);
             // Ability
             str = PBELocalizedString.GetAbilityName(abil).English;
-            rightColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, abilTextX, abilTextY, str, rightColColors);
+            rightColFont.DrawString(dst, dstW, dstH, abilTextX, abilTextY, str, rightColColors);
             // Ability desc
             str = PBELocalizedString.GetAbilityDescription(abil).English;
-            leftColFont.DrawString(bmpAddress, bmpWidth, bmpHeight, abilDescX, abilDescY, str, rightColColors);
+            leftColFont.DrawString(dst, dstW, dstH, abilDescX, abilDescY, str, rightColColors);
         }
-        private unsafe void DrawMovesPage(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void DrawMovesPage(uint* dst, int dstW, int dstH)
         {
             const float winX = 0.08f;
             const float winY = 0.15f;
@@ -634,7 +634,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float ppNumX = 0.35f;
             const float ppY = itemSpacingY / 2;
             const float cancelY = winY + moveY + (PkmnConstants.NumMoves * itemSpacingY);
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, winX, winY, winX + winW, winY + winH, 15, RenderUtils.Color(250, 128, 120, 255));
+            Renderer.FillRoundedRectangle(dst, dstW, dstH, winX, winY, winX + winW, winY + winH, 15, Renderer.Color(250, 128, 120, 255));
 
             Font moveFont = Font.Default;
             uint[] moveColors = Font.DefaultWhite_DarkerOutline_I;
@@ -646,18 +646,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 float x = moveTextX;
                 float y = winY + moveY + (i * itemSpacingY);
                 string str = PBELocalizedString.GetTypeName(mData.Type).English;
-                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y, str, moveColors);
+                moveFont.DrawString(dst, dstW, dstH, x, y, str, moveColors);
                 x += moveX;
                 str = PBELocalizedString.GetMoveName(move).English;
-                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y, str, moveColors);
+                moveFont.DrawString(dst, dstW, dstH, x, y, str, moveColors);
                 x = moveTextX + ppX;
                 y += ppY;
                 str = "PP";
-                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, x, y, str, ppColors);
+                moveFont.DrawString(dst, dstW, dstH, x, y, str, ppColors);
                 x = moveTextX + ppNumX;
                 str = string.Format("{0}/{1}", pp, maxPP);
                 moveFont.MeasureString(str, out int strW, out _);
-                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, x), (int)(bmpHeight * y), str, ppColors);
+                moveFont.DrawString(dst, dstW, dstH, Renderer.GetCoordinatesForCentering(dstW, strW, x), (int)(dstH * y), str, ppColors);
 
                 DrawSelection(i);
             }
@@ -671,7 +671,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 float y = winY + moveY + (i * itemSpacingY);
                 float w = moveColW;
                 float h = i == PkmnConstants.NumMoves ? itemSpacingY / 2 : itemSpacingY;
-                RenderUtils.DrawRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, x + w, y + h, 5, RenderUtils.Color(48, 180, 255, 200));
+                Renderer.DrawRoundedRectangle(dst, dstW, dstH, x, y, x + w, y + h, 5, Renderer.Color(48, 180, 255, 200));
             }
 
             // Moves
@@ -731,10 +731,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 PBEMoveData mData = PBEMoveData.Data[_learningMove];
                 float x = moveTextX;
                 string str = PBELocalizedString.GetTypeName(mData.Type).English;
-                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, x, cancelY, str, learnColors);
+                moveFont.DrawString(dst, dstW, dstH, x, cancelY, str, learnColors);
                 x += moveX;
                 str = PBELocalizedString.GetMoveName(_learningMove).English;
-                moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, x, cancelY, str, learnColors);
+                moveFont.DrawString(dst, dstW, dstH, x, cancelY, str, learnColors);
                 DrawSelection(PkmnConstants.NumMoves);
             }
             else
@@ -742,7 +742,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 if (_selectingMove != -1)
                 {
                     string str = "Cancel";
-                    moveFont.DrawString(bmpAddress, bmpWidth, bmpHeight, moveTextX, cancelY, str, moveColors);
+                    moveFont.DrawString(dst, dstW, dstH, moveTextX, cancelY, str, moveColors);
                     DrawSelection(PkmnConstants.NumMoves);
                 }
             }
@@ -864,15 +864,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
         }
 
-        private unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_RenderTick(uint* dst, int dstW, int dstH)
         {
-            RenderUtils.ThreeColorBackground(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(215, 231, 230, 255), RenderUtils.Color(231, 163, 0, 255), RenderUtils.Color(242, 182, 32, 255));
+            Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(215, 231, 230, 255), Renderer.Color(231, 163, 0, 255), Renderer.Color(242, 182, 32, 255));
 
             AnimatedImage.UpdateCurrentFrameForAll();
-            _pkmnImage.DrawOn(bmpAddress, bmpWidth, bmpHeight,
-                RenderUtils.GetCoordinatesForCentering(bmpWidth, _pkmnImage.Width, 0.2f), RenderUtils.GetCoordinatesForEndAlign(bmpHeight, _pkmnImage.Height, 0.6f));
+            _pkmnImage.DrawOn(dst, dstW, dstH,
+                Renderer.GetCoordinatesForCentering(dstW, _pkmnImage.Width, 0.2f), Renderer.GetCoordinatesForEndAlign(dstH, _pkmnImage.Height, 0.6f));
 
-            _pageImage.DrawOn(bmpAddress, bmpWidth, bmpHeight, 1f - PageImageWidth, 1f - PageImageHeight);
+            _pageImage.DrawOn(dst, dstW, dstH, 1f - PageImageWidth, 1f - PageImageHeight);
         }
     }
 }

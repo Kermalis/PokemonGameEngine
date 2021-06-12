@@ -4,19 +4,19 @@ using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
-    internal static partial class RenderUtils
+    internal static unsafe partial class Renderer
     {
         // Mimics DrawLineHigh
-        public static unsafe void ThreeColorBackground(uint* bmpAddress, int bmpWidth, int bmpHeight, uint color1, uint color2, uint color3)
+        public static void ThreeColorBackground(uint* dst, int dstW, int dstH, uint color1, uint color2, uint color3)
         {
             const float wf = 0.12f;
             const float x1f = 0.45f;
             const float x2f = 0.15f;
-            int w = (int)(wf * bmpWidth);
-            int x1 = (int)(x1f * bmpWidth);
-            int x2 = (int)(x2f * bmpWidth);
+            int w = (int)(wf * dstW);
+            int x1 = (int)(x1f * dstW);
+            int x2 = (int)(x2f * dstW);
             int y1 = 0;
-            int y2 = bmpHeight - 1;
+            int y2 = dstH - 1;
 
             // DrawLineHigh essentially
             int dx = x2 - x1;
@@ -31,9 +31,9 @@ namespace Kermalis.PokemonGameEngine.Render
             int px = x1;
             for (int py = y1; py <= y2; py++)
             {
-                DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, 0, py, px - 1, color1);
-                DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, px, py, px + w, color2);
-                DrawHorizontalLine_Points(bmpAddress, bmpWidth, bmpHeight, px + w + 1, py, bmpWidth - 1, color3);
+                DrawHorizontalLine_Points(dst, dstW, dstH, 0, py, px - 1, color1);
+                DrawHorizontalLine_Points(dst, dstW, dstH, px, py, px + w, color2);
+                DrawHorizontalLine_Points(dst, dstW, dstH, px + w + 1, py, dstW - 1, color3);
                 if (d > 0)
                 {
                     px += xi;
@@ -45,7 +45,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         #region HP & EXP
 
-        public static unsafe void HP_TripleLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, double percent)
+        public static void HP_TripleLine(uint* dst, int dstW, int dstH, int x, int y, int width, double percent)
         {
             uint hpSides, hpMid;
             if (percent <= 0.20)
@@ -63,29 +63,29 @@ namespace Kermalis.PokemonGameEngine.Render
                 hpSides = Color(0, 140, 41, 255);
                 hpMid = Color(0, 255, 74, 255);
             }
-            DrawRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, width, 5, Color(49, 49, 49, 255));
-            FillRectangle(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 1, width - 2, 3, Color(33, 33, 33, 255));
+            DrawRectangle(dst, dstW, dstH, x, y, width, 5, Color(49, 49, 49, 255));
+            FillRectangle(dst, dstW, dstH, x + 1, y + 1, width - 2, 3, Color(33, 33, 33, 255));
             int theW = (int)((width - 2) * percent);
             if (theW == 0 && percent > 0)
             {
                 theW = 1;
             }
-            DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 1, theW, hpSides);
-            DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 2, theW, hpMid);
-            DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 3, theW, hpSides);
+            DrawHorizontalLine_Width(dst, dstW, dstH, x + 1, y + 1, theW, hpSides);
+            DrawHorizontalLine_Width(dst, dstW, dstH, x + 1, y + 2, theW, hpMid);
+            DrawHorizontalLine_Width(dst, dstW, dstH, x + 1, y + 3, theW, hpSides);
         }
 
-        public static unsafe void EXP_SingleLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, uint exp, byte level, PBESpecies species, PBEForm form)
+        public static void EXP_SingleLine(uint* dst, int dstW, int dstH, int x, int y, int width, uint exp, byte level, PBESpecies species, PBEForm form)
         {
             if (level >= PkmnConstants.MaxLevel)
             {
-                EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, x, y, width, 0);
+                EXP_SingleLine(dst, dstW, dstH, x, y, width, 0);
                 return;
             }
             PBEGrowthRate gr = BaseStats.Get(species, form, true).GrowthRate;
-            EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, x, y, width, exp, level, gr);
+            EXP_SingleLine(dst, dstW, dstH, x, y, width, exp, level, gr);
         }
-        public static unsafe void EXP_SingleLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, uint exp, byte level, PBEGrowthRate gr)
+        public static void EXP_SingleLine(uint* dst, int dstW, int dstH, int x, int y, int width, uint exp, byte level, PBEGrowthRate gr)
         {
             double percent;
             if (level >= PkmnConstants.MaxLevel)
@@ -99,23 +99,23 @@ namespace Kermalis.PokemonGameEngine.Render
                 uint expCur = exp;
                 percent = (double)(expCur - expPrev) / (expNext - expPrev);
             }
-            EXP_SingleLine(bmpAddress, bmpWidth, bmpHeight, x, y, width, percent);
+            EXP_SingleLine(dst, dstW, dstH, x, y, width, percent);
         }
-        public static unsafe void EXP_SingleLine(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, int width, double percent)
+        public static void EXP_SingleLine(uint* dst, int dstW, int dstH, int x, int y, int width, double percent)
         {
-            DrawRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, width, 3, Color(49, 49, 49, 255));
-            DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 1, width - 2, Color(33, 33, 33, 255));
+            DrawRectangle(dst, dstW, dstH, x, y, width, 3, Color(49, 49, 49, 255));
+            DrawHorizontalLine_Width(dst, dstW, dstH, x + 1, y + 1, width - 2, Color(33, 33, 33, 255));
             int theW = (int)((width - 2) * percent);
             if (theW == 0 && percent > 0)
             {
                 theW = 1;
             }
-            DrawHorizontalLine_Width(bmpAddress, bmpWidth, bmpHeight, x + 1, y + 1, theW, Color(0, 160, 255, 255));
+            DrawHorizontalLine_Width(dst, dstW, dstH, x + 1, y + 1, theW, Color(0, 160, 255, 255));
         }
 
         #endregion
 
-        public static unsafe void Sprite_DrawWithShadow(Sprite s, uint* dst, int dstW, int dstH, int xOffset = 0, int yOffset = 0)
+        public static void Sprite_DrawWithShadow(Sprite s, uint* dst, int dstW, int dstH, int xOffset = 0, int yOffset = 0)
         {
             if (s.IsInvisible)
             {
@@ -127,7 +127,7 @@ namespace Kermalis.PokemonGameEngine.Render
                 DrawBitmapWithShadow(dst, dstW, dstH, s.X + xOffset, s.Y + yOffset, src, s.Image.Width, s.Image.Height);
             }
         }
-        public static unsafe PixelSupplier MakeShadowSupplier(uint* src, int srcW)
+        public static PixelSupplier MakeShadowSupplier(uint* src, int srcW)
         {
             return (x, y) =>
             {
@@ -135,7 +135,7 @@ namespace Kermalis.PokemonGameEngine.Render
                 return color != 0 ? Color(0, 0, 0, 160) : color;
             };
         }
-        public static unsafe void DrawBitmapWithShadow(uint* dst, int dstW, int dstH, int x, int y, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
+        public static void DrawBitmapWithShadow(uint* dst, int dstW, int dstH, int x, int y, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
         {
             PixelSupplier pixSupplyShadow = MakeShadowSupplier(src, srcW);
             uint[] rotated = CreateRotatedBitmap(pixSupplyShadow, srcW, srcH, 15, out int rotWidth, out int rotHeight, out _, out _, xFlip: xFlip, yFlip: yFlip, smooth: true);

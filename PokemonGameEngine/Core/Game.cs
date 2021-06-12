@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace Kermalis.PokemonGameEngine.Core
 {
     internal delegate void MainCallback();
-    internal unsafe delegate void RenderCallback(uint* bmpAddress, int bmpWidth, int bmpHeight);
+    internal unsafe delegate void RenderCallback(uint* dst, int dstW, int dstH);
 
     internal sealed class Game
     {
@@ -128,25 +128,25 @@ namespace Kermalis.PokemonGameEngine.Core
 
         #region Render Tick
 
-        public unsafe void RenderWindows(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe void RenderWindows(uint* dst, int dstW, int dstH)
         {
             foreach (Window w in Windows)
             {
-                w.Render(bmpAddress, bmpWidth, bmpHeight);
+                w.Render(dst, dstW, dstH);
             }
         }
 
-        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight
+        public unsafe void RenderTick(uint* dst, int dstW, int dstH
 #if DEBUG
             , string topLeftMessage, Font messageFont, uint[] messageColors
 #endif
             )
         {
-            RCallback?.Invoke(bmpAddress, bmpWidth, bmpHeight);
+            RCallback?.Invoke(dst, dstW, dstH);
 #if DEBUG
             if (topLeftMessage is not null)
             {
-                messageFont.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0, topLeftMessage, messageColors);
+                messageFont.DrawString(dst, dstW, dstH, 0, 0, topLeftMessage, messageColors);
             }
 #endif
         }

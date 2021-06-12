@@ -11,7 +11,7 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             if (_messageBox is null)
             {
-                _messageBox = new Window(0.00f, 0.79f, 1f, 0.17f, RenderUtils.Color(255, 255, 255, 255));
+                _messageBox = new Window(0.00f, 0.79f, 1f, 0.17f, Renderer.Color(255, 255, 255, 255));
             }
             _stringPrinter?.Close();
             _stringPrinter = new StringPrinter(_messageBox, text, 0.05f, 0.01f, Font.Default, Font.DefaultDarkGray_I);

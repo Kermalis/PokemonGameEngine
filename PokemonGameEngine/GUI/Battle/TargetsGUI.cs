@@ -34,27 +34,27 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _ally = ally;
             }
 
-            public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight, float x, float y, bool selected)
+            public unsafe void Render(uint* dst, int dstW, int dstH, float x, float y, bool selected)
             {
-                uint enabledC = _ally ? RenderUtils.Color(125, 100, 230, 255) : RenderUtils.Color(248, 80, 50, 255);
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, 0.24f, 0.2f, enabledC);
+                uint enabledC = _ally ? Renderer.Color(125, 100, 230, 255) : Renderer.Color(248, 80, 50, 255);
+                Renderer.FillRectangle(dst, dstW, dstH, x, y, 0.24f, 0.2f, enabledC);
 
                 if (Pokemon != null)
                 {
-                    Pokemon.Mini.DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y + 0.025f);
+                    Pokemon.Mini.DrawOn(dst, dstW, dstH, x, y + 0.025f);
 
-                    Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, x + 0.075f, y + 0.05f, Pokemon.Pkmn.KnownNickname, Font.DefaultWhite_I);
+                    Font.Default.DrawString(dst, dstW, dstH, x + 0.075f, y + 0.05f, Pokemon.Pkmn.KnownNickname, Font.DefaultWhite_I);
                 }
 
                 if (selected)
                 {
-                    uint selectedC = _ally ? RenderUtils.Color(75, 60, 150, 255) : RenderUtils.Color(120, 30, 10, 255);
-                    RenderUtils.DrawThickRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, 0.24f, 0.2f, 2, selectedC);
+                    uint selectedC = _ally ? Renderer.Color(75, 60, 150, 255) : Renderer.Color(120, 30, 10, 255);
+                    Renderer.DrawThickRectangle(dst, dstW, dstH, x, y, 0.24f, 0.2f, 2, selectedC);
                 }
 
                 if (!Enabled)
                 {
-                    RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, 0.24f, 0.2f, RenderUtils.Color(0, 0, 0, 150));
+                    Renderer.FillRectangle(dst, dstW, dstH, x, y, 0.24f, 0.2f, Renderer.Color(0, 0, 0, 150));
                 }
             }
         }
@@ -685,66 +685,66 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
-        public unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe void RenderTick(uint* dst, int dstW, int dstH)
         {
-            uint lineC = RenderUtils.Color(156, 173, 247, 255);
-            uint selectC = RenderUtils.Color(48, 180, 255, 200);
+            uint lineC = Renderer.Color(156, 173, 247, 255);
+            uint selectC = Renderer.Color(48, 180, 255, 200);
 
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(31, 31, 31, 151)); // Transparent background
+            Renderer.FillRectangle(dst, dstW, dstH, Renderer.Color(31, 31, 31, 151)); // Transparent background
 
             #region Lines
             if (_targetFoeRight.LineDownVisible)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.14f, 0.3f, 0.1f, 0.4f, lineC);
+                Renderer.FillRectangle(dst, dstW, dstH, 0.14f, 0.3f, 0.1f, 0.4f, lineC);
             }
             if (_targetFoeLeft.LineDownVisible)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.76f, 0.3f, 0.1f, 0.4f, lineC);
+                Renderer.FillRectangle(dst, dstW, dstH, 0.76f, 0.3f, 0.1f, 0.4f, lineC);
             }
             float w = _centerTargetsVisible ? 0.31f : 0.62f;
             if (_targetFoeRight.LineRightVisible)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.19f, 0.25f, w, 0.1f, lineC);
+                Renderer.FillRectangle(dst, dstW, dstH, 0.19f, 0.25f, w, 0.1f, lineC);
             }
             if (_targetAllyLeft.LineRightVisible)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.19f, 0.65f, w, 0.1f, lineC);
+                Renderer.FillRectangle(dst, dstW, dstH, 0.19f, 0.65f, w, 0.1f, lineC);
             }
             if (_centerTargetsVisible)
             {
                 if (_targetFoeCenter.LineDownVisible)
                 {
-                    RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.45f, 0.3f, 0.1f, 0.4f, lineC);
+                    Renderer.FillRectangle(dst, dstW, dstH, 0.45f, 0.3f, 0.1f, 0.4f, lineC);
                 }
                 if (_targetFoeCenter.LineRightVisible)
                 {
-                    RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.25f, w, 0.1f, lineC);
+                    Renderer.FillRectangle(dst, dstW, dstH, 0.5f, 0.25f, w, 0.1f, lineC);
                 }
                 if (_targetAllyCenter.LineRightVisible)
                 {
-                    RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.65f, w, 0.1f, lineC);
+                    Renderer.FillRectangle(dst, dstW, dstH, 0.5f, 0.65f, w, 0.1f, lineC);
                 }
             }
             #endregion
 
             if (_centerTargetsVisible)
             {
-                _targetFoeCenter.Render(bmpAddress, bmpWidth, bmpHeight, 0.38f, 0.2f, _selection == TargetSelection.FoeCenter);
-                _targetAllyCenter.Render(bmpAddress, bmpWidth, bmpHeight, 0.38f, 0.6f, _selection == TargetSelection.AllyCenter);
+                _targetFoeCenter.Render(dst, dstW, dstH, 0.38f, 0.2f, _selection == TargetSelection.FoeCenter);
+                _targetAllyCenter.Render(dst, dstW, dstH, 0.38f, 0.6f, _selection == TargetSelection.AllyCenter);
             }
-            _targetFoeRight.Render(bmpAddress, bmpWidth, bmpHeight, 0.07f, 0.2f, _selection == TargetSelection.FoeRight);
-            _targetFoeLeft.Render(bmpAddress, bmpWidth, bmpHeight, 0.69f, 0.2f, _selection == TargetSelection.FoeLeft);
-            _targetAllyLeft.Render(bmpAddress, bmpWidth, bmpHeight, 0.07f, 0.6f, _selection == TargetSelection.AllyLeft);
-            _targetAllyRight.Render(bmpAddress, bmpWidth, bmpHeight, 0.69f, 0.6f, _selection == TargetSelection.AllyRight);
+            _targetFoeRight.Render(dst, dstW, dstH, 0.07f, 0.2f, _selection == TargetSelection.FoeRight);
+            _targetFoeLeft.Render(dst, dstW, dstH, 0.69f, 0.2f, _selection == TargetSelection.FoeLeft);
+            _targetAllyLeft.Render(dst, dstW, dstH, 0.07f, 0.6f, _selection == TargetSelection.AllyLeft);
+            _targetAllyRight.Render(dst, dstW, dstH, 0.69f, 0.6f, _selection == TargetSelection.AllyRight);
 
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.45f, 0.9f, 0.1f, 0.1f, RenderUtils.Color(50, 50, 50, 255)); // Back
+            Renderer.FillRectangle(dst, dstW, dstH, 0.45f, 0.9f, 0.1f, 0.1f, Renderer.Color(50, 50, 50, 255)); // Back
             string str = "Back";
             Font.Default.MeasureString(str, out int strW, out int strH);
-            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight,
-                RenderUtils.GetCoordinatesForCentering(bmpWidth, strW, 0.5f), RenderUtils.GetCoordinatesForCentering(bmpHeight, strH, 0.95f), str, Font.DefaultWhite_I);
+            Font.Default.DrawString(dst, dstW, dstH,
+                Renderer.GetCoordinatesForCentering(dstW, strW, 0.5f), Renderer.GetCoordinatesForCentering(dstH, strH, 0.95f), str, Font.DefaultWhite_I);
             if (_selection == TargetSelection.Back)
             {
-                RenderUtils.DrawRectangle(bmpAddress, bmpWidth, bmpHeight, 0.45f, 0.9f, 0.1f, 0.1f, selectC);
+                Renderer.DrawRectangle(dst, dstW, dstH, 0.45f, 0.9f, 0.1f, 0.1f, selectC);
             }
         }
     }

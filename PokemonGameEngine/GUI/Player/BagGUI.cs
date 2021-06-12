@@ -56,7 +56,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
 
             _pouchChoices?.Dispose();
             _pouchChoices = new ItemGUIChoices(0.60f, 0.18f, 0.97f, 0.97f, 0.07f,
-                RenderUtils.Color(245, 200, 37, 255), RenderUtils.Color(231, 163, 0, 255));
+                Renderer.Color(245, 200, 37, 255), Renderer.Color(231, 163, 0, 255));
             foreach (InventorySlot s in _curPouch)
             {
                 _pouchChoices.Add(new ItemGUIChoice(s, null));
@@ -115,38 +115,38 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
             }
         }
 
-        private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_Fading(uint* dst, int dstW, int dstH)
         {
-            RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            RCB_RenderTick(dst, dstW, dstH);
+            _fadeTransition.Render(dst, dstW, dstH);
         }
-        private unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_RenderTick(uint* dst, int dstW, int dstH)
         {
             // Background
-            RenderUtils.ThreeColorBackground(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(215, 231, 230, 255), RenderUtils.Color(231, 163, 0, 255), RenderUtils.Color(242, 182, 32, 255));
+            Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(215, 231, 230, 255), Renderer.Color(231, 163, 0, 255), Renderer.Color(242, 182, 32, 255));
 
             // BAG
-            Font.Default.DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, 0.02f, 0.01f, 2, "BAG", Font.DefaultDarkGray_I);
+            Font.Default.DrawStringScaled(dst, dstW, dstH, 0.02f, 0.01f, 2, "BAG", Font.DefaultDarkGray_I);
 
-            _partyChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+            _partyChoices.Render(dst, dstW, dstH);
 
             // Draw pouch tabs background
-            int x1 = (int)(0.60f * bmpWidth);
-            int y1 = (int)(0.03f * bmpHeight);
-            int x2 = (int)(0.97f * bmpWidth);
-            int y2 = (int)(0.13f * bmpHeight);
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, y2, 10, RenderUtils.Color(245, 200, 37, 255));
-            RenderUtils.DrawRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, y2, 10, RenderUtils.Color(231, 163, 0, 255));
+            int x1 = (int)(0.60f * dstW);
+            int y1 = (int)(0.03f * dstH);
+            int x2 = (int)(0.97f * dstW);
+            int y2 = (int)(0.13f * dstH);
+            Renderer.FillRoundedRectangle(dst, dstW, dstH, x1, y1, x2, y2, 10, Renderer.Color(245, 200, 37, 255));
+            Renderer.DrawRoundedRectangle(dst, dstW, dstH, x1, y1, x2, y2, 10, Renderer.Color(231, 163, 0, 255));
 
             // Draw pouch name
-            x1 = (int)(0.62f * bmpWidth);
-            y1 = (int)(0.14f * bmpHeight);
-            Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, x1, y1, _curPouchName, Font.DefaultDarkGray_I);
+            x1 = (int)(0.62f * dstW);
+            y1 = (int)(0.14f * dstH);
+            Font.DefaultSmall.DrawString(dst, dstW, dstH, x1, y1, _curPouchName, Font.DefaultDarkGray_I);
             // Draw cash money
-            Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, x2 - _cashMoneyWidth, y1, _cashMoney, Font.DefaultDarkGray_I);
+            Font.DefaultSmall.DrawString(dst, dstW, dstH, x2 - _cashMoneyWidth, y1, _cashMoney, Font.DefaultDarkGray_I);
 
             // Draw item list
-            _pouchChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+            _pouchChoices.Render(dst, dstW, dstH);
         }
     }
 }

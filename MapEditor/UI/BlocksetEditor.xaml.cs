@@ -380,8 +380,8 @@ namespace Kermalis.MapEditor.UI
         {
             using (ILockedFramebuffer l = _clipboardBitmap.Lock())
             {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtils.ClearUnchecked(bmpAddress, Overworld.Block_NumPixelsX, 0, 0, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
+                uint* dst = (uint*)l.Address.ToPointer();
+                Util.Renderer.ClearRectangle_Unchecked(dst, Overworld.Block_NumPixelsX, 0, 0, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
                 TileLayerImage tli = _tileLayerImage;
                 Blockset.Block.Tile[][] c = tli.Clipboard;
                 for (int y = 0; y < Overworld.Block_NumTilesY; y++)
@@ -394,8 +394,8 @@ namespace Kermalis.MapEditor.UI
                         if (t.TilesetTile != null)
                         {
                             int tx = x * Overworld.Tile_NumPixelsX;
-                            RenderUtils.TransparencyGrid(bmpAddress, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, tx, ty, Overworld.Tile_NumPixelsX / 2, Overworld.Tile_NumPixelsY / 2, Overworld.Block_NumTilesX, Overworld.Block_NumTilesY);
-                            t.Draw(bmpAddress, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, tx, ty);
+                            Util.Renderer.TransparencyGrid(dst, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, tx, ty, Overworld.Tile_NumPixelsX / 2, Overworld.Tile_NumPixelsY / 2, Overworld.Block_NumTilesX, Overworld.Block_NumTilesY);
+                            t.Draw(dst, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, tx, ty);
                         }
                     }
                 }

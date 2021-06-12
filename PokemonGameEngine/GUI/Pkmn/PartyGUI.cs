@@ -181,10 +181,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
         }
 
-        private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_Fading(uint* dst, int dstW, int dstH)
         {
-            RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            RCB_RenderTick(dst, dstW, dstH);
+            _fadeTransition.Render(dst, dstW, dstH);
         }
 
         #endregion
@@ -289,7 +289,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
             _textChoices.Add(new TextGUIChoice("Cancel", BackCommand));
             _textChoices.GetSize(out int width, out int height);
-            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, RenderUtils.Color(255, 255, 255, 255));
+            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, Renderer.Color(255, 255, 255, 255));
             RenderChoicesOntoWindow();
             Game.Instance.SetCallback(CB_Choices);
         }
@@ -457,7 +457,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesThenGoToLogicTick));
             _textChoices.GetSize(out int width, out int height);
-            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, RenderUtils.Color(255, 255, 255, 255));
+            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, Renderer.Color(255, 255, 255, 255));
             RenderChoicesOntoWindow();
             _message = string.Format("Do what with {0}?", nickname);
             Game.Instance.SetCallback(CB_Choices);
@@ -484,12 +484,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private unsafe void RenderChoicesOntoWindow()
         {
-            _textChoicesWindow.ClearImage();
-            Image i = _textChoicesWindow.Image;
-            fixed (uint* bmpAddress = i.Bitmap)
-            {
-                _textChoices.Render(bmpAddress, i.Width, i.Height);
-            }
+            _textChoices.RenderChoicesOntoWindow(_textChoicesWindow);
         }
 
         private void CB_Choices()
@@ -598,34 +593,34 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
         }
 
-        private unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_RenderTick(uint* dst, int dstW, int dstH)
         {
             // Background
-            RenderUtils.ThreeColorBackground(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(222, 50, 60, 255), RenderUtils.Color(190, 40, 50, 255), RenderUtils.Color(255, 180, 200, 255));
+            Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(222, 50, 60, 255), Renderer.Color(190, 40, 50, 255), Renderer.Color(255, 180, 200, 255));
 
             for (int i = 0; i < _members.Count; i++)
             {
                 int col = i % 2;
                 int row = i / 2;
-                int x = col == 0 ? bmpWidth / 40 : (bmpWidth / 2) + (bmpWidth / 40);
-                int y = row * (bmpHeight / 4) + (bmpHeight / 20);
-                _members[i].Render(bmpAddress, bmpWidth, bmpHeight, x, y, col == _selectionX && row == _selectionY);
+                int x = col == 0 ? dstW / 40 : (dstW / 2) + (dstW / 40);
+                int y = row * (dstH / 4) + (dstH / 20);
+                _members[i].Render(dst, dstW, dstH, x, y, col == _selectionX && row == _selectionY);
             }
 
             // Back button
             if (_allowBack)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.8f, 0.5f, 0.2f, _selectionY == -1 ? RenderUtils.Color(96, 48, 48, 255) : RenderUtils.Color(48, 48, 48, 255));
-                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.5f, 0.8f, "Back", Font.DefaultWhite_I);
+                Renderer.FillRectangle(dst, dstW, dstH, 0.5f, 0.8f, 0.5f, 0.2f, _selectionY == -1 ? Renderer.Color(96, 48, 48, 255) : Renderer.Color(48, 48, 48, 255));
+                Font.Default.DrawString(dst, dstW, dstH, 0.5f, 0.8f, "Back", Font.DefaultWhite_I);
             }
 
             if (_message != null)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0.8f, 0.5f, 0.2f, RenderUtils.Color(200, 200, 200, 255));
-                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0, 0.8f, _message, Font.DefaultDarkGray_I);
+                Renderer.FillRectangle(dst, dstW, dstH, 0, 0.8f, 0.5f, 0.2f, Renderer.Color(200, 200, 200, 255));
+                Font.Default.DrawString(dst, dstW, dstH, 0, 0.8f, _message, Font.DefaultDarkGray_I);
             }
 
-            Game.Instance.RenderWindows(bmpAddress, bmpWidth, bmpHeight);
+            Game.Instance.RenderWindows(dst, dstW, dstH);
         }
     }
 }

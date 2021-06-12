@@ -68,7 +68,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             UpdateVisibleMaps();
         }
 
-        private void GetVisibleBlocksVariables(int bmpWidth, int bmpHeight,
+        private void GetVisibleBlocksVariables(int dstW, int dstH,
             out Map cameraMap, // The map the camera is currently on
             out int startBlockX, out int startBlockY, // The first visible blocks offset from the current map
             out int endBlockX, out int endBlockY, // The last visible blocks offset from the current map
@@ -76,14 +76,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             cameraMap = Map;
             Position cameraPos = Pos;
-            int cameraPixelX = (cameraPos.X * Overworld.Block_NumPixelsX) - (bmpWidth / 2) + (Overworld.Block_NumPixelsX / 2) + ProgressX + CameraOfsX;
-            int cameraPixelY = (cameraPos.Y * Overworld.Block_NumPixelsY) - (bmpHeight / 2) + (Overworld.Block_NumPixelsY / 2) + ProgressY + CameraOfsY;
+            int cameraPixelX = (cameraPos.X * Overworld.Block_NumPixelsX) - (dstW / 2) + (Overworld.Block_NumPixelsX / 2) + ProgressX + CameraOfsX;
+            int cameraPixelY = (cameraPos.Y * Overworld.Block_NumPixelsY) - (dstH / 2) + (Overworld.Block_NumPixelsY / 2) + ProgressY + CameraOfsY;
             int xpBX = cameraPixelX % Overworld.Block_NumPixelsX;
             int ypBY = cameraPixelY % Overworld.Block_NumPixelsY;
             startBlockX = (cameraPixelX / Overworld.Block_NumPixelsX) - (xpBX >= 0 ? 0 : 1);
             startBlockY = (cameraPixelY / Overworld.Block_NumPixelsY) - (ypBY >= 0 ? 0 : 1);
-            int numBlocksX = (bmpWidth / Overworld.Block_NumPixelsX) + (bmpWidth % Overworld.Block_NumPixelsX == 0 ? 0 : 1);
-            int numBlocksY = (bmpHeight / Overworld.Block_NumPixelsY) + (bmpHeight % Overworld.Block_NumPixelsY == 0 ? 0 : 1);
+            int numBlocksX = (dstW / Overworld.Block_NumPixelsX) + (dstW % Overworld.Block_NumPixelsX == 0 ? 0 : 1);
+            int numBlocksY = (dstH / Overworld.Block_NumPixelsY) + (dstH % Overworld.Block_NumPixelsY == 0 ? 0 : 1);
             endBlockX = startBlockX + numBlocksX + (xpBX == 0 ? 0 : 1);
             endBlockY = startBlockY + numBlocksY + (ypBY == 0 ? 0 : 1);
             startBlockPixelX = xpBX >= 0 ? -xpBX : -xpBX - Overworld.Block_NumPixelsX;
@@ -128,7 +128,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             VisibleMaps = newList;
         }
 
-        private static unsafe void RenderBlocks(uint* bmpAddress, int bmpWidth, int bmpHeight,
+        private static unsafe void RenderBlocks(uint* dst, int dstW, int dstH,
             byte elevation, Map cameraMap, int startBlockX, int startBlockY, int endBlockX, int endBlockY, int startBlockPixelX, int startBlockPixelY)
         {
             int curPixelX = startBlockPixelX;
@@ -140,7 +140,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                     Map.Layout.Block block = cameraMap.GetBlock_CrossMap(blockX, blockY, out _, out _, out _);
                     if (block != null) // No border would show pure black
                     {
-                        block.BlocksetBlock.Render(bmpAddress, bmpWidth, bmpHeight, elevation, curPixelX, curPixelY);
+                        block.BlocksetBlock.Render(dst, dstW, dstH, elevation, curPixelX, curPixelY);
                     }
                     curPixelX += Overworld.Block_NumPixelsX;
                 }
@@ -148,7 +148,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 curPixelY += Overworld.Block_NumPixelsY;
             }
         }
-        private static unsafe void RenderObjs(uint* bmpAddress, int bmpWidth, int bmpHeight,
+        private static unsafe void RenderObjs(uint* dst, int dstW, int dstH,
             List<Obj> objs, byte elevation, Map cameraMap, int startBlockX, int startBlockY, int endBlockX, int endBlockY, int startBlockPixelX, int startBlockPixelY)
         {
             // Extra tolerance for wide/tall VisualObj
@@ -181,7 +181,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                         Position p = v.Pos;
                         if (p.Elevation == elevation && p.X == outX && p.Y == outY)
                         {
-                            v.Draw(bmpAddress, bmpWidth, bmpHeight, blockX - startBlockX, blockY - startBlockY, startBlockPixelX, startBlockPixelY);
+                            v.Draw(dst, dstW, dstH, blockX - startBlockX, blockY - startBlockY, startBlockPixelX, startBlockPixelY);
                         }
                     }
                     curPixelX += Overworld.Block_NumPixelsX;
@@ -190,9 +190,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 curPixelY += Overworld.Block_NumPixelsY;
             }
         }
-        public static unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public static unsafe void Render(uint* dst, int dstW, int dstH)
         {
-            Camera.GetVisibleBlocksVariables(bmpWidth, bmpHeight,
+            Camera.GetVisibleBlocksVariables(dstW, dstH,
                 out Map cameraMap, out int startBlockX, out int startBlockY, out int endBlockX, out int endBlockY, out int startBlockPixelX, out int startBlockPixelY);
 
             List<Obj> objs = LoadedObjs;
@@ -200,9 +200,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             for (byte e = 0; e < Overworld.NumElevations; e++)
             {
                 // Draw blocks
-                RenderBlocks(bmpAddress, bmpWidth, bmpHeight, e, cameraMap, startBlockX, startBlockY, endBlockX, endBlockY, startBlockPixelX, startBlockPixelY);
+                RenderBlocks(dst, dstW, dstH, e, cameraMap, startBlockX, startBlockY, endBlockX, endBlockY, startBlockPixelX, startBlockPixelY);
                 // Draw VisualObjs
-                RenderObjs(bmpAddress, bmpWidth, bmpHeight, objs, e, cameraMap, startBlockX, startBlockY, endBlockX, endBlockY, startBlockPixelX, startBlockPixelY);
+                RenderObjs(dst, dstW, dstH, objs, e, cameraMap, startBlockX, startBlockY, endBlockX, endBlockY, startBlockPixelX, startBlockPixelY);
             }
         }
     }

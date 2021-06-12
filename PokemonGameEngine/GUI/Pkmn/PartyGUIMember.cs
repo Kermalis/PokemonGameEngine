@@ -102,14 +102,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             _background.Draw(DrawBackground);
         }
-        private unsafe void DrawBackground(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void DrawBackground(uint* dst, int dstW, int dstH)
         {
-            RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, _color);
+            Renderer.OverwriteRectangle(dst, dstW, dstH, _color);
             // Shadow
-            RenderUtils.FillEllipse_Points(bmpAddress, bmpWidth, bmpHeight, 3, 34, 29, 39, RenderUtils.Color(0, 0, 0, 100));
+            Renderer.FillEllipse_Points(dst, dstW, dstH, 3, 34, 29, 39, Renderer.Color(0, 0, 0, 100));
             // Nickname
             PartyPokemon p = _usePartyPkmn ? _partyPkmn : _battlePkmn.PartyPkmn;
-            Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 2, 3, p.Nickname, Font.DefaultWhite_I);
+            Font.DefaultSmall.DrawString(dst, dstW, dstH, 2, 3, p.Nickname, Font.DefaultWhite_I);
             if (p.IsEgg)
             {
                 return;
@@ -119,23 +119,23 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             PBEGender gender = p.Gender;
             if (gender != PBEGender.Genderless)
             {
-                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, -2, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultBlue_O : Font.DefaultRed_O);
+                Font.Default.DrawString(dst, dstW, dstH, 61, -2, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultBlue_O : Font.DefaultRed_O);
             }
             // Level
             const int lvX = 72;
-            Font.PartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, lvX, 3, "[LV]", Font.DefaultWhite_I);
-            Font.PartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, lvX + 12, 3, (_usePartyPkmn ? p.Level : bPkmn.Level).ToString(), Font.DefaultWhite_I);
+            Font.PartyNumbers.DrawString(dst, dstW, dstH, lvX, 3, "[LV]", Font.DefaultWhite_I);
+            Font.PartyNumbers.DrawString(dst, dstW, dstH, lvX + 12, 3, (_usePartyPkmn ? p.Level : bPkmn.Level).ToString(), Font.DefaultWhite_I);
             // Status
             PBEStatus1 status = _usePartyPkmn ? p.Status1 : bPkmn.Status1;
             if (status != PBEStatus1.None)
             {
-                Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 13, status.ToString(), Font.DefaultWhite_I);
+                Font.DefaultSmall.DrawString(dst, dstW, dstH, 61, 13, status.ToString(), Font.DefaultWhite_I);
             }
             // Item
             ItemType item = _usePartyPkmn ? p.Item : (ItemType)bPkmn.Item;
             if (item != ItemType.None)
             {
-                Font.DefaultSmall.DrawString(bmpAddress, bmpWidth, bmpHeight, 61, 23, ItemData.GetItemName(item), Font.DefaultWhite_I);
+                Font.DefaultSmall.DrawString(dst, dstW, dstH, 61, 23, ItemData.GetItemName(item), Font.DefaultWhite_I);
             }
         }
 
@@ -174,29 +174,29 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private static uint GetDefaultColor()
         {
-            return RenderUtils.Color(48, 48, 48, 128);
+            return Renderer.Color(48, 48, 48, 128);
         }
         private static uint GetFaintedColor()
         {
-            return RenderUtils.Color(120, 30, 60, 196);
+            return Renderer.Color(120, 30, 60, 196);
         }
         private static uint GetActiveColor()
         {
-            return RenderUtils.Color(255, 192, 60, 96);
+            return Renderer.Color(255, 192, 60, 96);
         }
         private static uint GetStandByColor()
         {
-            return RenderUtils.Color(125, 255, 195, 100);
+            return Renderer.Color(125, 255, 195, 100);
         }
 
-        public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, bool selected)
+        public unsafe void Render(uint* dst, int dstW, int dstH, int x, int y, bool selected)
         {
-            _background.DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y);
+            _background.DrawOn(dst, dstW, dstH, x, y);
             if (selected)
             {
-                RenderUtils.DrawRectangle(bmpAddress, bmpWidth, bmpHeight, x, y, _background.Width, _background.Height, RenderUtils.Color(48, 180, 255, 200));
+                Renderer.DrawRectangle(dst, dstW, dstH, x, y, _background.Width, _background.Height, Renderer.Color(48, 180, 255, 200));
             }
-            _mini.DrawOn(bmpAddress, bmpWidth, bmpHeight, xOffset: x, yOffset: y);
+            _mini.DrawOn(dst, dstW, dstH, xOffset: x, yOffset: y);
         }
     }
 }

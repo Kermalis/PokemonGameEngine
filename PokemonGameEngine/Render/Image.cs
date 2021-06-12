@@ -11,7 +11,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         private Image(string resource)
         {
-            RenderUtils.GetTextureData(resource, out int width, out int height, out uint[] bitmap);
+            Renderer.GetResourceBitmap(resource, out int width, out int height, out uint[] bitmap);
             Bitmap = bitmap;
             Width = width;
             Height = height;

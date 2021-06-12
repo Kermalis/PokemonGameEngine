@@ -91,17 +91,12 @@ namespace Kermalis.PokemonGameEngine.GUI
         private void SetupStartMenuWindow()
         {
             _startMenuChoices.GetSize(out int width, out int height);
-            _startMenuWindow = new Window(0.72f, 0.05f, width, height, RenderUtils.Color(255, 255, 255, 255));
+            _startMenuWindow = new Window(0.72f, 0.05f, width, height, Renderer.Color(255, 255, 255, 255));
             RenderStartMenuChoicesOntoWindow();
         }
         private unsafe void RenderStartMenuChoicesOntoWindow()
         {
-            _startMenuWindow.ClearImage();
-            Image i = _startMenuWindow.Image;
-            fixed (uint* bmpAddress = i.Bitmap)
-            {
-                _startMenuChoices.Render(bmpAddress, i.Width, i.Height);
-            }
+            _startMenuChoices.RenderChoicesOntoWindow(_startMenuWindow);
         }
         public void OpenStartMenu()
         {
@@ -430,20 +425,20 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         #endregion
 
-        private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_Fading(uint* dst, int dstW, int dstH)
         {
-            RCB_RenderOverworld(bmpAddress, bmpWidth, bmpHeight);
-            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            RCB_RenderOverworld(dst, dstW, dstH);
+            _fadeTransition.Render(dst, dstW, dstH);
         }
-        private unsafe void RCB_RenderOverworld(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_RenderOverworld(uint* dst, int dstW, int dstH)
         {
-            RenderUtils.OverwriteRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(0, 0, 0, 255));
-            CameraObj.Render(bmpAddress, bmpWidth, bmpHeight);
+            Renderer.OverwriteRectangle(dst, dstW, dstH, Renderer.Color(0, 0, 0, 255));
+            CameraObj.Render(dst, dstW, dstH);
             if (Overworld.ShouldRenderDayTint())
             {
-                DayTint.Render(bmpAddress, bmpWidth, bmpHeight);
+                DayTint.Render(dst, dstW, dstH);
             }
-            Game.Instance.RenderWindows(bmpAddress, bmpWidth, bmpHeight);
+            Game.Instance.RenderWindows(dst, dstW, dstH);
         }
     }
 }

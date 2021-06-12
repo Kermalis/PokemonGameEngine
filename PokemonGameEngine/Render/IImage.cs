@@ -2,118 +2,119 @@
 
 namespace Kermalis.PokemonGameEngine.Render
 {
+    internal unsafe delegate void DrawMethod(uint* dst, int dstW, int dstH);
+
     internal interface IImage
     {
         uint[] Bitmap { get; }
         int Width { get; }
         int Height { get; }
     }
+
     internal static class ImageExtensions
     {
-        public unsafe delegate void DrawMethod(uint* bmpAddress, int bmpWidth, int bmpHeight);
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void Draw(this IImage img, DrawMethod drawMethod)
+        public static unsafe void Draw(this IImage dstImg, DrawMethod drawMethod)
         {
-            fixed (uint* bmpAddress = img.Bitmap)
+            fixed (uint* dst = dstImg.Bitmap)
             {
-                drawMethod(bmpAddress, img.Width, img.Height);
+                drawMethod(dst, dstImg.Width, dstImg.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawOn(this IImage img, IImage otherImg, float x, float y)
+        public static unsafe void DrawOn(this IImage srcImg, IImage dstImg, float x, float y)
         {
-            fixed (uint* otherBmpAddress = otherImg.Bitmap)
+            fixed (uint* dst = dstImg.Bitmap)
             {
-                img.DrawOn(otherBmpAddress, otherImg.Width, otherImg.Height, x, y);
+                srcImg.DrawOn(dst, dstImg.Width, dstImg.Height, x, y);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawOn(this IImage img, IImage otherImg, int x, int y)
+        public static unsafe void DrawOn(this IImage srcImg, IImage dstImg, int x, int y)
         {
-            fixed (uint* otherBmpAddress = otherImg.Bitmap)
+            fixed (uint* dst = dstImg.Bitmap)
             {
-                img.DrawOn(otherBmpAddress, otherImg.Width, otherImg.Height, x, y);
+                srcImg.DrawOn(dst, dstImg.Width, dstImg.Height, x, y);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawOn(this IImage img, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, float x, float y)
+        public static unsafe void DrawOn(this IImage srcImg, uint* dst, int dstW, int dstH, float x, float y)
         {
-            fixed (uint* bmpAddress = img.Bitmap)
+            fixed (uint* src = srcImg.Bitmap)
             {
-                RenderUtils.DrawBitmap(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, bmpAddress, img.Width, img.Height);
+                Renderer.DrawBitmap(dst, dstW, dstH, x, y, src, srcImg.Width, srcImg.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawOn(this IImage img, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, int x, int y)
+        public static unsafe void DrawOn(this IImage srcImg, uint* dst, int dstW, int dstH, int x, int y)
         {
-            fixed (uint* bmpAddress = img.Bitmap)
+            fixed (uint* src = srcImg.Bitmap)
             {
-                RenderUtils.DrawBitmap(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, bmpAddress, img.Width, img.Height);
+                Renderer.DrawBitmap(dst, dstW, dstH, x, y, src, srcImg.Width, srcImg.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawSizedOn(this IImage img, IImage otherImg, float x, float y, float width, float height)
+        public static unsafe void DrawSizedOn(this IImage srcImg, IImage dstImg, float x, float y, float width, float height)
         {
-            fixed (uint* otherBmpAddress = otherImg.Bitmap)
+            fixed (uint* dst = dstImg.Bitmap)
             {
-                img.DrawSizedOn(otherBmpAddress, otherImg.Width, otherImg.Height, x, y, width, height);
+                srcImg.DrawSizedOn(dst, dstImg.Width, dstImg.Height, x, y, width, height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawSizedOn(this IImage img, IImage otherImg, int x, int y, int width, int height)
+        public static unsafe void DrawSizedOn(this IImage srcImg, IImage dstImg, int x, int y, int width, int height)
         {
-            fixed (uint* otherBmpAddress = otherImg.Bitmap)
+            fixed (uint* dst = dstImg.Bitmap)
             {
-                img.DrawSizedOn(otherBmpAddress, otherImg.Width, otherImg.Height, x, y, width, height);
+                srcImg.DrawSizedOn(dst, dstImg.Width, dstImg.Height, x, y, width, height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawSizedOn(this IImage img, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, float x, float y, float width, float height)
+        public static unsafe void DrawSizedOn(this IImage srcImg, uint* dst, int dstW, int dstH, float x, float y, float width, float height)
         {
-            fixed (uint* bmpAddress = img.Bitmap)
+            fixed (uint* src = srcImg.Bitmap)
             {
-                RenderUtils.DrawBitmapSized(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, width, height, bmpAddress, img.Width, img.Height);
+                Renderer.DrawBitmapSized(dst, dstW, dstH, x, y, width, height, src, srcImg.Width, srcImg.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawSizedOn(this IImage img, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, int x, int y, int width, int height)
+        public static unsafe void DrawSizedOn(this IImage srcImg, uint* dst, int dstW, int dstH, int x, int y, int width, int height)
         {
-            fixed (uint* bmpAddress = img.Bitmap)
+            fixed (uint* src = srcImg.Bitmap)
             {
-                RenderUtils.DrawBitmapSized(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, width, height, bmpAddress, img.Width, img.Height);
+                Renderer.DrawBitmapSized(dst, dstW, dstH, x, y, width, height, src, srcImg.Width, srcImg.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawScaledOn(this IImage img, IImage otherImg, float x, float y, float wScale, float hScale)
+        public static unsafe void DrawScaledOn(this IImage srcImg, IImage dstImg, float x, float y, float wScale, float hScale)
         {
-            fixed (uint* otherBmpAddress = otherImg.Bitmap)
+            fixed (uint* dst = dstImg.Bitmap)
             {
-                img.DrawScaledOn(otherBmpAddress, otherImg.Width, otherImg.Height, x, y, wScale, hScale);
+                srcImg.DrawScaledOn(dst, dstImg.Width, dstImg.Height, x, y, wScale, hScale);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawScaledOn(this IImage img, IImage otherImg, int x, int y, int wScale, int hScale)
+        public static unsafe void DrawScaledOn(this IImage srcImg, IImage dstImg, int x, int y, int wScale, int hScale)
         {
-            fixed (uint* otherBmpAddress = otherImg.Bitmap)
+            fixed (uint* dst = dstImg.Bitmap)
             {
-                img.DrawScaledOn(otherBmpAddress, otherImg.Width, otherImg.Height, x, y, wScale, hScale);
+                srcImg.DrawScaledOn(dst, dstImg.Width, dstImg.Height, x, y, wScale, hScale);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawScaledOn(this IImage img, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, float x, float y, float wScale, float hScale)
+        public static unsafe void DrawScaledOn(this IImage srcImg, uint* dst, int dstW, int dstH, float x, float y, float wScale, float hScale)
         {
-            fixed (uint* bmpAddress = img.Bitmap)
+            fixed (uint* src = srcImg.Bitmap)
             {
-                RenderUtils.DrawBitmapScaled(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, wScale, hScale, bmpAddress, img.Width, img.Height);
+                Renderer.DrawBitmapScaled(dst, dstW, dstH, x, y, wScale, hScale, src, srcImg.Width, srcImg.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void DrawScaledOn(this IImage img, uint* otherBmpAddress, int otherBmpWidth, int otherBmpHeight, int x, int y, float wScale, float hScale)
+        public static unsafe void DrawScaledOn(this IImage srcImg, uint* dst, int dstW, int dstH, int x, int y, float wScale, float hScale)
         {
-            fixed (uint* bmpAddress = img.Bitmap)
+            fixed (uint* src = srcImg.Bitmap)
             {
-                RenderUtils.DrawBitmapScaled(otherBmpAddress, otherBmpWidth, otherBmpHeight, x, y, wScale, hScale, bmpAddress, img.Width, img.Height);
+                Renderer.DrawBitmapScaled(dst, dstW, dstH, x, y, wScale, hScale, src, srcImg.Width, srcImg.Height);
             }
         }
     }

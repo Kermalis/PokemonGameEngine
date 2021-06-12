@@ -46,17 +46,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         {
             _drawn.Draw(Draw);
         }
-        private unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void Draw(uint* dst, int dstW, int dstH)
         {
-            uint backColor = IsSelected ? RenderUtils.Color(200, 200, 200, 255) : RenderUtils.Color(255, 255, 255, 255);
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth - 1, bmpHeight - 1, bmpHeight / 2, backColor);
+            uint backColor = IsSelected ? Renderer.Color(200, 200, 200, 255) : Renderer.Color(255, 255, 255, 255);
+            Renderer.FillRoundedRectangle(dst, dstW, dstH, 0, 0, dstW - 1, dstH - 1, dstH / 2, backColor);
 
-            _mini.DrawOn(bmpAddress, bmpWidth, bmpHeight, 0f, -0.15f);
+            _mini.DrawOn(dst, dstW, dstH, 0f, -0.15f);
 
             Font fontDefault = Font.Default;
             uint[] defaultDark = Font.DefaultDarkGray_I;
 
-            fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.2f, 0.01f, _pkmn.Nickname, defaultDark);
+            fontDefault.DrawString(dst, dstW, dstH, 0.2f, 0.01f, _pkmn.Nickname, defaultDark);
 
             if (_pkmn.IsEgg)
             {
@@ -64,20 +64,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             }
 
             Font fontPartyNumbers = Font.PartyNumbers;
-            fontPartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.2f, 0.65f, _pkmn.HP + "/" + _pkmn.MaxHP, defaultDark);
-            fontPartyNumbers.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.7f, 0.65f, "[LV] " + _pkmn.Level, defaultDark);
+            fontPartyNumbers.DrawString(dst, dstW, dstH, 0.2f, 0.65f, _pkmn.HP + "/" + _pkmn.MaxHP, defaultDark);
+            fontPartyNumbers.DrawString(dst, dstW, dstH, 0.7f, 0.65f, "[LV] " + _pkmn.Level, defaultDark);
             PBEGender gender = _pkmn.Gender;
             if (gender != PBEGender.Genderless)
             {
-                fontDefault.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.7f, 0.01f, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultBlue_O : Font.DefaultRed_O);
+                fontDefault.DrawString(dst, dstW, dstH, 0.7f, 0.01f, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultBlue_O : Font.DefaultRed_O);
             }
 
-            RenderUtils.FillRectangle_Points(bmpAddress, bmpWidth, bmpHeight, 0.2f, 0.58f, 0.7f, 0.64f, RenderUtils.Color(99, 255, 99, 255));
+            Renderer.FillRectangle_Points(dst, dstW, dstH, 0.2f, 0.58f, 0.7f, 0.64f, Renderer.Color(99, 255, 99, 255));
         }
 
-        public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
+        public unsafe void Render(uint* dst, int dstW, int dstH, int x, int y)
         {
-            _drawn.DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y);
+            _drawn.DrawOn(dst, dstW, dstH, x, y);
         }
     }
 
@@ -127,16 +127,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             _dirtySizes = true;
         }
 
-        public override unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public override unsafe void Render(uint* dst, int dstW, int dstH)
         {
-            int x1 = (int)(X * bmpWidth);
-            float fy1 = Y * bmpHeight;
+            int x1 = (int)(X * dstW);
+            float fy1 = Y * dstH;
 
-            float fHeight = (_y2 - Y) / PkmnConstants.PartyCapacity * bmpHeight;
+            float fHeight = (_y2 - Y) / PkmnConstants.PartyCapacity * dstH;
             if (_dirtySizes)
             {
                 _dirtySizes = false;
-                int width = (int)((_x2 - X) * bmpWidth);
+                int width = (int)((_x2 - X) * dstW);
                 int height = (int)fHeight;
                 foreach (PartyPkmnGUIChoice c in _choices)
                 {
@@ -146,13 +146,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                     }
                 }
             }
-            float space = Spacing * bmpHeight;
+            float space = Spacing * dstH;
             int count = _choices.Count;
             for (int i = 0; i < count; i++)
             {
                 PartyPkmnGUIChoice c = _choices[i];
                 int y = (int)(fy1 + (fHeight * i) + (space * i));
-                c.Render(bmpAddress, bmpWidth, bmpHeight, x1, y);
+                c.Render(dst, dstW, dstH, x1, y);
             }
         }
     }

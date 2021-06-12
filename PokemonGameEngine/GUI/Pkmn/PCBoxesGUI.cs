@@ -81,10 +81,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
         }
 
-        private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_Fading(uint* dst, int dstW, int dstH)
         {
-            RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            RCB_RenderTick(dst, dstW, dstH);
+            _fadeTransition.Render(dst, dstW, dstH);
         }
 
         #endregion
@@ -136,7 +136,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _textChoices.Add(new TextGUIChoice("Deposit", () => Action_DepositPartyPkmn(pkmn)));
             _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesAndStringPrinterThenGoToLogicTick));
             _textChoices.GetSize(out int width, out int height);
-            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, RenderUtils.Color(255, 255, 255, 255));
+            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, Renderer.Color(255, 255, 255, 255));
             RenderChoicesOntoWindow();
             string msg = string.Format("Do what with {0}?", pkmn.Nickname);
             _staticStringBackup = msg;
@@ -148,7 +148,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _textChoices.Add(new TextGUIChoice("Withdraw", () => Action_WithdrawBoxPkmn(pkmn)));
             _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesAndStringPrinterThenGoToLogicTick));
             _textChoices.GetSize(out int width, out int height);
-            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, RenderUtils.Color(255, 255, 255, 255));
+            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, Renderer.Color(255, 255, 255, 255));
             RenderChoicesOntoWindow();
             string msg = string.Format("Do what with {0}?", pkmn.Nickname);
             _staticStringBackup = msg;
@@ -169,17 +169,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private unsafe void RenderChoicesOntoWindow()
         {
-            _textChoicesWindow.ClearImage();
-            Image i = _textChoicesWindow.Image;
-            fixed (uint* bmpAddress = i.Bitmap)
-            {
-                _textChoices.Render(bmpAddress, i.Width, i.Height);
-            }
+            _textChoices.RenderChoicesOntoWindow(_textChoicesWindow);
         }
 
         private void CreateStringPrinterAndWindow(string message, bool isStaticMsg, MainCallback doneCallback)
         {
-            _stringWindow = new Window(0, 0.79f, 1, 0.16f, RenderUtils.Color(49, 49, 49, 192));
+            _stringWindow = new Window(0, 0.79f, 1, 0.16f, Renderer.Color(49, 49, 49, 192));
             _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite_I);
             _stringReadCallback = doneCallback;
             if (isStaticMsg)
@@ -383,62 +378,62 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
         }
 
-        private unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_RenderTick(uint* dst, int dstW, int dstH)
         {
             // Background
-            RenderUtils.ThreeColorBackground(bmpAddress, bmpWidth, bmpHeight, RenderUtils.Color(215, 231, 230, 255), RenderUtils.Color(231, 163, 0, 255), RenderUtils.Color(242, 182, 32, 255));
+            Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(215, 231, 230, 255), Renderer.Color(231, 163, 0, 255), Renderer.Color(242, 182, 32, 255));
 
             // PC
-            Font.Default.DrawStringScaled(bmpAddress, bmpWidth, bmpHeight, 0.02f, 0.01f, 2, $"BOX {_selectedBox + 1}", Font.DefaultDarkGray_I);
+            Font.Default.DrawStringScaled(dst, dstW, dstH, 0.02f, 0.01f, 2, $"BOX {_selectedBox + 1}", Font.DefaultDarkGray_I);
 
             if (_partyVisible)
             {
-                _partyChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+                _partyChoices.Render(dst, dstW, dstH);
             }
             else
             {
                 if (_selectedMainImage != null)
                 {
                     AnimatedImage.UpdateCurrentFrameForAll();
-                    _selectedMainImage.DrawOn(bmpAddress, bmpWidth, bmpHeight,
-                        RenderUtils.GetCoordinatesForCentering(bmpWidth, _selectedMainImage.Width, 0.24f), RenderUtils.GetCoordinatesForEndAlign(bmpHeight, _selectedMainImage.Height, 0.6f));
+                    _selectedMainImage.DrawOn(dst, dstW, dstH,
+                        Renderer.GetCoordinatesForCentering(dstW, _selectedMainImage.Width, 0.24f), Renderer.GetCoordinatesForEndAlign(dstH, _selectedMainImage.Height, 0.6f));
                 }
-                Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, 0.015f, 0.62f,
+                Font.Default.DrawString(dst, dstW, dstH, 0.015f, 0.62f,
                     "Press L or R to swap boxes\nPress SELECT to toggle the party\n  choices on or off\nPress START to swap between\n  party and boxes",
                     Font.DefaultDarkGray_I);
             }
 
             // Draw boxes
-            int boxStartX = (int)(bmpWidth * 0.48f);
-            int boxStartY = (int)(bmpHeight * 0.05f);
+            int boxStartX = (int)(dstW * 0.48f);
+            int boxStartY = (int)(dstH * 0.05f);
             for (int i = 0; i < PkmnConstants.BoxCapacity; i++)
             {
                 int x = i % NumPerRow;
                 int y = i / NumPerRow;
                 int px = boxStartX + (x * 40);
                 int py = boxStartY + (y * 40);
-                uint color = _selectedCol == y && _selectedRow == x ? RenderUtils.Color(0, 0, 0, 32) : RenderUtils.Color(0, 0, 0, 64);
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, px, py, 38, 38, color);
+                uint color = _selectedCol == y && _selectedRow == x ? Renderer.Color(0, 0, 0, 32) : Renderer.Color(0, 0, 0, 64);
+                Renderer.FillRectangle(dst, dstW, dstH, px, py, 38, 38, color);
 
                 Image mini = _selectedBoxMinis[i];
                 if (mini is null)
                 {
                     continue;
                 }
-                mini.DrawOn(bmpAddress, bmpWidth, bmpHeight, px + 3, py + 3);
+                mini.DrawOn(dst, dstW, dstH, px + 3, py + 3);
             }
 
             // Dim the side we're not using
             if (_isOnParty)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0.48f, 0, 0.52f, 1, RenderUtils.Color(0, 0, 0, 128));
+                Renderer.FillRectangle(dst, dstW, dstH, 0.48f, 0, 0.52f, 1, Renderer.Color(0, 0, 0, 128));
             }
             else if (_partyVisible)
             {
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, 0, 0, 0.48f, 1, RenderUtils.Color(0, 0, 0, 128));
+                Renderer.FillRectangle(dst, dstW, dstH, 0, 0, 0.48f, 1, Renderer.Color(0, 0, 0, 128));
             }
 
-            Game.Instance.RenderWindows(bmpAddress, bmpWidth, bmpHeight);
+            Game.Instance.RenderWindows(dst, dstW, dstH);
         }
     }
 }

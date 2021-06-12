@@ -24,9 +24,9 @@ namespace Kermalis.PokemonGameEngine.World
                     _tilesetTile = Tileset.LoadOrGet(r.ReadInt32()).Tiles[r.ReadInt32()];
                 }
 
-                public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
+                public unsafe void Render(uint* dst, int dstW, int dstH, int x, int y)
                 {
-                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, x, y, _tilesetTile.AnimBitmap ?? _tilesetTile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: _xFlip, yFlip: _yFlip);
+                    Renderer.DrawBitmap(dst, dstW, dstH, x, y, _tilesetTile.AnimBitmap ?? _tilesetTile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: _xFlip, yFlip: _yFlip);
                 }
             }
 
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.World
                 _parent = parent;
             }
 
-            public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight, byte elevation, int x, int y)
+            public unsafe void Render(uint* dst, int dstW, int dstH, byte elevation, int x, int y)
             {
                 Tile[][][] arrE = _tiles[elevation];
                 for (int by = 0; by < Overworld.Block_NumTilesY; by++)
@@ -88,7 +88,7 @@ namespace Kermalis.PokemonGameEngine.World
                         int tx = x + (bx * Overworld.Tile_NumPixelsX);
                         for (int t = 0; t < subLayers.Length; t++)
                         {
-                            subLayers[t].Render(bmpAddress, bmpWidth, bmpHeight, tx, ty);
+                            subLayers[t].Render(dst, dstW, dstH, tx, ty);
                         }
                     }
                 }
