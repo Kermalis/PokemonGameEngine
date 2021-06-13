@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Util;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
@@ -23,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             {
                 return;
             }
-            double progress = Utils.GetAnimationProgress(_end, ref _cur);
+            double progress = Renderer.GetAnimationProgress(_end, ref _cur);
             Renderer.FillRectangle(dst, dstW, dstH, Renderer.SetA(_color, (uint)((-progress + 1) * 0xFF)));
 
             if (!IsDone && progress >= 1)

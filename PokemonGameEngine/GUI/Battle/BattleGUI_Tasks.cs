@@ -1,12 +1,7 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.UI;
-using Kermalis.PokemonGameEngine.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
@@ -99,7 +94,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private void Sprite_TrainerGoAway(Sprite sprite)
         {
             var data = (SpriteData_TrainerGoAway)sprite.Data;
-            double progress = Utils.GetAnimationProgress(data.End, ref data.Cur);
+            double progress = Renderer.GetAnimationProgress(data.End, ref data.Cur);
             int x = (int)(progress * (Program.RenderWidth - data.StartX));
             sprite.X = data.StartX + x;
             if (progress >= 1)
