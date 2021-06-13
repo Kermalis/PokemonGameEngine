@@ -21,6 +21,7 @@ namespace Kermalis.PokemonGameEngine.Render
         public object Data;
         public SpriteDrawMethod DrawMethod;
         public SpriteCallback Callback;
+        public SpriteCallback RCallback;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void DrawOn(uint* dst, int dstW, int dstH, int xOffset = 0, int yOffset = 0)
@@ -123,6 +124,13 @@ namespace Kermalis.PokemonGameEngine.Render
             for (Sprite s = First; s is not null; s = s.Next)
             {
                 s.Callback?.Invoke(s);
+            }
+        }
+        public void DoRCallbacks()
+        {
+            for (Sprite s = First; s is not null; s = s.Next)
+            {
+                s.RCallback?.Invoke(s);
             }
         }
         public unsafe void DrawAll(uint* dst, int dstW, int dstH)

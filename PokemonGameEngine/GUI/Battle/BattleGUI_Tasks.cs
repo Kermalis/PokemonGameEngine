@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.UI;
+using Kermalis.PokemonGameEngine.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private sealed class TaskData_PrintMessage
         {
             public Action OnFinished;
+        }
+        private sealed class SpriteData_TrainerGoAway
+        {
+            public TimeSpan Cur;
+            public readonly TimeSpan End;
+            public readonly int StartX;
+
+            public SpriteData_TrainerGoAway(int ms, int startX)
+            {
+                Cur = new TimeSpan();
+                End = TimeSpan.FromMilliseconds(ms);
+                StartX = startX;
+            }
         }
 
         #endregion
@@ -84,7 +98,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void Sprite_TrainerGoAway(Sprite sprite)
         {
-            if ((sprite.X += Program.RenderWidth / 64) >= Program.RenderWidth)
+            var data = (SpriteData_TrainerGoAway)sprite.Data;
+            double progress = Utils.GetAnimationProgress(data.End, ref data.Cur);
+            int x = (int)(progress * (Program.RenderWidth - data.StartX));
+            sprite.X = data.StartX + x;
+            if (progress >= 1)
             {
                 sprite.Callback = null;
                 _sprites.Remove(sprite);

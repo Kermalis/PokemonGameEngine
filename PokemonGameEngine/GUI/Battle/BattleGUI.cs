@@ -101,7 +101,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private void DestroyTrainerSpriteAndBegin()
         {
             Sprite s = _sprites.First;
-            s.Callback = Sprite_TrainerGoAway;
+            s.Data = new SpriteData_TrainerGoAway(1000, s.X);
+            s.RCallback = Sprite_TrainerGoAway;
             Begin();
         }
         private void Begin()
@@ -284,6 +285,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public unsafe void RCB_RenderTick(uint* dst, int dstW, int dstH)
         {
             AnimatedImage.UpdateCurrentFrameForAll();
+            _sprites.DoRCallbacks();
             _battleBackground.DrawSizedOn(dst, dstW, dstH, 0, 0, dstW, dstH);
             void DoTeam(int i, bool info)
             {
