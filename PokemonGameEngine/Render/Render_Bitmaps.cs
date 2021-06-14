@@ -23,32 +23,7 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawBitmap(uint* dst, int dstW, int dstH, float x, float y, uint[] srcBmp, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
-        {
-            int ix = (int)(x * dstW);
-            int iy = (int)(y * dstH);
-            fixed (uint* src = srcBmp)
-            {
-                DrawBitmap(dst, dstW, dstH, ix, iy, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
-            }
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawBitmap(uint* dst, int dstW, int dstH, float x, float y, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
-        {
-            int ix = (int)(x * dstW);
-            int iy = (int)(y * dstH);
-            DrawBitmap(dst, dstW, dstH, ix, iy, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawBitmap(uint* dst, int dstW, int dstH, int x, int y, uint[] srcBmp, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
-        {
-            fixed (uint* src = srcBmp)
-            {
-                DrawBitmap(dst, dstW, dstH, x, y, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
-            }
-        }
-        public static void DrawBitmap(uint* dst, int dstW, int dstH, int x, int y, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
+        public static void DrawBitmap(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
         {
             for (int cy = 0; cy < srcH; cy++)
             {
@@ -60,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.Render
                         int px = xFlip ? (x + (srcW - 1 - cx)) : (x + cx);
                         if (px >= 0 && px < dstW)
                         {
-                            DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), *GetPixelAddress(src, srcW, cx, cy));
+                            DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), src(cx, cy));
                         }
                     }
                 }
@@ -68,36 +43,7 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawBitmapSized(uint* dst, int dstW, int dstH, float x, float y, float width, float height, uint[] srcBmp, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
-        {
-            int ix = (int)(x * dstW);
-            int iy = (int)(y * dstH);
-            int iw = (int)(width * dstW);
-            int ih = (int)(height * dstH);
-            fixed (uint* src = srcBmp)
-            {
-                DrawBitmapSized(dst, dstW, dstH, ix, iy, iw, ih, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
-            }
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawBitmapSized(uint* dst, int dstW, int dstH, float x, float y, float width, float height, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
-        {
-            int ix = (int)(x * dstW);
-            int iy = (int)(y * dstH);
-            int iw = (int)(width * dstW);
-            int ih = (int)(height * dstH);
-            DrawBitmapSized(dst, dstW, dstH, ix, iy, iw, ih, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawBitmapSized(uint* dst, int dstW, int dstH, int x, int y, int width, int height, uint[] srcBmp, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
-        {
-            fixed (uint* src = srcBmp)
-            {
-                DrawBitmapSized(dst, dstW, dstH, x, y, width, height, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
-            }
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawBitmapSized(uint* dst, int dstW, int dstH, int x, int y, int width, int height, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
+        public static void DrawBitmapSized(uint* dst, int dstW, int dstH, int x, int y, int width, int height, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
         {
             // Slight optimization
             if (width == srcW && height == srcH)
@@ -107,36 +53,11 @@ namespace Kermalis.PokemonGameEngine.Render
             }
             float wScale = (float)width / srcW;
             float hScale = (float)height / srcH;
-            DrawBitmapSizedScaled(dst, dstW, dstH, x, y, width, height, wScale, hScale, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
+            DrawBitmapSizedScaled(dst, dstW, dstH, x, y, width, height, wScale, hScale, src, xFlip: xFlip, yFlip: yFlip);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawBitmapScaled(uint* dst, int dstW, int dstH, float x, float y, float wScale, float hScale, uint[] srcBmp, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
-        {
-            int ix = (int)(x * dstW);
-            int iy = (int)(y * dstH);
-            fixed (uint* src = srcBmp)
-            {
-                DrawBitmapScaled(dst, dstW, dstH, ix, iy, wScale, hScale, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
-            }
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawBitmapScaled(uint* dst, int dstW, int dstH, float x, float y, float wScale, float hScale, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
-        {
-            int ix = (int)(x * dstW);
-            int iy = (int)(y * dstH);
-            DrawBitmapScaled(dst, dstW, dstH, ix, iy, wScale, hScale, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawBitmapScaled(uint* dst, int dstW, int dstH, int x, int y, float wScale, float hScale, uint[] srcBmp, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
-        {
-            fixed (uint* src = srcBmp)
-            {
-                DrawBitmapScaled(dst, dstW, dstH, x, y, wScale, hScale, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
-            }
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawBitmapScaled(uint* dst, int dstW, int dstH, int x, int y, float wScale, float hScale, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
+        public static void DrawBitmapScaled(uint* dst, int dstW, int dstH, int x, int y, float wScale, float hScale, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
         {
             // Slight optimization
             if (wScale == 1 && hScale == 1)
@@ -146,10 +67,10 @@ namespace Kermalis.PokemonGameEngine.Render
             }
             int width = (int)(srcW * wScale);
             int height = (int)(srcH * hScale);
-            DrawBitmapSizedScaled(dst, dstW, dstH, x, y, width, height, wScale, hScale, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
+            DrawBitmapSizedScaled(dst, dstW, dstH, x, y, width, height, wScale, hScale, src, xFlip: xFlip, yFlip: yFlip);
         }
 
-        private static void DrawBitmapSizedScaled(uint* dst, int dstW, int dstH, int x, int y, int width, int height, float wScale, float hScale, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
+        private static void DrawBitmapSizedScaled(uint* dst, int dstW, int dstH, int x, int y, int width, int height, float wScale, float hScale, PixelSupplier src, bool xFlip = false, bool yFlip = false)
         {
             for (int cy = 0; cy < height; cy++)
             {
@@ -163,7 +84,7 @@ namespace Kermalis.PokemonGameEngine.Render
                         if (px >= 0 && px < dstW)
                         {
                             int tx = (int)(cx / wScale);
-                            DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), *GetPixelAddress(src, srcW, tx, ty));
+                            DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), src(tx, ty));
                         }
                     }
                 }

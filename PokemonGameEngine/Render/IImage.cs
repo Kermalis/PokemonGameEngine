@@ -40,9 +40,13 @@ namespace Kermalis.PokemonGameEngine.Render
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DrawOn(this IImage srcImg, uint* dst, int dstW, int dstH, float x, float y)
         {
+            int ix = (int)(x * dstW);
+            int iy = (int)(y * dstH);
             fixed (uint* src = srcImg.Bitmap)
             {
-                Renderer.DrawBitmap(dst, dstW, dstH, x, y, src, srcImg.Width, srcImg.Height);
+                int srcW = srcImg.Width;
+                PixelSupplier pixSupply = Renderer.MakeBitmapSupplier(src, srcW);
+                Renderer.DrawBitmap(dst, dstW, dstH, ix, iy, pixSupply, srcW, srcImg.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50,7 +54,9 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             fixed (uint* src = srcImg.Bitmap)
             {
-                Renderer.DrawBitmap(dst, dstW, dstH, x, y, src, srcImg.Width, srcImg.Height);
+                int srcW = srcImg.Width;
+                PixelSupplier pixSupply = Renderer.MakeBitmapSupplier(src, srcW);
+                Renderer.DrawBitmap(dst, dstW, dstH, x, y, pixSupply, srcW, srcImg.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -72,9 +78,15 @@ namespace Kermalis.PokemonGameEngine.Render
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DrawSizedOn(this IImage srcImg, uint* dst, int dstW, int dstH, float x, float y, float width, float height)
         {
+            int ix = (int)(x * dstW);
+            int iy = (int)(y * dstH);
+            int iw = (int)(width * dstW);
+            int ih = (int)(height * dstH);
             fixed (uint* src = srcImg.Bitmap)
             {
-                Renderer.DrawBitmapSized(dst, dstW, dstH, x, y, width, height, src, srcImg.Width, srcImg.Height);
+                int srcW = srcImg.Width;
+                PixelSupplier pixSupply = Renderer.MakeBitmapSupplier(src, srcW);
+                Renderer.DrawBitmapSized(dst, dstW, dstH, ix, iy, iw, ih, pixSupply, srcW, srcImg.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -82,7 +94,9 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             fixed (uint* src = srcImg.Bitmap)
             {
-                Renderer.DrawBitmapSized(dst, dstW, dstH, x, y, width, height, src, srcImg.Width, srcImg.Height);
+                int srcW = srcImg.Width;
+                PixelSupplier pixSupply = Renderer.MakeBitmapSupplier(src, srcW);
+                Renderer.DrawBitmapSized(dst, dstW, dstH, x, y, width, height, pixSupply, srcW, srcImg.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -104,9 +118,13 @@ namespace Kermalis.PokemonGameEngine.Render
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DrawScaledOn(this IImage srcImg, uint* dst, int dstW, int dstH, float x, float y, float wScale, float hScale)
         {
+            int ix = (int)(x * dstW);
+            int iy = (int)(y * dstH);
             fixed (uint* src = srcImg.Bitmap)
             {
-                Renderer.DrawBitmapScaled(dst, dstW, dstH, x, y, wScale, hScale, src, srcImg.Width, srcImg.Height);
+                int srcW = srcImg.Width;
+                PixelSupplier pixSupply = Renderer.MakeBitmapSupplier(src, srcW);
+                Renderer.DrawBitmapScaled(dst, dstW, dstH, ix, iy, wScale, hScale, pixSupply, srcW, srcImg.Height);
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -114,7 +132,9 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             fixed (uint* src = srcImg.Bitmap)
             {
-                Renderer.DrawBitmapScaled(dst, dstW, dstH, x, y, wScale, hScale, src, srcImg.Width, srcImg.Height);
+                int srcW = srcImg.Width;
+                PixelSupplier pixSupply = Renderer.MakeBitmapSupplier(src, srcW);
+                Renderer.DrawBitmapScaled(dst, dstW, dstH, x, y, wScale, hScale, pixSupply, srcW, srcImg.Height);
             }
         }
     }

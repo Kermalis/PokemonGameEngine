@@ -26,7 +26,11 @@ namespace Kermalis.PokemonGameEngine.World
 
                 public unsafe void Render(uint* dst, int dstW, int dstH, int x, int y)
                 {
-                    Renderer.DrawBitmap(dst, dstW, dstH, x, y, _tilesetTile.AnimBitmap ?? _tilesetTile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: _xFlip, yFlip: _yFlip);
+                    fixed (uint* src = _tilesetTile.AnimBitmap ?? _tilesetTile.Bitmap)
+                    {
+                        PixelSupplier pixSupply = Renderer.MakeBitmapSupplier(src, Overworld.Tile_NumPixelsX);
+                        Renderer.DrawBitmap(dst, dstW, dstH, x, y, pixSupply, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: _xFlip, yFlip: _yFlip);
+                    }
                 }
             }
 

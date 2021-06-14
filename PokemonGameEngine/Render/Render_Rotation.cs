@@ -7,19 +7,18 @@ namespace Kermalis.PokemonGameEngine.Render
 {
     internal static unsafe partial class Renderer
     {
-        // TODO: XFLIP YFLIP
         #region 90 degree multiples
 
         public static void OverwriteBitmapRotated90CW(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
         {
             for (int cy = 0; cy < srcW; cy++)
             {
-                int py = y + cy;
+                int py = yFlip ? (y + (srcH - 1 - cy)) : (y + cy);
                 if (py >= 0 && py < dstH)
                 {
                     for (int cx = 0; cx < srcH; cx++)
                     {
-                        int px = x + cx;
+                        int px = xFlip ? (x + (srcW - 1 - cx)) : (x + cx);
                         if (px >= 0 && px < dstW)
                         {
                             *GetPixelAddress(dst, dstW, px, py) = src(cy, srcH - cx - 1);
@@ -32,12 +31,12 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             for (int cy = 0; cy < srcH; cy++)
             {
-                int py = y + cy;
+                int py = yFlip ? (y + (srcH - 1 - cy)) : (y + cy);
                 if (py >= 0 && py < dstH)
                 {
                     for (int cx = 0; cx < srcW; cx++)
                     {
-                        int px = x + cx;
+                        int px = xFlip ? (x + (srcW - 1 - cx)) : (x + cx);
                         if (px >= 0 && px < dstW)
                         {
                             *GetPixelAddress(dst, dstW, px, py) = src(srcW - cx - 1, srcH - cy - 1);
@@ -50,12 +49,12 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             for (int cy = 0; cy < srcW; cy++)
             {
-                int py = y + cy;
+                int py = yFlip ? (y + (srcH - 1 - cy)) : (y + cy);
                 if (py >= 0 && py < dstH)
                 {
                     for (int cx = 0; cx < srcH; cx++)
                     {
-                        int px = x + cx;
+                        int px = xFlip ? (x + (srcW - 1 - cx)) : (x + cx);
                         if (px >= 0 && px < dstW)
                         {
                             *GetPixelAddress(dst, dstW, px, py) = src(srcW - cy - 1, cx);
@@ -69,12 +68,12 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             for (int cy = 0; cy < srcW; cy++)
             {
-                int py = y + cy;
+                int py = yFlip ? (y + (srcH - 1 - cy)) : (y + cy);
                 if (py >= 0 && py < dstH)
                 {
                     for (int cx = 0; cx < srcH; cx++)
                     {
-                        int px = x + cx;
+                        int px = xFlip ? (x + (srcW - 1 - cx)) : (x + cx);
                         if (px >= 0 && px < dstW)
                         {
                             DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), src(cy, srcH - cx - 1));
@@ -87,12 +86,12 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             for (int cy = 0; cy < srcH; cy++)
             {
-                int py = y + cy;
+                int py = yFlip ? (y + (srcH - 1 - cy)) : (y + cy);
                 if (py >= 0 && py < dstH)
                 {
                     for (int cx = 0; cx < srcW; cx++)
                     {
-                        int px = x + cx;
+                        int px = xFlip ? (x + (srcW - 1 - cx)) : (x + cx);
                         if (px >= 0 && px < dstW)
                         {
                             DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), src(srcW - cx - 1, srcH - cy - 1));
@@ -105,12 +104,12 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             for (int cy = 0; cy < srcW; cy++)
             {
-                int py = y + cy;
+                int py = yFlip ? (y + (srcH - 1 - cy)) : (y + cy);
                 if (py >= 0 && py < dstH)
                 {
                     for (int cx = 0; cx < srcH; cx++)
                     {
-                        int px = x + cx;
+                        int px = xFlip ? (x + (srcW - 1 - cx)) : (x + cx);
                         if (px >= 0 && px < dstW)
                         {
                             DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), src(srcW - cy - 1, cx));
@@ -338,50 +337,55 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public static void DrawRotatedBitmap(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, double angle, bool xFlip = false, bool yFlip = false, bool smooth = false)
         {
-            uint[] rotated = CreateRotatedBitmap(src, srcW, srcH, angle, out int rotWidth, out int rotHeight, out _, out _, xFlip: xFlip, yFlip: yFlip, smooth: smooth);
-
-            DrawBitmap(dst, dstW, dstH, x, y, rotated, rotWidth, rotHeight);
+            fixed (uint* rotated = CreateRotatedBitmap(src, srcW, srcH, angle, out int rotWidth, out int rotHeight, out _, out _, xFlip: xFlip, yFlip: yFlip, smooth: smooth))
+            {
+                PixelSupplier pixSupplyRotated = MakeBitmapSupplier(rotated, rotWidth);
+                DrawBitmap(dst, dstW, dstH, x, y, pixSupplyRotated, rotWidth, rotHeight);
+            }
         }
         public static void DrawRotatedBitmap_Centered(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, double angle, bool xFlip = false, bool yFlip = false, bool smooth = false)
         {
-            uint[] rotated = CreateRotatedBitmap(src, srcW, srcH, angle, out int rotWidth, out int rotHeight, out double cAngle, out double sAngle, xFlip: xFlip, yFlip: yFlip, smooth: smooth);
+            fixed (uint* rotated = CreateRotatedBitmap(src, srcW, srcH, angle, out int rotWidth, out int rotHeight, out double cAngle, out double sAngle, xFlip: xFlip, yFlip: yFlip, smooth: smooth))
+            {
+                PixelSupplier pixSupplyRotated = MakeBitmapSupplier(rotated, rotWidth);
 
-            double centerX = srcW / 2;
-            double centerY = srcH / 2;
+                double centerX = srcW / 2;
+                double centerY = srcH / 2;
 
-            // Find out where the new origin is by rotating the four final_rect points around the center and then taking the extremes
-            int abscenterx = x + (int)centerX;
-            int abscentery = y + (int)centerY;
-            sAngle = -sAngle;
+                // Find out where the new origin is by rotating the four final_rect points around the center and then taking the extremes
+                int abscenterx = x + (int)centerX;
+                int abscentery = y + (int)centerY;
+                sAngle = -sAngle;
 
-            // Top Left
-            double px = x - abscenterx;
-            double py = y - abscentery;
-            double p1x = px * cAngle - py * sAngle + abscenterx;
-            double p1y = px * sAngle + py * cAngle + abscentery;
+                // Top Left
+                double px = x - abscenterx;
+                double py = y - abscentery;
+                double p1x = px * cAngle - py * sAngle + abscenterx;
+                double p1y = px * sAngle + py * cAngle + abscentery;
 
-            // Top Right
-            px = x + srcW - abscenterx;
-            py = y - abscentery;
-            double p2x = px * cAngle - py * sAngle + abscenterx;
-            double p2y = px * sAngle + py * cAngle + abscentery;
+                // Top Right
+                px = x + srcW - abscenterx;
+                py = y - abscentery;
+                double p2x = px * cAngle - py * sAngle + abscenterx;
+                double p2y = px * sAngle + py * cAngle + abscentery;
 
-            // Bottom Left
-            px = x - abscenterx;
-            py = y + srcH - abscentery;
-            double p3x = px * cAngle - py * sAngle + abscenterx;
-            double p3y = px * sAngle + py * cAngle + abscentery;
+                // Bottom Left
+                px = x - abscenterx;
+                py = y + srcH - abscentery;
+                double p3x = px * cAngle - py * sAngle + abscenterx;
+                double p3y = px * sAngle + py * cAngle + abscentery;
 
-            // Bottom Right
-            px = x + srcW - abscenterx;
-            py = y + srcH - abscentery;
-            double p4x = px * cAngle - py * sAngle + abscenterx;
-            double p4y = px * sAngle + py * cAngle + abscentery;
+                // Bottom Right
+                px = x + srcW - abscenterx;
+                py = y + srcH - abscentery;
+                double p4x = px * cAngle - py * sAngle + abscenterx;
+                double p4y = px * sAngle + py * cAngle + abscentery;
 
-            x = (int)Math.Min(Math.Min(p1x, p2x), Math.Min(p3x, p4x));
-            y = (int)Math.Min(Math.Min(p1y, p2y), Math.Min(p3y, p4y));
+                x = (int)Math.Min(Math.Min(p1x, p2x), Math.Min(p3x, p4x));
+                y = (int)Math.Min(Math.Min(p1y, p2y), Math.Min(p3y, p4y));
 
-            DrawBitmap(dst, dstW, dstH, x, y, rotated, rotWidth, rotHeight);
+                DrawBitmap(dst, dstW, dstH, x, y, pixSupplyRotated, rotWidth, rotHeight);
+            }
         }
 
         #endregion

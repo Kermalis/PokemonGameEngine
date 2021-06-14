@@ -38,7 +38,9 @@ namespace Kermalis.PokemonGameEngine.Render
             IImage img = s.Image;
             fixed (uint* src = img.Bitmap)
             {
-                Renderer.DrawBitmap(dst, dstW, dstH, s.X + xOffset, s.Y + yOffset, src, img.Width, img.Height, xFlip: s.XFlip, yFlip: s.YFlip);
+                int srcW = img.Width;
+                PixelSupplier pixSupply = Renderer.MakeBitmapSupplier(src, srcW);
+                Renderer.DrawBitmap(dst, dstW, dstH, s.X + xOffset, s.Y + yOffset, pixSupply, srcW, img.Height, xFlip: s.XFlip, yFlip: s.YFlip);
             }
         }
 
