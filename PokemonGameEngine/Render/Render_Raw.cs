@@ -74,7 +74,7 @@ namespace Kermalis.PokemonGameEngine.Render
             {
                 for (int px = 0; px < width; px++)
                 {
-                    arr[px + (py * width)] = *GetPixelAddress(src, srcW, x + px, y + py);
+                    arr[GetPixelIndex(width, px, py)] = *GetPixelAddress(src, srcW, x + px, y + py);
                 }
             }
             return arr;
@@ -86,9 +86,14 @@ namespace Kermalis.PokemonGameEngine.Render
             return (x, y) => *GetPixelAddress(src, srcW, x, y);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetPixelIndex(int srcW, int x, int y)
+        {
+            return x + (y * srcW);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint* GetPixelAddress(uint* src, int srcW, int x, int y)
         {
-            return src + x + (y * srcW);
+            return src + GetPixelIndex(srcW, x, y);
         }
 
         #endregion
