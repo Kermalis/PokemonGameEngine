@@ -31,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.Util
             {
                 return 1;
             }
-            return (double)((decimal)(cur - end).Ticks / end.Ticks) + 1;
+            return ((cur - end) / end) + 1;
         }
 
         public static bool HasShinyCharm()
