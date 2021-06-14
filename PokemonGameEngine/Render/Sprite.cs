@@ -139,7 +139,7 @@ namespace Kermalis.PokemonGameEngine.Render
             {
                 if (s.DrawMethod is not null)
                 {
-                    s.DrawMethod.Invoke(s, dst, dstW, dstH);
+                    s.DrawMethod(s, dst, dstW, dstH);
                 }
                 else
                 {

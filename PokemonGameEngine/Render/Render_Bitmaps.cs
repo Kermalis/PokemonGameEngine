@@ -16,7 +16,7 @@ namespace Kermalis.PokemonGameEngine.Render
                         int px = xFlip ? (x + (srcW - 1 - cx)) : (x + cx);
                         if (px >= 0 && px < dstW)
                         {
-                            *GetPixelAddress(dst, dstW, px, py) = src.Invoke(cx, cy);
+                            *GetPixelAddress(dst, dstW, px, py) = src(cx, cy);
                         }
                     }
                 }

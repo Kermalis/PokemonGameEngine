@@ -76,7 +76,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             {
                 DisposePartyChoices();
                 _fadeTransition = null;
-                _onClosed.Invoke();
+                _onClosed();
                 _onClosed = null;
             }
         }

@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Render
                         int px = x + cx;
                         if (px >= 0 && px < dstW)
                         {
-                            *GetPixelAddress(dst, dstW, px, py) = src.Invoke(cy, srcH - cx - 1);
+                            *GetPixelAddress(dst, dstW, px, py) = src(cy, srcH - cx - 1);
                         }
                     }
                 }
@@ -40,7 +40,7 @@ namespace Kermalis.PokemonGameEngine.Render
                         int px = x + cx;
                         if (px >= 0 && px < dstW)
                         {
-                            *GetPixelAddress(dst, dstW, px, py) = src.Invoke(srcW - cx - 1, srcH - cy - 1);
+                            *GetPixelAddress(dst, dstW, px, py) = src(srcW - cx - 1, srcH - cy - 1);
                         }
                     }
                 }
@@ -58,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.Render
                         int px = x + cx;
                         if (px >= 0 && px < dstW)
                         {
-                            *GetPixelAddress(dst, dstW, px, py) = src.Invoke(srcW - cy - 1, cx);
+                            *GetPixelAddress(dst, dstW, px, py) = src(srcW - cy - 1, cx);
                         }
                     }
                 }
@@ -77,7 +77,7 @@ namespace Kermalis.PokemonGameEngine.Render
                         int px = x + cx;
                         if (px >= 0 && px < dstW)
                         {
-                            DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), src.Invoke(cy, srcH - cx - 1));
+                            DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), src(cy, srcH - cx - 1));
                         }
                     }
                 }
@@ -95,7 +95,7 @@ namespace Kermalis.PokemonGameEngine.Render
                         int px = x + cx;
                         if (px >= 0 && px < dstW)
                         {
-                            DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), src.Invoke(srcW - cx - 1, srcH - cy - 1));
+                            DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), src(srcW - cx - 1, srcH - cy - 1));
                         }
                     }
                 }
@@ -113,7 +113,7 @@ namespace Kermalis.PokemonGameEngine.Render
                         int px = x + cx;
                         if (px >= 0 && px < dstW)
                         {
-                            DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), src.Invoke(srcW - cy - 1, cx));
+                            DrawPoint_Unchecked(GetPixelAddress(dst, dstW, px, py), src(srcW - cy - 1, cx));
                         }
                     }
                 }
@@ -168,10 +168,10 @@ namespace Kermalis.PokemonGameEngine.Render
                         if ((dx > -1) && (dy > -1) && (dx < (srcW - 1)) && (dy < (srcH - 1)))
                         {
                             // Get 4 pixels
-                            uint c00 = src.Invoke(dx, dy);
-                            uint c01 = src.Invoke(dx + 1, dy);
-                            uint c10 = src.Invoke(dx, dy + 1);
-                            uint c11 = src.Invoke(dx + 1, dy + 1);
+                            uint c00 = src(dx, dy);
+                            uint c01 = src(dx + 1, dy);
+                            uint c10 = src(dx, dy + 1);
+                            uint c11 = src(dx + 1, dy + 1);
                             if (xFlip)
                             {
                                 uint cswap = c00; c00 = c01; c01 = cswap;
@@ -243,7 +243,7 @@ namespace Kermalis.PokemonGameEngine.Render
                             {
                                 dy = sh - dy;
                             }
-                            *dst = src.Invoke(dx, dy);
+                            *dst = src(dx, dy);
                         }
                         sdx += icos;
                         sdy += isin;

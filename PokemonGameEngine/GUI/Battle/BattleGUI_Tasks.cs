@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     var data = (TaskData_PrintMessage)task.Data;
                     _autoAdvanceTimer = 0;
-                    data.OnFinished.Invoke();
+                    data.OnFinished();
                     _tasks.Remove(task);
                 }
             }
@@ -86,7 +86,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             if (_stringPrinter.IsEnded)
             {
                 var data = (TaskData_PrintMessage)task.Data;
-                data.OnFinished.Invoke();
+                data.OnFinished();
                 _tasks.Remove(task);
             }
         }

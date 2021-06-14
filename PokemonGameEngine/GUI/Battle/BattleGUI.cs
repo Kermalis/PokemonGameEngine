@@ -101,7 +101,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private void DestroyTrainerSpriteAndBegin()
         {
             Sprite s = _sprites.First;
-            s.Data = new SpriteData_TrainerGoAway(1000, s.X);
+            s.Data = new SpriteData_TrainerGoAway(1_000, s.X);
             s.RCallback = Sprite_TrainerGoAway;
             Begin();
         }
@@ -224,7 +224,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _stringWindow = null;
                 _actionsGUI?.Dispose();
                 _actionsGUI = null;
-                _onClosed.Invoke();
+                _onClosed();
                 _onClosed = null;
                 Instance = null;
             }

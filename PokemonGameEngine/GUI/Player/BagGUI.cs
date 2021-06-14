@@ -84,7 +84,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                _onClosed.Invoke();
+                _onClosed();
                 _onClosed = null;
             }
         }

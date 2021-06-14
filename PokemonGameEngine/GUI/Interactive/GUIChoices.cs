@@ -53,9 +53,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             if (b)
             {
                 Action c = BackCommand;
-                if (c != null)
+                if (c is not null)
                 {
-                    c.Invoke();
+                    c();
                     return;
                 }
             }
@@ -78,7 +78,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                 T c = _choices[curSelected];
                 if (c.IsEnabled)
                 {
-                    c.Command.Invoke();
+                    c.Command();
                 }
             }
         }

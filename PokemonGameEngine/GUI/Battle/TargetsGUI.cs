@@ -606,11 +606,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public void LogicTick()
         {
-            void Back()
-            {
-                _cancelAction.Invoke();
-            }
-
             if (InputManager.IsPressed(Key.A))
             {
                 TargetInfo ti;
@@ -622,18 +617,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     case TargetSelection.FoeLeft: ti = _targetFoeLeft; break;
                     case TargetSelection.FoeCenter: ti = _targetFoeCenter; break;
                     case TargetSelection.FoeRight: ti = _targetFoeRight; break;
-                    default: Back(); return;
+                    default: _cancelAction(); return;
                 }
                 if (ti.Enabled)
                 {
                     _pkmn.TurnAction = new PBETurnAction(_pkmn, _fightMove, ti.Targets);
-                    _selectAction.Invoke();
+                    _selectAction();
                 }
                 return;
             }
             if (InputManager.IsPressed(Key.B))
             {
-                Back();
+                _cancelAction();
                 return;
             }
             if (InputManager.IsPressed(Key.Left))
