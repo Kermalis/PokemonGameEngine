@@ -6,6 +6,7 @@ using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Util;
+using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
@@ -143,6 +144,35 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 AnimImage.SpeedModifier = s == PBEStatus1.Paralyzed || s == PBEStatus1.Asleep || pkmn.HPPercentage <= 0.25 ? 2d : 1d;
                 AnimImage.IsPaused = false;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe PixelSupplier MakeAllyBitmapSupplier(uint* src, int srcW)
+        {
+            return (x, y) => *Renderer.GetPixelAddress(src, srcW, x / 2, y / 2);
+        }
+        public unsafe void Render(uint* dst, int dstW, int dstH, float x, float y, bool ally)
+        {
+            AnimatedImage img = AnimImage;
+            int width = img.Width;
+            int height = img.Height;
+            fixed (uint* src = img.Bitmap)
+            {
+                PixelSupplier pixSupply;
+                if (ally)
+                {
+                    pixSupply = MakeAllyBitmapSupplier(src, width);
+                    width *= 2;
+                    height *= 2;
+                }
+                else
+                {
+                    pixSupply = Renderer.MakeBitmapSupplier(src, width);
+                }
+                int px = Renderer.GetCoordinatesForCentering(dstW, width, x);
+                int py = Renderer.GetCoordinatesForEndAlign(dstH, height, y);
+                Renderer.DrawBitmapWithShadow(dst, dstW, dstH, px, py, pixSupply, width, height);
             }
         }
     }

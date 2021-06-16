@@ -258,25 +258,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _sprites.DoCallbacks();
         }
 
-        private static unsafe void RenderPkmn(uint* dst, int dstW, int dstH, PkmnPosition pos, bool ally)
-        {
-            SpritedBattlePokemon sPkmn = pos.SPkmn;
-            AnimatedImage img = sPkmn.AnimImage;
-            int width = img.Width;
-            int height = img.Height;
-            if (ally)
-            {
-                width *= 2;
-                height *= 2;
-            }
-            img.DrawSizedOn(dst, dstW, dstH,
-                Renderer.GetCoordinatesForCentering(dstW, width, pos.MonX), Renderer.GetCoordinatesForEndAlign(dstH, height, pos.MonY), width, height);
-        }
-        private static unsafe void RenderPkmnInfo(uint* dst, int dstW, int dstH, PkmnPosition pos)
-        {
-            pos.SPkmn.InfoBarImg.DrawOn(dst, dstW, dstH, pos.BarX, pos.BarY);
-        }
-
         private unsafe void RCB_Fading(uint* dst, int dstW, int dstH)
         {
             RCB_RenderTick(dst, dstW, dstH);
@@ -296,12 +277,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         if (p.InfoVisible)
                         {
-                            RenderPkmnInfo(dst, dstW, dstH, p);
+                            p.RenderMonInfo(dst, dstW, dstH);
                         }
                     }
                     else if (p.PkmnVisible)
                     {
-                        RenderPkmn(dst, dstW, dstH, p, ally);
+                        p.RenderMon(dst, dstW, dstH, ally);
                     }
                 }
             }

@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
+using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
@@ -127,27 +128,49 @@ namespace Kermalis.PokemonGameEngine.Render
                 DrawBitmapWithShadow(dst, dstW, dstH, s.X + xOffset, s.Y + yOffset, src, s.Image.Width, s.Image.Height);
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint GetColorForShadow(uint color)
+        {
+            return color != 0 ? Color(0, 0, 0, 160) : color;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static PixelSupplier MakeShadowSupplier(uint* src, int srcW)
         {
-            return (x, y) =>
-            {
-                uint color = *GetPixelAddress(src, srcW, x, y);
-                return color != 0 ? Color(0, 0, 0, 160) : color;
-            };
+            return (x, y) => GetColorForShadow(*GetPixelAddress(src, srcW, x, y));
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static PixelSupplier MakeShadowSupplier(PixelSupplier src)
+        {
+            return (x, y) => GetColorForShadow(src(x, y));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DrawBitmapWithShadow(uint* dst, int dstW, int dstH, int x, int y, uint* src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
         {
             PixelSupplier pixSupplySrc = MakeBitmapSupplier(src, srcW);
             PixelSupplier pixSupplyShadow = MakeShadowSupplier(src, srcW);
-            fixed (uint* rotated = CreateRotatedBitmap(pixSupplyShadow, srcW, srcH, 5, out int rotWidth, out int rotHeight, out _, out _, xFlip: xFlip, yFlip: yFlip, smooth: true))
+            DrawBitmapWithShadow(dst, dstW, dstH, x, y, pixSupplySrc, srcW, srcH, pixSupplyShadow, xFlip: xFlip, yFlip: yFlip);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DrawBitmapWithShadow(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, bool xFlip = false, bool yFlip = false)
+        {
+            PixelSupplier shadow = MakeShadowSupplier(src);
+            DrawBitmapWithShadow(dst, dstW, dstH, x, y, src, srcW, srcH, shadow, xFlip: xFlip, yFlip: yFlip);
+        }
+        public static void DrawBitmapWithShadow(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, PixelSupplier shadow, bool xFlip = false, bool yFlip = false)
+        {
+            fixed (uint* rotated = CreateRotatedBitmap(shadow, srcW, srcH, 5, out int rotWidth, out int rotHeight, out _, out _, xFlip: xFlip, yFlip: yFlip, smooth: true))
             {
-                pixSupplyShadow = MakeBitmapSupplier(rotated, rotWidth);
-                int shadowW = (int)(rotWidth * 0.95f);
-                int shadowH = (int)(rotHeight * 0.6f);
+                shadow = MakeBitmapSupplier(rotated, rotWidth);
+                const float wScale = 0.95f;
+                const float hScale = 0.6f;
+                int shadowW = (int)(rotWidth * wScale);
+                int shadowH = (int)(rotHeight * hScale);
                 int shadowX = x + (int)(srcW * 0.035f);
                 int shadowY = y + srcH - shadowH - (int)(srcH * 0.04f);
-                DrawBitmapSized(dst, dstW, dstH, shadowX, shadowY, shadowW, shadowH, pixSupplyShadow, rotWidth, rotHeight);
-                DrawBitmap(dst, dstW, dstH, x, y, pixSupplySrc, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
+                DrawBitmapSizedScaled(dst, dstW, dstH, shadowX, shadowY, shadowW, shadowH, wScale, hScale, shadow);
+                DrawBitmap(dst, dstW, dstH, x, y, src, srcW, srcH, xFlip: xFlip, yFlip: yFlip);
             }
         }
     }
