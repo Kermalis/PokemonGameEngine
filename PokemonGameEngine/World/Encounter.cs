@@ -31,9 +31,65 @@ namespace Kermalis.PokemonGameEngine.World
             return false;
         }
 
-        // TODO: Determine battle music
-        private static Song GetWildBattleMusic()
+        private static Song GetWildBattleMusic(Party wildParty)
         {
+            if (wildParty.Count != 1)
+            {
+                return Song.WildBattle_Multi;
+            }
+            // All legendary/mythical species use the legendary battle music
+            PBESpecies s = wildParty[0].Species;
+            switch (s)
+            {
+                case PBESpecies.Articuno:
+                case PBESpecies.Zapdos:
+                case PBESpecies.Moltres:
+                case PBESpecies.Mewtwo:
+                case PBESpecies.Mew:
+                case PBESpecies.Raikou:
+                case PBESpecies.Entei:
+                case PBESpecies.Suicune:
+                case PBESpecies.Lugia:
+                case PBESpecies.HoOh:
+                case PBESpecies.Celebi:
+                case PBESpecies.Regirock:
+                case PBESpecies.Regice:
+                case PBESpecies.Registeel:
+                case PBESpecies.Latias:
+                case PBESpecies.Latios:
+                case PBESpecies.Kyogre:
+                case PBESpecies.Groudon:
+                case PBESpecies.Rayquaza:
+                case PBESpecies.Jirachi:
+                case PBESpecies.Deoxys:
+                case PBESpecies.Uxie:
+                case PBESpecies.Mesprit:
+                case PBESpecies.Azelf:
+                case PBESpecies.Dialga:
+                case PBESpecies.Palkia:
+                case PBESpecies.Heatran:
+                case PBESpecies.Regigigas:
+                case PBESpecies.Giratina:
+                case PBESpecies.Cresselia:
+                case PBESpecies.Phione:
+                case PBESpecies.Manaphy:
+                case PBESpecies.Darkrai:
+                case PBESpecies.Shaymin:
+                case PBESpecies.Arceus:
+                case PBESpecies.Victini:
+                case PBESpecies.Cobalion:
+                case PBESpecies.Terrakion:
+                case PBESpecies.Virizion:
+                case PBESpecies.Tornadus:
+                case PBESpecies.Thundurus:
+                case PBESpecies.Reshiram:
+                case PBESpecies.Zekrom:
+                case PBESpecies.Landorus:
+                case PBESpecies.Kyurem:
+                case PBESpecies.Keldeo:
+                case PBESpecies.Meloetta:
+                case PBESpecies.Genesect: return Song.LegendaryBattle;
+            }
             return Song.WildBattle;
         }
 
@@ -288,7 +344,7 @@ namespace Kermalis.PokemonGameEngine.World
                     return false; // Return false if an ability cancels the encounter
                 }
             }
-            Game.Instance.CreateWildBattle(weather, blockBehavior, wildParty, format, GetWildBattleMusic());
+            Game.Instance.CreateWildBattle(weather, blockBehavior, wildParty, format, GetWildBattleMusic(wildParty));
             return true;
         }
 
@@ -302,7 +358,8 @@ namespace Kermalis.PokemonGameEngine.World
             PBEGender gender = GetAffectedGender(leadPkmn.Gender, leadPkmn.Ability, bs.GenderRatio);
             PBENature nature = GetAffectedNature(leadPkmn.Ability, leadPkmn.Nature);
             var wildPkmn = PartyPokemon.CreateWildMon(species, form, level, gender, nature, bs);
-            Game.Instance.CreateWildBattle(weather, block.BlocksetBlock.Behavior, new Party { wildPkmn }, PBEBattleFormat.Single, Song.LegendaryBattle);
+            var wildParty = new Party { wildPkmn };
+            Game.Instance.CreateWildBattle(weather, block.BlocksetBlock.Behavior, wildParty, PBEBattleFormat.Single, GetWildBattleMusic(wildParty));
         }
     }
 }

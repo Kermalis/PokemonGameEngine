@@ -222,6 +222,7 @@ namespace Kermalis.PokemonGameEngine.World
         Route1,
         Cave1,
         WildBattle,
+        WildBattle_Multi,
         TrainerBattle,
         GymBattle,
         LegendaryBattle,
