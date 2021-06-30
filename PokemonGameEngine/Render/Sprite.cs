@@ -46,6 +46,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public void Dispose()
         {
+            // Do not dispose next or prev so we can continue looping after this gets removed
             Data = null;
             DrawMethod = null;
             Callback = null;
@@ -71,8 +72,12 @@ namespace Kermalis.PokemonGameEngine.Render
             {
                 if (s.Priority > sprite.Priority)
                 {
-                    // Found a task with a higher priority, so insert the new one before it
-                    if (s != First)
+                    // The new sprite has a lower priority than s, so insert new before s
+                    if (s == First)
+                    {
+                        First = sprite;
+                    }
+                    else
                     {
                         Sprite prev = s.Prev;
                         sprite.Prev = prev;
@@ -83,11 +88,11 @@ namespace Kermalis.PokemonGameEngine.Render
                     Count++;
                     return;
                 }
-                // Iterate to next task if there is one
+                // Iterate to next sprite if there is one
                 Sprite next = s.Next;
                 if (next is null)
                 {
-                    // The new task is the highest priority or tied for it, so it gets placed at the last position
+                    // The new sprite is the highest priority or tied for it, so place new at the last position
                     s.Next = sprite;
                     sprite.Prev = s;
                     Count++;

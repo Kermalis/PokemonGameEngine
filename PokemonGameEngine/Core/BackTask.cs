@@ -18,10 +18,14 @@
             BackTask t = First;
             while (true)
             {
-                if (t.Priority > task.Priority)
+                if (t.Priority < task.Priority)
                 {
-                    // Found a task with a higher priority, so insert the new one before it
-                    if (t != First)
+                    // The new task has a higher priority than t, so insert new before t
+                    if (t == First)
+                    {
+                        First = t;
+                    }
+                    else
                     {
                         BackTask prev = t.Prev;
                         task.Prev = prev;
@@ -36,7 +40,7 @@
                 BackTask next = t.Next;
                 if (next is null)
                 {
-                    // The new task is the highest priority or tied for it, so it gets placed at the last position
+                    // The new task is the lowest priority or tied for it, so place new at the last position
                     t.Next = task;
                     task.Prev = t;
                     Count++;
@@ -162,13 +166,14 @@
 
     internal sealed class BackTask
     {
+        public BackTask Next;
+        public BackTask Prev;
+
         public BackTaskAction Action;
         public object Data;
         public object Tag;
 
-        public readonly int Priority;
-        public BackTask Next;
-        public BackTask Prev;
+        public readonly int Priority; // Higher priorities go first
 
         public BackTask(BackTaskAction action, int priority, object data = null, object tag = null)
         {
@@ -180,6 +185,7 @@
 
         public void Dispose()
         {
+            // Do not dispose next or prev so we can continue looping after this gets removed
             Action = null;
             Data = null;
             Tag = null;
