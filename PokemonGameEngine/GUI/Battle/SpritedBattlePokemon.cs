@@ -196,7 +196,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 PBEBattlePokemon pPkmn = pBattle[i];
                 if (pPkmn.IsWild)
                 {
-                    wildPos = battleGUI.GetStuff(pPkmn, pPkmn.FieldPosition);
+                    wildPos = battleGUI.GetPkmnPosition(pPkmn, pPkmn.FieldPosition);
                 }
                 SpritedParty[i] = new SpritedBattlePokemon(pBattle[i], p[i], backImage, useKnownInfo, wildPos);
             }

@@ -9,7 +9,6 @@ using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.Trainer;
 using Kermalis.PokemonGameEngine.UI;
-using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,39 +22,22 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private const int AutoAdvanceTicks = Program.NumTicksPerSecond * 3; // 3 seconds
         private const string ThreadName = "Battle Thread";
-        private readonly Image _battleBackground;
 
         private Action _onClosed;
-        private FadeColorTransition _fadeTransition;
 
         public readonly PBEBattle Battle;
         private Thread _battleThread;
         private bool _pauseBattleThread;
-        public readonly SpritedBattlePokemonParty[] SpritedParties;
         public readonly PBETrainer Trainer;
-        private readonly SpriteList _sprites = new();
 
         private readonly string _trainerDefeatText;
         private readonly TrainerClass _trainerClass;
 
-        private Window _stringWindow;
-        private StringPrinter _stringPrinter;
-        private int _autoAdvanceTimer;
-
-        private ActionsGUI _actionsGUI;
-
         public BattleGUI(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties, TrainerClass trainerClass = default, string trainerDefeatText = null)
-            : this(battle.BattleFormat) // Init field controller
+            : this(battle, trainerParties) // BattleGUI_Render
         {
             Battle = battle;
             Trainer = battle.Trainers[0];
-            _battleBackground = Image.LoadOrGet($"GUI.Battle.Background.BG_{battle.BattleTerrain}_{battle.BattleFormat}.png");
-            SpritedParties = new SpritedBattlePokemonParty[battle.Trainers.Count];
-            for (int i = 0; i < battle.Trainers.Count; i++)
-            {
-                PBETrainer trainer = battle.Trainers[i];
-                SpritedParties[i] = new SpritedBattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team), ShouldUseKnownInfo(trainer), this);
-            }
             _onClosed = onClosed;
             _trainerClass = trainerClass;
             _trainerDefeatText = trainerDefeatText;
@@ -65,46 +47,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             Instance = this;
         }
 
-        public unsafe void FadeIn()
-        {
-            OverworldGUI.ProcessDayTint(true); // Catch up time
-            // Trainer sprite
-            if (Battle.BattleType == PBEBattleType.Trainer)
-            {
-                var img = new AnimatedImage(TrainerCore.GetTrainerClassResource(_trainerClass), true, isPaused: true);
-                var sprite = new Sprite
-                {
-                    Image = img,
-                    DrawMethod = Renderer.Sprite_DrawWithShadow,
-                    X = Renderer.GetCoordinatesForCentering(Program.RenderWidth, img.Width, 0.73f),
-                    Y = Renderer.GetCoordinatesForEndAlign(Program.RenderHeight, img.Height, 0.51f)
-                };
-                _sprites.Add(sprite);
-            }
-            _fadeTransition = new FadeFromColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeInBattle);
-            Game.Instance.SetRCallback(RCB_Fading);
-        }
-        private void OnFadeInFinished()
-        {
-            if (Battle.BattleType == PBEBattleType.Trainer)
-            {
-                ((AnimatedImage)_sprites.First.Image).IsPaused = false;
-                AddMessage(string.Format("You are challenged by {0}!", Battle.Teams[1].CombinedName), DestroyTrainerSpriteAndBegin);
-                _pauseBattleThread = false;
-            }
-            else
-            {
-                Begin();
-            }
-        }
-        private void DestroyTrainerSpriteAndBegin()
-        {
-            Sprite s = _sprites.First;
-            s.Data = new SpriteData_TrainerGoAway(1_000, s.X);
-            s.RCallback = Sprite_TrainerGoAway;
-            Begin();
-        }
         private void Begin()
         {
             _battleThread = new Thread(Battle.Begin) { Name = ThreadName };
@@ -195,11 +137,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             Game.Instance.SetRCallback(RCB_Fading);
         }
 
-        public void SetMessageWindowVisibility(bool invisible)
-        {
-            _stringWindow.IsInvisible = invisible;
-        }
-
         private unsafe void CB_FadeInBattle()
         {
             OverworldGUI.ProcessDayTint(false);
@@ -256,53 +193,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             OverworldGUI.ProcessDayTint(false);
             _tasks.RunTasks();
             _sprites.DoCallbacks();
-        }
-
-        private unsafe void RCB_Fading(uint* dst, int dstW, int dstH)
-        {
-            RCB_RenderTick(dst, dstW, dstH);
-            _fadeTransition.Render(dst, dstW, dstH);
-        }
-        public unsafe void RCB_RenderTick(uint* dst, int dstW, int dstH)
-        {
-            AnimatedImage.UpdateCurrentFrameForAll();
-            _sprites.DoRCallbacks();
-            _battleBackground.DrawSizedOn(dst, dstW, dstH, 0, 0, dstW, dstH);
-            void DoTeam(int i, bool info)
-            {
-                foreach (PkmnPosition p in _positions[i])
-                {
-                    bool ally = i == 0;
-                    if (info)
-                    {
-                        if (p.InfoVisible)
-                        {
-                            p.RenderMonInfo(dst, dstW, dstH);
-                        }
-                    }
-                    else if (p.PkmnVisible)
-                    {
-                        p.RenderMon(dst, dstW, dstH, ally);
-                    }
-                }
-            }
-            DoTeam(1, false);
-            DoTeam(0, false);
-
-            _sprites.DrawAll(dst, dstW, dstH);
-
-            if (Overworld.ShouldRenderDayTint())
-            {
-                DayTint.Render(dst, dstW, dstH);
-            }
-
-            DoTeam(1, true);
-            DoTeam(0, true);
-
-            if (_stringPrinter != null)
-            {
-                _stringWindow.Render(dst, dstW, dstH);
-            }
         }
 
         private void UpdateDisguisedPID(PBEBattlePokemon pkmn)
