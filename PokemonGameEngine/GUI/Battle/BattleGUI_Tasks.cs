@@ -15,6 +15,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private sealed class SpriteData_TrainerGoAway
         {
+            public const int Tag = 0xDEE;
+
             public TimeSpan Cur;
             public readonly TimeSpan End;
             public readonly int StartX;

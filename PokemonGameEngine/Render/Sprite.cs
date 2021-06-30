@@ -5,13 +5,14 @@ namespace Kermalis.PokemonGameEngine.Render
     internal delegate void SpriteCallback(Sprite sprite);
     internal unsafe delegate void SpriteDrawMethod(Sprite sprite, uint* dst, int dstW, int dstH, int xOffset = 0, int yOffset = 0);
 
-    internal sealed class Sprite
+    internal class Sprite
     {
         public Sprite Next;
         public Sprite Prev;
 
         public IImage Image;
-        public int Priority { get; init; }
+        /// <summary>After this is updated, a call will need to be made to <see cref="SpriteList.SortByPriority"/>. Higher priorities are rendered last</summary>
+        public virtual int Priority { get; set; }
         public int X;
         public int Y;
         public bool IsInvisible;
@@ -19,6 +20,7 @@ namespace Kermalis.PokemonGameEngine.Render
         public bool YFlip;
 
         public object Data;
+        public object Tag;
         public SpriteDrawMethod DrawMethod;
         public SpriteCallback Callback;
         public SpriteCallback RCallback;
@@ -124,6 +126,53 @@ namespace Kermalis.PokemonGameEngine.Render
             }
             sprite.Dispose();
             Count--;
+        }
+
+        public Sprite FirstWithTagOrDefault(object tag)
+        {
+            for (Sprite s = First; s is not null; s = s.Next)
+            {
+                if (s.Tag?.Equals(tag) == true)
+                {
+                    return s;
+                }
+            }
+            return null;
+        }
+
+        public void SortByPriority()
+        {
+            if (First is null)
+            {
+                return;
+            }
+            for (Sprite s = First.Next; s is not null; s = s.Next)
+            {
+                Sprite cur = s;
+                // Search all values before the current item
+                // If a value below has a a higher priority, shift it up
+                Sprite prev = cur.Prev;
+                while (prev.Priority > s.Priority)
+                {
+                    Sprite prev2 = prev.Prev;
+                    Sprite next = cur.Next;
+                    prev.Next = next;
+                    prev.Prev = cur;
+                    cur.Next = prev;
+                    cur.Prev = prev2;
+                    if (next is not null)
+                    {
+                        next.Prev = prev;
+                    }
+                    if (prev2 is null)
+                    {
+                        First = cur;
+                        break;
+                    }
+                    prev2.Next = cur;
+                    prev = prev2;
+                }
+            }
         }
 
         public void DoCallbacks()

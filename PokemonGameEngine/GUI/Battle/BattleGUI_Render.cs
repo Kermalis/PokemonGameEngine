@@ -147,7 +147,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     Image = img,
                     DrawMethod = Renderer.Sprite_DrawWithShadow,
                     X = Renderer.GetCoordinatesForCentering(Program.RenderWidth, img.Width, 0.73f),
-                    Y = Renderer.GetCoordinatesForEndAlign(Program.RenderHeight, img.Height, 0.51f)
+                    Y = Renderer.GetCoordinatesForEndAlign(Program.RenderHeight, img.Height, 0.51f),
+                    Priority = int.MaxValue, // TODO
+                    Tag = SpriteData_TrainerGoAway.Tag
                 };
                 _sprites.Add(sprite);
             }
@@ -159,7 +161,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             if (Battle.BattleType == PBEBattleType.Trainer)
             {
-                ((AnimatedImage)_sprites.First.Image).IsPaused = false;
+                ((AnimatedImage)_sprites.FirstWithTagOrDefault(SpriteData_TrainerGoAway.Tag).Image).IsPaused = false;
                 AddMessage(string.Format("You are challenged by {0}!", Battle.Teams[1].CombinedName), DestroyTrainerSpriteAndBegin);
                 _pauseBattleThread = false;
             }
@@ -170,7 +172,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void DestroyTrainerSpriteAndBegin()
         {
-            Sprite s = _sprites.First;
+            Sprite s = _sprites.FirstWithTagOrDefault(SpriteData_TrainerGoAway.Tag);
             s.Data = new SpriteData_TrainerGoAway(1_000, s.X);
             s.RCallback = Sprite_TrainerGoAway;
             Begin();
