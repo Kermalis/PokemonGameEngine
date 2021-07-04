@@ -56,5 +56,22 @@ namespace Kermalis.PokemonGameEngine.Util
             }
             return dir;
         }
+
+        public static float DegreesToRadiansF(float degrees)
+        {
+            return MathF.PI / 180 * degrees;
+        }
+        public static float RadiansToDegreesF(float radians)
+        {
+            return 180 / MathF.PI * radians;
+        }
+        public static double DegreesToRadians(double degrees)
+        {
+            return Math.PI / 180 * degrees;
+        }
+        public static double RadiansToDegrees(double radians)
+        {
+            return 180 / Math.PI * radians;
+        }
     }
 }

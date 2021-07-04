@@ -1,6 +1,7 @@
 ﻿// This file is adapted from SDL
 // https://github.com/spurious/SDL-mirror/blob/master/src/render/software/SDL_rotate.c
 // https://github.com/spurious/SDL-mirror/blob/master/src/render/software/SDL_render_sw.c
+using Kermalis.PokemonGameEngine.Util;
 using System;
 
 namespace Kermalis.PokemonGameEngine.Render
@@ -252,8 +253,8 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
 
-        private static void CalcSurfaceSize(int width, int height, double angle,
-            out int dstW, out int dstH, out double cAngle, out double sAngle)
+        private static void CalcSurfaceSize(int width, int height, float angle,
+            out int dstW, out int dstH, out float cAngle, out float sAngle)
         {
             double a = angle / 90;
             int angle90 = (int)a;
@@ -282,25 +283,25 @@ namespace Kermalis.PokemonGameEngine.Render
             else
             {
                 // Determine destination width and height by rotating a centered source box
-                double radians = angle * (Math.PI / -180.0); // Reverse the angle because our rotations are clockwise
-                sAngle = Math.Sin(radians);
-                cAngle = Math.Cos(radians);
-                double x = width / 2;
-                double y = height / 2;
-                double cx = cAngle * x;
-                double cy = cAngle * y;
-                double sx = sAngle * x;
-                double sy = sAngle * y;
+                float radians = Utils.DegreesToRadiansF(-angle); // Reverse the angle because our rotations are clockwise
+                sAngle = MathF.Sin(radians);
+                cAngle = MathF.Cos(radians);
+                float x = width / 2;
+                float y = height / 2;
+                float cx = cAngle * x;
+                float cy = cAngle * y;
+                float sx = sAngle * x;
+                float sy = sAngle * y;
 
-                int dstwidthhalf = Math.Max((int)Math.Ceiling(Math.Max(Math.Max(Math.Max(Math.Abs(cx + sy), Math.Abs(cx - sy)), Math.Abs(-cx + sy)), Math.Abs(-cx - sy))), 1);
-                int dstheighthalf = Math.Max((int)Math.Ceiling(Math.Max(Math.Max(Math.Max(Math.Abs(sx + cy), Math.Abs(sx - cy)), Math.Abs(-sx + cy)), Math.Abs(-sx - cy))), 1);
+                int dstwidthhalf = Math.Max((int)MathF.Ceiling(Math.Max(Math.Max(Math.Max(MathF.Abs(cx + sy), MathF.Abs(cx - sy)), MathF.Abs(-cx + sy)), MathF.Abs(-cx - sy))), 1);
+                int dstheighthalf = Math.Max((int)MathF.Ceiling(Math.Max(Math.Max(Math.Max(MathF.Abs(sx + cy), MathF.Abs(sx - cy)), MathF.Abs(-sx + cy)), MathF.Abs(-sx - cy))), 1);
                 dstW = 2 * dstwidthhalf;
                 dstH = 2 * dstheighthalf;
             }
         }
 
-        private static uint[] RotateSurface(PixelSupplier src, int srcW, int srcH, double angle, int centerX, int centerY, bool smooth, bool xFlip, bool yFlip,
-            int dstW, int dstH, double cAngle, double sAngle)
+        private static uint[] RotateSurface(PixelSupplier src, int srcW, int srcH, float angle, int centerX, int centerY, bool smooth, bool xFlip, bool yFlip,
+            int dstW, int dstH, float cAngle, float sAngle)
         {
             uint[] dstArray = new uint[dstW * (dstH + 2)]; // 2 is extra tolerance space for some rotations
             fixed (uint* dst = dstArray)
@@ -327,15 +328,15 @@ namespace Kermalis.PokemonGameEngine.Render
             return dstArray;
         }
 
-        public static uint[] CreateRotatedBitmap(PixelSupplier src, int srcW, int srcH, double angle,
-            out int rotWidth, out int rotHeight, out double cAngle, out double sAngle,
+        public static uint[] CreateRotatedBitmap(PixelSupplier src, int srcW, int srcH, float angle,
+            out int rotWidth, out int rotHeight, out float cAngle, out float sAngle,
             bool xFlip = false, bool yFlip = false, bool smooth = false)
         {
             CalcSurfaceSize(srcW, srcH, angle, out rotWidth, out rotHeight, out cAngle, out sAngle);
             return RotateSurface(src, srcW, srcH, angle, rotWidth / 2, rotHeight / 2, smooth, xFlip, yFlip, rotWidth, rotHeight, cAngle, sAngle);
         }
 
-        public static void DrawRotatedBitmap(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, double angle, bool xFlip = false, bool yFlip = false, bool smooth = false)
+        public static void DrawRotatedBitmap(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, float angle, bool xFlip = false, bool yFlip = false, bool smooth = false)
         {
             fixed (uint* rotated = CreateRotatedBitmap(src, srcW, srcH, angle, out int rotWidth, out int rotHeight, out _, out _, xFlip: xFlip, yFlip: yFlip, smooth: smooth))
             {
@@ -343,14 +344,14 @@ namespace Kermalis.PokemonGameEngine.Render
                 DrawBitmap(dst, dstW, dstH, x, y, pixSupplyRotated, rotWidth, rotHeight);
             }
         }
-        public static void DrawRotatedBitmap_Centered(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, double angle, bool xFlip = false, bool yFlip = false, bool smooth = false)
+        public static void DrawRotatedBitmap_Centered(uint* dst, int dstW, int dstH, int x, int y, PixelSupplier src, int srcW, int srcH, float angle, bool xFlip = false, bool yFlip = false, bool smooth = false)
         {
-            fixed (uint* rotated = CreateRotatedBitmap(src, srcW, srcH, angle, out int rotWidth, out int rotHeight, out double cAngle, out double sAngle, xFlip: xFlip, yFlip: yFlip, smooth: smooth))
+            fixed (uint* rotated = CreateRotatedBitmap(src, srcW, srcH, angle, out int rotWidth, out int rotHeight, out float cAngle, out float sAngle, xFlip: xFlip, yFlip: yFlip, smooth: smooth))
             {
                 PixelSupplier pixSupplyRotated = MakeBitmapSupplier(rotated, rotWidth);
 
-                double centerX = srcW / 2;
-                double centerY = srcH / 2;
+                float centerX = srcW / 2;
+                float centerY = srcH / 2;
 
                 // Find out where the new origin is by rotating the four final_rect points around the center and then taking the extremes
                 int abscenterx = x + (int)centerX;
@@ -358,28 +359,28 @@ namespace Kermalis.PokemonGameEngine.Render
                 sAngle = -sAngle;
 
                 // Top Left
-                double px = x - abscenterx;
-                double py = y - abscentery;
-                double p1x = px * cAngle - py * sAngle + abscenterx;
-                double p1y = px * sAngle + py * cAngle + abscentery;
+                float px = x - abscenterx;
+                float py = y - abscentery;
+                float p1x = px * cAngle - py * sAngle + abscenterx;
+                float p1y = px * sAngle + py * cAngle + abscentery;
 
                 // Top Right
                 px = x + srcW - abscenterx;
                 py = y - abscentery;
-                double p2x = px * cAngle - py * sAngle + abscenterx;
-                double p2y = px * sAngle + py * cAngle + abscentery;
+                float p2x = px * cAngle - py * sAngle + abscenterx;
+                float p2y = px * sAngle + py * cAngle + abscentery;
 
                 // Bottom Left
                 px = x - abscenterx;
                 py = y + srcH - abscentery;
-                double p3x = px * cAngle - py * sAngle + abscenterx;
-                double p3y = px * sAngle + py * cAngle + abscentery;
+                float p3x = px * cAngle - py * sAngle + abscenterx;
+                float p3y = px * sAngle + py * cAngle + abscentery;
 
                 // Bottom Right
                 px = x + srcW - abscenterx;
                 py = y + srcH - abscentery;
-                double p4x = px * cAngle - py * sAngle + abscenterx;
-                double p4y = px * sAngle + py * cAngle + abscentery;
+                float p4x = px * cAngle - py * sAngle + abscenterx;
+                float p4y = px * sAngle + py * cAngle + abscentery;
 
                 x = (int)Math.Min(Math.Min(p1x, p2x), Math.Min(p3x, p4x));
                 y = (int)Math.Min(Math.Min(p1y, p2y), Math.Min(p3y, p4y));
