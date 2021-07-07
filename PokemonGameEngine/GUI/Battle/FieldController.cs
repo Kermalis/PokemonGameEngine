@@ -22,6 +22,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             MonX = monX;
             MonY = monY;
         }
+
+        public unsafe void RenderMon(uint* dst, int dstW, int dstH, bool ally)
+        {
+            SPkmn.Render(dst, dstW, dstH, MonX, MonY, ally);
+        }
+        public unsafe void RenderMonInfo(uint* dst, int dstW, int dstH)
+        {
+            SPkmn.InfoBarImg.DrawOn(dst, dstW, dstH, BarX, BarY);
+        }
     }
 
     internal sealed partial class BattleGUI

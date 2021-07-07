@@ -116,9 +116,9 @@ namespace Kermalis.PokemonGameEngine.GUI
             _bMod = bMod;
         }
 
-        public static unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public static unsafe void Render(uint* dst, int dstW, int dstH)
         {
-            RenderUtils.ModulateRectangle(bmpAddress, bmpWidth, bmpHeight, _rMod, _gMod, _bMod, 1);
+            Renderer.ModulateRectangle(dst, dstW, dstH, _rMod, _gMod, _bMod, 1);
         }
     }
 }

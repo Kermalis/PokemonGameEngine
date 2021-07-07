@@ -43,13 +43,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             using (EndianBinaryReader r = GetReader())
             {
                 r.BaseStream.Position = _sheetOffsets[id];
-                Images = RenderUtils.LoadImageSheet(SheetsPath + r.ReadStringNullTerminated(), ImageWidth = r.ReadInt32(), ImageHeight = r.ReadInt32());
+                Images = Renderer.GetResourceSheetAsImages(SheetsPath + r.ReadStringNullTerminated(), ImageWidth = r.ReadInt32(), ImageHeight = r.ReadInt32());
                 ShadowXOffset = r.ReadInt32();
                 ShadowYOffset = r.ReadInt32();
                 ShadowImage = new Image(r.ReadInt32(), r.ReadInt32());
-                ShadowImage.Draw((uint* bmpAddress, int bmpWidth, int bmpHeight) =>
+                ShadowImage.Draw((uint* dst, int dstW, int dstH) =>
                 {
-                    RenderUtils.FillEllipse_Points(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth - 1, bmpHeight - 1, RenderUtils.Color(0, 0, 0, 160));
+                    Renderer.FillEllipse_Points(dst, dstW, dstH, 0, 0, dstW - 1, dstH - 1, Renderer.Color(0, 0, 0, 160));
                 });
             }
         }

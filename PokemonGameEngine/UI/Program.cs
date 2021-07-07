@@ -8,14 +8,8 @@ using System.Threading;
 
 namespace Kermalis.PokemonGameEngine.UI
 {
-    internal sealed class Program
+    internal static class Program
     {
-        [STAThread]
-        private static void Main()
-        {
-            new Program().MainLoop();
-        }
-
         // A block is 16x16 pixels (2x2 tiles, and a tile is 8x8 pixels)
         // You can have different sized blocks and tiles if you wish, but this table is demonstrating defaults
         // GB/GBC         -  160 x 144 resolution (10:9) - 10 x  9   blocks
@@ -35,16 +29,16 @@ namespace Kermalis.PokemonGameEngine.UI
         public static DateTime RenderTickTime { get; private set; }
         public static TimeSpan RenderTimeSinceLastFrame { get; private set; }
 
-        private readonly object _threadLockObj = new();
-        private readonly IntPtr _window;
-        private IntPtr _renderer;
-        private IntPtr _screen;
-        private bool _quit;
-        private bool _tickQuit1, _tickQuit2;
-        private IntPtr _controller;
-        private int _controllerId;
+        private static readonly object _threadLockObj = new();
+        private static readonly IntPtr _window;
+        private static IntPtr _renderer;
+        private static IntPtr _screen;
+        private static bool _quit;
+        private static bool _tickQuit1, _tickQuit2;
+        private static IntPtr _controller;
+        private static int _controllerId;
 
-        private Program()
+        static Program()
         {
             // Battle engine
             Utils.SetWorkingDirectory(string.Empty);
@@ -68,13 +62,13 @@ namespace Kermalis.PokemonGameEngine.UI
             new Thread(RenderTick) { Name = "Render Thread", Priority = ThreadPriority.Highest }.Start();
         }
 
-        private void CreateRendererAndScreen()
+        private static void CreateRendererAndScreen()
         {
             IntPtr r = SDL.SDL_CreateRenderer(_window, -1, SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED | SDL.SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC);
             _renderer = r;
             _screen = SDL.SDL_CreateTexture(r, SDL.SDL_PIXELFORMAT_ABGR8888, (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING, RenderWidth, RenderHeight);
         }
-        private void AttachFirstController()
+        private static void AttachFirstController()
         {
             int num = SDL.SDL_NumJoysticks();
             for (int i = 0; i < num; i++)
@@ -91,7 +85,8 @@ namespace Kermalis.PokemonGameEngine.UI
             }
         }
 
-        private void MainLoop()
+        [STAThread]
+        private static void Main()
         {
             while (!_quit)
             {
@@ -187,7 +182,7 @@ namespace Kermalis.PokemonGameEngine.UI
             SDL.SDL_Quit();
         }
 
-        private void LogicTick()
+        private static void LogicTick()
         {
             DateTime lastTickTime = DateTime.Now;
             while (!_quit)
@@ -213,7 +208,7 @@ namespace Kermalis.PokemonGameEngine.UI
             _tickQuit1 = true;
         }
 
-        private unsafe void RenderTick()
+        private static unsafe void RenderTick()
         {
             var time = new TimeBarrier(MaxFPS);
             time.Start();

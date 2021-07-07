@@ -34,7 +34,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _fightChoices.Add(new TextGUIChoice("Pokémon", command, isEnabled: enabled));
             command = enabled ? BagChoice : null;
             _fightChoices.Add(new TextGUIChoice("Bag", command, isEnabled: enabled));
-            enabled = pkmn.Trainer.ActiveBattlersOrdered.First() == pkmn && pkmn.Trainer.IsFleeValid() is null; // Only first Pokémon can "select" run
+            enabled = pkmn.Battle.BattleType == PBEBattleType.Wild && pkmn.Trainer.ActiveBattlersOrdered.First() == pkmn && pkmn.Trainer.IsFleeValid() is null; // Only first Pokémon can "select" run
             command = enabled ? RunChoice : null;
             _fightChoices.Add(new TextGUIChoice("Run", command, isEnabled: enabled));
         }
@@ -169,7 +169,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             else
             {
-                BattleGUI.Instance.AddMessage(null, false); // Clear message
+                BattleGUI.Instance.ClearMessage();
                 Game.Instance.SetRCallback(RCB_FadingPartyNoChoices);
             }
         }
@@ -221,30 +221,30 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _fightChoices.HandleInputs();
         }
 
-        private unsafe void RCB_Moves(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_Moves(uint* dst, int dstW, int dstH)
         {
-            BattleGUI.Instance.RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _moveChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+            BattleGUI.Instance.RCB_RenderTick(dst, dstW, dstH);
+            _moveChoices.Render(dst, dstW, dstH);
         }
-        private unsafe void RCB_Targets(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_Targets(uint* dst, int dstW, int dstH)
         {
-            BattleGUI.Instance.RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _targetsGUI.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            BattleGUI.Instance.RCB_RenderTick(dst, dstW, dstH);
+            _targetsGUI.RenderTick(dst, dstW, dstH);
         }
-        private unsafe void RCB_FadingParty(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_FadingParty(uint* dst, int dstW, int dstH)
         {
-            RCB_All(bmpAddress, bmpWidth, bmpHeight);
-            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            RCB_All(dst, dstW, dstH);
+            _fadeTransition.Render(dst, dstW, dstH);
         }
-        private unsafe void RCB_FadingPartyNoChoices(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_FadingPartyNoChoices(uint* dst, int dstW, int dstH)
         {
-            BattleGUI.Instance.RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
+            BattleGUI.Instance.RCB_RenderTick(dst, dstW, dstH);
+            _fadeTransition.Render(dst, dstW, dstH);
         }
-        private unsafe void RCB_All(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        private unsafe void RCB_All(uint* dst, int dstW, int dstH)
         {
-            BattleGUI.Instance.RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _fightChoices.Render(bmpAddress, bmpWidth, bmpHeight);
+            BattleGUI.Instance.RCB_RenderTick(dst, dstW, dstH);
+            _fightChoices.Render(dst, dstW, dstH);
         }
 
         public void Dispose()

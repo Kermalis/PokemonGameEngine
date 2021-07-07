@@ -101,13 +101,13 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private unsafe void AdvanceAndDrawString(int speed)
         {
-            unsafe void DrawString(uint* bmpAddress, int bmpWidth, int bmpHeight)
+            unsafe void DrawString(uint* dst, int dstW, int dstH)
             {
-                _result = DrawNext(bmpAddress, bmpWidth, bmpHeight, speed);
+                _result = DrawNext(dst, dstW, dstH, speed);
             }
             _window.Image.Draw(DrawString);
         }
-        private unsafe StringPrinterResult DrawNext(uint* bmpAddress, int bmpWidth, int bmpHeight, int count)
+        private unsafe StringPrinterResult DrawNext(uint* dst, int dstW, int dstH, int count)
         {
             int i = 0;
             while (i < count && _index < _str.Length)
@@ -125,7 +125,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 }
                 if (glyph != null)
                 {
-                    _font.DrawGlyph(bmpAddress, bmpWidth, bmpHeight, curX, curY, glyph, _fontColors);
+                    _font.DrawGlyph(dst, dstW, dstH, curX, curY, glyph, _fontColors);
                     i++;
                 }
             }

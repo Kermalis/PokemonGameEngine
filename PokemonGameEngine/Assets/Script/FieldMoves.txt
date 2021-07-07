@@ -18,12 +18,13 @@
     Message SurfText_UsedSurf
     AwaitMessageComplete
     CloseMessage
-    UseSurf
+    UseSurf // This command will handle everything via tasks, including unlocking all objs
     End
 
 // Text
 
 #SurfText_WannaUse
     "Would you like to use Surf?"
+
 #SurfText_UsedSurf
     "{BUF 0} used Surf!"

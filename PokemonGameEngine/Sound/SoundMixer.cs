@@ -191,7 +191,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
 
 #if DEBUG
-            Debug_DrawAudio();
+            //Debug_DrawAudio();
 #endif
 
             // Marshal copy is at least twice as fast as sdl memset

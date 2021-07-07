@@ -66,6 +66,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                 case Song.Cave1: return "Sound.BGM.Cave1.wav";
                 // Battles
                 case Song.WildBattle: // TODO
+                case Song.WildBattle_Multi: // TODO
                 case Song.TrainerBattle: return "Sound.BGM.TrainerBattle.wav";
                 case Song.LegendaryBattle: // TODO
                 case Song.GymBattle: return "Sound.BGM.GymBattle.wav";

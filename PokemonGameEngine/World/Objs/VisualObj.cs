@@ -41,7 +41,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
 
         // TODO: Water reflections
-        public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int blockX, int blockY, int startBlockPixelX, int startBlockPixelY)
+        public unsafe void Draw(uint* dst, int dstW, int dstH, int blockX, int blockY, int startBlockPixelX, int startBlockPixelY)
         {
             int baseX = (blockX * Overworld.Block_NumPixelsX) + ProgressX + startBlockPixelX;
             int baseY = (blockY * Overworld.Block_NumPixelsY) + ProgressY + startBlockPixelY;
@@ -59,17 +59,17 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             int sy = baseY + Overworld.Block_NumPixelsY + s.ShadowYOffset; // Bottom align (starts in block under)
 
             // Draw shadow image
-            if (RenderUtils.IsInsideBitmap(bmpWidth, bmpHeight, sx, sy, sw, sh))
+            if (Renderer.IsInsideBitmap(dstW, dstH, sx, sy, sw, sh))
             {
-                shadow.DrawOn(bmpAddress, bmpWidth, bmpHeight, sx, sy);
+                shadow.DrawOn(dst, dstW, dstH, sx, sy);
             }
             // Draw obj image
-            if (RenderUtils.IsInsideBitmap(bmpWidth, bmpHeight, x, y, w, h))
+            if (Renderer.IsInsideBitmap(dstW, dstH, x, y, w, h))
             {
                 float t = MovementTimer;
                 bool showMoving = t != 1 && t >= 0.6f;
                 int imgNum = GetImage(showMoving);
-                s.Images[imgNum].DrawOn(bmpAddress, bmpWidth, bmpHeight, x, y);
+                s.Images[imgNum].DrawOn(dst, dstW, dstH, x, y);
             }
         }
     }

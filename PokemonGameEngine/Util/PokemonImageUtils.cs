@@ -65,7 +65,7 @@ namespace Kermalis.PokemonGameEngine.Util
             var ret = new AnimatedImage(GetPokemonImageResource(species, form, gender, shiny, backImage, behindSubstitute, isEgg), !doSpindaSpots);
             if (doSpindaSpots)
             {
-                RenderUtils.RenderSpindaSpots(ret, pid, shiny);
+                Renderer.RenderSpindaSpots(ret, pid, shiny);
             }
             return ret;
         }

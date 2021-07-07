@@ -7,6 +7,7 @@ using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Sound;
+using Kermalis.PokemonGameEngine.Trainer;
 using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World;
 using System;
@@ -32,6 +33,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private bool _pauseBattleThread;
         public readonly SpritedBattlePokemonParty[] SpritedParties;
         public readonly PBETrainer Trainer;
+        private readonly SpriteList _sprites = new();
+
+        private readonly string _trainerDefeatText;
+        private readonly TrainerClass _trainerClass;
 
         private Window _stringWindow;
         private StringPrinter _stringPrinter;
@@ -39,7 +44,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private ActionsGUI _actionsGUI;
 
-        public BattleGUI(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties)
+        public BattleGUI(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties, TrainerClass trainerClass = default, string trainerDefeatText = null)
             : this(battle.BattleFormat) // Init field controller
         {
             Battle = battle;
@@ -52,6 +57,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 SpritedParties[i] = new SpritedBattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team), ShouldUseKnownInfo(trainer), this);
             }
             _onClosed = onClosed;
+            _trainerClass = trainerClass;
+            _trainerDefeatText = trainerDefeatText;
             battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
             battle.OnStateChanged += SinglePlayerBattle_OnStateChanged;
 
@@ -61,9 +68,47 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public unsafe void FadeIn()
         {
             OverworldGUI.ProcessDayTint(true); // Catch up time
+            // Trainer sprite
+            if (Battle.BattleType == PBEBattleType.Trainer)
+            {
+                var img = new AnimatedImage(TrainerCore.GetTrainerClassResource(_trainerClass), true, isPaused: true);
+                var sprite = new Sprite
+                {
+                    Image = img,
+                    DrawMethod = Renderer.Sprite_DrawWithShadow,
+                    X = Renderer.GetCoordinatesForCentering(Program.RenderWidth, img.Width, 0.73f),
+                    Y = Renderer.GetCoordinatesForEndAlign(Program.RenderHeight, img.Height, 0.51f)
+                };
+                _sprites.Add(sprite);
+            }
             _fadeTransition = new FadeFromColorTransition(500, 0);
             Game.Instance.SetCallback(CB_FadeInBattle);
             Game.Instance.SetRCallback(RCB_Fading);
+        }
+        private void OnFadeInFinished()
+        {
+            if (Battle.BattleType == PBEBattleType.Trainer)
+            {
+                ((AnimatedImage)_sprites.First.Image).IsPaused = false;
+                AddMessage(string.Format("You are challenged by {0}!", Battle.Teams[1].CombinedName), DestroyTrainerSpriteAndBegin);
+                _pauseBattleThread = false;
+            }
+            else
+            {
+                Begin();
+            }
+        }
+        private void DestroyTrainerSpriteAndBegin()
+        {
+            Sprite s = _sprites.First;
+            s.Data = new SpriteData_TrainerGoAway(1_000, s.X);
+            s.RCallback = Sprite_TrainerGoAway;
+            Begin();
+        }
+        private void Begin()
+        {
+            _battleThread = new Thread(Battle.Begin) { Name = ThreadName };
+            _battleThread.Start();
         }
 
         private unsafe void TransitionOut()
@@ -150,24 +195,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             Game.Instance.SetRCallback(RCB_Fading);
         }
 
-        public void AddMessage(string message, bool staticMsg)
-        {
-            _stringPrinter?.Close();
-            _stringPrinter = null;
-            if (!(message is null))
-            {
-                _stringPrinter = new StringPrinter(_stringWindow, message, 0.1f, 0.01f, Font.Default, Font.DefaultWhite_I);
-                if (staticMsg)
-                {
-                    Game.Instance.SetCallback(CB_ReadOutStaticMessage);
-                }
-                else
-                {
-                    _pauseBattleThread = true;
-                    Game.Instance.SetCallback(CB_ReadOutMessage);
-                }
-            }
-        }
         public void SetMessageWindowVisibility(bool invisible)
         {
             _stringWindow.IsInvisible = invisible;
@@ -179,9 +206,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                _stringWindow = new Window(0, 0.79f, 1, 0.16f, RenderUtils.Color(49, 49, 49, 128));
-                _battleThread = new Thread(Battle.Begin) { Name = ThreadName };
-                _battleThread.Start();
+                _stringWindow = new Window(0, 0.79f, 1, 0.16f, Renderer.Color(49, 49, 49, 128));
+                OnFadeInFinished();
                 Game.Instance.SetCallback(CB_LogicTick);
                 Game.Instance.SetRCallback(RCB_RenderTick);
             }
@@ -198,7 +224,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _stringWindow = null;
                 _actionsGUI?.Dispose();
                 _actionsGUI = null;
-                _onClosed.Invoke();
+                _onClosed();
                 _onClosed = null;
                 Instance = null;
             }
@@ -225,63 +251,23 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 new Thread(() => Trainer.SelectSwitchesIfValid(Switches)) { Name = ThreadName }.Start();
             }
         }
-        private void CB_ReadOutMessage()
-        {
-            OverworldGUI.ProcessDayTint(false);
-            _stringPrinter.LogicTick();
-            if (_stringPrinter.IsEnded)
-            {
-                if (_stringPrinter.IsDone || ++_autoAdvanceTimer >= AutoAdvanceTicks)
-                {
-                    _autoAdvanceTimer = 0;
-                    // TODO: Here we should branch off and do learning move logic
-                    AwakenBattleThread();
-                    Game.Instance.SetCallback(CB_LogicTick);
-                }
-            }
-        }
-        private void CB_ReadOutStaticMessage()
-        {
-            OverworldGUI.ProcessDayTint(false);
-            _stringPrinter.LogicTick();
-            if (_stringPrinter.IsEnded)
-            {
-                _actionsGUI.SetCallbacksForAllChoices();
-            }
-        }
         private void CB_LogicTick()
         {
             OverworldGUI.ProcessDayTint(false);
+            _tasks.RunTasks();
+            _sprites.DoCallbacks();
         }
 
-        private static unsafe void RenderPkmn(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos, bool ally)
+        private unsafe void RCB_Fading(uint* dst, int dstW, int dstH)
         {
-            SpritedBattlePokemon sPkmn = pos.SPkmn;
-            AnimatedImage img = sPkmn.AnimImage;
-            int width = img.Width;
-            int height = img.Height;
-            if (ally)
-            {
-                width *= 2;
-                height *= 2;
-            }
-            img.DrawSizedOn(bmpAddress, bmpWidth, bmpHeight,
-                RenderUtils.GetCoordinatesForCentering(bmpWidth, width, pos.MonX), RenderUtils.GetCoordinatesForEndAlign(bmpHeight, height, pos.MonY), width, height);
+            RCB_RenderTick(dst, dstW, dstH);
+            _fadeTransition.Render(dst, dstW, dstH);
         }
-        private static unsafe void RenderPkmnInfo(uint* bmpAddress, int bmpWidth, int bmpHeight, PkmnPosition pos)
-        {
-            pos.SPkmn.InfoBarImg.DrawOn(bmpAddress, bmpWidth, bmpHeight, pos.BarX, pos.BarY);
-        }
-
-        private unsafe void RCB_Fading(uint* bmpAddress, int bmpWidth, int bmpHeight)
-        {
-            RCB_RenderTick(bmpAddress, bmpWidth, bmpHeight);
-            _fadeTransition.RenderTick(bmpAddress, bmpWidth, bmpHeight);
-        }
-        public unsafe void RCB_RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe void RCB_RenderTick(uint* dst, int dstW, int dstH)
         {
             AnimatedImage.UpdateCurrentFrameForAll();
-            _battleBackground.DrawSizedOn(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight);
+            _sprites.DoRCallbacks();
+            _battleBackground.DrawSizedOn(dst, dstW, dstH, 0, 0, dstW, dstH);
             void DoTeam(int i, bool info)
             {
                 foreach (PkmnPosition p in _positions[i])
@@ -291,21 +277,23 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     {
                         if (p.InfoVisible)
                         {
-                            RenderPkmnInfo(bmpAddress, bmpWidth, bmpHeight, p);
+                            p.RenderMonInfo(dst, dstW, dstH);
                         }
                     }
                     else if (p.PkmnVisible)
                     {
-                        RenderPkmn(bmpAddress, bmpWidth, bmpHeight, p, ally);
+                        p.RenderMon(dst, dstW, dstH, ally);
                     }
                 }
             }
             DoTeam(1, false);
             DoTeam(0, false);
 
+            _sprites.DrawAll(dst, dstW, dstH);
+
             if (Overworld.ShouldRenderDayTint())
             {
-                DayTint.Render(bmpAddress, bmpWidth, bmpHeight);
+                DayTint.Render(dst, dstW, dstH);
             }
 
             DoTeam(1, true);
@@ -313,7 +301,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
             if (_stringPrinter != null)
             {
-                _stringWindow.Render(bmpAddress, bmpWidth, bmpHeight);
+                _stringWindow.Render(dst, dstW, dstH);
             }
         }
 
@@ -380,10 +368,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             else
             {
-                AddMessage($"What will {_actions[i].Nickname} do?", true);
                 SpritedBattlePokemonParty party = SpritedParties[Trainer.Id];
                 _actionsGUI?.Dispose();
                 _actionsGUI = new ActionsGUI(party, _actions[i]);
+                AddStaticMessage($"What will {_actions[i].Nickname} do?", _actionsGUI.SetCallbacksForAllChoices);
                 // For i == 0, while the message is being read, the R callback is already RCB_RenderTick
                 // For i != 0, while the message is being read, the R callback is _actionsGUI.RCB_Targets, so we need to update it
                 if (i != 0)
@@ -424,6 +412,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         #region Packet Processing
         private void ProcessPacket(IPBEPacket packet)
         {
+            // Packets with logic
             switch (packet)
             {
                 case PBEMoveLockPacket _:
@@ -459,16 +448,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         new Thread(t.CreateAISwitches) { Name = ThreadName }.Start();
                     }
                     return;
-                }
-                case PBEFleeFailedPacket ffp:
-                {
-                    PBETrainer t = ffp.PokemonTrainer;
-                    if (t == Trainer)
-                    {
-                        AddMessage("Couldn't get away!", false);
-                        return;
-                    }
-                    break; // Use default message otherwise
                 }
                 case PBEAutoCenterPacket acp:
                 {
@@ -616,12 +595,50 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     break;
                 }*/
             }
-            string message = PBEBattle.GetDefaultMessage(Battle, packet, userTrainer: Trainer);
+
+            // Packets that change the message
+            string message = null;
+            switch (packet)
+            {
+                case PBEFleeFailedPacket ffp:
+                {
+                    PBETrainer t = ffp.PokemonTrainer;
+                    if (t == Trainer)
+                    {
+                        message = "Couldn't get away!";
+                        break;
+                    }
+                    break;
+                }
+                case PBEBattleResultPacket brp:
+                {
+                    switch (brp.BattleResult)
+                    {
+                        case PBEBattleResult.Team0Win:
+                        {
+                            if (Battle.BattleType == PBEBattleType.Trainer)
+                            {
+                                message = _trainerDefeatText;
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            // No custom message, so get the default one
+            if (message is null)
+            {
+                message = PBEBattle.GetDefaultMessage(Battle, packet, userTrainer: Trainer);
+            }
+            // No message, so return
             if (string.IsNullOrEmpty(message))
             {
                 return;
             }
-            AddMessage(message, false);
+            // Print message
+            AddMessage(message, AwakenBattleThread);
             return;
         }
         #endregion

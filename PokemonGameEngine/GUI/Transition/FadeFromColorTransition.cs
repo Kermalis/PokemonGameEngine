@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Util;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
@@ -17,14 +16,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             _color = color;
         }
 
-        public unsafe override void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe override void Render(uint* dst, int dstW, int dstH)
         {
             if (IsDone)
             {
                 return;
             }
-            double progress = Utils.GetAnimationProgress(_end, ref _cur);
-            RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, RenderUtils.SetA(_color, (uint)((-progress + 1) * 0xFF)));
+            double progress = Renderer.GetAnimationProgress(_end, ref _cur);
+            Renderer.FillRectangle(dst, dstW, dstH, Renderer.SetA(_color, (uint)((-progress + 1) * 0xFF)));
 
             if (!IsDone && progress >= 1)
             {

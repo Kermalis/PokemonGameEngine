@@ -556,16 +556,16 @@ namespace Kermalis.MapEditor.Core
                     WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
                     using (ILockedFramebuffer l = bmp.Lock())
                     {
-                        uint* bmpAddress = (uint*)l.Address.ToPointer();
-                        int bmpWidth = (borderBlocks ? BorderWidth : Width) * Overworld.Block_NumPixelsX;
-                        int bmpHeight = (borderBlocks ? BorderHeight : Height) * Overworld.Block_NumPixelsY;
+                        uint* dst = (uint*)l.Address.ToPointer();
+                        int dstW = (borderBlocks ? BorderWidth : Width) * Overworld.Block_NumPixelsX;
+                        int dstH = (borderBlocks ? BorderHeight : Height) * Overworld.Block_NumPixelsY;
                         for (int i = 0; i < count; i++)
                         {
                             Block b = list[i];
                             int x = b.X * Overworld.Block_NumPixelsX;
                             int y = b.Y * Overworld.Block_NumPixelsY;
-                            RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, x, y, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, 0xFF000000);
-                            b.BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x, y);
+                            Renderer.FillRectangle(dst, dstW, dstH, x, y, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, Renderer.Color(0, 0, 0, 255));
+                            b.BlocksetBlock.Draw(dst, dstW, dstH, x, y);
                         }
                     }
                     list.Clear();
@@ -577,19 +577,19 @@ namespace Kermalis.MapEditor.Core
                 WriteableBitmap bmp = borderBlocks ? BorderBlocksBitmap : BlocksBitmap;
                 using (ILockedFramebuffer l = bmp.Lock())
                 {
-                    uint* bmpAddress = (uint*)l.Address.ToPointer();
+                    uint* dst = (uint*)l.Address.ToPointer();
                     int width = borderBlocks ? BorderWidth : Width;
                     int height = borderBlocks ? BorderHeight : Height;
-                    int bmpWidth = width * Overworld.Block_NumPixelsX;
-                    int bmpHeight = height * Overworld.Block_NumPixelsY;
-                    RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
+                    int dstW = width * Overworld.Block_NumPixelsX;
+                    int dstH = height * Overworld.Block_NumPixelsY;
+                    Renderer.FillRectangle(dst, dstW, dstH, 0, 0, dstW, dstH, Renderer.Color(0, 0, 0, 255));
                     Block[][] arr = borderBlocks ? BorderBlocks : Blocks;
                     for (int y = 0; y < height; y++)
                     {
                         Block[] arrY = arr[y];
                         for (int x = 0; x < width; x++)
                         {
-                            arrY[x].BlocksetBlock.Draw(bmpAddress, bmpWidth, bmpHeight, x * Overworld.Block_NumPixelsX, y * Overworld.Block_NumPixelsY);
+                            arrY[x].BlocksetBlock.Draw(dst, dstW, dstH, x * Overworld.Block_NumPixelsX, y * Overworld.Block_NumPixelsY);
                         }
                     }
                 }

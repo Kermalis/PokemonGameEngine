@@ -1,5 +1,4 @@
 Main Mechanics:
-    Trainers
     New Game/Saving
     Map scripts
     Withdrawing pkmn from daycare
@@ -68,6 +67,8 @@ Sound:
     Random cries in the overworld (task system)
     Fanfares
     Surf music logic
+    Encounter music logic (and battle script commands without encounter music)
+    Victory music logic
     Saving music to load next time
 
 Nice to have (no priority):
@@ -86,5 +87,4 @@ Nice to have (no priority):
 Sounds cool but definitely not necessary at all:
     Color lookup tables for day tints
     Move/Item effect/data integration with battle engine (not needed because you can just clone and edit the battle engine to add these things and more, like new species/forms)
-    Battle sprite shadows with rotation (like gen 5)
     Chatot special cry (if this is done, add it as a field move)

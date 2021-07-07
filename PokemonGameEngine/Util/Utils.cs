@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
-using Kermalis.PokemonGameEngine.UI;
 using System;
 using System.IO;
 using System.Reflection;
@@ -32,16 +31,7 @@ namespace Kermalis.PokemonGameEngine.Util
             {
                 return 1;
             }
-            return (double)((decimal)(cur - end).Ticks / end.Ticks) + 1;
-        }
-        public static double GetAnimationProgress(TimeSpan end, ref TimeSpan cur)
-        {
-            cur += Program.RenderTimeSinceLastFrame;
-            if (cur >= end)
-            {
-                return 1;
-            }
-            return GetProgress(end, cur);
+            return ((cur - end) / end) + 1;
         }
 
         public static bool HasShinyCharm()

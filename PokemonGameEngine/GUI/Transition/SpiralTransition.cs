@@ -19,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             _cur = new TimeSpan();
         }
 
-        private unsafe void SpiralTransitionLogic(uint* bmpAddress, int bmpWidth, int bmpHeight, int num)
+        private unsafe void SpiralTransitionLogic(uint* dst, int dstW, int dstH, int num)
         {
             int counterX = 0;
             int counterY = 0;
@@ -28,12 +28,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             bool doX = true;
             bool goBackwards = false;
 
-            int boxWidth = bmpWidth / NumBoxes;
-            int boxHeight = bmpHeight / NumBoxes;
+            int boxWidth = dstW / NumBoxes;
+            int boxHeight = dstH / NumBoxes;
             for (int i = 0; i <= num; i++)
             {
                 // Draw
-                RenderUtils.FillRectangle(bmpAddress, bmpWidth, bmpHeight, counterX * boxWidth, counterY * boxHeight, boxWidth, boxHeight, RenderUtils.Color(0, 0, 0, 255));
+                Renderer.FillRectangle(dst, dstW, dstH, counterX * boxWidth, counterY * boxHeight, boxWidth, boxHeight, Renderer.Color(0, 0, 0, 255));
 
                 // If it is done (we want to draw the final box before we say this is done)
                 if (doX
@@ -108,14 +108,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             }
         }
 
-        public unsafe override void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public unsafe override void Render(uint* dst, int dstW, int dstH)
         {
             if (!IsDone)
             {
                 _cur += Program.RenderTimeSinceLastFrame;
                 _counter = (int)(_cur.TotalMilliseconds / MillisecondsPerBox);
             }
-            SpiralTransitionLogic(bmpAddress, bmpWidth, bmpHeight, _counter);
+            SpiralTransitionLogic(dst, dstW, dstH, _counter);
             if (!IsDone)
             {
                 _counter++;

@@ -28,7 +28,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         private Tileset(string name, int id)
         {
-            uint[][] t = RenderUtils.LoadBitmapSheet(TilesetPath + name + TilesetExtension, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
+            uint[][] t = Renderer.GetResourceSheetAsBitmaps(TilesetPath + name + TilesetExtension, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
             Tiles = new Tile[t.Length];
             for (int i = 0; i < t.Length; i++)
             {
@@ -159,7 +159,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         public TileAnimation(EndianBinaryReader r)
         {
-            Sheet = RenderUtils.LoadBitmapSheet(AnimationsPath + r.ReadStringNullTerminated() + AnimationSheetExtension, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
+            Sheet = Renderer.GetResourceSheetAsBitmaps(AnimationsPath + r.ReadStringNullTerminated() + AnimationSheetExtension, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
             Duration = r.ReadInt32();
             byte numFrames = r.ReadByte();
             Frames = new Frame[numFrames];

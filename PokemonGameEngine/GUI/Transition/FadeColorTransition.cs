@@ -4,6 +4,6 @@
     {
         public bool IsDone { get; protected set; }
 
-        public abstract unsafe void RenderTick(uint* bmpAddress, int bmpWidth, int bmpHeight);
+        public abstract unsafe void Render(uint* dst, int dstW, int dstH);
     }
 }

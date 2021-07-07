@@ -18,17 +18,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             Font.Default.MeasureString(_quantityStr, out _quantityWidth, out _);
         }
 
-        public unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight,
+        public unsafe void Render(uint* dst, int dstW, int dstH,
             bool isSelected, int x1, int x2, int y, int height, int xOfs)
         {
             if (isSelected)
             {
-                RenderUtils.FillRectangle_Points(bmpAddress, bmpWidth, bmpHeight, x1, y, x2, y + height - 1, RenderUtils.Color(255, 0, 0, 128));
+                Renderer.FillRectangle_Points(dst, dstW, dstH, x1, y, x2, y + height - 1, Renderer.Color(255, 0, 0, 128));
             }
             x1 += xOfs;
             x2 -= xOfs;
-            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, x1, y, _itemName, Font.DefaultDarkGray_I);
-            Font.Default.DrawString(bmpAddress, bmpWidth, bmpHeight, x2 - _quantityWidth, y, _quantityStr, Font.DefaultDarkGray_I);
+            Font.Default.DrawString(dst, dstW, dstH, x1, y, _itemName, Font.DefaultDarkGray_I);
+            Font.Default.DrawString(dst, dstW, dstH, x2 - _quantityWidth, y, _quantityStr, Font.DefaultDarkGray_I);
         }
     }
 
@@ -51,29 +51,29 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             BorderColor = borderColor;
         }
 
-        public override unsafe void Render(uint* bmpAddress, int bmpWidth, int bmpHeight)
+        public override unsafe void Render(uint* dst, int dstW, int dstH)
         {
-            int x1 = (int)(X * bmpWidth);
-            float fy1 = Y * bmpHeight;
+            int x1 = (int)(X * dstW);
+            float fy1 = Y * dstH;
             int y1 = (int)fy1;
-            int x2 = (int)(X2 * bmpWidth);
-            int y2 = (int)(Y2 * bmpHeight);
+            int x2 = (int)(X2 * dstW);
+            int y2 = (int)(Y2 * dstH);
 
             // Draw background
-            RenderUtils.FillRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, y2, 10, BackColor);
-            RenderUtils.DrawRoundedRectangle(bmpAddress, bmpWidth, bmpHeight, x1, y1, x2, y2, 10, BorderColor);
+            Renderer.FillRoundedRectangle(dst, dstW, dstH, x1, y1, x2, y2, 10, BackColor);
+            Renderer.DrawRoundedRectangle(dst, dstW, dstH, x1, y1, x2, y2, 10, BorderColor);
 
-            int height = (int)(bmpHeight * Spacing);
-            int xOfs = (int)(0.015f * bmpWidth);
-            float yOfs = 0.015f * bmpHeight;
-            float space = Spacing * bmpHeight;
+            int height = (int)(dstH * Spacing);
+            int xOfs = (int)(0.015f * dstW);
+            float yOfs = 0.015f * dstH;
+            float space = Spacing * dstH;
             int count = _choices.Count;
             for (int i = 0; i < count; i++)
             {
                 ItemGUIChoice c = _choices[i];
                 bool isSelected = Selected == i;
                 int y = (int)(fy1 + (space * i) + yOfs);
-                c.Render(bmpAddress, bmpWidth, bmpHeight, isSelected, x1, x2, y, height, xOfs);
+                c.Render(dst, dstW, dstH, isSelected, x1, x2, y, height, xOfs);
             }
         }
     }
