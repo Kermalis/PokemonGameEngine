@@ -21,7 +21,10 @@ namespace Kermalis.PokemonGameEngine.UI
         public const int RenderWidth = 384;
         public const int RenderHeight = 216;
         public const int NumTicksPerSecond = 20;
-        public const int MaxFPS = 60;
+        private const int FPS_UNCAPPED = -1;
+        private const int MaxFPS = 60;
+        private const float MaxMillisecondsPerFrame = 1_000f / MaxFPS;
+        private const bool UseVSync = true;
 #if DEBUG
         public static readonly bool _showFPS = true;
 #endif
@@ -64,7 +67,12 @@ namespace Kermalis.PokemonGameEngine.UI
 
         private static void CreateRendererAndScreen()
         {
-            IntPtr r = SDL.SDL_CreateRenderer(_window, -1, SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED | SDL.SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC);
+            SDL.SDL_RendererFlags flags = SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED;
+            if (UseVSync)
+            {
+                flags |= SDL.SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC;
+            }
+            IntPtr r = SDL.SDL_CreateRenderer(_window, -1, flags);
             _renderer = r;
             _screen = SDL.SDL_CreateTexture(r, SDL.SDL_PIXELFORMAT_ABGR8888, (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING, RenderWidth, RenderHeight);
         }
@@ -210,12 +218,10 @@ namespace Kermalis.PokemonGameEngine.UI
 
         private static unsafe void RenderTick()
         {
-            var time = new TimeBarrier(MaxFPS);
-            time.Start();
-
             DateTime lastRenderTime = DateTime.Now;
             while (!_quit)
             {
+                int msToSleep;
                 lock (_threadLockObj)
                 {
                     if (_quit)
@@ -223,9 +229,9 @@ namespace Kermalis.PokemonGameEngine.UI
                         goto bottom;
                     }
                     RenderTickTime = DateTime.Now;
-                    if (RenderTickTime <= lastRenderTime)
+                    if (RenderTickTime <= lastRenderTime) // Time went backwards
                     {
-                        RenderTimeSinceLastFrame = new TimeSpan(0, 0, 0, 0, 1_000 / MaxFPS);
+                        RenderTimeSinceLastFrame = MaxFPS == FPS_UNCAPPED ? TimeSpan.Zero : new TimeSpan(0, 0, 0, 0, (int)MaxMillisecondsPerFrame);
                     }
                     else
                     {
@@ -244,12 +250,30 @@ namespace Kermalis.PokemonGameEngine.UI
                     SDL.SDL_RenderClear(r);
                     SDL.SDL_RenderCopy(r, s, IntPtr.Zero, IntPtr.Zero);
                     SDL.SDL_RenderPresent(r);
+                    if (MaxFPS == FPS_UNCAPPED)
+                    {
+                        msToSleep = 0;
+                    }
+                    else
+                    {
+                        DateTime now = DateTime.Now;
+                        if (now <= RenderTickTime) // Time went backwards
+                        {
+                            msToSleep = (int)MaxMillisecondsPerFrame;
+                        }
+                        else
+                        {
+                            msToSleep = (int)(MaxMillisecondsPerFrame - (now - RenderTickTime).TotalMilliseconds);
+                        }
+                    }
                 }
                 lastRenderTime = RenderTickTime;
-                time.Wait();
+                if (msToSleep > 0 && msToSleep < MaxMillisecondsPerFrame)
+                {
+                    Thread.Sleep(msToSleep);
+                }
             }
         bottom:
-            time.Stop();
             _tickQuit2 = true;
         }
     }
