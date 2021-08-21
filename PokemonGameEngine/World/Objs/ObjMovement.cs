@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.World.Maps;
+using System;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
@@ -17,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             // Get the x/y/map of the target block
             Map.GetXYMap(targetX, targetY, out int outX, out int outY, out Map outMap);
-            Map.Layout.Block targetBlock = outMap.GetBlock_InBounds(outX, outY);
+            MapLayout.Block targetBlock = outMap.GetBlock_InBounds(outX, outY);
             // Check occupancy permission
             if ((targetBlock.Passage & LayoutBlockPassage.AllowOccupancy) == 0)
             {
@@ -47,8 +49,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         private bool CanMoveTo_Cardinal(int targetX, int targetY, bool allowSurf, BlocksetBlockBehavior blockedCurrent, BlocksetBlockBehavior blockedTarget)
         {
             // Current block - return false if we are blocked
-            Position p = Pos;
-            Map.Layout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
+            WorldPos p = Pos;
+            MapLayout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrent)
             {
@@ -66,8 +68,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             BlocksetBlockBehavior upBehavior, BlocksetBlockBehavior downBehavior)
         {
             // Current block - return false if we are blocked
-            Position p = Pos;
-            Map.Layout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
+            WorldPos p = Pos;
+            MapLayout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrent)
             {
@@ -75,7 +77,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             // Stairs - check if we can go up a stair that's above our target
             Map.GetXYMap(targetX, targetY - 1, out int upStairX, out int upStairY, out Map upStairMap);
-            Map.Layout.Block upStairBlock = upStairMap.GetBlock_InBounds(upStairX, upStairY);
+            MapLayout.Block upStairBlock = upStairMap.GetBlock_InBounds(upStairX, upStairY);
             if ((upStairBlock.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
             {
                 BlocksetBlockBehavior upStairBehavior = upStairBlock.BlocksetBlock.Behavior;
@@ -115,8 +117,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             BlocksetBlockBehavior blockedNeighbor1, BlocksetBlockBehavior blockedNeighbor2)
         {
             // Current block - return false if we are blocked
-            Position p = Pos;
-            Map.Layout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
+            WorldPos p = Pos;
+            MapLayout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrentCardinal1 || curBehavior == blockedCurrentCardinal2 || curBehavior == blockedCurrentDiagonal)
             {
@@ -124,7 +126,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             // Target block - return false if we are blocked
             Map.GetXYMap(targetX, targetY, out int targetOutX, out int targetOutY, out Map targetOutMap);
-            Map.Layout.Block targetBlock = targetOutMap.GetBlock_InBounds(targetOutX, targetOutY);
+            MapLayout.Block targetBlock = targetOutMap.GetBlock_InBounds(targetOutX, targetOutY);
             if ((targetBlock.Passage & LayoutBlockPassage.AllowOccupancy) == 0)
             {
                 return false;
@@ -163,7 +165,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             // Get the x/y/map of the block
             Map.GetXYMap(x, y, out int outX, out int outY, out Map outMap);
-            Map.Layout.Block block = outMap.GetBlock_InBounds(outX, outY);
+            MapLayout.Block block = outMap.GetBlock_InBounds(outX, outY);
             // Check occupancy permission
             if ((block.Passage & diagonalPassage) == 0)
             {
@@ -185,7 +187,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public bool IsMovementLegal(FacingDirection facing, bool allowSurf)
         {
-            Position p = Pos;
+            WorldPos p = Pos;
             int x = p.X;
             int y = p.Y;
             switch (facing)
@@ -240,34 +242,34 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
         }
 
-        private void ApplyStairMovement(Position curPos, BlocksetBlockBehavior upBehavior, BlocksetBlockBehavior downBehavior)
+        private void ApplyStairMovement(WorldPos curPos, BlocksetBlockBehavior upBehavior, BlocksetBlockBehavior downBehavior)
         {
-            Map.Layout.Block curBlock = Map.GetBlock_InBounds(curPos.X, curPos.Y);
+            MapLayout.Block curBlock = Map.GetBlock_InBounds(curPos.X, curPos.Y);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == downBehavior)
             {
                 Pos.Y++;
             }
-            Position newPos = Pos;
+            WorldPos newPos = Pos;
             int newX = newPos.X;
             int newY = newPos.Y;
-            Map.Layout.Block upStairBlock = Map.GetBlock_CrossMap(newX, newY - 1, out _, out _, out _);
+            MapLayout.Block upStairBlock = Map.GetBlock_CrossMap(newX, newY - 1, out _, out _, out _);
             BlocksetBlockBehavior upStairBehavior = upStairBlock.BlocksetBlock.Behavior;
             if (upStairBehavior == upBehavior)
             {
                 Pos.Y--;
-                Pos.YOffset = StairYOffset;
+                VisualOffset.Y = StairYOffset;
                 return;
             }
-            Map.Layout.Block newBlock = Map.GetBlock_CrossMap(newX, newY, out _, out _, out _);
+            MapLayout.Block newBlock = Map.GetBlock_CrossMap(newX, newY, out _, out _, out _);
             BlocksetBlockBehavior newBehavior = newBlock.BlocksetBlock.Behavior;
             if (newBehavior == downBehavior)
             {
-                Pos.YOffset = StairYOffset;
+                VisualOffset.Y = StairYOffset;
             }
             else
             {
-                Pos.YOffset = 0;
+                VisualOffset.Y = 0;
             }
         }
         private void ApplyMovement(FacingDirection facing)
@@ -286,14 +288,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
                 case FacingDirection.West:
                 {
-                    Position p = Pos;
+                    WorldPos p = Pos;
                     Pos.X--;
                     ApplyStairMovement(p, BlocksetBlockBehavior.Stair_W, BlocksetBlockBehavior.Stair_E);
                     break;
                 }
                 case FacingDirection.East:
                 {
-                    Position p = Pos;
+                    WorldPos p = Pos;
                     Pos.X++;
                     ApplyStairMovement(p, BlocksetBlockBehavior.Stair_E, BlocksetBlockBehavior.Stair_W);
                     break;
@@ -330,7 +332,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Map curMap = Map;
             int newX = Pos.X;
             int newY = Pos.Y;
-            Map.Layout.Block block = curMap.GetBlock_CrossMap(newX, newY, out int outX, out int outY, out Map map);
+            MapLayout.Block block = curMap.GetBlock_CrossMap(newX, newY, out int outX, out int outY, out Map map);
             Pos.Elevation = Overworld.GetElevationIfMovedTo(Pos.Elevation, block.Elevations);
             if (map == curMap)
             {
@@ -365,6 +367,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             MovementTimer = 0;
             Facing = facing;
             PrevPos = Pos;
+            PrevVisualOffset = VisualOffset;
             bool success = ignoreLegalCheck || IsMovementLegal(facing, CanSurf());
             if (success)
             {
@@ -391,10 +394,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             MovementSpeed = FaceMovementSpeed;
             Facing = facing;
             PrevPos = Pos;
+            PrevVisualOffset = VisualOffset;
             UpdateXYProgress();
         }
 
-        private static FacingDirection GetDirectionToLook(Position myPos, Position otherPos)
+        private static FacingDirection GetDirectionToLook(WorldPos myPos, WorldPos otherPos)
         {
             if (otherPos.X == myPos.X)
             {
@@ -431,9 +435,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             LookTowards(other.Pos);
         }
-        public void LookTowards(Position oPos)
+        public void LookTowards(WorldPos oPos)
         {
-            Position pos = Pos;
+            WorldPos pos = Pos;
             if (oPos.X == pos.X && oPos.Y == pos.Y)
             {
                 return; // Same position, do nothing
@@ -443,8 +447,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         private void UpdateXYProgress()
         {
-            Position prevPos = PrevPos;
-            Position pos = Pos;
+            WorldPos prevPos = PrevPos;
+            Pos2D prevOfs = PrevVisualOffset;
+            WorldPos pos = Pos;
+            Pos2D ofs = VisualOffset;
             float t = MovementTimer; // Goes from 0% to 100%
             int DoTheMath(int cur, int prev, int curOfs, int prevOfs, int numPixelsInBlock)
             {
@@ -458,13 +464,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             bool changed = false;
             int old = ProgressX;
-            ProgressX = DoTheMath(pos.X, prevPos.X, pos.XOffset, prevPos.XOffset, Overworld.Block_NumPixelsX);
+            ProgressX = DoTheMath(pos.X, prevPos.X, ofs.X, prevOfs.X, Overworld.Block_NumPixelsX);
             if (ProgressX != old)
             {
                 changed = true;
             }
             old = ProgressY;
-            ProgressY = DoTheMath(pos.Y, prevPos.Y, pos.YOffset, prevPos.YOffset, Overworld.Block_NumPixelsY);
+            ProgressY = DoTheMath(pos.Y, prevPos.Y, ofs.Y, prevOfs.Y, Overworld.Block_NumPixelsY);
             if (ProgressY != old)
             {
                 changed = true;

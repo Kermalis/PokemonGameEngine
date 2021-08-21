@@ -1,38 +1,26 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Scripts;
+using Kermalis.PokemonGameEngine.World.Maps;
+using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
     // Regular movements handled in ObjMovement.cs
     // Script movements handled in Script/ScriptMovement.cs
-    internal abstract partial class Obj
+    internal abstract partial class Obj : IDisposable
     {
-        public struct Position : IXYElevation
-        {
-            public int X { get; set; }
-            public int Y { get; set; }
-            public byte Elevation { get; set; }
-            public int XOffset { get; set; }
-            public int YOffset { get; set; }
-
-            public Position(Map.Events.ObjEvent e)
-            {
-                X = e.X;
-                Y = e.Y;
-                Elevation = e.Elevation;
-                XOffset = 0;
-                YOffset = 0;
-            }
-        }
-
         public static readonly List<Obj> LoadedObjs = new();
 
         public readonly ushort Id;
 
         public FacingDirection Facing;
-        public Position Pos;
-        public Position PrevPos;
+        public WorldPos Pos;
+        /// <summary>VisualOffset and PrevVisualOffset are for stairs for example, where the obj is slightly offset from the normal position</summary>
+        public Pos2D VisualOffset;
+        public WorldPos PrevPos;
+        public Pos2D PrevVisualOffset;
         public Map Map;
 
         public virtual bool CanMoveWillingly => !IsLocked && !IsMoving;
@@ -56,11 +44,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         protected Obj(ushort id)
         {
             Id = id;
-            Pos = new Position();
-            PrevPos = new Position();
             LoadedObjs.Add(this);
         }
-        protected Obj(ushort id, Position pos)
+        protected Obj(ushort id, WorldPos pos)
         {
             Id = id;
             PrevPos = Pos = pos;
@@ -79,25 +65,24 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return null;
         }
 
-        public Map.Layout.Block GetBlock()
+        public MapLayout.Block GetBlock()
         {
-            Position p = Pos;
+            WorldPos p = Pos;
             return Map.GetBlock_InBounds(p.X, p.Y);
         }
-        public Map.Layout.Block GetBlockFacing()
+        public MapLayout.Block GetBlockFacing()
         {
-            Position p = Pos;
+            WorldPos p = Pos;
             Overworld.MoveCoords(Facing, p.X, p.Y, out int newX, out int newY);
             return Map.GetBlock_CrossMap(newX, newY, out _, out _, out _);
         }
 
-        public void Warp(IWarp warp)
+        public void Warp()
         {
-            var map = Map.LoadOrGet(warp.DestMapId);
-            int x = warp.DestX;
-            int y = warp.DestY;
-            byte e = warp.DestElevation;
-            Map.Layout.Block block = map.GetBlock_CrossMap(x, y, out int outX, out int outY, out map); // GetBlock_CrossMap in case our warp is actually in a connection for some reason
+            WarpInProgress wip = WarpInProgress.Current;
+            Map map = wip.DestMapLoaded;
+            WorldPos pos = wip.Destination.DestPos;
+            MapLayout.Block block = map.GetBlock_CrossMap(pos.X, pos.Y, out int outX, out int outY, out map); // GetBlock_CrossMap in case our warp is actually in a connection for some reason
             // Facing is of the original direction unless the block behavior says otherwise
             // All QueuedScriptMovements will be run after the warp is complete
             switch (block.BlocksetBlock.Behavior)
@@ -111,16 +96,16 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 case BlocksetBlockBehavior.Warp_NoOccupancy_S:
                 {
                     Facing = FacingDirection.North;
-                    outY--;
+                    outY--; // Can put you outside the map but that's the map designer's problem
                     break;
                 }
             }
             UpdateMap(map);
-            Pos.X = outX;
-            Pos.Y = outY;
-            Pos.Elevation = e;
+            Pos = new WorldPos(outX, outY, pos.Elevation);
             PrevPos = Pos;
+            PrevVisualOffset = VisualOffset;
             CameraObj.CopyMovementIfAttachedTo(this);
+            WarpInProgress.EndCurrent();
         }
 
         protected void UpdateMap(Map newMap)
@@ -157,12 +142,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public static void FaceLastTalkedTowardsPlayer()
         {
-            ushort id = (ushort)Game.Instance.Save.Vars[Var.LastTalked];
+            ushort id = (ushort)Engine.Instance.Save.Vars[Var.LastTalked];
             if (id != Overworld.PlayerId)
             {
                 Obj looker = GetObj(id);
                 looker.LookTowards(PlayerObj.Player);
             }
         }
+
+        public virtual void Dispose() { }
     }
 }

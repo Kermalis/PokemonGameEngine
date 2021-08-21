@@ -3,6 +3,7 @@ using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Script;
+using Kermalis.PokemonGameEngine.World.Maps;
 using System;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
@@ -69,12 +70,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
             if (moved)
             {
-                Position playerPos = Pos;
+                WorldPos playerPos = Pos;
 
                 // ScriptTile
-                foreach (Map.Events.ScriptEvent se in Map.MapEvents.ScriptTiles)
+                foreach (MapEvents.ScriptEvent se in Map.Events.ScriptTiles)
                 {
-                    if (playerPos.IsSamePosition(se) && se.VarConditional.Match(Game.Instance.Save.Vars[se.Var], se.VarValue))
+                    if (playerPos.Equals(se.Pos) && se.VarConditional.Match(Engine.Instance.Save.Vars[se.Var], se.VarValue))
                     {
                         string script = se.Script;
                         if (script != string.Empty)
@@ -86,11 +87,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
 
                 // Warp
-                foreach (Map.Events.WarpEvent warp in Map.MapEvents.Warps)
+                foreach (MapEvents.WarpEvent warp in Map.Events.Warps)
                 {
-                    if (playerPos.IsSamePosition(warp))
+                    if (playerPos.Equals(warp.Pos))
                     {
-                        OverworldGUI.Instance.TempWarp(warp);
+                        OverworldGUI.Instance.TempWarp(warp.Warp);
                         return true;
                     }
                 }
@@ -107,17 +108,17 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 // Friendship
                 Friendship.UpdateFriendshipStep();
                 // Daycare
-                Game.Instance.Save.Daycare.DoDaycareStep();
+                Engine.Instance.Save.Daycare.DoDaycareStep();
                 // Egg
-                Game.Instance.Save.Daycare.DoEggCycleStep();
+                Engine.Instance.Save.Daycare.DoEggCycleStep();
                 // Hatch
-                Party pp = Game.Instance.Save.PlayerParty;
+                Party pp = Engine.Instance.Save.PlayerParty;
                 for (short i = 0; i < pp.Count; i++)
                 {
                     PartyPokemon p = pp[i];
                     if (p.IsEgg && p.Friendship == 0)
                     {
-                        Game.Instance.Save.Vars[Var.SpecialVar1] = i;
+                        Engine.Instance.Save.Vars[Var.SpecialVar1] = i;
                         ScriptLoader.LoadScript("Egg_Hatch");
                         return true;
                     }
@@ -197,7 +198,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             bool run = State == PlayerObjState.Walking && InputManager.IsDown(Key.B);
             if (Move(facing, run, false))
             {
-                Game.Instance.Save.GameStats[GameStat.StepsTaken]++;
+                Engine.Instance.Save.GameStats[GameStat.StepsTaken]++;
                 _changedPosition = true;
             }
             _shouldRunTriggers = true;
@@ -225,7 +226,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 return false; // Cannot use surf if we're surfing
             }
-            Position p = Pos;
+            WorldPos p = Pos;
             if (!IsInteractionLegal(Facing, Map, p.X, p.Y, out int x, out int y, out Map map))
             {
                 return false; // Can only use surf if we can reach an interaction
@@ -269,7 +270,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
             // TODO: This does not consider sideways stairs or countertops when fetching the target block
             // TODO: Stuff like signs
-            Position p = Pos;
+            WorldPos p = Pos;
             if (!IsInteractionLegal(Facing, Map, p.X, p.Y, out int x, out int y, out Map map))
             {
                 return false;
@@ -372,7 +373,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             out int outX, out int outY, out Map outMap)
         {
             // Current block - return false if we are blocked
-            Map.Layout.Block curBlock = curMap.GetBlock_InBounds(curX, curY);
+            MapLayout.Block curBlock = curMap.GetBlock_InBounds(curX, curY);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrent)
             {
@@ -383,7 +384,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             // Target block - return false if we are blocked
             curMap.GetXYMap(targetX, targetY, out outX, out outY, out outMap);
-            Map.Layout.Block targetBlock = outMap.GetBlock_InBounds(outX, outY);
+            MapLayout.Block targetBlock = outMap.GetBlock_InBounds(outX, outY);
             BlocksetBlockBehavior targetBehavior = targetBlock.BlocksetBlock.Behavior;
             if (targetBehavior == blockedTarget)
             {
@@ -400,7 +401,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             out int outX, out int outY, out Map outMap)
         {
             // Current block - return false if we are blocked
-            Map.Layout.Block curBlock = curMap.GetBlock_InBounds(curX, curY);
+            MapLayout.Block curBlock = curMap.GetBlock_InBounds(curX, curY);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrentCardinal1 || curBehavior == blockedCurrentCardinal2 || curBehavior == blockedCurrentDiagonal)
             {
@@ -411,7 +412,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             // Target block - return false if we are blocked
             curMap.GetXYMap(targetX, targetY, out outX, out outY, out outMap);
-            Map.Layout.Block targetBlock = outMap.GetBlock_InBounds(outX, outY);
+            MapLayout.Block targetBlock = outMap.GetBlock_InBounds(outX, outY);
             BlocksetBlockBehavior targetBehavior = targetBlock.BlocksetBlock.Behavior;
             if (targetBehavior == blockedTargetCardinal1 || targetBehavior == blockedTargetCardinal2 || targetBehavior == blockedTargetDiagonal)
             {
@@ -430,7 +431,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             // Get the x/y/map of the block
             map.GetXYMap(x, y, out int outX, out int outY, out Map outMap);
-            Map.Layout.Block block = outMap.GetBlock_InBounds(outX, outY);
+            MapLayout.Block block = outMap.GetBlock_InBounds(outX, outY);
             // Check occupancy permission
             if ((block.Passage & diagonalPassage) == 0)
             {
@@ -446,5 +447,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
 
         #endregion
+
+        public override void Dispose()
+        {
+            throw new InvalidOperationException();
+        }
     }
 }

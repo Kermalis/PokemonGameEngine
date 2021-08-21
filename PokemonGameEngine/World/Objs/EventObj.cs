@@ -1,6 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.UI;
+using Kermalis.PokemonGameEngine.World.Maps;
 using System;
 using System.Collections.Generic;
 
@@ -26,14 +26,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         private int _movementTypeTimer; // -1 means never run the tick, 0 means run the tick, >=1 means wait that many ticks
         private object _movementTypeArg;
 
-        public EventObj(Map.Events.ObjEvent oe, Map map)
-            : base(oe.Id, oe.ImageId, new Position(oe))
+        public EventObj(MapEvents.ObjEvent oe, Map map)
+            : base(oe.Id, oe.ImageId, oe.Pos)
         {
             MovementType = oe.MovementType;
             InitMovementType();
-            OriginX = oe.X;
+            OriginX = oe.Pos.X;
             MovementX = oe.MovementX;
-            OriginY = oe.Y;
+            OriginY = oe.Pos.Y;
             MovementY = oe.MovementY;
             TrainerType = oe.TrainerType;
             TrainerSight = oe.TrainerSight;
@@ -88,7 +88,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
         private static int GetRandomTimer()
         {
-            return PBEDataProvider.GlobalRandom.RandomInt(1 * Program.NumTicksPerSecond, 10 * Program.NumTicksPerSecond);
+            return PBEDataProvider.GlobalRandom.RandomInt(1 * Game.NumTicksPerSecond, 10 * Game.NumTicksPerSecond);
         }
 
         private void WanderSomewhere(FacingDirection[] allowed)
@@ -100,7 +100,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             bool allowSurf = CanSurf();
             // Check if we are in range of our movement radius
-            Position p = Pos;
+            WorldPos p = Pos;
             bool south = Math.Abs(p.Y + 1 - OriginY) <= MovementY;
             bool north = Math.Abs(p.Y - 1 - OriginY) <= MovementY;
             bool west = Math.Abs(p.X - 1 - OriginX) <= MovementX;
