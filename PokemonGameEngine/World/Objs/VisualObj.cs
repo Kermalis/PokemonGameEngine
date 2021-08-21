@@ -1,4 +1,7 @@
-﻿using Kermalis.PokemonGameEngine.Render;
+﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.Images;
+using Silk.NET.OpenGL;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
@@ -13,7 +16,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             _sheet = ImageSheet.LoadOrGet(imageId);
         }
-        protected VisualObj(ushort id, string imageId, Position pos)
+        protected VisualObj(ushort id, string imageId, WorldPos pos)
             : base(id, pos)
         {
             _sheet = ImageSheet.LoadOrGet(imageId);
@@ -41,36 +44,41 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
 
         // TODO: Water reflections
-        public unsafe void Draw(uint* dst, int dstW, int dstH, int blockX, int blockY, int startBlockPixelX, int startBlockPixelY)
+        public void Draw(Size2D dstSize, int blockX, int blockY, int startBlockPixelX, int startBlockPixelY)
         {
             int baseX = (blockX * Overworld.Block_NumPixelsX) + ProgressX + startBlockPixelX;
             int baseY = (blockY * Overworld.Block_NumPixelsY) + ProgressY + startBlockPixelY;
             // Calc img coords
             ImageSheet s = _sheet;
-            int w = s.ImageWidth;
-            int h = s.ImageHeight;
-            int x = baseX - ((w - Overworld.Block_NumPixelsX) / 2); // Center align
-            int y = baseY - (h - Overworld.Block_NumPixelsY); // Bottom align
+            Size2D size = s.ImageSize;
+            var pos = new Pos2D(baseX - (((int)size.Width - Overworld.Block_NumPixelsX) / 2), // Center align
+                baseY - ((int)size.Height - Overworld.Block_NumPixelsY)); // Bottom align
             // Calc shadow coords
-            Image shadow = s.ShadowImage;
-            int sw = shadow.Width;
-            int sh = shadow.Height;
-            int sx = baseX + s.ShadowXOffset; // Left align
-            int sy = baseY + Overworld.Block_NumPixelsY + s.ShadowYOffset; // Bottom align (starts in block under)
+            WriteableImage shadow = s.ShadowImage;
+            Size2D shadowSize = shadow.Size;
+            Pos2D shadowPos = s.ShadowOffset;
+            shadowPos.X += baseX; // Left align
+            shadowPos.Y += baseY + Overworld.Block_NumPixelsY; // Bottom align (starts in block under)
 
             // Draw shadow image
-            if (Renderer.IsInsideBitmap(dstW, dstH, sx, sy, sw, sh))
+            if (new Rect2D(shadowPos, shadowSize).Intersects(dstSize))
             {
-                shadow.DrawOn(dst, dstW, dstH, sx, sy);
+                shadow.Render(shadowPos);
             }
             // Draw obj image
-            if (Renderer.IsInsideBitmap(dstW, dstH, x, y, w, h))
+            if (new Rect2D(pos, size).Intersects(dstSize))
             {
                 float t = MovementTimer;
                 bool showMoving = t != 1 && t >= 0.6f;
                 int imgNum = GetImage(showMoving);
-                s.Images[imgNum].DrawOn(dst, dstW, dstH, x, y);
+                s.Images[imgNum].Render(pos);
             }
+        }
+
+        public override void Dispose()
+        {
+            GL gl = Game.OpenGL;
+            _sheet.DeductReference(gl);
         }
     }
 }

@@ -1,9 +1,12 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render.Images;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
     internal delegate void SpriteCallback(Sprite sprite);
-    internal unsafe delegate void SpriteDrawMethod(Sprite sprite, uint* dst, int dstW, int dstH, int xOffset = 0, int yOffset = 0);
+    internal delegate void SpriteDrawMethod(Sprite sprite, Pos2D translation = default);
 
     internal class Sprite
     {
@@ -13,8 +16,7 @@ namespace Kermalis.PokemonGameEngine.Render
         public IImage Image;
         /// <summary>After this is updated, a call will need to be made to <see cref="SpriteList.SortByPriority"/>. Higher priorities are rendered last</summary>
         public virtual int Priority { get; set; }
-        public int X;
-        public int Y;
+        public Pos2D Pos;
         public bool IsInvisible;
         public bool XFlip;
         public bool YFlip;
@@ -25,25 +27,15 @@ namespace Kermalis.PokemonGameEngine.Render
         public SpriteCallback Callback;
         public SpriteCallback RCallback;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void DrawOn(uint* dst, int dstW, int dstH, int xOffset = 0, int yOffset = 0)
+        public void Render(Pos2D translation = default)
         {
-            DrawOn(this, dst, dstW, dstH, xOffset: xOffset, yOffset: yOffset);
-        }
-        public static unsafe void DrawOn(Sprite s, uint* dst, int dstW, int dstH, int xOffset = 0, int yOffset = 0)
-        {
-            if (s.IsInvisible)
+            if (IsInvisible)
             {
                 return;
             }
 
-            IImage img = s.Image;
-            fixed (uint* src = img.Bitmap)
-            {
-                int srcW = img.Width;
-                PixelSupplier pixSupply = Renderer.MakeBitmapSupplier(src, srcW);
-                Renderer.DrawBitmap(dst, dstW, dstH, s.X + xOffset, s.Y + yOffset, pixSupply, srcW, img.Height, xFlip: s.XFlip, yFlip: s.YFlip);
-            }
+            IImage img = Image;
+            GUIRenderer.Instance.RenderTexture(img.Texture, new Rect2D(Pos + translation, img.Size), xFlip: XFlip, yFlip: YFlip);
         }
 
         public void Dispose()
@@ -52,32 +44,33 @@ namespace Kermalis.PokemonGameEngine.Render
             Data = null;
             DrawMethod = null;
             Callback = null;
+            Image?.DeductReference(Game.OpenGL);
             Image = null;
         }
     }
 
-    internal sealed class SpriteList
+    internal sealed class SpriteList : IEnumerable<Sprite>
     {
-        public Sprite First;
-        public int Count;
+        private Sprite _first;
+        public int Count { get; private set; }
 
         public void Add(Sprite sprite)
         {
-            if (First is null)
+            if (_first is null)
             {
-                First = sprite;
+                _first = sprite;
                 Count = 1;
                 return;
             }
-            Sprite s = First;
+            Sprite s = _first;
             while (true)
             {
                 if (s.Priority > sprite.Priority)
                 {
                     // The new sprite has a lower priority than s, so insert new before s
-                    if (s == First)
+                    if (s == _first)
                     {
-                        First = sprite;
+                        _first = sprite;
                     }
                     else
                     {
@@ -103,16 +96,16 @@ namespace Kermalis.PokemonGameEngine.Render
                 s = next;
             }
         }
-        public void Remove(Sprite sprite)
+        public void RemoveAndDispose(Sprite sprite)
         {
-            if (sprite == First)
+            if (sprite == _first)
             {
                 Sprite next = sprite.Next;
                 if (next is not null)
                 {
                     next.Prev = null;
                 }
-                First = next;
+                _first = next;
             }
             else
             {
@@ -130,7 +123,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public Sprite FirstWithTagOrDefault(object tag)
         {
-            for (Sprite s = First; s is not null; s = s.Next)
+            for (Sprite s = _first; s is not null; s = s.Next)
             {
                 if (s.Tag?.Equals(tag) == true)
                 {
@@ -142,11 +135,11 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public void SortByPriority()
         {
-            if (First is null)
+            if (_first is null)
             {
                 return;
             }
-            for (Sprite s = First.Next; s is not null; s = s.Next)
+            for (Sprite s = _first.Next; s is not null; s = s.Next)
             {
                 Sprite cur = s;
                 // Search all values before the current item
@@ -166,7 +159,7 @@ namespace Kermalis.PokemonGameEngine.Render
                     }
                     if (prev2 is null)
                     {
-                        First = cur;
+                        _first = cur;
                         break;
                     }
                     prev2.Next = cur;
@@ -177,31 +170,43 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public void DoCallbacks()
         {
-            for (Sprite s = First; s is not null; s = s.Next)
+            for (Sprite s = _first; s is not null; s = s.Next)
             {
                 s.Callback?.Invoke(s);
             }
         }
         public void DoRCallbacks()
         {
-            for (Sprite s = First; s is not null; s = s.Next)
+            for (Sprite s = _first; s is not null; s = s.Next)
             {
                 s.RCallback?.Invoke(s);
             }
         }
-        public unsafe void DrawAll(uint* dst, int dstW, int dstH)
+        public void DrawAll()
         {
-            for (Sprite s = First; s is not null; s = s.Next)
+            for (Sprite s = _first; s is not null; s = s.Next)
             {
                 if (s.DrawMethod is not null)
                 {
-                    s.DrawMethod(s, dst, dstW, dstH);
+                    s.DrawMethod(s);
                 }
                 else
                 {
-                    s.DrawOn(dst, dstW, dstH);
+                    s.Render();
                 }
             }
+        }
+
+        public IEnumerator<Sprite> GetEnumerator()
+        {
+            for (Sprite s = _first; s is not null; s = s.Next)
+            {
+                yield return s;
+            }
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable<Sprite>)this).GetEnumerator();
         }
     }
 }

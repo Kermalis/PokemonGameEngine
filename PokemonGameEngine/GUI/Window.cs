@@ -1,57 +1,69 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.UI;
+using Kermalis.PokemonGameEngine.Render.Images;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Silk.NET.OpenGL;
+using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.GUI
 {
     internal sealed class Window
     {
-        private readonly float _x;
-        private readonly float _y;
-        private readonly uint _backColor;
+        private static readonly List<Window> _allWindows = new();
+
+        private readonly RelPos2D _pos;
+        private readonly ColorF _backColor;
 
         public bool IsInvisible;
-        public readonly Image Image;
+        public readonly WriteableImage Image;
 
-        public Window(float x, float y, uint backColor)
-            : this(x, y, Program.RenderWidth, Program.RenderHeight, backColor) { }
-        public Window(float x, float y, float w, float h, uint backColor)
-            : this(x, y, (int)(Program.RenderWidth * w), (int)(Program.RenderHeight * h), backColor) { }
-        public Window(float x, float y, int pxWidth, int pxHeight, uint backColor)
+        public Window(RelPos2D pos, Size2D size, in ColorF backColor)
         {
-            _x = x;
-            _y = y;
+            _pos = pos;
             _backColor = backColor;
-            Image = new Image(pxWidth, pxHeight);
+            Image = new WriteableImage(size);
             ClearImage();
-            Game.Instance.Windows.Add(this);
+            _allWindows.Add(this);
+        }
+        public static Window CreateStandardMessageBox(in ColorF backColor)
+        {
+            return new Window(new RelPos2D(0f, 0.79f), Size2D.FromRelative(1f, 0.17f), backColor);
         }
 
         public void ClearImage()
         {
-            Renderer.OverwriteRectangle(Image, _backColor);
+            GL gl = Game.OpenGL;
+            Image.PushFrameBuffer(gl);
+            ClearImagePushed(gl);
+            GLHelper.PopFrameBuffer(gl);
         }
-        public unsafe void ClearImage(int x, int y, int width, int height)
+        public void ClearImagePushed(GL gl)
         {
-            void Clear(uint* dst, int dstW, int dstH)
-            {
-                Renderer.OverwriteRectangle(dst, dstW, dstH, x, y, width, height, _backColor);
-            }
-            Image.Draw(Clear);
+            GLHelper.ClearColor(gl, _backColor);
+            gl.Clear(ClearBufferMask.ColorBufferBit);
         }
 
-        public unsafe void Render(uint* dst, int dstW, int dstH)
+        public void Render()
         {
             if (IsInvisible)
             {
                 return;
             }
-            Image.DrawOn(dst, dstW, dstH, _x, _y);
+            Image.Render(_pos.Absolute());
+        }
+        public static void RenderAll()
+        {
+            foreach (Window w in _allWindows)
+            {
+                w.Render();
+            }
         }
 
         public void Close()
         {
-            Game.Instance.Windows.Remove(this);
+            GL gl = Game.OpenGL;
+            Image.DeductReference(gl);
+            _allWindows.Remove(this);
         }
     }
 }

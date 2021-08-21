@@ -1,13 +1,43 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Util;
-using System;
+using Kermalis.PokemonGameEngine.Render.Images;
+using Silk.NET.OpenGL;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal sealed class ImageSheet
     {
+        public readonly Image[] Images;
+        public readonly Size2D ImageSize;
+        public readonly WriteableImage ShadowImage;
+        public readonly Pos2D ShadowOffset;
+
+        private unsafe ImageSheet(string id)
+        {
+            using (EndianBinaryReader r = GetReader())
+            {
+                r.BaseStream.Position = _sheetOffsets[id];
+                Images = Renderer.GetResourceSheetAsImages(SheetsPath + r.ReadStringNullTerminated(), ImageSize = new Size2D(r.ReadUInt32(), r.ReadUInt32()));
+                ShadowOffset = new Pos2D(r.ReadInt32(), r.ReadInt32());
+                ShadowImage = new WriteableImage(new Size2D(r.ReadUInt32(), r.ReadUInt32()));
+                uint dstW = ShadowImage.Size.Width;
+                uint dstH = ShadowImage.Size.Height;
+                uint[] bmp = new uint[dstW * dstH];
+                fixed (uint* dst = bmp)
+                {
+                    Renderer.FillEllipse_Points(dst, dstW, dstH, 0, 0, (int)dstW - 1, (int)dstH - 1, Renderer.RawColor(0, 0, 0, 160));
+                    ShadowImage.LoadTextureData(Game.OpenGL, dst);
+                }
+            }
+            _id = id;
+            _numReferences = 1;
+            _loadedSheets.Add(id, this);
+        }
+
+        #region Loading
+
         private static readonly Dictionary<string, uint> _sheetOffsets;
 
         private const string SheetsExtension = ".bin";
@@ -31,44 +61,39 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return new EndianBinaryReader(Utils.GetResourceStream(SheetsFile), encoding: EncodingType.UTF16);
         }
 
-        public readonly Image[] Images;
-        public readonly int ImageWidth;
-        public readonly int ImageHeight;
-        public readonly Image ShadowImage;
-        public readonly int ShadowXOffset;
-        public readonly int ShadowYOffset;
+        #endregion
 
-        private unsafe ImageSheet(string id)
-        {
-            using (EndianBinaryReader r = GetReader())
-            {
-                r.BaseStream.Position = _sheetOffsets[id];
-                Images = Renderer.GetResourceSheetAsImages(SheetsPath + r.ReadStringNullTerminated(), ImageWidth = r.ReadInt32(), ImageHeight = r.ReadInt32());
-                ShadowXOffset = r.ReadInt32();
-                ShadowYOffset = r.ReadInt32();
-                ShadowImage = new Image(r.ReadInt32(), r.ReadInt32());
-                ShadowImage.Draw((uint* dst, int dstW, int dstH) =>
-                {
-                    Renderer.FillEllipse_Points(dst, dstW, dstH, 0, 0, dstW - 1, dstH - 1, Renderer.Color(0, 0, 0, 160));
-                });
-            }
-        }
+        #region Cache
 
-        private static readonly Dictionary<string, WeakReference<ImageSheet>> _loadedSheets = new();
-        public static ImageSheet LoadOrGet(string id)
+        private readonly string _id;
+        private int _numReferences;
+        private static readonly Dictionary<string, ImageSheet> _loadedSheets = new();
+        public static ImageSheet LoadOrGet(string resource)
         {
-            ImageSheet s;
-            if (!_loadedSheets.TryGetValue(id, out WeakReference<ImageSheet> w))
+            if (_loadedSheets.TryGetValue(resource, out ImageSheet s))
             {
-                s = new ImageSheet(id);
-                _loadedSheets.Add(id, new WeakReference<ImageSheet>(s));
+                s._numReferences++;
             }
-            else if (!w.TryGetTarget(out s))
+            else
             {
-                s = new ImageSheet(id);
-                w.SetTarget(s);
+                s = new ImageSheet(resource);
             }
             return s;
         }
+
+        public void DeductReference(GL gl)
+        {
+            if (--_numReferences <= 0)
+            {
+                ShadowImage.DeductReference(gl);
+                for (int i = 0; i < Images.Length; i++)
+                {
+                    Images[i].DeductReference(gl);
+                }
+                _loadedSheets.Remove(_id);
+            }
+        }
+
+        #endregion
     }
 }
