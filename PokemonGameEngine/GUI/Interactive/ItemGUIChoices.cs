@@ -1,34 +1,48 @@
-﻿using Kermalis.PokemonGameEngine.Item;
+﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Silk.NET.OpenGL;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Interactive
 {
     internal sealed class ItemGUIChoice : GUIChoice
     {
-        private readonly string _itemName;
-        private readonly string _quantityStr;
+        private readonly GUIString _itemName;
+        private readonly GUIString _quantityStr;
         private readonly int _quantityWidth;
 
         public ItemGUIChoice(InventorySlot slot, Action command, bool isEnabled = true)
             : base(command, isEnabled: isEnabled)
         {
-            _itemName = ItemData.GetItemName(slot.Item);
-            _quantityStr = "x" + slot.Quantity.ToString();
-            Font.Default.MeasureString(_quantityStr, out _quantityWidth, out _);
+            Font font = Font.Default;
+            ColorF[] colors = FontColors.DefaultDarkGray_I;
+            _itemName = new GUIString(ItemData.GetItemName(slot.Item), font, colors);
+            string q = "x" + slot.Quantity.ToString();
+            _quantityStr = new GUIString(q, font, colors);
+            _quantityWidth = (int)font.MeasureString(q).Width;
         }
 
-        public unsafe void Render(uint* dst, int dstW, int dstH,
-            bool isSelected, int x1, int x2, int y, int height, int xOfs)
+        public void Render(GL gl, bool isSelected, int x1, int x2, int y, int height, int xOfs)
         {
             if (isSelected)
             {
-                Renderer.FillRectangle_Points(dst, dstW, dstH, x1, y, x2, y + height - 1, Renderer.Color(255, 0, 0, 128));
+                GUIRenderer.Instance.FillRectangle(ColorF.FromRGBA(255, 0, 0, 128), new Rect2D(new Pos2D(x1, y), new Pos2D(x2, y + height - 1)));
             }
             x1 += xOfs;
             x2 -= xOfs;
-            Font.Default.DrawString(dst, dstW, dstH, x1, y, _itemName, Font.DefaultDarkGray_I);
-            Font.Default.DrawString(dst, dstW, dstH, x2 - _quantityWidth, y, _quantityStr, Font.DefaultDarkGray_I);
+            _itemName.Render(gl, new Pos2D(x1, y));
+            _quantityStr.Render(gl, new Pos2D(x2 - _quantityWidth, y));
+        }
+
+        public override void Dispose()
+        {
+            GL gl = Game.OpenGL;
+            Command = null;
+            _itemName.Delete(gl);
+            _quantityStr.Delete(gl);
         }
     }
 
@@ -37,11 +51,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         public float X2;
         public float Y2;
 
-        public uint BackColor;
-        public uint BorderColor;
+        public ColorF BackColor;
+        public ColorF BorderColor;
 
         public ItemGUIChoices(float x1, float y1, float x2, float y2, float spacing,
-            uint backColor, uint borderColor,
+            in ColorF backColor, in ColorF borderColor,
             Action backCommand = null)
             : base(x1, y1, spacing, backCommand: backCommand)
         {
@@ -51,8 +65,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             BorderColor = borderColor;
         }
 
-        public override unsafe void Render(uint* dst, int dstW, int dstH)
+        public override void Render(GL gl)
         {
+            uint dstW = GLHelper.CurrentWidth;
+            uint dstH = GLHelper.CurrentHeight;
             int x1 = (int)(X * dstW);
             float fy1 = Y * dstH;
             int y1 = (int)fy1;
@@ -60,8 +76,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             int y2 = (int)(Y2 * dstH);
 
             // Draw background
-            Renderer.FillRoundedRectangle(dst, dstW, dstH, x1, y1, x2, y2, 10, BackColor);
-            Renderer.DrawRoundedRectangle(dst, dstW, dstH, x1, y1, x2, y2, 10, BorderColor);
+            GUIRenderer.Instance.FillRectangle(BackColor, new Rect2D(new Pos2D(x1, y1), new Pos2D(x2, y2))); // TODO: Rounded 10
+            GUIRenderer.Instance.DrawRectangle(BorderColor, new Rect2D(new Pos2D(x1, y1), new Pos2D(x2, y2))); // TODO: Rounded 10
 
             int height = (int)(dstH * Spacing);
             int xOfs = (int)(0.015f * dstW);
@@ -73,7 +89,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                 ItemGUIChoice c = _choices[i];
                 bool isSelected = Selected == i;
                 int y = (int)(fy1 + (space * i) + yOfs);
-                c.Render(dst, dstW, dstH, isSelected, x1, x2, y, height, xOfs);
+                c.Render(gl, isSelected, x1, x2, y, height, xOfs);
             }
         }
     }

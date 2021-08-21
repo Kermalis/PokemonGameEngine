@@ -8,11 +8,15 @@ using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Script;
 using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.Trainer;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
+using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 
@@ -28,7 +32,6 @@ namespace Kermalis.PokemonGameEngine.GUI
         private string _interactiveScript;
 
         private FadeColorTransition _fadeTransition;
-        private IWarp _warpingTo;
 
         private Window _startMenuWindow;
         private TextGUIChoices _startMenuChoices;
@@ -39,20 +42,20 @@ namespace Kermalis.PokemonGameEngine.GUI
             Instance = this;
         }
 
-        public static unsafe void Debug_InitOverworldGUI()
+        public static void Debug_InitOverworldGUI()
         {
             _ = new OverworldGUI(); // Create
 
             ProcessDayTint(true);
             LoadMapMusic();
-            Instance._fadeTransition = new FadeFromColorTransition(500, 0);
-            Game.Instance.SetCallback(Instance.CB_FadeIn);
-            Game.Instance.SetRCallback(Instance.RCB_Fading);
+            Instance._fadeTransition = new FadeFromColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(Instance.CB_FadeIn);
+            Engine.Instance.SetRCallback(Instance.RCB_Fading);
         }
 
         public void SetInteractiveScript(EventObj talkedTo, string script)
         {
-            Game.Instance.Save.Vars[Var.LastTalked] = (short)talkedTo.Id; // Special var for the last person we talked to
+            Engine.Instance.Save.Vars[Var.LastTalked] = (short)talkedTo.Id; // Special var for the last person we talked to
             talkedTo.TalkedTo = true;
             PlayerObj.Player.IsWaitingForObjToStartScript = true;
             _interactiveScriptWaitingFor = talkedTo;
@@ -67,103 +70,103 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
-        private unsafe void StartMenu_DebugBagSelected()
+        private void StartMenu_DebugBagSelected()
         {
-            _fadeTransition = new FadeToColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeOutToBag);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeOutToBag);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
-        private unsafe void StartMenu_DebugPCSelected()
+        private void StartMenu_DebugPCSelected()
         {
-            _fadeTransition = new FadeToColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeOutToPC);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeOutToPC);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
         private void SetupStartMenuChoices()
         {
-            _startMenuChoices = new TextGUIChoices(0, 0, backCommand: CloseStartMenuAndSetCB, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
-            _startMenuChoices.Add(new TextGUIChoice("Pokémon", () => OpenPartyMenu(PartyGUI.Mode.PkmnMenu)));
-            _startMenuChoices.Add(new TextGUIChoice("Bag", StartMenu_DebugBagSelected));
-            _startMenuChoices.Add(new TextGUIChoice("PC", StartMenu_DebugPCSelected));
-            _startMenuChoices.Add(new TextGUIChoice("Close", CloseStartMenuAndSetCB));
+            _startMenuChoices = new TextGUIChoices(0, 0, backCommand: CloseStartMenuAndSetCB, font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
+            _startMenuChoices.AddOne("Pokémon", () => OpenPartyMenu(PartyGUI.Mode.PkmnMenu));
+            _startMenuChoices.AddOne("Bag", StartMenu_DebugBagSelected);
+            _startMenuChoices.AddOne("PC", StartMenu_DebugPCSelected);
+            _startMenuChoices.AddOne("Close", CloseStartMenuAndSetCB);
         }
 
         private void SetupStartMenuWindow()
         {
-            _startMenuChoices.GetSize(out int width, out int height);
-            _startMenuWindow = new Window(0.72f, 0.05f, width, height, Renderer.Color(255, 255, 255, 255));
+            Size2D s = _startMenuChoices.GetSize();
+            _startMenuWindow = new Window(new RelPos2D(0.72f, 0.05f), s, Colors.White);
             RenderStartMenuChoicesOntoWindow();
         }
-        private unsafe void RenderStartMenuChoicesOntoWindow()
+        private void RenderStartMenuChoicesOntoWindow()
         {
             _startMenuChoices.RenderChoicesOntoWindow(_startMenuWindow);
         }
         public void OpenStartMenu()
         {
             SetupStartMenuWindow();
-            Game.Instance.SetCallback(CB_StartMenu);
+            Engine.Instance.SetCallback(CB_StartMenu);
         }
         private void CloseStartMenuAndSetCB()
         {
             _startMenuWindow.Close();
             _startMenuWindow = null;
-            Game.Instance.SetCallback(CB_LogicTick);
+            Engine.Instance.SetCallback(CB_LogicTick);
         }
 
-        public unsafe void OpenPartyMenu(PartyGUI.Mode mode)
+        public void OpenPartyMenu(PartyGUI.Mode mode)
         {
-            _fadeTransition = new FadeToColorTransition(500, 0);
+            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
             switch (mode)
             {
                 case PartyGUI.Mode.PkmnMenu:
                 {
-                    Game.Instance.SetCallback(CB_FadeOutToParty_PkmnMenu);
+                    Engine.Instance.SetCallback(CB_FadeOutToParty_PkmnMenu);
                     break;
                 }
                 case PartyGUI.Mode.SelectDaycare:
                 {
-                    Game.Instance.IsOnOverworld = false;
-                    Game.Instance.SetCallback(CB_FadeOutToParty_SelectDaycare);
+                    Engine.Instance.IsOnOverworld = false;
+                    Engine.Instance.SetCallback(CB_FadeOutToParty_SelectDaycare);
                     break;
                 }
                 default: throw new Exception();
             }
-            Game.Instance.SetRCallback(RCB_Fading);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
-        public unsafe void StartEggHatchScreen()
+        public void StartEggHatchScreen()
         {
-            _fadeTransition = new FadeToColorTransition(500, 0);
-            Game.Instance.IsOnOverworld = false;
-            Game.Instance.SetCallback(CB_FadeOutToEggHatchScreen);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
+            Engine.Instance.IsOnOverworld = false;
+            Engine.Instance.SetCallback(CB_FadeOutToEggHatchScreen);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
-        public unsafe void StartBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties, TrainerClass c = default, string defeatText = null)
+        public void StartBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties, TrainerClass c = default, string defeatText = null)
         {
-            Game.Instance.IsOnOverworld = false;
+            Engine.Instance.IsOnOverworld = false;
             _ = new BattleGUI(battle, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties, trainerClass: c, trainerDefeatText: defeatText);
             SoundControl.SetBattleBGM(song);
             _fadeTransition = new SpiralTransition();
-            Game.Instance.SetCallback(CB_FadeOutToBattle);
-            Game.Instance.SetRCallback(RCB_Fading);
+            Engine.Instance.SetCallback(CB_FadeOutToBattle);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
-        public unsafe void TempWarp(IWarp warp)
+        public void TempWarp(in Warp warp)
         {
-            _warpingTo = warp;
-            SoundControl.SetOverworldBGM(Map.LoadOrGet(warp.DestMapId).MapDetails.Music);
-            _fadeTransition = new FadeToColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeOutToWarp);
-            Game.Instance.SetRCallback(RCB_Fading);
+            var w = WarpInProgress.Start(warp);
+            SoundControl.SetOverworldBGM(w.DestMapLoaded.Details.Music);
+            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeOutToWarp);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
 
-        private unsafe void ReturnToStartMenuWithFadeIn()
+        private void ReturnToStartMenuWithFadeIn()
         {
             ProcessDayTint(true); // Catch up time
             SetupStartMenuWindow();
-            _fadeTransition = new FadeFromColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeInToStartMenu);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeInToStartMenu);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
-        public unsafe void ReturnToFieldWithFadeInAfterEvolutionCheck()
+        public void ReturnToFieldWithFadeInAfterEvolutionCheck()
         {
             if (Evolution.GetNextPendingEvolution(out (PartyPokemon, EvolutionData.EvoData) pending))
             {
@@ -173,43 +176,43 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
             ReturnToFieldWithFadeIn();
         }
-        public unsafe void ReturnToFieldWithFadeIn()
+        public void ReturnToFieldWithFadeIn()
         {
-            _fadeTransition = new FadeFromColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeIn);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeIn);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
 
         private static void LoadMapMusic()
         {
-            SoundControl.SetOverworldBGM(PlayerObj.Player.Map.MapDetails.Music);
+            SoundControl.SetOverworldBGM(PlayerObj.Player.Map.Details.Music);
         }
 
-        private unsafe void CB_FadeIn()
+        private void CB_FadeIn()
         {
             Tileset.AnimationTick();
             ProcessDayTint(false);
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                Game.Instance.IsOnOverworld = true;
-                Game.Instance.SetCallback(CB_LogicTick);
-                Game.Instance.SetRCallback(RCB_RenderOverworld);
+                Engine.Instance.IsOnOverworld = true;
+                Engine.Instance.SetCallback(CB_LogicTick);
+                Engine.Instance.SetRCallback(RCB_RenderOverworld);
             }
         }
-        private unsafe void CB_FadeInToStartMenu()
+        private void CB_FadeInToStartMenu()
         {
             Tileset.AnimationTick();
             ProcessDayTint(false);
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                Game.Instance.IsOnOverworld = true;
-                Game.Instance.SetCallback(CB_StartMenu);
-                Game.Instance.SetRCallback(RCB_RenderOverworld);
+                Engine.Instance.IsOnOverworld = true;
+                Engine.Instance.SetCallback(CB_StartMenu);
+                Engine.Instance.SetRCallback(RCB_RenderOverworld);
             }
         }
-        private unsafe void CB_FadeOutToWarp()
+        private void CB_FadeOutToWarp()
         {
             Tileset.AnimationTick();
             ProcessDayTint(false);
@@ -217,17 +220,16 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 _fadeTransition = null;
                 Obj player = PlayerObj.Player;
-                player.Warp(_warpingTo);
-                _warpingTo = null;
+                player.Warp();
                 if (player.QueuedScriptMovements.Count > 0)
                 {
                     player.RunNextScriptMovement();
                     player.IsScriptMoving = true;
                 }
                 ProcessDayTint(true); // Catch up time
-                _fadeTransition = new FadeFromColorTransition(500, 0);
-                Game.Instance.SetCallback(CB_FadeIn);
-                Game.Instance.SetRCallback(RCB_Fading);
+                _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
+                Engine.Instance.SetCallback(CB_FadeIn);
+                Engine.Instance.SetRCallback(RCB_Fading);
             }
         }
         private void CB_FadeOutToEggHatchScreen()
@@ -249,7 +251,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _fadeTransition = null;
                 _startMenuWindow.Close();
                 _startMenuWindow = null;
-                _ = new PartyGUI(Game.Instance.Save.PlayerParty, PartyGUI.Mode.PkmnMenu, ReturnToStartMenuWithFadeIn);
+                _ = new PartyGUI(Engine.Instance.Save.PlayerParty, PartyGUI.Mode.PkmnMenu, ReturnToStartMenuWithFadeIn);
             }
         }
         private void CB_FadeOutToParty_SelectDaycare()
@@ -259,7 +261,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                _ = new PartyGUI(Game.Instance.Save.PlayerParty, PartyGUI.Mode.SelectDaycare, ReturnToFieldWithFadeIn);
+                _ = new PartyGUI(Engine.Instance.Save.PlayerParty, PartyGUI.Mode.SelectDaycare, ReturnToFieldWithFadeIn);
             }
         }
         private void CB_FadeOutToBag()
@@ -271,7 +273,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _fadeTransition = null;
                 _startMenuWindow.Close();
                 _startMenuWindow = null;
-                _ = new BagGUI(Game.Instance.Save.PlayerInventory, Game.Instance.Save.PlayerParty, ReturnToStartMenuWithFadeIn);
+                _ = new BagGUI(Engine.Instance.Save.PlayerInventory, Engine.Instance.Save.PlayerParty, ReturnToStartMenuWithFadeIn);
             }
         }
         private void CB_FadeOutToPC()
@@ -283,7 +285,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 _fadeTransition = null;
                 _startMenuWindow.Close();
                 _startMenuWindow = null;
-                _ = new PCBoxesGUI(Game.Instance.Save.PCBoxes, Game.Instance.Save.PlayerParty, ReturnToStartMenuWithFadeIn);
+                _ = new PCBoxesGUI(Engine.Instance.Save.PCBoxes, Engine.Instance.Save.PlayerParty, ReturnToStartMenuWithFadeIn);
             }
         }
         private void CB_FadeOutToBattle()
@@ -298,8 +300,8 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void CB_LogicTick()
         {
-            Game.Instance.ProcessScripts();
-            Game.Instance.ProcessStringPrinters();
+            ScriptContext.ProcessAll();
+            StringPrinter.ProcessAll();
             Tileset.AnimationTick();
             ProcessDayTint(false);
             _tasks.RunTasks();
@@ -353,7 +355,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         #region Surf
 
-        public unsafe void ReturnToFieldAndUseSurf()
+        public void ReturnToFieldAndUseSurf()
         {
             _startMenuWindow?.Close();
             _startMenuWindow = null;
@@ -361,27 +363,27 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 o.IsLocked = true;
             }
-            _fadeTransition = new FadeFromColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeInToUseSurf);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeInToUseSurf);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
-        private unsafe void CB_FadeInToUseSurf()
+        private void CB_FadeInToUseSurf()
         {
             Tileset.AnimationTick();
             ProcessDayTint(false);
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                Game.Instance.IsOnOverworld = true;
+                Engine.Instance.IsOnOverworld = true;
                 StartSurfTasks();
-                Game.Instance.SetCallback(CB_LogicTick);
-                Game.Instance.SetRCallback(RCB_RenderOverworld);
+                Engine.Instance.SetCallback(CB_LogicTick);
+                Engine.Instance.SetRCallback(RCB_RenderOverworld);
             }
         }
 
         public void StartSurfTasks()
         {
-            PartyPokemon pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar_Result]];
+            PartyPokemon pkmn = Engine.Instance.Save.PlayerParty[Engine.Instance.Save.Vars[Var.SpecialVar_Result]];
             _tasks.Add(Task_SurfInit, int.MaxValue, data: pkmn);
             // TODO: Clear saved music, start surf music
         }
@@ -420,25 +422,26 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 o.IsLocked = false;
             }
-            _tasks.Remove(task);
+            _tasks.RemoveAndDispose(task);
         }
 
         #endregion
 
-        private unsafe void RCB_Fading(uint* dst, int dstW, int dstH)
+        private void RCB_Fading(GL gl)
         {
-            RCB_RenderOverworld(dst, dstW, dstH);
-            _fadeTransition.Render(dst, dstW, dstH);
+            RCB_RenderOverworld(gl);
+            _fadeTransition.Render(gl);
         }
-        private unsafe void RCB_RenderOverworld(uint* dst, int dstW, int dstH)
+        private void RCB_RenderOverworld(GL gl)
         {
-            Renderer.OverwriteRectangle(dst, dstW, dstH, Renderer.Color(0, 0, 0, 255));
-            CameraObj.Render(dst, dstW, dstH);
-            if (Overworld.ShouldRenderDayTint())
+            GLHelper.ClearColor(gl, Colors.Black);
+            gl.Clear(ClearBufferMask.ColorBufferBit);
+            MapRenderer.Render(Game.RenderSize);
+            /*if (Overworld.ShouldRenderDayTint())
             {
-                DayTint.Render(dst, dstW, dstH);
-            }
-            Game.Instance.RenderWindows(dst, dstW, dstH);
+                DayTint.Render();
+            }*/
+            Window.RenderAll();
         }
     }
 }

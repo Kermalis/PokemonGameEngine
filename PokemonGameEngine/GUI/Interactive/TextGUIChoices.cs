@@ -1,27 +1,36 @@
-﻿using Kermalis.PokemonGameEngine.Render;
+﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Silk.NET.OpenGL;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Interactive
 {
     internal sealed class TextGUIChoice : GUIChoice
     {
-        public string Text;
+        public GUIString ArrowStr;
+        public GUIString Str;
+        public ColorF[] TextColors;
+        public ColorF[] SelectedColors;
+        public ColorF[] DisabledColors;
 
-        public Font Font;
-        public uint[] FontColors;
-        public uint[] SelectedColors;
-        public uint[] DisabledColors;
-
-        public TextGUIChoice(string text, Action command, bool isEnabled = true,
-            Font font = null, uint[] fontColors = null, uint[] selectedColors = null, uint[] disabledColors = null)
-            : base(command, isEnabled: isEnabled)
+        public TextGUIChoice(GUIString str, Action command, ColorF[] textColors, ColorF[] selectedColors, ColorF[] disabledColors, bool isEnabled)
+            : base(command, isEnabled)
         {
-            Text = text;
-
-            Font = font;
-            FontColors = fontColors;
+            ArrowStr = new GUIString("→", str.Font, null);
+            Str = str;
+            TextColors = textColors;
             SelectedColors = selectedColors;
             DisabledColors = disabledColors;
+        }
+
+        public override void Dispose()
+        {
+            GL gl = Game.OpenGL;
+            Command = null;
+            ArrowStr.Delete(gl);
+            Str.Delete(gl);
         }
     }
 
@@ -30,24 +39,36 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
     {
         public bool BottomAligned;
         public Font Font;
-        public uint[] FontColors;
-        public uint[] SelectedColors;
-        public uint[] DisabledColors;
+        public ColorF[] TextColors;
+        public ColorF[] SelectedColors;
+        public ColorF[] DisabledColors;
 
         public TextGUIChoices(float x, float y, float spacing = 3, bool bottomAlign = false, Action backCommand = null,
-            Font font = null, uint[] fontColors = null, uint[] selectedColors = null, uint[] disabledColors = null)
+            Font font = null, ColorF[] textColors = null, ColorF[] selectedColors = null, ColorF[] disabledColors = null)
             : base(x, y, spacing, backCommand: backCommand)
         {
             Font = font;
-            FontColors = fontColors;
+            TextColors = textColors;
             SelectedColors = selectedColors;
             DisabledColors = disabledColors;
             BottomAligned = bottomAlign;
         }
 
-        public override unsafe void Render(uint* dst, int dstW, int dstH)
+        public void AddOne(string text, Action command, bool isEnabled = true,
+            Font font = null, ColorF[] textColors = null, ColorF[] selectedColors = null, ColorF[] disabledColors = null)
         {
-            float y1 = Y * dstH;
+            font ??= Font;
+            textColors ??= TextColors;
+            selectedColors ??= SelectedColors;
+            disabledColors ??= DisabledColors;
+            var str = new GUIString(text, font, null);
+            Add(new TextGUIChoice(str, command, textColors, selectedColors, disabledColors, isEnabled));
+        }
+
+        public override void Render(GL gl)
+        {
+            float y1 = Y * GLHelper.CurrentHeight;
+            int x = Renderer.RelXToAbsX(X);
             float y = y1;
             float space = Spacing;
             int count = _choices.Count;
@@ -55,28 +76,25 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             while (true)
             {
                 TextGUIChoice c = _choices[i];
-                Font font = c.Font ?? Font;
+                Font font = c.Str.Font;
                 bool isSelected = Selected == i;
-                uint[] colors;
+                ColorF[] colors;
                 if (c.IsEnabled)
                 {
-                    colors = isSelected
-                        ? c.SelectedColors ?? SelectedColors
-                        : c.FontColors ?? FontColors;
+                    colors = isSelected ? c.SelectedColors : c.TextColors;
                 }
                 else
                 {
-                    colors = c.DisabledColors ?? DisabledColors;
+                    colors = c.DisabledColors;
                 }
-                font.MeasureString("→ ", out int arrowW, out int textH);
-                int x = (int)(dstW * X);
+                Size2D arrowSize = font.MeasureString("→ ");
                 // If this is bottom align, we need to adjust the y
-                int iy = BottomAligned ? (int)y - textH : (int)y;
-                font.DrawString(dst, dstW, dstH, x + arrowW, iy, c.Text, colors);
+                int iy = BottomAligned ? (int)y - (int)arrowSize.Height : (int)y;
+                c.Str.Render(gl, new Pos2D(x + (int)arrowSize.Width, iy), colors);
                 // Draw selection arrow
                 if (isSelected)
                 {
-                    font.DrawString(dst, dstW, dstH, x, iy, "→", colors);
+                    c.ArrowStr.Render(gl, new Pos2D(x, iy), colors);
                 }
 
                 if (BottomAligned)
@@ -93,56 +111,55 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                     {
                         break;
                     }
-                    y += textH + space;
+                    y += arrowSize.Height + space;
                 }
             }
         }
 
-        public void GetSize(out int width, out int height)
+        public Size2D GetSize()
         {
-            width = 0;
-            height = 0;
+            var s = new Size2D(0, 0);
             float y = 0;
             float space = Spacing;
             int count = _choices.Count;
             for (int i = 0; i < count; i++)
             {
                 TextGUIChoice c = _choices[i];
-                Font font = c.Font ?? Font;
-                font.MeasureString(c.Text, out int textW, out int textH);
-                font.MeasureString("→ ", out int arrowW, out _);
-                int totalWidth = textW + arrowW;
-                if (totalWidth > width)
+                Font font = c.Str.Font;
+                Size2D textSize = font.MeasureString(c.Str.Text);
+                Size2D arrowSize = font.MeasureString("→ ");
+                uint totalWidth = textSize.Width + arrowSize.Width;
+                if (totalWidth > s.Width)
                 {
-                    width = totalWidth;
+                    s.Width = totalWidth;
                 }
-                int totalHeight = textH + (int)y;
-                if (totalHeight > height)
+                uint totalHeight = textSize.Height + (uint)y;
+                if (totalHeight > s.Height)
                 {
-                    height = totalHeight;
+                    s.Height = totalHeight;
                 }
 
-                y += textH + space;
+                y += textSize.Height + space;
             }
+            return s;
         }
 
         public static void CreateStandardYesNoChoices(Action<bool> clickAction, out TextGUIChoices choices, out Window window, float x = 0.8f, float y = 0.4f)
         {
-            choices = new TextGUIChoices(0, 0, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
-            choices.Add(new TextGUIChoice("Yes", () => clickAction(true)));
-            choices.Add(new TextGUIChoice("No", () => clickAction(false)));
-            choices.GetSize(out int width, out int height);
-            window = new Window(x, y, width, height, Renderer.Color(255, 255, 255, 255));
+            choices = new TextGUIChoices(0, 0, font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
+            choices.AddOne("Yes", () => clickAction(true));
+            choices.AddOne("No", () => clickAction(false));
+            Size2D s = choices.GetSize();
+            window = new Window(new RelPos2D(x, y), s, Colors.White);
             choices.RenderChoicesOntoWindow(window);
         }
-        public unsafe void RenderChoicesOntoWindow(Window window)
+        public void RenderChoicesOntoWindow(Window window)
         {
-            window.ClearImage();
-            Image i = window.Image;
-            fixed (uint* dst = i.Bitmap)
-            {
-                Render(dst, i.Width, i.Height);
-            }
+            GL gl = Game.OpenGL;
+            window.Image.PushFrameBuffer(gl);
+            window.ClearImagePushed(gl);
+            Render(gl);
+            GLHelper.PopFrameBuffer(gl);
         }
     }
 }

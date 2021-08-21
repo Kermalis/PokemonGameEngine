@@ -7,7 +7,10 @@ using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.World.Objs;
+using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 
@@ -64,14 +67,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private Window _textChoicesWindow;
         private TextGUIChoices _textChoices;
-        private string _message;
+        private GUIString _message;
 
         private int _selectionX;
         private int _selectionY;
 
+        private GUIString _backStr;
+
         #region Open & Close GUI
 
-        public unsafe PartyGUI(Party party, Mode mode, Action onClosed)
+        public PartyGUI(Party party, Mode mode, Action onClosed)
         {
             _mode = mode;
             _allowBack = true;
@@ -79,19 +84,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _sprites = new();
             _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
             _gameParty = new GamePartyData(party, _members, _sprites);
-            _members[0].SetBigBounce();
 
             if (mode == Mode.SelectDaycare)
             {
                 SetSelectionVar(-1);
             }
 
-            _onClosed = onClosed;
-            _fadeTransition = new FadeFromColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeInParty);
-            Game.Instance.SetRCallback(RCB_Fading);
+            FinishConstructor(onClosed);
         }
-        public unsafe PartyGUI(SpritedBattlePokemonParty party, Mode mode, Action onClosed)
+        public PartyGUI(SpritedBattlePokemonParty party, Mode mode, Action onClosed)
         {
             _mode = mode;
             _allowBack = mode != Mode.BattleReplace; // Disallow back for BattleReplace
@@ -99,7 +100,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _sprites = new();
             _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
             _battleParty = new BattlePartyData(party, _members, _sprites);
-            _members[0].SetBigBounce();
 
             if (mode == Mode.BattleSwitchIn)
             {
@@ -110,57 +110,72 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 SetBattleReplacementMessage();
             }
 
+            FinishConstructor(onClosed);
+        }
+        private void FinishConstructor(Action onClosed)
+        {
+            _members[0].SetBounce(true);
+            _backStr = new GUIString("Back", Font.Default, FontColors.DefaultWhite_I);
+
             _onClosed = onClosed;
-            _fadeTransition = new FadeFromColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeInParty);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeInParty);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
 
-        private unsafe void ClosePartyMenu()
+        private void ClosePartyMenu()
         {
-            _fadeTransition = new FadeToColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeOutParty);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeOutParty);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
-        private unsafe void OnSummaryClosed()
+        private void OnSummaryClosed()
         {
             _textChoicesWindow.IsInvisible = false;
-            _fadeTransition = new FadeFromColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeInThenGoToChoicesCB);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeInThenGoToChoicesCB);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
 
-        private unsafe void CB_FadeInParty()
+        private void CB_FadeInParty()
         {
             _sprites.DoCallbacks();
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                Game.Instance.SetCallback(CB_LogicTick);
-                Game.Instance.SetRCallback(RCB_RenderTick);
+                Engine.Instance.SetCallback(CB_LogicTick);
+                Engine.Instance.SetRCallback(RCB_RenderTick);
             }
         }
-        private unsafe void CB_FadeOutParty()
+        private void CB_FadeOutParty()
         {
             _sprites.DoCallbacks();
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
+                GL gl = Game.OpenGL;
+                foreach (PartyGUIMember m in _members)
+                {
+                    m.Delete(gl);
+                }
+                _backStr.Delete(gl);
+                DeleteMessage(gl);
+                // Choices should be closed so no need to dispose
                 _onClosed();
                 _onClosed = null;
             }
         }
-        private unsafe void CB_FadeInThenGoToChoicesCB()
+        private void CB_FadeInThenGoToChoicesCB()
         {
             _sprites.DoCallbacks();
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                Game.Instance.SetCallback(CB_Choices);
-                Game.Instance.SetRCallback(RCB_RenderTick);
+                Engine.Instance.SetCallback(CB_Choices);
+                Engine.Instance.SetRCallback(RCB_RenderTick);
             }
         }
-        private unsafe void CB_FadeOutToSummary()
+        private void CB_FadeOutToSummary()
         {
             _sprites.DoCallbacks();
             if (_fadeTransition.IsDone)
@@ -181,10 +196,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
         }
 
-        private unsafe void RCB_Fading(uint* dst, int dstW, int dstH)
+        private void RCB_Fading(GL gl)
         {
-            RCB_RenderTick(dst, dstW, dstH);
-            _fadeTransition.Render(dst, dstW, dstH);
+            RCB_RenderTick(gl);
+            _fadeTransition.Render(gl);
         }
 
         #endregion
@@ -211,28 +226,37 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             int i = SelectionCoordsToPartyIndex(oldCol, oldRow);
             if (i != -1)
             {
-                _members[i].SetSmallBounce();
+                _members[i].SetBounce(false);
             }
             i = SelectionCoordsToPartyIndex(_selectionX, _selectionY);
             if (i != -1)
             {
-                _members[i].SetBigBounce();
+                _members[i].SetBounce(true);
             }
         }
         private static void SetSelectionVar(short index)
         {
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = index;
+            Engine.Instance.Save.Vars[Var.SpecialVar_Result] = index;
+        }
+        private void SetMessage(string message)
+        {
+            _message = new GUIString(message, Font.Default, FontColors.DefaultDarkGray_I);
+        }
+        private void DeleteMessage(GL gl = null)
+        {
+            _message?.Delete(gl ?? Game.OpenGL);
+            _message = null;
         }
 
         #region Battle replacement
 
         private void SetBattleReplacementMessage()
         {
-            _message = string.Format("You must send in {0} Pokémon.", BattleGUI.Instance.SwitchesRequired);
+            SetMessage(string.Format("You must send in {0} Pokémon.", BattleGUI.Instance.SwitchesRequired));
         }
         private static bool CanUsePositionForBattle(PBEFieldPosition pos)
         {
-            return !BattleGUI.Instance.PositionStandBy.Contains(pos) && BattleGUI.Instance.Trainer.OwnsSpot(pos) && BattleGUI.Instance.Trainer.Team.TryGetPokemon(pos) == null;
+            return !BattleGUI.Instance.PositionStandBy.Contains(pos) && BattleGUI.Instance.Trainer.OwnsSpot(pos) && BattleGUI.Instance.Trainer.Team.TryGetPokemon(pos) is null;
         }
         private void SelectForBattleReplacement(PBEBattlePokemon pkmn, PBEFieldPosition pos)
         {
@@ -242,7 +266,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             BattleGUI.Instance.PositionStandBy.Add(pos);
             if (--BattleGUI.Instance.SwitchesRequired == 0)
             {
-                _message = null;
+                DeleteMessage();
                 ClosePartyMenu();
                 return;
             }
@@ -257,7 +281,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     break;
                 }
             }
-            Game.Instance.SetCallback(CB_LogicTick);
+            Engine.Instance.SetCallback(CB_LogicTick);
         }
         private void SetUpPositionQuery(int index, bool left, bool center, bool right)
         {
@@ -265,7 +289,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             PBEBattlePokemon bPkmn = party.BattleParty[index];
             SpritedBattlePokemon sPkmn = party[bPkmn];
             PartyPokemon pkmn = sPkmn.PartyPkmn;
-            _message = string.Format("Send {0} where?", pkmn.Nickname);
+            SetMessage(string.Format("Send {0} where?", pkmn.Nickname));
             CloseChoices();
 
             void BackCommand()
@@ -274,24 +298,24 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 BringUpPkmnActions(index);
             }
 
-            _textChoices = new TextGUIChoices(0, 0, backCommand: BackCommand, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
+            _textChoices = new TextGUIChoices(0, 0, backCommand: BackCommand, font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
             if (left)
             {
-                _textChoices.Add(new TextGUIChoice("Send Left", () => SelectForBattleReplacement(bPkmn, PBEFieldPosition.Left)));
+                _textChoices.AddOne("Send Left", () => SelectForBattleReplacement(bPkmn, PBEFieldPosition.Left));
             }
             if (center)
             {
-                _textChoices.Add(new TextGUIChoice("Send Center", () => SelectForBattleReplacement(bPkmn, PBEFieldPosition.Center)));
+                _textChoices.AddOne("Send Center", () => SelectForBattleReplacement(bPkmn, PBEFieldPosition.Center));
             }
             if (right)
             {
-                _textChoices.Add(new TextGUIChoice("Send Right", () => SelectForBattleReplacement(bPkmn, PBEFieldPosition.Right)));
+                _textChoices.AddOne("Send Right", () => SelectForBattleReplacement(bPkmn, PBEFieldPosition.Right));
             }
-            _textChoices.Add(new TextGUIChoice("Cancel", BackCommand));
-            _textChoices.GetSize(out int width, out int height);
-            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, Renderer.Color(255, 255, 255, 255));
+            _textChoices.AddOne("Cancel", BackCommand);
+            Size2D s = _textChoices.GetSize();
+            _textChoicesWindow = new Window(new RelPos2D(0.6f, 0.3f), s, Colors.White);
             RenderChoicesOntoWindow();
-            Game.Instance.SetCallback(CB_Choices);
+            Engine.Instance.SetCallback(CB_Choices);
         }
 
         #endregion
@@ -303,7 +327,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             void Add(PBEMove move, Action command)
             {
                 string str = PBELocalizedString.GetMoveName(move).English;
-                _textChoices.Add(new TextGUIChoice(str, command, fontColors: Font.DefaultBlue_I));
+                _textChoices.AddOne(str, command, textColors: FontColors.DefaultBlue_I);
             }
 
             Moveset moves = pkmn.Moveset;
@@ -314,8 +338,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void SetCantUseThatHere()
         {
-            _message = "Can't use that here.";
-            Game.Instance.SetCallback(CB_CantUseFieldMove);
+            SetMessage("Can't use that here.");
+            Engine.Instance.SetCallback(CB_CantUseFieldMove);
         }
 
         private void Action_FieldSurf(int index)
@@ -403,25 +427,25 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 default: throw new Exception();
             }
         }
-        private unsafe void Action_BringUpSummary(int index)
+        private void Action_BringUpSummary(int index)
         {
             _selectionForSummary = index;
-            _fadeTransition = new FadeToColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeOutToSummary);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeOutToSummary);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
 
         private void BringUpPkmnActions(int index)
         {
             string nickname;
-            _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesThenGoToLogicTick, font: Font.Default, fontColors: Font.DefaultDarkGray_I, selectedColors: Font.DefaultYellow_O);
+            _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesThenGoToLogicTick, font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
             switch (_mode)
             {
                 case Mode.PkmnMenu:
                 {
                     PartyPokemon pkmn = _gameParty.Party[index];
                     nickname = pkmn.Nickname;
-                    _textChoices.Add(new TextGUIChoice("Check summary", () => Action_BringUpSummary(index)));
+                    _textChoices.AddOne("Check summary", () => Action_BringUpSummary(index));
                     AddFieldMovesToActions(pkmn, index);
                     break;
                 }
@@ -431,9 +455,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     nickname = pkmn.Nickname;
                     if (!pkmn.IsEgg)
                     {
-                        _textChoices.Add(new TextGUIChoice("Select", () => Action_SelectPartyPkmn(index)));
+                        _textChoices.AddOne("Select", () => Action_SelectPartyPkmn(index));
                     }
-                    _textChoices.Add(new TextGUIChoice("Check summary", () => Action_BringUpSummary(index)));
+                    _textChoices.AddOne("Check summary", () => Action_BringUpSummary(index));
                     break;
                 }
                 case Mode.BattleSwitchIn:
@@ -447,20 +471,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     // Cannot switch in if active already or fainted, or in the switch stand by
                     if (!pkmn.IsEgg && bPkmn.FieldPosition == PBEFieldPosition.None && bPkmn.HP > 0 && !BattleGUI.Instance.StandBy.Contains(bPkmn))
                     {
-                        _textChoices.Add(new TextGUIChoice("Switch In", () => Action_SelectPartyPkmn(index)));
+                        _textChoices.AddOne("Switch In", () => Action_SelectPartyPkmn(index));
                     }
-                    _textChoices.Add(new TextGUIChoice("Check summary", () => Action_BringUpSummary(index)));
+                    _textChoices.AddOne("Check summary", () => Action_BringUpSummary(index));
                     break;
                 }
                 default: throw new Exception();
             }
 
-            _textChoices.Add(new TextGUIChoice("Cancel", CloseChoicesThenGoToLogicTick));
-            _textChoices.GetSize(out int width, out int height);
-            _textChoicesWindow = new Window(0.6f, 0.3f, width, height, Renderer.Color(255, 255, 255, 255));
+            _textChoices.AddOne("Cancel", CloseChoicesThenGoToLogicTick);
+            Size2D s = _textChoices.GetSize();
+            _textChoicesWindow = new Window(new RelPos2D(0.6f, 0.3f), s, Colors.White);
             RenderChoicesOntoWindow();
-            _message = string.Format("Do what with {0}?", nickname);
-            Game.Instance.SetCallback(CB_Choices);
+            SetMessage(string.Format("Do what with {0}?", nickname));
+            Engine.Instance.SetCallback(CB_Choices);
         }
         private void CloseChoices()
         {
@@ -478,11 +502,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
             else
             {
-                _message = null;
+                DeleteMessage();
             }
-            Game.Instance.SetCallback(CB_LogicTick);
+            Engine.Instance.SetCallback(CB_LogicTick);
         }
-        private unsafe void RenderChoicesOntoWindow()
+        private void RenderChoicesOntoWindow()
         {
             _textChoices.RenderChoicesOntoWindow(_textChoicesWindow);
         }
@@ -490,6 +514,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void CB_Choices()
         {
             _sprites.DoCallbacks();
+
             int s = _textChoices.Selected;
             _textChoices.HandleInputs();
             if (_textChoicesWindow is null)
@@ -503,6 +528,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void CB_CantUseFieldMove()
         {
+            _sprites.DoCallbacks();
+
             if (!InputManager.IsPressed(Key.A) && !InputManager.IsPressed(Key.B))
             {
                 return;
@@ -510,12 +537,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             int index = SelectionCoordsToPartyIndex(_selectionX, _selectionY);
             // Assume Mode.PkmnMenu
-            _message = string.Format("Do what with {0}?", _gameParty.Party[index].Nickname);
-            Game.Instance.SetCallback(CB_Choices);
+            SetMessage(string.Format("Do what with {0}?", _gameParty.Party[index].Nickname));
+            Engine.Instance.SetCallback(CB_Choices);
         }
         private void CB_LogicTick()
         {
             _sprites.DoCallbacks();
+
             if (InputManager.IsPressed(Key.A))
             {
                 if (_selectionY == -1)
@@ -593,34 +621,38 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
         }
 
-        private unsafe void RCB_RenderTick(uint* dst, int dstW, int dstH)
+        private void RCB_RenderTick(GL gl)
         {
             // Background
-            Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(222, 50, 60, 255), Renderer.Color(190, 40, 50, 255), Renderer.Color(255, 180, 200, 255));
+            //Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(222, 50, 60, 255), Renderer.Color(190, 40, 50, 255), Renderer.Color(255, 180, 200, 255));
+            GLHelper.ClearColor(gl, ColorF.FromRGB(31, 31, 31));
+            gl.Clear(ClearBufferMask.ColorBufferBit);
 
+            int dstW = (int)GLHelper.CurrentWidth;
+            int dstH = (int)GLHelper.CurrentHeight;
             for (int i = 0; i < _members.Count; i++)
             {
                 int col = i % 2;
                 int row = i / 2;
                 int x = col == 0 ? dstW / 40 : (dstW / 2) + (dstW / 40);
                 int y = row * (dstH / 4) + (dstH / 20);
-                _members[i].Render(dst, dstW, dstH, x, y, col == _selectionX && row == _selectionY);
+                _members[i].Render(new Pos2D(x, y), col == _selectionX && row == _selectionY);
             }
 
             // Back button
             if (_allowBack)
             {
-                Renderer.FillRectangle(dst, dstW, dstH, 0.5f, 0.8f, 0.5f, 0.2f, _selectionY == -1 ? Renderer.Color(96, 48, 48, 255) : Renderer.Color(48, 48, 48, 255));
-                Font.Default.DrawString(dst, dstW, dstH, 0.5f, 0.8f, "Back", Font.DefaultWhite_I);
+                GUIRenderer.Instance.FillRectangle(_selectionY == -1 ? ColorF.FromRGB(96, 48, 48) : ColorF.FromRGB(48, 48, 48), new Rect2D(Pos2D.FromRelative(0.5f, 0.8f), Size2D.FromRelative(0.5f, 0.2f)));
+                _backStr.Render(gl, Pos2D.FromRelative(0.5f, 0.8f));
             }
 
-            if (_message != null)
+            if (_message is not null)
             {
-                Renderer.FillRectangle(dst, dstW, dstH, 0, 0.8f, 0.5f, 0.2f, Renderer.Color(200, 200, 200, 255));
-                Font.Default.DrawString(dst, dstW, dstH, 0, 0.8f, _message, Font.DefaultDarkGray_I);
+                GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(200, 200, 200), new Rect2D(Pos2D.FromRelative(0f, 0.8f), Size2D.FromRelative(0.5f, 0.2f)));
+                _message.Render(gl, Pos2D.FromRelative(0f, 0.8f));
             }
 
-            Game.Instance.RenderWindows(dst, dstW, dstH);
+            Window.RenderAll();
         }
     }
 }

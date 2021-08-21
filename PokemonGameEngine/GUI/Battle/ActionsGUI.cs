@@ -5,6 +5,9 @@ using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.GUI.Pkmn;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.Fonts;
+using Silk.NET.OpenGL;
 using System;
 using System.Linq;
 
@@ -27,27 +30,27 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _pkmn = pkmn;
 
             _fightChoices = new TextGUIChoices(0.75f, 0.75f, bottomAlign: true,
-                font: Font.Default, fontColors: Font.DefaultWhite_I, selectedColors: Font.DefaultYellow_O, disabledColors: Font.DefaultDisabled);
-            _fightChoices.Add(new TextGUIChoice("Fight", FightChoice));
+                font: Font.Default, textColors: FontColors.DefaultWhite_I, selectedColors: FontColors.DefaultYellow_O, disabledColors: FontColors.DefaultDisabled);
+            _fightChoices.AddOne("Fight", FightChoice);
             bool enabled = pkmn.CanSwitchOut(); // Cannot switch out or use item if TempLockedMove exists
             Action command = enabled ? PokemonChoice : null;
-            _fightChoices.Add(new TextGUIChoice("Pokémon", command, isEnabled: enabled));
+            _fightChoices.AddOne("Pokémon", command, isEnabled: enabled);
             command = enabled ? BagChoice : null;
-            _fightChoices.Add(new TextGUIChoice("Bag", command, isEnabled: enabled));
+            _fightChoices.AddOne("Bag", command, isEnabled: enabled);
             enabled = pkmn.Battle.BattleType == PBEBattleType.Wild && pkmn.Trainer.ActiveBattlersOrdered.First() == pkmn && pkmn.Trainer.IsFleeValid() is null; // Only first Pokémon can "select" run
             command = enabled ? RunChoice : null;
-            _fightChoices.Add(new TextGUIChoice("Run", command, isEnabled: enabled));
+            _fightChoices.AddOne("Run", command, isEnabled: enabled);
         }
 
-        public unsafe void SetCallbacksForAllChoices()
+        public void SetCallbacksForAllChoices()
         {
-            Game.Instance.SetCallback(CB_All);
-            Game.Instance.SetRCallback(RCB_All);
+            Engine.Instance.SetCallback(CB_All);
+            Engine.Instance.SetRCallback(RCB_All);
         }
-        private unsafe void SetCallbacksForMoves()
+        private void SetCallbacksForMoves()
         {
-            Game.Instance.SetCallback(CB_Moves);
-            Game.Instance.SetRCallback(RCB_Moves);
+            Engine.Instance.SetCallback(CB_Moves);
+            Engine.Instance.SetRCallback(RCB_Moves);
         }
 
         private bool TryUseForcedMove()
@@ -66,54 +69,55 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void CreateMoveChoices()
         {
-            if (_moveChoices is null)
+            if (_moveChoices is not null)
             {
-                PBEBattleMoveset moves = _pkmn.Moves;
-                PBEMove[] usableMoves = _pkmn.GetUsableMoves();
-                _moveChoices = new TextGUIChoices(0.75f, 0.75f, bottomAlign: true, backCommand: SetCallbacksForAllChoices,
-                    font: Font.Default, fontColors: Font.DefaultWhite_I, selectedColors: Font.DefaultYellow_O, disabledColors: Font.DefaultDisabled);
-                for (int i = 0; i < PkmnConstants.NumMoves; i++)
-                {
-                    PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[i];
-                    PBEMove m = slot.Move;
-                    string text = PBEDataProvider.Instance.GetMoveName(m).English;
-                    bool enabled = Array.IndexOf(usableMoves, m) != -1;
-                    Action command = enabled ? () => SelectMoveForTurn(m) : null;
-                    _moveChoices.Add(new TextGUIChoice(text, command, isEnabled: enabled));
-                }
+                return;
+            }
+            PBEBattleMoveset moves = _pkmn.Moves;
+            PBEMove[] usableMoves = _pkmn.GetUsableMoves();
+            _moveChoices = new TextGUIChoices(0.75f, 0.75f, bottomAlign: true, backCommand: SetCallbacksForAllChoices,
+                font: Font.Default, textColors: FontColors.DefaultWhite_I, selectedColors: FontColors.DefaultYellow_O, disabledColors: FontColors.DefaultDisabled);
+            for (int i = 0; i < PkmnConstants.NumMoves; i++)
+            {
+                PBEBattleMoveset.PBEBattleMovesetSlot slot = moves[i];
+                PBEMove m = slot.Move;
+                string text = PBEDataProvider.Instance.GetMoveName(m).English;
+                bool enabled = Array.IndexOf(usableMoves, m) != -1;
+                Action command = enabled ? () => SelectMoveForTurn(m) : null;
+                _moveChoices.AddOne(text, command, isEnabled: enabled);
             }
         }
 
-        private unsafe void FightChoice()
+        private void FightChoice()
         {
             // Check if there's a move we must use
             if (TryUseForcedMove())
             {
-                BattleGUI.Instance.ActionsLoop(false);
+                BattleGUI.Instance.ActionsLoop();
                 return;
             }
 
             CreateMoveChoices();
             SetCallbacksForMoves();
         }
-        private unsafe void PokemonChoice()
+        private void PokemonChoice()
         {
-            _fadeTransition = new FadeToColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeToParty);
-            Game.Instance.SetRCallback(RCB_FadingParty);
+            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeToParty);
+            Engine.Instance.SetRCallback(RCB_FadingParty);
         }
         private void BagChoice()
         {
             // Temporarily auto select
             _pkmn.TurnAction = new PBETurnAction(_pkmn, PBEItem.DuskBall);
-            BattleGUI.Instance.ActionsLoop(false);
+            BattleGUI.Instance.ActionsLoop();
         }
         private void RunChoice()
         {
             BattleGUI.Instance.Flee();
         }
 
-        private unsafe void SelectMoveForTurn(PBEMove move)
+        private void SelectMoveForTurn(PBEMove move)
         {
             PBEMoveTarget possibleTargets = _pkmn.GetMoveTargets(move);
             if (_pkmn.Battle.BattleFormat == PBEBattleFormat.Single || _pkmn.Battle.BattleFormat == PBEBattleFormat.Rotation)
@@ -136,41 +140,43 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     default: throw new Exception();
                 }
                 _pkmn.TurnAction = new PBETurnAction(_pkmn, move, targets);
-                BattleGUI.Instance.ActionsLoop(false);
+                BattleGUI.Instance.ActionsLoop();
             }
             else // Double / Triple
             {
                 void TargetSelected()
                 {
-                    BattleGUI.Instance.ActionsLoop(false);
+                    BattleGUI.Instance.ActionsLoop();
+                    _targetsGUI.Delete(Game.OpenGL);
                     _targetsGUI = null;
-                    // no need to change callbacks since this'll get disposed in actionsloop
+                    // no need to change callbacks since this ActionsGUI will get disposed in ActionsLoop
                 }
                 void TargetCancelled()
                 {
+                    _targetsGUI.Delete(Game.OpenGL);
                     _targetsGUI = null;
                     SetCallbacksForMoves();
                 }
                 _targetsGUI = new TargetsGUI(_pkmn, possibleTargets, move, BattleGUI.Instance.SpritedParties, TargetSelected, TargetCancelled);
-                Game.Instance.SetCallback(CB_Targets);
-                Game.Instance.SetRCallback(RCB_Targets);
+                Engine.Instance.SetCallback(CB_Targets);
+                Engine.Instance.SetRCallback(RCB_Targets);
             }
         }
 
-        private unsafe void OnPartyClosed()
+        private void OnPartyClosed()
         {
             OverworldGUI.ProcessDayTint(true); // Catch up time
-            _fadeTransition = new FadeFromColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeFromParty);
-            short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];
+            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeFromParty);
+            short result = Engine.Instance.Save.Vars[Var.SpecialVar_Result];
             if (result == -1) // No selection, display actions
             {
-                Game.Instance.SetRCallback(RCB_FadingParty);
+                Engine.Instance.SetRCallback(RCB_FadingParty);
             }
             else
             {
                 BattleGUI.Instance.ClearMessage();
-                Game.Instance.SetRCallback(RCB_FadingPartyNoChoices);
+                Engine.Instance.SetRCallback(RCB_FadingPartyNoChoices);
             }
         }
 
@@ -200,7 +206,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];
+                short result = Engine.Instance.Save.Vars[Var.SpecialVar_Result];
                 BattleGUI.Instance.SetMessageWindowVisibility(false);
                 if (result == -1) // No selection, display actions
                 {
@@ -211,7 +217,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     PBEBattlePokemon p = _party.BattleParty[result];
                     _pkmn.TurnAction = new PBETurnAction(_pkmn, p);
                     BattleGUI.Instance.StandBy.Add(p);
-                    BattleGUI.Instance.ActionsLoop(false);
+                    BattleGUI.Instance.ActionsLoop();
                 }
             }
         }
@@ -221,30 +227,30 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _fightChoices.HandleInputs();
         }
 
-        private unsafe void RCB_Moves(uint* dst, int dstW, int dstH)
+        private void RCB_Moves(GL gl)
         {
-            BattleGUI.Instance.RCB_RenderTick(dst, dstW, dstH);
-            _moveChoices.Render(dst, dstW, dstH);
+            BattleGUI.Instance.RCB_RenderTick(gl);
+            _moveChoices.Render(gl);
         }
-        private unsafe void RCB_Targets(uint* dst, int dstW, int dstH)
+        private void RCB_Targets(GL gl)
         {
-            BattleGUI.Instance.RCB_RenderTick(dst, dstW, dstH);
-            _targetsGUI.RenderTick(dst, dstW, dstH);
+            BattleGUI.Instance.RCB_RenderTick(gl);
+            _targetsGUI.RenderTick(gl);
         }
-        private unsafe void RCB_FadingParty(uint* dst, int dstW, int dstH)
+        private void RCB_FadingParty(GL gl)
         {
-            RCB_All(dst, dstW, dstH);
-            _fadeTransition.Render(dst, dstW, dstH);
+            RCB_All(gl);
+            _fadeTransition.Render(gl);
         }
-        private unsafe void RCB_FadingPartyNoChoices(uint* dst, int dstW, int dstH)
+        private void RCB_FadingPartyNoChoices(GL gl)
         {
-            BattleGUI.Instance.RCB_RenderTick(dst, dstW, dstH);
-            _fadeTransition.Render(dst, dstW, dstH);
+            BattleGUI.Instance.RCB_RenderTick(gl);
+            _fadeTransition.Render(gl);
         }
-        private unsafe void RCB_All(uint* dst, int dstW, int dstH)
+        private void RCB_All(GL gl)
         {
-            BattleGUI.Instance.RCB_RenderTick(dst, dstW, dstH);
-            _fightChoices.Render(dst, dstW, dstH);
+            BattleGUI.Instance.RCB_RenderTick(gl);
+            _fightChoices.Render(gl);
         }
 
         public void Dispose()

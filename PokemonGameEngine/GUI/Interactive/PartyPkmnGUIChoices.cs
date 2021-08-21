@@ -1,8 +1,10 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
+﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.Images;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Silk.NET.OpenGL;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Interactive
@@ -14,14 +16,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         private readonly PartyPokemon _pkmn;
         private readonly Image _mini;
 
-        private Image _drawn;
+        private WriteableImage _drawn;
         public override bool IsSelected
         {
             get => base.IsSelected;
             set
             {
                 base.IsSelected = value;
-                if (_drawn != null) // initial add means _drawn is null
+                if (_drawn is not null) // initial add means _drawn is null
                 {
                     Draw();
                 }
@@ -32,52 +34,55 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             : base(command, isEnabled: isEnabled)
         {
             _pkmn = pkmn;
-            _mini = PokemonImageUtils.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.IsEgg);
+            _mini = PokemonImageLoader.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.IsEgg);
 
             IsDirty = true;
         }
 
-        public void UpdateSize(int width, int height)
+        public void UpdateSize(Size2D size)
         {
-            _drawn = new Image(width, height);
+            _drawn = new WriteableImage(size);
             Draw();
         }
-        public unsafe void Draw()
+        public void Draw()
         {
-            _drawn.Draw(Draw);
-        }
-        private unsafe void Draw(uint* dst, int dstW, int dstH)
-        {
-            uint backColor = IsSelected ? Renderer.Color(200, 200, 200, 255) : Renderer.Color(255, 255, 255, 255);
-            Renderer.FillRoundedRectangle(dst, dstW, dstH, 0, 0, dstW - 1, dstH - 1, dstH / 2, backColor);
+            GL gl = Game.OpenGL;
+            _drawn.PushFrameBuffer(gl);
+            ColorF backColor = IsSelected ? ColorF.FromRGB(200, 200, 200) : Colors.White;
+            GUIRenderer.Instance.FillRectangle(backColor, new Rect2D(new Pos2D(0, 0), Size2D.FromRelative(1f, 1f))); // TODO: Rounded of size (dstH / 2)
 
-            _mini.DrawOn(dst, dstW, dstH, 0f, -0.15f);
+            _mini.Render(Pos2D.FromRelative(0f, -0.15f));
 
             Font fontDefault = Font.Default;
-            uint[] defaultDark = Font.DefaultDarkGray_I;
-
-            fontDefault.DrawString(dst, dstW, dstH, 0.2f, 0.01f, _pkmn.Nickname, defaultDark);
+            ColorF[] defaultDark = FontColors.DefaultDarkGray_I;
+            GUIString.CreateAndRenderOneTimeString(gl, _pkmn.Nickname, fontDefault, defaultDark, Pos2D.FromRelative(0.2f, 0.01f));
 
             if (_pkmn.IsEgg)
             {
-                return; // Eggs don't show the rest
+                goto bottom; // Eggs don't show the rest
             }
 
             Font fontPartyNumbers = Font.PartyNumbers;
-            fontPartyNumbers.DrawString(dst, dstW, dstH, 0.2f, 0.65f, _pkmn.HP + "/" + _pkmn.MaxHP, defaultDark);
-            fontPartyNumbers.DrawString(dst, dstW, dstH, 0.7f, 0.65f, "[LV] " + _pkmn.Level, defaultDark);
-            PBEGender gender = _pkmn.Gender;
-            if (gender != PBEGender.Genderless)
-            {
-                fontDefault.DrawString(dst, dstW, dstH, 0.7f, 0.01f, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultBlue_O : Font.DefaultRed_O);
-            }
+            GUIString.CreateAndRenderOneTimeString(gl, _pkmn.HP + "/" + _pkmn.MaxHP, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.2f, 0.65f));
+            GUIString.CreateAndRenderOneTimeString(gl, "[LV] " + _pkmn.Level, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.7f, 0.65f));
+            GUIString.CreateAndRenderOneTimeGenderString(gl, _pkmn.Gender, fontDefault, Pos2D.FromRelative(0.7f, 0.01f));
 
-            Renderer.FillRectangle_Points(dst, dstW, dstH, 0.2f, 0.58f, 0.7f, 0.64f, Renderer.Color(99, 255, 99, 255));
+            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(99, 255, 99), new Rect2D(Pos2D.FromRelative(0.2f, 0.58f), Pos2D.FromRelative(0.7f, 0.64f)));
+        bottom:
+            GLHelper.PopFrameBuffer(gl);
         }
 
-        public unsafe void Render(uint* dst, int dstW, int dstH, int x, int y)
+        public void Render(Pos2D pos)
         {
-            _drawn.DrawOn(dst, dstW, dstH, x, y);
+            _drawn.Render(pos);
+        }
+
+        public override void Dispose()
+        {
+            GL gl = Game.OpenGL;
+            Command = null;
+            _drawn?.DeductReference(gl);
+            _mini.DeductReference(gl);
         }
     }
 
@@ -127,8 +132,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             _dirtySizes = true;
         }
 
-        public override unsafe void Render(uint* dst, int dstW, int dstH)
+        public override void Render(GL gl)
         {
+            uint dstW = GLHelper.CurrentWidth;
+            uint dstH = GLHelper.CurrentHeight;
             int x1 = (int)(X * dstW);
             float fy1 = Y * dstH;
 
@@ -136,13 +143,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             if (_dirtySizes)
             {
                 _dirtySizes = false;
-                int width = (int)((_x2 - X) * dstW);
-                int height = (int)fHeight;
+                var size = new Size2D((uint)((_x2 - X) * dstW), (uint)fHeight);
                 foreach (PartyPkmnGUIChoice c in _choices)
                 {
                     if (c.IsDirty)
                     {
-                        c.UpdateSize(width, height);
+                        c.UpdateSize(size);
                     }
                 }
             }
@@ -152,7 +158,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             {
                 PartyPkmnGUIChoice c = _choices[i];
                 int y = (int)(fy1 + (fHeight * i) + (space * i));
-                c.Render(dst, dstW, dstH, x1, y);
+                c.Render(new Pos2D(x1, y));
             }
         }
     }

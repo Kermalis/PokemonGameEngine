@@ -1,20 +1,26 @@
 ﻿using Kermalis.PokemonGameEngine.Input;
+using Silk.NET.OpenGL;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.GUI.Interactive
 {
-    internal abstract class GUIChoice
+    internal abstract class GUIChoice : IDisposable
     {
         public Action Command;
         public bool IsEnabled;
         public virtual bool IsSelected { get; set; }
 
-        public GUIChoice(Action command, bool isEnabled = true)
+        public GUIChoice(Action command, bool isEnabled)
         {
             Command = command;
             IsEnabled = isEnabled;
+        }
+
+        public virtual void Dispose()
+        {
+            Command = null;
         }
     }
 
@@ -83,7 +89,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             }
         }
 
-        public abstract unsafe void Render(uint* dst, int dstW, int dstH);
+        public abstract void Render(GL gl);
 
         public virtual void Add(T c)
         {
@@ -121,7 +127,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         {
             foreach (T c in _choices)
             {
-                c.Command = null;
+                c.Dispose();
             }
         }
     }
