@@ -1,11 +1,11 @@
 ﻿using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Kermalis.PokemonGameEngine.World
+namespace Kermalis.PokemonGameEngine.Render.World
 {
     internal sealed class Blockset
     {
@@ -24,19 +24,19 @@ namespace Kermalis.PokemonGameEngine.World
                     _tilesetTile = Tileset.LoadOrGet(r.ReadInt32()).Tiles[r.ReadInt32()];
                 }
 
-                public unsafe void Render(uint* dst, int dstW, int dstH, int x, int y)
+                public void Render(Pos2D pos)
                 {
-                    fixed (uint* src = _tilesetTile.AnimBitmap ?? _tilesetTile.Bitmap)
+                    uint tex = _tilesetTile.AnimBitmap;
+                    if (tex == 0)
                     {
-                        PixelSupplier pixSupply = Renderer.MakeBitmapSupplier(src, Overworld.Tile_NumPixelsX);
-                        Renderer.DrawBitmap(dst, dstW, dstH, x, y, pixSupply, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: _xFlip, yFlip: _yFlip);
+                        tex = _tilesetTile.Bitmap;
                     }
+                    GUIRenderer.Instance.RenderTexture(tex, new Rect2D(pos, new Size2D(Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY)), xFlip: _xFlip, yFlip: _yFlip);
                 }
             }
 
-#pragma warning disable IDE0052 // Remove unread private members
-            private readonly Blockset _parent; // Keeps Blockset reference alive
-#pragma warning restore IDE0052 // Remove unread private members
+            /// <summary>Unused, but needed to keep the Blockset reference alive (since Blocksets aren't stored anywhere, while Blocks are stored by the MapLayout blocks)</summary>
+            public readonly Blockset Parent;
             public readonly BlocksetBlockBehavior Behavior;
             private readonly Tile[][][][] _tiles; // Elevation,Y,X,Sublayers
 
@@ -76,10 +76,10 @@ namespace Kermalis.PokemonGameEngine.World
                     }
                     _tiles[e] = arrE;
                 }
-                _parent = parent;
+                Parent = parent;
             }
 
-            public unsafe void Render(uint* dst, int dstW, int dstH, byte elevation, int x, int y)
+            public void Render(byte elevation, int x, int y)
             {
                 Tile[][][] arrE = _tiles[elevation];
                 for (int by = 0; by < Overworld.Block_NumTilesY; by++)
@@ -92,7 +92,7 @@ namespace Kermalis.PokemonGameEngine.World
                         int tx = x + (bx * Overworld.Tile_NumPixelsX);
                         for (int t = 0; t < subLayers.Length; t++)
                         {
-                            subLayers[t].Render(dst, dstW, dstH, tx, ty);
+                            subLayers[t].Render(new Pos2D(tx, ty));
                         }
                     }
                 }

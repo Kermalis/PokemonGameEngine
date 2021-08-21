@@ -2,13 +2,6 @@
 
 namespace Kermalis.PokemonGameEngine.World
 {
-    internal interface IXYElevation
-    {
-        int X { get; }
-        int Y { get; }
-        byte Elevation { get; }
-    }
-
     internal static class WorldUtils
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -28,11 +21,6 @@ namespace Kermalis.PokemonGameEngine.World
                 }
             }
             return 0;
-        }
-
-        public static bool IsSamePosition(this IXYElevation this1, IXYElevation other)
-        {
-            return this1.X == other.X && this1.Y == other.Y && this1.Elevation == other.Elevation;
         }
     }
 }

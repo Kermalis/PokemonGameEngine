@@ -4,6 +4,7 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
+using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
@@ -293,7 +294,7 @@ namespace Kermalis.PokemonGameEngine.World
         public static bool CheckForWildBattle(bool ignoreAbilityOrItemOrBike)
         {
             PlayerObj player = PlayerObj.Player;
-            Map.Layout.Block block = player.GetBlock();
+            MapLayout.Block block = player.GetBlock();
             BlocksetBlockBehavior blockBehavior = block.BlocksetBlock.Behavior;
             if (!TryGetEncounterType(blockBehavior, out EncounterType t))
             {
@@ -310,8 +311,8 @@ namespace Kermalis.PokemonGameEngine.World
             {
                 return false; // Return false if all of the encounters are disabled
             }
-            PartyPokemon leadPkmn = Game.Instance.Save.PlayerParty[0];
-            MapWeather weather = map.MapDetails.Weather;
+            PartyPokemon leadPkmn = Engine.Instance.Save.PlayerParty[0];
+            MapWeather weather = map.Details.Weather;
             int chance = tbl.ChanceOfPhenomenon;
             // This is an option because some encounters (like rock smash) do not use the ability to modify the rate
             if (!ignoreAbilityOrItemOrBike)
@@ -344,22 +345,22 @@ namespace Kermalis.PokemonGameEngine.World
                     return false; // Return false if an ability cancels the encounter
                 }
             }
-            Game.Instance.CreateWildBattle(weather, blockBehavior, wildParty, format, GetWildBattleMusic(wildParty));
+            Engine.Instance.CreateWildBattle(weather, blockBehavior, wildParty, format, GetWildBattleMusic(wildParty));
             return true;
         }
 
         public static void CreateStaticWildBattle(PBESpecies species, PBEForm form, byte level)
         {
             PlayerObj player = PlayerObj.Player;
-            Map.Layout.Block block = player.GetBlock();
-            PartyPokemon leadPkmn = Game.Instance.Save.PlayerParty[0];
-            MapWeather weather = player.Map.MapDetails.Weather;
+            MapLayout.Block block = player.GetBlock();
+            PartyPokemon leadPkmn = Engine.Instance.Save.PlayerParty[0];
+            MapWeather weather = player.Map.Details.Weather;
             var bs = BaseStats.Get(species, form, true);
             PBEGender gender = GetAffectedGender(leadPkmn.Gender, leadPkmn.Ability, bs.GenderRatio);
             PBENature nature = GetAffectedNature(leadPkmn.Ability, leadPkmn.Nature);
             var wildPkmn = PartyPokemon.CreateWildMon(species, form, level, gender, nature, bs);
             var wildParty = new Party { wildPkmn };
-            Game.Instance.CreateWildBattle(weather, block.BlocksetBlock.Behavior, wildParty, PBEBattleFormat.Single, GetWildBattleMusic(wildParty));
+            Engine.Instance.CreateWildBattle(weather, block.BlocksetBlock.Behavior, wildParty, PBEBattleFormat.Single, GetWildBattleMusic(wildParty));
         }
     }
 }

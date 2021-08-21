@@ -4,6 +4,7 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.World;
+using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 
@@ -46,15 +47,19 @@ namespace Kermalis.PokemonGameEngine.Trainer
         {
             var ret = new Party();
             PartyPokemon p;
+            //PartyPokemon p2;
             if (temp)
             {
                 p = PartyPokemon.CreateWildMon(PBESpecies.Giratina, PBEForm.Giratina_Origin, 20, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Giratina, PBEForm.Giratina_Origin, true));
+                //p2 = PartyPokemon.CreateWildMon(PBESpecies.Shaymin, PBEForm.Shaymin_Sky, 20, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Shaymin, PBEForm.Shaymin_Sky, true));
             }
             else
             {
                 p = PartyPokemon.CreateWildMon(PBESpecies.Arceus, PBEForm.Arceus_Dragon, 50, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Arceus, PBEForm.Arceus_Dragon, true));
+                //p2 = PartyPokemon.CreateWildMon(PBESpecies.Arceus, PBEForm.Arceus_Dark, 50, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Arceus, PBEForm.Arceus_Dark, true));
             }
             ret.Add(p);
+            //ret.Add(p2);
             return ret;
         }
 
@@ -62,8 +67,8 @@ namespace Kermalis.PokemonGameEngine.Trainer
         {
             PlayerObj player = PlayerObj.Player;
             Map map = player.Map;
-            Map.Layout.Block block = player.GetBlock();
-            MapWeather weather = map.MapDetails.Weather;
+            MapLayout.Block block = player.GetBlock();
+            MapWeather weather = map.Details.Weather;
             BlocksetBlockBehavior behavior = block.BlocksetBlock.Behavior;
 
             TrainerClass tc = trainer == Flag.Trainer1 ? TrainerClass.PkmnTrainer : TrainerClass.Leader; // TODO
@@ -73,9 +78,9 @@ namespace Kermalis.PokemonGameEngine.Trainer
             PBEBattleFormat format = PBEBattleFormat.Single; // TODO
 
             var enemyInfo = new PBETrainerInfo(enemyParty, string.Format("{0} {1}", GetTrainerClassName(tc), name), false, inventory: inv);
-            var parties = new Party[] { Game.Instance.Save.PlayerParty, enemyParty };
+            var parties = new Party[] { Engine.Instance.Save.PlayerParty, enemyParty };
             Song song = GetTrainerClassSong(tc);
-            Game.Instance.CreateTrainerBattle_1v1(weather, behavior, parties, enemyInfo, format, song, tc, defeatText);
+            Engine.Instance.CreateTrainerBattle_1v1(weather, behavior, parties, enemyInfo, format, song, tc, defeatText);
         }
     }
 }

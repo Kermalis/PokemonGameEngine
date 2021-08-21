@@ -32,6 +32,7 @@ namespace Kermalis.PokemonGameEngine.Script
             var obj = Obj.GetObj(id);
             Obj.LoadedObjs.Remove(obj);
             obj.Map.Objs.Remove(obj);
+            obj.Dispose();
         }
         private void AwaitObjMovementCommand()
         {
@@ -70,7 +71,7 @@ namespace Kermalis.PokemonGameEngine.Script
             int x = _reader.ReadInt32();
             int y = _reader.ReadInt32();
             byte elevation = (byte)ReadVarOrValue();
-            OverworldGUI.Instance.TempWarp(new Warp(mapId, x, y, elevation));
+            OverworldGUI.Instance.TempWarp(new Warp(mapId, new WorldPos(x, y, elevation)));
         }
 
         private void SetLock(bool locked)
