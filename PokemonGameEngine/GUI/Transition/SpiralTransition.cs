@@ -1,5 +1,7 @@
-﻿using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.UI;
+﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Silk.NET.OpenGL;
 using System;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
@@ -19,7 +21,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             _cur = new TimeSpan();
         }
 
-        private unsafe void SpiralTransitionLogic(uint* dst, int dstW, int dstH, int num)
+        private void SpiralTransitionLogic(uint dstW, uint dstH, int num)
         {
             int counterX = 0;
             int counterY = 0;
@@ -28,12 +30,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             bool doX = true;
             bool goBackwards = false;
 
-            int boxWidth = dstW / NumBoxes;
-            int boxHeight = dstH / NumBoxes;
+            uint boxWidth = dstW / NumBoxes;
+            uint boxHeight = dstH / NumBoxes;
             for (int i = 0; i <= num; i++)
             {
                 // Draw
-                Renderer.FillRectangle(dst, dstW, dstH, counterX * boxWidth, counterY * boxHeight, boxWidth, boxHeight, Renderer.Color(0, 0, 0, 255));
+                GUIRenderer.Instance.FillRectangle(Colors.Black, new Rect2D(new Pos2D(counterX * (int)boxWidth, counterY * (int)boxHeight), new Size2D(boxWidth, boxHeight)));
 
                 // If it is done (we want to draw the final box before we say this is done)
                 if (doX
@@ -108,14 +110,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             }
         }
 
-        public unsafe override void Render(uint* dst, int dstW, int dstH)
+        public override void Render(GL gl)
         {
             if (!IsDone)
             {
-                _cur += Program.RenderTimeSinceLastFrame;
+                _cur += Game.RenderTimeSinceLastFrame;
                 _counter = (int)(_cur.TotalMilliseconds / MillisecondsPerBox);
             }
-            SpiralTransitionLogic(dst, dstW, dstH, _counter);
+            SpiralTransitionLogic(GLHelper.CurrentWidth, GLHelper.CurrentHeight, _counter);
             if (!IsDone)
             {
                 _counter++;
