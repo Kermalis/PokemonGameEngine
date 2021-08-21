@@ -105,7 +105,7 @@ namespace Kermalis.MapEditor.UI
                         if (curX < Overworld.Block_NumTilesX)
                         {
                             Blockset.Block.Tile st = arrY[x];
-                            if (st.TilesetTile != null)
+                            if (st.TilesetTile is not null)
                             {
                                 Set(_block.Tiles[_eLayerNum][curY][curX], st);
                             }
@@ -224,7 +224,7 @@ namespace Kermalis.MapEditor.UI
                                 if (x < width && y < height)
                                 {
                                     Blockset.Block.Tile got = SubLayerModel.GetTile(_block, _eLayerNum, _subLayerNum, startX + x, startY + y);
-                                    if (got != null)
+                                    if (got is not null)
                                     {
                                         if (!got.Equals(t))
                                         {
@@ -234,7 +234,7 @@ namespace Kermalis.MapEditor.UI
                                         continue;
                                     }
                                 }
-                                if (t.TilesetTile != null)
+                                if (t.TilesetTile is not null)
                                 {
                                     changed = true;
                                 }

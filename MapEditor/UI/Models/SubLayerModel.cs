@@ -62,7 +62,7 @@ namespace Kermalis.MapEditor.UI.Models
                     {
                         int px = x * Overworld.Tile_NumPixelsX;
                         Blockset.Block.Tile t = GetTile(block, eLayerNum, subLayerNum, x, y);
-                        if (t != null)
+                        if (t is not null)
                         {
                             Renderer.TransparencyGrid(dst, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, px, py, Overworld.Tile_NumPixelsX / 2, Overworld.Tile_NumPixelsY / 2, Overworld.Block_NumTilesX, Overworld.Block_NumTilesY);
                             t.Draw(dst, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, px, py);

@@ -34,7 +34,7 @@ namespace Kermalis.MapEditor.Core
                 MaxLevel = j[nameof(MaxLevel)].Value<byte>();
                 Species = j[nameof(Species)].ReadEnumValue<PBESpecies>();
                 string strForm = j[nameof(Form)].Value<string>();
-                if (strForm == null)
+                if (strForm is null)
                 {
                     Form = 0;
                 }

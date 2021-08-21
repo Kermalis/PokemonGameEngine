@@ -233,7 +233,7 @@ namespace Kermalis.MapEditor.UI
                     for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
                         Blockset.Block.Tile t = arrY[x];
-                        if (t.TilesetTile != null)
+                        if (t.TilesetTile is not null)
                         {
                             changed = true;
                             if (xFlipChanged)
@@ -286,7 +286,7 @@ namespace Kermalis.MapEditor.UI
                 for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                 {
                     Blockset.Block.Tile t = arrY[x];
-                    if (t.TilesetTile != null)
+                    if (t.TilesetTile is not null)
                     {
                         bool txf = t.XFlip;
                         bool tyf = t.YFlip;
@@ -318,7 +318,7 @@ namespace Kermalis.MapEditor.UI
         }
         private void TilesetImage_SelectionCompleted(object sender, Tileset.Tile[][] e)
         {
-            if (e != null)
+            if (e is not null)
             {
                 TileLayerImage tli = _tileLayerImage;
                 Blockset.Block.Tile[][] c = tli.Clipboard;
@@ -356,7 +356,7 @@ namespace Kermalis.MapEditor.UI
         private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
         {
             Blockset.Block block = e[0][0];
-            if (block != null && block != _selectedBlock)
+            if (block is not null && block != _selectedBlock)
             {
                 _selectedBlock = block;
                 _ignoreChange = true;
@@ -391,7 +391,7 @@ namespace Kermalis.MapEditor.UI
                     for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                     {
                         Blockset.Block.Tile t = arrY[x];
-                        if (t.TilesetTile != null)
+                        if (t.TilesetTile is not null)
                         {
                             int tx = x * Overworld.Tile_NumPixelsX;
                             Util.Renderer.TransparencyGrid(dst, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, tx, ty, Overworld.Tile_NumPixelsX / 2, Overworld.Tile_NumPixelsY / 2, Overworld.Block_NumTilesX, Overworld.Block_NumTilesY);
@@ -487,7 +487,7 @@ namespace Kermalis.MapEditor.UI
         }
         private void RemoveBlocksetEvents()
         {
-            if (_blockset != null)
+            if (_blockset is not null)
             {
                 _blockset.OnChanged -= Blockset_OnChanged;
             }

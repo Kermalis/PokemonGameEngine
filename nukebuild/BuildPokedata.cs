@@ -11,7 +11,7 @@ internal static class PokedataBuilderHelper
     public static PBEForm FormValue(this JToken j)
     {
         string strForm = j.Value<string>();
-        if (strForm == null)
+        if (strForm is null)
         {
             return 0;
         }

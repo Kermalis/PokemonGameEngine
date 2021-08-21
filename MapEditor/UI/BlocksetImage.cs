@@ -57,7 +57,7 @@ namespace Kermalis.MapEditor.UI
 
         public override void Render(DrawingContext context)
         {
-            if (_blockset != null)
+            if (_blockset is not null)
             {
                 IBitmap source = _blockset.Bitmap;
                 var viewPort = new Rect(Bounds.Size);
@@ -73,7 +73,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (_blockset != null)
+            if (_blockset is not null)
             {
                 return _blockset.Bitmap.Size * _scale;
             }
@@ -81,7 +81,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (_blockset != null)
+            if (_blockset is not null)
             {
                 return _blockset.Bitmap.Size * _scale;
             }
@@ -90,7 +90,7 @@ namespace Kermalis.MapEditor.UI
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
-            if (_blockset != null)
+            if (_blockset is not null)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
@@ -107,7 +107,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerMoved(PointerEventArgs e)
         {
-            if (_blockset != null && _isSelecting)
+            if (_blockset is not null && _isSelecting)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
@@ -123,7 +123,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
-            if (_blockset != null && _isSelecting)
+            if (_blockset is not null && _isSelecting)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
@@ -152,7 +152,7 @@ namespace Kermalis.MapEditor.UI
         }
         private void FireSelectionCompleted()
         {
-            if (SelectionCompleted != null)
+            if (SelectionCompleted is not null)
             {
                 var blocks = new Blockset.Block[_selection.Height][];
                 for (int y = 0; y < _selection.Height; y++)
@@ -171,7 +171,7 @@ namespace Kermalis.MapEditor.UI
 
         private void RemoveBlocksetEvents()
         {
-            if (_blockset != null)
+            if (_blockset is not null)
             {
                 _blockset.OnAdded -= Blockset_OnAddedRemoved;
                 _blockset.OnRemoved -= Blockset_OnAddedRemoved;

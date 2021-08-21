@@ -476,7 +476,7 @@ namespace Kermalis.MapEditor.Core
                             if (dx >= 0 && dx < width)
                             {
                                 Blockset.Block b = inArrY[x];
-                                if (b != null)
+                                if (b is not null)
                                 {
                                     Block outB = outArrY[dx];
                                     if (outB.BlocksetBlock != b)
@@ -522,7 +522,7 @@ namespace Kermalis.MapEditor.Core
                 int bmpWidth = (borderBlocks ? BorderWidth : Width) * Overworld.Block_NumPixelsX;
                 int bmpHeight = (borderBlocks ? BorderHeight : Height) * Overworld.Block_NumPixelsY;
                 bool createNew;
-                if (bmp == null)
+                if (bmp is null)
                 {
                     createNew = true;
                 }
@@ -690,7 +690,7 @@ namespace Kermalis.MapEditor.Core
         internal static Map LoadOrGet(int id)
         {
             string name = Ids[id];
-            if (name == null)
+            if (name is null)
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
             }

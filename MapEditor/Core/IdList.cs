@@ -20,7 +20,7 @@ namespace Kermalis.MapEditor.Core
                 using (StreamReader s = File.OpenText(path))
                 {
                     string key;
-                    while ((key = s.ReadLine()) != null)
+                    while ((key = s.ReadLine()) is not null)
                     {
                         if (!string.IsNullOrWhiteSpace(key))
                         {
