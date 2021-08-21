@@ -1,6 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
 
@@ -43,6 +43,18 @@ namespace Kermalis.PokemonGameEngine.World
             }
         }
 
+        public ushort GetCombinedChance()
+        {
+            ushort sum = 0;
+            for (int i = 0; i < Encounters.Length; i++)
+            {
+                sum += Encounters[i].Chance;
+            }
+            return sum;
+        }
+
+        #region Cache
+
         private const string EncounterTablePath = "Encounter.";
         private static readonly IdList _ids = new(EncounterTablePath + "EncounterTableIds.txt");
         private static readonly Dictionary<int, WeakReference<EncounterTable>> _loadedEncounterTables = new();
@@ -67,15 +79,7 @@ namespace Kermalis.PokemonGameEngine.World
             return e;
         }
 
-        public ushort GetCombinedChance()
-        {
-            ushort sum = 0;
-            for (int i = 0; i < Encounters.Length; i++)
-            {
-                sum += Encounters[i].Chance;
-            }
-            return sum;
-        }
+        #endregion
     }
 
     internal sealed class EncounterGroups

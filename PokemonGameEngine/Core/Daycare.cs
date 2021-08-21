@@ -3,7 +3,6 @@ using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
-using Kermalis.PokemonGameEngine.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +50,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         public void GiveEgg()
         {
-            if (Game.Instance.Save.PlayerParty.Add(new PartyPokemon(_offspring)) == -1)
+            if (Engine.Instance.Save.PlayerParty.Add(new PartyPokemon(_offspring)) == -1)
             {
                 throw new Exception();
             }
@@ -64,7 +63,7 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public DaycareState GetDaycareState()
         {
-            if (_offspring != null)
+            if (_offspring is not null)
             {
                 return DaycareState.EggWaiting;
             }
@@ -150,7 +149,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         private static byte GetCompatibility_OvalCharm(BoxPokemon p0, BoxPokemon p1)
         {
-            bool hasCharm = Game.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][ItemType.OvalCharm] != null;
+            bool hasCharm = Engine.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][ItemType.OvalCharm] is not null;
             byte compat = GetCompatibility(p0, p1);
             if (hasCharm)
             {
@@ -435,7 +434,7 @@ namespace Kermalis.PokemonGameEngine.Core
         // Egg hatch
         private static byte GetEggCyclesToSubtract()
         {
-            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
+            foreach (PartyPokemon p in Engine.Instance.Save.PlayerParty)
             {
                 if (p.IsEgg)
                 {
@@ -459,7 +458,7 @@ namespace Kermalis.PokemonGameEngine.Core
 
             _eggCycleCounter = 0;
             byte toRemove = GetEggCyclesToSubtract();
-            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
+            foreach (PartyPokemon p in Engine.Instance.Save.PlayerParty)
             {
                 if (p.IsEgg && p.Friendship > 0)
                 {

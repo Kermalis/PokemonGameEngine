@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.World;
-using System;
 
 namespace Kermalis.PokemonGameEngine.Sound
 {
@@ -68,7 +67,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                     _overworldBGM.Channel = new SoundChannel(_overworldBGM.Wav);
                     SoundMixer.AddChannel(_overworldBGM.Channel);
                 }
-                _tasks.Remove(task);
+                _tasks.RemoveAndDispose(task);
             }
         }
 
@@ -85,7 +84,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                     _overworldBGM.Channel.BeginFade(1_000, 0f, 1f);
                     _overworldBGM.Channel.IsPaused = false;
                 }
-                _tasks.Remove(task);
+                _tasks.RemoveAndDispose(task);
             }
         }
     }

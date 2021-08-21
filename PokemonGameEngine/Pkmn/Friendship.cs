@@ -118,13 +118,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public static void UpdateFriendshipStep()
         {
-            short val = Game.Instance.Save.Vars[Var.Friendship_Step_Counter];
+            short val = Engine.Instance.Save.Vars[Var.Friendship_Step_Counter];
             val++;
             val %= 128;
-            Game.Instance.Save.Vars[Var.Friendship_Step_Counter] = val;
+            Engine.Instance.Save.Vars[Var.Friendship_Step_Counter] = val;
             if (val == 0)
             {
-                foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
+                foreach (PartyPokemon p in Engine.Instance.Save.PlayerParty)
                 {
                     if (!p.IsEgg)
                     {

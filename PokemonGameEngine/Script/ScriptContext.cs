@@ -10,6 +10,8 @@ namespace Kermalis.PokemonGameEngine.Script
 {
     internal sealed partial class ScriptContext : IDisposable
     {
+        private static readonly List<ScriptContext> _allScripts = new();
+
         private readonly EndianBinaryReader _reader;
         private readonly Stack<long> _callStack = new();
         private bool _isDisposed;
@@ -33,6 +35,7 @@ namespace Kermalis.PokemonGameEngine.Script
         public ScriptContext(EndianBinaryReader r)
         {
             _reader = r;
+            _allScripts.Add(this);
         }
 
         private bool ShouldLeaveLogicTick(bool update)
@@ -97,7 +100,7 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             if (_waitReturnToField)
             {
-                if (!Game.Instance.IsOnOverworld)
+                if (!Engine.Instance.IsOnOverworld)
                 {
                     stopRunning = true;
                 }
@@ -124,12 +127,20 @@ namespace Kermalis.PokemonGameEngine.Script
             }
         }
 
+        public static void ProcessAll()
+        {
+            foreach (ScriptContext ctx in _allScripts.ToArray()) // Copy the list so a script ending/starting does not crash here
+            {
+                ctx.LogicTick();
+            }
+        }
+
         public void Dispose()
         {
             if (!_isDisposed)
             {
                 _isDisposed = true;
-                Game.Instance.Scripts.Remove(this);
+                _allScripts.Remove(this);
                 _reader.Dispose();
                 _onWaitMessageFinished = null;
                 _onWaitReturnToFieldFinished = null;

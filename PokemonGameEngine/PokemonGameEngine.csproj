@@ -11,7 +11,7 @@
 		<NoWarn />
 		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
-		<StartupObject>Kermalis.PokemonGameEngine.UI.Program</StartupObject>
+		<StartupObject>Kermalis.PokemonGameEngine.Core.Game</StartupObject>
 	</PropertyGroup>
 
 	<ItemGroup>

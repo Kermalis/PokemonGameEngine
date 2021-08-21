@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
-using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World;
 using System;
 
@@ -28,11 +27,11 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public override int GetSpeciesCaught()
         {
-            return Game.Instance.Save.Pokedex.GetSpeciesCaught();
+            return Engine.Instance.Save.Pokedex.GetSpeciesCaught();
         }
         public override bool IsRepeatBallSpecies(PBESpecies species)
         {
-            return Game.Instance.Save.Pokedex.IsCaught(species);
+            return Engine.Instance.Save.Pokedex.IsCaught(species);
         }
 
         public override bool IsDarkGrass(PBEBattle battle)
@@ -45,7 +44,7 @@ namespace Kermalis.PokemonGameEngine.Core
             {
                 return true;
             }
-            DateTime time = Program.LogicTickTime;
+            DateTime time = Game.LogicTickTime;
             Month month = OverworldTime.GetMonth((Month)time.Month);
             Season season = OverworldTime.GetSeason(month);
             int hour = OverworldTime.GetHour(time.Hour);

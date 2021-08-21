@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Util;
 using Kermalis.PokemonGameEngine.World;
 using System;
 
@@ -37,12 +36,12 @@ namespace Kermalis.PokemonGameEngine.Sound
         private static Sound _battleBGM;
         private static CrySound _testCry; // TODO: Cry system
 
-        private static unsafe CrySound CryToSound(PBESpecies species, PBEForm form)
+        private static CrySound CryToSound(PBESpecies species, PBEForm form)
         {
             var wav = WaveFileData.Get(GetCryResource(species, form));
             return new CrySound(wav);
         }
-        private static unsafe Sound SongToSound(Song song)
+        private static Sound SongToSound(Song song)
         {
             var wav = WaveFileData.Get(GetSongResource(song));
             return new Sound(song, wav);
@@ -74,12 +73,12 @@ namespace Kermalis.PokemonGameEngine.Sound
             throw new ArgumentOutOfRangeException(nameof(song));
         }
 
-        public static int GetCryPitch(double hpPercentage)
+        public static int GetCryPitch(float hpPercentage)
         {
             return (int)((1 - hpPercentage) * -96); // 1/8 of -768; so -0.125 semitones for a fainted mon
         }
 
-        public static void PlayCry(PBESpecies species, PBEForm form, double hpPercentage, float vol = 0.5f, float pan = 0f, SoundStoppedFunc onStopped = null)
+        public static void PlayCryFromHP(PBESpecies species, PBEForm form, float hpPercentage, float vol = 0.5f, float pan = 0f, SoundStoppedFunc onStopped = null)
         {
             PlayCry(species, form, vol: vol, pan: pan, pitch: GetCryPitch(hpPercentage), onStopped: onStopped);
         }

@@ -1,6 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.Core;
 
 namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
 {

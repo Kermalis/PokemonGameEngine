@@ -3,8 +3,6 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
-using Kermalis.PokemonGameEngine.UI;
-using Kermalis.PokemonGameEngine.Util;
 using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
@@ -226,11 +224,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             MetLocation = Overworld.GetCurrentLocation();
             MetLevel = Level;
-            MetDate = Program.LogicTickTime.Date;
+            MetDate = Game.LogicTickTime.Date;
         }
         private void SetPlayerOT()
         {
-            OT = Game.Instance.Save.OT;
+            OT = Engine.Instance.Save.OT;
         }
         private void SetEmptyPokerus()
         {
@@ -310,7 +308,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         // Temp function to get completely random moves
         public void Debug_RandomizeMoves()
         {
-            var moves = new List<PBEMove>(new LevelUpData(Species, Form).Moves.Where(t => t.Level <= Level && PBEDataUtils.IsMoveUsable(t.Move)).Select(t => t.Move).Distinct());
+            var moves = new List<PBEMove>(Array.FindAll(new LevelUpData(Species, Form).Moves, t => t.Level <= Level && PBEDataUtils.IsMoveUsable(t.Move)).Select(t => t.Move).Distinct());
             int i;
             for (i = 0; i < PkmnConstants.NumMoves && moves.Count > 0; i++)
             {
@@ -351,7 +349,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void UpdateTimeBasedForms()
         {
-            DateTime time = Program.LogicTickTime;
+            DateTime time = Game.LogicTickTime;
             Month month = OverworldTime.GetMonth((Month)time.Month);
             Season season = OverworldTime.GetSeason(month);
             int hour = OverworldTime.GetHour(time.Hour);
@@ -419,7 +417,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public void HatchEgg()
         {
-            Game.Instance.Save.GameStats[GameStat.HatchedEggs]++;
+            Engine.Instance.Save.GameStats[GameStat.HatchedEggs]++;
             IsEgg = false;
             Friendship = PkmnConstants.HatchFriendship;
             SetDefaultNickname();
@@ -433,7 +431,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void Evolve(EvolutionData.EvoData evo)
         {
-            Game.Instance.Save.GameStats[GameStat.EvolvedPokemon]++;
+            Engine.Instance.Save.GameStats[GameStat.EvolvedPokemon]++;
             bool nicknameShouldUpdate = HasDefaultNickname();
             Species = evo.Species;
             Form = evo.Form;

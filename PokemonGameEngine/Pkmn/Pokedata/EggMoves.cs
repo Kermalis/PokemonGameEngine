@@ -1,6 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
                 arr = r.ReadEnums<PBEMove>(r.ReadByte());
             }
 
-            return arr.Where(m => PBEDataUtils.IsMoveUsable(m)).Distinct(); // For now
+            return Array.FindAll(arr, m => PBEDataUtils.IsMoveUsable(m)).Distinct(); // For now
         }
     }
 }

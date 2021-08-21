@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Util;
+﻿using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -25,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         private float _freq;
         private float _interPos;
         private long _offset;
-        private long _trailOffset;
+        private long _trailOffset; // todo: no more
 
         // Fade
         public bool IsFading;
@@ -45,9 +45,9 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         public void SetPitch(int pitch)
         {
-            // (float)Math.Pow(2, ((Key - 60) / 12f) + (pitch / 768f))
+            // MathF.Pow(2, ((Key - 60) / 12f) + (pitch / 768f))
             // If we had a key we'd use the above. Instead we're emulating base key
-            _freq = Data.SampleRate * (float)Math.Pow(2, pitch / 768f);
+            _freq = Data.SampleRate * MathF.Pow(2, pitch / 768f);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

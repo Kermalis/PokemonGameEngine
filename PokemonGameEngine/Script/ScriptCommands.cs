@@ -105,7 +105,7 @@ namespace Kermalis.PokemonGameEngine.Script
         }
         private short ReadVarOrValue()
         {
-            return Game.Instance.Save.Vars.GetVarOrValue(_reader.ReadInt32());
+            return Engine.Instance.Save.Vars.GetVarOrValue(_reader.ReadInt32());
         }
 
         private uint? IfVar()
@@ -121,7 +121,7 @@ namespace Kermalis.PokemonGameEngine.Script
             uint offset = _reader.ReadUInt32();
             Flag flag = ReadVarOrEnum<Flag>();
             byte value = (byte)ReadVarOrValue();
-            if (Game.Instance.Save.Flags[flag] ? value != 0 : value == 0)
+            if (Engine.Instance.Save.Flags[flag] ? value != 0 : value == 0)
             {
                 return offset;
             }
@@ -190,73 +190,73 @@ namespace Kermalis.PokemonGameEngine.Script
         private void SetFlagCommand()
         {
             Flag flag = ReadVarOrEnum<Flag>();
-            Game.Instance.Save.Flags[flag] = true;
+            Engine.Instance.Save.Flags[flag] = true;
         }
         private void ClearFlagCommand()
         {
             Flag flag = ReadVarOrEnum<Flag>();
-            Game.Instance.Save.Flags[flag] = false;
+            Engine.Instance.Save.Flags[flag] = false;
         }
 
         private void SetVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Game.Instance.Save.Vars[var] = value;
+            Engine.Instance.Save.Vars[var] = value;
         }
         private void AddVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Game.Instance.Save.Vars[var] += value;
+            Engine.Instance.Save.Vars[var] += value;
         }
         private void SubVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Game.Instance.Save.Vars[var] -= value;
+            Engine.Instance.Save.Vars[var] -= value;
         }
         private void MulVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Game.Instance.Save.Vars[var] *= value;
+            Engine.Instance.Save.Vars[var] *= value;
         }
         private void DivVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Game.Instance.Save.Vars[var] /= value;
+            Engine.Instance.Save.Vars[var] /= value;
         }
         private void RshiftVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Game.Instance.Save.Vars[var] >>= value;
+            Engine.Instance.Save.Vars[var] >>= value;
         }
         private void LshiftVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Game.Instance.Save.Vars[var] <<= value;
+            Engine.Instance.Save.Vars[var] <<= value;
         }
         private void AndVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Game.Instance.Save.Vars[var] &= value;
+            Engine.Instance.Save.Vars[var] &= value;
         }
         private void OrVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Game.Instance.Save.Vars[var] |= value;
+            Engine.Instance.Save.Vars[var] |= value;
         }
         private void XorVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Game.Instance.Save.Vars[var] ^= value;
+            Engine.Instance.Save.Vars[var] ^= value;
         }
         private void RandomizeVarCommand()
         {
@@ -264,18 +264,18 @@ namespace Kermalis.PokemonGameEngine.Script
             short min = ReadVarOrValue();
             short max = ReadVarOrValue();
             short value = (short)PBEDataProvider.GlobalRandom.RandomInt(min, max);
-            Game.Instance.Save.Vars[var] = value;
+            Engine.Instance.Save.Vars[var] = value;
         }
 
         private void BufferSeenCountCommand()
         {
             byte buffer = (byte)ReadVarOrValue();
-            Game.Instance.StringBuffers.Buffers[buffer] = Game.Instance.Save.Pokedex.GetSpeciesSeen().ToString();
+            Engine.Instance.StringBuffers.Buffers[buffer] = Engine.Instance.Save.Pokedex.GetSpeciesSeen().ToString();
         }
         private void BufferCaughtCountCommand()
         {
             byte buffer = (byte)ReadVarOrValue();
-            Game.Instance.StringBuffers.Buffers[buffer] = Game.Instance.Save.Pokedex.GetSpeciesCaught().ToString();
+            Engine.Instance.StringBuffers.Buffers[buffer] = Engine.Instance.Save.Pokedex.GetSpeciesCaught().ToString();
         }
 
         private void WildBattleCommand()
@@ -289,17 +289,17 @@ namespace Kermalis.PokemonGameEngine.Script
         private void IncrementGameStatCommand()
         {
             GameStat stat = ReadVarOrEnum<GameStat>();
-            Game.Instance.Save.GameStats[stat]++;
+            Engine.Instance.Save.GameStats[stat]++;
         }
 
         private static void CountBadgesCommand()
         {
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)Game.Instance.Save.Flags.GetNumBadges();
+            Engine.Instance.Save.Vars[Var.SpecialVar_Result] = (short)Engine.Instance.Save.Flags.GetNumBadges();
         }
         private void BufferBadgesCommand()
         {
             byte buffer = (byte)ReadVarOrValue();
-            Game.Instance.StringBuffers.Buffers[buffer] = Game.Instance.Save.Flags.GetNumBadges().ToString();
+            Engine.Instance.StringBuffers.Buffers[buffer] = Engine.Instance.Save.Flags.GetNumBadges().ToString();
         }
     }
 }

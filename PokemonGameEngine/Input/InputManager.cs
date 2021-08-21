@@ -27,14 +27,14 @@ namespace Kermalis.PokemonGameEngine.Input
         }
 
         // Updating the real time presses
-        public static void OnAxis(SDL.SDL_Event e)
+        public static void OnAxis(SDL.SDL_ControllerAxisEvent caxis)
         {
             const ushort Deadzone = ushort.MaxValue / 4;
             void Do(Key less, Key more)
             {
                 KeyDownData pLess = _pressed[less];
                 KeyDownData pMore = _pressed[more];
-                short val = e.caxis.axisValue;
+                short val = caxis.axisValue;
                 if (val < -Deadzone)
                 {
                     pLess.StickPressed = true;
@@ -51,17 +51,17 @@ namespace Kermalis.PokemonGameEngine.Input
                     pMore.StickPressed = false;
                 }
             }
-            switch ((SDL.SDL_GameControllerAxis)e.caxis.axis)
+            switch ((SDL.SDL_GameControllerAxis)caxis.axis)
             {
                 case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX: Do(Key.Left, Key.Right); break;
                 case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY: Do(Key.Up, Key.Down); break;
                 default: break;
             }
         }
-        public static void OnButtonDown(SDL.SDL_Event e, bool down)
+        public static void OnButtonDown(SDL.SDL_GameControllerButton button, bool down)
         {
             Key key;
-            switch ((SDL.SDL_GameControllerButton)e.cbutton.button)
+            switch (button)
             {
                 case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER: key = Key.L; break;
                 case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: key = Key.R; break;
@@ -81,10 +81,10 @@ namespace Kermalis.PokemonGameEngine.Input
             KeyDownData p = _pressed[key];
             p.NonStickPressed = down;
         }
-        public static void OnKeyDown(SDL.SDL_Event e, bool down)
+        public static void OnKeyDown(SDL.SDL_Keycode sym, bool down)
         {
             Key key;
-            switch (e.key.keysym.sym)
+            switch (sym)
             {
                 case SDL.SDL_Keycode.SDLK_q: key = Key.L; break;
                 case SDL.SDL_Keycode.SDLK_w: key = Key.R; break;

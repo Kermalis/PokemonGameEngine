@@ -16,7 +16,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private static void HealPartyCommand()
         {
-            Game.Instance.Save.PlayerParty.HealFully();
+            Engine.Instance.Save.PlayerParty.HealFully();
         }
 
         private void GivePokemonCommand()
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             byte level = (byte)ReadVarOrValue();
             var pkmn = PartyPokemon.CreatePlayerOwnedMon(species, 0, level);
-            Game.Instance.Save.GivePokemon(pkmn);
+            Engine.Instance.Save.GivePokemon(pkmn);
         }
         private void GivePokemonFormCommand()
         {
@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
             var pkmn = PartyPokemon.CreatePlayerOwnedMon(species, form, level);
-            Game.Instance.Save.GivePokemon(pkmn);
+            Engine.Instance.Save.GivePokemon(pkmn);
         }
         private void GivePokemonFormItemCommand()
         {
@@ -42,20 +42,20 @@ namespace Kermalis.PokemonGameEngine.Script
             ItemType item = ReadVarOrEnum<ItemType>();
             var pkmn = PartyPokemon.CreatePlayerOwnedMon(species, form, level);
             pkmn.Item = item;
-            Game.Instance.Save.GivePokemon(pkmn);
+            Engine.Instance.Save.GivePokemon(pkmn);
         }
 
         private void BufferSpeciesNameCommand()
         {
             byte buffer = (byte)ReadVarOrValue();
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
-            Game.Instance.StringBuffers.Buffers[buffer] = PBEDataProvider.Instance.GetSpeciesName(species).English;
+            Engine.Instance.StringBuffers.Buffers[buffer] = PBEDataProvider.Instance.GetSpeciesName(species).English;
         }
         private void BufferPartyMonNicknameCommand()
         {
             byte buffer = (byte)ReadVarOrValue();
             byte index = (byte)ReadVarOrValue();
-            Game.Instance.StringBuffers.Buffers[buffer] = Game.Instance.Save.PlayerParty[index].Nickname;
+            Engine.Instance.StringBuffers.Buffers[buffer] = Engine.Instance.Save.PlayerParty[index].Nickname;
         }
 
         private void PlayCryCommand()
@@ -72,37 +72,37 @@ namespace Kermalis.PokemonGameEngine.Script
         private static void CountNonEggPartyCommand()
         {
             short count = 0;
-            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
+            foreach (PartyPokemon p in Engine.Instance.Save.PlayerParty)
             {
                 if (!p.IsEgg)
                 {
                     count++;
                 }
             }
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = count;
+            Engine.Instance.Save.Vars[Var.SpecialVar_Result] = count;
         }
         private static void CountNonFaintedNonEggPartyCommand()
         {
             short count = 0;
-            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
+            foreach (PartyPokemon p in Engine.Instance.Save.PlayerParty)
             {
                 if (!p.IsEgg && p.HP > 0)
                 {
                     count++;
                 }
             }
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = count;
+            Engine.Instance.Save.Vars[Var.SpecialVar_Result] = count;
         }
         private static void CountPlayerPartyCommand()
         {
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)Game.Instance.Save.PlayerParty.Count;
+            Engine.Instance.Save.Vars[Var.SpecialVar_Result] = (short)Engine.Instance.Save.PlayerParty.Count;
         }
 
         private void CheckPartyHasMoveCommand()
         {
             PBEMove move = ReadVarOrEnum<PBEMove>();
             Overworld.GetNonEggPartyMonWithMove(move, out _, out int index);
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)index;
+            Engine.Instance.Save.Vars[Var.SpecialVar_Result] = (short)index;
         }
     }
 }

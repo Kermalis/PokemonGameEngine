@@ -1,5 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.Render.Images;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -59,11 +59,11 @@ namespace Kermalis.PokemonGameEngine.Core
 
         private static PBEGender GetGenderKey(PBESpecies species, PBEGender gender)
         {
-            return PokemonImageUtils.HasFemaleVersion(species, false) ? gender : PBEGender.MAX;
+            return PokemonImageLoader.HasFemaleVersion(species, false) ? gender : PBEGender.MAX;
         }
         private static PBEGender[] GetGenderKeys(PBESpecies species)
         {
-            if (PokemonImageUtils.HasFemaleVersion(species, false))
+            if (PokemonImageLoader.HasFemaleVersion(species, false))
             {
                 return new[] { PBEGender.Male, PBEGender.Female };
             }
@@ -103,11 +103,11 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public bool IsSeen(PBESpecies species)
         {
-            return GetFirstOrNullSeenEntry(species) != null;
+            return GetFirstOrNullSeenEntry(species) is not null;
         }
         public bool IsCaught(PBESpecies species)
         {
-            return GetFirstOrNullCaughtEntry(species) != null;
+            return GetFirstOrNullCaughtEntry(species) is not null;
         }
 
         public int GetSpeciesSeen()

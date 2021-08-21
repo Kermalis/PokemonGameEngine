@@ -1,6 +1,6 @@
 ﻿//This file is adapted from NAudio (https://github.com/naudio/NAudio) which uses the MIT license
 using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,8 +32,9 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private WaveFileData(string resource)
         {
-            _resource = resource;
+            _id = resource;
             _numReferences = 1;
+            _dataCache.Add(resource, this);
             Stream = Utils.GetResourceStream(resource);
             Reader = new EndianBinaryReader(Stream);
 
@@ -201,7 +202,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         #region Cache
 
-        private readonly string _resource;
+        private readonly string _id;
         private int _numReferences;
         private static readonly Dictionary<string, WaveFileData> _dataCache = new();
 
@@ -214,7 +215,6 @@ namespace Kermalis.PokemonGameEngine.Sound
             else
             {
                 data = new WaveFileData(resource);
-                _dataCache.Add(resource, data);
             }
             return data;
         }
@@ -223,7 +223,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             if (--_numReferences <= 0)
             {
                 Stream.Dispose();
-                _dataCache.Remove(_resource);
+                _dataCache.Remove(_id);
             }
         }
 

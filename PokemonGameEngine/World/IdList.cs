@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Util;
+﻿using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +14,7 @@ namespace Kermalis.PokemonGameEngine.World
             using (var s = new StreamReader(Utils.GetResourceStream(resource)))
             {
                 string key;
-                while ((key = s.ReadLine()) != null)
+                while ((key = s.ReadLine()) is not null)
                 {
                     if (!string.IsNullOrWhiteSpace(key))
                     {

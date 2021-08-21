@@ -3,7 +3,7 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Sound;
-using Kermalis.PokemonGameEngine.UI;
+using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 
@@ -15,7 +15,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         public static MapSection GetCurrentLocation()
         {
-            return PlayerObj.Player.Map.MapDetails.Section;
+            return PlayerObj.Player.Map.Details.Section;
         }
         // TODO
         public static bool IsGiratinaLocation()
@@ -24,11 +24,11 @@ namespace Kermalis.PokemonGameEngine.World
         }
         public static PBEForm GetProperBurmyForm()
         {
-            return PlayerObj.Player.Map.MapDetails.BurmyForm;
+            return PlayerObj.Player.Map.Details.BurmyForm;
         }
         public static PBEForm GetProperDeerlingSawsbuckForm()
         {
-            DateTime time = Program.LogicTickTime;
+            DateTime time = Game.LogicTickTime;
             Month month = OverworldTime.GetMonth((Month)time.Month);
             Season season = OverworldTime.GetSeason(month);
             return season.ToDeerlingSawsbuckForm();
@@ -36,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         public static bool ShouldRenderDayTint()
         {
-            return CameraObj.Camera.Map.MapDetails.Flags.HasFlag(MapFlags.DayTint);
+            return CameraObj.Camera.Map.Details.Flags.HasFlag(MapFlags.DayTint);
         }
         public static PBEWeather GetPBEWeatherFromMap(MapWeather mapWeather)
         {
@@ -99,12 +99,12 @@ namespace Kermalis.PokemonGameEngine.World
 #if DEBUG
             Console.WriteLine("Player is now on {0}", map.Name);
 #endif
-            SoundControl.SetOverworldBGM(map.MapDetails.Music);
+            SoundControl.SetOverworldBGM(map.Details.Music);
             UpdateGiratinaForms();
         }
         public static void UpdateGiratinaForms()
         {
-            foreach (PartyPokemon pkmn in Game.Instance.Save.PlayerParty)
+            foreach (PartyPokemon pkmn in Engine.Instance.Save.PlayerParty)
             {
                 pkmn.UpdateGiratinaForm();
             }
@@ -112,7 +112,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         public static bool GetNonEggPartyMonWithMove(PBEMove move, out PartyPokemon pkmn, out int index)
         {
-            Party party = Game.Instance.Save.PlayerParty;
+            Party party = Engine.Instance.Save.PlayerParty;
             for (int i = 0; i < party.Count; i++)
             {
                 PartyPokemon p = party[i];
