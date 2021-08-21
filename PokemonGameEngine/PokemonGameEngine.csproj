@@ -25,9 +25,6 @@
 		<EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
 			<Link>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</EmbeddedResource>
-		<EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\BG\**\*.*">
-			<Link>Assets\GUI\Battle\Background\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</EmbeddedResource>
 		<ContentWithTargetPath Include="..\Shared Dependencies\PokemonBattleEngine.db">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>PokemonBattleEngine.db</TargetPath>
@@ -44,7 +41,7 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>SDL2.dll</TargetPath>
 		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Dependencies\SDL_Image\SDL2_image.dll">
+        		<ContentWithTargetPath Include="Dependencies\SDL_Image\SDL2_image.dll">
 			<!--64-bit windows dll for now-->
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>SDL2_image.dll</TargetPath>
