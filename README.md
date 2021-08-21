@@ -26,7 +26,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * Day & Night Cycle
 * Tile animations
 * Controller support
-* Animated sprites with shadow support
+* Animated sprites
 * Spinda spots ![Spindas](PreviewImages/Spinda.gif)
 * Custom sound engine and music (also supports Pokémon cries)
 * Daycare, Breeding, and Eggs
@@ -42,13 +42,16 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 
 ----
 ## PokemonGameEngine Uses:
+* [Assimp](https://github.com/assimp/assimp)
 * [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)
 * [Microsoft.Data.Sqlite](https://docs.microsoft.com/en-us/ef/core)
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 * [NUKE](https://github.com/nuke-build/nuke)
+* [OpenGL](https://www.opengl.org/)
 * [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine)
 * [SDL2](https://www.libsdl.org/)
 * [SDL2#](https://github.com/flibitijibibo/SDL2-CS)
+* [Silk.NET](https://github.com/dotnet/Silk.NET)
 * [SimpleGIF](https://github.com/Kermalis/SimpleGIF)
 * [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)
 
