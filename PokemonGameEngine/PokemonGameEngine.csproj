@@ -32,6 +32,9 @@
 		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
 		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.6" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Silk.NET.Assimp" Version="2.7.0" />
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.7.0" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
 		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
 		<Reference Include="PokemonBattleEngine">
 			<HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
@@ -40,21 +43,6 @@
 			<!--64-bit windows dll for now-->
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>SDL2.dll</TargetPath>
-		</ContentWithTargetPath>
-        		<ContentWithTargetPath Include="Dependencies\SDL_Image\SDL2_image.dll">
-			<!--64-bit windows dll for now-->
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<TargetPath>SDL2_image.dll</TargetPath>
-		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Dependencies\SDL_Image\libpng16-16.dll">
-			<!--64-bit windows dll for now-->
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<TargetPath>libpng16-16.dll</TargetPath>
-		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Dependencies\SDL_Image\zlib1.dll">
-			<!--64-bit windows dll for now-->
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<TargetPath>zlib1.dll</TargetPath>
 		</ContentWithTargetPath>
 		<Reference Include="SDL2-CS">
 			<HintPath>Dependencies\SDL2-CS.dll</HintPath>
