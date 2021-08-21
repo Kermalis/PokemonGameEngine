@@ -2,28 +2,56 @@
 {
     internal delegate void BackTaskAction(BackTask task);
 
+    internal sealed class BackTask
+    {
+        public BackTask Next;
+        public BackTask Prev;
+
+        public BackTaskAction Action;
+        public object Data;
+        public object Tag;
+
+        public readonly int Priority; // Higher priorities go first
+
+        public BackTask(BackTaskAction action, int priority, object data = null, object tag = null)
+        {
+            Action = action;
+            Priority = priority;
+            Data = data;
+            Tag = tag;
+        }
+
+        public void Dispose()
+        {
+            // Do not dispose next or prev so we can continue looping after this gets removed
+            Action = null;
+            Data = null;
+            Tag = null;
+        }
+    }
+
     internal sealed class TaskList
     {
-        public BackTask First;
-        public int Count;
+        private BackTask _first;
+        public int Count { get; private set; }
 
         public void Add(BackTask task)
         {
-            if (First is null)
+            if (_first is null)
             {
-                First = task;
+                _first = task;
                 Count = 1;
                 return;
             }
-            BackTask t = First;
+            BackTask t = _first;
             while (true)
             {
                 if (t.Priority < task.Priority)
                 {
                     // The new task has a higher priority than t, so insert new before t
-                    if (t == First)
+                    if (t == _first)
                     {
-                        First = t;
+                        _first = t;
                     }
                     else
                     {
@@ -53,16 +81,16 @@
         {
             Add(new BackTask(action, priority, data: data, tag: tag));
         }
-        public void Remove(BackTask task)
+        public void RemoveAndDispose(BackTask task)
         {
-            if (task == First)
+            if (task == _first)
             {
                 BackTask next = task.Next;
                 if (next is not null)
                 {
                     next.Prev = null;
                 }
-                First = next;
+                _first = next;
             }
             else
             {
@@ -80,67 +108,67 @@
 
         public void RemoveAll()
         {
-            for (BackTask t = First; t is not null; t = t.Next)
+            for (BackTask t = _first; t is not null; t = t.Next)
             {
                 t.Dispose();
             }
-            First = null;
+            _first = null;
             Count = 0;
         }
         public void RemoveAllWithTag(object tag)
         {
-            for (BackTask t = First; t is not null; t = t.Next)
+            for (BackTask t = _first; t is not null; t = t.Next)
             {
-                if (t.Tag == tag)
+                if (Equals(t.Tag, tag))
                 {
-                    Remove(t);
+                    RemoveAndDispose(t);
                 }
             }
         }
         public void RemoveAllWithoutTag(object tag)
         {
-            for (BackTask t = First; t is not null; t = t.Next)
+            for (BackTask t = _first; t is not null; t = t.Next)
             {
-                if (t.Tag != tag)
+                if (!Equals(t.Tag, tag))
                 {
-                    Remove(t);
+                    RemoveAndDispose(t);
                 }
             }
         }
 
         public void RunTasks()
         {
-            for (BackTask t = First; t is not null; t = t.Next)
+            for (BackTask t = _first; t is not null; t = t.Next)
             {
-                t.Action?.Invoke(t);
+                t.Action(t);
             }
         }
         public void RunTasksWithTag(object tag)
         {
-            for (BackTask t = First; t is not null; t = t.Next)
+            for (BackTask t = _first; t is not null; t = t.Next)
             {
-                if (t.Tag == tag)
+                if (Equals(t.Tag, tag))
                 {
-                    t.Action?.Invoke(t);
+                    t.Action(t);
                 }
             }
         }
         public void RunTasksWithoutTag(object tag)
         {
-            for (BackTask t = First; t is not null; t = t.Next)
+            for (BackTask t = _first; t is not null; t = t.Next)
             {
-                if (t.Tag != tag)
+                if (!Equals(t.Tag, tag))
                 {
-                    t.Action?.Invoke(t);
+                    t.Action(t);
                 }
             }
         }
 
         public bool TryGetTask(BackTaskAction action, out BackTask task)
         {
-            for (BackTask t = First; t is not null; t = t.Next)
+            for (BackTask t = _first; t is not null; t = t.Next)
             {
-                if (t.Action == action)
+                if (Equals(t.Action, action))
                 {
                     task = t;
                     return true;
@@ -151,9 +179,9 @@
         }
         public bool TryGetTaskWithTag(object tag, out BackTask task)
         {
-            for (BackTask t = First; t is not null; t = t.Next)
+            for (BackTask t = _first; t is not null; t = t.Next)
             {
-                if (t.Tag == tag)
+                if (Equals(t.Tag, tag))
                 {
                     task = t;
                     return true;
@@ -161,34 +189,6 @@
             }
             task = default;
             return false;
-        }
-    }
-
-    internal sealed class BackTask
-    {
-        public BackTask Next;
-        public BackTask Prev;
-
-        public BackTaskAction Action;
-        public object Data;
-        public object Tag;
-
-        public readonly int Priority; // Higher priorities go first
-
-        public BackTask(BackTaskAction action, int priority, object data = null, object tag = null)
-        {
-            Action = action;
-            Priority = priority;
-            Data = data;
-            Tag = tag;
-        }
-
-        public void Dispose()
-        {
-            // Do not dispose next or prev so we can continue looping after this gets removed
-            Action = null;
-            Data = null;
-            Tag = null;
         }
     }
 }
