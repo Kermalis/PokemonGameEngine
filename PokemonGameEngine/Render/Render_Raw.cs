@@ -2,8 +2,6 @@
 
 namespace Kermalis.PokemonGameEngine.Render
 {
-    internal delegate uint PixelSupplier(int x, int y);
-
     internal static unsafe partial class Renderer
     {
         // Colors must be RGBA8888 (0xAABBCCDD - AA is A, BB is B, CC is G, DD is R)
@@ -21,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.Render
             g = (byte)(g * gMod);
             b = (byte)(b * bMod);
             a = (byte)(a * aMod);
-            *dst = Color(r, g, b, a);
+            *dst = RawColor(r, g, b, a);
         }
         public static void DrawPoint_Unchecked(uint* dst, uint color)
         {
@@ -47,11 +45,11 @@ namespace Kermalis.PokemonGameEngine.Render
             uint g = (gIn * aIn / 0xFF) + (gOld * aOld * (0xFF - aIn) / (0xFF * 0xFF));
             uint b = (bIn * aIn / 0xFF) + (bOld * aOld * (0xFF - aIn) / (0xFF * 0xFF));
             uint a = aIn + (aOld * (0xFF - aIn) / 0xFF);
-            *dst = Color(r, g, b, a);
+            *dst = RawColor(r, g, b, a);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawPoint_Checked(uint* dst, int dstW, int dstH, int x, int y, uint color)
+        public static void DrawPoint_Checked(uint* dst, uint dstW, uint dstH, int x, int y, uint color)
         {
             if (y >= 0 && y < dstH && x >= 0 && x < dstW)
             {
@@ -59,7 +57,7 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void OverwritePoint_Checked(uint* dst, int dstW, int dstH, int x, int y, uint color)
+        public static void OverwritePoint_Checked(uint* dst, uint dstW, uint dstH, int x, int y, uint color)
         {
             if (y >= 0 && y < dstH && x >= 0 && x < dstW)
             {
@@ -67,31 +65,26 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
 
-        public static uint[] GetBitmap_Unchecked(uint* src, int srcW, int x, int y, int width, int height)
+        public static uint[] GetBitmap_Unchecked(uint* src, uint srcW, Pos2D pos, Size2D size)
         {
-            uint[] arr = new uint[width * height];
-            for (int py = 0; py < height; py++)
+            uint[] arr = new uint[size.Width * size.Height];
+            for (int py = 0; py < size.Height; py++)
             {
-                for (int px = 0; px < width; px++)
+                for (int px = 0; px < size.Width; px++)
                 {
-                    arr[GetPixelIndex(width, px, py)] = *GetPixelAddress(src, srcW, x + px, y + py);
+                    arr[GetPixelIndex(size.Width, px, py)] = *GetPixelAddress(src, srcW, pos.X + px, pos.Y + py);
                 }
             }
             return arr;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static PixelSupplier MakeBitmapSupplier(uint* src, int srcW)
+        public static int GetPixelIndex(uint srcW, int x, int y)
         {
-            return (x, y) => *GetPixelAddress(src, srcW, x, y);
+            return (int)(x + (y * srcW));
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetPixelIndex(int srcW, int x, int y)
-        {
-            return x + (y * srcW);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint* GetPixelAddress(uint* src, int srcW, int x, int y)
+        public static uint* GetPixelAddress(uint* src, uint srcW, int x, int y)
         {
             return src + GetPixelIndex(srcW, x, y);
         }
@@ -101,14 +94,9 @@ namespace Kermalis.PokemonGameEngine.Render
         #region Colors
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint Color(uint r, uint g, uint b, uint a)
+        public static uint RawColor(uint r, uint g, uint b, uint a)
         {
             return (a << 24) | (b << 16) | (g << 8) | r;
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint ColorNoA(uint r, uint g, uint b)
-        {
-            return (b << 16) | (g << 8) | r;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint GetR(uint color)
@@ -136,7 +124,7 @@ namespace Kermalis.PokemonGameEngine.Render
             uint g = GetG(color);
             uint b = GetB(color);
             uint a = GetA(color);
-            return Color(newR, g, b, a);
+            return RawColor(newR, g, b, a);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint SetG(uint color, uint newG)
@@ -144,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.Render
             uint r = GetR(color);
             uint b = GetB(color);
             uint a = GetA(color);
-            return Color(r, newG, b, a);
+            return RawColor(r, newG, b, a);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint SetB(uint color, uint newB)
@@ -152,7 +140,7 @@ namespace Kermalis.PokemonGameEngine.Render
             uint r = GetR(color);
             uint g = GetG(color);
             uint a = GetA(color);
-            return Color(r, g, newB, a);
+            return RawColor(r, g, newB, a);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint SetA(uint color, uint newA)
@@ -160,7 +148,7 @@ namespace Kermalis.PokemonGameEngine.Render
             uint r = GetR(color);
             uint g = GetG(color);
             uint b = GetB(color);
-            return Color(r, g, b, newA);
+            return RawColor(r, g, b, newA);
         }
 
         #endregion

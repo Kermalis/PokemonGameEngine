@@ -1,101 +1,122 @@
-﻿using Kermalis.PokemonGameEngine.UI;
-using Kermalis.PokemonGameEngine.Util;
-using SDL2;
+﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render.Images;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Silk.NET.OpenGL;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.IO;
+using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
-    // https://stackoverflow.com/questions/24771828/algorithm-for-creating-rounded-corners-in-a-polygon
-    // ^^ This could be cool, not sure if we'd need it yet though
-
     internal static unsafe partial class Renderer
     {
-        #region SDL
+        public static TextureUnit ToTextureUnit(this int unit)
+        {
+            return (TextureUnit)((int)TextureUnit.Texture0 + unit);
+        }
 
-        private static IntPtr ConvertSurfaceFormat(IntPtr surface)
+        #region Images
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float AbsXToRelX(float x)
         {
-            IntPtr result = surface;
-            var surPtr = (SDL.SDL_Surface*)surface;
-            var pixelFormatPtr = (SDL.SDL_PixelFormat*)surPtr->format;
-            if (pixelFormatPtr->format != SDL.SDL_PIXELFORMAT_ABGR8888)
-            {
-                result = SDL.SDL_ConvertSurfaceFormat(surface, SDL.SDL_PIXELFORMAT_ABGR8888, 0);
-                SDL.SDL_FreeSurface(surface);
-            }
-            return result;
+            return x / GLHelper.CurrentWidth;
         }
-        private static IntPtr GetSurfacePixels(IntPtr surface)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float AbsXToRelX(float x, uint totalWidth)
         {
-            return ((SDL.SDL_Surface*)surface)->pixels;
+            return x / totalWidth;
         }
-        private static int GetSurfaceWidth(IntPtr surface)
+        /// <summary>0 -> -1, 1 -> 1</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float RelXToGLX(float x)
         {
-            return ((SDL.SDL_Surface*)surface)->w;
+            return (x * 2) - 1;
         }
-        private static int GetSurfaceHeight(IntPtr surface)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int RelXToAbsX(float x)
         {
-            return ((SDL.SDL_Surface*)surface)->h;
+            return (int)(x * GLHelper.CurrentWidth);
         }
-        private static IntPtr ResourceToRWops(string resource)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float AbsYToRelY(float y)
         {
-            byte[] bytes;
-            using (Stream stream = Utils.GetResourceStream(resource))
-            {
-                bytes = new byte[stream.Length];
-                stream.Read(bytes, 0, bytes.Length);
-            }
-            fixed (byte* src = bytes)
-            {
-                return SDL.SDL_RWFromMem(new IntPtr(src), bytes.Length);
-            }
+            return y / GLHelper.CurrentHeight;
         }
-        public static void GetResourceBitmap(string resource, out int width, out int height, out uint[] dstBmp)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float AbsYToRelY(float y, uint totalHeight)
         {
-            IntPtr rwops = ResourceToRWops(resource);
-            IntPtr surface = SDL_image.IMG_Load_RW(rwops, 1);
-            surface = ConvertSurfaceFormat(surface);
-            width = GetSurfaceWidth(surface);
-            height = GetSurfaceHeight(surface);
-            dstBmp = new uint[width * height];
+            return y / totalHeight;
+        }
+        /// <summary>0 -> 1, 1 -> -1</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float RelYToGLY(float y)
+        {
+            return (y * -2) + 1;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int RelYToAbsY(float y)
+        {
+            return (int)(y * GLHelper.CurrentHeight);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 AbsToGL(float x, float y)
+        {
+            return new Vector2(RelXToGLX(AbsXToRelX(x)), RelYToGLY(AbsYToRelY(y)));
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 RelToGL(float x, float y)
+        {
+            return new Vector2(RelXToGLX(x), RelYToGLY(y));
+        }
+
+        public static void GetResourceBitmap(string resource, out Size2D size, out uint[] dstBmp)
+        {
+            Stream s = Utils.GetResourceStream(resource);
+            var img = SixLabors.ImageSharp.Image.Load<Rgba32>(s);
+            s.Dispose();
+            size.Width = (uint)img.Width;
+            size.Height = (uint)img.Height;
+            dstBmp = new uint[size.Width * size.Height];
             fixed (uint* dst = dstBmp)
             {
-                int len = width * height * sizeof(uint);
-                Buffer.MemoryCopy(GetSurfacePixels(surface).ToPointer(), dst, len, len);
+                uint len = size.Width * size.Height * sizeof(uint);
+                fixed (void* data = &MemoryMarshal.GetReference(img.GetPixelRowSpan(0)))
+                {
+                    System.Buffer.MemoryCopy(data, dst, len, len);
+                }
             }
-            SDL.SDL_FreeSurface(surface);
-            SDL.SDL_FreeRW(rwops);
+            img.Dispose();
         }
 
-        #endregion
-
-        #region Sheets
-
-        public static Image[] GetResourceSheetAsImages(string resource, int imageWidth, int imageHeight)
+        public static Image[] GetResourceSheetAsImages(string resource, Size2D imageSize)
         {
-            uint[][] bitmaps = GetResourceSheetAsBitmaps(resource, imageWidth, imageHeight);
+            uint[][] bitmaps = GetResourceSheetAsBitmaps(resource, imageSize);
             var arr = new Image[bitmaps.Length];
             for (int i = 0; i < bitmaps.Length; i++)
             {
-                arr[i] = new Image(bitmaps[i], imageWidth, imageHeight);
+                arr[i] = new Image(bitmaps[i], imageSize, resource + '[' + i + ']');
             }
             return arr;
         }
-        public static uint[][] GetResourceSheetAsBitmaps(string resource, int imageWidth, int imageHeight)
+        public static uint[][] GetResourceSheetAsBitmaps(string resource, Size2D imageSize)
         {
-            GetResourceBitmap(resource, out int sheetWidth, out int sheetHeight, out uint[] srcBmp);
+            GetResourceBitmap(resource, out Size2D sheetSize, out uint[] srcBmp);
             fixed (uint* src = srcBmp)
             {
-                int numImagesX = sheetWidth / imageWidth;
-                int numImagesY = sheetHeight / imageHeight;
+                uint numImagesX = sheetSize.Width / imageSize.Width;
+                uint numImagesY = sheetSize.Height / imageSize.Height;
                 uint[][] imgs = new uint[numImagesX * numImagesY][];
                 int img = 0;
-                for (int sy = 0; sy < numImagesY; sy++)
+                for (uint sy = 0; sy < numImagesY; sy++)
                 {
-                    for (int sx = 0; sx < numImagesX; sx++)
+                    for (uint sx = 0; sx < numImagesX; sx++)
                     {
-                        imgs[img++] = GetBitmap_Unchecked(src, sheetWidth, sx * imageWidth, sy * imageHeight, imageWidth, imageHeight);
+                        imgs[img++] = GetBitmap_Unchecked(src, sheetSize.Width, new Pos2D((int)(sx * imageSize.Width), (int)(sy * imageSize.Height)), imageSize);
                     }
                 }
                 return imgs;
@@ -106,27 +127,21 @@ namespace Kermalis.PokemonGameEngine.Render
 
         #region Utilities
 
-        /// <summary>Returns true if any pixel is inside of the target bitmap.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsInsideBitmap(int bmpWidth, int bmpHeight, int x, int y, int w, int h)
+        public static int GetCoordinatesForCentering(uint dstSize, uint srcSize, float pos)
         {
-            return x < bmpWidth && x + w > 0 && y < bmpHeight && y + h > 0;
+            return (int)((uint)(dstSize * pos) - (srcSize / 2));
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetCoordinatesForCentering(int dstSize, int srcSize, float pos)
+        public static int GetCoordinatesForEndAlign(uint dstSize, uint srcSize, float pos)
         {
-            return (int)(dstSize * pos) - (srcSize / 2);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetCoordinatesForEndAlign(int dstSize, int srcSize, float pos)
-        {
-            return (int)(dstSize * pos) - srcSize;
+            return (int)((uint)(dstSize * pos) - srcSize);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double GetAnimationProgress(TimeSpan end, ref TimeSpan cur)
         {
-            cur += Program.RenderTimeSinceLastFrame;
+            cur += Game.RenderTimeSinceLastFrame;
             return Utils.GetProgress(end, cur);
         }
 

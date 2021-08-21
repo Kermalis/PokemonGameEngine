@@ -1,6 +1,8 @@
-﻿namespace Kermalis.PokemonGameEngine.Render
+﻿using Kermalis.SimpleGIF;
+
+namespace Kermalis.PokemonGameEngine.Render
 {
-    internal static unsafe partial class Renderer
+    internal static unsafe class SpindaSpotRenderer
     {
         #region Spot Coordinates
         // First pair is right eye, second is left eye, third is right ear, fourth is left ear
@@ -69,93 +71,99 @@
         };
         #endregion
 
+        private static readonly bool[,] _rightEye;
+        private static readonly bool[,] _leftEye;
+        private static readonly bool[,] _rightEar;
+        private static readonly bool[,] _leftEar;
+
+        static SpindaSpotRenderer()
+        {
+            static bool[,] Load(string resource)
+            {
+                uint spotColor = Renderer.RawColor(0, 255, 255, 255);
+
+                Renderer.GetResourceBitmap(resource, out Size2D size, out uint[] bitmap);
+                bool[,] arr = new bool[size.Height, size.Width];
+                fixed (uint* src = bitmap)
+                {
+                    for (int y = 0; y < size.Height; y++)
+                    {
+                        for (int x = 0; x < size.Width; x++)
+                        {
+                            arr[y, x] = *Renderer.GetPixelAddress(src, size.Width, x, y) == spotColor;
+                        }
+                    }
+                }
+                return arr;
+            }
+            _rightEye = Load("Sprites.SpindaSpot_RightEye.png");
+            _leftEye = Load("Sprites.SpindaSpot_LeftEye.png");
+            _rightEar = Load("Sprites.SpindaSpot_RightEar.png");
+            _leftEar = Load("Sprites.SpindaSpot_LeftEar.png");
+        }
+
         private static (uint color, uint replacement)[] SpindaSpotColorsFromShininess(bool shiny)
         {
-            uint color1 = Color(230, 214, 165, 255);
-            uint color1Replacement = shiny ? Color(165, 206, 16, 255) : Color(239, 82, 74, 255);
-            uint color2 = Color(206, 165, 115, 255);
-            uint color2Replacement = shiny ? Color(123, 156, 0, 255) : Color(189, 74, 49, 255);
+            uint color1 = Renderer.RawColor(230, 214, 165, 255);
+            uint color1Replacement = shiny ? Renderer.RawColor(165, 206, 16, 255) : Renderer.RawColor(239, 82, 74, 255);
+            uint color2 = Renderer.RawColor(206, 165, 115, 255);
+            uint color2Replacement = shiny ? Renderer.RawColor(123, 156, 0, 255) : Renderer.RawColor(189, 74, 49, 255);
             return new[] { (color1, color1Replacement), (color2, color2Replacement) };
         }
-        public static void RenderSpindaSpots(uint* dst, int dstW, int dstH, int frame, uint pid, bool shiny)
+        public static void Render(DecodedGIF img, uint pid, bool shiny)
         {
             (uint color, uint replacement)[] colors = SpindaSpotColorsFromShininess(shiny);
-            (int X, int Y)[] coords = _spindaSpotCoordinates[frame];
 
-            byte b = (byte)((pid >> 24) & 0xFF);
-            RenderSpindaSpot(dst, dstW, dstH, Image.LoadOrGet("Sprites.SpindaSpot_RightEye.png"), coords[0], b, colors);
-            b = (byte)((pid >> 16) & 0xFF);
-            RenderSpindaSpot(dst, dstW, dstH, Image.LoadOrGet("Sprites.SpindaSpot_LeftEye.png"), coords[1], b, colors);
-            b = (byte)((pid >> 8) & 0xFF);
-            RenderSpindaSpot(dst, dstW, dstH, Image.LoadOrGet("Sprites.SpindaSpot_RightEar.png"), coords[2], b, colors);
-            b = (byte)(pid & 0xFF);
-            RenderSpindaSpot(dst, dstW, dstH, Image.LoadOrGet("Sprites.SpindaSpot_LeftEar.png"), coords[3], b, colors);
-        }
-        public static void RenderSpindaSpots(AnimatedImage img, uint pid, bool shiny)
-        {
-            var rightEye = Image.LoadOrGet("Sprites.SpindaSpot_RightEye.png");
-            var leftEye = Image.LoadOrGet("Sprites.SpindaSpot_LeftEye.png");
-            var rightEar = Image.LoadOrGet("Sprites.SpindaSpot_RightEar.png");
-            var leftEar = Image.LoadOrGet("Sprites.SpindaSpot_LeftEar.png");
-            (uint color, uint replacement)[] colors = SpindaSpotColorsFromShininess(shiny);
-
-            for (int i = 0; i < img.NumFrames; i++)
+            for (int i = 0; i < img.Frames.Count; i++)
             {
                 (int X, int Y)[] coords = _spindaSpotCoordinates[i];
-                fixed (uint* dst = img.GetFrameBitmap(i))
+                fixed (uint* dst = img.Frames[i].Bitmap)
                 {
-                    int dstW = img.Width;
-                    int dstH = img.Height;
-
-                    byte b = (byte)((pid >> 24) & 0xFF);
-                    RenderSpindaSpot(dst, dstW, dstH, rightEye, coords[0], b, colors);
-                    b = (byte)((pid >> 16) & 0xFF);
-                    RenderSpindaSpot(dst, dstW, dstH, leftEye, coords[1], b, colors);
-                    b = (byte)((pid >> 8) & 0xFF);
-                    RenderSpindaSpot(dst, dstW, dstH, rightEar, coords[2], b, colors);
-                    b = (byte)(pid & 0xFF);
-                    RenderSpindaSpot(dst, dstW, dstH, leftEar, coords[3], b, colors);
+                    Render(dst, (uint)img.Width, (uint)img.Height, pid, coords, colors);
                 }
             }
         }
-
-        private static void RenderSpindaSpot(uint* dst, int dstW, int dstH, Image spot, (int X, int Y) center, byte data, (uint color, uint replacement)[] colors)
+        private static void Render(uint* dst, uint dstW, uint dstH, uint pid, (int X, int Y)[] coords, (uint color, uint replacement)[] colors)
         {
-            uint spotColor = Color(0, 255, 255, 255);
+            byte b = (byte)((pid >> 24) & 0xFF);
+            RenderSpot(dst, dstW, dstH, _rightEye, coords[0], b, colors);
+            b = (byte)((pid >> 16) & 0xFF);
+            RenderSpot(dst, dstW, dstH, _leftEye, coords[1], b, colors);
+            b = (byte)((pid >> 8) & 0xFF);
+            RenderSpot(dst, dstW, dstH, _rightEar, coords[2], b, colors);
+            b = (byte)(pid & 0xFF);
+            RenderSpot(dst, dstW, dstH, _leftEar, coords[3], b, colors);
+        }
 
+        private static void RenderSpot(uint* dst, uint dstW, uint dstH, bool[,] spot, (int X, int Y) center, byte data, (uint color, uint replacement)[] colors)
+        {
             int spotX = data & 0xF;
             int spotY = (data >> 4) & 0xF;
-            fixed (uint* src = spot.Bitmap)
+            int height = spot.GetLength(0);
+            int width = spot.GetLength(1);
+            for (int py = 0; py < height; py++)
             {
-                for (int py = 0; py < spot.Height; py++)
+                int bmpY = center.Y - 8 + spotY + py;
+                if (bmpY < 0 || bmpY >= dstH)
                 {
-                    int bmpY = center.Y - 8 + spotY + py;
-                    if (bmpY < 0 || bmpY >= dstH)
+                    continue;
+                }
+                for (int px = 0; px < width; px++)
+                {
+                    int bmpX = center.X - 8 + spotX + px;
+                    if (bmpX < 0 || bmpX >= dstW || !spot[py, px])
                     {
                         continue;
                     }
-                    for (int px = 0; px < spot.Width; px++)
+                    uint* dstPix = Renderer.GetPixelAddress(dst, dstW, bmpX, bmpY);
+                    uint curColor = *dstPix;
+                    for (int i = 0; i < colors.Length; i++)
                     {
-                        int bmpX = center.X - 8 + spotX + px;
-                        if (bmpX < 0 || bmpX >= dstW)
+                        (uint color, uint replacement) = colors[i];
+                        if (curColor == color)
                         {
-                            continue;
-                        }
-                        uint* srcPix = GetPixelAddress(src, spot.Width, px, py);
-                        if (*srcPix != spotColor)
-                        {
-                            continue;
-                        }
-                        uint* dstPix = GetPixelAddress(dst, dstW, bmpX, bmpY);
-                        uint curColor = *dstPix;
-                        for (int i = 0; i < colors.Length; i++)
-                        {
-                            (uint color, uint replacement) = colors[i];
-                            if (curColor == color)
-                            {
-                                *dstPix = replacement;
-                                break;
-                            }
+                            *dstPix = replacement;
+                            break;
                         }
                     }
                 }
