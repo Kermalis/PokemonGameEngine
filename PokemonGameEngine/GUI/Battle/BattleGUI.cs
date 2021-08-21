@@ -1,4 +1,7 @@
-﻿using Kermalis.PokemonBattleEngine.AI;
+﻿#if DEBUG
+using Kermalis.PokemonGameEngine.Input;
+#endif
+using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonGameEngine.Core;
@@ -8,11 +11,12 @@ using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.Trainer;
-using Kermalis.PokemonGameEngine.UI;
+using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Kermalis.PokemonGameEngine.Render.R3D;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
@@ -20,15 +24,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
     {
         public static BattleGUI Instance { get; private set; }
 
-        private const int AutoAdvanceTicks = Program.NumTicksPerSecond * 3; // 3 seconds
-        private const string ThreadName = "Battle Thread";
-
         private Action _onClosed;
 
         public readonly PBEBattle Battle;
-        private Thread _battleThread;
-        private bool _pauseBattleThread;
         public readonly PBETrainer Trainer;
+
+        // Battle thread
+        private IPBEPacket _newPacket;
+        private PBEBattleState? _newState;
+        private readonly ManualResetEvent _resumeProcessing = new(false);
 
         private readonly string _trainerDefeatText;
         private readonly TrainerClass _trainerClass;
@@ -36,8 +40,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public BattleGUI(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties, TrainerClass trainerClass = default, string trainerDefeatText = null)
             : this(battle, trainerParties) // BattleGUI_Render
         {
-            Battle = battle;
-            Trainer = battle.Trainers[0];
             _onClosed = onClosed;
             _trainerClass = trainerClass;
             _trainerDefeatText = trainerDefeatText;
@@ -49,118 +51,114 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void Begin()
         {
-            _battleThread = new Thread(Battle.Begin) { Name = ThreadName };
-            _battleThread.Start();
+            CreateBattleThread(Battle.Begin);
         }
 
-        private unsafe void TransitionOut()
+        private void TransitionOut()
         {
             SoundControl.FadeOutBattleBGMToOverworldBGM();
-            _fadeTransition = new FadeToColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeOutBattle);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeOutBattle);
+            Engine.Instance.SetRCallback(RCB_Fading);
+        }
+        private void OnBattleEnded()
+        {
+            // Fade out (temporarily until capture screen exists)
+            // TODO: Does pokerus spread before the capture screen, or after the mon is added to the party?
+            TransitionOut();
         }
 
-        private void SinglePlayerBattle_OnNewEvent(PBEBattle battle, IPBEPacket packet)
+        private void SinglePlayerBattle_OnNewEvent(PBEBattle _, IPBEPacket packet)
         {
-            ProcessPacket(packet);
-            if (_pauseBattleThread)
-            {
-                try
-                {
-                    Thread.Sleep(Timeout.Infinite);
-                }
-                catch (ThreadInterruptedException) { }
-            }
+            _newPacket = packet;
+            _resumeProcessing.Reset(); // Pause battle thread
+            _resumeProcessing.WaitOne(); // Wait for permission to continue
+            // TODO: Will keep the game alive even if X is pressed
         }
         private void SinglePlayerBattle_OnStateChanged(PBEBattle battle)
         {
-            switch (battle.BattleState)
+            _newState = battle.BattleState;
+            // Let this thread die; we will create a new one if the battle is to continue
+        }
+        /// <summary>
+        /// Using this is necessary to prevent the battle state from changing on the main thread.
+        /// Whatever GL calls we make must be on the main thread though, which is why we delegate the packets and states back.
+        /// </summary>
+        private static void CreateBattleThread(ThreadStart start)
+        {
+            new Thread(start) { Name = "Battle Thread" }.Start();
+        }
+        private void ResumeBattleThread()
+        {
+            _resumeProcessing.Set();
+        }
+        private bool HandleNewPacket()
+        {
+            if (_newPacket is null)
             {
-                case PBEBattleState.Ended:
-                {
-                    // Copy our Pokémon back from battle, update teammates, update wild Pokémon
-                    // Could technically only update what we need (like caught mon, roaming mon, and following partners)
-                    for (int i = 0; i < SpritedParties.Length; i++)
-                    {
-                        SpritedBattlePokemonParty p = SpritedParties[i];
-                        p.UpdateToParty(i == Trainer?.Id);
-                    }
-                    // Update inventory
-                    Game.Instance.Save.PlayerInventory.FromPBEInventory(Trainer.Inventory);
-                    // Do capture stuff (temporary)
-                    if (Battle.BattleResult == PBEBattleResult.WildCapture)
-                    {
-                        Game.Instance.Save.GameStats[GameStat.PokemonCaptures]++;
-                        PBETrainer wildTrainer = Battle.Teams[1].Trainers[0];
-                        SpritedBattlePokemonParty sp = SpritedParties[wildTrainer.Id];
-                        PBEBattlePokemon wildPkmn = wildTrainer.ActiveBattlers.Single();
-                        PartyPokemon pkmn = sp[wildPkmn].PartyPkmn;
-                        pkmn.UpdateFromBattle_Caught(wildPkmn);
-                        Game.Instance.Save.GivePokemon(pkmn);
-                    }
-                    // Pokerus
-                    Pokerus.TryCreatePokerus(Game.Instance.Save.PlayerParty);
-                    Pokerus.TrySpreadPokerus(Game.Instance.Save.PlayerParty);
-                    // Fade out (temporarily until capture screen exists)
-                    TransitionOut();
-                    break;
-                }
-                case PBEBattleState.ReadyToRunSwitches:
-                {
-                    _battleThread = new Thread(battle.RunSwitches) { Name = ThreadName };
-                    _battleThread.Start();
-                    break;
-                }
-                case PBEBattleState.ReadyToRunTurn:
-                {
-                    _battleThread = new Thread(battle.RunTurn) { Name = ThreadName };
-                    _battleThread.Start();
-                    break;
-                }
+                return false;
+            }
+            IPBEPacket packet = _newPacket;
+            _newPacket = null;
+            ProcessPacket(packet);
+            return true;
+        }
+        private void HandleNewBattleState()
+        {
+            if (_newState is null)
+            {
+                return;
+            }
+            PBEBattleState s = _newState.Value;
+            _newState = null;
+            switch (s)
+            {
+                case PBEBattleState.Ended: OnBattleEnded(); break;
+                case PBEBattleState.ReadyToRunSwitches: CreateBattleThread(Battle.RunSwitches); break;
+                case PBEBattleState.ReadyToRunTurn: CreateBattleThread(Battle.RunTurn); break;
+            }
+        }
+        private void HandleNewEvents()
+        {
+            if (!HandleNewPacket())
+            {
+                HandleNewBattleState();
             }
         }
 
-        private void AwakenBattleThread()
-        {
-            _pauseBattleThread = false;
-            if (_battleThread.IsAlive)
-            {
-                _battleThread.Interrupt();
-            }
-        }
-        private unsafe void OnPartyReplacementClosed()
+        private void OnPartyReplacementClosed()
         {
             OverworldGUI.ProcessDayTint(true); // Catch up time
-            _fadeTransition = new FadeFromColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeFromPartyReplacement);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeFromPartyReplacement);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
 
-        private unsafe void CB_FadeInBattle()
+        private void CB_FadeInBattle()
         {
             OverworldGUI.ProcessDayTint(false);
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                _stringWindow = new Window(0, 0.79f, 1, 0.16f, Renderer.Color(49, 49, 49, 128));
+                _stringWindow = Window.CreateStandardMessageBox(ColorF.FromRGBA(49, 49, 49, 128));
                 OnFadeInFinished();
-                Game.Instance.SetCallback(CB_LogicTick);
-                Game.Instance.SetRCallback(RCB_RenderTick);
+                Engine.Instance.SetCallback(CB_LogicTick);
+                Engine.Instance.SetRCallback(RCB_RenderTick);
             }
         }
-        private unsafe void CB_FadeOutBattle()
+        private void CB_FadeOutBattle()
         {
             OverworldGUI.ProcessDayTint(false);
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
-                _stringPrinter?.Close();
+                _stringPrinter?.Delete();
                 _stringPrinter = null;
                 _stringWindow.Close();
                 _stringWindow = null;
                 _actionsGUI?.Dispose();
                 _actionsGUI = null;
+                CleanUpStuffAfterFadeOut();
                 _onClosed();
                 _onClosed = null;
                 Instance = null;
@@ -176,23 +174,73 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _ = new PartyGUI(SpritedParties[Trainer.Id], PartyGUI.Mode.BattleReplace, OnPartyReplacementClosed);
             }
         }
-        private unsafe void CB_FadeFromPartyReplacement()
+        private void CB_FadeFromPartyReplacement()
         {
             OverworldGUI.ProcessDayTint(false);
             if (_fadeTransition.IsDone)
             {
                 _fadeTransition = null;
                 SetMessageWindowVisibility(false);
-                Game.Instance.SetCallback(CB_LogicTick);
-                Game.Instance.SetRCallback(RCB_RenderTick);
-                new Thread(() => Trainer.SelectSwitchesIfValid(Switches)) { Name = ThreadName }.Start();
+                Engine.Instance.SetCallback(CB_LogicTick);
+                Engine.Instance.SetRCallback(RCB_RenderTick);
+                CreateBattleThread(() => Trainer.SelectSwitchesIfValid(Switches));
             }
         }
         private void CB_LogicTick()
         {
             OverworldGUI.ProcessDayTint(false);
+            HandleNewEvents();
             _tasks.RunTasks();
             _sprites.DoCallbacks();
+#if DEBUG
+            if (InputManager.IsPressed(Key.Select))
+            {
+                MoveCameraToDefaultPosition(null);
+            }
+            else
+            {
+                //_camera.PR.Debug_Move(5f);
+                //_models[3].PR.Debug_Move(5f);
+            }
+#endif
+        }
+
+        /// <summary>Run after the fade out, and deletes the info bars etc, but also does Pokerus, updating the bag, everything else</summary>
+        private void CleanUpStuffAfterFadeOut()
+        {
+            GL gl = Game.OpenGL;
+            foreach (Model m in _models)
+            {
+                m.Delete(gl);
+            }
+            _shader.Delete(gl);
+            // Copy our Pokémon back from battle, update teammates, update wild Pokémon
+            // Could technically only update what we need (like caught mon, roaming mon, and following partners)
+            for (int i = 0; i < SpritedParties.Length; i++)
+            {
+                SpritedBattlePokemonParty p = SpritedParties[i];
+                p.UpdateToParty(i == Trainer?.Id);
+                foreach (SpritedBattlePokemon pp in p.SpritedParty)
+                {
+                    pp.Delete(gl);
+                }
+            }
+            // Update inventory
+            Engine.Instance.Save.PlayerInventory.FromPBEInventory(Trainer.Inventory);
+            // Do capture stuff (temporary)
+            if (Battle.BattleResult == PBEBattleResult.WildCapture)
+            {
+                Engine.Instance.Save.GameStats[GameStat.PokemonCaptures]++;
+                PBETrainer wildTrainer = Battle.Teams[1].Trainers[0];
+                SpritedBattlePokemonParty sp = SpritedParties[wildTrainer.Id];
+                PBEBattlePokemon wildPkmn = wildTrainer.ActiveBattlers.Single();
+                PartyPokemon pkmn = sp[wildPkmn].PartyPkmn;
+                pkmn.UpdateFromBattle_Caught(wildPkmn);
+                Engine.Instance.Save.GivePokemon(pkmn); // Also sets pokedex caught flag
+            }
+            // Pokerus
+            Pokerus.TryCreatePokerus(Engine.Instance.Save.PlayerParty);
+            Pokerus.TrySpreadPokerus(Engine.Instance.Save.PlayerParty);
         }
 
         private void UpdateDisguisedPID(PBEBattlePokemon pkmn)
@@ -207,12 +255,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 return;
             }
             SpritedBattlePokemon sPkmn = SpritedParties[pkmn.Trainer.Id][pkmn];
-            Game.Instance.Save.Pokedex.SetSeen(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownGender, pkmn.KnownShiny, sPkmn.DisguisedPID);
-        }
-        private void UpdateAnimationSpeed(PBEBattlePokemon pkmn)
-        {
-            SpritedBattlePokemon sPkmn = SpritedParties[pkmn.Trainer.Id][pkmn];
-            sPkmn.UpdateAnimationSpeed();
+            Engine.Instance.Save.Pokedex.SetSeen(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownGender, pkmn.KnownShiny, sPkmn.DisguisedPID);
         }
         private void UpdateFriendshipForFaint(PBEBattlePokemon pkmn)
         {
@@ -228,7 +271,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private static void PlayCry(PBEBattlePokemon pkmn)
         {
-            SoundControl.PlayCry(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.HPPercentage, pan: GetCryPanpot(pkmn));
+            SoundControl.PlayCryFromHP(pkmn.KnownSpecies, pkmn.KnownForm, (float)pkmn.HPPercentage, pan: GetCryPanpot(pkmn)); // TODO: REMOVE CASE WHEN UPDATING PBE
         }
         private static float GetCryPanpot(PBEBattlePokemon pkmn)
         {
@@ -236,70 +279,79 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
 
         #region Actions
+
         private readonly List<PBEBattlePokemon> _actions = new(3);
         public List<PBEBattlePokemon> StandBy { get; } = new(3);
-        public unsafe void ActionsLoop(bool begin)
+        private void BeginActionsLoop()
         {
-            if (begin)
+            foreach (PBEBattlePokemon pkmn in Trainer.Party)
             {
-                foreach (PBEBattlePokemon pkmn in Trainer.Party)
-                {
-                    pkmn.TurnAction = null;
-                }
-                _actions.Clear();
-                _actions.AddRange(Trainer.ActiveBattlersOrdered);
-                StandBy.Clear();
+                pkmn.TurnAction = null;
             }
-            int i = _actions.FindIndex(p => p.TurnAction == null);
-            if (i == -1)
+            _actions.Clear();
+            _actions.AddRange(Trainer.ActiveBattlersOrdered);
+            StandBy.Clear();
+            ActionsLoop();
+        }
+        public void ActionsLoop()
+        {
+            int i = _actions.FindIndex(p => p.TurnAction is null);
+            if (i == -1) // None in need of an action; time to submit
             {
                 RemoveActionsGUIAndSetCallbacks();
-                new Thread(() => Trainer.SelectActionsIfValid(_actions.Select(p => p.TurnAction).ToArray())) { Name = ThreadName }.Start();
+                var arr = new PBETurnAction[_actions.Count];
+                for (int j = 0; j < arr.Length; j++)
+                {
+                    arr[j] = _actions[j].TurnAction;
+                }
+                CreateBattleThread(() => Trainer.SelectActionsIfValid(arr));
             }
             else
             {
                 SpritedBattlePokemonParty party = SpritedParties[Trainer.Id];
                 _actionsGUI?.Dispose();
-                _actionsGUI = new ActionsGUI(party, _actions[i]);
-                AddStaticMessage($"What will {_actions[i].Nickname} do?", _actionsGUI.SetCallbacksForAllChoices);
-                // For i == 0, while the message is being read, the R callback is already RCB_RenderTick
-                // For i != 0, while the message is being read, the R callback is _actionsGUI.RCB_Targets, so we need to update it
+                PBEBattlePokemon pkmn = _actions[i];
+                _actionsGUI = new ActionsGUI(party, pkmn);
+                SetStaticMessage($"What will {pkmn.Nickname} do?", _actionsGUI.SetCallbacksForAllChoices);
                 if (i != 0)
                 {
-                    Game.Instance.SetRCallback(RCB_RenderTick);
+                    Engine.Instance.SetCallback(CB_LogicTick); // LogicTick will run the message task
+                    Engine.Instance.SetRCallback(RCB_RenderTick);
                 }
             }
         }
         public void Flee()
         {
             RemoveActionsGUIAndSetCallbacks();
-            new Thread(() => Trainer.SelectFleeIfValid()) { Name = ThreadName }.Start();
+            CreateBattleThread(() => Trainer.SelectFleeIfValid());
         }
 
         public List<PBESwitchIn> Switches { get; } = new(3);
         public byte SwitchesRequired;
         public List<PBEFieldPosition> PositionStandBy { get; } = new(3);
-        private unsafe void SetUpBattleReplacementFade()
+        private void SetUpBattleReplacementFade()
         {
             // TODO: Run from wild?
             Switches.Clear();
             StandBy.Clear();
             PositionStandBy.Clear();
-            _fadeTransition = new FadeToColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_FadeToPartyForReplacement);
-            Game.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_FadeToPartyForReplacement);
+            Engine.Instance.SetRCallback(RCB_Fading);
         }
 
-        private unsafe void RemoveActionsGUIAndSetCallbacks()
+        private void RemoveActionsGUIAndSetCallbacks()
         {
             _actionsGUI.Dispose();
             _actionsGUI = null;
-            Game.Instance.SetCallback(CB_LogicTick);
-            Game.Instance.SetRCallback(RCB_RenderTick);
+            Engine.Instance.SetCallback(CB_LogicTick);
+            Engine.Instance.SetRCallback(RCB_RenderTick);
         }
+
         #endregion
 
         #region Packet Processing
+
         private void ProcessPacket(IPBEPacket packet)
         {
             // Packets with logic
@@ -310,19 +362,24 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 case PBEIllusionPacket _:
                 case PBETransformPacket _:
                 case PBEBattlePacket _:
-                case PBETurnBeganPacket _: return;
+                case PBETurnBeganPacket _:
+                {
+                    ResumeBattleThread(); // No need to wait
+                    return;
+                }
                 case PBEActionsRequestPacket arp:
                 {
                     PBETrainer t = arp.Trainer;
                     if (t == Trainer)
                     {
-                        ActionsLoop(true);
+                        BeginActionsLoop();
                     }
                     else
                     {
                         // If the team is wild, no flees are allowed by default
-                        new Thread(t.CreateAIActions) { Name = ThreadName }.Start();
+                        CreateBattleThread(t.CreateAIActions);
                     }
+                    ResumeBattleThread(); // No need to wait
                     return;
                 }
                 case PBESwitchInRequestPacket sirp:
@@ -335,8 +392,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     }
                     else
                     {
-                        new Thread(t.CreateAISwitches) { Name = ThreadName }.Start();
+                        CreateBattleThread(t.CreateAISwitches);
                     }
+                    ResumeBattleThread(); // No need to wait
                     return;
                 }
                 case PBEAutoCenterPacket acp:
@@ -352,7 +410,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     PBEBattlePokemon pokemon = pecp.PokemonTrainer.TryGetPokemon(pecp.Pokemon);
                     if (pokemon.FieldPosition != PBEFieldPosition.None)
                     {
-                        UpdatePokemon(pokemon, true, false);
+                        UpdatePokemon(pokemon, true, false, false, false, false, false);
                     }
                     break;
                 }
@@ -371,14 +429,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     PBEBattlePokemon pkmn = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
                     SetSeen(pkmn);
-                    UpdatePokemon(pkmn, true, true);
+                    UpdatePokemon(pkmn, true, true, true, false, true, false);
                     break;
                 }
                 case PBEPkmnHPChangedPacket phcp:
                 {
                     PBEBattlePokemon pkmn = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
                     UpdateAnimationSpeed(pkmn);
-                    UpdatePokemon(pkmn, true, false);
+                    UpdatePokemon(pkmn, true, false, false, false, false, false);
                     break;
                 }
                 case PBEPkmnLevelChangedPacket plcp:
@@ -386,7 +444,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     PBEBattlePokemon pokemon = plcp.PokemonTrainer.TryGetPokemon(plcp.Pokemon);
                     if (pokemon.FieldPosition != PBEFieldPosition.None)
                     {
-                        UpdatePokemon(pokemon, true, false);
+                        UpdatePokemon(pokemon, true, false, false, false, false, false);
                     }
                     UpdateFriendshipForLevelUp(pokemon);
                     break;
@@ -395,7 +453,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTrainer.TryGetPokemon(s1p.Status1Receiver);
                     UpdateAnimationSpeed(status1Receiver);
-                    UpdatePokemon(status1Receiver, true, false);
+                    UpdatePokemon(status1Receiver, true, false, false, false, false, false);
                     break;
                 }
                 case PBEStatus2Packet s2p:
@@ -403,7 +461,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     PBEBattlePokemon status2Receiver = s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver);
                     switch (s2p.Status2)
                     {
-                        case PBEStatus2.Airborne: UpdatePokemon(status2Receiver, false, true); break;
+                        case PBEStatus2.Airborne: UpdatePokemon(status2Receiver, false, true, false, false, false, true); break;
                         case PBEStatus2.Disguised:
                         {
                             switch (s2p.StatusAction)
@@ -412,19 +470,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                                 {
                                     UpdateDisguisedPID(status2Receiver);
                                     SetSeen(status2Receiver);
-                                    UpdatePokemon(status2Receiver, true, true);
+                                    UpdatePokemon(status2Receiver, true, true, true, false, true, false);
                                     break;
                                 }
                             }
                             break;
                         }
-                        case PBEStatus2.ShadowForce: UpdatePokemon(status2Receiver, false, true); break;
+                        case PBEStatus2.ShadowForce: UpdatePokemon(status2Receiver, false, true, false, false, false, true); break;
                         case PBEStatus2.Substitute:
                         {
                             switch (s2p.StatusAction)
                             {
                                 case PBEStatusAction.Added:
-                                case PBEStatusAction.Ended: UpdatePokemon(status2Receiver, false, true); break;
+                                case PBEStatusAction.Ended: UpdatePokemon(status2Receiver, false, true, true, true, false, true); break;
                             }
                             break;
                         }
@@ -432,12 +490,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                         {
                             switch (s2p.StatusAction)
                             {
-                                case PBEStatusAction.Added: UpdatePokemon(status2Receiver, false, true); break;
+                                case PBEStatusAction.Added: UpdatePokemon(status2Receiver, false, true, true, false, true, false); break;
                             }
                             break;
                         }
-                        case PBEStatus2.Underground: UpdatePokemon(status2Receiver, false, true); break;
-                        case PBEStatus2.Underwater: UpdatePokemon(status2Receiver, false, true); break;
+                        case PBEStatus2.Underground: UpdatePokemon(status2Receiver, false, true, false, false, false, true); break;
+                        case PBEStatus2.Underwater: UpdatePokemon(status2Receiver, false, true, false, false, false, true); break;
                     }
                     break;
                 }
@@ -525,12 +583,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             // No message, so return
             if (string.IsNullOrEmpty(message))
             {
+                ResumeBattleThread();
                 return;
             }
             // Print message
-            AddMessage(message, AwakenBattleThread);
+            SetMessage(message, ResumeBattleThread);
             return;
         }
+
         #endregion
     }
 }
