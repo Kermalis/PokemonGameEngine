@@ -1,12 +1,13 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Util;
-using System.Runtime.CompilerServices;
+using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.Images;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Silk.NET.OpenGL;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
@@ -16,27 +17,29 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public PBEBattlePokemon Pkmn { get; }
         public uint DisguisedPID { get; set; }
         public Image Mini { get; private set; }
-        public AnimatedImage AnimImage { get; private set; }
-        public Image InfoBarImg { get; }
+        public WriteableImage InfoBarImg { get; }
         private readonly bool _backImage;
         private readonly bool _useKnownInfo;
 
-        public SpritedBattlePokemon(PBEBattlePokemon pkmn, PartyPokemon pPkmn, bool backImage, bool useKnownInfo, PkmnPosition wildPos)
+        public SpritedBattlePokemon(PBEBattlePokemon pkmn, PartyPokemon pPkmn, bool backImage, bool useKnownInfo, PkmnPosition wildPos = null)
         {
             PartyPkmn = pPkmn;
             Pkmn = pkmn;
             DisguisedPID = pPkmn.PID; // By default, use our own PID (for example, wild disguised pkmn)
             _backImage = backImage;
             _useKnownInfo = useKnownInfo;
-            InfoBarImg = new Image(100, useKnownInfo ? 30 : 42);
+            InfoBarImg = new WriteableImage(new Size2D(100, useKnownInfo ? 30u : 42));
             UpdateInfoBar();
-            UpdateSprites(wildPos, wildPos is null);
-            UpdateAnimationSpeed(); // Ensure the proper speed is set upon entering battle
-            if (wildPos != null)
+            if (wildPos is not null)
             {
+                UpdateSprites(wildPos, true, true, true, true);
                 wildPos.InfoVisible = false;
-                wildPos.PkmnVisible = true;
                 wildPos.SPkmn = this;
+                wildPos.UpdateAnimationSpeed(pkmn); // Ensure the proper speed is set upon entering battle
+            }
+            else
+            {
+                UpdateMini();
             }
         }
 
@@ -53,127 +56,97 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
-        // Will cause double load for some cases (like status2 updating)
-        // Because new animated image is created
-        public void UpdateSprites(PkmnPosition pos, bool paused)
+        private void UpdateMini()
         {
-            Mini = PokemonImageUtils.GetMini(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, PartyPkmn.IsEgg);
+            Mini?.DeductReference(Game.OpenGL);
+            Mini = PokemonImageLoader.GetMini(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, PartyPkmn.IsEgg);
+        }
+        // TODO: Make substitute imgs separate
+        public void UpdateSprites(PkmnPosition pos, bool updateSprite, bool updateSpriteIfSubstituted, bool updateMini, bool updateVisibility)
+        {
+            if (updateMini)
+            {
+                UpdateMini();
+            }
             PBEStatus2 status2 = _useKnownInfo ? Pkmn.KnownStatus2 : Pkmn.Status2;
-            AnimImage = PokemonImageUtils.GetPokemonImage(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, _backImage,
-                status2.HasFlag(PBEStatus2.Substitute), status2.HasFlag(PBEStatus2.Disguised) ? DisguisedPID : PartyPkmn.PID, PartyPkmn.IsEgg);
-            AnimImage.IsPaused = paused;
-            if (pos is null)
+            bool substitute = status2.HasFlag(PBEStatus2.Substitute);
+            // If behind a sub, update if requested
+            // If not behind a sub, update always
+            if (updateSprite && (!substitute || updateSpriteIfSubstituted))
             {
-                return; // Only for updating visibility below
+                Sprite sprite = pos.Sprite;
+                sprite.Image?.DeductReference(Game.OpenGL);
+                sprite.Image = PokemonImageLoader.GetPokemonImage(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, _backImage,
+                    substitute, status2.HasFlag(PBEStatus2.Disguised) ? DisguisedPID : PartyPkmn.PID, PartyPkmn.IsEgg);
             }
-            if (!status2.HasFlag(PBEStatus2.Substitute))
+            if (!updateVisibility)
             {
-                if (status2.HasFlag(PBEStatus2.Airborne)
-                    || status2.HasFlag(PBEStatus2.ShadowForce)
-                    || status2.HasFlag(PBEStatus2.Underground)
-                    || status2.HasFlag(PBEStatus2.Underwater))
-                {
-                    pos.PkmnVisible = false;
-                }
-                else
-                {
-                    pos.PkmnVisible = true;
-                }
+                return;
             }
-        }
-        public unsafe void UpdateInfoBar()
-        {
-            fixed (uint* dst = InfoBarImg.Bitmap)
+            if (!substitute &&
+                (status2.HasFlag(PBEStatus2.Airborne)
+                || status2.HasFlag(PBEStatus2.ShadowForce)
+                || status2.HasFlag(PBEStatus2.Underground)
+                || status2.HasFlag(PBEStatus2.Underwater)))
             {
-                int dstW = InfoBarImg.Width;
-                int dstH = InfoBarImg.Height;
-                Renderer.OverwriteRectangle(dst, dstW, dstH, Renderer.Color(48, 48, 48, 128));
-                // Nickname
-                Font.DefaultSmall.DrawString(dst, dstW, dstH, 2, 3, Pkmn.KnownNickname, Font.DefaultWhite_I);
-                // Gender
-                PBEGender gender = _useKnownInfo && !Pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? Pkmn.KnownGender : Pkmn.Gender;
-                if (gender != PBEGender.Genderless)
-                {
-                    Font.Default.DrawString(dst, dstW, dstH, 51, -2, gender.ToSymbol(), gender == PBEGender.Male ? Font.DefaultBlue_O : Font.DefaultRed_O);
-                }
-                // Level
-                const int lvX = 62;
-                Font.PartyNumbers.DrawString(dst, dstW, dstH, lvX, 3, "[LV]", Font.DefaultWhite_I);
-                Font.PartyNumbers.DrawString(dst, dstW, dstH, lvX + 12, 3, Pkmn.Level.ToString(), Font.DefaultWhite_I);
-                // Caught
-                if (_useKnownInfo && Pkmn.IsWild && Game.Instance.Save.Pokedex.IsCaught(Pkmn.KnownSpecies))
-                {
-                    Font.Default.DrawString(dst, dstW, dstH, 2, 12, "*", Font.DefaultRed_O);
-                }
-                // Status
-                PBEStatus1 status = Pkmn.Status1;
-                if (status != PBEStatus1.None)
-                {
-                    Font.DefaultSmall.DrawString(dst, dstW, dstH, 30, 13, status.ToString(), Font.DefaultWhite_I);
-                }
-                // HP
-                if (!_useKnownInfo)
-                {
-                    string str = Pkmn.HP.ToString();
-                    Font.PartyNumbers.MeasureString(str, out int strW, out int _);
-                    Font.PartyNumbers.DrawString(dst, dstW, dstH, 45 - strW, 28, str, Font.DefaultWhite_I);
-                    Font.PartyNumbers.DrawString(dst, dstW, dstH, 46, 28, "/" + Pkmn.MaxHP, Font.DefaultWhite_I);
-                }
-
-                const int lineStartX = 9;
-                const int lineW = 82;
-                Renderer.HP_TripleLine(dst, dstW, dstH, lineStartX, 23, lineW, Pkmn.HPPercentage);
-
-                // EXP
-                if (!_useKnownInfo)
-                {
-                    Renderer.EXP_SingleLine(dst, dstW, dstH, lineStartX, 37, lineW, Pkmn.EXP, Pkmn.Level, Pkmn.Species, Pkmn.RevertForm);
-                }
-            }
-        }
-
-        public void UpdateAnimationSpeed()
-        {
-            PBEBattlePokemon pkmn = Pkmn;
-            PBEStatus1 s = pkmn.Status1;
-            if (s == PBEStatus1.Frozen)
-            {
-                AnimImage.IsPaused = true;
+                pos.PkmnVisible = false;
             }
             else
             {
-                AnimImage.SpeedModifier = s == PBEStatus1.Paralyzed || s == PBEStatus1.Asleep || pkmn.HPPercentage <= 0.25 ? 2d : 1d;
-                AnimImage.IsPaused = false;
+                pos.PkmnVisible = true;
             }
+        }
+        public void UpdateInfoBar()
+        {
+            GL gl = Game.OpenGL;
+            InfoBarImg.PushFrameBuffer(gl);
+            GLHelper.ClearColor(gl, ColorF.FromRGBA(48, 48, 48, 128));
+            gl.Clear(ClearBufferMask.ColorBufferBit);
+            // Nickname
+            GUIString.CreateAndRenderOneTimeString(gl, Pkmn.KnownNickname, Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(2, 3));
+            // Gender
+            PBEGender gender = _useKnownInfo && !Pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? Pkmn.KnownGender : Pkmn.Gender;
+            GUIString.CreateAndRenderOneTimeGenderString(gl, gender, Font.Default, new Pos2D(51, -2));
+            // Level
+            const int lvX = 62;
+            GUIString.CreateAndRenderOneTimeString(gl, "[LV]", Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX, 3));
+            GUIString.CreateAndRenderOneTimeString(gl, Pkmn.Level.ToString(), Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX + 12, 3));
+            // Caught
+            if (_useKnownInfo && Pkmn.IsWild && Engine.Instance.Save.Pokedex.IsCaught(Pkmn.KnownSpecies))
+            {
+                GUIString.CreateAndRenderOneTimeString(gl, "*", Font.Default, FontColors.DefaultRed_O, new Pos2D(2, 12));
+            }
+            // Status
+            PBEStatus1 status = Pkmn.Status1;
+            if (status != PBEStatus1.None)
+            {
+                GUIString.CreateAndRenderOneTimeString(gl, status.ToString(), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(30, 13));
+            }
+            // HP
+            if (!_useKnownInfo)
+            {
+                string str = Pkmn.HP.ToString();
+                Size2D strS = Font.PartyNumbers.MeasureString(str);
+                GUIString.CreateAndRenderOneTimeString(gl, str, Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(45 - (int)strS.Width, 28));
+                GUIString.CreateAndRenderOneTimeString(gl, "/" + Pkmn.MaxHP, Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(46, 28));
+            }
+
+            const int lineStartX = 9;
+            const int lineW = 82;
+            Renderer.HP_TripleLine(lineStartX, 23, lineW, (float)Pkmn.HPPercentage); // TODO: CAST CAN BE REMOVED WHEN UPDATING PBE
+
+            // EXP
+            if (!_useKnownInfo)
+            {
+                Renderer.EXP_SingleLine(lineStartX, 37, lineW, Pkmn.EXP, Pkmn.Level, Pkmn.Species, Pkmn.RevertForm);
+            }
+            GLHelper.PopFrameBuffer(gl);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe PixelSupplier MakeAllyBitmapSupplier(uint* src, int srcW)
+        public void Delete(GL gl)
         {
-            return (x, y) => *Renderer.GetPixelAddress(src, srcW, x / 2, y / 2);
-        }
-        public unsafe void Render(uint* dst, int dstW, int dstH, float x, float y, bool ally)
-        {
-            AnimatedImage img = AnimImage;
-            int width = img.Width;
-            int height = img.Height;
-            fixed (uint* src = img.Bitmap)
-            {
-                PixelSupplier pixSupply;
-                if (ally)
-                {
-                    pixSupply = MakeAllyBitmapSupplier(src, width);
-                    width *= 2;
-                    height *= 2;
-                }
-                else
-                {
-                    pixSupply = Renderer.MakeBitmapSupplier(src, width);
-                }
-                int px = Renderer.GetCoordinatesForCentering(dstW, width, x);
-                int py = Renderer.GetCoordinatesForEndAlign(dstH, height, y);
-                Renderer.DrawBitmapWithShadow(dst, dstW, dstH, px, py, pixSupply, width, height);
-            }
+            InfoBarImg.DeductReference(gl);
+            Mini?.DeductReference(gl);
         }
     }
 
@@ -212,7 +185,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 if (shouldCheckEvolution && oldLevel != pp.Level)
                 {
                     EvolutionData.EvoData evo = Evolution.GetLevelUpEvolution(Party, pp);
-                    if (evo != null)
+                    if (evo is not null)
                     {
                         Evolution.AddPendingEvolution(pp, evo);
                     }

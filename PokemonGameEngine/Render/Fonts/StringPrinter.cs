@@ -1,7 +1,10 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.UI;
+using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Silk.NET.OpenGL;
+using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.GUI
 {
@@ -10,21 +13,16 @@ namespace Kermalis.PokemonGameEngine.GUI
         EnoughChars,
         FormFeed,
         VerticalTab,
-        Ended,
+        Ended
     }
 
-    // 1x scale only for now
     internal sealed class StringPrinter
     {
+        private static readonly List<StringPrinter> _allStringPrinters = new();
+
         private readonly Window _window;
 
-        private readonly string _str;
-        private readonly Font _font;
-        private readonly uint[] _fontColors;
-        private readonly int _startX;
-        private readonly int _startY;
-        private int _nextXOffset;
-        private int _nextYOffset;
+        private readonly GUIString _str;
         private int _index;
 
         private StringPrinterResult _result;
@@ -32,27 +30,29 @@ namespace Kermalis.PokemonGameEngine.GUI
         public bool IsDone => _result == StringPrinterResult.Ended && _pressedDone;
         public bool IsEnded => _result == StringPrinterResult.Ended;
 
-        public StringPrinter(Window w, string str, float x, float y, Font font, uint[] fontColors)
-            : this(w, str, (int)(Program.RenderWidth * x), (int)(Program.RenderHeight * y), font, fontColors) { }
-        public StringPrinter(Window w, string str, int x, int y, Font font, uint[] fontColors)
+        public StringPrinter(Window w, string str, Font font, ColorF[] strColors, Pos2D pos, int scale = 1)
         {
             _window = w;
-            _str = Game.Instance.StringBuffers.ApplyBuffers(str);
-            _startX = x;
-            _startY = y;
-            _font = font;
-            _fontColors = fontColors;
-
-            _window.ClearImage();
-            Game.Instance.StringPrinters.Add(this);
+            GL gl = Game.OpenGL;
+            _window.Image.PushFrameBuffer(gl);
+            _str = new GUIString(Engine.Instance.StringBuffers.ApplyBuffers(str), font, strColors, pos: pos, allVisible: false, scale: scale);
+            _window.ClearImagePushed(gl);
+            GLHelper.PopFrameBuffer(gl);
+            _allStringPrinters.Add(this);
         }
-
-        public void Close()
+        public static StringPrinter CreateStandardMessageBox(Window w, string str, Font font, ColorF[] strColors, int scale = 1)
         {
-            Game.Instance.StringPrinters.Remove(this);
+            return new StringPrinter(w, str, font, strColors, Pos2D.FromRelative(0.05f, 0.01f), scale: scale);
         }
 
-        public unsafe void LogicTick()
+        public void Delete()
+        {
+            GL gl = Game.OpenGL;
+            _str.Delete(gl);
+            _allStringPrinters.Remove(this);
+        }
+
+        public void LogicTick()
         {
             bool IsDown()
             {
@@ -75,6 +75,8 @@ namespace Kermalis.PokemonGameEngine.GUI
                     if (IsPressed())
                     {
                         _window.ClearImage();
+                        _str.VisibleStart = _str.NumVisible;
+                        _str.NumVisible = 0;
                         _result = StringPrinterResult.EnoughChars;
                     }
                     break;
@@ -99,22 +101,20 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
-        private unsafe void AdvanceAndDrawString(int speed)
+        private void AdvanceAndDrawString(int count)
         {
-            unsafe void DrawString(uint* dst, int dstW, int dstH)
-            {
-                _result = DrawNext(dst, dstW, dstH, speed);
-            }
-            _window.Image.Draw(DrawString);
+            GL gl = Game.OpenGL;
+            _window.Image.PushFrameBuffer(gl);
+            _result = DrawNext(gl, count);
+            GLHelper.PopFrameBuffer(gl);
         }
-        private unsafe StringPrinterResult DrawNext(uint* dst, int dstW, int dstH, int count)
+        private StringPrinterResult DrawNext(GL gl, int count)
         {
             int i = 0;
-            while (i < count && _index < _str.Length)
+            uint nx = 0, ny = 0;
+            while (i < count && _index < _str.Text.Length)
             {
-                int curX = _startX + _nextXOffset;
-                int curY = _startY + _nextYOffset;
-                Font.Glyph glyph = _font.GetGlyph(_str, ref _index, ref _nextXOffset, ref _nextYOffset, out string readStr);
+                Glyph glyph = _str.Font.GetGlyph(_str.Text, ref _index, ref nx, ref ny, out string readStr);
                 if (readStr == "\f")
                 {
                     return StringPrinterResult.FormFeed;
@@ -123,13 +123,22 @@ namespace Kermalis.PokemonGameEngine.GUI
                 {
                     return StringPrinterResult.VerticalTab;
                 }
-                if (glyph != null)
+                if (glyph is not null)
                 {
-                    _font.DrawGlyph(dst, dstW, dstH, curX, curY, glyph, _fontColors);
+                    _str.NumVisible++;
+                    _str.Render(gl);
                     i++;
                 }
             }
-            return _index >= _str.Length ? StringPrinterResult.Ended : StringPrinterResult.EnoughChars;
+            return _index >= _str.Text.Length ? StringPrinterResult.Ended : StringPrinterResult.EnoughChars;
+        }
+
+        public static void ProcessAll()
+        {
+            foreach (StringPrinter s in _allStringPrinters.ToArray())
+            {
+                s.LogicTick();
+            }
         }
     }
 }

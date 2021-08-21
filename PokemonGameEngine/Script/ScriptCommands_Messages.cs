@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.Fonts;
 
 namespace Kermalis.PokemonGameEngine.Script
 {
@@ -11,10 +12,10 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             if (_messageBox is null)
             {
-                _messageBox = new Window(0.00f, 0.79f, 1f, 0.17f, Renderer.Color(255, 255, 255, 255));
+                _messageBox = Window.CreateStandardMessageBox(Colors.White);
             }
-            _stringPrinter?.Close();
-            _stringPrinter = new StringPrinter(_messageBox, text, 0.05f, 0.01f, Font.Default, Font.DefaultDarkGray_I);
+            _stringPrinter?.Delete();
+            _stringPrinter = StringPrinter.CreateStandardMessageBox(_messageBox, text, Font.Default, FontColors.DefaultDarkGray_I);
         }
         private string ReadString()
         {
@@ -53,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.Script
                     return;
                 }
             }
-            _stringPrinter.Close();
+            _stringPrinter.Delete();
             _stringPrinter = null;
             _messageBox.Close();
             _messageBox = null;
@@ -69,7 +70,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private void YesNoAction(bool value)
         {
-            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)(value ? 1 : 0);
+            Engine.Instance.Save.Vars[Var.SpecialVar_Result] = (short)(value ? 1 : 0);
             CloseChoices();
         }
         /*private void MultichoiceAction(short value)

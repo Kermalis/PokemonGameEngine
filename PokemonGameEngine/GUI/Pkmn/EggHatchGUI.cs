@@ -2,9 +2,11 @@
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.Images;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Sound;
-using Kermalis.PokemonGameEngine.UI;
-using Kermalis.PokemonGameEngine.Util;
+using Silk.NET.OpenGL;
 
 namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
@@ -29,28 +31,27 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private StringPrinter _stringPrinter;
 
         private AnimatedImage _img;
-        private int _imgX;
-        private int _imgY;
+        private Pos2D _imgPos;
 
-        public unsafe EggHatchGUI()
+        public EggHatchGUI()
         {
-            _pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar1]];
+            _pkmn = Engine.Instance.Save.PlayerParty[Engine.Instance.Save.Vars[Var.SpecialVar1]];
             LoadPkmnImage();
             _state = State.FadeIn;
-            _fadeTransition = new FadeFromColorTransition(500, 0);
-            Game.Instance.SetCallback(CB_EggHatch);
-            Game.Instance.SetRCallback(RCB_EggHatch);
+            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
+            Engine.Instance.SetCallback(CB_EggHatch);
+            Engine.Instance.SetRCallback(RCB_EggHatch);
         }
 
         private void LoadPkmnImage()
         {
-            _img = PokemonImageUtils.GetPokemonImage(_pkmn.Species, _pkmn.Form, _pkmn.Gender, _pkmn.Shiny, false, false, _pkmn.PID, _pkmn.IsEgg);
-            _imgX = Renderer.GetCoordinatesForCentering(Program.RenderWidth, _img.Width, 0.5f);
-            _imgY = Renderer.GetCoordinatesForCentering(Program.RenderHeight, _img.Height, 0.5f);
+            _img?.DeductReference(Game.OpenGL);
+            _img = PokemonImageLoader.GetPokemonImage(_pkmn.Species, _pkmn.Form, _pkmn.Gender, _pkmn.Shiny, false, false, _pkmn.PID, _pkmn.IsEgg);
+            _imgPos = Pos2D.Center(0.5f, 0.5f, _img.Size);
         }
         private void CreateMessage(string msg)
         {
-            _stringPrinter = new StringPrinter(_stringWindow, msg, 0.1f, 0.01f, Font.Default, Font.DefaultDarkGray_I);
+            _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, msg, Font.Default, FontColors.DefaultDarkGray_I);
         }
         private bool ReadMessage()
         {
@@ -67,7 +68,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     if (_fadeTransition.IsDone)
                     {
                         _fadeTransition = null;
-                        _stringWindow = new Window(0, 0.79f, 1, 0.16f, Renderer.Color(255, 255, 255, 255));
+                        _stringWindow = Window.CreateStandardMessageBox(Colors.White);
                         CreateMessage("An egg is hatching!");
                         _state = State.AnEggIsHatchingMsg;
                     }
@@ -77,9 +78,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     if (ReadMessage())
                     {
-                        _stringPrinter.Close();
+                        _stringPrinter.Delete();
                         _stringPrinter = null;
-                        _fadeTransition = new FadeToColorTransition(1_000, Renderer.ColorNoA(200, 200, 200));
+                        _fadeTransition = new FadeToColorTransition(1_000, ColorF.FromRGB(200, 200, 200));
                         _state = State.FadeToWhite;
                     }
                     return;
@@ -91,7 +92,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                         _fadeTransition = null;
                         _pkmn.HatchEgg();
                         LoadPkmnImage();
-                        _fadeTransition = new FadeFromColorTransition(1_000, Renderer.ColorNoA(200, 200, 200));
+                        _fadeTransition = new FadeFromColorTransition(1_000, ColorF.FromRGB(200, 200, 200));
                         _state = State.FadeToHatched;
                     }
                     return;
@@ -111,11 +112,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     if (ReadMessage())
                     {
-                        _stringPrinter.Close();
+                        _stringPrinter.Delete();
                         _stringPrinter = null;
                         _stringWindow.Close();
                         _stringWindow = null;
-                        _fadeTransition = new FadeToColorTransition(500, 0);
+                        _fadeTransition = new FadeToColorTransition(500, Colors.Black);
                         _state = State.FadeOut;
                     }
                     return;
@@ -125,6 +126,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     if (_fadeTransition.IsDone)
                     {
                         _fadeTransition = null;
+                        GL gl = Game.OpenGL;
+                        _img.DeductReference(gl);
                         OverworldGUI.Instance.ReturnToFieldWithFadeIn();
                     }
                     return;
@@ -132,12 +135,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
         }
 
-        private unsafe void RCB_EggHatch(uint* dst, int dstW, int dstH)
+        private void RCB_EggHatch(GL gl)
         {
-            Renderer.OverwriteRectangle(dst, dstW, dstH, Renderer.Color(30, 30, 30, 255));
+            GLHelper.ClearColor(gl, ColorF.FromRGB(31, 31, 31));
+            gl.Clear(ClearBufferMask.ColorBufferBit);
 
             AnimatedImage.UpdateCurrentFrameForAll();
-            _img.DrawOn(dst, dstW, dstH, _imgX, _imgY);
+            _img.Render(_imgPos);
 
             switch (_state)
             {
@@ -146,13 +150,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 case State.FadeToHatched:
                 case State.FadeOut:
                 {
-                    _fadeTransition.Render(dst, dstW, dstH);
+                    _fadeTransition.Render(gl);
                     return;
                 }
                 case State.AnEggIsHatchingMsg:
                 case State.PkmnHatchedMsg:
                 {
-                    _stringWindow.Render(dst, dstW, dstH);
+                    _stringWindow.Render();
                     return;
                 }
             }
