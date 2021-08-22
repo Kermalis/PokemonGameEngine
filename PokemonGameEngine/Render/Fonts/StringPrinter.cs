@@ -33,11 +33,8 @@ namespace Kermalis.PokemonGameEngine.GUI
         public StringPrinter(Window w, string str, Font font, ColorF[] strColors, Pos2D pos, int scale = 1)
         {
             _window = w;
-            GL gl = Game.OpenGL;
-            _window.Image.PushFrameBuffer(gl);
             _str = new GUIString(Engine.Instance.StringBuffers.ApplyBuffers(str), font, strColors, pos: pos, allVisible: false, scale: scale);
-            _window.ClearImagePushed(gl);
-            GLHelper.PopFrameBuffer(gl);
+            w.ClearImage();
             _allStringPrinters.Add(this);
         }
         public static StringPrinter CreateStandardMessageBox(Window w, string str, Font font, ColorF[] strColors, int scale = 1)
