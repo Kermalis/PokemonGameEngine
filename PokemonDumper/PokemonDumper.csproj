@@ -19,6 +19,9 @@
 		<Reference Include="PokemonBattleEngine">
 			<HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
 		</Reference>
+		<Reference Include="PokemonBattleEngine.DefaultData">
+			<HintPath>..\Shared Dependencies\PokemonBattleEngine.DefaultData.dll</HintPath>
+		</Reference>
 		<Reference Include="SimpleNARC">
 			<HintPath>Dependencies\SimpleNARC.dll</HintPath>
 		</Reference>

@@ -1,12 +1,14 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.DefaultData;
+using Kermalis.PokemonBattleEngine.Utils;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.World;
 using System;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
-    internal sealed class BattleEngineDataProvider : PBEDataProvider
+    internal sealed class BattleEngineDataProvider : PBEDefaultDataProvider
     {
         public static new BattleEngineDataProvider Instance => (BattleEngineDataProvider)PBEDataProvider.Instance;
 
@@ -15,6 +17,12 @@ namespace Kermalis.PokemonGameEngine.Core
         private bool _isFishing;
         private bool _isSurfing;
         private bool _isUnderwater;
+
+        public BattleEngineDataProvider(string databasePath)
+            : base(databasePath, PBELanguage.English, new PBERandom())
+        {
+
+        }
 
         public void UpdateBattleSetting(bool isCave, bool isDarkGrass, bool isFishing, bool isSurfing, bool isUnderwater)
         {
@@ -99,13 +107,13 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             return BaseStats.Get(species, form, cache);
         }
-        public override IPBEPokemonDataExtended GetPokemonDataExtended(PBESpecies species, PBEForm form, bool cache = true)
+        public override IPBEDDPokemonDataExtended GetPokemonDataExtended(PBESpecies species, PBEForm form, bool cache = true)
         {
             throw new InvalidOperationException(); // By default I won't use these systems
         }
 
         // Temporary crash prevention
-        public override IPBELocalizedString GetItemName(PBEItem item)
+        public override IPBEReadOnlyLocalizedString GetItemName(PBEItem item)
         {
             if (!Enum.IsDefined(typeof(PBEItem), item))
             {

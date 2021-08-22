@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Item;
 using System;
 using System.IO;
@@ -54,13 +55,6 @@ namespace Kermalis.PokemonGameEngine.Core
                 return pathb;
             }
             return path + '.' + pathb;
-        }
-
-        public static string WorkingDirectory { get; private set; }
-        public static void SetWorkingDirectory(string workingDirectory)
-        {
-            PBEDataProvider.InitEngine(workingDirectory, dataProvider: new BattleEngineDataProvider());
-            WorkingDirectory = workingDirectory;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

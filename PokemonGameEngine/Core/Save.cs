@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
@@ -60,9 +61,9 @@ namespace Kermalis.PokemonGameEngine.Core
             PlayerParty = new Party();
             {
                 // To test evolution
-                var evomon = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Burmy, PBEForm.Burmy_Trash, 19);
+                var evomon = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Chimchar, 0, 19);
                 evomon.Item = ItemType.Leftovers;
-                evomon.EXP = PBEEXPTables.GetEXPRequired(BaseStats.Get(evomon.Species, evomon.Form, true).GrowthRate, 20) - 1;
+                evomon.EXP = PBEDataProvider.Instance.GetEXPRequired(BaseStats.Get(evomon.Species, evomon.Form, true).GrowthRate, 20) - 1;
                 GivePokemon(evomon);
                 // To pummel
                 var victini = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Victini, 0, 67);

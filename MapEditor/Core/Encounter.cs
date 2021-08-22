@@ -1,5 +1,6 @@
 ﻿using Kermalis.MapEditor.Util;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.World;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

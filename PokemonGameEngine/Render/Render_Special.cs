@@ -55,8 +55,8 @@ namespace Kermalis.PokemonGameEngine.Render
             }
             else
             {
-                uint expPrev = PBEEXPTables.GetEXPRequired(gr, level);
-                uint expNext = PBEEXPTables.GetEXPRequired(gr, (byte)(level + 1));
+                uint expPrev = PBEDataProvider.Instance.GetEXPRequired(gr, level);
+                uint expNext = PBEDataProvider.Instance.GetEXPRequired(gr, (byte)(level + 1));
                 uint expCur = exp;
                 percent = (float)(expCur - expPrev) / (expNext - expPrev);
             }

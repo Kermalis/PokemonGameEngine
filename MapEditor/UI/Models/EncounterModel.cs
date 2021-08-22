@@ -1,6 +1,7 @@
 ﻿using Kermalis.MapEditor.Core;
 using Kermalis.MapEditor.Util;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

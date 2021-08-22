@@ -1,7 +1,6 @@
 ﻿#if DEBUG
 using Kermalis.PokemonGameEngine.Input;
 #endif
-using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonGameEngine.Core;
@@ -17,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Kermalis.PokemonGameEngine.Render.R3D;
+using Kermalis.PokemonBattleEngine.DefaultData.AI;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
@@ -28,6 +28,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public readonly PBEBattle Battle;
         public readonly PBETrainer Trainer;
+        private readonly PBEDDWildAI _wildAI;
+        private readonly PBEDDAI[] _ais;
 
         // Battle thread
         private IPBEPacket _newPacket;
@@ -40,6 +42,23 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public BattleGUI(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties, TrainerClass trainerClass = default, string trainerDefeatText = null)
             : this(battle, trainerParties) // BattleGUI_Render
         {
+            // Create AIs
+            _ais = new PBEDDAI[trainerParties.Count];
+            // Skip player
+            for (int i = 1; i < trainerParties.Count; i++)
+            {
+                PBETrainer t = battle.Trainers[i];
+                if (t.IsWild)
+                {
+                    _wildAI = new PBEDDWildAI(t);
+                }
+                else
+                {
+                    _ais[i] = new PBEDDAI(t);
+                }
+            }
+
+            // Finish init
             _onClosed = onClosed;
             _trainerClass = trainerClass;
             _trainerDefeatText = trainerDefeatText;
@@ -183,7 +202,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 SetMessageWindowVisibility(false);
                 Engine.Instance.SetCallback(CB_LogicTick);
                 Engine.Instance.SetRCallback(RCB_RenderTick);
-                CreateBattleThread(() => Trainer.SelectSwitchesIfValid(Switches));
+                CreateBattleThread(() => Trainer.SelectSwitchesIfValid(Switches, out _));
             }
         }
         private void CB_LogicTick()
@@ -271,7 +290,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private static void PlayCry(PBEBattlePokemon pkmn)
         {
-            SoundControl.PlayCryFromHP(pkmn.KnownSpecies, pkmn.KnownForm, (float)pkmn.HPPercentage, pan: GetCryPanpot(pkmn)); // TODO: REMOVE CASE WHEN UPDATING PBE
+            SoundControl.PlayCryFromHP(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.HPPercentage, pan: GetCryPanpot(pkmn));
         }
         private static float GetCryPanpot(PBEBattlePokemon pkmn)
         {
@@ -304,7 +323,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 {
                     arr[j] = _actions[j].TurnAction;
                 }
-                CreateBattleThread(() => Trainer.SelectActionsIfValid(arr));
+                CreateBattleThread(() => Trainer.SelectActionsIfValid(out _, arr));
             }
             else
             {
@@ -323,7 +342,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public void Flee()
         {
             RemoveActionsGUIAndSetCallbacks();
-            CreateBattleThread(() => Trainer.SelectFleeIfValid());
+            CreateBattleThread(() => Trainer.SelectFleeIfValid(out _));
         }
 
         public List<PBESwitchIn> Switches { get; } = new(3);
@@ -377,7 +396,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     else
                     {
                         // If the team is wild, no flees are allowed by default
-                        CreateBattleThread(t.CreateAIActions);
+                        if (Battle.BattleType == PBEBattleType.Wild)
+                        {
+                            CreateBattleThread(() => _wildAI.CreateActions(false));
+                        }
+                        else
+                        {
+                            CreateBattleThread(_ais[t.Id].CreateActions);
+                        }
                     }
                     ResumeBattleThread(); // No need to wait
                     return;
@@ -392,22 +418,22 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     }
                     else
                     {
-                        CreateBattleThread(t.CreateAISwitches);
+                        CreateBattleThread(_ais[t.Id].CreateSwitches);
                     }
                     ResumeBattleThread(); // No need to wait
                     return;
                 }
                 case PBEAutoCenterPacket acp:
                 {
-                    PBEBattlePokemon pkmn0 = acp.Pokemon0Trainer.TryGetPokemon(acp.Pokemon0);
-                    PBEBattlePokemon pkmn1 = acp.Pokemon1Trainer.TryGetPokemon(acp.Pokemon1);
+                    PBEBattlePokemon pkmn0 = acp.Pokemon0Trainer.GetPokemon(acp.Pokemon0);
+                    PBEBattlePokemon pkmn1 = acp.Pokemon1Trainer.GetPokemon(acp.Pokemon1);
                     MovePokemon(pkmn0, acp.Pokemon0OldPosition);
                     MovePokemon(pkmn1, acp.Pokemon1OldPosition);
                     break;
                 }
                 case PBEPkmnEXPChangedPacket pecp:
                 {
-                    PBEBattlePokemon pokemon = pecp.PokemonTrainer.TryGetPokemon(pecp.Pokemon);
+                    PBEBattlePokemon pokemon = pecp.PokemonTrainer.GetPokemon(pecp.Pokemon);
                     if (pokemon.FieldPosition != PBEFieldPosition.None)
                     {
                         UpdatePokemon(pokemon, true, false, false, false, false, false);
@@ -416,7 +442,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 case PBEPkmnFaintedPacket pfp:
                 {
-                    PBEBattlePokemon pkmn = pfp.PokemonTrainer.TryGetPokemon(pfp.Pokemon);
+                    PBEBattlePokemon pkmn = pfp.PokemonTrainer.GetPokemon(pfp.Pokemon);
                     HidePokemon(pkmn, pfp.OldPosition);
                     if (pkmn.Trainer == Trainer)
                     {
@@ -427,21 +453,21 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 case PBEPkmnFormChangedPacket pfcp:
                 {
-                    PBEBattlePokemon pkmn = pfcp.PokemonTrainer.TryGetPokemon(pfcp.Pokemon);
+                    PBEBattlePokemon pkmn = pfcp.PokemonTrainer.GetPokemon(pfcp.Pokemon);
                     SetSeen(pkmn);
                     UpdatePokemon(pkmn, true, true, true, false, true, false);
                     break;
                 }
                 case PBEPkmnHPChangedPacket phcp:
                 {
-                    PBEBattlePokemon pkmn = phcp.PokemonTrainer.TryGetPokemon(phcp.Pokemon);
+                    PBEBattlePokemon pkmn = phcp.PokemonTrainer.GetPokemon(phcp.Pokemon);
                     UpdateAnimationSpeed(pkmn);
                     UpdatePokemon(pkmn, true, false, false, false, false, false);
                     break;
                 }
                 case PBEPkmnLevelChangedPacket plcp:
                 {
-                    PBEBattlePokemon pokemon = plcp.PokemonTrainer.TryGetPokemon(plcp.Pokemon);
+                    PBEBattlePokemon pokemon = plcp.PokemonTrainer.GetPokemon(plcp.Pokemon);
                     if (pokemon.FieldPosition != PBEFieldPosition.None)
                     {
                         UpdatePokemon(pokemon, true, false, false, false, false, false);
@@ -451,14 +477,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 case PBEStatus1Packet s1p:
                 {
-                    PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTrainer.TryGetPokemon(s1p.Status1Receiver);
+                    PBEBattlePokemon status1Receiver = s1p.Status1ReceiverTrainer.GetPokemon(s1p.Status1Receiver);
                     UpdateAnimationSpeed(status1Receiver);
                     UpdatePokemon(status1Receiver, true, false, false, false, false, false);
                     break;
                 }
                 case PBEStatus2Packet s2p:
                 {
-                    PBEBattlePokemon status2Receiver = s2p.Status2ReceiverTrainer.TryGetPokemon(s2p.Status2Receiver);
+                    PBEBattlePokemon status2Receiver = s2p.Status2ReceiverTrainer.GetPokemon(s2p.Status2Receiver);
                     switch (s2p.Status2)
                     {
                         case PBEStatus2.Airborne: UpdatePokemon(status2Receiver, false, true, false, false, false, true); break;
@@ -504,7 +530,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     PBETrainer trainer = psip.Trainer;
                     foreach (PBEPkmnAppearedInfo info in psip.SwitchIns)
                     {
-                        PBEBattlePokemon pkmn = trainer.TryGetPokemon(info.Pokemon);
+                        PBEBattlePokemon pkmn = trainer.GetPokemon(info.Pokemon);
                         UpdateDisguisedPID(pkmn);
                         SetSeen(pkmn);
                         ShowPokemon(pkmn);
@@ -514,7 +540,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 case PBEPkmnSwitchOutPacket psop:
                 {
-                    PBEBattlePokemon pkmn = psop.PokemonTrainer.TryGetPokemon(psop.Pokemon);
+                    PBEBattlePokemon pkmn = psop.PokemonTrainer.GetPokemon(psop.Pokemon);
                     HidePokemon(pkmn, psop.OldPosition);
                     break;
                 }
@@ -523,7 +549,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     PBETrainer trainer = Battle.Teams[1].Trainers[0];
                     foreach (PBEPkmnAppearedInfo info in wpap.Pokemon)
                     {
-                        PBEBattlePokemon pkmn = trainer.TryGetPokemon(info.Pokemon);
+                        PBEBattlePokemon pkmn = trainer.GetPokemon(info.Pokemon);
                         UpdateDisguisedPID(pkmn);
                         SetSeen(pkmn);
                         ShowWildPokemon(pkmn);

@@ -4,21 +4,6 @@
         <name>PokemonBattleEngine</name>
     </assembly>
     <members>
-        <member name="T:Kermalis.PokemonBattleEngine.AI.PBEAI">
-            <summary>Creates valid decisions for a team in a battle. Decisions may not be valid for custom settings and/or move changes.</summary>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.AI.PBEAI.CreateAIActions(Kermalis.PokemonBattleEngine.Battle.PBETrainer)">
-            <summary>Creates valid actions for a battle turn for a specific team.</summary>
-            <param name="trainer">The trainer to create actions for.</param>
-            <exception cref="T:System.InvalidOperationException">Thrown when <paramref name="trainer"/> has no active battlers or <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForActions"/>.</exception>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when a Pokémon has no moves, the AI tries to use a move with invalid targets, or <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleFormat"/> is invalid.</exception>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.AI.PBEAI.CreateAISwitches(Kermalis.PokemonBattleEngine.Battle.PBETrainer)">
-            <summary>Creates valid switches for a battle for a specific team.</summary>
-            <param name="trainer">The trainer to create switches for.</param>
-            <exception cref="T:System.InvalidOperationException">Thrown when <paramref name="trainer"/> does not require switch-ins or <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleState"/> is not <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEBattleState.WaitingForActions"/>.</exception>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when <paramref name="trainer"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBETrainer.Battle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleFormat"/> is invalid.</exception>
-        </member>
         <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEBattle">
             <summary>Represents a specific Pokémon battle.</summary>
         </member>
@@ -68,6 +53,7 @@
             <param name="user">The Pokémon that will act.</param>
             <param name="requestedTargets">The targets the Pokémon wishes to hit.</param>
             <param name="canHitFarCorners">Whether the move can hit far Pokémon in a triple battle.</param>
+            <param name="rand">The random to use.</param>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattle.AreTargetsValid(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Data.PBEMove,Kermalis.PokemonBattleEngine.Battle.PBETurnTarget)">
             <summary>Determines whether chosen targets are valid for a given move.</summary>
@@ -80,6 +66,7 @@
             <summary>Gets a random target a move can hit when called by <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.Metronome"/>.</summary>
             <param name="pkmn">The Pokémon using <paramref name="calledMove"/>.</param>
             <param name="calledMove">The move being called.</param>
+            <param name="rand">The random to use.</param>
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown when <paramref name="calledMove"/>, <paramref name="pkmn"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.FieldPosition"/>, or <paramref name="pkmn"/>'s <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattle"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattle.BattleFormat"/> is invalid.</exception>
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Battle.PBEBattleTerrain">
@@ -431,10 +418,6 @@
             <summary>The status was forcefully removed from a team.</summary>
             <example>A Pokémon used <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.BrickBreak"/> and destroyed <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.Reflect"/>.</example>
         </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatusAction.Damage">
-            <summary>The status caused a Pokémon to take damage.</summary>
-            <example>A Pokémon switched in and took damage from <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.StealthRock"/>.</example>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatusAction.Ended">
             <summary>The status ended naturally.</summary>
             <example><see cref="F:Kermalis.PokemonBattleEngine.Battle.PBETeamStatus.LightScreen"/> wore off.</example>
@@ -492,9 +475,6 @@
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEWeatherAction.Added">
             <summary>The weather was added to the battle.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEWeatherAction.CausedDamage">
-            <summary>The weather caused a Pokémon to take damage.</summary>
         </member>
         <member name="F:Kermalis.PokemonBattleEngine.Battle.PBEWeatherAction.Ended">
             <summary>The weather was removed from the battle.</summary>
@@ -647,10 +627,10 @@
             <summary>The amount of HP the Pokémon's <see cref="F:Kermalis.PokemonBattleEngine.Battle.PBEStatus2.Substitute"/> has left.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.HasUsedMoveThisTurn">
-            <summary>True if the Pokémon has successfully executed a move this turn.</summary>
+            <summary><see langword="true"/> if the Pokémon has successfully executed a move this turn.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.TurnAction">
-            <summary>The action the Pokémon will try to perform when the turn is run.</summary>
+            <summary>The action the Pokémon will try to perform when the turn is run. <see langword="null"/> if the Pokémon just switched in, attempted to flee, etc.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.TempLockedMove">
             <summary>The move the Pokémon is forced to use by multi-turn moves.</summary>
@@ -709,21 +689,23 @@
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.GetProtectionChance">
             <summary>Gets the chance of a protection move succeeding (based on <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.Protection_Counter"/>) out of <see cref="F:System.UInt16.MaxValue"/>.</summary>
         </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.ToString">
+            <summary>Will only be accurate for the host</summary>
+        </member>
         <member name="T:Kermalis.PokemonBattleEngine.Battle.PBETeam">
             <summary>Represents a team in a specific <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattle"/>.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Battle.PBETeam.Battle">
             <summary>The battle this team and its party belongs to.</summary>
         </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Battle.PBETeam.TryGetPokemon(Kermalis.PokemonBattleEngine.Battle.PBEFieldPosition)">
-            <summary>Gets a specific active <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon"/> by its <see cref="P:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon.FieldPosition"/>.</summary>
-            <param name="pos">The <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEFieldPosition"/> of the <see cref="T:Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon"/>.</param>
-        </member>
         <member name="F:Kermalis.PokemonBattleEngine.Battle.PBETypeEffectiveness._table">
             <summary>The type effectiveness table. The first key is the attacking type and the second key is the defending type.</summary>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Battle.PBETypeEffectiveness.ThunderWaveTypeCheck(Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Battle.PBEBattlePokemon,Kermalis.PokemonBattleEngine.Data.PBEMove,System.Boolean)">
             <summary>Checks if <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEMoveEffect.ThunderWave"/>'s type affects the target, taking into account <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Normalize"/>.</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Data.PBELanguage">
+            <summary>Represents a language the engine supports.</summary>
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Data.PBEGender">
             <summary>Represents a specific Pokémon's gender.</summary>
@@ -806,113 +788,8 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveCategory.MAX">
             <summary>Invalid category.</summary>
         </member>
-        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod">
+        <member name="T:Kermalis.PokemonBattleEngine.Data.PBEType">
             <summary>Represents the various methods in which a Pokémon can learn a <see cref="T:Kermalis.PokemonBattleEngine.Data.PBEMove"/>.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.None">
-            <summary>There is no way to learn this move.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.LevelUp_RSColoXD">
-            <summary>The move can be learned by levelling up a Pokémon in Pokémon Ruby Version and Pokémon Sapphire Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.LevelUp_FR">
-            <summary>The move can be learned by levelling up a Pokémon in Pokémon Fire Red Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.LevelUp_LG">
-            <summary>The move can be learned by levelling up a Pokémon in Pokémon Leaf Green Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.LevelUp_E">
-            <summary>The move can be learned by levelling up a Pokémon in Pokémon Emerald Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.LevelUp_DP">
-            <summary>The move can be learned by levelling up a Pokémon in Pokémon Diamond Version and Pokémon Pearl Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.LevelUp_Pt">
-            <summary>The move can be learned by levelling up a Pokémon in Pokémon Platinum Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.LevelUp_HGSS">
-            <summary>The move can be learned by levelling up a Pokémon in Pokémon HeartGold Version and Pokémon SoulSilver Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.LevelUp_BW">
-            <summary>The move can be learned by levelling up a Pokémon in Pokémon Black Version and Pokémon White Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.LevelUp_B2W2">
-            <summary>The move can be learned by levelling up a Pokémon in Pokémon Black Version 2 and Pokémon White Version 2.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.TM_RSFRLGEColoXD">
-            <summary>The move can be learned by using a technical machine on a Pokémon in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, Pokémon Leaf Green Version, Pokémon Emerald Version, Pokémon Colosseum, and Pokémon XD: Gale of Darkness.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.TM_DPPt">
-            <summary>The move can be learned by using a technical machine on a Pokémon in Pokémon Diamond Version, Pokémon Pearl Version, and Pokémon Platinum Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.TM_HGSS">
-            <summary>The move can be learned by using a technical machine on a Pokémon in Pokémon HeartGold Version and Pokémon SoulSilver Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.TM_BW">
-            <summary>The move can be learned by using a technical machine on a Pokémon in Pokémon Black Version and Pokémon White Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.TM_B2W2">
-            <summary>The move can be learned by using a technical machine on a Pokémon in Pokémon Black Version 2 and Pokémon White Version 2.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.HM_RSFRLGEColoXD">
-            <summary>The move can be learned by using a hidden machine on a Pokémon in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, Pokémon Leaf Green Version, Pokémon Emerald Version, Pokémon Colosseum, and Pokémon XD: Gale of Darkness.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.HM_DPPt">
-            <summary>The move can be learned by using a hidden machine on a Pokémon in Pokémon Diamond Version, Pokémon Pearl Version, and Pokémon Platinum Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.HM_HGSS">
-            <summary>The move can be learned by using a hidden machine on a Pokémon in Pokémon HeartGold Version and Pokémon SoulSilver Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.HM_BWB2W2">
-            <summary>The move can be learned by using a hidden machine on a Pokémon in Pokémon Black Version, Pokémon White Version, Pokémon Black Version 2, and Pokémon White Version 2.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.MoveTutor_FRLG">
-            <summary>The move can be taught to a Pokémon by a move tutor in Pokémon Fire Red Version and Pokémon Leaf Green Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.MoveTutor_E">
-            <summary>The move can be taught to a Pokémon by a move tutor in Pokémon Emerald Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.MoveTutor_XD">
-            <summary>The move can be taught to a Pokémon by a move tutor in Pokémon XD: Gale of Darkness.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.MoveTutor_DP">
-            <summary>The move can be taught to a Pokémon by a move tutor in Pokémon Diamond Version and Pokémon Pearl Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.MoveTutor_Pt">
-            <summary>The move can be taught to a Pokémon by a move tutor in Pokémon Platinum Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.MoveTutor_HGSS">
-            <summary>The move can be taught to a Pokémon by a move tutor in Pokémon HeartGold Version and Pokémon SoulSilver Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.MoveTutor_BW">
-            <summary>The move can be taught to a Pokémon by a move tutor in Pokémon Black Version and Pokémon White Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.MoveTutor_B2W2">
-            <summary>The move can be taught to a Pokémon by a move tutor in Pokémon Black Version 2 and Pokémon White Version 2.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.EggMove_RSFRLGE">
-            <summary>The move can be learned by hatching a Pokémon egg in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, Pokémon Leaf Green Version, and Pokémon Emerald Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.EggMove_DPPt">
-            <summary>The move can be learned by hatching a Pokémon egg in Pokémon Diamond Version, Pokémon Pearl Version, and Pokémon Platinum Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.EggMove_HGSS">
-            <summary>The move can be learned by hatching a Pokémon egg in Pokémon HeartGold Version and Pokémon SoulSilver Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.EggMove_BWB2W2">
-            <summary>The move can be learned by hatching a Pokémon egg in Pokémon Black Version, Pokémon White Version, Pokémon Black Version 2, and Pokémon White Version 2.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.DreamWorld_BW">
-            <summary>The move is known by a Pokémon when found in the Dream World with Pokémon Black Version and Pokémon White Version.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.DreamWorld_B2W2">
-            <summary>The move is known by a Pokémon when found in the Dream World with Pokémon Black Version 2 and Pokémon White Version 2.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.EggMove_Special">
-            <summary>The move can be learned by hatching a Pokémon egg under special conditions.</summary>
-        </member>
-        <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMoveObtainMethod.Form">
-            <summary>The move is learned by a Pokémon when changing forms. The move cannot be used by other forms if this is the only flag or if the species cannot change forms.</summary>
         </member>
         <member name="T:Kermalis.PokemonBattleEngine.Data.PBENature">
             <summary>Represents a specific Pokémon's nature.</summary>
@@ -1541,15 +1418,6 @@
         <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataProvider.GetCatchRateModifier(Kermalis.PokemonBattleEngine.Battle.PBEBattle)">
             <summary>This is the boost to the catch rate. In generation 5, Capture Powers boost the catch rate.</summary>
         </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataUtils.IsMoveUsable(Kermalis.PokemonBattleEngine.Data.PBEMove)">
-            <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataUtils.IsMoveUsable(Kermalis.PokemonBattleEngine.Data.PBEMoveEffect)">
-            <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
-        </member>
-        <member name="P:Kermalis.PokemonBattleEngine.Data.PBEPokemonData.Weight">
-            <summary>Weight in Kilograms</summary>
-        </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEItemData.FlingPower">
             <summary>The power <see cref="!:PBEMoveEffect.Fling"/> has when the user is holding this item. 0 will cause the move to fail.</summary>
         </member>
@@ -1563,14 +1431,20 @@
             <summary>0 PPTier will become 1 PP (unaffected by pp ups)</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEMoveData.Power">
-            <summary>0 power or accuracy will show up as --</summary>
+            <summary>0 power will show up as --</summary>
+        </member>
+        <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEMoveData.Accuracy">
+            <summary>0 accuracy will show up as --</summary>
+        </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEMoveDataExtensions.IsMoveUsable(Kermalis.PokemonBattleEngine.Data.IPBEMoveData)">
+            <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemonData.Weight">
             <summary>Weight in Kilograms</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemon.PBEIgnore">
             <summary>This marks the Pokémon to be ignored by the battle engine. The Pokémon will be treated like an egg or fainted Pokémon.
-            Therefore, it won't be sent out, copied with Illusion, or count as a battler if the rest of the team faints.</summary>
+            Therefore, it won't be sent out, copied with <see cref="F:Kermalis.PokemonBattleEngine.Data.PBEAbility.Illusion"/>, or count as a battler if the rest of the team faints.</summary>
         </member>
         <member name="P:Kermalis.PokemonBattleEngine.Data.IPBEPokemonTypes.Type1">
             <summary>The Pokémon's first type.</summary>
@@ -1883,6 +1757,15 @@
         <member name="M:Kermalis.PokemonBattleEngine.Data.PBESettings.ToString">
             <summary>Converts this <see cref="T:Kermalis.PokemonBattleEngine.Data.PBESettings"/> object into a unique code <see cref="T:System.String"/>.</summary>
         </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.Utils.PBEDataUtils.IsMoveUsable(Kermalis.PokemonBattleEngine.Data.PBEMove)">
+            <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
+        </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.Utils.PBEDataUtils.IsMoveUsable(Kermalis.PokemonBattleEngine.Data.PBEMoveEffect)">
+            <summary>Temporary check to see if a move is usable, can be removed once all moves are added</summary>
+        </member>
+        <member name="T:Kermalis.PokemonBattleEngine.Utils.PBERandom">
+            <summary>A random helper. This class is thread-safe.</summary>
+        </member>
         <member name="P:Kermalis.PokemonBattleEngine.Utils.PBERandom.Seed">
             <summary>Gets or sets the seed of this <see cref="T:Kermalis.PokemonBattleEngine.Utils.PBERandom"/>. The chain will be reset even if the seed is the same as the previous seed.</summary>
         </member>
@@ -1896,7 +1779,6 @@
         <member name="M:Kermalis.PokemonBattleEngine.Utils.PBERandom.RandomLevel(Kermalis.PokemonBattleEngine.Data.PBESettings)">
             <summary>Returns a random <see cref="T:System.Byte"/> value that is between <paramref name="settings"/>'s <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.MinLevel"/> and <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.MaxLevel"/>.</summary>
             <param name="settings">The <see cref="T:Kermalis.PokemonBattleEngine.Data.PBESettings"/> object to use.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="settings"/> == null.</exception>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Utils.PBERandom.RandomShiny">
             <summary>Returns a random <see cref="T:System.Boolean"/> value that represents shininess using shiny odds.</summary>
@@ -1907,15 +1789,6 @@
         <member name="M:Kermalis.PokemonBattleEngine.Utils.PBERandom.Shuffle``1(System.Collections.Generic.IList{``0})">
             <summary>Shuffles the items in <paramref name="source"/> using the Fisher-Yates Shuffle algorithm.</summary>
         </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Utils.PBERandomTeamGenerator.CreateRandomTeam(System.Int32)">
-            <summary>Creates a random team meant for <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultSettings"/>.</summary>
-            <param name="numPkmn">The amount of Pokémon to create in the team./></param>
-        </member>
-        <member name="M:Kermalis.PokemonBattleEngine.Utils.PBERandomTeamGenerator.CreateRandomTeam(System.Int32,System.Collections.Generic.IEnumerable{Kermalis.PokemonBattleEngine.Data.PBESpecies})">
-            <summary>Creates a random team meant for <see cref="P:Kermalis.PokemonBattleEngine.Data.PBESettings.DefaultSettings"/>.</summary>
-            <param name="numPkmn">The amount of Pokémon to create in the team./></param>
-            <param name="allowedSpecies">The allowed species to consider.</param>
-        </member>
         <member name="T:Kermalis.PokemonBattleEngine.Utils.PBEUtils">
             <summary>A static class that provides utilities that are used throughout the battle engine.</summary>
         </member>
@@ -1923,7 +1796,6 @@
             <summary>Returns a <see cref="T:System.String"/> that combines <paramref name="source"/>'s elements' string representations using "and" with commas.</summary>
             <typeparam name="T">The type of the elements of <paramref name="source"/>.</typeparam>
             <param name="source">An <see cref="T:System.Collections.Generic.IReadOnlyList`1"/> to create a string from.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="source"/> == null.</exception>
         </member>
         <member name="M:Kermalis.PokemonBattleEngine.Utils.PBEUtils.ToSafeFileName(System.String)">
             <summary>Removes all invalid file name characters from <paramref name="fileName"/>.</summary>

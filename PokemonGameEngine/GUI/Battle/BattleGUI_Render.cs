@@ -55,7 +55,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             else
             {
-                img.SpeedModifier = s == PBEStatus1.Paralyzed || s == PBEStatus1.Asleep || pkmn.HPPercentage <= 0.25 ? 2 : 1;
+                img.SpeedModifier = s == PBEStatus1.Paralyzed || s == PBEStatus1.Asleep || pkmn.HPPercentage <= 0.25f ? 2 : 1;
                 img.IsPaused = false;
             }
         }
@@ -133,7 +133,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 },
                 new Model(Path.Combine(@"../../../\Assets\BattleBG", allyPath))
                 {
-                    PR = new PositionRotation(new (0, 0, 3), Quaternion.Identity)
+                    PR = new PositionRotation(new(0, 0, 3), Quaternion.Identity)
                 },
                 // You'd add more models here if you wanted. File paths for now
             };

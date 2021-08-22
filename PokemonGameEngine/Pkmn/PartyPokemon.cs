@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
@@ -236,11 +237,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         private void SetDefaultNickname()
         {
-            Nickname = PBELocalizedString.GetSpeciesName(Species).English;
+            Nickname = PBEDataProvider.Instance.GetSpeciesName(Species).English;
         }
         private bool HasDefaultNickname()
         {
-            return Nickname == PBELocalizedString.GetSpeciesName(Species).English;
+            return Nickname == PBEDataProvider.Instance.GetSpeciesName(Species).English;
         }
         /// <summary>Sets the moves to the last 4 moves the Pokémon would've learned by level-up.</summary>
         private void SetDefaultMoves()

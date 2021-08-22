@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Transition;
@@ -206,7 +207,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 PBEBattlePokemon bPkmn = _bPkmn.Pkmn;
                 species = pPkmn.Species;
                 form = bPkmn.RevertForm;
-                hpPercentage = (float)bPkmn.HPPercentage; // TODO: REMOVE CAST WHEN UPDATING PBE
+                hpPercentage = bPkmn.HPPercentage;
             }
             SoundControl.PlayCryFromHP(species, form, hpPercentage);
         }
@@ -338,18 +339,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             else
             {
                 PBEGrowthRate gr = bs.GrowthRate;
-                toNextLvl = PBEEXPTables.GetEXPRequired(gr, (byte)(level + 1)) - exp;
+                toNextLvl = PBEDataProvider.Instance.GetEXPRequired(gr, (byte)(level + 1)) - exp;
                 Renderer.EXP_SingleLine(xpX, xpY, xpW, exp, level, gr);
             }
 
             // Species
-            string str = PBELocalizedString.GetSpeciesName(species).English;
+            string str = PBEDataProvider.Instance.GetSpeciesName(species).English;
             PlaceRightCol(0, str, rightColColors);
             // Types
-            str = PBELocalizedString.GetTypeName(bs.Type1).English;
+            str = PBEDataProvider.Instance.GetTypeName(bs.Type1).English;
             if (bs.Type2 != PBEType.None)
             {
-                str += ' ' + PBELocalizedString.GetTypeName(bs.Type2).English;
+                str += ' ' + PBEDataProvider.Instance.GetTypeName(bs.Type2).English;
             }
             PlaceRightCol(1, str, rightColColors);
             // OT
@@ -427,7 +428,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             PBEFlavor? flavor = PBEDataUtils.GetLikedFlavor(nature);
 
             // Nature
-            string str = PBELocalizedString.GetNatureName(nature).English + ' ';
+            string str = PBEDataProvider.Instance.GetNatureName(nature).English + ' ';
             Place(0, 0, str, highlightColors);
             Size2D strS = leftColFont.MeasureString(str);
             str = "nature.";
@@ -620,10 +621,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             str = speed.ToString();
             PlaceRightCol(4, str, rightColColors);
             // Ability
-            str = PBELocalizedString.GetAbilityName(abil).English;
+            str = PBEDataProvider.Instance.GetAbilityName(abil).English;
             GUIString.CreateAndRenderOneTimeString(gl, str, rightColFont, rightColColors, Pos2D.FromRelative(abilTextX, abilTextY));
             // Ability desc
-            str = PBELocalizedString.GetAbilityDescription(abil).English;
+            str = PBEDataProvider.Instance.GetAbilityDescription(abil).English;
             GUIString.CreateAndRenderOneTimeString(gl, str, leftColFont, rightColColors, Pos2D.FromRelative(abilDescX, abilDescY));
         }
         private void DrawMovesPage(GL gl)
@@ -650,13 +651,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             void Place(int i, PBEMove move, int pp, int maxPP)
             {
-                PBEMoveData mData = PBEMoveData.Data[move];
+                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                 float x = moveTextX;
                 float y = winY + moveY + (i * itemSpacingY);
-                string str = PBELocalizedString.GetTypeName(mData.Type).English;
+                string str = PBEDataProvider.Instance.GetTypeName(mData.Type).English;
                 GUIString.CreateAndRenderOneTimeString(gl, str, moveFont, moveColors, Pos2D.FromRelative(x, y));
                 x += moveX;
-                str = PBELocalizedString.GetMoveName(move).English;
+                str = PBEDataProvider.Instance.GetMoveName(move).English;
                 GUIString.CreateAndRenderOneTimeString(gl, str, moveFont, moveColors, Pos2D.FromRelative(x, y));
                 x = moveTextX + ppX;
                 y += ppY;
@@ -737,12 +738,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             if (_learningMove != PBEMove.None)
             {
                 ColorF[] learnColors = FontColors.DefaultBlue_I;
-                PBEMoveData mData = PBEMoveData.Data[_learningMove];
+                IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(_learningMove);
                 float x = moveTextX;
-                string str = PBELocalizedString.GetTypeName(mData.Type).English;
+                string str = PBEDataProvider.Instance.GetTypeName(mData.Type).English;
                 GUIString.CreateAndRenderOneTimeString(gl, str, moveFont, learnColors, Pos2D.FromRelative(x, cancelY));
                 x += moveX;
-                str = PBELocalizedString.GetMoveName(_learningMove).English;
+                str = PBEDataProvider.Instance.GetMoveName(_learningMove).English;
                 GUIString.CreateAndRenderOneTimeString(gl, str, moveFont, learnColors, Pos2D.FromRelative(x, cancelY));
                 DrawSelection(PkmnConstants.NumMoves);
             }

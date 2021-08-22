@@ -109,8 +109,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             SpritedBattlePokemon GetSprited(bool ally, PBEFieldPosition pos)
             {
                 PBETeam deTeem = ally ? pkmn.Trainer.Team : pkmn.Trainer.Team.OpposingTeam;
-                PBEBattlePokemon dePokeMone = deTeem.TryGetPokemon(pos);
-                return dePokeMone is null ? null : spritedParties[dePokeMone.Trainer.Id][dePokeMone]; // Return null because it'll be disabled anyway
+                if (deTeem.TryGetPokemon(pos, out PBEBattlePokemon dePokeMone))
+                {
+                    return spritedParties[dePokeMone.Trainer.Id][dePokeMone];
+                }
+                return null; // Return null because it'll be disabled anyway
             }
 
             _backText = GUIString.CreateCentered("Back", Font.Default, FontColors.DefaultWhite_I, 0.5f, 0.95f);

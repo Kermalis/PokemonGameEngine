@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.GUI.Transition;
@@ -131,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             if (value)
             {
                 PBEMove move = _learningMoves.Dequeue(); // Remove from queue
-                string str = PBELocalizedString.GetMoveName(move).English;
+                string str = PBEDataProvider.Instance.GetMoveName(move).English;
                 CreateMessage(string.Format("{0} did not learn {1}.", _pkmn.Nickname, str));
                 _state = State.LearnMove_DidNotLearnMsg;
             }
@@ -165,9 +166,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     Moveset.MovesetSlot slot = _pkmn.Moveset[index];
                     PBEMove move = _learningMoves.Dequeue(); // Remove from queue
-                    string moveStr = PBELocalizedString.GetMoveName(move).English;
+                    string moveStr = PBEDataProvider.Instance.GetMoveName(move).English;
                     slot.Move = move;
-                    PBEMoveData mData = PBEMoveData.Data[move];
+                    IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                     slot.PP = PBEDataUtils.CalcMaxPP(mData.PPTier, 0, PkmnConstants.PBESettings);
                     slot.PPUps = 0;
                     CreateMessage(string.Format("{0} learned {1}!", _pkmn.Nickname, moveStr));
@@ -183,14 +184,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void SetWantsToLearnMove()
         {
             PBEMove move = _learningMoves.Peek();
-            string str = PBELocalizedString.GetMoveName(move).English;
+            string str = PBEDataProvider.Instance.GetMoveName(move).English;
             CreateMessage(string.Format("{0} wants to learn {1},\nbut {0} already knows {2} moves.\fForget a move and learn {1}?", _pkmn.Nickname, str, PkmnConstants.NumMoves));
             _state = State.LearnMove_WantsToLearnMoveMsg;
         }
         private void SetGiveUpLearningMove()
         {
             PBEMove move = _learningMoves.Peek();
-            string str = PBELocalizedString.GetMoveName(move).English;
+            string str = PBEDataProvider.Instance.GetMoveName(move).English;
             CreateMessage(string.Format("Give up on learning {0}?", str));
             _state = State.LearnMove_GiveUpLearningMsg;
         }
@@ -257,7 +258,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                     {
                         _fadeTransition = null;
                         SoundControl.PlayCry(_pkmn.Species, _pkmn.Form);
-                        CreateMessage(string.Format("{0} evolved into {1}!", _oldNickname, PBELocalizedString.GetSpeciesName(_pkmn.Species).English));
+                        CreateMessage(string.Format("{0} evolved into {1}!", _oldNickname, PBEDataProvider.Instance.GetSpeciesName(_pkmn.Species).English));
                         _state = State.EvolvedIntoMsg;
                     }
                     return;
@@ -340,11 +341,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                         {
                             Moveset.MovesetSlot slot = _pkmn.Moveset[_forgetMove];
                             PBEMove oldMove = slot.Move;
-                            string oldMoveStr = PBELocalizedString.GetMoveName(oldMove).English;
+                            string oldMoveStr = PBEDataProvider.Instance.GetMoveName(oldMove).English;
                             PBEMove move = _learningMoves.Dequeue(); // Remove from queue
-                            string moveStr = PBELocalizedString.GetMoveName(move).English;
+                            string moveStr = PBEDataProvider.Instance.GetMoveName(move).English;
                             slot.Move = move;
-                            PBEMoveData mData = PBEMoveData.Data[move];
+                            IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(move);
                             slot.PP = PBEDataUtils.CalcMaxPP(mData.PPTier, 0, PkmnConstants.PBESettings);
                             slot.PPUps = 0;
                             CreateMessage(string.Format("{0} forgot {1}\nand learned {2}!", _pkmn.Nickname, oldMoveStr, moveStr));

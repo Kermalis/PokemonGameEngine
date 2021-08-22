@@ -101,7 +101,7 @@ namespace Kermalis.PokemonGameEngine.Core
             var trainerParties = new Party[] { sav.PlayerParty, wildParty };
             var wild = new PBEWildInfo(wildParty);
             PBEBattleTerrain terrain = UpdateBattleSetting(blockBehavior);
-            var battle = new PBEBattle(format, PkmnConstants.PBESettings, me, wild, battleTerrain: terrain, weather: Overworld.GetPBEWeatherFromMap(mapWeather));
+            var battle = PBEBattle.CreateWildBattle(format, PkmnConstants.PBESettings, me, wild, battleTerrain: terrain, weather: Overworld.GetPBEWeatherFromMap(mapWeather));
             CreateBattle(battle, song, trainerParties);
             Save.GameStats[GameStat.WildBattles]++;
         }
@@ -110,7 +110,7 @@ namespace Kermalis.PokemonGameEngine.Core
             Save sav = Save;
             var me = new PBETrainerInfo(sav.PlayerParty, sav.OT.TrainerName, true, inventory: sav.PlayerInventory.ToPBEInventory());
             PBEBattleTerrain terrain = UpdateBattleSetting(blockBehavior);
-            var battle = new PBEBattle(format, PkmnConstants.PBESettings, me, enemyInfo, battleTerrain: terrain, weather: Overworld.GetPBEWeatherFromMap(mapWeather));
+            var battle = PBEBattle.CreateTrainerBattle(format, PkmnConstants.PBESettings, me, enemyInfo, battleTerrain: terrain, weather: Overworld.GetPBEWeatherFromMap(mapWeather));
             CreateBattle(battle, song, trainerParties, c: c, defeatText: defeatText);
             Save.GameStats[GameStat.TrainerBattles]++;
         }

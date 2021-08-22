@@ -30,7 +30,7 @@
 			<TargetPath>PokemonBattleEngine.db</TargetPath>
 		</ContentWithTargetPath>
 		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.6" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.9" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="Silk.NET.Assimp" Version="2.7.0" />
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.7.0" />
@@ -38,6 +38,9 @@
 		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
 		<Reference Include="PokemonBattleEngine">
 			<HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="PokemonBattleEngine.DefaultData">
+			<HintPath>..\Shared Dependencies\PokemonBattleEngine.DefaultData.dll</HintPath>
 		</Reference>
 		<ContentWithTargetPath Include="Dependencies\SDL2.dll">
 			<!--64-bit windows dll for now-->

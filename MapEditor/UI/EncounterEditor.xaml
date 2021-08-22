@@ -1,7 +1,7 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:core="clr-namespace:Kermalis.MapEditor.Core;assembly=MapEditor"
-             xmlns:pbedata="clr-namespace:Kermalis.PokemonBattleEngine.Data;assembly=PokemonBattleEngine"
+             xmlns:pbedata="clr-namespace:Kermalis.PokemonBattleEngine.Data.Utils;assembly=PokemonBattleEngine"
              x:Class="Kermalis.MapEditor.UI.EncounterEditor" Padding="2">
   <DockPanel>
     <TextBlock DockPanel.Dock="Top" Text="Map Encounter Group" />

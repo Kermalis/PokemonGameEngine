@@ -256,7 +256,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private static bool CanUsePositionForBattle(PBEFieldPosition pos)
         {
-            return !BattleGUI.Instance.PositionStandBy.Contains(pos) && BattleGUI.Instance.Trainer.OwnsSpot(pos) && BattleGUI.Instance.Trainer.Team.TryGetPokemon(pos) is null;
+            return !BattleGUI.Instance.PositionStandBy.Contains(pos) && BattleGUI.Instance.Trainer.OwnsSpot(pos) && !BattleGUI.Instance.Trainer.Team.IsSpotOccupied(pos);
         }
         private void SelectForBattleReplacement(PBEBattlePokemon pkmn, PBEFieldPosition pos)
         {
@@ -326,7 +326,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             void Add(PBEMove move, Action command)
             {
-                string str = PBELocalizedString.GetMoveName(move).English;
+                string str = PBEDataProvider.Instance.GetMoveName(move).English;
                 _textChoices.AddOne(str, command, textColors: FontColors.DefaultBlue_I);
             }
 

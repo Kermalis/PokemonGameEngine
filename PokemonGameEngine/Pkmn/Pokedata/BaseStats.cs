@@ -26,7 +26,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         public PBEAbility Ability2 { get; }
         public PBEAbility AbilityH { get; }
         public byte FleeRate { get; }
-        public double Weight { get; }
+        public float Weight { get; }
 
         IPBEReadOnlyStatCollection IPBEPokemonData.BaseStats => Stats;
         private readonly List<PBEAbility> _abilities;
@@ -109,7 +109,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
                 Ability2 = r.ReadEnum<PBEAbility>();
                 AbilityH = r.ReadEnum<PBEAbility>();
                 FleeRate = r.ReadByte();
-                Weight = r.ReadDouble();
+                Weight = r.ReadSingle();
             }
 
             _abilities = new List<PBEAbility>(3);

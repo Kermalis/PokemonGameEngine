@@ -133,7 +133,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
             const int lineStartX = 9;
             const int lineW = 82;
-            Renderer.HP_TripleLine(lineStartX, 23, lineW, (float)Pkmn.HPPercentage); // TODO: CAST CAN BE REMOVED WHEN UPDATING PBE
+            Renderer.HP_TripleLine(lineStartX, 23, lineW, Pkmn.HPPercentage);
 
             // EXP
             if (!_useKnownInfo)

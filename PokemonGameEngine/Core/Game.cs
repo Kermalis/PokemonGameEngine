@@ -174,7 +174,7 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             // Init Game in the proper thread
             RenderTickTime = LogicTickTime = DateTime.Now;
-            Utils.SetWorkingDirectory(string.Empty);
+            _ = new BattleEngineDataProvider(string.Empty);
             _ = new Engine(); // Init game
             GUIRenderer.Instance = new();
 
