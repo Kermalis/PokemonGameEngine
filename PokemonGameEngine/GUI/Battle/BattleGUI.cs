@@ -396,7 +396,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     else
                     {
                         // If the team is wild, no flees are allowed by default
-                        if (Battle.BattleType == PBEBattleType.Wild)
+                        // Check IsWild instead of Battle type, since we can have an ai partner trainer
+                        if (t.IsWild)
                         {
                             CreateBattleThread(() => _wildAI.CreateActions(false));
                         }
