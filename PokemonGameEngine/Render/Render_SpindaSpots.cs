@@ -1,10 +1,12 @@
-﻿using Kermalis.SimpleGIF;
+﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.SimpleGIF;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
     internal static unsafe class SpindaSpotRenderer
     {
         #region Spot Coordinates
+
         // First pair is right eye, second is left eye, third is right ear, fourth is left ear
         // Pairs point to the center of each monument (the nibbles 8 and 8 will refer to the exact points in this pair)
         private static readonly (int X, int Y)[][] _spindaSpotCoordinates = new (int, int)[59][]
@@ -69,6 +71,7 @@ namespace Kermalis.PokemonGameEngine.Render
             new[] { (21, 22), (09, 21), (27, 04), (05, 02) }, // 58
             new[] { (21, 22), (09, 21), (27, 04), (05, 02) }  // 59
         };
+
         #endregion
 
         private static readonly bool[,] _rightEye;
@@ -78,11 +81,11 @@ namespace Kermalis.PokemonGameEngine.Render
 
         static SpindaSpotRenderer()
         {
-            static bool[,] Load(string resource)
+            static bool[,] Load(string asset)
             {
                 uint spotColor = Renderer.RawColor(0, 255, 255, 255);
 
-                Renderer.GetResourceBitmap(resource, out Size2D size, out uint[] bitmap);
+                AssetLoader.GetAssetBitmap(asset, out Size2D size, out uint[] bitmap);
                 bool[,] arr = new bool[size.Height, size.Width];
                 fixed (uint* src = bitmap)
                 {
@@ -96,10 +99,10 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
                 return arr;
             }
-            _rightEye = Load("Sprites.SpindaSpot_RightEye.png");
-            _leftEye = Load("Sprites.SpindaSpot_LeftEye.png");
-            _rightEar = Load("Sprites.SpindaSpot_RightEar.png");
-            _leftEar = Load("Sprites.SpindaSpot_LeftEar.png");
+            _rightEye = Load("Sprites\\SpindaSpot_RightEye.png");
+            _leftEye = Load("Sprites\\SpindaSpot_LeftEye.png");
+            _rightEar = Load("Sprites\\SpindaSpot_RightEar.png");
+            _leftEar = Load("Sprites\\SpindaSpot_LeftEar.png");
         }
 
         private static (uint color, uint replacement)[] SpindaSpotColorsFromShininess(bool shiny)

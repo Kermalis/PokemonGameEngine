@@ -13,7 +13,6 @@ using Kermalis.PokemonGameEngine.Trainer;
 using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
@@ -126,12 +125,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             GetTerrainPath(battle.BattleTerrain, out string bgPath, out string allyPath, out string foePath);
             _models = new()
             {
-                new Model(Path.Combine(@"../../../\Assets\BattleBG", bgPath)),
-                new Model(Path.Combine(@"../../../\Assets\BattleBG", foePath))
+                new Model(bgPath),
+                new Model(foePath)
                 {
                     PR = new PositionRotation(new Vector3(0, 0, -15), Quaternion.Identity)
                 },
-                new Model(Path.Combine(@"../../../\Assets\BattleBG", allyPath))
+                new Model(allyPath)
                 {
                     PR = new PositionRotation(new(0, 0, 3), Quaternion.Identity)
                 },
@@ -232,10 +231,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             string name = GetTerrainName(terrain);
             bool specificPlat = TerrainHasSpecificPlatforms(terrain);
-            bgPath = string.Format("{0}\\{0}.dae", name);
+            bgPath = string.Format("BattleBG\\{0}\\{0}.dae", name);
             string FormatPlatform(string team)
             {
-                return string.Format("Platform{0}{1}\\{0}{1}.dae", name, team);
+                return string.Format("BattleBG\\Platform{0}{1}\\{0}{1}.dae", name, team);
             }
             if (specificPlat)
             {
@@ -256,7 +255,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             // Trainer sprite
             if (Battle.BattleType == PBEBattleType.Trainer)
             {
-                var img = new AnimatedImage(TrainerCore.GetTrainerClassResource(_trainerClass), isPaused: true);
+                var img = new AnimatedImage(TrainerCore.GetTrainerClassAsset(_trainerClass), isPaused: true);
                 var sprite = new Sprite
                 {
                     Image = img,

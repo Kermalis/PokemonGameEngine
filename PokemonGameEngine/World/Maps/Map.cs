@@ -18,7 +18,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
         private Map(string name)
         {
-            using (var r = new EndianBinaryReader(Utils.GetResourceStream(MapPath + name + ".bin")))
+            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(MapPath + name + ".bin")))
             {
                 Layout = new MapLayout(r.ReadInt32());
                 Details = new MapDetails(r);
@@ -223,7 +223,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         public readonly string Name;
 #endif
 
-        private const string MapPath = "Map.";
+        private const string MapPath = "Map\\";
         private static readonly IdList _ids = new(MapPath + "MapIds.txt");
         private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new();
         public static Map LoadOrGet(int id)

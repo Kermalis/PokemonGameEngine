@@ -1,62 +1,13 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Item;
 using System;
-using System.IO;
 using System.Numerics;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
     internal static class Utils
     {
-        private const string AssemblyPrefix = "Kermalis.PokemonGameEngine.Assets.";
-        private static readonly Assembly _assembly = Assembly.GetExecutingAssembly();
-        public static Stream GetResourceStream(string resource)
-        {
-            Stream s = _assembly.GetManifestResourceStream(AssemblyPrefix + resource);
-            if (s is null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(resource), "Resource not found: " + resource);
-            }
-            return s;
-        }
-
-        public static string GetResourcePathWithoutFilename(string resourceWithFilename)
-        {
-            bool foundFileExtensionDot = false;
-            int len = resourceWithFilename.Length;
-            for (int i = resourceWithFilename.Length - 1; i >= 0; i--)
-            {
-                char c = resourceWithFilename[i];
-                if (c == '.')
-                {
-                    if (foundFileExtensionDot)
-                    {
-                        len--;
-                        break;
-                    }
-                    else
-                    {
-                        foundFileExtensionDot = true;
-                        len--;
-                        continue;
-                    }
-                }
-                len--;
-            }
-            return resourceWithFilename.Substring(0, len);
-        }
-        public static string CombineResourcePath(string path, string pathb)
-        {
-            if (path.Length == 0)
-            {
-                return pathb;
-            }
-            return path + '.' + pathb;
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double GetProgress(TimeSpan end, TimeSpan cur)
         {
@@ -74,11 +25,6 @@ namespace Kermalis.PokemonGameEngine.Core
         public static bool GetRandomShiny()
         {
             return PBEDataProvider.GlobalRandom.RandomBool(HasShinyCharm() ? 3 : 1, 8192);
-        }
-
-        public static string GetPkmnDirectoryName(PBESpecies species, PBEForm form)
-        {
-            return form == 0 ? species.ToString() : PBEDataUtils.GetNameOfForm(species, form);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

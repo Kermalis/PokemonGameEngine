@@ -23,15 +23,15 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
 
         static Font()
         {
-            Default = new Font("Fonts.Default.kermfont", 1024, 1024, new (string, ushort)[]
+            Default = new Font("Fonts\\Default.kermfont", 1024, 1024, new (string, ushort)[]
             {
                 ("♂", 0x246D),
                 ("♀", 0x246E),
                 ("[PK]", 0x2486),
                 ("[MN]", 0x2487)
             });
-            DefaultSmall = new Font("Fonts.DefaultSmall.kermfont", 1024, 512, Default._overrides);
-            PartyNumbers = new Font("Fonts.PartyNumbers.kermfont", 64, 32, new (string, ushort)[]
+            DefaultSmall = new Font("Fonts\\DefaultSmall.kermfont", 1024, 512, Default._overrides);
+            PartyNumbers = new Font("Fonts\\PartyNumbers.kermfont", 64, 32, new (string, ushort)[]
             {
                 ("[ID]", 0x0049),
                 ("[LV]", 0x004C),
@@ -40,9 +40,9 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
         }
 
         // Atlas size must be a power of 2
-        private unsafe Font(string resource, uint atlasWidth, uint atlasHeight, (string, ushort)[] overrides)
+        private unsafe Font(string asset, uint atlasWidth, uint atlasHeight, (string, ushort)[] overrides)
         {
-            using (var r = new EndianBinaryReader(Utils.GetResourceStream(resource), Endianness.LittleEndian))
+            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(asset), Endianness.LittleEndian))
             {
                 FontHeight = r.ReadByte();
                 if (FontHeight > atlasHeight)

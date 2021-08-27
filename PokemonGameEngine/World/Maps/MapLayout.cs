@@ -42,7 +42,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
-            using (var r = new EndianBinaryReader(Utils.GetResourceStream(LayoutPath + name + LayoutExtension)))
+            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(LayoutPath + name + LayoutExtension)))
             {
                 BlocksWidth = r.ReadInt32();
                 if (BlocksWidth <= 0)
@@ -89,7 +89,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         #region Loading
 
         private const string LayoutExtension = ".pgelayout";
-        private const string LayoutPath = "Layout.";
+        private const string LayoutPath = "Layout\\";
         private static readonly IdList _ids = new(LayoutPath + "LayoutIds.txt");
 
         #endregion

@@ -15,19 +15,22 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Assets\**" />
-		<EmbeddedResource Remove="Assets\Encounter\**\*.json" />
-		<EmbeddedResource Remove="Assets\Map\**\*.json" />
-		<EmbeddedResource Remove="Assets\ObjSprites\ObjSprites.json" />
-		<EmbeddedResource Remove="Assets\Pokedata\**\*.json" />
-		<EmbeddedResource Remove="Assets\Script\**\*.txt" />
-		<EmbeddedResource Remove="Assets\Tileset\Animation\**\*.json" />
-		<EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
-			<Link>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</EmbeddedResource>
+		<Content Include="Assets\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Remove="Assets\Encounter\**\*.json" />
+		<Content Remove="Assets\Map\**\*.json" />
+		<Content Remove="Assets\ObjSprites\ObjSprites.json" />
+		<Content Remove="Assets\Pokedata\**\*.json" />
+		<Content Remove="Assets\Script\**\*.txt" />
+		<Content Remove="Assets\Tileset\Animation\**\*.json" />
+		<ContentWithTargetPath Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</TargetPath>
+		</ContentWithTargetPath>
 		<ContentWithTargetPath Include="..\Shared Dependencies\PokemonBattleEngine.db">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<TargetPath>PokemonBattleEngine.db</TargetPath>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>Assets\PokemonBattleEngine.db</TargetPath>
 		</ContentWithTargetPath>
 		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
 		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.9" />

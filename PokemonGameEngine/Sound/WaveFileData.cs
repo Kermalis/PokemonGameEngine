@@ -27,15 +27,15 @@ namespace Kermalis.PokemonGameEngine.Sound
         public readonly long LoopStart;
         public readonly long LoopEnd;
 
-        public readonly Stream Stream;
+        public readonly FileStream Stream;
         public readonly EndianBinaryReader Reader;
 
-        private WaveFileData(string resource)
+        private WaveFileData(string asset)
         {
-            _id = resource;
+            _id = asset;
             _numReferences = 1;
-            _dataCache.Add(resource, this);
-            Stream = Utils.GetResourceStream(resource);
+            _dataCache.Add(asset, this);
+            Stream = AssetLoader.GetAssetStream(asset);
             Reader = new EndianBinaryReader(Stream);
 
             DataStart = -1;
@@ -206,15 +206,15 @@ namespace Kermalis.PokemonGameEngine.Sound
         private int _numReferences;
         private static readonly Dictionary<string, WaveFileData> _dataCache = new();
 
-        public static WaveFileData Get(string resource)
+        public static WaveFileData Get(string asset)
         {
-            if (_dataCache.TryGetValue(resource, out WaveFileData data))
+            if (_dataCache.TryGetValue(asset, out WaveFileData data))
             {
                 data._numReferences++;
             }
             else
             {
-                data = new WaveFileData(resource);
+                data = new WaveFileData(asset);
             }
             return data;
         }

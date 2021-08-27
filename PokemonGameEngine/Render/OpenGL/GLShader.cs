@@ -10,11 +10,11 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
     {
         public readonly uint Program;
 
-        protected GLShader(GL gl, string vertexResource, string fragmentResource)
+        protected GLShader(GL gl, string vertexAsset, string fragmentAsset)
         {
             Program = gl.CreateProgram();
-            uint vertex = LoadShader(gl, ShaderType.VertexShader, vertexResource);
-            uint fragment = LoadShader(gl, ShaderType.FragmentShader, fragmentResource);
+            uint vertex = LoadShader(gl, ShaderType.VertexShader, vertexAsset);
+            uint fragment = LoadShader(gl, ShaderType.FragmentShader, fragmentAsset);
             gl.AttachShader(Program, vertex);
             gl.AttachShader(Program, fragment);
             gl.LinkProgram(Program);
@@ -28,9 +28,9 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.DeleteShader(vertex);
             gl.DeleteShader(fragment);
         }
-        private static uint LoadShader(GL gl, ShaderType type, string resource)
+        private static uint LoadShader(GL gl, ShaderType type, string asset)
         {
-            var sr = new StreamReader(Utils.GetResourceStream(resource));
+            StreamReader sr = AssetLoader.GetAssetStreamText(asset);
             string src = sr.ReadToEnd();
             sr.Dispose();
 

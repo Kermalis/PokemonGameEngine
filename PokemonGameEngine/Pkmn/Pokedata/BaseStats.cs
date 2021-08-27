@@ -91,8 +91,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
             Species = species;
             Form = form;
 
-            string resource = "Pokedata." + Utils.GetPkmnDirectoryName(species, form) + ".BaseStats.bin";
-            using (var r = new EndianBinaryReader(Utils.GetResourceStream(resource)))
+            string asset = "Pokedata\\" + AssetLoader.GetPkmnDirectoryName(species, form) + "\\BaseStats.bin";
+            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(asset)))
             {
                 Stats = new PBEReadOnlyStatCollection(r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte());
                 Type1 = r.ReadEnum<PBEType>();

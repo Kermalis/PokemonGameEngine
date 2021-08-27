@@ -103,7 +103,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private Blockset(string name)
         {
-            using (var r = new EndianBinaryReader(Utils.GetResourceStream(BlocksetPath + name + BlocksetExtension)))
+            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(BlocksetPath + name + BlocksetExtension)))
             {
                 ushort count = r.ReadUInt16();
                 if (count == 0)
@@ -119,7 +119,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
 
         private const string BlocksetExtension = ".pgeblockset";
-        private const string BlocksetPath = "Blockset.";
+        private const string BlocksetPath = "Blockset\\";
         private static readonly IdList _ids = new(BlocksetPath + "BlocksetIds.txt");
         private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new();
         public static Blockset LoadOrGet(int id)

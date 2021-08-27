@@ -11,9 +11,9 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         private readonly int _lView;
 
         public ModelShader(GL gl)
-            : this(gl, "Shaders.model_vert.glsl", "Shaders.model_frag.glsl") { }
-        protected ModelShader(GL gl, string vertexResource, string fragmentResource)
-            : base(gl, vertexResource, fragmentResource)
+            : this(gl, "Shaders\\model_vert.glsl", "Shaders\\model_frag.glsl") { }
+        protected ModelShader(GL gl, string vertexAsset, string fragmentAsset)
+            : base(gl, vertexAsset, fragmentAsset)
         {
             _lProjection = GetUniformLocation(gl, "projection");
             _lModel = GetUniformLocation(gl, "model");

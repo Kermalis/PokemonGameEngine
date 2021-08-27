@@ -81,7 +81,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         public unsafe TileAnimation(EndianBinaryReader r)
         {
-            uint[][] sheet = Renderer.GetResourceSheetAsBitmaps(AnimationsPath + r.ReadStringNullTerminated() + AnimationSheetExtension, new Size2D(Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY));
+            uint[][] sheet = AssetLoader.GetAssetSheetAsBitmaps(AnimationsPath + r.ReadStringNullTerminated() + AnimationSheetExtension, new Size2D(Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY));
             Textures = new uint[sheet.Length];
             GL gl = Game.OpenGL;
             GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
@@ -122,7 +122,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private const string AnimationSheetExtension = ".png";
         private const string AnimationsExtension = ".bin";
-        private const string AnimationsPath = "Tileset.Animation.";
+        private const string AnimationsPath = "Tileset\\Animation\\";
         private const string AnimationsFile = AnimationsPath + "Animations" + AnimationsExtension;
         static TileAnimation()
         {
@@ -142,7 +142,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private static EndianBinaryReader GetReader()
         {
-            return new EndianBinaryReader(Utils.GetResourceStream(AnimationsFile), encoding: EncodingType.UTF16);
+            return new EndianBinaryReader(AssetLoader.GetAssetStream(AnimationsFile), encoding: EncodingType.UTF16);
         }
 
         #endregion

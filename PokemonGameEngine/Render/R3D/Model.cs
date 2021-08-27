@@ -11,9 +11,9 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         public Vector3 Scale = Vector3.One;
         public PositionRotation PR;
 
-        public Model(string resource)
+        public Model(string asset)
         {
-            _meshes = AssimpLoader.ImportModel(resource);
+            _meshes = AssimpLoader.ImportModel(asset);
             PR = new PositionRotation();
         }
 

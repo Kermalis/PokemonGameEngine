@@ -8,7 +8,7 @@ namespace Kermalis.PokemonGameEngine.Render
         private readonly int _lGUITexture;
 
         public GUITextureShader(GL gl)
-            : base(gl, "Shaders.gui_texture_vert.glsl", "Shaders.gui_texture_frag.glsl")
+            : base(gl, "Shaders\\gui_texture_vert.glsl", "Shaders\\gui_texture_frag.glsl")
         {
             _lGUITexture = GetUniformLocation(gl, "guiTexture");
         }

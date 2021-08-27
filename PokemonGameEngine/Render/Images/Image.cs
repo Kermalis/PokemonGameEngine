@@ -10,19 +10,19 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         public uint Texture { get; }
         public Size2D Size { get; }
 
-        private Image(string resource)
+        private Image(string asset)
         {
             GL gl = Game.OpenGL;
-            Renderer.GetResourceBitmap(resource, out Size2D size, out uint[] bitmap);
+            AssetLoader.GetAssetBitmap(asset, out Size2D size, out uint[] bitmap);
             GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
             Texture = GLHelper.GenTexture(gl);
             Size = size;
             UpdateGLTexture(bitmap);
-            _id = resource;
+            _id = asset;
             _numReferences = 1;
-            _loadedImages.Add(resource, this);
+            _loadedImages.Add(asset, this);
         }
-        // TODO: Currently only used in GetResourceSheetAsImages
+        // TODO: Currently only used in GetAssetSheetAsImages
         public Image(uint[] bitmap, Size2D size, string id)
         {
             GL gl = Game.OpenGL;
@@ -56,15 +56,15 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         private readonly string _id;
         private int _numReferences;
         private static readonly Dictionary<string, Image> _loadedImages = new();
-        public static Image LoadOrGet(string resource)
+        public static Image LoadOrGet(string asset)
         {
-            if (_loadedImages.TryGetValue(resource, out Image img))
+            if (_loadedImages.TryGetValue(asset, out Image img))
             {
                 img._numReferences++;
             }
             else
             {
-                img = new Image(resource);
+                img = new Image(asset);
             }
             return img;
         }

@@ -15,7 +15,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         private readonly int _lReflectivity;
 
         public LitModelShader(GL gl)
-            : base(gl, "Shaders.model_lit_vert.glsl", "Shaders.model_lit_frag.glsl")
+            : base(gl, "Shaders\\model_lit_vert.glsl", "Shaders\\model_lit_frag.glsl")
         {
             _lCameraPos = GetUniformLocation(gl, "cameraPos");
             _lNumLights = GetUniformLocation(gl, "numLights");

@@ -11,7 +11,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
         private readonly int[] _lFontColors;
 
         public FontShader(GL gl)
-            : base(gl, "Shaders.font_vert.glsl", "Shaders.font_frag.glsl")
+            : base(gl, "Shaders\\font_vert.glsl", "Shaders\\font_frag.glsl")
         {
             _lFontTexture = GetUniformLocation(gl, "fontTexture");
             _lTranslation = GetUniformLocation(gl, "translation");

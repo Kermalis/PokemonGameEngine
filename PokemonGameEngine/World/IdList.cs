@@ -9,24 +9,25 @@ namespace Kermalis.PokemonGameEngine.World
     {
         private readonly List<string> _entries = new();
 
-        public IdList(string resource)
+        public IdList(string asset)
         {
-            using (var s = new StreamReader(Utils.GetResourceStream(resource)))
+            using (StreamReader s = AssetLoader.GetAssetStreamText(asset))
             {
                 string key;
                 while ((key = s.ReadLine()) is not null)
                 {
-                    if (!string.IsNullOrWhiteSpace(key))
+                    if (string.IsNullOrWhiteSpace(key))
                     {
-                        for (int i = 0; i < _entries.Count; i++)
-                        {
-                            if (key == _entries[i])
-                            {
-                                throw new ArgumentException(nameof(key));
-                            }
-                        }
-                        _entries.Add(key);
+                        continue;
                     }
+                    for (int i = 0; i < _entries.Count; i++)
+                    {
+                        if (key == _entries[i])
+                        {
+                            throw new ArgumentException(nameof(key));
+                        }
+                    }
+                    _entries.Add(key);
                 }
             }
         }

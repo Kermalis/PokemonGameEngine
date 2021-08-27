@@ -38,37 +38,37 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private static CrySound CryToSound(PBESpecies species, PBEForm form)
         {
-            var wav = WaveFileData.Get(GetCryResource(species, form));
+            var wav = WaveFileData.Get(GetCryAsset(species, form));
             return new CrySound(wav);
         }
         private static Sound SongToSound(Song song)
         {
-            var wav = WaveFileData.Get(GetSongResource(song));
+            var wav = WaveFileData.Get(GetSongAsset(song));
             return new Sound(song, wav);
         }
 
-        private static string GetCryResource(PBESpecies species, PBEForm form)
+        private static string GetCryAsset(PBESpecies species, PBEForm form)
         {
             if (species == PBESpecies.Shaymin && form == PBEForm.Shaymin_Sky)
             {
-                return "Sound.Cries.Shaymin_Sky.wav";
+                return "Sound\\Cries\\Shaymin_Sky.wav";
             }
-            return "Sound.Cries." + species + ".wav";
+            return "Sound\\Cries\\" + species + ".wav";
         }
-        private static string GetSongResource(Song song)
+        private static string GetSongAsset(Song song)
         {
             switch (song)
             {
                 // Locations
                 case Song.Route1: // TODO
-                case Song.Town1: return "Sound.BGM.Town1.wav";
-                case Song.Cave1: return "Sound.BGM.Cave1.wav";
+                case Song.Town1: return "Sound\\BGM\\Town1.wav";
+                case Song.Cave1: return "Sound\\BGM\\Cave1.wav";
                 // Battles
                 case Song.WildBattle: // TODO
                 case Song.WildBattle_Multi: // TODO
-                case Song.TrainerBattle: return "Sound.BGM.TrainerBattle.wav";
+                case Song.TrainerBattle: return "Sound\\BGM\\TrainerBattle.wav";
                 case Song.LegendaryBattle: // TODO
-                case Song.GymBattle: return "Sound.BGM.GymBattle.wav";
+                case Song.GymBattle: return "Sound\\BGM\\GymBattle.wav";
             }
             throw new ArgumentOutOfRangeException(nameof(song));
         }

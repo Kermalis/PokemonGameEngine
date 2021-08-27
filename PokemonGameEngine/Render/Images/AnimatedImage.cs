@@ -32,10 +32,10 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             public Size2D Size { get; }
             public ushort RepeatCount { get; } // 0 means forever
 
-            private Image(string resource, string id, (uint PID, bool Shiny)? spindaSpots)
+            private Image(string asset, string id, (uint PID, bool Shiny)? spindaSpots)
             {
                 GL gl = Game.OpenGL;
-                DecodedGIF gif = GIFRenderer.DecodeAllFrames(Utils.GetResourceStream(resource), ColorFormat.RGBA);
+                DecodedGIF gif = GIFRenderer.DecodeAllFrames(AssetLoader.GetAssetStream(asset), ColorFormat.RGBA);
                 if (spindaSpots.HasValue)
                 {
                     (uint pid, bool shiny) = spindaSpots.Value;
@@ -59,18 +59,18 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             private readonly string _id;
             private int _numReferences;
             private static readonly Dictionary<string, Image> _loadedImages = new();
-            public static Image LoadOrGet(string resource, (uint PID, bool Shiny)? spindaSpots)
+            public static Image LoadOrGet(string asset, (uint PID, bool Shiny)? spindaSpots)
             {
-                // Add spinda spot data to the resource to use it uniquely
+                // Add spinda spot data to the asset to use it uniquely
                 string id;
                 if (spindaSpots.HasValue)
                 {
                     (uint pid, bool shiny) = spindaSpots.Value;
-                    id = resource + string.Format("_{0:X8}_{1}", pid, shiny);
+                    id = asset + string.Format("_{0:X8}_{1}", pid, shiny);
                 }
                 else
                 {
-                    id = resource;
+                    id = asset;
                 }
                 // LoadOrGet now
                 if (_loadedImages.TryGetValue(id, out Image img))
@@ -79,7 +79,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                 }
                 else
                 {
-                    img = new Image(resource, id, spindaSpots);
+                    img = new Image(asset, id, spindaSpots);
                 }
                 return img;
             }
@@ -111,9 +111,9 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         private int _curFrameIndex;
         private TimeSpan _nextFrameTime;
 
-        public AnimatedImage(string resource, (uint PID, bool Shiny)? spindaSpots = null, bool isPaused = false, float speedModifier = 1, int? repeatCount = null)
+        public AnimatedImage(string asset, (uint PID, bool Shiny)? spindaSpots = null, bool isPaused = false, float speedModifier = 1, int? repeatCount = null)
         {
-            _img = Image.LoadOrGet(resource, spindaSpots);
+            _img = Image.LoadOrGet(asset, spindaSpots);
             int frameDelay = _img.Frames[0].Delay;
             if (frameDelay == -1)
             {

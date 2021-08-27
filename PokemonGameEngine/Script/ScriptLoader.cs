@@ -10,7 +10,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private static readonly Dictionary<string, uint> _globalScriptOffsets;
 
         private const string _scriptExtension = ".bin";
-        private const string _scriptPath = "Script.";
+        private const string _scriptPath = "Script\\";
         private const string _scriptFile = _scriptPath + "Scripts" + _scriptExtension;
         static ScriptLoader()
         {
@@ -27,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private static EndianBinaryReader GetReader()
         {
-            return new EndianBinaryReader(Utils.GetResourceStream(_scriptFile), encoding: EncodingType.UTF16);
+            return new EndianBinaryReader(AssetLoader.GetAssetStream(_scriptFile), encoding: EncodingType.UTF16);
         }
 
         public static void LoadScript(string label)

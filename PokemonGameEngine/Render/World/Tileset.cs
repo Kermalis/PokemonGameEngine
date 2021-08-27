@@ -38,7 +38,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private Tileset(string name, int id)
         {
-            uint[][] t = Renderer.GetResourceSheetAsBitmaps(TilesetPath + name + TilesetExtension, new Size2D(Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY));
+            uint[][] t = AssetLoader.GetAssetSheetAsBitmaps(TilesetPath + name + TilesetExtension, new Size2D(Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY));
             Tiles = new Tile[t.Length];
             for (int i = 0; i < t.Length; i++)
             {
@@ -83,7 +83,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
 
         private const string TilesetExtension = ".png";
-        private const string TilesetPath = "Tileset.";
+        private const string TilesetPath = "Tileset\\";
         private static readonly IdList _ids = new(TilesetPath + "TilesetIds.txt");
         private static readonly Dictionary<int, WeakReference<Tileset>> _loadedTilesets = new();
         public static Tileset LoadOrGet(int id)

@@ -8,7 +8,7 @@ namespace Kermalis.PokemonGameEngine.Render
         private readonly int _lColor;
 
         public GUIQuadShader(GL gl)
-            : base(gl, "Shaders.gui_quad_vert.glsl", "Shaders.gui_quad_frag.glsl")
+            : base(gl, "Shaders\\gui_quad_vert.glsl", "Shaders\\gui_quad_frag.glsl")
         {
             _lColor = GetUniformLocation(gl, "color");
         }

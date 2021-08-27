@@ -31,9 +31,10 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
     {
         private static readonly Assimp _assimp = Assimp.GetApi();
 
-        public static List<Mesh> ImportModel(string resource)
+        public static List<Mesh> ImportModel(string asset)
         {
-            Scene* scene = _assimp.ImportFile(resource, (uint)(PostProcessSteps.Triangulate | PostProcessSteps.GenerateSmoothNormals | PostProcessSteps.FlipUVs));
+            asset = AssetLoader.GetPath(asset);
+            Scene* scene = _assimp.ImportFile(asset, (uint)(PostProcessSteps.Triangulate | PostProcessSteps.GenerateSmoothNormals | PostProcessSteps.FlipUVs));
 
             // Check for errors
             if (scene is null || scene->MFlags == (uint)SceneFlags.Incomplete || scene->MRootNode is null)
@@ -41,8 +42,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                 throw new InvalidDataException(_assimp.GetErrorStringS());
             }
 
-            string dir = Path.GetDirectoryName(resource);
-            //dir = Utils.GetResourcePathWithoutFilename(resource);
+            string dir = Path.GetDirectoryName(asset);
 
             var meshes = new List<Mesh>();
             var loaded = new List<AssimpTexture>();

@@ -19,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             using (EndianBinaryReader r = GetReader())
             {
                 r.BaseStream.Position = _sheetOffsets[id];
-                Images = Renderer.GetResourceSheetAsImages(SheetsPath + r.ReadStringNullTerminated(), ImageSize = new Size2D(r.ReadUInt32(), r.ReadUInt32()));
+                Images = AssetLoader.GetAssetSheetAsImages(SheetsPath + r.ReadStringNullTerminated(), ImageSize = new Size2D(r.ReadUInt32(), r.ReadUInt32()));
                 ShadowOffset = new Pos2D(r.ReadInt32(), r.ReadInt32());
                 ShadowImage = new WriteableImage(new Size2D(r.ReadUInt32(), r.ReadUInt32()));
                 uint dstW = ShadowImage.Size.Width;
@@ -41,7 +41,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         private static readonly Dictionary<string, uint> _sheetOffsets;
 
         private const string SheetsExtension = ".bin";
-        private const string SheetsPath = "ObjSprites.";
+        private const string SheetsPath = "ObjSprites\\";
         private const string SheetsFile = SheetsPath + "ObjSprites" + SheetsExtension;
         static ImageSheet()
         {
@@ -58,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         private static EndianBinaryReader GetReader()
         {
-            return new EndianBinaryReader(Utils.GetResourceStream(SheetsFile), encoding: EncodingType.UTF16);
+            return new EndianBinaryReader(AssetLoader.GetAssetStream(SheetsFile), encoding: EncodingType.UTF16);
         }
 
         #endregion
@@ -68,15 +68,15 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         private readonly string _id;
         private int _numReferences;
         private static readonly Dictionary<string, ImageSheet> _loadedSheets = new();
-        public static ImageSheet LoadOrGet(string resource)
+        public static ImageSheet LoadOrGet(string asset)
         {
-            if (_loadedSheets.TryGetValue(resource, out ImageSheet s))
+            if (_loadedSheets.TryGetValue(asset, out ImageSheet s))
             {
                 s._numReferences++;
             }
             else
             {
-                s = new ImageSheet(resource);
+                s = new ImageSheet(asset);
             }
             return s;
         }

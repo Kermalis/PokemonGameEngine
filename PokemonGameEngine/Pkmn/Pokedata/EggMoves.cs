@@ -14,8 +14,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         {
             PBEMove[] arr;
 
-            string resource = "Pokedata." + Utils.GetPkmnDirectoryName(species, form) + ".EggMoves.bin";
-            using (var r = new EndianBinaryReader(Utils.GetResourceStream(resource)))
+            string asset = "Pokedata\\" + AssetLoader.GetPkmnDirectoryName(species, form) + "\\EggMoves.bin";
+            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(asset)))
             {
                 arr = r.ReadEnums<PBEMove>(r.ReadByte());
             }

@@ -1,13 +1,9 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
-using SixLabors.ImageSharp.PixelFormats;
 using System;
-using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
@@ -72,55 +68,6 @@ namespace Kermalis.PokemonGameEngine.Render
         public static Vector2 RelToGL(float x, float y)
         {
             return new Vector2(RelXToGLX(x), RelYToGLY(y));
-        }
-
-        public static void GetResourceBitmap(string resource, out Size2D size, out uint[] dstBmp)
-        {
-            Stream s = Utils.GetResourceStream(resource);
-            var img = SixLabors.ImageSharp.Image.Load<Rgba32>(s);
-            s.Dispose();
-            size.Width = (uint)img.Width;
-            size.Height = (uint)img.Height;
-            dstBmp = new uint[size.Width * size.Height];
-            fixed (uint* dst = dstBmp)
-            {
-                uint len = size.Width * size.Height * sizeof(uint);
-                fixed (void* data = &MemoryMarshal.GetReference(img.GetPixelRowSpan(0)))
-                {
-                    System.Buffer.MemoryCopy(data, dst, len, len);
-                }
-            }
-            img.Dispose();
-        }
-
-        public static Image[] GetResourceSheetAsImages(string resource, Size2D imageSize)
-        {
-            uint[][] bitmaps = GetResourceSheetAsBitmaps(resource, imageSize);
-            var arr = new Image[bitmaps.Length];
-            for (int i = 0; i < bitmaps.Length; i++)
-            {
-                arr[i] = new Image(bitmaps[i], imageSize, resource + '[' + i + ']');
-            }
-            return arr;
-        }
-        public static uint[][] GetResourceSheetAsBitmaps(string resource, Size2D imageSize)
-        {
-            GetResourceBitmap(resource, out Size2D sheetSize, out uint[] srcBmp);
-            fixed (uint* src = srcBmp)
-            {
-                uint numImagesX = sheetSize.Width / imageSize.Width;
-                uint numImagesY = sheetSize.Height / imageSize.Height;
-                uint[][] imgs = new uint[numImagesX * numImagesY][];
-                int img = 0;
-                for (uint sy = 0; sy < numImagesY; sy++)
-                {
-                    for (uint sx = 0; sx < numImagesX; sx++)
-                    {
-                        imgs[img++] = GetBitmap_Unchecked(src, sheetSize.Width, new Pos2D((int)(sx * imageSize.Width), (int)(sy * imageSize.Height)), imageSize);
-                    }
-                }
-                return imgs;
-            }
         }
 
         #endregion

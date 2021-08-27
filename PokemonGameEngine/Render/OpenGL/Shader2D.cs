@@ -6,8 +6,8 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
     {
         private readonly int _lResolution;
 
-        public Shader2D(GL gl, string vertexResource, string fragmentResource)
-            : base(gl, vertexResource, fragmentResource)
+        public Shader2D(GL gl, string vertexAsset, string fragmentAsset)
+            : base(gl, vertexAsset, fragmentAsset)
         {
             _lResolution = GetUniformLocation(gl, "resolution");
         }
