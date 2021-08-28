@@ -48,10 +48,10 @@ namespace Kermalis.PokemonGameEngine.Core
             {
                 size.Width = (uint)img.Width;
                 size.Height = (uint)img.Height;
-                dstBmp = new uint[size.Width * size.Height];
+                dstBmp = new uint[size.GetArea()];
                 fixed (uint* dst = dstBmp)
                 {
-                    uint len = size.Width * size.Height * sizeof(uint);
+                    uint len = size.GetArea() * sizeof(uint);
                     fixed (void* data = &MemoryMarshal.GetReference(img.GetPixelRowSpan(0)))
                     {
                         Buffer.MemoryCopy(data, dst, len, len);

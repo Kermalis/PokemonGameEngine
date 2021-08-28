@@ -79,6 +79,11 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return new Size2D((uint)(w * totalW), (uint)(h * totalH));
         }
+
+        public uint GetArea()
+        {
+            return Width * Height;
+        }
     }
 
     internal struct RelSize2D

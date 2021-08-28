@@ -67,7 +67,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public static uint[] GetBitmap_Unchecked(uint* src, uint srcW, Pos2D pos, Size2D size)
         {
-            uint[] arr = new uint[size.Width * size.Height];
+            uint[] arr = new uint[size.GetArea()];
             for (int py = 0; py < size.Height; py++)
             {
                 for (int px = 0; px < size.Width; px++)
