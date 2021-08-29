@@ -9,6 +9,7 @@ namespace Kermalis.PokemonGameEngine.Render
 {
     internal static unsafe partial class Renderer
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TextureUnit ToTextureUnit(this int unit)
         {
             return (TextureUnit)((int)TextureUnit.Texture0 + unit);
