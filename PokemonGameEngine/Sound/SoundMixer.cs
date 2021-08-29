@@ -80,7 +80,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             c.OnStopped = null;
         }
 
-#if DEBUG
+#if DEBUG_AUDIO_LOG
         // Draws bars in the console
         public static void Debug_DrawAudio()
         {
@@ -190,8 +190,8 @@ namespace Kermalis.PokemonGameEngine.Sound
                 }
             }
 
-#if DEBUG
-            //Debug_DrawAudio();
+#if DEBUG_AUDIO_LOG
+            Debug_DrawAudio();
 #endif
 
             // Marshal copy is at least twice as fast as sdl memset

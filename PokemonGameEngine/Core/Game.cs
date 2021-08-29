@@ -1,5 +1,5 @@
-﻿#define FULLSCREEN
-#if DEBUG
+﻿#if DEBUG
+using Kermalis.PokemonGameEngine.Debug;
 using System.Runtime.InteropServices;
 #endif
 using Kermalis.PokemonGameEngine.Input;
@@ -191,7 +191,9 @@ namespace Kermalis.PokemonGameEngine.Core
                 bool doTick;
                 if (now <= prev)
                 {
-                    Console.WriteLine("Time went back!");
+#if DEBUG
+                    Log.WriteLineWithTime("Time went back!");
+#endif
                     doTick = true;
                 }
                 else
@@ -278,7 +280,9 @@ namespace Kermalis.PokemonGameEngine.Core
                             {
                                 string path = Path.Combine(ScreenshotPath, string.Format("Screenshot_{0:MM-dd-yyyy_HH-mm-ss-fff}.png", DateTime.Now));
                                 path = GLTextureUtils.SaveScreenTextureAsImage(OpenGL, _virtualFBOTexture, RenderWidth, RenderHeight, path);
-                                Console.WriteLine("Screenshot saved to {0}", path);
+#if DEBUG
+                                Log.WriteLineWithTime(string.Format("Screenshot saved to {0}", path));
+#endif
                                 break;
                             }
                             default: InputManager.OnKeyDown(sym, true); break;
@@ -350,7 +354,9 @@ namespace Kermalis.PokemonGameEngine.Core
         private static void Print_SDL_Error(string error)
         {
             error = string.Format("{2}{0}SDL Error: \"{1}\"", Environment.NewLine, SDL.SDL_GetError(), error);
-            Console.WriteLine(error);
+#if DEBUG
+            Log.WriteLineWithTime(error);
+#endif
             throw new Exception(error);
         }
 #if DEBUG
@@ -361,7 +367,13 @@ namespace Kermalis.PokemonGameEngine.Core
                 return;
             }
             string msg = Marshal.PtrToStringAnsi(message, length);
-            Console.WriteLine("----- GL Error -----{0}Message: \"{1}\"{0}Type: {2}{0}Id: {3}{0}Severity: {4}{0}-----", Environment.NewLine, msg, type, id, severity);
+            Log.WriteLineWithTime("GL Error:");
+            Log.ModifyIndent(1);
+            Log.WriteLine(string.Format("Message: \"{0}\"", msg));
+            Log.WriteLine(string.Format("Type: \"{0}\"", type));
+            Log.WriteLine(string.Format("Id: \"{0}\"", id));
+            Log.WriteLine(string.Format("Severity: \"{0}\"", severity));
+            Log.ModifyIndent(-1);
             ;
         }
 #endif

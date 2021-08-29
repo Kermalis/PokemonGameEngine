@@ -1,7 +1,4 @@
-﻿#if DEBUG
-//#define DEBUG_WIREFRAME
-#endif
-using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
@@ -316,7 +313,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             GLHelper.BlendFunc(gl, BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             gl.BlendEquation(BlendEquationModeEXT.FuncAddExt);
             GLHelper.ClearColor(gl, Colors.Black);
-#if DEBUG_WIREFRAME
+#if DEBUG_BATTLE_WIREFRAME
             gl.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 #endif
             gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -347,7 +344,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
             GLHelper.EnableBlend(gl, false);
             GLHelper.EnableDepthTest(gl, false);
-#if DEBUG_WIREFRAME
+#if DEBUG_BATTLE_WIREFRAME
             gl.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill); // Reset
 #endif
             gl.UseProgram(0);
@@ -380,7 +377,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _stringWindow.Render();
             }
 
-#if DEBUG
+#if DEBUG_BATTLE_CAMERAPOS
             _camera.PR.Debug_RenderPosition(gl);
 #endif
         }

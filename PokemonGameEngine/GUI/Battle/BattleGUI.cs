@@ -1,4 +1,4 @@
-﻿#if DEBUG
+﻿#if DEBUG_BATTLE_CAMERAPOS
 using Kermalis.PokemonGameEngine.Input;
 #endif
 using Kermalis.PokemonBattleEngine.Battle;
@@ -211,7 +211,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             HandleNewEvents();
             _tasks.RunTasks();
             _sprites.DoCallbacks();
-#if DEBUG
+
+#if DEBUG_BATTLE_CAMERAPOS
             if (InputManager.IsPressed(Key.Select))
             {
                 MoveCameraToDefaultPosition(null);

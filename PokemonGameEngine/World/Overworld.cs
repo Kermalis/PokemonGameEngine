@@ -1,4 +1,7 @@
-﻿using Kermalis.PokemonBattleEngine.Battle;
+﻿#if DEBUG_OVERWORLD
+using Kermalis.PokemonGameEngine.Debug;
+#endif
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
@@ -96,8 +99,8 @@ namespace Kermalis.PokemonGameEngine.World
 
         public static void DoEnteredMapThings(Map map)
         {
-#if DEBUG
-            Console.WriteLine("Player is now on {0}", map.Name);
+#if DEBUG_OVERWORLD
+            Log.WriteLine(string.Format("Player is now on {0}", map.Name));
 #endif
             SoundControl.SetOverworldBGM(map.Details.Music);
             UpdateGiratinaForms();

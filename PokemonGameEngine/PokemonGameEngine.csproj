@@ -14,6 +14,23 @@
 		<StartupObject>Kermalis.PokemonGameEngine.Core.Game</StartupObject>
 	</PropertyGroup>
 
+	<!--Always defined-->
+	<!--FULLSCREEN-->
+	<PropertyGroup>
+		<DefineConstants>FULLSCREEN</DefineConstants>
+	</PropertyGroup>
+
+	<!--Debug defines-->
+	<!--DEBUG_CALLBACKS;DEBUG_BATTLE_WIREFRAME;DEBUG_BATTLE_CAMERAPOS;DEBUG_DAYCARE_LOGEGG;DEBUG_FRIENDSHIP;DEBUG_AUDIO_LOG;DEBUG_OVERWORLD;DEBUG_DATA_CACHE-->
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0|AnyCPU'">
+		<DefineConstants>$(DefineConstants);TRACE;DEBUG;DEBUG_DAYCARE_LOGEGG;DEBUG_FRIENDSHIP;DEBUG_OVERWORLD</DefineConstants>
+	</PropertyGroup>
+
+	<!--Release defines-->
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net5.0|AnyCPU'">
+		<DefineConstants>$(DefineConstants)</DefineConstants>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<Content Include="Assets\**\*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

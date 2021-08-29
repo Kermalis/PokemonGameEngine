@@ -1,4 +1,7 @@
 ﻿//This file is adapted from NAudio (https://github.com/naudio/NAudio) which uses the MIT license
+#if DEBUG
+using Kermalis.PokemonGameEngine.Debug;
+#endif
 using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
 using System;
@@ -126,7 +129,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                         if (extraSize != formatChunkLength - 18)
                         {
 #if DEBUG
-                            Console.WriteLine("Format chunk mismatch");
+                            Log.WriteLine("Format chunk mismatch in " + asset);
 #endif
                             extraSize = (short)(formatChunkLength - 18);
                         }

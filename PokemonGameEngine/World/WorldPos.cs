@@ -23,5 +23,12 @@ namespace Kermalis.PokemonGameEngine.World
         {
             return HashCode.Combine(X, Y, Elevation);
         }
+
+#if DEBUG
+        public override string ToString()
+        {
+            return string.Format("[[X: {0}, Y: {1}], E: {2}]", X, Y, Elevation);
+        }
+#endif
     }
 }

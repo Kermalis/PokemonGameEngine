@@ -23,6 +23,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 Move = PBEMove.None;
                 PPUps = 0;
             }
+
+#if DEBUG
+            public override string ToString()
+            {
+                return string.Format("({0}, {1})", Move, PPUps);
+            }
+#endif
         }
 
         private readonly BoxMovesetSlot[] _slots;
@@ -90,5 +97,12 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             return _slots.GetEnumerator();
         }
+
+#if DEBUG
+        public override string ToString()
+        {
+            return "[" + string.Join(", ", (object[])_slots) + "]";
+        }
+#endif
     }
 }

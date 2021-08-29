@@ -1,4 +1,7 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿#if DEBUG_DAYCARE_LOGEGG
+using Kermalis.PokemonGameEngine.Debug;
+#endif
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
@@ -393,20 +396,56 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         private static BoxPokemon ProduceOffspring(BoxPokemon p0, BoxPokemon p1)
         {
+#if DEBUG_DAYCARE_LOGEGG
+            Log.WriteLine(string.Format("Parents: ({0} [{1} {2} {3}]), ({4} [{5} {6} {7}])",
+                p0.Nickname, p0.Species, PBEDataUtils.GetNameOfForm(p0.Species, p0.Form), p0.Gender,
+                p1.Nickname, p1.Species, PBEDataUtils.GetNameOfForm(p1.Species, p1.Form), p1.Gender));
+#endif
             int mainParentIdx = GetMainSpeciesParentIndex(p0, p1);
             BoxPokemon mainParent = mainParentIdx == 0 ? p0 : p1;
+#if DEBUG_DAYCARE_LOGEGG
+            Log.WriteLine(string.Format("Main parent: ({0} [{1} {2} {3}])",
+                mainParent.Nickname, mainParent.Species, PBEDataUtils.GetNameOfForm(mainParent.Species, mainParent.Form), mainParent.Gender));
+#endif
             (PBESpecies species, PBEForm form) = GetOffspringSpecies(mainParent);
+#if DEBUG_DAYCARE_LOGEGG
+            Log.WriteLine(string.Format("Offspring: ({0} {1})", species, PBEDataUtils.GetNameOfForm(species, form)));
+            Log.ModifyIndent(1);
+#endif
             var bs = BaseStats.Get(species, form, true);
 
             byte level = PkmnConstants.EggHatchLevel;
+#if DEBUG_DAYCARE_LOGEGG
+            Log.WriteLine("Level: " + level);
+#endif
             PBEGender gender = PBEDataProvider.GlobalRandom.RandomGender(bs.GenderRatio);
+#if DEBUG_DAYCARE_LOGEGG
+            Log.WriteLine("Gender: " + gender);
+#endif
             byte cycles = bs.EggCycles;
             uint exp = PBEDataProvider.Instance.GetEXPRequired(bs.GrowthRate, level);
             bool shiny = GetOffspringShininess(p0, p1);
+#if DEBUG_DAYCARE_LOGEGG
+            Log.WriteLine("Shiny: " + shiny);
+#endif
             PBENature nature = GetOffspringNature(p0, p1);
+#if DEBUG_DAYCARE_LOGEGG
+            Log.WriteLine("Nature: " + nature);
+#endif
             (AbilityType, PBEAbility) ability = GetOffspringAbility(p0, p1, bs);
+#if DEBUG_DAYCARE_LOGEGG
+            Log.WriteLine("Ability Type: " + ability.Item1);
+            Log.WriteLine("Ability: " + ability.Item2);
+#endif
             IVs ivs = GetOffspringIVs(p0, p1);
+#if DEBUG_DAYCARE_LOGEGG
+            Log.WriteLine("IVS: " + ivs);
+#endif
             BoxMoveset moves = GetOffspringMoves(p0, p1, species, form);
+#if DEBUG_DAYCARE_LOGEGG
+            Log.WriteLine("Moves: " + moves);
+            Log.ModifyIndent(-1);
+#endif
             return BoxPokemon.CreateDaycareEgg(species, form, gender, cycles, level, exp, shiny, nature, ability, ivs, moves);
         }
         public void DoDaycareStep()
@@ -423,9 +462,13 @@ namespace Kermalis.PokemonGameEngine.Core
                 byte compat = GetCompatibility_OvalCharm(p0, p1);
                 if (compat > 0 && PBEDataProvider.GlobalRandom.RandomBool(compat, 100))
                 {
+#if DEBUG_DAYCARE_LOGEGG
+                    Log.WriteLineWithTime("Egg produced at daycare:");
+                    Log.ModifyIndent(1);
+#endif
                     _offspring = ProduceOffspring(p0, p1);
-#if DEBUG
-                    Console.WriteLine("Egg produced at daycare");
+#if DEBUG_DAYCARE_LOGEGG
+                    Log.ModifyIndent(-1);
 #endif
                 }
             }

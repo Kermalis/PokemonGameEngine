@@ -1,4 +1,7 @@
-﻿using Kermalis.EndianBinaryIO;
+﻿#if DEBUG_OVERWORLD
+using Kermalis.PokemonGameEngine.Debug;
+#endif
+using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
@@ -18,6 +21,10 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
         private Map(string name)
         {
+#if DEBUG_OVERWORLD
+            Log.WriteLine("Loading map: " + name);
+            Log.ModifyIndent(1);
+#endif
             using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(MapPath + name + ".bin")))
             {
                 Layout = new MapLayout(r.ReadInt32());
@@ -31,10 +38,17 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                 Encounters = new EncounterGroups(r);
                 Events = new MapEvents(r);
             }
-#if DEBUG
+#if DEBUG_OVERWORLD
             Name = name;
+            Log.ModifyIndent(-1);
 #endif
         }
+#if DEBUG_OVERWORLD
+        ~Map()
+        {
+            Log.WriteLine("Unloading map: " + Name);
+        }
+#endif
 
         // TODO: Loading entire map details and layouts is unnecessary
         public void GetXYMap(int x, int y, out int outX, out int outY, out Map outMap)
@@ -182,15 +196,15 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
         public void OnMapNowVisible()
         {
-#if DEBUG
-            Console.WriteLine("Map \"{0}\" is now visible", Name);
+#if DEBUG_OVERWORLD
+            Log.WriteLine("Map is now visible: " + Name);
 #endif
             LoadObjEvents();
         }
         public void OnMapNoLongerVisible()
         {
-#if DEBUG
-            Console.WriteLine("Map \"{0}\" is no longer visible", Name);
+#if DEBUG_OVERWORLD
+            Log.WriteLine("Map is no longer visible: " + Name);
 #endif
             UnloadObjEvents();
         }
@@ -219,7 +233,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
         #region Cache
 
-#if DEBUG
+#if DEBUG_OVERWORLD
         public readonly string Name;
 #endif
 

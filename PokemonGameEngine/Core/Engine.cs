@@ -1,9 +1,11 @@
 ﻿#if DEBUG
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
-using System;
+#if DEBUG_CALLBACKS
+using Kermalis.PokemonGameEngine.Debug;
 using System.IO;
 using System.Runtime.CompilerServices;
+#endif
 #endif
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonGameEngine.GUI;
@@ -41,17 +43,17 @@ namespace Kermalis.PokemonGameEngine.Core
             OverworldGUI.Debug_InitOverworldGUI();
         }
 
-#if DEBUG
+#if DEBUG_CALLBACKS
         public void SetCallback(MainCallback callback, [CallerMemberName] string caller = null, [CallerFilePath] string callerFile = null)
         {
             callerFile = Path.GetFileName(callerFile);
             if (callback is null)
             {
-                Console.WriteLine("  Main Callback\t\tnull\t\tFrom {0}()\t[{1}]", caller, callerFile);
+                Log.WriteLine(string.Format("  Main Callback\t\tnull\t\tFrom {0}()\t[{1}]", caller, callerFile));
             }
             else
             {
-                Console.WriteLine("  Main Callback\t\t{0}.{1}()\t\tFrom {2}()\t[{3}]", callback.Method.DeclaringType.Name, callback.Method.Name, caller, callerFile);
+                Log.WriteLine(string.Format("  Main Callback\t\t{0}.{1}()\t\tFrom {2}()\t[{3}]", callback.Method.DeclaringType.Name, callback.Method.Name, caller, callerFile));
             }
             Callback = callback;
         }
@@ -60,11 +62,11 @@ namespace Kermalis.PokemonGameEngine.Core
             callerFile = Path.GetFileName(callerFile);
             if (callback is null)
             {
-                Console.WriteLine("Render Callback\t\tnull\t\tFrom {0}()\t[{1}]", caller, callerFile);
+                Log.WriteLine(string.Format("Render Callback\t\tnull\t\tFrom {0}()\t[{1}]", caller, callerFile));
             }
             else
             {
-                Console.WriteLine("Render Callback\t\t{0}.{1}()\t\tFrom {2}()\t[{3}]", callback.Method.DeclaringType.Name, callback.Method.Name, caller, callerFile);
+                Log.WriteLine(string.Format("Render Callback\t\t{0}.{1}()\t\tFrom {2}()\t[{3}]", callback.Method.DeclaringType.Name, callback.Method.Name, caller, callerFile));
             }
             RCallback = callback;
         }
