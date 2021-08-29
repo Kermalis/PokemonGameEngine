@@ -100,7 +100,7 @@ namespace Kermalis.PokemonGameEngine.World
         public static void DoEnteredMapThings(Map map)
         {
 #if DEBUG_OVERWORLD
-            Log.WriteLine(string.Format("Player is now on {0}", map.Name));
+            Log.WriteLine("Player is now on  map: " + map.Name);
 #endif
             SoundControl.SetOverworldBGM(map.Details.Music);
             UpdateGiratinaForms();
