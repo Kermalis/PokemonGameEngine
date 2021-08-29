@@ -37,6 +37,13 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return new Pos2D(a.X + b.X, a.Y + b.Y);
         }
+
+#if DEBUG
+        public override string ToString()
+        {
+            return string.Format("[X: {0}, Y: {1}]", X, Y);
+        }
+#endif
     }
 
     internal struct RelPos2D
@@ -58,6 +65,13 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return Pos2D.FromRelative(X, Y, size.Width, size.Height);
         }
+
+#if DEBUG
+        public override string ToString()
+        {
+            return string.Format("[X: {0}, Y: {1}]", X, Y);
+        }
+#endif
     }
 
     internal struct Size2D
@@ -84,6 +98,13 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return Width * Height;
         }
+
+#if DEBUG
+        public override string ToString()
+        {
+            return string.Format("[W: {0}, H: {1}]", Width, Height);
+        }
+#endif
     }
 
     internal struct RelSize2D
@@ -105,5 +126,12 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return Size2D.FromRelative(Width, Height, size.Width, size.Height);
         }
+
+#if DEBUG
+        public override string ToString()
+        {
+            return string.Format("[W: {0}, H: {1}]", Width, Height);
+        }
+#endif
     }
 }

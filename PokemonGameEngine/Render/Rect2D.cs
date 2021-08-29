@@ -71,5 +71,12 @@
             return TopLeft.X <= other.GetRight() && TopLeft.Y <= other.GetBottom()
                 && GetRight() >= other.TopLeft.X && GetBottom() >= other.TopLeft.Y;
         }
+
+#if DEBUG
+        public override string ToString()
+        {
+            return string.Format("[{0}, {1}]", TopLeft, Size);
+        }
+#endif
     }
 }
