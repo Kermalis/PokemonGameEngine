@@ -1409,6 +1409,9 @@
         <member name="F:Kermalis.PokemonBattleEngine.Data.PBEMove.MAX">
             <summary>Invalid move.</summary>
         </member>
+        <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataProvider.GetLegalMoves(Kermalis.PokemonBattleEngine.Data.PBESpecies,Kermalis.PokemonBattleEngine.Data.PBEForm,System.Byte)">
+            <summary>Used by <see cref="T:Kermalis.PokemonBattleEngine.Data.Legality.PBELegalMoveset"/>.</summary>
+        </member>
         <member name="M:Kermalis.PokemonBattleEngine.Data.PBEDataProvider.GetEXPModifier(Kermalis.PokemonBattleEngine.Battle.PBEBattle)">
             <summary>This is the boost to the EXP rate. In generation 5, Pass Powers boost the EXP rate.</summary>
         </member>

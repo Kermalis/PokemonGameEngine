@@ -19,6 +19,7 @@ Main Mechanics:
     Releasing Pokémon
 
 GUIs:
+    Debug namespace with cool stuff to test
     Intro/Title/Continue/NewGame
     Pokedex
     Bag (I like the hgss one)
@@ -33,7 +34,6 @@ Encounters:
     StickyHold, SuctionCups
     Phenomena (task system)
     Fishing
-    Determine battle music
 
 Field Effects:
     Spin tiles
@@ -76,7 +76,7 @@ Nice to have (no priority):
     Reflections on tiles
     Different day tints based on season
     Obj Following (#29)
-    Attack animations
+    Attack animations with camera movement
     Pass Powers
     Move relearner & Move tutor
     Feebas/Swarm/Roamer

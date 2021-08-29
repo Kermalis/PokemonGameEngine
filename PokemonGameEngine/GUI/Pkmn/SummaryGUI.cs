@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.GUI.Transition;
@@ -624,7 +625,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             str = PBEDataProvider.Instance.GetAbilityName(abil).English;
             GUIString.CreateAndRenderOneTimeString(gl, str, rightColFont, rightColColors, Pos2D.FromRelative(abilTextX, abilTextY));
             // Ability desc
-            str = PBEDataProvider.Instance.GetAbilityDescription(abil).English;
+            str = PBEDefaultDataProvider.Instance.GetAbilityDescription(abil).English;
             GUIString.CreateAndRenderOneTimeString(gl, str, leftColFont, rightColColors, Pos2D.FromRelative(abilDescX, abilDescY));
         }
         private void DrawMovesPage(GL gl)
