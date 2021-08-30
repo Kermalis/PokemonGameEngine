@@ -27,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 GLHelper.BindTexture(gl, tex);
                 fixed (uint* d = bitmap)
                 {
-                    GLTextureUtils.LoadTextureData(gl, d, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
+                    GLTextureUtils.LoadTextureData(gl, d, new Size2D(Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY));
                 }
                 Bitmap = tex;
             }

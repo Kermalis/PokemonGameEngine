@@ -3,28 +3,11 @@ using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
-using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.Fonts
 {
     internal sealed class GUIString
     {
-        private struct TexStruct
-        {
-            public const int OffsetOfPos = 0;
-            public const int OffsetOfTexCoords = 2 * sizeof(int);
-            public const uint SizeOf = (2 * sizeof(int)) + (2 * sizeof(float));
-
-            public Pos2D Pos;
-            public Vector2 TexCoords;
-
-            public TexStruct(int x, int y, float texX, float texY)
-            {
-                Pos = new Pos2D(x, y);
-                TexCoords = new Vector2(texX, texY);
-            }
-        }
-
         private static readonly FontShader _shader;
 
         static GUIString()
@@ -38,18 +21,17 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
         public ColorF[] Colors;
         public readonly Pos2D Origin;
         public Pos2D Translation;
-        public readonly int Scale;
+        public readonly uint Scale;
 
         private readonly uint _vao;
         private readonly uint _vbo;
         private readonly uint _ebo;
         private readonly uint _totalVisible;
-        private readonly uint _indexCount;
 
         public uint VisibleStart;
         public uint NumVisible;
 
-        public unsafe GUIString(string text, Font font, ColorF[] colors, Pos2D pos = default, int scale = 1, bool allVisible = true)
+        public GUIString(string text, Font font, ColorF[] colors, Pos2D pos = default, uint scale = 1, bool allVisible = true)
         {
             Text = text;
             Font = font;
@@ -59,89 +41,45 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
 
             // Write glyph vertices
             // May not necessarily use this many, because some glyphs don't have visual results
-            var vertices = new TexStruct[text.Length * 4];
-            uint[] indices = new uint[text.Length * 6];
+            var builder = new TexVertexBuilder(text.Length);
             _totalVisible = 0;
-            uint vertexCount = 0;
-            _indexCount = 0;
             uint nextXOffset = 0;
             uint nextYOffset = 0;
             int index = 0;
             while (index < text.Length)
             {
-                int curX = pos.X + (int)(nextXOffset * scale);
-                int curY = pos.Y + (int)(nextYOffset * scale);
+                Pos2D curPos;
+                curPos.X = pos.X + (int)(nextXOffset * scale);
+                curPos.Y = pos.Y + (int)(nextYOffset * scale);
                 Glyph g = font.GetGlyph(text, ref index, ref nextXOffset, ref nextYOffset, out _);
                 if (g is null)
                 {
                     continue;
                 }
-                int w = g.CharWidth * scale;
-                int h = font.FontHeight * scale;
-                float texX = g.AtlasStartX;
-                float texEndX = g.AtlasEndX;
-                float texY = g.AtlasStartY;
-                float texEndY = g.AtlasEndY;
+                Size2D size;
+                size.Width = g.CharWidth * scale;
+                size.Height = font.FontHeight * scale;
                 // Can't use triangle strips
-                uint vIndex = vertexCount;
-                vertexCount += 4;
-                vertices[vIndex + 0] = new TexStruct(curX, curY, texX, texY);
-                vertices[vIndex + 1] = new TexStruct(curX, curY + h, texX, texEndY);
-                vertices[vIndex + 2] = new TexStruct(curX + w, curY, texEndX, texY);
-                vertices[vIndex + 3] = new TexStruct(curX + w, curY + h, texEndX, texEndY);
-                indices[_indexCount++] = vIndex + 0;
-                indices[_indexCount++] = vIndex + 1;
-                indices[_indexCount++] = vIndex + 2;
-                indices[_indexCount++] = vIndex + 2;
-                indices[_indexCount++] = vIndex + 1;
-                indices[_indexCount++] = vIndex + 3;
+                builder.Add(new Rect2D(curPos, size), g.AtlasPos);
                 _totalVisible++;
             }
             NumVisible = allVisible ? _totalVisible : 0;
 
-            // Create vao
-            GL gl = Game.OpenGL;
-            _vao = gl.GenVertexArray();
-            gl.BindVertexArray(_vao);
-
-            // Store in vbo
-            _vbo = gl.GenBuffer();
-            gl.BindBuffer(BufferTargetARB.ArrayBuffer, _vbo);
-            fixed (void* d = vertices)
-            {
-                gl.BufferData(BufferTargetARB.ArrayBuffer, TexStruct.SizeOf * vertexCount, d, BufferUsageARB.StaticDraw);
-            }
-            // Store in ebo
-            _ebo = gl.GenBuffer();
-            gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, _ebo);
-            fixed (void* d = indices)
-            {
-                gl.BufferData(BufferTargetARB.ElementArrayBuffer, sizeof(uint) * _indexCount, d, BufferUsageARB.StaticDraw);
-            }
-
-            // Now set attribs
-            gl.EnableVertexAttribArray(0);
-            gl.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, TexStruct.SizeOf, (void*)TexStruct.OffsetOfPos);
-            gl.DisableVertexAttribArray(0);
-            gl.EnableVertexAttribArray(1);
-            gl.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, TexStruct.SizeOf, (void*)TexStruct.OffsetOfTexCoords);
-            gl.DisableVertexAttribArray(1);
-
-            gl.BindVertexArray(0);
+            builder.Finish(Game.OpenGL, out _, out _vao, out _vbo, out _ebo);
         }
 
-        public static GUIString CreateCentered(string text, Font font, ColorF[] colors, float centerX, float centerY, int scale = 1)
+        public static GUIString CreateCentered(string text, Font font, ColorF[] colors, float centerX, float centerY, uint scale = 1)
         {
             Size2D s = font.MeasureString(text);
             return new GUIString(text, font, colors, Pos2D.Center(centerX, centerY, s), scale: scale);
         }
-        public static void CreateAndRenderOneTimeString(GL gl, string text, Font font, ColorF[] colors, Pos2D pos, int scale = 1)
+        public static void CreateAndRenderOneTimeString(GL gl, string text, Font font, ColorF[] colors, Pos2D pos, uint scale = 1)
         {
             var s = new GUIString(text, font, colors, pos, scale: scale);
             s.Render(gl);
             s.Delete(gl);
         }
-        public static void CreateAndRenderOneTimeGenderString(GL gl, PBEGender gender, Font font, Pos2D pos, int scale = 1)
+        public static void CreateAndRenderOneTimeGenderString(GL gl, PBEGender gender, Font font, Pos2D pos, uint scale = 1)
         {
             if (gender == PBEGender.Genderless)
             {
@@ -168,9 +106,9 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
                 return;
             }
 
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
             GLHelper.EnableBlend(gl, true);
             GLHelper.BlendFunc(gl, BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
             GLHelper.BindTexture(gl, Font.Texture);
             gl.BindVertexArray(_vao);
             gl.EnableVertexAttribArray(0);

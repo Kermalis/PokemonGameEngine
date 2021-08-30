@@ -18,27 +18,19 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
     }
     internal sealed class Glyph
     {
-        public readonly Font Parent;
         public readonly byte CharWidth;
         public readonly byte CharSpace;
-        public readonly float AtlasStartX;
-        public readonly float AtlasEndX;
-        public readonly float AtlasStartY;
-        public readonly float AtlasEndY;
+        public readonly AtlasPos AtlasPos;
 
-        public Glyph(byte[] dst, int startX, int startY, uint atlasWidth, uint atlasHeight, Font parent, PackedGlyph g)
+        public Glyph(byte[] dst, Pos2D posInAtlas, Size2D atlasSize, Font parent, PackedGlyph g)
         {
-            Parent = parent;
             CharWidth = g.CharWidth;
             CharSpace = g.CharSpace;
             if (CharWidth == 0)
             {
                 return;
             }
-            AtlasStartX = Renderer.AbsXToRelX(startX, atlasWidth);
-            AtlasEndX = Renderer.AbsXToRelX(startX + CharWidth, atlasWidth);
-            AtlasStartY = Renderer.AbsYToRelY(startY, atlasHeight);
-            AtlasEndY = Renderer.AbsYToRelY(startY + parent.FontHeight, atlasHeight);
+            AtlasPos = new AtlasPos(new Rect2D(posInAtlas, new Size2D(CharWidth, parent.FontHeight)), atlasSize);
 
             // Draw to texture atlas
             byte[] packed = g.PackedBitmap;
@@ -51,7 +43,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
                 for (int px = 0; px < CharWidth; px++)
                 {
                     int colorIndex = (packed[curByte] >> (8 - bpp - curBit)) % (1 << bpp);
-                    dst[Renderer.GetPixelIndex(atlasWidth, px + startX, py + startY)] = (byte)colorIndex; // Only set the R component
+                    dst[Renderer.GetPixelIndex(atlasSize.Width, px + posInAtlas.X, py + posInAtlas.Y)] = (byte)colorIndex; // Only set the R component
                     curBit = (curBit + bpp) % 8;
                     if (curBit == 0)
                     {

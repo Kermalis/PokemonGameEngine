@@ -9,9 +9,9 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
 {
     internal static class GLTextureUtils
     {
-        public static unsafe void LoadTextureData(GL gl, void* data, uint width, uint height)
+        public static unsafe void LoadTextureData(GL gl, void* data, Size2D size)
         {
-            gl.TexImage2D(TextureTarget.Texture2D, 0, (int)InternalFormat.Rgba8, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+            gl.TexImage2D(TextureTarget.Texture2D, 0, (int)InternalFormat.Rgba8, size.Width, size.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
 
             gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
             gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);

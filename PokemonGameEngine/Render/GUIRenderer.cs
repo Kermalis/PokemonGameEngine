@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
-using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
@@ -13,21 +12,16 @@ namespace Kermalis.PokemonGameEngine.Render
         private struct TexStruct
         {
             public const int OffsetOfPos = 0;
-            public const int OffsetOfTexCoords = 2 * sizeof(int);
-            public const uint SizeOf = (2 * sizeof(int)) + (2 * sizeof(float));
+            public const int OffsetOfTexCoords = OffsetOfPos + 2 * sizeof(int);
+            public const uint SizeOf = OffsetOfTexCoords + (2 * sizeof(float));
 
             public Pos2D Pos;
-            public Vector2 TexCoords;
-
-            public void SetTexCoords(float x, float y, bool xFlip, bool yFlip)
-            {
-                TexCoords = new(xFlip ? 1 - x : x, yFlip ? 1 - y : y);
-            }
+            public RelPos2D TexCoords;
         }
         private struct QuadStruct
         {
             public const int OffsetOfPos = 0;
-            public const uint SizeOf = 2 * sizeof(int);
+            public const uint SizeOf = OffsetOfPos + 2 * sizeof(int);
 
             public Pos2D Pos;
         }
@@ -87,22 +81,17 @@ namespace Kermalis.PokemonGameEngine.Render
             gl.EnableVertexAttribArray(1);
             _texShader.SetTextureUnit(gl, 0);
         }
-        private unsafe void RenderOneTexture(GL gl, uint texture, Rect2D rect, bool xFlip, bool yFlip)
+        private unsafe void RenderOneTexture(GL gl, uint texture, Rect2D rect, AtlasPos texPos)
         {
             GLHelper.BindTexture(gl, texture);
-            _texCache[0].SetTexCoords(0, 0, xFlip, yFlip);
-            _texCache[1].SetTexCoords(0, 1, xFlip, yFlip);
-            _texCache[2].SetTexCoords(1, 0, xFlip, yFlip);
-            _texCache[3].SetTexCoords(1, 1, xFlip, yFlip);
+            _texCache[0].TexCoords = texPos.GetTopLeft();
+            _texCache[1].TexCoords = texPos.GetBottomLeft();
+            _texCache[2].TexCoords = texPos.GetTopRight();
+            _texCache[3].TexCoords = texPos.GetBottomRight();
             _texCache[0].Pos = rect.TopLeft;
-            _texCache[1].Pos = rect.GetBottomLeft();
-            _texCache[2].Pos = rect.GetTopRight();
-            _texCache[3].Pos = rect.GetBottomRight();
-            // Set bounds due to how gl works
-            _texCache[1].Pos.Y++;
-            _texCache[2].Pos.X++;
-            _texCache[3].Pos.X++;
-            _texCache[3].Pos.Y++;
+            _texCache[1].Pos = rect.GetExclusiveBottomLeft();
+            _texCache[2].Pos = rect.GetExclusiveTopRight();
+            _texCache[3].Pos = rect.GetExclusiveBottomRight();
             fixed (void* d = _texCache)
             {
                 gl.BufferData(BufferTargetARB.ArrayBuffer, TexStruct.SizeOf * 4, d, BufferUsageARB.StreamDraw);
@@ -124,7 +113,14 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             GL gl = Game.OpenGL;
             RenderTextureStart(gl);
-            RenderOneTexture(gl, texture, rect, xFlip, yFlip);
+            RenderOneTexture(gl, texture, rect, new AtlasPos(xFlip, yFlip));
+            RenderTextureEnd(gl);
+        }
+        public void RenderTexture(uint texture, Rect2D rect, AtlasPos texPos)
+        {
+            GL gl = Game.OpenGL;
+            RenderTextureStart(gl);
+            RenderOneTexture(gl, texture, rect, texPos);
             RenderTextureEnd(gl);
         }
 

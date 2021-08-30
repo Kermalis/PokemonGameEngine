@@ -36,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         {
             GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
             GLHelper.BindTexture(gl, Texture);
-            GLTextureUtils.LoadTextureData(gl, data, Size.Width, Size.Height);
+            GLTextureUtils.LoadTextureData(gl, data, Size);
         }
 
         public void Render(Pos2D pos, bool xFlip = false, bool yFlip = false)

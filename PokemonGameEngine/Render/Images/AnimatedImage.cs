@@ -15,13 +15,13 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             public uint Texture { get; }
             public int Delay { get; }
 
-            public unsafe Frame(GL gl, DecodedGIF.Frame frame, int w, int h)
+            public unsafe Frame(GL gl, DecodedGIF.Frame frame, Size2D size)
             {
                 Texture = GLHelper.GenTexture(gl);
                 GLHelper.BindTexture(gl, Texture);
                 fixed (void* imgdata = frame.Bitmap)
                 {
-                    GLTextureUtils.LoadTextureData(gl, imgdata, (uint)w, (uint)h);
+                    GLTextureUtils.LoadTextureData(gl, imgdata, size);
                 }
                 Delay = frame.Delay;
             }
@@ -36,18 +36,21 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             {
                 GL gl = Game.OpenGL;
                 DecodedGIF gif = GIFRenderer.DecodeAllFrames(AssetLoader.GetAssetStream(asset), ColorFormat.RGBA);
+
                 if (spindaSpots.HasValue)
                 {
                     (uint pid, bool shiny) = spindaSpots.Value;
                     SpindaSpotRenderer.Render(gif, pid, shiny);
                 }
+
                 GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
+
+                Size = new Size2D((uint)gif.Width, (uint)gif.Height);
                 Frames = new Frame[gif.Frames.Count];
                 for (int i = 0; i < gif.Frames.Count; i++)
                 {
-                    Frames[i] = new Frame(gl, gif.Frames[i], gif.Width, gif.Height);
+                    Frames[i] = new Frame(gl, gif.Frames[i], Size);
                 }
-                Size = new Size2D((uint)gif.Width, (uint)gif.Height);
                 RepeatCount = gif.RepeatCount;
                 _id = id;
                 _numReferences = 1;

@@ -30,14 +30,14 @@ namespace Kermalis.PokemonGameEngine.GUI
         public bool IsDone => _result == StringPrinterResult.Ended && _pressedDone;
         public bool IsEnded => _result == StringPrinterResult.Ended;
 
-        public StringPrinter(Window w, string str, Font font, ColorF[] strColors, Pos2D pos, int scale = 1)
+        public StringPrinter(Window w, string str, Font font, ColorF[] strColors, Pos2D pos, uint scale = 1)
         {
             _window = w;
             _str = new GUIString(Engine.Instance.StringBuffers.ApplyBuffers(str), font, strColors, pos: pos, allVisible: false, scale: scale);
             w.ClearImage();
             _allStringPrinters.Add(this);
         }
-        public static StringPrinter CreateStandardMessageBox(Window w, string str, Font font, ColorF[] strColors, int scale = 1)
+        public static StringPrinter CreateStandardMessageBox(Window w, string str, Font font, ColorF[] strColors, uint scale = 1)
         {
             return new StringPrinter(w, str, font, strColors, Pos2D.FromRelative(0.05f, 0.01f), scale: scale);
         }

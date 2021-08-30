@@ -16,23 +16,35 @@
             Size = new Size2D((uint)(bottomRight.X - topLeft.X + 1), (uint)(bottomRight.Y - topLeft.Y + 1));
         }
 
+        public int GetExclusiveRight()
+        {
+            return TopLeft.X + (int)Size.Width;
+        }
         public int GetRight()
         {
-            return TopLeft.X + (int)Size.Width - 1;
+            return GetExclusiveRight() - 1;
         }
         public void SetRight(int x)
         {
             Size.Width = (uint)(x - TopLeft.X + 1);
         }
+        public int GetExclusiveBottom()
+        {
+            return TopLeft.Y + (int)Size.Height;
+        }
         public int GetBottom()
         {
-            return TopLeft.Y + (int)Size.Height - 1;
+            return GetExclusiveBottom() - 1;
         }
         public void SetBottom(int y)
         {
             Size.Height = (uint)(y - TopLeft.Y + 1);
         }
 
+        public Pos2D GetExclusiveTopRight()
+        {
+            return new Pos2D(GetExclusiveRight(), TopLeft.Y);
+        }
         public Pos2D GetTopRight()
         {
             return new Pos2D(GetRight(), TopLeft.Y);
@@ -42,6 +54,10 @@
             TopLeft.Y = topRight.Y;
             SetRight(topRight.X);
         }
+        public Pos2D GetExclusiveBottomLeft()
+        {
+            return new Pos2D(TopLeft.X, GetExclusiveBottom());
+        }
         public Pos2D GetBottomLeft()
         {
             return new Pos2D(TopLeft.X, GetBottom());
@@ -50,6 +66,10 @@
         {
             TopLeft.X = bottomLeft.X;
             SetBottom(bottomLeft.Y);
+        }
+        public Pos2D GetExclusiveBottomRight()
+        {
+            return new Pos2D(GetExclusiveRight(), GetExclusiveBottom());
         }
         public Pos2D GetBottomRight()
         {

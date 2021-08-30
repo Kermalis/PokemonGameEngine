@@ -42,7 +42,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             GLHelper.BindTexture(gl, Texture);
             fixed (void* imgdata = bitmap)
             {
-                GLTextureUtils.LoadTextureData(gl, imgdata, Size.Width, Size.Height);
+                GLTextureUtils.LoadTextureData(gl, imgdata, Size);
             }
         }
 

@@ -23,15 +23,15 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
 
         static Font()
         {
-            Default = new Font("Fonts\\Default.kermfont", 1024, 1024, new (string, ushort)[]
+            Default = new Font("Fonts\\Default.kermfont", new Size2D(1024, 1024), new (string, ushort)[]
             {
                 ("♂", 0x246D),
                 ("♀", 0x246E),
                 ("[PK]", 0x2486),
                 ("[MN]", 0x2487)
             });
-            DefaultSmall = new Font("Fonts\\DefaultSmall.kermfont", 1024, 512, Default._overrides);
-            PartyNumbers = new Font("Fonts\\PartyNumbers.kermfont", 64, 32, new (string, ushort)[]
+            DefaultSmall = new Font("Fonts\\DefaultSmall.kermfont", new Size2D(1024, 512), Default._overrides);
+            PartyNumbers = new Font("Fonts\\PartyNumbers.kermfont", new Size2D(64, 32), new (string, ushort)[]
             {
                 ("[ID]", 0x0049),
                 ("[LV]", 0x004C),
@@ -40,12 +40,12 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
         }
 
         // Atlas size must be a power of 2
-        private unsafe Font(string asset, uint atlasWidth, uint atlasHeight, (string, ushort)[] overrides)
+        private unsafe Font(string asset, Size2D atlasSize, (string, ushort)[] overrides)
         {
             using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(asset), Endianness.LittleEndian))
             {
                 FontHeight = r.ReadByte();
-                if (FontHeight > atlasHeight)
+                if (FontHeight > atlasSize.Height)
                 {
                     throw new InvalidDataException();
                 }
@@ -59,30 +59,29 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
                 _overrides = overrides;
 
                 // Make texture atlas. Atlas must be sized by powers of 2
-                byte[] dest = new byte[atlasWidth * atlasHeight];
+                byte[] dest = new byte[atlasSize.GetArea()];
                 _glyphs = new Dictionary<ushort, Glyph>(numGlyphs);
-                int x = 0;
-                int y = 0;
+                var posInAtlas = new Pos2D(0, 0);
                 foreach (KeyValuePair<ushort, PackedGlyph> k in packed)
                 {
                     ushort key = k.Key;
                     PackedGlyph pg = k.Value;
-                    if (pg.CharWidth > atlasWidth)
+                    if (pg.CharWidth > atlasSize.Width)
                     {
                         throw new InvalidDataException();
                     }
-                    if (x >= atlasWidth || x + pg.CharWidth > atlasWidth)
+                    if (posInAtlas.X >= atlasSize.Width || posInAtlas.X + pg.CharWidth > atlasSize.Width)
                     {
-                        x = 0;
-                        y += FontHeight;
-                        if (y + FontHeight > atlasHeight)
+                        posInAtlas.X = 0;
+                        posInAtlas.Y += FontHeight;
+                        if (posInAtlas.Y + FontHeight > atlasSize.Height)
                         {
                             throw new InvalidDataException();
                         }
                     }
-                    var g = new Glyph(dest, x, y, atlasWidth, atlasHeight, this, pg);
+                    var g = new Glyph(dest, posInAtlas, atlasSize, this, pg);
                     _glyphs.Add(key, g);
-                    x += g.CharWidth;
+                    posInAtlas.X += g.CharWidth;
                 }
                 // Create the texture
                 fixed (byte* dst = dest)
@@ -91,7 +90,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
                     GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
                     Texture = GLHelper.GenTexture(gl);
                     GLHelper.BindTexture(gl, Texture);
-                    gl.TexImage2D(TextureTarget.Texture2D, 0, (int)InternalFormat.R8ui, atlasWidth, atlasHeight, 0, PixelFormat.RedInteger, PixelType.UnsignedByte, dst);
+                    gl.TexImage2D(TextureTarget.Texture2D, 0, (int)InternalFormat.R8ui, atlasSize.Width, atlasSize.Height, 0, PixelFormat.RedInteger, PixelType.UnsignedByte, dst);
                     gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
                     gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
                 }
