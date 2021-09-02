@@ -84,7 +84,7 @@ namespace Kermalis.PokemonGameEngine.Render
         private unsafe void RenderOneTexture(GL gl, uint texture, Rect2D rect, AtlasPos texPos)
         {
             GLHelper.BindTexture(gl, texture);
-            _texCache[0].TexCoords = texPos.GetTopLeft();
+            _texCache[0].TexCoords = texPos.Start;
             _texCache[1].TexCoords = texPos.GetBottomLeft();
             _texCache[2].TexCoords = texPos.GetTopRight();
             _texCache[3].TexCoords = texPos.GetBottomRight();

@@ -2,47 +2,41 @@
 {
     internal struct AtlasPos
     {
-        public readonly float AtlasStartX;
-        public readonly float AtlasStartY;
-        public readonly float AtlasEndX;
-        public readonly float AtlasEndY;
+        public readonly RelPos2D Start;
+        public readonly RelPos2D End;
 
         public AtlasPos(bool xFlip, bool yFlip)
         {
-            AtlasStartX = xFlip ? 1 : 0;
-            AtlasStartY = yFlip ? 1 : 0;
-            AtlasEndX = xFlip ? 0 : 1;
-            AtlasEndY = yFlip ? 0 : 1;
+            Start.X = xFlip ? 1 : 0;
+            Start.Y = yFlip ? 1 : 0;
+            End.X = xFlip ? 0 : 1;
+            End.Y = yFlip ? 0 : 1;
         }
-        public AtlasPos(Rect2D rect, Size2D atlasSize, bool xFlip = false, bool yFlip = false)
+        public AtlasPos(in Rect2D rect, Size2D atlasSize, bool xFlip = false, bool yFlip = false)
         {
-            AtlasStartX = Renderer.AbsXToRelX(xFlip ? rect.GetExclusiveRight() : rect.TopLeft.X, atlasSize.Width);
-            AtlasStartY = Renderer.AbsYToRelY(yFlip ? rect.GetExclusiveBottom() : rect.TopLeft.Y, atlasSize.Height);
-            AtlasEndX = Renderer.AbsXToRelX(xFlip ? rect.TopLeft.X : rect.GetExclusiveRight(), atlasSize.Width);
-            AtlasEndY = Renderer.AbsYToRelY(yFlip ? rect.TopLeft.Y : rect.GetExclusiveBottom(), atlasSize.Height);
+            Start.X = Renderer.AbsXToRelX(xFlip ? rect.GetExclusiveRight() : rect.TopLeft.X, atlasSize.Width);
+            Start.Y = Renderer.AbsYToRelY(yFlip ? rect.GetExclusiveBottom() : rect.TopLeft.Y, atlasSize.Height);
+            End.X = Renderer.AbsXToRelX(xFlip ? rect.TopLeft.X : rect.GetExclusiveRight(), atlasSize.Width);
+            End.Y = Renderer.AbsYToRelY(yFlip ? rect.TopLeft.Y : rect.GetExclusiveBottom(), atlasSize.Height);
         }
 
-        public RelPos2D GetTopLeft()
-        {
-            return new RelPos2D(AtlasStartX, AtlasStartY);
-        }
         public RelPos2D GetBottomLeft()
         {
-            return new RelPos2D(AtlasStartX, AtlasEndY);
+            return new RelPos2D(Start.X, End.Y);
         }
         public RelPos2D GetTopRight()
         {
-            return new RelPos2D(AtlasEndX, AtlasStartY);
+            return new RelPos2D(End.X, Start.Y);
         }
         public RelPos2D GetBottomRight()
         {
-            return new RelPos2D(AtlasEndX, AtlasEndY);
+            return new RelPos2D(End.X, End.Y);
         }
 
 #if DEBUG
         public override string ToString()
         {
-            return string.Format("[SX: {0}, SY: {1}, EX: {2}, EY: {3}]", AtlasStartX, AtlasStartY, AtlasEndX, AtlasEndY);
+            return string.Format("[Start: {0}, End: {1}]", Start, End);
         }
 #endif
     }
