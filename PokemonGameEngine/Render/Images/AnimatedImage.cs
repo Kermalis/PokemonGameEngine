@@ -12,6 +12,8 @@ namespace Kermalis.PokemonGameEngine.Render.Images
     {
         private sealed class Frame
         {
+            public const int NoDelay = -1;
+
             public uint Texture { get; }
             public int Delay { get; }
 
@@ -23,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                 {
                     GLTextureUtils.LoadTextureData(gl, imgdata, size);
                 }
-                Delay = frame.Delay;
+                Delay = frame.Delay ?? NoDelay;
             }
         }
         private sealed class Image
@@ -118,7 +120,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         {
             _img = Image.LoadOrGet(asset, spindaSpots);
             int frameDelay = _img.Frames[0].Delay;
-            if (frameDelay == -1)
+            if (frameDelay == Frame.NoDelay)
             {
                 IsPaused = true;
             }
@@ -145,7 +147,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         {
             int curFrameIndex = _curFrameIndex;
             int curFrameDelay = _img.Frames[curFrameIndex].Delay;
-            if (curFrameDelay == -1)
+            if (curFrameDelay == Frame.NoDelay)
             {
                 IsPaused = true;
                 return; // This would only be reached if IsPaused is set to false manually
@@ -169,7 +171,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                     curFrameIndex++;
                 }
                 curFrameDelay = _img.Frames[curFrameIndex].Delay;
-                if (curFrameDelay == -1)
+                if (curFrameDelay == Frame.NoDelay)
                 {
                     IsPaused = true;
                     _curFrameIndex = curFrameIndex;
