@@ -6,7 +6,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
     {
         bool IsDone { get; }
 
-        bool Update(PositionRotation result);
+        bool Update(ref PositionRotation result);
     }
 
     internal sealed class PositionRotationAnimator : IPositionRotationAnimator
@@ -18,8 +18,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
 
         public bool IsDone { get; private set; }
 
-        /// <summary>Does not create a copy of <paramref name="from"/> or <paramref name="to"/>.</summary>
-        public PositionRotationAnimator(PositionRotation from, PositionRotation to, double milliseconds)
+        public PositionRotationAnimator(in PositionRotation from, in PositionRotation to, double milliseconds)
         {
             _from = from;
             _to = to;
@@ -27,7 +26,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             _movementEnd = TimeSpan.FromMilliseconds(milliseconds);
         }
 
-        public bool Update(PositionRotation result)
+        public bool Update(ref PositionRotation result)
         {
             if (IsDone)
             {
@@ -53,8 +52,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         public bool IsRotDone;
         public bool IsDone => IsPosDone && IsRotDone;
 
-        /// <summary>Does not create a copy of <paramref name="from"/> or <paramref name="to"/>.</summary>
-        public PositionRotationAnimatorSplit(PositionRotation from, PositionRotation to, double posMilliseconds, double rotMilliseconds)
+        public PositionRotationAnimatorSplit(in PositionRotation from, in PositionRotation to, double posMilliseconds, double rotMilliseconds)
         {
             _from = from;
             _to = to;
@@ -64,7 +62,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             _movementEnd = TimeSpan.FromMilliseconds(rotMilliseconds);
         }
 
-        public bool Update(PositionRotation result)
+        public bool Update(ref PositionRotation result)
         {
             if (IsDone)
             {

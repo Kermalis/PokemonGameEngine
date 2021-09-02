@@ -14,7 +14,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         public Model(string asset)
         {
             _meshes = AssimpLoader.ImportModel(asset);
-            PR = new PositionRotation();
+            PR = PositionRotation.Default;
         }
 
         public Matrix4x4 GetTransformation()

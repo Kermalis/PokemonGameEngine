@@ -114,7 +114,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 0, 0, -1.0039f, -1,
                 0, 0, -2.0039f, 0);
 
-            _camera = new Camera(new PositionRotation(), projection);
+            _camera = new Camera(PositionRotation.Default, projection);
             //_shader = new ModelShader(Core.Program.OpenGL);
             _shader = new LitModelShader(Game.OpenGL);
 

@@ -9,8 +9,10 @@ using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.R3D
 {
-    internal sealed class PositionRotation
+    internal struct PositionRotation
     {
+        public static PositionRotation Default { get; } = new(Vector3.Zero, Quaternion.Identity);
+
         public Vector3 Position;
         public Quaternion Rotation;
 
@@ -21,27 +23,14 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         private float _yawDegrees;
         private float _yawRadians;
 
-        public PositionRotation()
-        {
-            Rotation = Quaternion.Identity;
-        }
-        public PositionRotation(PositionRotation other)
-        {
-            Position = other.Position;
-            Rotation = other.Rotation;
-            _rollDegrees = other._rollDegrees;
-            _rollRadians = other._rollRadians;
-            _pitchDegrees = other._pitchDegrees;
-            _pitchRadians = other._pitchRadians;
-            _yawDegrees = other._yawDegrees;
-            _yawRadians = other._yawRadians;
-        }
-        public PositionRotation(Vector3 pos, Quaternion rot)
+        public PositionRotation(in Vector3 pos, in Quaternion rot)
+            : this()
         {
             Position = pos;
             SetRotation(rot);
         }
-        public PositionRotation(Vector3 pos, float rollDegrees, float pitchDegrees, float yawDegrees)
+        public PositionRotation(in Vector3 pos, float rollDegrees, float pitchDegrees, float yawDegrees)
+            : this()
         {
             Position = pos;
             SetRotation(rollDegrees, pitchDegrees, yawDegrees);
@@ -57,7 +46,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             _yawRadians = 0;
             Rotation = Quaternion.Identity;
         }
-        public void SetRotation(Quaternion rot)
+        public void SetRotation(in Quaternion rot)
         {
             Rotation = rot;
             _rollRadians = -rot.GetRollRadiansF();
@@ -113,7 +102,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         {
             SetRotation(Quaternion.Slerp(from, to, progress));
         }
-        public void Slerp(PositionRotation from, PositionRotation to, float progress)
+        public void Slerp(in PositionRotation from, in PositionRotation to, float progress)
         {
             LerpPosition(from.Position, to.Position, progress);
             SlerpRotation(from.Rotation, to.Rotation, progress);

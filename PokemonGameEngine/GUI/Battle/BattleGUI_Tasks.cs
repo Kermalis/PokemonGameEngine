@@ -89,15 +89,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             public Action OnFinished;
             public IPositionRotationAnimator Animator;
 
-            public TaskData_MoveCamera(Camera c, PositionRotation to, Action onFinished, double milliseconds)
+            public TaskData_MoveCamera(Camera c, in PositionRotation to, Action onFinished, double milliseconds)
             {
                 OnFinished = onFinished;
-                Animator = new PositionRotationAnimator(new PositionRotation(c.PR), to, milliseconds);
+                Animator = new PositionRotationAnimator(c.PR, to, milliseconds);
             }
-            public TaskData_MoveCamera(Camera c, PositionRotation to, Action onFinished, double posMilliseconds, double rotMilliseconds)
+            public TaskData_MoveCamera(Camera c, in PositionRotation to, Action onFinished, double posMilliseconds, double rotMilliseconds)
             {
                 OnFinished = onFinished;
-                Animator = new PositionRotationAnimatorSplit(new PositionRotation(c.PR), to, posMilliseconds, rotMilliseconds);
+                Animator = new PositionRotationAnimatorSplit(c.PR, to, posMilliseconds, rotMilliseconds);
             }
         }
 
@@ -109,11 +109,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             _renderTasks.Add(Task_CameraMotion, int.MaxValue, data: data, tag: TaskData_MoveCamera.Tag);
         }
-        private void CreateCameraMotionTask(PositionRotation to, Action onFinished, double milliseconds = 500)
+        private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, double milliseconds = 500)
         {
             CreateCameraMotionTask(new TaskData_MoveCamera(_camera, to, onFinished, milliseconds));
         }
-        private void CreateCameraMotionTask(PositionRotation to, Action onFinished, double posMilliseconds, double rotMilliseconds)
+        private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, double posMilliseconds, double rotMilliseconds)
         {
             CreateCameraMotionTask(new TaskData_MoveCamera(_camera, to, onFinished, posMilliseconds, rotMilliseconds));
         }
@@ -121,7 +121,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private void Task_CameraMotion(BackTask task)
         {
             var data = (TaskData_MoveCamera)task.Data;
-            if (data.Animator.Update(_camera.PR))
+            if (data.Animator.Update(ref _camera.PR))
             {
                 _renderTasks.RemoveAndDispose(task);
                 data.OnFinished?.Invoke();
