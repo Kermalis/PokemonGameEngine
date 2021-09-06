@@ -46,6 +46,8 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
             uint nextXOffset = 0;
             uint nextYOffset = 0;
             int index = 0;
+            Size2D size;
+            size.Height = font.FontHeight * scale;
             while (index < text.Length)
             {
                 Pos2D curPos;
@@ -56,9 +58,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
                 {
                     continue;
                 }
-                Size2D size;
                 size.Width = g.CharWidth * scale;
-                size.Height = font.FontHeight * scale;
                 // Can't use triangle strips
                 builder.Add(new Rect2D(curPos, size), g.AtlasPos);
                 _totalVisible++;
