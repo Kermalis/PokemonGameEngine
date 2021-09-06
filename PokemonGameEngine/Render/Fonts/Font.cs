@@ -110,7 +110,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
             {
                 index++;
                 xOffset = 0;
-                yOffset += (uint)(FontHeight + 1);
+                yOffset += (uint)FontHeight + 1;
                 readStr = c.ToString();
                 return null;
             }
@@ -143,7 +143,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
             }
             readStr = c.ToString();
         bottom:
-            xOffset += (uint)(ret.CharWidth + ret.CharSpace);
+            xOffset += (uint)ret.CharWidth + ret.CharSpace;
             return ret;
         }
 
