@@ -410,7 +410,7 @@ namespace Kermalis.PokemonGameEngine.Core
             (PBESpecies species, PBEForm form) = GetOffspringSpecies(mainParent);
 #if DEBUG_DAYCARE_LOGEGG
             Log.WriteLine(string.Format("Offspring: ({0} {1})", species, PBEDataUtils.GetNameOfForm(species, form)));
-            Log.ModifyIndent(1);
+            Log.ModifyIndent(+1);
 #endif
             var bs = BaseStats.Get(species, form, true);
 
@@ -464,7 +464,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 {
 #if DEBUG_DAYCARE_LOGEGG
                     Log.WriteLineWithTime("Egg produced at daycare:");
-                    Log.ModifyIndent(1);
+                    Log.ModifyIndent(+1);
 #endif
                     _offspring = ProduceOffspring(p0, p1);
 #if DEBUG_DAYCARE_LOGEGG

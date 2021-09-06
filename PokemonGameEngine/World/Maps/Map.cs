@@ -23,7 +23,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         {
 #if DEBUG_OVERWORLD
             Log.WriteLine("Loading map: " + name);
-            Log.ModifyIndent(1);
+            Log.ModifyIndent(+1);
 #endif
             using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(MapPath + name + ".bin")))
             {

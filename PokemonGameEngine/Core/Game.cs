@@ -368,7 +368,7 @@ namespace Kermalis.PokemonGameEngine.Core
             }
             string msg = Marshal.PtrToStringAnsi(message, length);
             Log.WriteLineWithTime("GL Error:");
-            Log.ModifyIndent(1);
+            Log.ModifyIndent(+1);
             Log.WriteLine(string.Format("Message: \"{0}\"", msg));
             Log.WriteLine(string.Format("Type: \"{0}\"", type));
             Log.WriteLine(string.Format("Id: \"{0}\"", id));
