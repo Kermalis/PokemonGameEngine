@@ -1,9 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.World;
-using Silk.NET.OpenGL;
-using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Render.World
@@ -23,23 +20,22 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         public void Tick()
         {
-            TileAnimation anim = _anim;
-            int c = (_counter + 1) % anim.Duration;
+            int c = (_counter + 1) % _anim.Duration;
             _counter = c;
-            for (int f = 0; f < anim.Frames.Length; f++)
+            for (int f = 0; f < _anim.Frames.Length; f++)
             {
-                TileAnimation.Frame frame = anim.Frames[f];
+                TileAnimation.Frame frame = _anim.Frames[f];
                 Tileset.Tile tile = _tileset.Tiles[frame.TilesetTile];
                 for (int s = frame.Stops.Length - 1; s >= 0; s--)
                 {
                     TileAnimation.Frame.Stop stop = frame.Stops[s];
                     if (stop.Time <= c)
                     {
-                        tile.AnimBitmap = anim.Textures[stop.SheetTile];
+                        tile.AnimId = stop.AnimTile;
                         goto bottom;
                     }
                 }
-                tile.AnimBitmap = 0;
+                tile.AnimId = Tileset.Tile.NoAnim;
             bottom:
                 ;
             }
@@ -52,12 +48,12 @@ namespace Kermalis.PokemonGameEngine.Render.World
         {
             public sealed class Stop
             {
-                public readonly int SheetTile;
+                public readonly int AnimTile;
                 public readonly int Time;
 
                 public Stop(EndianBinaryReader r)
                 {
-                    SheetTile = r.ReadInt32();
+                    AnimTile = r.ReadInt32();
                     Time = r.ReadInt32();
                 }
             }
@@ -75,26 +71,11 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 }
             }
         }
-        public readonly uint[] Textures;
         public readonly int Duration;
         public readonly Frame[] Frames;
 
-        public unsafe TileAnimation(EndianBinaryReader r)
+        private TileAnimation(EndianBinaryReader r)
         {
-            uint[][] sheet = AssetLoader.GetAssetSheetAsBitmaps(AnimationsPath + r.ReadStringNullTerminated() + AnimationSheetExtension, new Size2D(Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY));
-            Textures = new uint[sheet.Length];
-            GL gl = Game.OpenGL;
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-            for (int i = 0; i < sheet.Length; i++)
-            {
-                uint tex = GLHelper.GenTexture(gl);
-                GLHelper.BindTexture(gl, tex);
-                fixed (uint* d = sheet[i])
-                {
-                    GLTextureUtils.LoadTextureData(gl, d, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
-                }
-                Textures[i] = tex;
-            }
             Duration = r.ReadInt32();
             byte numFrames = r.ReadByte();
             Frames = new Frame[numFrames];
@@ -103,24 +84,11 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 Frames[i] = new Frame(r);
             }
         }
-        // Delete textures when the animation is unloaded
-        ~TileAnimation()
-        {
-            Game.AddTempTask(() =>
-            {
-                GL gl = Game.OpenGL;
-                for (int i = 0; i < Textures.Length; i++)
-                {
-                    gl.DeleteTexture(Textures[i]);
-                }
-            });
-        }
 
         #region Loading
 
         private static readonly Dictionary<int, uint[]> _animationOffsets;
 
-        private const string AnimationSheetExtension = ".png";
         private const string AnimationsExtension = ".bin";
         private const string AnimationsPath = "Tileset\\Animation\\";
         private const string AnimationsFile = AnimationsPath + "Animations" + AnimationsExtension;
@@ -145,42 +113,22 @@ namespace Kermalis.PokemonGameEngine.Render.World
             return new EndianBinaryReader(AssetLoader.GetAssetStream(AnimationsFile), encoding: EncodingType.UTF16);
         }
 
-        #endregion
-
-        #region Cache
-
-        private static readonly Dictionary<int, WeakReference<TileAnimation[]>> _loadedAnimations = new();
-        public static TileAnimation[] LoadOrGet(int tilesetId)
+        public static TileAnimation[] Load(int tilesetId)
         {
             if (!_animationOffsets.TryGetValue(tilesetId, out uint[] offsets))
             {
                 return null;
             }
-            TileAnimation[] Create()
+            using (EndianBinaryReader r = GetReader())
             {
-                using (EndianBinaryReader r = GetReader())
+                var arr = new TileAnimation[offsets.Length];
+                for (int i = 0; i < offsets.Length; i++)
                 {
-                    var arr = new TileAnimation[offsets.Length];
-                    for (int i = 0; i < offsets.Length; i++)
-                    {
-                        r.BaseStream.Position = offsets[i];
-                        arr[i] = new TileAnimation(r);
-                    }
-                    return arr;
+                    r.BaseStream.Position = offsets[i];
+                    arr[i] = new TileAnimation(r);
                 }
+                return arr;
             }
-            TileAnimation[] a;
-            if (!_loadedAnimations.TryGetValue(tilesetId, out WeakReference<TileAnimation[]> w))
-            {
-                a = Create();
-                _loadedAnimations.Add(tilesetId, new WeakReference<TileAnimation[]>(a));
-            }
-            else if (!w.TryGetTarget(out a))
-            {
-                a = Create();
-                w.SetTarget(a);
-            }
-            return a;
         }
 
         #endregion

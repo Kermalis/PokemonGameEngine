@@ -137,7 +137,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return false;
         }
 
-        protected virtual void OnPositionVisiblyChanged() { }
         public virtual void LogicTick() { }
 
         public static void FaceLastTalkedTowardsPlayer()

@@ -44,29 +44,27 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
 
         // TODO: Water reflections
-        public void Draw(Size2D dstSize, int blockX, int blockY, int startBlockPixelX, int startBlockPixelY)
+        public void Draw(Pos2D blockPos)
         {
-            int baseX = (blockX * Overworld.Block_NumPixelsX) + ProgressX + startBlockPixelX;
-            int baseY = (blockY * Overworld.Block_NumPixelsY) + ProgressY + startBlockPixelY;
             // Calc img coords
             ImageSheet s = _sheet;
             Size2D size = s.ImageSize;
-            var pos = new Pos2D(baseX - (((int)size.Width - Overworld.Block_NumPixelsX) / 2), // Center align
-                baseY - ((int)size.Height - Overworld.Block_NumPixelsY)); // Bottom align
+            Pos2D pos;
+            pos.X = blockPos.X - (((int)size.Width - Overworld.Block_NumPixelsX) / 2); // Center align
+            pos.Y = blockPos.Y - ((int)size.Height - Overworld.Block_NumPixelsY); // Bottom align
             // Calc shadow coords
             WriteableImage shadow = s.ShadowImage;
-            Size2D shadowSize = shadow.Size;
             Pos2D shadowPos = s.ShadowOffset;
-            shadowPos.X += baseX; // Left align
-            shadowPos.Y += baseY + Overworld.Block_NumPixelsY; // Bottom align (starts in block under)
+            shadowPos.X += blockPos.X; // Left align
+            shadowPos.Y += blockPos.Y + Overworld.Block_NumPixelsY; // Bottom align (starts in block under)
 
             // Draw shadow image
-            if (new Rect2D(shadowPos, shadowSize).Intersects(dstSize))
+            if (new Rect2D(shadowPos, shadow.Size).Intersects(Game.RenderSize))
             {
                 shadow.Render(shadowPos);
             }
             // Draw obj image
-            if (new Rect2D(pos, size).Intersects(dstSize))
+            if (new Rect2D(pos, size).Intersects(Game.RenderSize))
             {
                 float t = MovementTimer;
                 bool showMoving = t != 1 && t >= 0.6f;

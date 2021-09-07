@@ -470,18 +470,18 @@ public sealed partial class Build
         {
             private sealed class Stop
             {
-                private readonly int SheetTile;
+                private readonly int AnimTile;
                 private readonly int Time;
 
                 public Stop(JToken j)
                 {
-                    SheetTile = j[nameof(SheetTile)].Value<int>();
+                    AnimTile = j[nameof(AnimTile)].Value<int>();
                     Time = j[nameof(Time)].Value<int>();
                 }
 
                 public void Write(EndianBinaryWriter w)
                 {
-                    w.Write(SheetTile);
+                    w.Write(AnimTile);
                     w.Write(Time);
                 }
             }
@@ -512,14 +512,12 @@ public sealed partial class Build
             }
         }
         public readonly string Tileset; // Not written
-        private readonly string Sheet;
         private readonly int Duration;
         private readonly Frame[] Frames;
 
         public TileAnimation(JToken j)
         {
             Tileset = j[nameof(Tileset)].Value<string>();
-            Sheet = j[nameof(Sheet)].Value<string>();
             Duration = j[nameof(Duration)].Value<int>();
             var frames = (JArray)j[nameof(Frames)];
             int numFrames = frames.Count;
@@ -535,7 +533,6 @@ public sealed partial class Build
 
         public void Write(EndianBinaryWriter w)
         {
-            w.Write(Sheet, true);
             w.Write(Duration);
             byte numFrames = (byte)Frames.Length;
             w.Write(numFrames);

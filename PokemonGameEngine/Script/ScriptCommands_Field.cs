@@ -51,7 +51,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private static void DetachCameraCommand()
         {
-            CameraObj.CameraAttachedTo = null;
+            CameraObj.SetCameraAttachedTo(null);
             // Camera should probably have properties that get its attachment or its own properties
             // Instead of using CameraCopyMovement()
             // Map changing will be tougher though
@@ -61,8 +61,7 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             ushort id = (ushort)ReadVarOrValue();
             var obj = Obj.GetObj(id);
-            CameraObj.CameraAttachedTo = obj;
-            CameraObj.CameraCopyMovement();
+            CameraObj.SetCameraAttachedTo(obj);
         }
 
         private void WarpCommand()

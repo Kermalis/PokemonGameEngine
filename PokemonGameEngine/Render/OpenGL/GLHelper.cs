@@ -6,6 +6,8 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
 {
     internal static partial class GLHelper
     {
+        public const int MaxActiveTextures = 12;
+
         private static readonly TextureState[] _textures;
         private static int _activeTexture;
         private static readonly DepthState _depth = new();
@@ -20,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
 
         static GLHelper()
         {
-            _textures = new TextureState[12];
+            _textures = new TextureState[MaxActiveTextures];
             for (int i = 0; i < _textures.Length; i++)
             {
                 _textures[i] = new TextureState();

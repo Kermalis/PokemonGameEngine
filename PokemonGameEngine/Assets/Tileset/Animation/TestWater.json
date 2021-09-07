@@ -1,37 +1,36 @@
 {
   "Tileset": "TestTilesO",
-  "Sheet": "TestWater",
   "Duration": 40,
   "Frames": [
     {
       "TilesetTile": 103,
       "Stops": [
         {
-          "SheetTile": 0,
+          "AnimTile": 480,
           "Time": 5
         },
         {
-          "SheetTile": 40,
+          "AnimTile": 484,
           "Time": 10
         },
         {
-          "SheetTile": 80,
+          "AnimTile": 488,
           "Time": 15
         },
         {
-          "SheetTile": 120,
+          "AnimTile": 560,
           "Time": 20
         },
         {
-          "SheetTile": 160,
+          "AnimTile": 564,
           "Time": 25
         },
         {
-          "SheetTile": 200,
+          "AnimTile": 568,
           "Time": 30
         },
         {
-          "SheetTile": 240,
+          "AnimTile": 640,
           "Time": 35
         }
       ]
@@ -40,31 +39,31 @@
       "TilesetTile": 104,
       "Stops": [
         {
-          "SheetTile": 1,
+          "AnimTile": 481,
           "Time": 5
         },
         {
-          "SheetTile": 41,
+          "AnimTile": 485,
           "Time": 10
         },
         {
-          "SheetTile": 81,
+          "AnimTile": 489,
           "Time": 15
         },
         {
-          "SheetTile": 121,
+          "AnimTile": 561,
           "Time": 20
         },
         {
-          "SheetTile": 161,
+          "AnimTile": 565,
           "Time": 25
         },
         {
-          "SheetTile": 201,
+          "AnimTile": 569,
           "Time": 30
         },
         {
-          "SheetTile": 241,
+          "AnimTile": 641,
           "Time": 35
         }
       ]
@@ -73,31 +72,31 @@
       "TilesetTile": 105,
       "Stops": [
         {
-          "SheetTile": 2,
+          "AnimTile": 482,
           "Time": 5
         },
         {
-          "SheetTile": 42,
+          "AnimTile": 486,
           "Time": 10
         },
         {
-          "SheetTile": 82,
+          "AnimTile": 490,
           "Time": 15
         },
         {
-          "SheetTile": 122,
+          "AnimTile": 562,
           "Time": 20
         },
         {
-          "SheetTile": 162,
+          "AnimTile": 566,
           "Time": 25
         },
         {
-          "SheetTile": 202,
+          "AnimTile": 570,
           "Time": 30
         },
         {
-          "SheetTile": 242,
+          "AnimTile": 642,
           "Time": 35
         }
       ]
@@ -106,163 +105,31 @@
       "TilesetTile": 106,
       "Stops": [
         {
-          "SheetTile": 3,
+          "AnimTile": 483,
           "Time": 5
         },
         {
-          "SheetTile": 43,
+          "AnimTile": 487,
           "Time": 10
         },
         {
-          "SheetTile": 83,
+          "AnimTile": 491,
           "Time": 15
         },
         {
-          "SheetTile": 123,
+          "AnimTile": 563,
           "Time": 20
         },
         {
-          "SheetTile": 163,
+          "AnimTile": 567,
           "Time": 25
         },
         {
-          "SheetTile": 203,
+          "AnimTile": 571,
           "Time": 30
         },
         {
-          "SheetTile": 243,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 130,
-      "Stops": [
-        {
-          "SheetTile": 4,
-          "Time": 5
-        },
-        {
-          "SheetTile": 44,
-          "Time": 10
-        },
-        {
-          "SheetTile": 84,
-          "Time": 15
-        },
-        {
-          "SheetTile": 124,
-          "Time": 20
-        },
-        {
-          "SheetTile": 164,
-          "Time": 25
-        },
-        {
-          "SheetTile": 204,
-          "Time": 30
-        },
-        {
-          "SheetTile": 244,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 131,
-      "Stops": [
-        {
-          "SheetTile": 5,
-          "Time": 5
-        },
-        {
-          "SheetTile": 45,
-          "Time": 10
-        },
-        {
-          "SheetTile": 85,
-          "Time": 15
-        },
-        {
-          "SheetTile": 125,
-          "Time": 20
-        },
-        {
-          "SheetTile": 165,
-          "Time": 25
-        },
-        {
-          "SheetTile": 205,
-          "Time": 30
-        },
-        {
-          "SheetTile": 245,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 132,
-      "Stops": [
-        {
-          "SheetTile": 6,
-          "Time": 5
-        },
-        {
-          "SheetTile": 46,
-          "Time": 10
-        },
-        {
-          "SheetTile": 86,
-          "Time": 15
-        },
-        {
-          "SheetTile": 126,
-          "Time": 20
-        },
-        {
-          "SheetTile": 166,
-          "Time": 25
-        },
-        {
-          "SheetTile": 206,
-          "Time": 30
-        },
-        {
-          "SheetTile": 246,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 133,
-      "Stops": [
-        {
-          "SheetTile": 7,
-          "Time": 5
-        },
-        {
-          "SheetTile": 47,
-          "Time": 10
-        },
-        {
-          "SheetTile": 87,
-          "Time": 15
-        },
-        {
-          "SheetTile": 127,
-          "Time": 20
-        },
-        {
-          "SheetTile": 167,
-          "Time": 25
-        },
-        {
-          "SheetTile": 207,
-          "Time": 30
-        },
-        {
-          "SheetTile": 247,
+          "AnimTile": 643,
           "Time": 35
         }
       ]
@@ -271,31 +138,31 @@
       "TilesetTile": 119,
       "Stops": [
         {
-          "SheetTile": 8,
+          "AnimTile": 496,
           "Time": 5
         },
         {
-          "SheetTile": 48,
+          "AnimTile": 500,
           "Time": 10
         },
         {
-          "SheetTile": 88,
+          "AnimTile": 504,
           "Time": 15
         },
         {
-          "SheetTile": 128,
+          "AnimTile": 576,
           "Time": 20
         },
         {
-          "SheetTile": 168,
+          "AnimTile": 580,
           "Time": 25
         },
         {
-          "SheetTile": 208,
+          "AnimTile": 584,
           "Time": 30
         },
         {
-          "SheetTile": 248,
+          "AnimTile": 656,
           "Time": 35
         }
       ]
@@ -304,31 +171,31 @@
       "TilesetTile": 120,
       "Stops": [
         {
-          "SheetTile": 9,
+          "AnimTile": 497,
           "Time": 5
         },
         {
-          "SheetTile": 49,
+          "AnimTile": 501,
           "Time": 10
         },
         {
-          "SheetTile": 89,
+          "AnimTile": 505,
           "Time": 15
         },
         {
-          "SheetTile": 129,
+          "AnimTile": 577,
           "Time": 20
         },
         {
-          "SheetTile": 169,
+          "AnimTile": 581,
           "Time": 25
         },
         {
-          "SheetTile": 209,
+          "AnimTile": 585,
           "Time": 30
         },
         {
-          "SheetTile": 249,
+          "AnimTile": 657,
           "Time": 35
         }
       ]
@@ -337,31 +204,31 @@
       "TilesetTile": 121,
       "Stops": [
         {
-          "SheetTile": 10,
+          "AnimTile": 498,
           "Time": 5
         },
         {
-          "SheetTile": 50,
+          "AnimTile": 502,
           "Time": 10
         },
         {
-          "SheetTile": 90,
+          "AnimTile": 506,
           "Time": 15
         },
         {
-          "SheetTile": 130,
+          "AnimTile": 578,
           "Time": 20
         },
         {
-          "SheetTile": 170,
+          "AnimTile": 582,
           "Time": 25
         },
         {
-          "SheetTile": 210,
+          "AnimTile": 586,
           "Time": 30
         },
         {
-          "SheetTile": 250,
+          "AnimTile": 658,
           "Time": 35
         }
       ]
@@ -370,163 +237,31 @@
       "TilesetTile": 122,
       "Stops": [
         {
-          "SheetTile": 11,
+          "AnimTile": 499,
           "Time": 5
         },
         {
-          "SheetTile": 51,
+          "AnimTile": 503,
           "Time": 10
         },
         {
-          "SheetTile": 91,
+          "AnimTile": 507,
           "Time": 15
         },
         {
-          "SheetTile": 131,
+          "AnimTile": 579,
           "Time": 20
         },
         {
-          "SheetTile": 171,
+          "AnimTile": 583,
           "Time": 25
         },
         {
-          "SheetTile": 211,
+          "AnimTile": 587,
           "Time": 30
         },
         {
-          "SheetTile": 251,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 146,
-      "Stops": [
-        {
-          "SheetTile": 12,
-          "Time": 5
-        },
-        {
-          "SheetTile": 52,
-          "Time": 10
-        },
-        {
-          "SheetTile": 92,
-          "Time": 15
-        },
-        {
-          "SheetTile": 132,
-          "Time": 20
-        },
-        {
-          "SheetTile": 172,
-          "Time": 25
-        },
-        {
-          "SheetTile": 212,
-          "Time": 30
-        },
-        {
-          "SheetTile": 252,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 147,
-      "Stops": [
-        {
-          "SheetTile": 13,
-          "Time": 5
-        },
-        {
-          "SheetTile": 53,
-          "Time": 10
-        },
-        {
-          "SheetTile": 93,
-          "Time": 15
-        },
-        {
-          "SheetTile": 133,
-          "Time": 20
-        },
-        {
-          "SheetTile": 173,
-          "Time": 25
-        },
-        {
-          "SheetTile": 213,
-          "Time": 30
-        },
-        {
-          "SheetTile": 253,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 148,
-      "Stops": [
-        {
-          "SheetTile": 14,
-          "Time": 5
-        },
-        {
-          "SheetTile": 54,
-          "Time": 10
-        },
-        {
-          "SheetTile": 94,
-          "Time": 15
-        },
-        {
-          "SheetTile": 134,
-          "Time": 20
-        },
-        {
-          "SheetTile": 174,
-          "Time": 25
-        },
-        {
-          "SheetTile": 214,
-          "Time": 30
-        },
-        {
-          "SheetTile": 254,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 149,
-      "Stops": [
-        {
-          "SheetTile": 15,
-          "Time": 5
-        },
-        {
-          "SheetTile": 55,
-          "Time": 10
-        },
-        {
-          "SheetTile": 95,
-          "Time": 15
-        },
-        {
-          "SheetTile": 135,
-          "Time": 20
-        },
-        {
-          "SheetTile": 175,
-          "Time": 25
-        },
-        {
-          "SheetTile": 215,
-          "Time": 30
-        },
-        {
-          "SheetTile": 255,
+          "AnimTile": 659,
           "Time": 35
         }
       ]
@@ -535,31 +270,31 @@
       "TilesetTile": 135,
       "Stops": [
         {
-          "SheetTile": 16,
+          "AnimTile": 512,
           "Time": 5
         },
         {
-          "SheetTile": 56,
+          "AnimTile": 516,
           "Time": 10
         },
         {
-          "SheetTile": 96,
+          "AnimTile": 520,
           "Time": 15
         },
         {
-          "SheetTile": 136,
+          "AnimTile": 592,
           "Time": 20
         },
         {
-          "SheetTile": 176,
+          "AnimTile": 596,
           "Time": 25
         },
         {
-          "SheetTile": 216,
+          "AnimTile": 600,
           "Time": 30
         },
         {
-          "SheetTile": 256,
+          "AnimTile": 672,
           "Time": 35
         }
       ]
@@ -568,31 +303,31 @@
       "TilesetTile": 136,
       "Stops": [
         {
-          "SheetTile": 17,
+          "AnimTile": 513,
           "Time": 5
         },
         {
-          "SheetTile": 57,
+          "AnimTile": 517,
           "Time": 10
         },
         {
-          "SheetTile": 97,
+          "AnimTile": 521,
           "Time": 15
         },
         {
-          "SheetTile": 137,
+          "AnimTile": 593,
           "Time": 20
         },
         {
-          "SheetTile": 177,
+          "AnimTile": 597,
           "Time": 25
         },
         {
-          "SheetTile": 217,
+          "AnimTile": 601,
           "Time": 30
         },
         {
-          "SheetTile": 257,
+          "AnimTile": 673,
           "Time": 35
         }
       ]
@@ -601,31 +336,31 @@
       "TilesetTile": 137,
       "Stops": [
         {
-          "SheetTile": 18,
+          "AnimTile": 514,
           "Time": 5
         },
         {
-          "SheetTile": 58,
+          "AnimTile": 518,
           "Time": 10
         },
         {
-          "SheetTile": 98,
+          "AnimTile": 522,
           "Time": 15
         },
         {
-          "SheetTile": 138,
+          "AnimTile": 594,
           "Time": 20
         },
         {
-          "SheetTile": 178,
+          "AnimTile": 598,
           "Time": 25
         },
         {
-          "SheetTile": 218,
+          "AnimTile": 602,
           "Time": 30
         },
         {
-          "SheetTile": 258,
+          "AnimTile": 674,
           "Time": 35
         }
       ]
@@ -634,163 +369,31 @@
       "TilesetTile": 138,
       "Stops": [
         {
-          "SheetTile": 19,
+          "AnimTile": 515,
           "Time": 5
         },
         {
-          "SheetTile": 59,
+          "AnimTile": 519,
           "Time": 10
         },
         {
-          "SheetTile": 99,
+          "AnimTile": 523,
           "Time": 15
         },
         {
-          "SheetTile": 139,
+          "AnimTile": 595,
           "Time": 20
         },
         {
-          "SheetTile": 179,
+          "AnimTile": 599,
           "Time": 25
         },
         {
-          "SheetTile": 219,
+          "AnimTile": 603,
           "Time": 30
         },
         {
-          "SheetTile": 259,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 162,
-      "Stops": [
-        {
-          "SheetTile": 20,
-          "Time": 5
-        },
-        {
-          "SheetTile": 60,
-          "Time": 10
-        },
-        {
-          "SheetTile": 100,
-          "Time": 15
-        },
-        {
-          "SheetTile": 140,
-          "Time": 20
-        },
-        {
-          "SheetTile": 180,
-          "Time": 25
-        },
-        {
-          "SheetTile": 220,
-          "Time": 30
-        },
-        {
-          "SheetTile": 260,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 163,
-      "Stops": [
-        {
-          "SheetTile": 21,
-          "Time": 5
-        },
-        {
-          "SheetTile": 61,
-          "Time": 10
-        },
-        {
-          "SheetTile": 101,
-          "Time": 15
-        },
-        {
-          "SheetTile": 141,
-          "Time": 20
-        },
-        {
-          "SheetTile": 181,
-          "Time": 25
-        },
-        {
-          "SheetTile": 221,
-          "Time": 30
-        },
-        {
-          "SheetTile": 261,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 164,
-      "Stops": [
-        {
-          "SheetTile": 22,
-          "Time": 5
-        },
-        {
-          "SheetTile": 62,
-          "Time": 10
-        },
-        {
-          "SheetTile": 102,
-          "Time": 15
-        },
-        {
-          "SheetTile": 142,
-          "Time": 20
-        },
-        {
-          "SheetTile": 182,
-          "Time": 25
-        },
-        {
-          "SheetTile": 222,
-          "Time": 30
-        },
-        {
-          "SheetTile": 262,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 165,
-      "Stops": [
-        {
-          "SheetTile": 23,
-          "Time": 5
-        },
-        {
-          "SheetTile": 63,
-          "Time": 10
-        },
-        {
-          "SheetTile": 103,
-          "Time": 15
-        },
-        {
-          "SheetTile": 143,
-          "Time": 20
-        },
-        {
-          "SheetTile": 183,
-          "Time": 25
-        },
-        {
-          "SheetTile": 223,
-          "Time": 30
-        },
-        {
-          "SheetTile": 263,
+          "AnimTile": 675,
           "Time": 35
         }
       ]
@@ -799,31 +402,31 @@
       "TilesetTile": 151,
       "Stops": [
         {
-          "SheetTile": 24,
+          "AnimTile": 528,
           "Time": 5
         },
         {
-          "SheetTile": 64,
+          "AnimTile": 532,
           "Time": 10
         },
         {
-          "SheetTile": 104,
+          "AnimTile": 536,
           "Time": 15
         },
         {
-          "SheetTile": 144,
+          "AnimTile": 608,
           "Time": 20
         },
         {
-          "SheetTile": 184,
+          "AnimTile": 612,
           "Time": 25
         },
         {
-          "SheetTile": 224,
+          "AnimTile": 616,
           "Time": 30
         },
         {
-          "SheetTile": 264,
+          "AnimTile": 688,
           "Time": 35
         }
       ]
@@ -832,31 +435,31 @@
       "TilesetTile": 152,
       "Stops": [
         {
-          "SheetTile": 25,
+          "AnimTile": 529,
           "Time": 5
         },
         {
-          "SheetTile": 65,
+          "AnimTile": 533,
           "Time": 10
         },
         {
-          "SheetTile": 105,
+          "AnimTile": 537,
           "Time": 15
         },
         {
-          "SheetTile": 145,
+          "AnimTile": 609,
           "Time": 20
         },
         {
-          "SheetTile": 185,
+          "AnimTile": 613,
           "Time": 25
         },
         {
-          "SheetTile": 225,
+          "AnimTile": 617,
           "Time": 30
         },
         {
-          "SheetTile": 265,
+          "AnimTile": 689,
           "Time": 35
         }
       ]
@@ -865,31 +468,31 @@
       "TilesetTile": 153,
       "Stops": [
         {
-          "SheetTile": 26,
+          "AnimTile": 530,
           "Time": 5
         },
         {
-          "SheetTile": 66,
+          "AnimTile": 534,
           "Time": 10
         },
         {
-          "SheetTile": 106,
+          "AnimTile": 538,
           "Time": 15
         },
         {
-          "SheetTile": 146,
+          "AnimTile": 610,
           "Time": 20
         },
         {
-          "SheetTile": 186,
+          "AnimTile": 614,
           "Time": 25
         },
         {
-          "SheetTile": 226,
+          "AnimTile": 618,
           "Time": 30
         },
         {
-          "SheetTile": 266,
+          "AnimTile": 690,
           "Time": 35
         }
       ]
@@ -898,163 +501,31 @@
       "TilesetTile": 154,
       "Stops": [
         {
-          "SheetTile": 27,
+          "AnimTile": 531,
           "Time": 5
         },
         {
-          "SheetTile": 67,
+          "AnimTile": 535,
           "Time": 10
         },
         {
-          "SheetTile": 107,
+          "AnimTile": 539,
           "Time": 15
         },
         {
-          "SheetTile": 147,
+          "AnimTile": 611,
           "Time": 20
         },
         {
-          "SheetTile": 187,
+          "AnimTile": 615,
           "Time": 25
         },
         {
-          "SheetTile": 227,
+          "AnimTile": 619,
           "Time": 30
         },
         {
-          "SheetTile": 267,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 178,
-      "Stops": [
-        {
-          "SheetTile": 28,
-          "Time": 5
-        },
-        {
-          "SheetTile": 68,
-          "Time": 10
-        },
-        {
-          "SheetTile": 108,
-          "Time": 15
-        },
-        {
-          "SheetTile": 148,
-          "Time": 20
-        },
-        {
-          "SheetTile": 188,
-          "Time": 25
-        },
-        {
-          "SheetTile": 228,
-          "Time": 30
-        },
-        {
-          "SheetTile": 268,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 179,
-      "Stops": [
-        {
-          "SheetTile": 29,
-          "Time": 5
-        },
-        {
-          "SheetTile": 69,
-          "Time": 10
-        },
-        {
-          "SheetTile": 109,
-          "Time": 15
-        },
-        {
-          "SheetTile": 149,
-          "Time": 20
-        },
-        {
-          "SheetTile": 189,
-          "Time": 25
-        },
-        {
-          "SheetTile": 229,
-          "Time": 30
-        },
-        {
-          "SheetTile": 269,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 180,
-      "Stops": [
-        {
-          "SheetTile": 30,
-          "Time": 5
-        },
-        {
-          "SheetTile": 70,
-          "Time": 10
-        },
-        {
-          "SheetTile": 110,
-          "Time": 15
-        },
-        {
-          "SheetTile": 150,
-          "Time": 20
-        },
-        {
-          "SheetTile": 190,
-          "Time": 25
-        },
-        {
-          "SheetTile": 230,
-          "Time": 30
-        },
-        {
-          "SheetTile": 270,
-          "Time": 35
-        }
-      ]
-    },
-    {
-      "TilesetTile": 181,
-      "Stops": [
-        {
-          "SheetTile": 31,
-          "Time": 5
-        },
-        {
-          "SheetTile": 71,
-          "Time": 10
-        },
-        {
-          "SheetTile": 111,
-          "Time": 15
-        },
-        {
-          "SheetTile": 151,
-          "Time": 20
-        },
-        {
-          "SheetTile": 191,
-          "Time": 25
-        },
-        {
-          "SheetTile": 231,
-          "Time": 30
-        },
-        {
-          "SheetTile": 271,
+          "AnimTile": 691,
           "Time": 35
         }
       ]
@@ -1063,31 +534,31 @@
       "TilesetTile": 167,
       "Stops": [
         {
-          "SheetTile": 32,
+          "AnimTile": 544,
           "Time": 5
         },
         {
-          "SheetTile": 72,
+          "AnimTile": 548,
           "Time": 10
         },
         {
-          "SheetTile": 112,
+          "AnimTile": 552,
           "Time": 15
         },
         {
-          "SheetTile": 152,
+          "AnimTile": 624,
           "Time": 20
         },
         {
-          "SheetTile": 192,
+          "AnimTile": 628,
           "Time": 25
         },
         {
-          "SheetTile": 232,
+          "AnimTile": 632,
           "Time": 30
         },
         {
-          "SheetTile": 272,
+          "AnimTile": 704,
           "Time": 35
         }
       ]
@@ -1096,31 +567,31 @@
       "TilesetTile": 168,
       "Stops": [
         {
-          "SheetTile": 33,
+          "AnimTile": 545,
           "Time": 5
         },
         {
-          "SheetTile": 73,
+          "AnimTile": 549,
           "Time": 10
         },
         {
-          "SheetTile": 113,
+          "AnimTile": 553,
           "Time": 15
         },
         {
-          "SheetTile": 153,
+          "AnimTile": 625,
           "Time": 20
         },
         {
-          "SheetTile": 193,
+          "AnimTile": 629,
           "Time": 25
         },
         {
-          "SheetTile": 233,
+          "AnimTile": 633,
           "Time": 30
         },
         {
-          "SheetTile": 273,
+          "AnimTile": 705,
           "Time": 35
         }
       ]
@@ -1129,31 +600,31 @@
       "TilesetTile": 169,
       "Stops": [
         {
-          "SheetTile": 34,
+          "AnimTile": 546,
           "Time": 5
         },
         {
-          "SheetTile": 74,
+          "AnimTile": 550,
           "Time": 10
         },
         {
-          "SheetTile": 114,
+          "AnimTile": 554,
           "Time": 15
         },
         {
-          "SheetTile": 154,
+          "AnimTile": 626,
           "Time": 20
         },
         {
-          "SheetTile": 194,
+          "AnimTile": 630,
           "Time": 25
         },
         {
-          "SheetTile": 234,
+          "AnimTile": 634,
           "Time": 30
         },
         {
-          "SheetTile": 274,
+          "AnimTile": 706,
           "Time": 35
         }
       ]
@@ -1162,31 +633,559 @@
       "TilesetTile": 170,
       "Stops": [
         {
-          "SheetTile": 35,
+          "AnimTile": 547,
           "Time": 5
         },
         {
-          "SheetTile": 75,
+          "AnimTile": 551,
           "Time": 10
         },
         {
-          "SheetTile": 115,
+          "AnimTile": 555,
           "Time": 15
         },
         {
-          "SheetTile": 155,
+          "AnimTile": 627,
           "Time": 20
         },
         {
-          "SheetTile": 195,
+          "AnimTile": 631,
           "Time": 25
         },
         {
-          "SheetTile": 235,
+          "AnimTile": 635,
           "Time": 30
         },
         {
-          "SheetTile": 275,
+          "AnimTile": 707,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 130,
+      "Stops": [
+        {
+          "AnimTile": 396,
+          "Time": 5
+        },
+        {
+          "AnimTile": 476,
+          "Time": 10
+        },
+        {
+          "AnimTile": 556,
+          "Time": 15
+        },
+        {
+          "AnimTile": 636,
+          "Time": 20
+        },
+        {
+          "AnimTile": 716,
+          "Time": 25
+        },
+        {
+          "AnimTile": 796,
+          "Time": 30
+        },
+        {
+          "AnimTile": 876,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 131,
+      "Stops": [
+        {
+          "AnimTile": 397,
+          "Time": 5
+        },
+        {
+          "AnimTile": 477,
+          "Time": 10
+        },
+        {
+          "AnimTile": 557,
+          "Time": 15
+        },
+        {
+          "AnimTile": 637,
+          "Time": 20
+        },
+        {
+          "AnimTile": 717,
+          "Time": 25
+        },
+        {
+          "AnimTile": 797,
+          "Time": 30
+        },
+        {
+          "AnimTile": 877,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 132,
+      "Stops": [
+        {
+          "AnimTile": 398,
+          "Time": 5
+        },
+        {
+          "AnimTile": 478,
+          "Time": 10
+        },
+        {
+          "AnimTile": 558,
+          "Time": 15
+        },
+        {
+          "AnimTile": 638,
+          "Time": 20
+        },
+        {
+          "AnimTile": 718,
+          "Time": 25
+        },
+        {
+          "AnimTile": 798,
+          "Time": 30
+        },
+        {
+          "AnimTile": 878,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 133,
+      "Stops": [
+        {
+          "AnimTile": 399,
+          "Time": 5
+        },
+        {
+          "AnimTile": 479,
+          "Time": 10
+        },
+        {
+          "AnimTile": 559,
+          "Time": 15
+        },
+        {
+          "AnimTile": 639,
+          "Time": 20
+        },
+        {
+          "AnimTile": 719,
+          "Time": 25
+        },
+        {
+          "AnimTile": 799,
+          "Time": 30
+        },
+        {
+          "AnimTile": 879,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 146,
+      "Stops": [
+        {
+          "AnimTile": 412,
+          "Time": 5
+        },
+        {
+          "AnimTile": 492,
+          "Time": 10
+        },
+        {
+          "AnimTile": 572,
+          "Time": 15
+        },
+        {
+          "AnimTile": 652,
+          "Time": 20
+        },
+        {
+          "AnimTile": 732,
+          "Time": 25
+        },
+        {
+          "AnimTile": 812,
+          "Time": 30
+        },
+        {
+          "AnimTile": 892,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 147,
+      "Stops": [
+        {
+          "AnimTile": 413,
+          "Time": 5
+        },
+        {
+          "AnimTile": 493,
+          "Time": 10
+        },
+        {
+          "AnimTile": 573,
+          "Time": 15
+        },
+        {
+          "AnimTile": 653,
+          "Time": 20
+        },
+        {
+          "AnimTile": 733,
+          "Time": 25
+        },
+        {
+          "AnimTile": 813,
+          "Time": 30
+        },
+        {
+          "AnimTile": 893,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 148,
+      "Stops": [
+        {
+          "AnimTile": 414,
+          "Time": 5
+        },
+        {
+          "AnimTile": 494,
+          "Time": 10
+        },
+        {
+          "AnimTile": 574,
+          "Time": 15
+        },
+        {
+          "AnimTile": 654,
+          "Time": 20
+        },
+        {
+          "AnimTile": 734,
+          "Time": 25
+        },
+        {
+          "AnimTile": 814,
+          "Time": 30
+        },
+        {
+          "AnimTile": 894,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 149,
+      "Stops": [
+        {
+          "AnimTile": 415,
+          "Time": 5
+        },
+        {
+          "AnimTile": 495,
+          "Time": 10
+        },
+        {
+          "AnimTile": 575,
+          "Time": 15
+        },
+        {
+          "AnimTile": 655,
+          "Time": 20
+        },
+        {
+          "AnimTile": 735,
+          "Time": 25
+        },
+        {
+          "AnimTile": 815,
+          "Time": 30
+        },
+        {
+          "AnimTile": 895,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 162,
+      "Stops": [
+        {
+          "AnimTile": 428,
+          "Time": 5
+        },
+        {
+          "AnimTile": 508,
+          "Time": 10
+        },
+        {
+          "AnimTile": 588,
+          "Time": 15
+        },
+        {
+          "AnimTile": 668,
+          "Time": 20
+        },
+        {
+          "AnimTile": 748,
+          "Time": 25
+        },
+        {
+          "AnimTile": 828,
+          "Time": 30
+        },
+        {
+          "AnimTile": 908,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 163,
+      "Stops": [
+        {
+          "AnimTile": 429,
+          "Time": 5
+        },
+        {
+          "AnimTile": 509,
+          "Time": 10
+        },
+        {
+          "AnimTile": 589,
+          "Time": 15
+        },
+        {
+          "AnimTile": 669,
+          "Time": 20
+        },
+        {
+          "AnimTile": 749,
+          "Time": 25
+        },
+        {
+          "AnimTile": 829,
+          "Time": 30
+        },
+        {
+          "AnimTile": 909,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 164,
+      "Stops": [
+        {
+          "AnimTile": 430,
+          "Time": 5
+        },
+        {
+          "AnimTile": 510,
+          "Time": 10
+        },
+        {
+          "AnimTile": 590,
+          "Time": 15
+        },
+        {
+          "AnimTile": 670,
+          "Time": 20
+        },
+        {
+          "AnimTile": 750,
+          "Time": 25
+        },
+        {
+          "AnimTile": 830,
+          "Time": 30
+        },
+        {
+          "AnimTile": 910,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 165,
+      "Stops": [
+        {
+          "AnimTile": 431,
+          "Time": 5
+        },
+        {
+          "AnimTile": 511,
+          "Time": 10
+        },
+        {
+          "AnimTile": 591,
+          "Time": 15
+        },
+        {
+          "AnimTile": 671,
+          "Time": 20
+        },
+        {
+          "AnimTile": 751,
+          "Time": 25
+        },
+        {
+          "AnimTile": 831,
+          "Time": 30
+        },
+        {
+          "AnimTile": 911,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 178,
+      "Stops": [
+        {
+          "AnimTile": 444,
+          "Time": 5
+        },
+        {
+          "AnimTile": 524,
+          "Time": 10
+        },
+        {
+          "AnimTile": 604,
+          "Time": 15
+        },
+        {
+          "AnimTile": 684,
+          "Time": 20
+        },
+        {
+          "AnimTile": 764,
+          "Time": 25
+        },
+        {
+          "AnimTile": 844,
+          "Time": 30
+        },
+        {
+          "AnimTile": 924,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 179,
+      "Stops": [
+        {
+          "AnimTile": 445,
+          "Time": 5
+        },
+        {
+          "AnimTile": 525,
+          "Time": 10
+        },
+        {
+          "AnimTile": 605,
+          "Time": 15
+        },
+        {
+          "AnimTile": 685,
+          "Time": 20
+        },
+        {
+          "AnimTile": 765,
+          "Time": 25
+        },
+        {
+          "AnimTile": 845,
+          "Time": 30
+        },
+        {
+          "AnimTile": 925,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 180,
+      "Stops": [
+        {
+          "AnimTile": 446,
+          "Time": 5
+        },
+        {
+          "AnimTile": 526,
+          "Time": 10
+        },
+        {
+          "AnimTile": 606,
+          "Time": 15
+        },
+        {
+          "AnimTile": 686,
+          "Time": 20
+        },
+        {
+          "AnimTile": 766,
+          "Time": 25
+        },
+        {
+          "AnimTile": 846,
+          "Time": 30
+        },
+        {
+          "AnimTile": 926,
+          "Time": 35
+        }
+      ]
+    },
+    {
+      "TilesetTile": 181,
+      "Stops": [
+        {
+          "AnimTile": 447,
+          "Time": 5
+        },
+        {
+          "AnimTile": 527,
+          "Time": 10
+        },
+        {
+          "AnimTile": 607,
+          "Time": 15
+        },
+        {
+          "AnimTile": 687,
+          "Time": 20
+        },
+        {
+          "AnimTile": 767,
+          "Time": 25
+        },
+        {
+          "AnimTile": 847,
+          "Time": 30
+        },
+        {
+          "AnimTile": 927,
           "Time": 35
         }
       ]
@@ -1195,31 +1194,31 @@
       "TilesetTile": 196,
       "Stops": [
         {
-          "SheetTile": 36,
+          "AnimTile": 460,
           "Time": 5
         },
         {
-          "SheetTile": 76,
+          "AnimTile": 540,
           "Time": 10
         },
         {
-          "SheetTile": 116,
+          "AnimTile": 620,
           "Time": 15
         },
         {
-          "SheetTile": 156,
+          "AnimTile": 700,
           "Time": 20
         },
         {
-          "SheetTile": 196,
+          "AnimTile": 780,
           "Time": 25
         },
         {
-          "SheetTile": 236,
+          "AnimTile": 860,
           "Time": 30
         },
         {
-          "SheetTile": 276,
+          "AnimTile": 940,
           "Time": 35
         }
       ]
@@ -1228,31 +1227,31 @@
       "TilesetTile": 197,
       "Stops": [
         {
-          "SheetTile": 37,
+          "AnimTile": 461,
           "Time": 5
         },
         {
-          "SheetTile": 77,
+          "AnimTile": 541,
           "Time": 10
         },
         {
-          "SheetTile": 117,
+          "AnimTile": 621,
           "Time": 15
         },
         {
-          "SheetTile": 157,
+          "AnimTile": 701,
           "Time": 20
         },
         {
-          "SheetTile": 197,
+          "AnimTile": 781,
           "Time": 25
         },
         {
-          "SheetTile": 237,
+          "AnimTile": 861,
           "Time": 30
         },
         {
-          "SheetTile": 277,
+          "AnimTile": 941,
           "Time": 35
         }
       ]
@@ -1261,31 +1260,31 @@
       "TilesetTile": 212,
       "Stops": [
         {
-          "SheetTile": 38,
+          "AnimTile": 462,
           "Time": 5
         },
         {
-          "SheetTile": 78,
+          "AnimTile": 542,
           "Time": 10
         },
         {
-          "SheetTile": 118,
+          "AnimTile": 622,
           "Time": 15
         },
         {
-          "SheetTile": 158,
+          "AnimTile": 702,
           "Time": 20
         },
         {
-          "SheetTile": 198,
+          "AnimTile": 782,
           "Time": 25
         },
         {
-          "SheetTile": 238,
+          "AnimTile": 862,
           "Time": 30
         },
         {
-          "SheetTile": 278,
+          "AnimTile": 942,
           "Time": 35
         }
       ]
@@ -1294,31 +1293,31 @@
       "TilesetTile": 213,
       "Stops": [
         {
-          "SheetTile": 39,
+          "AnimTile": 463,
           "Time": 5
         },
         {
-          "SheetTile": 79,
+          "AnimTile": 543,
           "Time": 10
         },
         {
-          "SheetTile": 119,
+          "AnimTile": 623,
           "Time": 15
         },
         {
-          "SheetTile": 159,
+          "AnimTile": 703,
           "Time": 20
         },
         {
-          "SheetTile": 199,
+          "AnimTile": 783,
           "Time": 25
         },
         {
-          "SheetTile": 239,
+          "AnimTile": 863,
           "Time": 30
         },
         {
-          "SheetTile": 279,
+          "AnimTile": 943,
           "Time": 35
         }
       ]

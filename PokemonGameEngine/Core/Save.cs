@@ -1,4 +1,7 @@
-﻿using Kermalis.PokemonBattleEngine.Battle;
+﻿#if DEBUG_OVERWORLD
+using Kermalis.PokemonGameEngine.Debug;
+#endif
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Item;
@@ -26,9 +29,17 @@ namespace Kermalis.PokemonGameEngine.Core
 
         private static void InitPlayerWithDefaultLocation()
         {
+#if DEBUG_OVERWORLD
+            Log.WriteLineWithTime("Initializing saved map, player obj, and camera obj");
+            Log.ModifyIndent(+1);
+#endif
             var map = Map.LoadOrGet(0);
             PlayerObj.Init(2, 29, map);
             CameraObj.Init();
+#if DEBUG_OVERWORLD
+            Log.ModifyIndent(-1);
+            Log.WriteLine("Done initializing saved map");
+#endif
         }
         public void Debug_Create()
         {

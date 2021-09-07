@@ -1,14 +1,13 @@
-﻿using Kermalis.PokemonGameEngine.Render.World;
+﻿using Kermalis.PokemonGameEngine.Render;
 using System;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
-    internal class CameraObj : Obj
+    internal sealed class CameraObj : Obj
     {
         public static readonly CameraObj Camera = new();
-        public static int CameraOfsX;
-        public static int CameraOfsY;
-        public static Obj CameraAttachedTo;
+        public static Pos2D CameraVisualOffset;
+        public static Obj CameraAttachedTo { get; private set; }
 
         private CameraObj()
             : base(Overworld.CameraId)
@@ -20,7 +19,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Camera.Pos = PlayerObj.Player.Pos;
             Camera.Map = PlayerObj.Player.Map;
             Camera.Map.Objs.Add(Camera);
-            MapRenderer.UpdateVisibleMaps();
         }
 
         public static void CopyMovementIfAttachedTo(Obj obj)
@@ -45,13 +43,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             c.ProgressX = other.ProgressX;
             c.ProgressY = other.ProgressY;
             c.UpdateMap(other.Map);
-            MapRenderer.UpdateVisibleMaps();
         }
-        public static void SetCameraOffset(int xOffset, int yOffset)
+        public static void SetCameraAttachedTo(Obj o)
         {
-            CameraOfsX = xOffset;
-            CameraOfsY = yOffset;
-            MapRenderer.UpdateVisibleMaps();
+            CameraAttachedTo = o;
+            if (o is not null)
+            {
+                CameraCopyMovement();
+            }
         }
 
         public override bool CollidesWithOthers()
@@ -61,10 +60,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         protected override bool CanSurf()
         {
             return true;
-        }
-        protected override void OnPositionVisiblyChanged()
-        {
-            MapRenderer.UpdateVisibleMaps();
         }
 
         public override void Dispose()

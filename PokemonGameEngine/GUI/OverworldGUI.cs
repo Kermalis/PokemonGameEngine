@@ -436,7 +436,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             GLHelper.ClearColor(gl, Colors.Black);
             gl.Clear(ClearBufferMask.ColorBufferBit);
-            MapRenderer.Render(Game.RenderSize);
+            MapRenderer.Render();
             /*if (Overworld.ShouldRenderDayTint())
             {
                 DayTint.Render();

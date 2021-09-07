@@ -43,12 +43,13 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             Log.ModifyIndent(-1);
 #endif
         }
-#if DEBUG_OVERWORLD
         ~Map()
         {
+#if DEBUG_OVERWORLD
             Log.WriteLine("Unloading map: " + Name);
-        }
 #endif
+            Game.AddTempTask(Layout.Delete);
+        }
 
         // TODO: Loading entire map details and layouts is unnecessary
         public void GetXYMap(int x, int y, out int outX, out int outY, out Map outMap)

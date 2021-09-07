@@ -1,4 +1,7 @@
-﻿using Kermalis.EndianBinaryIO;
+﻿#if DEBUG_OVERWORLD
+using Kermalis.PokemonGameEngine.Debug;
+#endif
+using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.World;
 using System;
@@ -15,53 +18,67 @@ namespace Kermalis.PokemonGameEngine.Render.World
             {
                 private readonly bool _xFlip;
                 private readonly bool _yFlip;
+                private readonly Tileset _tileset;
                 private readonly Tileset.Tile _tilesetTile;
 
-                public Tile(EndianBinaryReader r)
+                // Cache AtlasPos for less calculations
+                private AtlasPos _atlasPos;
+                private int _atlasPosId = Tileset.Tile.InvalidAnim;
+
+                public Tile(EndianBinaryReader r, List<Tileset> used)
                 {
                     _xFlip = r.ReadBoolean();
                     _yFlip = r.ReadBoolean();
-                    _tilesetTile = Tileset.LoadOrGet(r.ReadInt32()).Tiles[r.ReadInt32()];
+                    int tilesetId = r.ReadInt32();
+                    int tileId = r.ReadInt32();
+
+                    // Load tileset if it's not loaded already by this blockset
+                    _tileset = used.Find(t => t.Id == tilesetId);
+                    if (_tileset is null)
+                    {
+                        _tileset = Tileset.LoadOrGet(tilesetId);
+                        used.Add(_tileset);
+                    }
+                    _tilesetTile = _tileset.Tiles[tileId];
+                }
+
+                private static AtlasPos MakeAtlasPos(Pos2D tilePixelPos, Size2D tilesetSize, bool xFlip, bool yFlip)
+                {
+                    return new AtlasPos(new Rect2D(tilePixelPos, new Size2D(Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY)), tilesetSize, xFlip: xFlip, yFlip: yFlip);
+                }
+                private static Pos2D GetPixelPos(int tileId, int numTilesX)
+                {
+                    return new Pos2D(tileId % numTilesX * Overworld.Tile_NumPixelsX, tileId / numTilesX * Overworld.Tile_NumPixelsY);
                 }
 
                 public void Render(Pos2D pos)
                 {
-                    uint tex = _tilesetTile.AnimBitmap;
-                    if (tex == 0)
+                    // Update _atlasPos if it needs updating
+                    int id = _tilesetTile.AnimId;
+                    if (id == Tileset.Tile.NoAnim)
                     {
-                        tex = _tilesetTile.Bitmap;
+                        id = _tilesetTile.Id;
                     }
-                    GUIRenderer.Instance.RenderTexture(tex, new Rect2D(pos, new Size2D(Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY)), xFlip: _xFlip, yFlip: _yFlip);
+                    if (id != _atlasPosId)
+                    {
+                        Pos2D pp = GetPixelPos(id, _tileset.NumTilesX);
+                        _atlasPos = MakeAtlasPos(pp, _tileset.TextureSize, _xFlip, _yFlip);
+                        _atlasPosId = id;
+                    }
+                    // Render
+                    GUIRenderer.Instance.RenderTexture(_tileset.Texture, new Rect2D(pos, new Size2D(Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY)), _atlasPos);
                 }
             }
 
-            /// <summary>Unused, but needed to keep the Blockset reference alive (since Blocksets aren't stored anywhere, while Blocks are stored by the MapLayout blocks)</summary>
-            public readonly Blockset Parent;
             public readonly BlocksetBlockBehavior Behavior;
-            private readonly Tile[][][][] _tiles; // Elevation,Y,X,Sublayers
+            /// <summary>Elevation,Y,X,Sublayers</summary>
+            public readonly Tile[][][][] Tiles;
 
             public Block(Blockset parent, EndianBinaryReader r)
             {
                 Behavior = r.ReadEnum<BlocksetBlockBehavior>();
-                Tile[] Read()
-                {
-                    byte count = r.ReadByte();
-                    Tile[] subLayers;
-                    if (count == 0)
-                    {
-                        subLayers = Array.Empty<Tile>();
-                    }
-                    else
-                    {
-                        subLayers = new Tile[count];
-                        for (int i = 0; i < count; i++)
-                        {
-                            subLayers[i] = new Tile(r);
-                        }
-                    }
-                    return subLayers;
-                }
-                _tiles = new Tile[Overworld.NumElevations][][][];
+
+                Tiles = new Tile[Overworld.NumElevations][][][];
                 for (byte e = 0; e < Overworld.NumElevations; e++)
                 {
                     var arrE = new Tile[Overworld.Block_NumTilesY][][];
@@ -70,29 +87,47 @@ namespace Kermalis.PokemonGameEngine.Render.World
                         var arrY = new Tile[Overworld.Block_NumTilesX][];
                         for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                         {
-                            arrY[x] = Read();
+                            byte count = r.ReadByte();
+                            Tile[] subLayers;
+                            if (count == 0)
+                            {
+                                subLayers = Array.Empty<Tile>();
+                            }
+                            else
+                            {
+                                subLayers = new Tile[count];
+                                for (int i = 0; i < count; i++)
+                                {
+                                    subLayers[i] = new Tile(r, parent._usedTilesets);
+                                }
+                            }
+                            arrY[x] = subLayers;
                         }
                         arrE[y] = arrY;
                     }
-                    _tiles[e] = arrE;
+                    Tiles[e] = arrE;
                 }
-                Parent = parent;
             }
 
-            public void Render(byte elevation, int x, int y)
+            public void Render(byte elevation, Pos2D pos)
             {
-                Tile[][][] arrE = _tiles[elevation];
-                for (int by = 0; by < Overworld.Block_NumTilesY; by++)
+                Tile[][][] arrE = Tiles[elevation];
+                Pos2D bPos;
+                Pos2D tilePos;
+
+                for (bPos.Y = 0; bPos.Y < Overworld.Block_NumTilesY; bPos.Y++)
                 {
-                    Tile[][] arrY = arrE[by];
-                    int ty = y + (by * Overworld.Tile_NumPixelsY);
-                    for (int bx = 0; bx < Overworld.Block_NumTilesX; bx++)
+                    Tile[][] arrY = arrE[bPos.Y];
+                    tilePos.Y = pos.Y + (bPos.Y * Overworld.Tile_NumPixelsY);
+
+                    for (bPos.X = 0; bPos.X < Overworld.Block_NumTilesX; bPos.X++)
                     {
-                        Tile[] subLayers = arrY[bx];
-                        int tx = x + (bx * Overworld.Tile_NumPixelsX);
+                        Tile[] subLayers = arrY[bPos.X];
+                        tilePos.X = pos.X + (bPos.X * Overworld.Tile_NumPixelsX);
+
                         for (int t = 0; t < subLayers.Length; t++)
                         {
-                            subLayers[t].Render(new Pos2D(tx, ty));
+                            subLayers[t].Render(tilePos);
                         }
                     }
                 }
@@ -100,9 +135,15 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
 
         public readonly Block[] Blocks;
+        /// <summary>Keeps track of which tilesets are loaded so they can be unloaded later.</summary>
+        private readonly List<Tileset> _usedTilesets;
 
-        private Blockset(string name)
+        private Blockset(int id, string name)
         {
+#if DEBUG_OVERWORLD
+            Log.WriteLine("Loading blockset: " + name);
+            Log.ModifyIndent(+1);
+#endif
             using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(BlocksetPath + name + BlocksetExtension)))
             {
                 ushort count = r.ReadUInt16();
@@ -110,18 +151,33 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 {
                     throw new InvalidDataException();
                 }
+
+                _usedTilesets = new List<Tileset>();
                 Blocks = new Block[count];
                 for (int i = 0; i < count; i++)
                 {
                     Blocks[i] = new Block(this, r);
                 }
             }
+
+            Id = id;
+            _numReferences = 1;
+            _loadedBlocksets.Add(id, this);
+
+#if DEBUG_OVERWORLD
+            Log.ModifyIndent(-1);
+#endif
         }
+
+        #region Cache
+
+        public readonly int Id;
+        private int _numReferences;
 
         private const string BlocksetExtension = ".pgeblockset";
         private const string BlocksetPath = "Blockset\\";
         private static readonly IdList _ids = new(BlocksetPath + "BlocksetIds.txt");
-        private static readonly Dictionary<int, WeakReference<Blockset>> _loadedBlocksets = new();
+        private static readonly Dictionary<int, Blockset> _loadedBlocksets = new();
         public static Blockset LoadOrGet(int id)
         {
             string name = _ids[id];
@@ -129,18 +185,44 @@ namespace Kermalis.PokemonGameEngine.Render.World
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
-            Blockset b;
-            if (!_loadedBlocksets.TryGetValue(id, out WeakReference<Blockset> w))
+            if (_loadedBlocksets.TryGetValue(id, out Blockset b))
             {
-                b = new Blockset(name);
-                _loadedBlocksets.Add(id, new WeakReference<Blockset>(b));
+                b._numReferences++;
+#if DEBUG_OVERWORLD
+                Log.WriteLine("Adding reference to blockset: " + name + " (new count is " + b._numReferences + ")");
+#endif
             }
-            else if (!w.TryGetTarget(out b))
+            else
             {
-                b = new Blockset(name);
-                w.SetTarget(b);
+                b = new Blockset(id, name);
             }
             return b;
         }
+
+        public void DeductReference()
+        {
+            if (--_numReferences > 0)
+            {
+#if DEBUG_OVERWORLD
+                Log.WriteLine("Removing reference from blockset: " + _ids[Id] + " (new count is " + _numReferences + ")");
+#endif
+                return;
+            }
+
+#if DEBUG_OVERWORLD
+            Log.WriteLine("Unloading blockset: " + _ids[Id]);
+            Log.ModifyIndent(+1);
+#endif
+            foreach (Tileset t in _usedTilesets)
+            {
+                t.DeductReference();
+            }
+            _loadedBlocksets.Remove(Id);
+#if DEBUG_OVERWORLD
+            Log.ModifyIndent(-1);
+#endif
+        }
+
+        #endregion
     }
 }

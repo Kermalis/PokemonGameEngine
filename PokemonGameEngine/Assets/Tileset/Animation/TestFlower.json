@@ -1,21 +1,20 @@
 {
   "Tileset": "TestTilesO",
-  "Sheet": "TestFlower",
   "Duration": 40,
   "Frames": [
     {
       "TilesetTile": 322,
       "Stops": [
         {
-          "SheetTile": 0,
+          "AnimTile": 394,
           "Time": 10
         },
         {
-          "SheetTile": 4,
+          "AnimTile": 426,
           "Time": 20
         },
         {
-          "SheetTile": 8,
+          "AnimTile": 458,
           "Time": 30
         }
       ]
@@ -24,15 +23,15 @@
       "TilesetTile": 323,
       "Stops": [
         {
-          "SheetTile": 1,
+          "AnimTile": 395,
           "Time": 10
         },
         {
-          "SheetTile": 5,
+          "AnimTile": 427,
           "Time": 20
         },
         {
-          "SheetTile": 9,
+          "AnimTile": 459,
           "Time": 30
         }
       ]
@@ -41,15 +40,15 @@
       "TilesetTile": 338,
       "Stops": [
         {
-          "SheetTile": 2,
+          "AnimTile": 410,
           "Time": 10
         },
         {
-          "SheetTile": 6,
+          "AnimTile": 442,
           "Time": 20
         },
         {
-          "SheetTile": 10,
+          "AnimTile": 474,
           "Time": 30
         }
       ]
@@ -58,15 +57,15 @@
       "TilesetTile": 339,
       "Stops": [
         {
-          "SheetTile": 3,
+          "AnimTile": 411,
           "Time": 10
         },
         {
-          "SheetTile": 7,
+          "AnimTile": 443,
           "Time": 20
         },
         {
-          "SheetTile": 11,
+          "AnimTile": 475,
           "Time": 30
         }
       ]
