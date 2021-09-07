@@ -11,6 +11,7 @@ using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
+using Kermalis.PokemonGameEngine.Render;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
@@ -34,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.Core
             Log.ModifyIndent(+1);
 #endif
             var map = Map.LoadOrGet(0);
-            PlayerObj.Init(2, 29, map);
+            PlayerObj.Init(new WorldPos(new Pos2D(2, 29), 0), map);
             CameraObj.Init();
 #if DEBUG_OVERWORLD
             Log.ModifyIndent(-1);

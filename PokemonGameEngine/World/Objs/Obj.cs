@@ -32,8 +32,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public bool IsScriptMoving = false;
         public float MovementTimer = 1;
         public float MovementSpeed;
-        public int ProgressX;
-        public int ProgressY;
+        public Pos2D VisualProgress;
         protected const float FaceMovementSpeed = 1 / 3f;
         protected const float NormalMovementSpeed = 1 / 6f;
         protected const float RunningMovementSpeed = 1 / 4f;
@@ -67,22 +66,20 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public MapLayout.Block GetBlock()
         {
-            WorldPos p = Pos;
-            return Map.GetBlock_InBounds(p.X, p.Y);
+            return Map.GetBlock_InBounds(Pos.XY);
         }
         public MapLayout.Block GetBlockFacing()
         {
-            WorldPos p = Pos;
-            Overworld.MoveCoords(Facing, p.X, p.Y, out int newX, out int newY);
-            return Map.GetBlock_CrossMap(newX, newY, out _, out _, out _);
+            return Map.GetBlock_CrossMap(Pos.XY.Move(Facing), out _, out _);
         }
 
         public void Warp()
         {
             WarpInProgress wip = WarpInProgress.Current;
-            Map map = wip.DestMapLoaded;
-            WorldPos pos = wip.Destination.DestPos;
-            MapLayout.Block block = map.GetBlock_CrossMap(pos.X, pos.Y, out int outX, out int outY, out map); // GetBlock_CrossMap in case our warp is actually in a connection for some reason
+            Map newMap = wip.DestMapLoaded;
+            WorldPos newPos = wip.Destination.DestPos;
+            MapLayout.Block block = newMap.GetBlock_InBounds(newPos.XY);
+
             // Facing is of the original direction unless the block behavior says otherwise
             // All QueuedScriptMovements will be run after the warp is complete
             switch (block.BlocksetBlock.Behavior)
@@ -96,13 +93,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 case BlocksetBlockBehavior.Warp_NoOccupancy_S:
                 {
                     Facing = FacingDirection.North;
-                    outY--; // Can put you outside the map but that's the map designer's problem
+                    newPos.XY.Y--;
                     break;
                 }
             }
-            UpdateMap(map);
-            Pos = new WorldPos(outX, outY, pos.Elevation);
-            PrevPos = Pos;
+
+            UpdateMap(newMap);
+            Pos = newPos;
+            PrevPos = newPos;
             PrevVisualOffset = VisualOffset;
             CameraObj.CopyMovementIfAttachedTo(this);
             WarpInProgress.EndCurrent();
@@ -122,11 +120,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             return true;
         }
-        public bool CollidesWithAny_InBounds(Map map, int x, int y, byte elevation)
+        public bool CollidesWithAny_InBounds(Map map, in WorldPos pos)
         {
             if (CollidesWithOthers())
             {
-                foreach (Obj o in map.GetObjs_InBounds(x, y, elevation, this, true))
+                foreach (Obj o in map.GetObjs_InBounds(pos, this, true))
                 {
                     if (o.CollidesWithOthers())
                     {

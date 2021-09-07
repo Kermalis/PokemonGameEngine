@@ -1,33 +1,32 @@
-﻿using System;
+﻿using Kermalis.PokemonGameEngine.Render;
+using System;
 
 namespace Kermalis.PokemonGameEngine.World
 {
     internal struct WorldPos
     {
-        public int X;
-        public int Y;
+        public Pos2D XY;
         public byte Elevation;
 
-        public WorldPos(int x, int y, byte e)
+        public WorldPos(Pos2D xy, byte e)
         {
-            X = x;
-            Y = y;
+            XY = xy;
             Elevation = e;
         }
 
         public override bool Equals(object obj)
         {
-            return obj is WorldPos other && X == other.X && Y == other.Y && Elevation == other.Elevation;
+            return obj is WorldPos other && XY.Equals(other.XY) && Elevation == other.Elevation;
         }
         public override int GetHashCode()
         {
-            return HashCode.Combine(X, Y, Elevation);
+            return HashCode.Combine(XY, Elevation);
         }
 
 #if DEBUG
         public override string ToString()
         {
-            return string.Format("[[X: {0}, Y: {1}], E: {2}]", X, Y, Elevation);
+            return string.Format("[{0}, E: {1}]", XY, Elevation);
         }
 #endif
     }

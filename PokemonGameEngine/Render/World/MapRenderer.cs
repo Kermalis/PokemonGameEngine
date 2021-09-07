@@ -37,9 +37,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
             out Pos2D startBlockPixel) // Pixel coords of the blocks to start rendering from
         {
             cameraMap = cam.Map;
-            WorldPos cameraPos = cam.Pos;
-            int cameraPixelX = (cameraPos.X * Overworld.Block_NumPixelsX) - ((int)GLHelper.CurrentWidth / 2) + (Overworld.Block_NumPixelsX / 2) + cam.ProgressX + CameraObj.CameraVisualOffset.X;
-            int cameraPixelY = (cameraPos.Y * Overworld.Block_NumPixelsY) - ((int)GLHelper.CurrentHeight / 2) + (Overworld.Block_NumPixelsY / 2) + cam.ProgressY + CameraObj.CameraVisualOffset.Y;
+            Pos2D cameraXY = cam.Pos.XY;
+            int cameraPixelX = (cameraXY.X * Overworld.Block_NumPixelsX) - ((int)GLHelper.CurrentWidth / 2) + (Overworld.Block_NumPixelsX / 2) + cam.VisualProgress.X + CameraObj.CameraVisualOffset.X;
+            int cameraPixelY = (cameraXY.Y * Overworld.Block_NumPixelsY) - ((int)GLHelper.CurrentHeight / 2) + (Overworld.Block_NumPixelsY / 2) + cam.VisualProgress.Y + CameraObj.CameraVisualOffset.Y;
             int xpBX = cameraPixelX % Overworld.Block_NumPixelsX;
             int ypBY = cameraPixelY % Overworld.Block_NumPixelsY;
             startBlock.X = (cameraPixelX / Overworld.Block_NumPixelsX) - (xpBX >= 0 ? 0 : 1);
@@ -118,39 +118,36 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _visibleObjs.Clear();
 
             // Extra tolerance for wide/tall VisualObj
-            const int ToleranceW = 2;
-            const int ToleranceH = 2;
-            startBlock.X -= ToleranceW;
-            endBlock.X += ToleranceW;
-            startBlockPixel.X -= ToleranceW * Overworld.Block_NumPixelsX;
-            startBlock.Y -= ToleranceH;
-            endBlock.Y += ToleranceH;
-            startBlockPixel.Y -= ToleranceH * Overworld.Block_NumPixelsY;
+            const int ToleranceX = 2;
+            const int ToleranceY = 2;
+            startBlock.X -= ToleranceX;
+            startBlock.Y -= ToleranceY;
+            endBlock.X += ToleranceX;
+            endBlock.Y += ToleranceY;
+            startBlockPixel.X -= ToleranceX * Overworld.Block_NumPixelsX;
+            startBlockPixel.Y -= ToleranceY * Overworld.Block_NumPixelsY;
 
-            for (int blockY = startBlock.Y; blockY < endBlock.Y; blockY++)
+            Pos2D bXY;
+            for (bXY.Y = startBlock.Y; bXY.Y < endBlock.Y; bXY.Y++)
             {
-                for (int blockX = startBlock.X; blockX < endBlock.X; blockX++)
+                for (bXY.X = startBlock.X; bXY.X < endBlock.X; bXY.X++)
                 {
-                    cameraMap.GetXYMap(blockX, blockY, out int outX, out int outY, out Map map);
+                    cameraMap.GetXYMap(bXY, out Pos2D xy, out Map map);
                     for (int i = 0; i < objs.Count; i++)
                     {
-                        Obj o = objs[i];
-                        if (o is not VisualObj v || v.Map != map)
-                        {
-                            continue;
-                        }
                         // We don't need to check PrevPos to prevent it from popping in/out of existence
                         // The tolerance covers enough pixels where we can confidently check Pos only
                         // It'd only mess up if Pos and PrevPos were farther apart from each other than the tolerance
-                        WorldPos p = v.Pos;
-                        if (p.X == outX && p.Y == outY)
+                        Obj o = objs[i];
+                        if (o is not VisualObj v || v.Map != map || !v.Pos.XY.Equals(xy))
                         {
-                            VisibleObj vo;
-                            vo.Obj = v;
-                            vo.PositionOnScreen.X = ((blockX - startBlock.X) * Overworld.Block_NumPixelsX) + v.ProgressX + startBlockPixel.X;
-                            vo.PositionOnScreen.Y = ((blockY - startBlock.Y) * Overworld.Block_NumPixelsY) + v.ProgressY + startBlockPixel.Y;
-                            _visibleObjs.Add(vo);
+                            continue;
                         }
+                        VisibleObj vo;
+                        vo.Obj = v;
+                        vo.PositionOnScreen.X = ((bXY.X - startBlock.X) * Overworld.Block_NumPixelsX) + v.VisualProgress.X + startBlockPixel.X;
+                        vo.PositionOnScreen.Y = ((bXY.Y - startBlock.Y) * Overworld.Block_NumPixelsY) + v.VisualProgress.Y + startBlockPixel.Y;
+                        _visibleObjs.Add(vo);
                     }
                 }
             }
@@ -187,15 +184,18 @@ namespace Kermalis.PokemonGameEngine.Render.World
         {
             UpdateVisibleBlocksBounds(startBlock, endBlock);
 
-            Pos2D curPixel = startBlockPixel;
-            for (int blockY = startBlock.Y, blockYIndex = 0; blockY < endBlock.Y; blockY++, blockYIndex++)
+            Pos2D pixel = startBlockPixel;
+            Pos2D bXY;
+            int blockYIndex = 0;
+            for (bXY.Y = startBlock.Y; bXY.Y < endBlock.Y; bXY.Y++, blockYIndex++)
             {
                 VisibleBlock[] vbY = _visibleBlocks[blockYIndex];
-                for (int blockX = startBlock.X, blockXIndex = 0; blockX < endBlock.X; blockX++, blockXIndex++)
+                int blockXIndex = 0;
+                for (bXY.X = startBlock.X; bXY.X < endBlock.X; bXY.X++, blockXIndex++)
                 {
                     VisibleBlock vb;
-                    vb.Block = cameraMap.GetBlock_CrossMap(blockX, blockY, out _, out _, out Map map);
-                    vb.PositionOnScreen = curPixel;
+                    vb.Block = cameraMap.GetBlock_CrossMap(bXY, out _, out Map map);
+                    vb.PositionOnScreen = pixel;
                     vbY[blockXIndex] = vb;
                     if (!newMaps.Contains(map))
                     {
@@ -205,10 +205,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
                             map.OnMapNowVisible();
                         }
                     }
-                    curPixel.X += Overworld.Block_NumPixelsX;
+                    pixel.X += Overworld.Block_NumPixelsX;
                 }
-                curPixel.X = startBlockPixel.X;
-                curPixel.Y += Overworld.Block_NumPixelsY;
+                pixel.X = startBlockPixel.X;
+                pixel.Y += Overworld.Block_NumPixelsY;
             }
         }
     }

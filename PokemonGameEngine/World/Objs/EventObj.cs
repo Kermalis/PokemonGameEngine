@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.World.Maps;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
     internal sealed class EventObj : VisualObj
     {
         public ObjMovementType MovementType;
-        public int OriginX;
-        public int MovementX;
-        public int OriginY;
-        public int MovementY;
+        public Pos2D OriginPos;
+        public Pos2D MovementRange;
         public TrainerType TrainerType;
         public byte TrainerSight;
         public string Script;
@@ -31,10 +30,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             MovementType = oe.MovementType;
             InitMovementType();
-            OriginX = oe.Pos.X;
-            MovementX = oe.MovementX;
-            OriginY = oe.Pos.Y;
-            MovementY = oe.MovementY;
+            OriginPos = oe.Pos.XY;
+            MovementRange = oe.MovementRange;
             TrainerType = oe.TrainerType;
             TrainerSight = oe.TrainerSight;
             Script = oe.Script;
@@ -100,11 +97,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             bool allowSurf = CanSurf();
             // Check if we are in range of our movement radius
-            WorldPos p = Pos;
-            bool south = Math.Abs(p.Y + 1 - OriginY) <= MovementY;
-            bool north = Math.Abs(p.Y - 1 - OriginY) <= MovementY;
-            bool west = Math.Abs(p.X - 1 - OriginX) <= MovementX;
-            bool east = Math.Abs(p.X + 1 - OriginX) <= MovementX;
+            Pos2D p = Pos.XY;
+            bool south = Math.Abs(p.Y + 1 - OriginPos.Y) <= MovementRange.Y;
+            bool north = Math.Abs(p.Y - 1 - OriginPos.Y) <= MovementRange.Y;
+            bool west = Math.Abs(p.X - 1 - OriginPos.X) <= MovementRange.X;
+            bool east = Math.Abs(p.X + 1 - OriginPos.X) <= MovementRange.X;
             // Filter out places we cannot go
             var list = new List<FacingDirection>(allowed);
             if (list.Contains(FacingDirection.South) && (!south || !IsMovementLegal(FacingDirection.South, allowSurf)))
@@ -155,7 +152,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             if (false.Equals(_movementTypeArg))
             {
                 Move(FacingDirection.West, false, false);
-                if (Pos.X + MovementX <= OriginX)
+                if (Pos.XY.X + MovementRange.X <= OriginPos.X)
                 {
                     _movementTypeArg = true;
                 }
@@ -163,7 +160,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             else
             {
                 Move(FacingDirection.East, false, false);
-                if (Pos.X == OriginX)
+                if (Pos.XY.X == OriginPos.X)
                 {
                     _movementTypeArg = false;
                 }
@@ -175,7 +172,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             if (false.Equals(_movementTypeArg))
             {
                 Move(FacingDirection.East, false, false);
-                if (Pos.X - MovementX >= OriginX)
+                if (Pos.XY.X - MovementRange.X >= OriginPos.X)
                 {
                     _movementTypeArg = true;
                 }
@@ -183,7 +180,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             else
             {
                 Move(FacingDirection.West, false, false);
-                if (Pos.X == OriginX)
+                if (Pos.XY.X == OriginPos.X)
                 {
                     _movementTypeArg = false;
                 }

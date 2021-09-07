@@ -14,12 +14,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             return Overworld.AllowsElevationChange(curBehavior) || Overworld.AllowsElevationChange(targetBehavior);
         }
-        private bool CanMoveTo_Cardinal__CanOccupy(int targetX, int targetY, bool allowSurf,
+        private bool CanMoveTo_Cardinal__CanOccupy(Pos2D targetXY, bool allowSurf,
             BlocksetBlockBehavior curBehavior, BlocksetBlockBehavior blockedTarget, bool checkElevation, byte curElevation)
         {
             // Get the x/y/map of the target block
-            Map.GetXYMap(targetX, targetY, out int outX, out int outY, out Map outMap);
-            MapLayout.Block targetBlock = outMap.GetBlock_InBounds(outX, outY);
+            Map.GetXYMap(targetXY, out targetXY, out Map targetMap);
+            MapLayout.Block targetBlock = targetMap.GetBlock_InBounds(targetXY);
             // Check occupancy permission
             if ((targetBlock.Passage & LayoutBlockPassage.AllowOccupancy) == 0)
             {
@@ -39,45 +39,45 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             byte newElevation = Overworld.GetElevationIfMovedTo(curElevation, targetElevations);
             // Check if we can pass through objs at the position
-            if (CollidesWithAny_InBounds(outMap, outX, outY, newElevation))
+            if (CollidesWithAny_InBounds(targetMap, new WorldPos(targetXY, newElevation)))
             {
                 return false;
             }
             return true;
         }
         // South/North
-        private bool CanMoveTo_Cardinal(int targetX, int targetY, bool allowSurf, BlocksetBlockBehavior blockedCurrent, BlocksetBlockBehavior blockedTarget)
+        private bool CanMoveTo_Cardinal(Pos2D targetXY, bool allowSurf, BlocksetBlockBehavior blockedCurrent, BlocksetBlockBehavior blockedTarget)
         {
             // Current block - return false if we are blocked
             WorldPos p = Pos;
-            MapLayout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
+            MapLayout.Block curBlock = Map.GetBlock_InBounds(p.XY);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrent)
             {
                 return false;
             }
             // Target block - return false if we are blocked
-            if (!CanMoveTo_Cardinal__CanOccupy(targetX, targetY, allowSurf, curBehavior, blockedTarget, true, p.Elevation))
+            if (!CanMoveTo_Cardinal__CanOccupy(targetXY, allowSurf, curBehavior, blockedTarget, true, p.Elevation))
             {
                 return false;
             }
             return true;
         }
         // West/East
-        private bool CanMoveTo_Cardinal_ConsiderStairs(int targetX, int targetY, bool allowSurf, BlocksetBlockBehavior blockedCurrent, BlocksetBlockBehavior blockedTarget,
+        private bool CanMoveTo_Cardinal_ConsiderStairs(Pos2D targetXY, bool allowSurf, BlocksetBlockBehavior blockedCurrent, BlocksetBlockBehavior blockedTarget,
             BlocksetBlockBehavior upBehavior, BlocksetBlockBehavior downBehavior)
         {
             // Current block - return false if we are blocked
             WorldPos p = Pos;
-            MapLayout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
+            MapLayout.Block curBlock = Map.GetBlock_InBounds(p.XY);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrent)
             {
                 return false;
             }
             // Stairs - check if we can go up a stair that's above our target
-            Map.GetXYMap(targetX, targetY - 1, out int upStairX, out int upStairY, out Map upStairMap);
-            MapLayout.Block upStairBlock = upStairMap.GetBlock_InBounds(upStairX, upStairY);
+            Map.GetXYMap(targetXY.North(), out Pos2D upStairPos, out Map upStairMap);
+            MapLayout.Block upStairBlock = upStairMap.GetBlock_InBounds(upStairPos);
             if ((upStairBlock.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
             {
                 BlocksetBlockBehavior upStairBehavior = upStairBlock.BlocksetBlock.Behavior;
@@ -85,7 +85,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 {
                     // Check if we can pass through objs on the position
                     byte newElevation = Overworld.GetElevationIfMovedTo(p.Elevation, upStairBlock.Elevations);
-                    if (CollidesWithAny_InBounds(upStairMap, upStairX, upStairY, newElevation))
+                    if (CollidesWithAny_InBounds(upStairMap, new WorldPos(upStairPos, newElevation)))
                     {
                         return false;
                     }
@@ -97,36 +97,36 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             if (curBehavior == downBehavior)
             {
                 canChangeElevation = true;
-                targetY++;
+                targetXY.Y++;
             }
             else if (curBehavior == upBehavior)
             {
                 canChangeElevation = true;
             }
             // Target block - return false if we are blocked
-            if (!CanMoveTo_Cardinal__CanOccupy(targetX, targetY, allowSurf, curBehavior, blockedTarget, !canChangeElevation, p.Elevation))
+            if (!CanMoveTo_Cardinal__CanOccupy(targetXY, allowSurf, curBehavior, blockedTarget, !canChangeElevation, p.Elevation))
             {
                 return false;
             }
             return true;
         }
         // Southwest/Southeast/Northwest/Northeast
-        private bool CanMoveTo_Diagonal(int targetX, int targetY, bool allowSurf, LayoutBlockPassage neighbor1Passage, int neighbor1X, int neighbor1Y, LayoutBlockPassage neighbor2Passage, int neighbor2X, int neighbor2Y,
+        private bool CanMoveTo_Diagonal(Pos2D targetXY, bool allowSurf, LayoutBlockPassage neighbor1Passage, Pos2D neighbor1XY, LayoutBlockPassage neighbor2Passage, Pos2D neighbor2XY,
             BlocksetBlockBehavior blockedCurrentCardinal1, BlocksetBlockBehavior blockedCurrentCardinal2, BlocksetBlockBehavior blockedCurrentDiagonal,
             BlocksetBlockBehavior blockedTargetCardinal1, BlocksetBlockBehavior blockedTargetCardinal2, BlocksetBlockBehavior blockedTargetDiagonal,
             BlocksetBlockBehavior blockedNeighbor1, BlocksetBlockBehavior blockedNeighbor2)
         {
             // Current block - return false if we are blocked
             WorldPos p = Pos;
-            MapLayout.Block curBlock = Map.GetBlock_InBounds(p.X, p.Y);
+            MapLayout.Block curBlock = Map.GetBlock_InBounds(p.XY);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == blockedCurrentCardinal1 || curBehavior == blockedCurrentCardinal2 || curBehavior == blockedCurrentDiagonal)
             {
                 return false;
             }
             // Target block - return false if we are blocked
-            Map.GetXYMap(targetX, targetY, out int targetOutX, out int targetOutY, out Map targetOutMap);
-            MapLayout.Block targetBlock = targetOutMap.GetBlock_InBounds(targetOutX, targetOutY);
+            Map.GetXYMap(targetXY, out targetXY, out Map targetMap);
+            MapLayout.Block targetBlock = targetMap.GetBlock_InBounds(targetXY);
             if ((targetBlock.Passage & LayoutBlockPassage.AllowOccupancy) == 0)
             {
                 return false;
@@ -147,25 +147,25 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             byte newElevation = Overworld.GetElevationIfMovedTo(curElevation, targetElevations);
             // Check if we can pass through objs at the position
-            if (CollidesWithAny_InBounds(targetOutMap, targetOutX, targetOutY, newElevation))
+            if (CollidesWithAny_InBounds(targetMap, new WorldPos(targetXY, newElevation)))
             {
                 return false;
             }
             // Target's neighbors - check if we can pass through them diagonally
-            if (!CanPassThroughDiagonally(neighbor1X, neighbor1Y, curElevation, neighbor1Passage, blockedCurrentCardinal1, blockedTargetCardinal2, blockedNeighbor1)
-                || !CanPassThroughDiagonally(neighbor2X, neighbor2Y, curElevation, neighbor2Passage, blockedTargetCardinal1, blockedCurrentCardinal2, blockedNeighbor2))
+            if (!CanPassThroughDiagonally(new WorldPos(neighbor1XY, curElevation), neighbor1Passage, blockedCurrentCardinal1, blockedTargetCardinal2, blockedNeighbor1)
+                || !CanPassThroughDiagonally(new WorldPos(neighbor2XY, curElevation), neighbor2Passage, blockedTargetCardinal1, blockedCurrentCardinal2, blockedNeighbor2))
             {
                 return false;
             }
             return true;
         }
 
-        private bool CanPassThroughDiagonally(int x, int y, byte elevation, LayoutBlockPassage diagonalPassage,
+        private bool CanPassThroughDiagonally(in WorldPos pos, LayoutBlockPassage diagonalPassage,
             BlocksetBlockBehavior blockedCardinal1, BlocksetBlockBehavior blockedCardinal2, BlocksetBlockBehavior blockedDiagonal)
         {
             // Get the x/y/map of the block
-            Map.GetXYMap(x, y, out int outX, out int outY, out Map outMap);
-            MapLayout.Block block = outMap.GetBlock_InBounds(outX, outY);
+            Map.GetXYMap(pos.XY, out Pos2D targetXY, out Map targetMap);
+            MapLayout.Block block = targetMap.GetBlock_InBounds(targetXY);
             // Check occupancy permission
             if ((block.Passage & diagonalPassage) == 0)
             {
@@ -178,7 +178,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return false;
             }
             // Check if we can pass through objs at the position (only checks current elevation, not the target elevation or any other elevations)
-            if (CollidesWithAny_InBounds(outMap, outX, outY, elevation))
+            if (CollidesWithAny_InBounds(targetMap, new WorldPos(targetXY, pos.Elevation)))
             {
                 return false;
             }
@@ -187,53 +187,51 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public bool IsMovementLegal(FacingDirection facing, bool allowSurf)
         {
-            WorldPos p = Pos;
-            int x = p.X;
-            int y = p.Y;
+            Pos2D xy = Pos.XY;
             switch (facing)
             {
                 case FacingDirection.South:
                 {
-                    return CanMoveTo_Cardinal(x, y + 1, allowSurf, BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_N);
+                    return CanMoveTo_Cardinal(xy.South(), allowSurf, BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_N);
                 }
                 case FacingDirection.North:
                 {
-                    return CanMoveTo_Cardinal(x, y - 1, allowSurf, BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_S);
+                    return CanMoveTo_Cardinal(xy.North(), allowSurf, BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_S);
                 }
                 case FacingDirection.West:
                 {
-                    return CanMoveTo_Cardinal_ConsiderStairs(x - 1, y, allowSurf, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_E,
+                    return CanMoveTo_Cardinal_ConsiderStairs(xy.West(), allowSurf, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_E,
                         BlocksetBlockBehavior.Stair_W, BlocksetBlockBehavior.Stair_E);
                 }
                 case FacingDirection.East:
                 {
-                    return CanMoveTo_Cardinal_ConsiderStairs(x + 1, y, allowSurf, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_W,
+                    return CanMoveTo_Cardinal_ConsiderStairs(xy.East(), allowSurf, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_W,
                         BlocksetBlockBehavior.Stair_E, BlocksetBlockBehavior.Stair_W);
                 }
                 case FacingDirection.Southwest:
                 {
-                    return CanMoveTo_Diagonal(x - 1, y + 1, allowSurf, LayoutBlockPassage.SoutheastPassage, x - 1, y, LayoutBlockPassage.NorthwestPassage, x, y + 1,
+                    return CanMoveTo_Diagonal(xy.Southwest(), allowSurf, LayoutBlockPassage.SoutheastPassage, xy.West(), LayoutBlockPassage.NorthwestPassage, xy.South(),
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_SW,
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_NE,
                         BlocksetBlockBehavior.Blocked_SE, BlocksetBlockBehavior.Blocked_NW);
                 }
                 case FacingDirection.Southeast:
                 {
-                    return CanMoveTo_Diagonal(x + 1, y + 1, allowSurf, LayoutBlockPassage.SouthwestPassage, x + 1, y, LayoutBlockPassage.NortheastPassage, x, y + 1,
+                    return CanMoveTo_Diagonal(xy.Southeast(), allowSurf, LayoutBlockPassage.SouthwestPassage, xy.East(), LayoutBlockPassage.NortheastPassage, xy.South(),
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_SE,
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_NW,
                         BlocksetBlockBehavior.Blocked_SW, BlocksetBlockBehavior.Blocked_NE);
                 }
                 case FacingDirection.Northwest:
                 {
-                    return CanMoveTo_Diagonal(x - 1, y - 1, allowSurf, LayoutBlockPassage.NortheastPassage, x - 1, y, LayoutBlockPassage.SouthwestPassage, x, y - 1,
+                    return CanMoveTo_Diagonal(xy.Northwest(), allowSurf, LayoutBlockPassage.NortheastPassage, xy.West(), LayoutBlockPassage.SouthwestPassage, xy.North(),
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_NW,
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_SE,
                         BlocksetBlockBehavior.Blocked_NE, BlocksetBlockBehavior.Blocked_SW);
                 }
                 case FacingDirection.Northeast:
                 {
-                    return CanMoveTo_Diagonal(x + 1, y - 1, allowSurf, LayoutBlockPassage.NorthwestPassage, x + 1, y, LayoutBlockPassage.SoutheastPassage, x, y - 1,
+                    return CanMoveTo_Diagonal(xy.Northeast(), allowSurf, LayoutBlockPassage.NorthwestPassage, xy.East(), LayoutBlockPassage.SoutheastPassage, xy.North(),
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_NE,
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_SW,
                         BlocksetBlockBehavior.Blocked_NW, BlocksetBlockBehavior.Blocked_SE);
@@ -242,26 +240,24 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
         }
 
-        private void ApplyStairMovement(WorldPos curPos, BlocksetBlockBehavior upBehavior, BlocksetBlockBehavior downBehavior)
+        private void ApplyStairMovement(Pos2D curXY, BlocksetBlockBehavior upBehavior, BlocksetBlockBehavior downBehavior)
         {
-            MapLayout.Block curBlock = Map.GetBlock_InBounds(curPos.X, curPos.Y);
+            MapLayout.Block curBlock = Map.GetBlock_InBounds(curXY);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
             if (curBehavior == downBehavior)
             {
-                Pos.Y++;
+                Pos.XY.Y++;
             }
-            WorldPos newPos = Pos;
-            int newX = newPos.X;
-            int newY = newPos.Y;
-            MapLayout.Block upStairBlock = Map.GetBlock_CrossMap(newX, newY - 1, out _, out _, out _);
+            Pos2D newXY = Pos.XY;
+            MapLayout.Block upStairBlock = Map.GetBlock_CrossMap(newXY.North(), out _, out _);
             BlocksetBlockBehavior upStairBehavior = upStairBlock.BlocksetBlock.Behavior;
             if (upStairBehavior == upBehavior)
             {
-                Pos.Y--;
+                Pos.XY.Y--;
                 VisualOffset.Y = StairYOffset;
                 return;
             }
-            MapLayout.Block newBlock = Map.GetBlock_CrossMap(newX, newY, out _, out _, out _);
+            MapLayout.Block newBlock = Map.GetBlock_CrossMap(newXY, out _, out _);
             BlocksetBlockBehavior newBehavior = newBlock.BlocksetBlock.Behavior;
             if (newBehavior == downBehavior)
             {
@@ -278,76 +274,74 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 case FacingDirection.South:
                 {
-                    Pos.Y++;
+                    Pos.XY.Y++;
                     break;
                 }
                 case FacingDirection.North:
                 {
-                    Pos.Y--;
+                    Pos.XY.Y--;
                     break;
                 }
                 case FacingDirection.West:
                 {
-                    WorldPos p = Pos;
-                    Pos.X--;
-                    ApplyStairMovement(p, BlocksetBlockBehavior.Stair_W, BlocksetBlockBehavior.Stair_E);
+                    Pos2D xy = Pos.XY;
+                    Pos.XY.X--;
+                    ApplyStairMovement(xy, BlocksetBlockBehavior.Stair_W, BlocksetBlockBehavior.Stair_E);
                     break;
                 }
                 case FacingDirection.East:
                 {
-                    WorldPos p = Pos;
-                    Pos.X++;
-                    ApplyStairMovement(p, BlocksetBlockBehavior.Stair_E, BlocksetBlockBehavior.Stair_W);
+                    Pos2D xy = Pos.XY;
+                    Pos.XY.X++;
+                    ApplyStairMovement(xy, BlocksetBlockBehavior.Stair_E, BlocksetBlockBehavior.Stair_W);
                     break;
                 }
                 case FacingDirection.Southwest:
                 {
-                    Pos.X--;
-                    Pos.Y++;
+                    Pos.XY.X--;
+                    Pos.XY.Y++;
                     MovementSpeed *= DiagonalMovementSpeedModifier;
                     break;
                 }
                 case FacingDirection.Southeast:
                 {
-                    Pos.X++;
-                    Pos.Y++;
+                    Pos.XY.X++;
+                    Pos.XY.Y++;
                     MovementSpeed *= DiagonalMovementSpeedModifier;
                     break;
                 }
                 case FacingDirection.Northwest:
                 {
-                    Pos.X--;
-                    Pos.Y--;
+                    Pos.XY.X--;
+                    Pos.XY.Y--;
                     MovementSpeed *= DiagonalMovementSpeedModifier;
                     break;
                 }
                 case FacingDirection.Northeast:
                 {
-                    Pos.X++;
-                    Pos.Y--;
+                    Pos.XY.X++;
+                    Pos.XY.Y--;
                     MovementSpeed *= DiagonalMovementSpeedModifier;
                     break;
                 }
             }
             Map curMap = Map;
-            int newX = Pos.X;
-            int newY = Pos.Y;
-            MapLayout.Block block = curMap.GetBlock_CrossMap(newX, newY, out int outX, out int outY, out Map map);
+            Pos2D curXY = Pos.XY;
+            MapLayout.Block block = curMap.GetBlock_CrossMap(curXY, out Pos2D newXY, out Map newMap);
             Pos.Elevation = Overworld.GetElevationIfMovedTo(Pos.Elevation, block.Elevations);
-            if (map == curMap)
+            if (newMap == curMap)
             {
                 return;
             }
             // Map crossing - Update Map, Pos, and PrevPos
             curMap.Objs.Remove(this);
-            map.Objs.Add(this);
-            Map = map;
+            newMap.Objs.Add(this);
+            Map = newMap;
 
-            Pos.X = outX;
-            Pos.Y = outY;
-            PrevPos.X += outX - newX;
-            PrevPos.Y += outY - newY;
-            OnMapChanged(curMap, map);
+            Pos.XY = newXY;
+            PrevPos.XY.X += newXY.X - curXY.X;
+            PrevPos.XY.Y += newXY.Y - curXY.Y;
+            OnMapChanged(curMap, newMap);
         }
 
         protected virtual void OnMapChanged(Map oldMap, Map newMap) { }
@@ -398,33 +392,33 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             UpdateXYProgress();
         }
 
-        private static FacingDirection GetDirectionToLook(WorldPos myPos, WorldPos otherPos)
+        private static FacingDirection GetDirectionToLook(Pos2D myXY, Pos2D otherXY)
         {
-            if (otherPos.X == myPos.X)
+            if (otherXY.X == myXY.X)
             {
-                if (otherPos.Y < myPos.Y)
+                if (otherXY.Y < myXY.Y)
                 {
                     return FacingDirection.North; // x == x, y < y
                 }
                 return FacingDirection.South; // x == x, y == y
             }
-            if (otherPos.Y == myPos.Y)
+            if (otherXY.Y == myXY.Y)
             {
-                if (otherPos.X < myPos.X)
+                if (otherXY.X < myXY.X)
                 {
                     return FacingDirection.West; // x < x, y == y
                 }
                 return FacingDirection.East; // x > x, y == y
             }
-            if (otherPos.X < myPos.X)
+            if (otherXY.X < myXY.X)
             {
-                if (otherPos.Y < myPos.Y)
+                if (otherXY.Y < myXY.Y)
                 {
                     return FacingDirection.Northwest; // x < x, y < y
                 }
                 return FacingDirection.Southwest; // x < x, y > y
             }
-            if (otherPos.Y < myPos.Y)
+            if (otherXY.Y < myXY.Y)
             {
                 return FacingDirection.Northeast; // x > x, y < y
             }
@@ -433,23 +427,23 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public void LookTowards(Obj other)
         {
-            LookTowards(other.Pos);
+            LookTowards(other.Pos.XY);
         }
-        public void LookTowards(WorldPos oPos)
+        public void LookTowards(Pos2D otherXY)
         {
-            WorldPos pos = Pos;
-            if (oPos.X == pos.X && oPos.Y == pos.Y)
+            Pos2D myXY = Pos.XY;
+            if (myXY.Equals(otherXY))
             {
                 return; // Same position, do nothing
             }
-            Facing = GetDirectionToLook(pos, oPos);
+            Facing = GetDirectionToLook(myXY, otherXY);
         }
 
         private void UpdateXYProgress()
         {
-            WorldPos prevPos = PrevPos;
+            Pos2D prevXY = PrevPos.XY;
             Pos2D prevOfs = PrevVisualOffset;
-            WorldPos pos = Pos;
+            Pos2D xy = Pos.XY;
             Pos2D ofs = VisualOffset;
             float t = MovementTimer; // Goes from 0% to 100%
             int DoTheMath(int cur, int prev, int curOfs, int prevOfs, int numPixelsInBlock)
@@ -462,8 +456,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 // Scale from previous value to new value based on % of transition
                 return (int)(prevVisualOfs + (t * visualOfsScale));
             }
-            ProgressX = DoTheMath(pos.X, prevPos.X, ofs.X, prevOfs.X, Overworld.Block_NumPixelsX);
-            ProgressY = DoTheMath(pos.Y, prevPos.Y, ofs.Y, prevOfs.Y, Overworld.Block_NumPixelsY);
+            VisualProgress.X = DoTheMath(xy.X, prevXY.X, ofs.X, prevOfs.X, Overworld.Block_NumPixelsX);
+            VisualProgress.Y = DoTheMath(xy.Y, prevXY.Y, ofs.Y, prevOfs.Y, Overworld.Block_NumPixelsY);
         }
         public void UpdateMovement()
         {

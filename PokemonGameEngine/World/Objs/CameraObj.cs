@@ -40,8 +40,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             c.VisualOffset = other.VisualOffset;
             c.PrevPos = other.PrevPos;
             c.PrevVisualOffset = other.PrevVisualOffset;
-            c.ProgressX = other.ProgressX;
-            c.ProgressY = other.ProgressY;
+            c.VisualProgress = other.VisualProgress;
             c.UpdateMap(other.Map);
         }
         public static void SetCameraAttachedTo(Obj o)

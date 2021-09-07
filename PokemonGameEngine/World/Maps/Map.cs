@@ -6,6 +6,7 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
+using Kermalis.PokemonGameEngine.Render;
 
 namespace Kermalis.PokemonGameEngine.World.Maps
 {
@@ -52,13 +53,13 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         }
 
         // TODO: Loading entire map details and layouts is unnecessary
-        public void GetXYMap(int x, int y, out int outX, out int outY, out Map outMap)
+        public void GetXYMap(Pos2D xy, out Pos2D newXY, out Map newMap)
         {
-            MapLayout ml = Layout;
-            bool north = y < 0;
-            bool south = y >= ml.BlocksHeight;
-            bool west = x < 0;
-            bool east = x >= ml.BlocksWidth;
+            MapLayout curL = Layout;
+            bool north = xy.Y < 0;
+            bool south = xy.Y >= curL.BlocksHeight;
+            bool west = xy.X < 0;
+            bool east = xy.X >= curL.BlocksWidth;
             // If we're out of bounds, try to branch into a connection. If we don't find one, we meet at the bottom
             if (north || south || west || east)
             {
@@ -73,9 +74,9 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                             {
                                 Map m = LoadOrGet(c.MapId);
                                 MapLayout l = m.Layout;
-                                if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                                if (xy.X >= c.Offset && xy.X < c.Offset + l.BlocksWidth)
                                 {
-                                    m.GetXYMap(x - c.Offset, y - ml.BlocksHeight, out outX, out outY, out outMap);
+                                    m.GetXYMap(xy.Northwest(c.Offset, curL.BlocksHeight), out newXY, out newMap);
                                     return;
                                 }
                             }
@@ -87,9 +88,9 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                             {
                                 Map m = LoadOrGet(c.MapId);
                                 MapLayout l = m.Layout;
-                                if (x >= c.Offset && x < c.Offset + l.BlocksWidth)
+                                if (xy.X >= c.Offset && xy.X < c.Offset + l.BlocksWidth)
                                 {
-                                    m.GetXYMap(x - c.Offset, l.BlocksHeight + y, out outX, out outY, out outMap);
+                                    m.GetXYMap(xy.Southwest(c.Offset, l.BlocksHeight), out newXY, out newMap);
                                     return;
                                 }
                             }
@@ -101,9 +102,9 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                             {
                                 Map m = LoadOrGet(c.MapId);
                                 MapLayout l = m.Layout;
-                                if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                                if (xy.Y >= c.Offset && xy.Y < c.Offset + l.BlocksHeight)
                                 {
-                                    m.GetXYMap(l.BlocksWidth + x, y - c.Offset, out outX, out outY, out outMap);
+                                    m.GetXYMap(xy.Northeast(l.BlocksWidth, c.Offset), out newXY, out newMap);
                                     return;
                                 }
                             }
@@ -115,9 +116,9 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                             {
                                 Map m = LoadOrGet(c.MapId);
                                 MapLayout l = m.Layout;
-                                if (y >= c.Offset && y < c.Offset + l.BlocksHeight)
+                                if (xy.Y >= c.Offset && xy.Y < c.Offset + l.BlocksHeight)
                                 {
-                                    m.GetXYMap(x - ml.BlocksWidth, y - c.Offset, out outX, out outY, out outMap);
+                                    m.GetXYMap(xy.Northwest(curL.BlocksWidth, c.Offset), out newXY, out newMap);
                                     return;
                                 }
                             }
@@ -128,26 +129,25 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             }
             // If we are in bounds, return the current map
             // If we didn't find a connection, we are at the border, which counts as the current map
-            outX = x;
-            outY = y;
-            outMap = this;
+            newXY = xy;
+            newMap = this;
         }
-        public MapLayout.Block GetBlock_CrossMap(int x, int y, out int outX, out int outY, out Map outMap)
+        public MapLayout.Block GetBlock_CrossMap(Pos2D xy, out Pos2D newXY, out Map newMap)
         {
-            GetXYMap(x, y, out outX, out outY, out outMap);
-            return outMap.GetBlock_InBounds(outX, outY);
+            GetXYMap(xy, out newXY, out newMap);
+            return newMap.GetBlock_InBounds(newXY);
         }
-        public MapLayout.Block GetBlock_InBounds(int x, int y)
+        public MapLayout.Block GetBlock_InBounds(Pos2D xy)
         {
             MapLayout ml = Layout;
-            bool north = y < 0;
-            bool south = y >= ml.BlocksHeight;
-            bool west = x < 0;
-            bool east = x >= ml.BlocksWidth;
+            bool north = xy.Y < 0;
+            bool south = xy.Y >= ml.BlocksHeight;
+            bool west = xy.X < 0;
+            bool east = xy.X >= ml.BlocksWidth;
             // In bounds
             if (!north && !south && !west && !east)
             {
-                return ml.Blocks[y][x];
+                return ml.Blocks[xy.Y][xy.X];
             }
             // Border blocks
             byte bw = ml.BorderWidth;
@@ -158,17 +158,17 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                 return null;
             }
             // Has a border
-            x %= bw;
+            xy.X %= bw;
             if (west)
             {
-                x *= -1;
+                xy.X *= -1;
             }
-            y %= bh;
+            xy.Y %= bh;
             if (north)
             {
-                y *= -1;
+                xy.Y *= -1;
             }
-            return ml.BorderBlocks[y][x];
+            return ml.BorderBlocks[xy.Y][xy.X];
         }
 
         private void LoadObjEvents()
@@ -215,16 +215,12 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         /// <para>The camera is not hardcoded here because we can have some objs disable collisions, plus someone might want to get the camera from this.</para>
         /// <paramref name="checkMovingPrevPos"/> checks if an obj is moving from its <see cref="Obj.PrevPos"/> (that matches the coords we are looking at).
         /// </summary> 
-        public List<Obj> GetObjs_InBounds(int x, int y, byte elevation, Obj exceptThisOne, bool checkMovingPrevPos)
+        public List<Obj> GetObjs_InBounds(in WorldPos pos, Obj exceptThisOne, bool checkMovingPrevPos)
         {
-            bool Check(WorldPos pos)
-            {
-                return pos.X == x && pos.Y == y && pos.Elevation == elevation;
-            }
             var list = new List<Obj>();
             foreach (Obj o in Objs)
             {
-                if (o != exceptThisOne && (Check(o.Pos) || (checkMovingPrevPos && o.IsMoving && Check(o.PrevPos))))
+                if (o != exceptThisOne && (pos.Equals(o.Pos) || (checkMovingPrevPos && o.IsMoving && pos.Equals(o.PrevPos))))
                 {
                     list.Add(o);
                 }

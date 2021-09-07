@@ -1,4 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.World;
+using System;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
@@ -11,6 +13,54 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             X = x;
             Y = y;
+        }
+
+        public Pos2D South(int amt = 1)
+        {
+            return new Pos2D(X, Y + amt);
+        }
+        public Pos2D North(int amt = 1)
+        {
+            return new Pos2D(X, Y - amt);
+        }
+        public Pos2D West(int amt = 1)
+        {
+            return new Pos2D(X - amt, Y);
+        }
+        public Pos2D East(int amt = 1)
+        {
+            return new Pos2D(X + amt, Y);
+        }
+        public Pos2D Southwest(int xAmt = 1, int yAmt = 1)
+        {
+            return new Pos2D(X - xAmt, Y + yAmt);
+        }
+        public Pos2D Southeast(int xAmt = 1, int yAmt = 1)
+        {
+            return new Pos2D(X + xAmt, Y + yAmt);
+        }
+        public Pos2D Northwest(int xAmt = 1, int yAmt = 1)
+        {
+            return new Pos2D(X - xAmt, Y - yAmt);
+        }
+        public Pos2D Northeast(int xAmt = 1, int yAmt = 1)
+        {
+            return new Pos2D(X + xAmt, Y - yAmt);
+        }
+        public Pos2D Move(FacingDirection dir)
+        {
+            switch (dir)
+            {
+                case FacingDirection.South: return South();
+                case FacingDirection.North: return North();
+                case FacingDirection.West: return West();
+                case FacingDirection.East: return East();
+                case FacingDirection.Southwest: return Southwest();
+                case FacingDirection.Southeast: return Southeast();
+                case FacingDirection.Northwest: return Northwest();
+                case FacingDirection.Northeast: return Northeast();
+                default: throw new ArgumentOutOfRangeException(nameof(dir));
+            }
         }
 
         public static Pos2D FromRelative(float x, float y)
@@ -36,6 +86,15 @@ namespace Kermalis.PokemonGameEngine.Render
         public static Pos2D operator +(Pos2D a, Pos2D b)
         {
             return new Pos2D(a.X + b.X, a.Y + b.Y);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Pos2D other && X == other.X && Y == other.Y;
+        }
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y);
         }
 
 #if DEBUG

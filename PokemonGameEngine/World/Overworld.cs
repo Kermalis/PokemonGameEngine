@@ -133,61 +133,6 @@ namespace Kermalis.PokemonGameEngine.World
 
         #region Movement
 
-        public static void MoveCoords(FacingDirection dir, int x, int y, out int outX, out int outY)
-        {
-            switch (dir)
-            {
-                case FacingDirection.South:
-                {
-                    outX = x;
-                    outY = y + 1;
-                    break;
-                }
-                case FacingDirection.North:
-                {
-                    outX = x;
-                    outY = y - 1;
-                    break;
-                }
-                case FacingDirection.West:
-                {
-                    outX = x - 1;
-                    outY = y;
-                    break;
-                }
-                case FacingDirection.East:
-                {
-                    outX = x + 1;
-                    outY = y;
-                    break;
-                }
-                case FacingDirection.Southwest:
-                {
-                    outX = x - 1;
-                    outY = y + 1;
-                    break;
-                }
-                case FacingDirection.Southeast:
-                {
-                    outX = x + 1;
-                    outY = y + 1;
-                    break;
-                }
-                case FacingDirection.Northwest:
-                {
-                    outX = x - 1;
-                    outY = y - 1;
-                    break;
-                }
-                case FacingDirection.Northeast:
-                {
-                    outX = x + 1;
-                    outY = y - 1;
-                    break;
-                }
-                default: throw new ArgumentOutOfRangeException(nameof(dir));
-            }
-        }
         public static byte GetElevationIfMovedTo(byte curElevation, byte targetElevations)
         {
             if (!targetElevations.HasElevation(curElevation))
