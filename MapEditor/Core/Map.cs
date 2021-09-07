@@ -31,7 +31,10 @@ namespace Kermalis.MapEditor.Core
             internal string Map;
             internal int Offset;
 
-            internal Connection() { }
+            internal Connection()
+            {
+                Map = Ids[0];
+            }
             internal Connection(JToken j)
             {
                 Direction = j[nameof(Direction)].ReadEnumValue<Dir>();
