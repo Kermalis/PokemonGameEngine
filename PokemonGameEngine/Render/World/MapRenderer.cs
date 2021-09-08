@@ -8,7 +8,6 @@ using System.Collections.Generic;
 namespace Kermalis.PokemonGameEngine.Render.World
 {
     // TODO: Why do border blocks tank framerate so much? Even cross map blocks don't
-    // TODO: Black frame when new map is now visible
     internal static class MapRenderer
     {
         private struct VisibleBlock

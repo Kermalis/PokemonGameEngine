@@ -21,13 +21,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 r.BaseStream.Position = _sheetOffsets[id];
                 Images = AssetLoader.GetAssetSheetAsImages(SheetsPath + r.ReadStringNullTerminated(), ImageSize = new Size2D(r.ReadUInt32(), r.ReadUInt32()));
                 ShadowOffset = new Pos2D(r.ReadInt32(), r.ReadInt32());
-                ShadowImage = new WriteableImage(new Size2D(r.ReadUInt32(), r.ReadUInt32()));
-                uint dstW = ShadowImage.Size.Width;
-                uint dstH = ShadowImage.Size.Height;
-                uint[] bmp = new uint[dstW * dstH];
+                var shadowSize = new Size2D(r.ReadUInt32(), r.ReadUInt32());
+                ShadowImage = new WriteableImage(shadowSize); // TODO: Power of 2
+                uint[] bmp = new uint[shadowSize.GetArea()];
                 fixed (uint* dst = bmp)
                 {
-                    Renderer.FillEllipse_Points(dst, dstW, dstH, 0, 0, (int)dstW - 1, (int)dstH - 1, Renderer.RawColor(0, 0, 0, 160));
+                    Renderer.FillEllipse_Points(dst, shadowSize.Width, shadowSize.Height, 0, 0, (int)shadowSize.Width - 1, (int)shadowSize.Height - 1, Renderer.RawColor(0, 0, 0, 160));
                     ShadowImage.LoadTextureData(Game.OpenGL, dst);
                 }
             }

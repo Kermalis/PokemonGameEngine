@@ -34,9 +34,11 @@ namespace Kermalis.PokemonGameEngine.Render.Images
 
         public unsafe void LoadTextureData(GL gl, void* data)
         {
+            PushFrameBuffer(gl);
             GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
             GLHelper.BindTexture(gl, Texture);
             GLTextureUtils.LoadTextureData(gl, data, Size);
+            GLHelper.PopFrameBuffer(gl);
         }
 
         public void Render(Pos2D pos, bool xFlip = false, bool yFlip = false)
