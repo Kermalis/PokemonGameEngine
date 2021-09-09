@@ -22,18 +22,6 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             _numReferences = 1;
             _loadedImages.Add(asset, this);
         }
-        // TODO: Currently only used in GetAssetSheetAsImages
-        public Image(uint[] bitmap, Size2D size, string id)
-        {
-            GL gl = Game.OpenGL;
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-            Texture = GLHelper.GenTexture(gl);
-            Size = size;
-            UpdateGLTexture(bitmap);
-            _id = id;
-            _numReferences = 1;
-            _loadedImages.Add(id, this);
-        }
 
         private unsafe void UpdateGLTexture(uint[] bitmap)
         {
@@ -49,6 +37,10 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         public void Render(Pos2D pos, bool xFlip = false, bool yFlip = false)
         {
             GUIRenderer.Instance.RenderTexture(Texture, new Rect2D(pos, Size), xFlip: xFlip, yFlip: yFlip);
+        }
+        public void Render(Rect2D rect, AtlasPos part)
+        {
+            GUIRenderer.Instance.RenderTexture(Texture, rect, part);
         }
 
         #region Cache

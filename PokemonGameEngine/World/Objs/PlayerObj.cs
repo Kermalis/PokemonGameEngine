@@ -204,18 +204,18 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             _shouldRunTriggers = true;
         }
 
-        protected override int GetImage(bool showMoving)
+        protected override uint GetImage(bool showMoving)
         {
             byte f = (byte)Facing;
             if (State is PlayerObjState.Surfing or PlayerObjState.Biking)
             {
-                return f + 24;
+                return f + 24u;
             }
             if (!showMoving)
             {
                 return f;
             }
-            return _leg ? f + 8 : f + 16;
+            return _leg ? f + 8u : f + 16u;
         }
 
         #region Interaction

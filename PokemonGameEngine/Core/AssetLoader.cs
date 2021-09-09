@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Render.Images;
 using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.IO;
@@ -57,35 +56,6 @@ namespace Kermalis.PokemonGameEngine.Core
                         Buffer.MemoryCopy(data, dst, len, len);
                     }
                 }
-            }
-        }
-        public static Image[] GetAssetSheetAsImages(string asset, Size2D imageSize)
-        {
-            uint[][] bitmaps = GetAssetSheetAsBitmaps(asset, imageSize);
-            var arr = new Image[bitmaps.Length];
-            for (int i = 0; i < bitmaps.Length; i++)
-            {
-                arr[i] = new Image(bitmaps[i], imageSize, asset + '[' + i + ']');
-            }
-            return arr;
-        }
-        public static unsafe uint[][] GetAssetSheetAsBitmaps(string asset, Size2D imageSize)
-        {
-            GetAssetBitmap(asset, out Size2D sheetSize, out uint[] srcBmp);
-            fixed (uint* src = srcBmp)
-            {
-                uint numImagesX = sheetSize.Width / imageSize.Width;
-                uint numImagesY = sheetSize.Height / imageSize.Height;
-                uint[][] imgs = new uint[numImagesX * numImagesY][];
-                int img = 0;
-                for (uint sy = 0; sy < numImagesY; sy++)
-                {
-                    for (uint sx = 0; sx < numImagesX; sx++)
-                    {
-                        imgs[img++] = Renderer.GetBitmap_Unchecked(src, sheetSize.Width, new Pos2D((int)(sx * imageSize.Width), (int)(sy * imageSize.Height)), imageSize);
-                    }
-                }
-                return imgs;
             }
         }
     }

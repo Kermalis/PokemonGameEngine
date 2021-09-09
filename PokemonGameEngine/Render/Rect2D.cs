@@ -16,6 +16,11 @@
             Size = new Size2D((uint)(bottomRight.X - topLeft.X + 1), (uint)(bottomRight.Y - topLeft.Y + 1));
         }
 
+        public static Rect2D FromSheet(uint imgIndex, Size2D imgSize, uint atlasWidth)
+        {
+            return new Rect2D(Pos2D.FromSheet(imgIndex, imgSize, atlasWidth), imgSize);
+        }
+
         public int GetExclusiveRight()
         {
             return TopLeft.X + (int)Size.Width;

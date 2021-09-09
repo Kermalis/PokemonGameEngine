@@ -33,14 +33,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             base.Face(facing);
         }
 
-        protected virtual int GetImage(bool showMoving)
+        protected virtual uint GetImage(bool showMoving)
         {
             byte f = (byte)Facing;
             if (!showMoving)
             {
                 return f;
             }
-            return _leg ? f + 8 : f + 16; // TODO: Fall-back to specific images if the target image doesn't exist
+            return _leg ? f + 8u : f + 16u; // TODO: Fall-back to specific images if the target image doesn't exist
         }
 
         // TODO: Water reflections
@@ -64,12 +64,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 shadow.Render(shadowPos);
             }
             // Draw obj image
-            if (new Rect2D(pos, size).Intersects(Game.RenderSize))
+            var objRect = new Rect2D(pos, size);
+            if (objRect.Intersects(Game.RenderSize))
             {
                 float t = MovementTimer;
                 bool showMoving = t != 1 && t >= 0.6f;
-                int imgNum = GetImage(showMoving);
-                s.Images[imgNum].Render(pos);
+                uint imgNum = GetImage(showMoving);
+                s.Images.Render(objRect, s.GetAtlasPos(imgNum));
             }
         }
 

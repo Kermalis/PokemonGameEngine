@@ -9,7 +9,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal sealed class ImageSheet
     {
-        public readonly Image[] Images;
+        public readonly Image Images;
         public readonly Size2D ImageSize;
         public readonly WriteableImage ShadowImage;
         public readonly Pos2D ShadowOffset;
@@ -19,7 +19,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             using (EndianBinaryReader r = GetReader())
             {
                 r.BaseStream.Position = _sheetOffsets[id];
-                Images = AssetLoader.GetAssetSheetAsImages(SheetsPath + r.ReadStringNullTerminated(), ImageSize = new Size2D(r.ReadUInt32(), r.ReadUInt32()));
+                Images = Image.LoadOrGet(SheetsPath + r.ReadStringNullTerminated());
+                ImageSize = new Size2D(r.ReadUInt32(), r.ReadUInt32());
                 ShadowOffset = new Pos2D(r.ReadInt32(), r.ReadInt32());
                 var shadowSize = new Size2D(r.ReadUInt32(), r.ReadUInt32());
                 ShadowImage = new WriteableImage(shadowSize); // TODO: Power of 2
@@ -33,6 +34,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             _id = id;
             _numReferences = 1;
             _loadedSheets.Add(id, this);
+        }
+
+        public AtlasPos GetAtlasPos(uint imgIndex, bool xFlip = false, bool yFlip = false)
+        {
+            return new AtlasPos(Rect2D.FromSheet(imgIndex, ImageSize, Images.Size.Width), Images.Size, xFlip: xFlip, yFlip: yFlip);
         }
 
         #region Loading
@@ -85,10 +91,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             if (--_numReferences <= 0)
             {
                 ShadowImage.DeductReference(gl);
-                for (int i = 0; i < Images.Length; i++)
-                {
-                    Images[i].DeductReference(gl);
-                }
+                Images.DeductReference(gl);
                 _loadedSheets.Remove(_id);
             }
         }
