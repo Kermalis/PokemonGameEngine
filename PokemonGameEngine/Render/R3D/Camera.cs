@@ -7,8 +7,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         public Matrix4x4 Projection;
         public PositionRotation PR;
 
-        /// <summary>Does not create a copy of <paramref name="pr"/>.</summary>
-        public Camera(PositionRotation pr, Matrix4x4 projection)
+        public Camera(in PositionRotation pr, in Matrix4x4 projection)
         {
             PR = pr;
             Projection = projection;
@@ -18,11 +17,11 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         {
             return CreateViewMatrix(PR);
         }
-        public static Matrix4x4 CreateViewMatrix(PositionRotation pr)
+        public static Matrix4x4 CreateViewMatrix(in PositionRotation pr)
         {
             return CreateViewMatrix(pr.Position, pr.Rotation);
         }
-        public static Matrix4x4 CreateViewMatrix(Vector3 pos, Quaternion rot)
+        public static Matrix4x4 CreateViewMatrix(in Vector3 pos, in Quaternion rot)
         {
             // A camera works by moving the entire world in the opposite direction of the camera
             return Matrix4x4.CreateTranslation(Vector3.Negate(pos)) * Matrix4x4.CreateFromQuaternion(Quaternion.Conjugate(rot));

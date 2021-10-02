@@ -7,8 +7,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
 {
     internal sealed class Mesh
     {
-        private readonly AssimpVertex[] _vertices;
-        private readonly uint[] _indices;
+        private readonly uint _elementCount;
         private readonly IReadOnlyList<AssimpTexture> _textures;
 
         private readonly uint _vao;
@@ -17,8 +16,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
 
         public unsafe Mesh(AssimpVertex[] vertices, uint[] indices, IReadOnlyList<AssimpTexture> textures)
         {
-            _vertices = vertices;
-            _indices = indices;
+            _elementCount = (uint)indices.Length;
             _textures = textures;
 
             GL gl = Game.OpenGL;
@@ -36,7 +34,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, _ebo);
             fixed (void* d = indices)
             {
-                gl.BufferData(BufferTargetARB.ElementArrayBuffer, sizeof(uint) * (uint)indices.Length, d, BufferUsageARB.StaticDraw);
+                gl.BufferData(BufferTargetARB.ElementArrayBuffer, sizeof(uint) * _elementCount, d, BufferUsageARB.StaticDraw);
             }
 
             gl.EnableVertexAttribArray(0);
@@ -61,15 +59,9 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
 
             // Draw
             gl.BindVertexArray(_vao);
-            gl.EnableVertexAttribArray(0);
-            gl.EnableVertexAttribArray(1);
-            gl.EnableVertexAttribArray(2);
 
-            gl.DrawElements(PrimitiveType.Triangles, (uint)_indices.Length, DrawElementsType.UnsignedInt, null);
+            gl.DrawElements(PrimitiveType.Triangles, _elementCount, DrawElementsType.UnsignedInt, null);
 
-            gl.DisableVertexAttribArray(0);
-            gl.DisableVertexAttribArray(1);
-            gl.DisableVertexAttribArray(2);
             gl.BindVertexArray(0);
 
             // Deactivate all textures
