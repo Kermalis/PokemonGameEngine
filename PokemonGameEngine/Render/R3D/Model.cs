@@ -19,7 +19,9 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
 
         public Matrix4x4 GetTransformation()
         {
-            return Matrix4x4.CreateFromQuaternion(PR.Rotation) * Matrix4x4.CreateScale(Scale) * Matrix4x4.CreateTranslation(PR.Position);
+            return Matrix4x4.CreateScale(Scale)
+                * Matrix4x4.CreateFromQuaternion(PR.Rotation)
+                * Matrix4x4.CreateTranslation(PR.Position);
         }
 
         public void Draw(GL gl, ModelShader shader)
