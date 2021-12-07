@@ -26,6 +26,10 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return Width * Height;
         }
+        public Size2D PowerOfTwoize()
+        {
+            return new Size2D(Renderer.PowerOfTwoize(Width), Renderer.PowerOfTwoize(Height));
+        }
 
 #if DEBUG
         public override string ToString()

@@ -4,13 +4,13 @@
     {
         // https://stackoverflow.com/questions/2914807/plot-ellipse-from-rectangle
         /// <summary>Works based on a top-left point and with width and height. Even widths and heights work properly.</summary>
-        public static void FillEllipse_Points(uint* dst, uint dstW, uint dstH, int x1, int y1, int x2, int y2, uint color)
+        public static void FillEllipse_Points(uint* dst, Size2D dstSize, Pos2D topLeft, Pos2D bottomRight, uint color)
         {
             int xb, yb, xc, yc;
 
             // Calculate height
-            yb = yc = (y1 + y2) / 2;
-            int qb = (y1 < y2) ? (y2 - y1) : (y1 - y2);
+            yb = yc = (topLeft.Y + bottomRight.Y) / 2;
+            int qb = bottomRight.Y - topLeft.Y;
             int qy = qb;
             int dy = qb / 2;
             if (qb % 2 != 0)
@@ -20,8 +20,8 @@
             }
 
             // Calculate width
-            xb = xc = (x1 + x2) / 2;
-            int qa = (x1 < x2) ? (x2 - x1) : (x1 - x2);
+            xb = xc = (topLeft.X + bottomRight.X) / 2;
+            int qa = bottomRight.X - topLeft.X;
             int qx = qa % 2;
             int dx = 0;
             long qt = (long)qa*qa + (long)qb*qb -2L*qa*qa*qb;
@@ -46,10 +46,10 @@
                 }
                 else if (qt - 2L * qa * qa * qy + 3L * qa * qa > 0L)
                 {
-                    DrawHorizontalLine_Points(dst, dstW, dstH, xb - dx, yc + dy, xc + dx, color);
+                    DrawHorizontalLine_Points(dst, dstSize, xb - dx, yc + dy, xc + dx, color);
                     if (dy != 0 || yb != yc)
                     {
-                        DrawHorizontalLine_Points(dst, dstW, dstH, xb - dx, yb - dy, xc + dx, color);
+                        DrawHorizontalLine_Points(dst, dstSize, xb - dx, yb - dy, xc + dx, color);
                     }
                     qt += 8L * qa * qa - 4L * qa * qa * qy;
                     dy--;
@@ -58,10 +58,10 @@
                 }
                 else
                 {
-                    DrawHorizontalLine_Points(dst, dstW, dstH, xb - dx, yc + dy, xc + dx, color);
+                    DrawHorizontalLine_Points(dst, dstSize, xb - dx, yc + dy, xc + dx, color);
                     if (dy != 0 || yb != yc)
                     {
-                        DrawHorizontalLine_Points(dst, dstW, dstH, xb - dx, yb - dy, xc + dx, color);
+                        DrawHorizontalLine_Points(dst, dstSize, xb - dx, yb - dy, xc + dx, color);
                     }
                     qt += 8L * qb * qb + 4L * qb * qb * qx + 8L * qa * qa - 4L * qa * qa * qy;
                     dx++;

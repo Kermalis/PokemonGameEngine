@@ -15,8 +15,6 @@ namespace Kermalis.PokemonGameEngine.Render
             return (TextureUnit)((int)TextureUnit.Texture0 + unit);
         }
 
-        #region Images
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AbsXToRelX(float x)
         {
@@ -71,9 +69,16 @@ namespace Kermalis.PokemonGameEngine.Render
             return new Vector2(RelXToGLX(x), RelYToGLY(y));
         }
 
-        #endregion
-
-        #region Utilities
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint PowerOfTwoize(uint value)
+        {
+            uint i = 2;
+            while (value > i)
+            {
+                i *= 2;
+            }
+            return i;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCoordinatesForCentering(uint dstSize, uint srcSize, float pos)
@@ -92,7 +97,5 @@ namespace Kermalis.PokemonGameEngine.Render
             cur += Game.RenderTimeSinceLastFrame;
             return Utils.GetProgress(end, cur);
         }
-
-        #endregion
     }
 }

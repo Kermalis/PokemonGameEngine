@@ -59,9 +59,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             shadowPos.Y += blockPos.Y + Overworld.Block_NumPixelsY; // Bottom align (starts in block under)
 
             // Draw shadow image
-            if (new Rect2D(shadowPos, shadow.Size).Intersects(Game.RenderSize))
+            if (new Rect2D(shadowPos, s.ShadowSize).Intersects(Game.RenderSize))
             {
-                shadow.Render(shadowPos);
+                shadow.Render(shadowPos, yFlip: true); // Flip y because OpenGL. We created the shadow in the top left
             }
             // Draw obj image
             var objRect = new Rect2D(pos, size);
