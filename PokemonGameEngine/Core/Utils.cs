@@ -47,15 +47,15 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             return 180 / Math.PI * radians;
         }
-        public static float GetYawRadiansF(this Quaternion q)
+        public static float GetYawRadiansF(this in Quaternion q)
         {
             return MathF.Atan2((2 * q.Y * q.W) - (2 * q.X * q.Z), 1 - (2 * q.Y * q.Y) - (2 * q.Z * q.Z));
         }
-        public static float GetPitchRadiansF(this Quaternion q)
+        public static float GetPitchRadiansF(this in Quaternion q)
         {
             return MathF.Atan2((2 * q.X * q.W) - (2 * q.Y * q.Z), 1 - (2 * q.X * q.X) - (2 * q.Z * q.Z));
         }
-        public static float GetRollRadiansF(this Quaternion q)
+        public static float GetRollRadiansF(this in Quaternion q)
         {
             return MathF.Asin((2 * q.X * q.Y) + (2 * q.Z * q.W));
         }
