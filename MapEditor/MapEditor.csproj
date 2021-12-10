@@ -28,13 +28,13 @@
 			<Link>PokemonBattleEngine.db</Link>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<PackageReference Include="Avalonia" Version="0.10.7" />
-		<PackageReference Include="Avalonia.Desktop" Version="0.10.7" />
-		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.7" />
+		<PackageReference Include="Avalonia" Version="0.10.10" />
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
 		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.9" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.7" />
 		<Reference Include="PokemonBattleEngine">
 			<HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
 		</Reference>
