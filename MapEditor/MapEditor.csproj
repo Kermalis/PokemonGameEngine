@@ -28,9 +28,9 @@
 			<Link>PokemonBattleEngine.db</Link>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<PackageReference Include="Avalonia" Version="0.10.10" />
-		<PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
-		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
+		<PackageReference Include="Avalonia" Version="0.10.5" /> <!--Had to downgrade because Avalonia can't get their shit together-->
+		<PackageReference Include="Avalonia.Desktop" Version="0.10.5" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.5" />
 		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
 		<PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
