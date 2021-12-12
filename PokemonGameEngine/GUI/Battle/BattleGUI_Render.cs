@@ -5,7 +5,9 @@ using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.R3D;
+using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Trainer;
+using Kermalis.PokemonGameEngine.World;
 using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
@@ -350,10 +352,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _sprites.SortByPriority();
             _sprites.DrawAll();
 
-            //if (Overworld.ShouldRenderDayTint())
-            //{
-            //    DayTint.Render(dst, dstW, dstH);
-            //}
+            if (Overworld.ShouldRenderDayTint())
+            {
+                DayTint.Render();
+            }
 
             void DoTeam(int i)
             {
