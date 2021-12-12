@@ -246,7 +246,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public void InitFadeIn()
         {
-            OverworldGUI.ProcessDayTint(true); // Catch up time
+            OverworldGUI.UpdateDayTint(true); // Catch up time
             // Trainer sprite
             if (Battle.BattleType == PBEBattleType.Trainer)
             {
