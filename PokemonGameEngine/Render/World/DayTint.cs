@@ -1,14 +1,19 @@
-﻿using Kermalis.PokemonGameEngine.World;
+﻿using Kermalis.PokemonGameEngine.Render.GUIs;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.World;
+using Silk.NET.OpenGL;
 using System;
 using System.Numerics;
 
-namespace Kermalis.PokemonGameEngine.GUI
+namespace Kermalis.PokemonGameEngine.Render.World
 {
     internal static class DayTint
     {
         private static int _tintHour;
         private static int _tintMinute;
         private static Vector3 _mod;
+
+        private static FrameBuffer _frameBuffer;
 
         // TODO: Colors by season
         // TODO: Generate lookup tables from colors to render faster?
@@ -39,6 +44,11 @@ namespace Kermalis.PokemonGameEngine.GUI
             new(0.180f, 0.205f, 0.350f), // 22
             new(0.160f, 0.180f, 0.330f)  // 23
         };
+
+        public static void Init()
+        {
+            _frameBuffer = FrameBuffer.CreateWithColor(Display.RenderSize);
+        }
 
         public static void SetTintTime()
         {
@@ -101,7 +111,23 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public static void Render()
         {
-            //Renderer.ModulateRectangle(dst, dstW, dstH, _mod.X, _mod.Y, _mod.Z, 1); // TODO: Convert into a post process effect
+            GL gl = Display.OpenGL;
+            // Set shader uniform
+            DayTintShader shader = DayTintShader.Instance;
+            shader.Use(gl);
+            shader.SetModification(gl, ref _mod);
+
+            // Bind current fbo's texture
+            gl.ActiveTexture(TextureUnit.Texture0);
+            gl.BindTexture(TextureTarget.Texture2D, FrameBuffer.Current.ColorTexture);
+
+            // Render to DayTint's fbo
+            _frameBuffer.Push();
+            SimpleRectMesh.Instance.Render();
+
+            // Copy rendered result back to the previous fbo (its texture is still bound)
+            gl.CopyTexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, 0, 0, Display.RenderWidth, Display.RenderHeight);
+            FrameBuffer.Pop();
         }
     }
 }

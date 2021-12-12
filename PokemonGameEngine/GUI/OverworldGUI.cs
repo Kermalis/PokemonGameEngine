@@ -47,7 +47,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             _ = new OverworldGUI(); // Create
 
-            ProcessDayTint(true);
+            UpdateDayTint(true);
             LoadMapMusic();
             Instance._fadeTransition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(Instance.CB_FadeIn);
@@ -62,7 +62,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             _interactiveScript = script;
         }
 
-        public static void ProcessDayTint(bool skipTransition)
+        public static void UpdateDayTint(bool skipTransition)
         {
             if (Overworld.ShouldRenderDayTint())
             {
@@ -155,7 +155,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private void ReturnToStartMenuWithFadeIn()
         {
-            ProcessDayTint(true); // Catch up time
+            UpdateDayTint(true); // Catch up time
             SetupStartMenuWindow();
             _fadeTransition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeInToStartMenu);
@@ -184,7 +184,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         private void CB_FadeIn()
         {
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -197,7 +197,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void CB_FadeInToStartMenu()
         {
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -210,7 +210,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void CB_FadeOutToWarp()
         {
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -225,13 +225,13 @@ namespace Kermalis.PokemonGameEngine.GUI
                 player.RunNextScriptMovement();
                 player.IsScriptMoving = true;
             }
-            ProcessDayTint(true); // Catch up time
+            UpdateDayTint(true); // Catch up time
             _fadeTransition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeIn);
         }
         private void CB_FadeOutToEggHatchScreen()
         {
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -243,7 +243,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void CB_FadeOutToParty_PkmnMenu()
         {
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -257,7 +257,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void CB_FadeOutToParty_SelectDaycare()
         {
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -269,7 +269,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void CB_FadeOutToBag()
         {
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -283,7 +283,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void CB_FadeOutToPC()
         {
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -297,7 +297,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void CB_FadeOutToBattle()
         {
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -311,7 +311,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         {
             ScriptContext.UpdateAll();
             StringPrinter.UpdateAll();
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             _tasks.RunTasks();
             ProcessObjs();
 
@@ -319,7 +319,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void CB_StartMenu()
         {
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             int s = _startMenuChoices.Selected;
             _startMenuChoices.HandleInputs();
             // Check if the window was just closed
@@ -382,7 +382,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         }
         private void CB_FadeInToUseSurf()
         {
-            ProcessDayTint(false);
+            UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -457,7 +457,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             MapRenderer.Render();
             if (Overworld.ShouldRenderDayTint())
             {
-                //DayTint.Render();
+                DayTint.Render();
             }
             Window.RenderAll();
         }

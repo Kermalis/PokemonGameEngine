@@ -145,14 +145,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void OnPartyReplacementClosed()
         {
-            OverworldGUI.ProcessDayTint(true); // Catch up time
+            OverworldGUI.UpdateDayTint(true); // Catch up time
             _fadeTransition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeFromPartyReplacement);
         }
 
         private void CB_FadeInBattle()
         {
-            OverworldGUI.ProcessDayTint(false);
+            OverworldGUI.UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -166,7 +166,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void CB_FadeOutBattle()
         {
-            OverworldGUI.ProcessDayTint(false);
+            OverworldGUI.UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -187,7 +187,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void CB_FadeToPartyForReplacement()
         {
-            OverworldGUI.ProcessDayTint(false);
+            OverworldGUI.UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -200,7 +200,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void CB_FadeFromPartyReplacement()
         {
-            OverworldGUI.ProcessDayTint(false);
+            OverworldGUI.UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -214,7 +214,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void CB_RunTasksAndEvents()
         {
-            OverworldGUI.ProcessDayTint(false);
+            OverworldGUI.UpdateDayTint(false);
             HandleNewEvents();
             _tasks.RunTasks();
 

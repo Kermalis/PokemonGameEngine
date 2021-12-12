@@ -183,15 +183,5 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             RenderOneQuad(gl, new Rect2D(new Pos2D(rect.TopLeft.X + 1, rect.GetBottom()), new Size2D(rect.Size.Width - 2, 1)));
             RenderQuadEnd(gl);
         }
-
-        public void Quit(GL gl)
-        {
-            gl.DeleteVertexArray(_texVAO);
-            gl.DeleteBuffer(_texVBO);
-            _texShader.Delete();
-            gl.DeleteVertexArray(_quadVAO);
-            gl.DeleteBuffer(_quadVBO);
-            _quadShader.Delete();
-        }
     }
 }

@@ -160,7 +160,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void OnPartyClosed()
         {
-            OverworldGUI.ProcessDayTint(true); // Catch up time
+            OverworldGUI.UpdateDayTint(true); // Catch up time
             _fadeTransition = FadeFromColorTransition.FromBlackStandard();
             short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];
             if (result == PartyGUI.NO_PKMN_CHOSEN)
@@ -193,7 +193,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void CB_HandleMoveChoices()
         {
-            OverworldGUI.ProcessDayTint(false);
+            OverworldGUI.UpdateDayTint(false);
             BattleGUI.Instance.RenderBattle();
             _moveChoices.Render();
 
@@ -201,7 +201,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void CB_HandleTargetsSelection()
         {
-            OverworldGUI.ProcessDayTint(false);
+            OverworldGUI.UpdateDayTint(false);
             BattleGUI.Instance.RenderBattle();
             _targetsGUI.Render();
 
@@ -209,7 +209,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void CB_FadeToParty()
         {
-            OverworldGUI.ProcessDayTint(false);
+            OverworldGUI.UpdateDayTint(false);
             RenderFadingWithFightChoices();
             if (!_fadeTransition.IsDone)
             {
@@ -222,7 +222,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void CB_FadeFromParty()
         {
-            OverworldGUI.ProcessDayTint(false);
+            OverworldGUI.UpdateDayTint(false);
             RenderFadingWithFightChoices();
             if (!_fadeTransition.IsDone)
             {
@@ -233,7 +233,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void CB_FadeFromPartyNoChoices()
         {
-            OverworldGUI.ProcessDayTint(false);
+            OverworldGUI.UpdateDayTint(false);
             RenderFading();
             if (!_fadeTransition.IsDone)
             {
@@ -244,7 +244,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         private void CB_HandleFightChoices()
         {
-            OverworldGUI.ProcessDayTint(false);
+            OverworldGUI.UpdateDayTint(false);
             RenderWithFightChoices();
             _fightChoices.HandleInputs();
         }
