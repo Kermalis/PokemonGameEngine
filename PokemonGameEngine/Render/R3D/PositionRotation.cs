@@ -1,11 +1,10 @@
-﻿#if DEBUG
+﻿using Kermalis.PokemonGameEngine.Core;
+using System.Numerics;
+#if DEBUG
 using System;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Render.Fonts;
-using Silk.NET.OpenGL;
 #endif
-using Kermalis.PokemonGameEngine.Core;
-using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.R3D
 {
@@ -49,39 +48,39 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         public void SetRotation(in Quaternion rot)
         {
             Rotation = rot;
-            _rollRadians = -rot.GetRollRadiansF();
-            _rollDegrees = Utils.RadiansToDegreesF(_rollRadians);
-            _pitchRadians = -rot.GetPitchRadiansF();
-            _pitchDegrees = Utils.RadiansToDegreesF(_pitchRadians);
-            _yawRadians = -rot.GetYawRadiansF();
-            _yawDegrees = Utils.RadiansToDegreesF(_yawRadians);
+            _rollRadians = -rot.GetRollRadians();
+            _rollDegrees = _rollRadians * Utils.RadToDeg;
+            _pitchRadians = -rot.GetPitchRadians();
+            _pitchDegrees = _pitchRadians * Utils.RadToDeg;
+            _yawRadians = -rot.GetYawRadians();
+            _yawDegrees = _yawRadians * Utils.RadToDeg;
         }
         public void SetRotation(float rollDegrees, float pitchDegrees, float yawDegrees)
         {
             _rollDegrees = rollDegrees;
-            _rollRadians = Utils.DegreesToRadiansF(rollDegrees);
+            _rollRadians = rollDegrees * Utils.DegToRad;
             _pitchDegrees = pitchDegrees;
-            _pitchRadians = Utils.DegreesToRadiansF(pitchDegrees);
+            _pitchRadians = pitchDegrees * Utils.DegToRad;
             _yawDegrees = yawDegrees;
-            _yawRadians = Utils.DegreesToRadiansF(yawDegrees);
+            _yawRadians = yawDegrees * Utils.DegToRad;
             Rotation = CreateRotation(_yawRadians, _pitchRadians, _rollRadians);
         }
         public void UpdateRollDegrees(float degrees)
         {
             _rollDegrees = degrees;
-            _rollRadians = Utils.DegreesToRadiansF(degrees);
+            _rollRadians = degrees * Utils.DegToRad;
             UpdateRotation();
         }
         public void UpdatePitchDegrees(float degrees)
         {
             _pitchDegrees = degrees;
-            _pitchRadians = Utils.DegreesToRadiansF(degrees);
+            _pitchRadians = degrees * Utils.DegToRad;
             UpdateRotation();
         }
         public void UpdateYawDegrees(float degrees)
         {
             _yawDegrees = degrees;
-            _yawRadians = Utils.DegreesToRadiansF(degrees);
+            _yawRadians = degrees * Utils.DegToRad;
             UpdateRotation();
         }
 
@@ -280,9 +279,9 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                 MathF.Round(Position.X, 2), MathF.Round(Position.Y, 2), MathF.Round(Position.Z, 2),
                 _rollDegrees, _pitchDegrees, _yawDegrees);
         }
-        public void Debug_RenderPosition(GL gl)
+        public void Debug_RenderPosition()
         {
-            GUIString.CreateAndRenderOneTimeString(gl, ToString(), Font.Default, FontColors.DefaultRed_O, new Pos2D(0, 0));
+            GUIString.CreateAndRenderOneTimeString(ToString(), Font.Default, FontColors.DefaultRed_O, new Pos2D(0, 0));
         }
 #endif
     }

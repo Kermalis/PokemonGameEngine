@@ -1,12 +1,13 @@
-﻿#if DEBUG_OVERWORLD
-using Kermalis.PokemonGameEngine.Debug;
-#endif
-using Kermalis.EndianBinaryIO;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.World.Data;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
-using Kermalis.PokemonGameEngine.Render;
+#if DEBUG_OVERWORLD
+using Kermalis.PokemonGameEngine.Debug;
+#endif
 
 namespace Kermalis.PokemonGameEngine.World.Maps
 {
@@ -49,7 +50,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 #if DEBUG_OVERWORLD
             Log.WriteLine("Unloading map: " + Name);
 #endif
-            Game.AddTempTask(Layout.Delete);
+            Engine.AddTempTask(Layout.Delete);
         }
 
         // TODO: Loading entire map details and layouts is unnecessary
@@ -173,7 +174,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
         private void LoadObjEvents()
         {
-            Flags flags = Engine.Instance.Save.Flags;
+            Flags flags = Game.Instance.Save.Flags;
             foreach (MapEvents.ObjEvent oe in Events.Objs)
             {
                 if (!flags[oe.Flag])
@@ -210,6 +211,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             UnloadObjEvents();
         }
 
+        // TODO: (#68) Crash if the camera is fixated on an eventobj and the player talks to that eventobj, cannot cast a camera to an eventobj
         /// <summary>
         /// <paramref name="exceptThisOne"/> is used so objs aren't checking if they collide with themselves.
         /// <para>The camera is not hardcoded here because we can have some objs disable collisions, plus someone might want to get the camera from this.</para>

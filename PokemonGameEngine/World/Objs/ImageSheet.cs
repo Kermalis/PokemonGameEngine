@@ -2,7 +2,6 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Images;
-using Silk.NET.OpenGL;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
@@ -30,7 +29,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 fixed (uint* dst = bmp)
                 {
                     Renderer.FillEllipse_Points(dst, shadowSizePOT, new Pos2D(0, 0), new Pos2D((int)ShadowSize.Width - 1, (int)ShadowSize.Height - 1), Renderer.RawColor(0, 0, 0, 160));
-                    ShadowImage.LoadTextureData(Game.OpenGL, dst);
+                    ShadowImage.LoadTextureData(Display.OpenGL, dst);
                 }
             }
             _id = id;
@@ -88,12 +87,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return s;
         }
 
-        public void DeductReference(GL gl)
+        public void DeductReference()
         {
             if (--_numReferences <= 0)
             {
-                ShadowImage.DeductReference(gl);
-                Images.DeductReference(gl);
+                ShadowImage.DeductReference();
+                Images.DeductReference();
                 _loadedSheets.Remove(_id);
             }
         }

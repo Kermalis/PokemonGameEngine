@@ -77,10 +77,10 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.Form = form;
             p.EffortValues = new EVs();
             p.CaughtBall = ItemType.PokeBall;
-            p.OT = Engine.Instance.Save.OT;
+            p.OT = Game.Instance.Save.OT;
             p.MetLocation = MapSection.TestMapC; // Egg met location
             p.MetLevel = level;
-            p.MetDate = Game.LogicTickTime.Date;
+            p.MetDate = DateTime.Today;
             p.Gender = gender;
             p.Friendship = cycles;
             p.EXP = exp;

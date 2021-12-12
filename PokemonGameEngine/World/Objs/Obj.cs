@@ -16,29 +16,26 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public readonly ushort Id;
 
         public FacingDirection Facing;
+        public Map Map;
         public WorldPos Pos;
         /// <summary>VisualOffset and PrevVisualOffset are for stairs for example, where the obj is slightly offset from the normal position</summary>
         public Pos2D VisualOffset;
         public WorldPos PrevPos;
         public Pos2D PrevVisualOffset;
-        public Map Map;
 
         public virtual bool CanMoveWillingly => !IsLocked && !IsMoving;
         // Do not move locked Objs unless they're being moved by scripts
         public virtual bool ShouldUpdateMovement => !IsLocked || IsScriptMoving;
         public bool IsMoving => IsScriptMoving || IsMovingSelf;
+
         public bool IsLocked = false;
         public bool IsMovingSelf = false;
         public bool IsScriptMoving = false;
+        /// <summary>Goes from 0 to 1 inclusive. 1 indicates the movement has finished</summary>
         public float MovementTimer = 1;
+        /// <summary>The amount of seconds it takes <see cref="MovementTimer"/> to go from 0 to 1</summary>
         public float MovementSpeed;
         public Pos2D VisualProgress;
-        protected const float FaceMovementSpeed = 1 / 3f;
-        protected const float NormalMovementSpeed = 1 / 6f;
-        protected const float RunningMovementSpeed = 1 / 4f;
-        protected const float DiagonalMovementSpeedModifier = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
-        protected const float BlockedMovementSpeedModifier = 0.8f;
-        protected const int StairYOffset = 6; // Any offset will work
 
         protected Obj(ushort id)
         {
@@ -102,7 +99,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Pos = newPos;
             PrevPos = newPos;
             PrevVisualOffset = VisualOffset;
-            CameraObj.CopyMovementIfAttachedTo(this);
+            CameraObj.CopyMovementIfAttachedTo(this); // Update camera map and pos
             WarpInProgress.EndCurrent();
         }
 
@@ -135,15 +132,15 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return false;
         }
 
-        public virtual void LogicTick() { }
+        public virtual void Update() { }
 
         public static void FaceLastTalkedTowardsPlayer()
         {
-            ushort id = (ushort)Engine.Instance.Save.Vars[Var.LastTalked];
+            ushort id = (ushort)Game.Instance.Save.Vars[Var.LastTalked];
             if (id != Overworld.PlayerId)
             {
                 Obj looker = GetObj(id);
-                looker.LookTowards(PlayerObj.Player);
+                looker.LookTowards(PlayerObj.Instance);
             }
         }
 

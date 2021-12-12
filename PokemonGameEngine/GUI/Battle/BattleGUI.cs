@@ -1,22 +1,21 @@
-﻿#if DEBUG_BATTLE_CAMERAPOS
-using Kermalis.PokemonGameEngine.Input;
-#endif
-using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.DefaultData.AI;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Pkmn;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.R3D;
 using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.Trainer;
-using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Kermalis.PokemonGameEngine.Render.R3D;
-using Kermalis.PokemonBattleEngine.DefaultData.AI;
+#if DEBUG_BATTLE_CAMERAPOS
+using Kermalis.PokemonGameEngine.Input;
+#endif
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
@@ -73,18 +72,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             CreateBattleThread(Battle.Begin);
         }
 
-        private void TransitionOut()
+        private void SetExitToOverworldFadeAndCallback()
         {
             SoundControl.FadeOutBattleBGMToOverworldBGM();
-            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
-            Engine.Instance.SetCallback(CB_FadeOutBattle);
-            Engine.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            Game.Instance.SetCallback(CB_FadeOutBattle);
         }
         private void OnBattleEnded()
         {
             // Fade out (temporarily until capture screen exists)
             // TODO: Does pokerus spread before the capture screen, or after the mon is added to the party?
-            TransitionOut();
+            SetExitToOverworldFadeAndCallback();
         }
 
         private void SinglePlayerBattle_OnNewEvent(PBEBattle _, IPBEPacket packet)
@@ -92,7 +90,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _newPacket = packet;
             _resumeProcessing.Reset(); // Pause battle thread
             _resumeProcessing.WaitOne(); // Wait for permission to continue
-            // TODO: Will keep the game alive even if X is pressed
+            // TODO: Will keep the game alive even if close is pressed
         }
         private void SinglePlayerBattle_OnStateChanged(PBEBattle battle)
         {
@@ -148,69 +146,77 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private void OnPartyReplacementClosed()
         {
             OverworldGUI.ProcessDayTint(true); // Catch up time
-            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
-            Engine.Instance.SetCallback(CB_FadeFromPartyReplacement);
-            Engine.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            Game.Instance.SetCallback(CB_FadeFromPartyReplacement);
         }
 
         private void CB_FadeInBattle()
         {
             OverworldGUI.ProcessDayTint(false);
-            if (_fadeTransition.IsDone)
+            RenderFading();
+            if (!_fadeTransition.IsDone)
             {
-                _fadeTransition = null;
-                _stringWindow = Window.CreateStandardMessageBox(ColorF.FromRGBA(49, 49, 49, 128));
-                OnFadeInFinished();
-                Engine.Instance.SetCallback(CB_LogicTick);
-                Engine.Instance.SetRCallback(RCB_RenderTick);
+                return;
             }
+
+            _fadeTransition = null;
+            _stringWindow = Window.CreateStandardMessageBox(Colors.FromRGBA(49, 49, 49, 128));
+            OnFadeInFinished();
+            Game.Instance.SetCallback(CB_RunTasksAndEvents);
         }
         private void CB_FadeOutBattle()
         {
             OverworldGUI.ProcessDayTint(false);
-            if (_fadeTransition.IsDone)
+            RenderFading();
+            if (!_fadeTransition.IsDone)
             {
-                _fadeTransition = null;
-                _stringPrinter?.Delete();
-                _stringPrinter = null;
-                _stringWindow.Close();
-                _stringWindow = null;
-                _actionsGUI?.Dispose();
-                _actionsGUI = null;
-                CleanUpStuffAfterFadeOut();
-                _onClosed();
-                _onClosed = null;
-                Instance = null;
+                return;
             }
+
+            _fadeTransition = null;
+            _stringPrinter?.Delete();
+            _stringPrinter = null;
+            _stringWindow.Close();
+            _stringWindow = null;
+            _actionsGUI?.Dispose();
+            _actionsGUI = null;
+            CleanUpStuffAfterFadeOut();
+            _onClosed();
+            _onClosed = null;
+            Instance = null;
         }
         private void CB_FadeToPartyForReplacement()
         {
             OverworldGUI.ProcessDayTint(false);
-            if (_fadeTransition.IsDone)
+            RenderFading();
+            if (!_fadeTransition.IsDone)
             {
-                _fadeTransition = null;
-                SetMessageWindowVisibility(true);
-                _ = new PartyGUI(SpritedParties[Trainer.Id], PartyGUI.Mode.BattleReplace, OnPartyReplacementClosed);
+                return;
             }
+
+            _fadeTransition = null;
+            SetMessageWindowVisibility(true);
+            _ = new PartyGUI(SpritedParties[Trainer.Id], PartyGUI.Mode.BattleReplace, OnPartyReplacementClosed);
         }
         private void CB_FadeFromPartyReplacement()
         {
             OverworldGUI.ProcessDayTint(false);
-            if (_fadeTransition.IsDone)
+            RenderFading();
+            if (!_fadeTransition.IsDone)
             {
-                _fadeTransition = null;
-                SetMessageWindowVisibility(false);
-                Engine.Instance.SetCallback(CB_LogicTick);
-                Engine.Instance.SetRCallback(RCB_RenderTick);
-                CreateBattleThread(() => Trainer.SelectSwitchesIfValid(Switches, out _));
+                return;
             }
+
+            _fadeTransition = null;
+            SetMessageWindowVisibility(false);
+            Game.Instance.SetCallback(CB_RunTasksAndEvents);
+            CreateBattleThread(() => Trainer.SelectSwitchesIfValid(Switches, out _));
         }
-        private void CB_LogicTick()
+        private void CB_RunTasksAndEvents()
         {
             OverworldGUI.ProcessDayTint(false);
             HandleNewEvents();
             _tasks.RunTasks();
-            _sprites.DoCallbacks();
 
 #if DEBUG_BATTLE_CAMERAPOS
             if (InputManager.IsPressed(Key.Select))
@@ -223,17 +229,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 //_models[3].PR.Debug_Move(5f);
             }
 #endif
+
+            RenderBattle();
         }
 
         /// <summary>Run after the fade out, and deletes the info bars etc, but also does Pokerus, updating the bag, everything else</summary>
         private void CleanUpStuffAfterFadeOut()
         {
-            GL gl = Game.OpenGL;
             foreach (Model m in _models)
             {
-                m.Delete(gl);
+                m.Delete();
             }
-            _shader.Delete(gl);
+            _shader.Delete(Display.OpenGL);
             // Copy our Pokémon back from battle, update teammates, update wild Pokémon
             // Could technically only update what we need (like caught mon, roaming mon, and following partners)
             for (int i = 0; i < SpritedParties.Length; i++)
@@ -242,25 +249,25 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 p.UpdateToParty(i == Trainer?.Id);
                 foreach (SpritedBattlePokemon pp in p.SpritedParty)
                 {
-                    pp.Delete(gl);
+                    pp.Delete();
                 }
             }
             // Update inventory
-            Engine.Instance.Save.PlayerInventory.FromPBEInventory(Trainer.Inventory);
+            Game.Instance.Save.PlayerInventory.FromPBEInventory(Trainer.Inventory);
             // Do capture stuff (temporary)
             if (Battle.BattleResult == PBEBattleResult.WildCapture)
             {
-                Engine.Instance.Save.GameStats[GameStat.PokemonCaptures]++;
+                Game.Instance.Save.GameStats[GameStat.PokemonCaptures]++;
                 PBETrainer wildTrainer = Battle.Teams[1].Trainers[0];
                 SpritedBattlePokemonParty sp = SpritedParties[wildTrainer.Id];
                 PBEBattlePokemon wildPkmn = wildTrainer.ActiveBattlers.Single();
                 PartyPokemon pkmn = sp[wildPkmn].PartyPkmn;
                 pkmn.UpdateFromBattle_Caught(wildPkmn);
-                Engine.Instance.Save.GivePokemon(pkmn); // Also sets pokedex caught flag
+                Game.Instance.Save.GivePokemon(pkmn); // Also sets pokedex caught flag
             }
             // Pokerus
-            Pokerus.TryCreatePokerus(Engine.Instance.Save.PlayerParty);
-            Pokerus.TrySpreadPokerus(Engine.Instance.Save.PlayerParty);
+            Pokerus.TryCreatePokerus(Game.Instance.Save.PlayerParty);
+            Pokerus.TrySpreadPokerus(Game.Instance.Save.PlayerParty);
         }
 
         private void UpdateDisguisedPID(PBEBattlePokemon pkmn)
@@ -275,7 +282,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 return;
             }
             SpritedBattlePokemon sPkmn = SpritedParties[pkmn.Trainer.Id][pkmn];
-            Engine.Instance.Save.Pokedex.SetSeen(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownGender, pkmn.KnownShiny, sPkmn.DisguisedPID);
+            Game.Instance.Save.Pokedex.SetSeen(pkmn.KnownSpecies, pkmn.KnownForm, pkmn.KnownGender, pkmn.KnownShiny, sPkmn.DisguisedPID);
         }
         private void UpdateFriendshipForFaint(PBEBattlePokemon pkmn)
         {
@@ -332,11 +339,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _actionsGUI?.Dispose();
                 PBEBattlePokemon pkmn = _actions[i];
                 _actionsGUI = new ActionsGUI(party, pkmn);
-                SetStaticMessage($"What will {pkmn.Nickname} do?", _actionsGUI.SetCallbacksForAllChoices);
+                SetStaticMessage($"What will {pkmn.Nickname} do?", _actionsGUI.SetCallbackForFightChoices);
                 if (i != 0)
                 {
-                    Engine.Instance.SetCallback(CB_LogicTick); // LogicTick will run the message task
-                    Engine.Instance.SetRCallback(RCB_RenderTick);
+                    Game.Instance.SetCallback(CB_RunTasksAndEvents); // Will run the message task
                 }
             }
         }
@@ -355,17 +361,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             Switches.Clear();
             StandBy.Clear();
             PositionStandBy.Clear();
-            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
-            Engine.Instance.SetCallback(CB_FadeToPartyForReplacement);
-            Engine.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            Game.Instance.SetCallback(CB_FadeToPartyForReplacement);
         }
 
         private void RemoveActionsGUIAndSetCallbacks()
         {
             _actionsGUI.Dispose();
             _actionsGUI = null;
-            Engine.Instance.SetCallback(CB_LogicTick);
-            Engine.Instance.SetRCallback(RCB_RenderTick);
+            Game.Instance.SetCallback(CB_RunTasksAndEvents);
         }
 
         #endregion

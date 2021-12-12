@@ -1,8 +1,7 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
-using Silk.NET.OpenGL;
+﻿using Silk.NET.OpenGL;
+using System.Numerics;
 
-namespace Kermalis.PokemonGameEngine.Render
+namespace Kermalis.PokemonGameEngine.Render.GUIs
 {
     // TODO: Optimize
     internal sealed class GUIRenderer
@@ -28,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         #endregion
 
-        public static GUIRenderer Instance;
+        public static GUIRenderer Instance { get; private set; } = null!; // Set in RenderManager
 
         private readonly uint _texVAO;
         private readonly uint _texVBO;
@@ -42,15 +41,18 @@ namespace Kermalis.PokemonGameEngine.Render
         /// <summary>Top left, bottom left, top right, bottom right</summary>
         private readonly QuadStruct[] _quadCache = new QuadStruct[4];
 
-        public unsafe GUIRenderer()
+        public unsafe GUIRenderer(GL gl)
         {
-            GL gl = Game.OpenGL;
+            Instance = this;
+
             _texVAO = gl.GenVertexArray();
             gl.BindVertexArray(_texVAO);
 
             _texVBO = gl.GenBuffer();
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _texVBO);
+            gl.EnableVertexAttribArray(0);
             gl.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, TexStruct.SizeOf, (void*)TexStruct.OffsetOfPos);
+            gl.EnableVertexAttribArray(1);
             gl.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, TexStruct.SizeOf, (void*)TexStruct.OffsetOfTexCoords);
 
             _texShader = new GUITextureShader(gl);
@@ -60,37 +62,33 @@ namespace Kermalis.PokemonGameEngine.Render
 
             _quadVBO = gl.GenBuffer();
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _quadVBO);
+            gl.EnableVertexAttribArray(0);
             gl.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, QuadStruct.SizeOf, (void*)QuadStruct.OffsetOfPos);
 
             _quadShader = new GUIQuadShader(gl);
-
-            gl.BindVertexArray(0);
         }
-
 
         private void RenderTextureStart(GL gl)
         {
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-            GLHelper.EnableBlend(gl, true);
-            GLHelper.BlendFunc(gl, BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            gl.ActiveTexture(TextureUnit.Texture0);
+            gl.Enable(EnableCap.Blend);
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             _texShader.Use(gl);
             _texShader.SetResolution(gl);
             gl.BindVertexArray(_texVAO);
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _texVBO);
-            gl.EnableVertexAttribArray(0);
-            gl.EnableVertexAttribArray(1);
             _texShader.SetTextureUnit(gl, 0);
         }
         private unsafe void RenderOneTexture(GL gl, uint texture, Rect2D rect, AtlasPos texPos)
         {
-            GLHelper.BindTexture(gl, texture);
+            gl.BindTexture(TextureTarget.Texture2D, texture);
             _texCache[0].TexCoords = texPos.Start;
-            _texCache[1].TexCoords = texPos.GetBottomLeft();
-            _texCache[2].TexCoords = texPos.GetTopRight();
-            _texCache[3].TexCoords = texPos.GetBottomRight();
             _texCache[0].Pos = rect.TopLeft;
+            _texCache[1].TexCoords = texPos.GetBottomLeft();
             _texCache[1].Pos = rect.GetExclusiveBottomLeft();
+            _texCache[2].TexCoords = texPos.GetTopRight();
             _texCache[2].Pos = rect.GetExclusiveTopRight();
+            _texCache[3].TexCoords = texPos.GetBottomRight();
             _texCache[3].Pos = rect.GetExclusiveBottomRight();
             fixed (void* d = _texCache)
             {
@@ -100,40 +98,33 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         private static void RenderTextureEnd(GL gl)
         {
-            GLHelper.EnableBlend(gl, false);
-            GLHelper.BindTexture(gl, 0);
-            gl.BindBuffer(BufferTargetARB.ArrayBuffer, 0);
-            gl.DisableVertexAttribArray(0);
-            gl.DisableVertexAttribArray(1);
-            gl.BindVertexArray(0);
-            gl.UseProgram(0);
+            gl.Disable(EnableCap.Blend);
         }
 
         public void RenderTexture(uint texture, Rect2D rect, bool xFlip = false, bool yFlip = false)
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             RenderTextureStart(gl);
             RenderOneTexture(gl, texture, rect, new AtlasPos(xFlip, yFlip));
             RenderTextureEnd(gl);
         }
         public void RenderTexture(uint texture, Rect2D rect, AtlasPos texPos)
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             RenderTextureStart(gl);
             RenderOneTexture(gl, texture, rect, texPos);
             RenderTextureEnd(gl);
         }
 
 
-        private void RenderQuadStart(GL gl, in ColorF color)
+        private void RenderQuadStart(GL gl, in Vector4 color)
         {
-            GLHelper.EnableBlend(gl, true);
-            GLHelper.BlendFunc(gl, BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            gl.Enable(EnableCap.Blend);
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             _quadShader.Use(gl);
             _texShader.SetResolution(gl);
             gl.BindVertexArray(_quadVAO);
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _quadVBO);
-            gl.EnableVertexAttribArray(0);
             _quadShader.SetColor(gl, color);
         }
         private unsafe void RenderOneQuad(GL gl, Rect2D rect)
@@ -155,37 +146,33 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         private static void RenderQuadEnd(GL gl)
         {
-            GLHelper.EnableBlend(gl, false);
-            gl.BindBuffer(BufferTargetARB.ArrayBuffer, 0);
-            gl.DisableVertexAttribArray(0);
-            gl.BindVertexArray(0);
-            gl.UseProgram(0);
+            gl.Disable(EnableCap.Blend);
         }
 
-        public void FillRectangle(in ColorF color, Rect2D rect)
+        public void FillRectangle(in Vector4 color, Rect2D rect)
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             RenderQuadStart(gl, color);
             RenderOneQuad(gl, rect);
             RenderQuadEnd(gl);
         }
-        public void DrawHorizontalLine_Width(in ColorF color, int absDstX, int absDstY, uint absDstW)
+        public void DrawHorizontalLine_Width(in Vector4 color, int absDstX, int absDstY, uint absDstW)
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             RenderQuadStart(gl, color);
             RenderOneQuad(gl, new Rect2D(new Pos2D(absDstX, absDstY), new Size2D(absDstW, 1)));
             RenderQuadEnd(gl);
         }
-        public void DrawVerticalLine_Height(in ColorF color, int absDstX, int absDstY, uint absDstH)
+        public void DrawVerticalLine_Height(in Vector4 color, int absDstX, int absDstY, uint absDstH)
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             RenderQuadStart(gl, color);
             RenderOneQuad(gl, new Rect2D(new Pos2D(absDstX, absDstY), new Size2D(1, absDstH)));
             RenderQuadEnd(gl);
         }
-        public void DrawRectangle(in ColorF color, Rect2D rect)
+        public void DrawRectangle(in Vector4 color, Rect2D rect)
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             RenderQuadStart(gl, color);
             // The two vert lines
             RenderOneQuad(gl, new Rect2D(rect.TopLeft, new Size2D(1, rect.Size.Height)));
@@ -197,7 +184,7 @@ namespace Kermalis.PokemonGameEngine.Render
             RenderQuadEnd(gl);
         }
 
-        public void GameExit(GL gl)
+        public void Quit(GL gl)
         {
             gl.DeleteVertexArray(_texVAO);
             gl.DeleteBuffer(_texVBO);

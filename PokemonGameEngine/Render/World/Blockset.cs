@@ -1,12 +1,13 @@
-﻿#if DEBUG_OVERWORLD
-using Kermalis.PokemonGameEngine.Debug;
-#endif
-using Kermalis.EndianBinaryIO;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
 using System.IO;
+#if DEBUG_OVERWORLD
+using Kermalis.PokemonGameEngine.Debug;
+#endif
 
 namespace Kermalis.PokemonGameEngine.Render.World
 {
@@ -23,7 +24,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
                 // Cache AtlasPos for less calculations
                 private AtlasPos _atlasPos;
-                private int _atlasPosId = Tileset.Tile.InvalidAnim;
+                private int _atlasPosId = TileAnimation.INVALID_ANIM_ID;
 
                 public Tile(EndianBinaryReader r, List<Tileset> used)
                 {
@@ -55,7 +56,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 {
                     // Update _atlasPos if it needs updating
                     int id = _tilesetTile.AnimId;
-                    if (id == Tileset.Tile.NoAnim)
+                    if (id == TileAnimation.NO_ANIM_ID)
                     {
                         id = _tilesetTile.Id;
                     }

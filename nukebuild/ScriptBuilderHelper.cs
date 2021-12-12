@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
+using Kermalis.PokemonGameEngine.Player;
 using Kermalis.PokemonGameEngine.Scripts;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.AwaitObjMovement, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.DetachCamera, Array.Empty<Type>() },
         { ScriptCommand.AttachCamera, new[] { typeof(ushort) } }, // Id
-        { ScriptCommand.Delay, new[] { typeof(ushort) } }, // Delay
+        { ScriptCommand.Delay, new[] { typeof(float) } }, // Delay in seconds
         { ScriptCommand.SetFlag, new[] { typeof(Flag) } }, // Flag
         { ScriptCommand.ClearFlag, new[] { typeof(Flag) } }, // Flag
         { ScriptCommand.Warp, new[] { typeof(string), typeof(int), typeof(int), typeof(byte) } }, // Map id, x, y, elevation

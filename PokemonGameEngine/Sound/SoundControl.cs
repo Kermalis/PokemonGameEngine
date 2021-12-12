@@ -10,23 +10,23 @@ namespace Kermalis.PokemonGameEngine.Sound
         private sealed class Sound
         {
             public readonly Song Song;
-            public readonly WaveFileData Wav;
+            public readonly WaveFileData Data;
             public SoundChannel Channel;
 
-            public Sound(Song song, WaveFileData wav)
+            public Sound(Song song, WaveFileData data)
             {
                 Song = song;
-                Wav = wav;
+                Data = data;
             }
         }
         private sealed class CrySound
         {
-            public readonly WaveFileData Wav;
-            public SoundChannel Handle;
+            public readonly WaveFileData Data;
+            public SoundChannel Channel;
 
-            public CrySound(WaveFileData wav)
+            public CrySound(WaveFileData data)
             {
-                Wav = wav;
+                Data = data;
             }
         }
 
@@ -36,15 +36,15 @@ namespace Kermalis.PokemonGameEngine.Sound
         private static Sound _battleBGM;
         private static CrySound _testCry; // TODO: Cry system
 
-        private static CrySound CryToSound(PBESpecies species, PBEForm form)
+        private static CrySound LoadCrySound(PBESpecies species, PBEForm form)
         {
-            var wav = WaveFileData.Get(GetCryAsset(species, form));
-            return new CrySound(wav);
+            var data = WaveFileData.Get(GetCryAsset(species, form));
+            return new CrySound(data);
         }
-        private static Sound SongToSound(Song song)
+        private static Sound LoadSongSound(Song song)
         {
-            var wav = WaveFileData.Get(GetSongAsset(song));
-            return new Sound(song, wav);
+            var data = WaveFileData.Get(GetSongAsset(song));
+            return new Sound(song, data);
         }
 
         private static string GetCryAsset(PBESpecies species, PBEForm form)
@@ -84,10 +84,10 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         public static void PlayCry(PBESpecies species, PBEForm form, float vol = 0.5f, float pan = 0f, int pitch = 0, SoundStoppedFunc onStopped = null)
         {
-            _testCry = CryToSound(species, form);
-            _testCry.Handle = new SoundChannel(_testCry.Wav) { Volume = vol, Panpot = pan, OnStopped = onStopped };
-            _testCry.Handle.SetPitch(pitch);
-            SoundMixer.AddChannel(_testCry.Handle);
+            _testCry = LoadCrySound(species, form);
+            _testCry.Channel = new SoundChannel(_testCry.Data) { Volume = vol, Panpot = pan, OnStopped = onStopped };
+            _testCry.Channel.SetPitch(pitch);
+            SoundMixer.AddChannel(_testCry.Channel);
         }
 
         public static void SetOverworldBGM_NoFade(Song song)
@@ -96,21 +96,21 @@ namespace Kermalis.PokemonGameEngine.Sound
             {
                 SoundMixer.StopChannel(_overworldBGM.Channel);
             }
-            _overworldBGM = SongToSound(song);
-            _overworldBGM.Channel = new SoundChannel(_overworldBGM.Wav);
+            _overworldBGM = LoadSongSound(song);
+            _overworldBGM.Channel = new SoundChannel(_overworldBGM.Data);
             SoundMixer.AddChannel(_overworldBGM.Channel);
         }
         public static void SetOverworldBGM(Song song)
         {
             if (_overworldBGM is null)
             {
-                _overworldBGM = SongToSound(song);
-                _overworldBGM.Channel = new SoundChannel(_overworldBGM.Wav);
+                _overworldBGM = LoadSongSound(song);
+                _overworldBGM.Channel = new SoundChannel(_overworldBGM.Data);
                 SoundMixer.AddChannel(_overworldBGM.Channel);
                 return;
             }
             // Fade if the song is different
-            CreateOrUpdateFadeOverworldBGMAndStartNewSongTask(song, 1_000, 1f, 0f);
+            CreateOrUpdateFadeOverworldBGMAndStartNewSongTask(song, 1f, 1f, 0f);
         }
 
         public static void FadeOutBattleBGMToOverworldBGM()
@@ -124,13 +124,13 @@ namespace Kermalis.PokemonGameEngine.Sound
             {
                 _overworldBGM.Channel.IsPaused = true;
             }
-            _battleBGM = SongToSound(song);
-            _battleBGM.Channel = new SoundChannel(_battleBGM.Wav);
+            _battleBGM = LoadSongSound(song);
+            _battleBGM.Channel = new SoundChannel(_battleBGM.Data);
             SoundMixer.AddChannel(_battleBGM.Channel);
         }
 
         // Called every time SoundMixer mixes
-        public static void SoundLogicTick()
+        public static void RunSoundTasks()
         {
             _tasks.RunTasks();
         }

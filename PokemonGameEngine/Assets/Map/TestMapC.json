@@ -155,6 +155,20 @@
         "TrainerSight": 0,
         "Script": "TestMessage",
         "Flag": "Test2"
+      },
+      {
+        "X": 29,
+        "Y": 34,
+        "Elevation": 0,
+        "Id": 8,
+        "Sprite": "Player",
+        "MovementType": "Face_Randomly",
+        "MovementX": 0,
+        "MovementY": 0,
+        "TrainerType": "None",
+        "TrainerSight": 0,
+        "Script": "TestScript",
+        "Flag": "MAX"
       }
     ],
     "ScriptTiles": [

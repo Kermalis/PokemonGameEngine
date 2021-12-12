@@ -4,7 +4,7 @@ using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
 
-namespace Kermalis.PokemonGameEngine.World
+namespace Kermalis.PokemonGameEngine.World.Data
 {
     internal sealed class EncounterTable
     {

@@ -1,11 +1,12 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Pkmn;
+﻿using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Interactive
 {
@@ -46,16 +47,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         }
         public void Draw()
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             _drawn.PushFrameBuffer(gl);
-            ColorF backColor = IsSelected ? ColorF.FromRGB(200, 200, 200) : Colors.White;
+            Vector4 backColor = IsSelected ? Colors.V4FromRGB(200, 200, 200) : Colors.White4;
             GUIRenderer.Instance.FillRectangle(backColor, new Rect2D(new Pos2D(0, 0), Size2D.FromRelative(1f, 1f))); // TODO: Rounded of size (dstH / 2)
 
             _mini.Render(Pos2D.FromRelative(0f, -0.15f));
 
             Font fontDefault = Font.Default;
-            ColorF[] defaultDark = FontColors.DefaultDarkGray_I;
-            GUIString.CreateAndRenderOneTimeString(gl, _pkmn.Nickname, fontDefault, defaultDark, Pos2D.FromRelative(0.2f, 0.01f));
+            Vector4[] defaultDark = FontColors.DefaultDarkGray_I;
+            GUIString.CreateAndRenderOneTimeString(_pkmn.Nickname, fontDefault, defaultDark, Pos2D.FromRelative(0.2f, 0.01f));
 
             if (_pkmn.IsEgg)
             {
@@ -63,11 +64,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             }
 
             Font fontPartyNumbers = Font.PartyNumbers;
-            GUIString.CreateAndRenderOneTimeString(gl, _pkmn.HP + "/" + _pkmn.MaxHP, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.2f, 0.65f));
-            GUIString.CreateAndRenderOneTimeString(gl, "[LV] " + _pkmn.Level, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.7f, 0.65f));
-            GUIString.CreateAndRenderOneTimeGenderString(gl, _pkmn.Gender, fontDefault, Pos2D.FromRelative(0.7f, 0.01f));
+            GUIString.CreateAndRenderOneTimeString(_pkmn.HP + "/" + _pkmn.MaxHP, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.2f, 0.65f));
+            GUIString.CreateAndRenderOneTimeString("[LV] " + _pkmn.Level, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.7f, 0.65f));
+            GUIString.CreateAndRenderOneTimeGenderString(_pkmn.Gender, fontDefault, Pos2D.FromRelative(0.7f, 0.01f));
 
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(99, 255, 99), new Rect2D(Pos2D.FromRelative(0.2f, 0.58f), Pos2D.FromRelative(0.7f, 0.64f)));
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(99, 255, 99), new Rect2D(Pos2D.FromRelative(0.2f, 0.58f), Pos2D.FromRelative(0.7f, 0.64f)));
         bottom:
             GLHelper.PopFrameBuffer(gl);
         }
@@ -79,10 +80,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
 
         public override void Dispose()
         {
-            GL gl = Game.OpenGL;
             Command = null;
-            _drawn?.DeductReference(gl);
-            _mini.DeductReference(gl);
+            _drawn?.DeductReference();
+            _mini.DeductReference();
         }
     }
 
@@ -132,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             _dirtySizes = true;
         }
 
-        public override void Render(GL gl)
+        public override void Render()
         {
             uint dstW = GLHelper.CurrentWidth;
             uint dstH = GLHelper.CurrentHeight;

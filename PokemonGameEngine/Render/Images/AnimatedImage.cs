@@ -1,9 +1,9 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.SimpleGIF;
 using Kermalis.SimpleGIF.Decoding;
 using Silk.NET.OpenGL;
-using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Render.Images
@@ -12,31 +12,34 @@ namespace Kermalis.PokemonGameEngine.Render.Images
     {
         private sealed class Frame
         {
-            public const int NoDelay = -1;
+            public const float STAY_FOREVER = -1f;
 
-            public uint Texture { get; }
-            public int Delay { get; }
+            public readonly uint Texture;
+            public readonly float SecondsVisible;
 
             public unsafe Frame(GL gl, DecodedGIF.Frame frame, Size2D size)
             {
-                Texture = GLHelper.GenTexture(gl);
-                GLHelper.BindTexture(gl, Texture);
+                Texture = gl.GenTexture();
+                gl.BindTexture(TextureTarget.Texture2D, Texture);
                 fixed (void* imgdata = frame.Bitmap)
                 {
                     GLTextureUtils.LoadTextureData(gl, imgdata, size);
                 }
-                Delay = frame.Delay ?? NoDelay;
+
+                int? d = frame.Delay;
+                SecondsVisible = d is null ? STAY_FOREVER : d.Value / 1000f;
             }
         }
         private sealed class Image
         {
+            public const ushort REPEAT_FOREVER = 0;
+
             public Frame[] Frames { get; }
             public Size2D Size { get; }
-            public ushort RepeatCount { get; } // 0 means forever
+            public ushort RepeatCount { get; }
 
             private Image(string asset, string id, (uint PID, bool Shiny)? spindaSpots)
             {
-                GL gl = Game.OpenGL;
                 DecodedGIF gif = GIFRenderer.DecodeAllFrames(AssetLoader.GetAssetStream(asset), ColorFormat.RGBA);
 
                 if (spindaSpots.HasValue)
@@ -45,7 +48,8 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                     SpindaSpotRenderer.Render(gif, pid, shiny);
                 }
 
-                GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
+                GL gl = Display.OpenGL;
+                gl.ActiveTexture(TextureUnit.Texture0);
 
                 Size = new Size2D((uint)gif.Width, (uint)gif.Height);
                 Frames = new Frame[gif.Frames.Count];
@@ -89,10 +93,11 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                 return img;
             }
 
-            public void DeductReference(GL gl)
+            public void DeductReference()
             {
                 if (--_numReferences <= 0)
                 {
+                    GL gl = Display.OpenGL;
                     for (int i = 0; i < Frames.Length; i++)
                     {
                         gl.DeleteTexture(Frames[i].Texture);
@@ -114,20 +119,14 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         public int NumFrames => _img.Frames.Length;
         private int _numRepeats;
         private int _curFrameIndex;
-        private TimeSpan _nextFrameTime;
+        private float _curFrameTimeRemaining;
 
         public AnimatedImage(string asset, (uint PID, bool Shiny)? spindaSpots = null, bool isPaused = false, float speedModifier = 1, int? repeatCount = null)
         {
             _img = Image.LoadOrGet(asset, spindaSpots);
-            int frameDelay = _img.Frames[0].Delay;
-            if (frameDelay == Frame.NoDelay)
+            if (!isPaused)
             {
-                IsPaused = true;
-            }
-            else
-            {
-                _nextFrameTime = TimeSpan.FromMilliseconds(frameDelay);
-                IsPaused = isPaused;
+                Restart();
             }
             SpeedModifier = speedModifier;
             _repeatCount = repeatCount ?? _img.RepeatCount;
@@ -143,68 +142,87 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             GUIRenderer.Instance.RenderTexture(_img.Frames[i].Texture, new Rect2D(pos, Size), xFlip: xFlip, yFlip: yFlip);
         }
 
-        private void UpdateCurrentFrame()
+        public void Restart()
+        {
+            float frameLen = _img.Frames[0].SecondsVisible;
+            if (frameLen == Frame.STAY_FOREVER)
+            {
+                IsPaused = true;
+            }
+            else
+            {
+                _curFrameTimeRemaining = frameLen;
+                IsPaused = false;
+            }
+        }
+
+        private void Update_Private()
         {
             int curFrameIndex = _curFrameIndex;
-            int curFrameDelay = _img.Frames[curFrameIndex].Delay;
-            if (curFrameDelay == Frame.NoDelay)
+            float curFrameLen = _img.Frames[curFrameIndex].SecondsVisible;
+            if (curFrameLen == Frame.STAY_FOREVER)
             {
                 IsPaused = true;
                 return; // This would only be reached if IsPaused is set to false manually
             }
-            TimeSpan timeRequired = _nextFrameTime.Subtract(Game.RenderTimeSinceLastFrame);
-            long ms;
-            for (ms = (long)timeRequired.TotalMilliseconds; ms <= 0; ms += (long)(curFrameDelay * SpeedModifier))
+
+            // Advance time remaining by the speed modifier
+            // If the time is <= 0, it's time for a new frame (multiple could've been skipped)
+            _curFrameTimeRemaining -= Display.DeltaTime * SpeedModifier;
+            while (_curFrameTimeRemaining <= 0)
             {
                 if (curFrameIndex + 1 >= _img.Frames.Length)
                 {
-                    if (_repeatCount != 0 && ++_numRepeats >= _repeatCount)
+                    // Currently on the last frame, pause or loop?
+                    if (_repeatCount != Image.REPEAT_FOREVER && ++_numRepeats >= _repeatCount)
                     {
                         IsPaused = true;
                         _curFrameIndex = curFrameIndex;
-                        return;
+                        return; // No more repeats allowed, pause it and return
                     }
-                    curFrameIndex = 0;
+                    curFrameIndex = 0; // Loop to first frame
                 }
                 else
                 {
-                    curFrameIndex++;
+                    curFrameIndex++; // Go to next frame
                 }
-                curFrameDelay = _img.Frames[curFrameIndex].Delay;
-                if (curFrameDelay == Frame.NoDelay)
+
+                // We are starting a new frame
+                _curFrameIndex = curFrameIndex;
+                curFrameLen = _img.Frames[curFrameIndex].SecondsVisible;
+                if (curFrameLen == Frame.STAY_FOREVER)
                 {
                     IsPaused = true;
-                    _curFrameIndex = curFrameIndex;
-                    return;
+                    return; // The new frame is set to stay forever, pause and return
                 }
+                // Set new frame time remaining
+                _curFrameTimeRemaining += curFrameLen;
             }
-            _curFrameIndex = curFrameIndex;
-            _nextFrameTime = TimeSpan.FromMilliseconds(ms);
         }
-        public static void UpdateCurrentFrameForAll()
+        public void Update()
+        {
+            if (!IsPaused)
+            {
+                Update_Private();
+            }
+        }
+        public static void UpdateAll()
         {
             foreach (AnimatedImage i in _loadedAnimImages)
             {
                 if (!i.IsPaused)
                 {
-                    i.UpdateCurrentFrame();
+                    i.Update_Private();
                 }
             }
         }
 
         private static readonly List<AnimatedImage> _loadedAnimImages = new();
 
-        public void DeductReference(GL gl)
+        public void DeductReference()
         {
             _loadedAnimImages.Remove(this);
-            _img.DeductReference(gl);
-        }
-        public static void DeleteAll(GL gl)
-        {
-            foreach (AnimatedImage i in _loadedAnimImages)
-            {
-                i.DeductReference(gl);
-            }
+            _img.DeductReference();
         }
     }
 }

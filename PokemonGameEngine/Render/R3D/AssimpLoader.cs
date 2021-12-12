@@ -119,7 +119,6 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
 
         private static List<AssimpTexture> LoadMaterialTextures(Material* mat, TextureType type, string dir, List<AssimpTexture> loaded)
         {
-            GL gl = Game.OpenGL;
             var textures = new List<AssimpTexture>();
 
             uint count = _assimp.GetMaterialTextureCount(mat, type);
@@ -142,10 +141,12 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                         goto dontload; // break out of this loop and continue on the parent loop
                     }
                 }
+
+                GL gl = Display.OpenGL;
                 AssimpTexture texture;
-                GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-                texture.GLTex = GLHelper.GenTexture(gl);
-                GLHelper.BindTexture(gl, texture.GLTex);
+                gl.ActiveTexture(TextureUnit.Texture0);
+                texture.GLTex = gl.GenTexture();
+                gl.BindTexture(TextureTarget.Texture2D, texture.GLTex);
                 using (var img = SixLabors.ImageSharp.Image.Load<Rgba32>(Path.Combine(dir, sPath)))
                 {
                     fixed (void* imgdata = &MemoryMarshal.GetReference(img.GetPixelRowSpan(0)))
@@ -164,7 +165,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             return textures;
         }
 
-        public static void GameExit()
+        public static void Quit()
         {
             _assimp.Dispose();
         }

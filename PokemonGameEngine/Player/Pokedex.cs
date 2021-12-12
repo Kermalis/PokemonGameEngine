@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Kermalis.PokemonGameEngine.Core
+namespace Kermalis.PokemonGameEngine.Player
 {
     internal sealed class Pokedex
     {

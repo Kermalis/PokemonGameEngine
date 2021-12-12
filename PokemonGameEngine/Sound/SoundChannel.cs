@@ -29,11 +29,11 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         // Fade
         public bool IsFading;
-        private TimeSpan _fadeCurTime;
-        private TimeSpan _fadeEndTime;
-        private float _fadeCurVolume;
         private float _fadeFrom;
         private float _fadeTo;
+        private float _fadeCurVolume;
+        private float _fadeTime;
+        private float _fadeDuration;
 
         public SoundChannel(WaveFileData data)
         {
@@ -113,35 +113,38 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         #region Fade
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private float GetFadeVolume(double progress)
-        {
-            return (float)(_fadeFrom + ((_fadeTo - _fadeFrom) * progress));
-        }
-
-        public void BeginFade(int milliseconds, float from, float to)
+        public void BeginFade(float seconds, float from, float to)
         {
             if (IsFading)
             {
+                _fadeDuration = seconds - _fadeTime;
+                if (_fadeDuration <= 0f)
+                {
+                    _fadeDuration = 0f;
+                    IsFading = false;
+                    return;
+                }
                 _fadeFrom = _fadeCurVolume;
-                _fadeEndTime = TimeSpan.FromMilliseconds(milliseconds) - _fadeCurTime;
             }
             else
             {
                 _fadeFrom = from;
                 _fadeCurVolume = from;
-                _fadeEndTime = TimeSpan.FromMilliseconds(milliseconds);
+                _fadeDuration = seconds;
                 IsFading = true;
             }
-            _fadeCurTime = new TimeSpan();
             _fadeTo = to;
         }
         public void ApplyFade(float[] buffer, int numSamples)
         {
             float fromVol = _fadeCurVolume;
-            _fadeCurTime += SoundMixer.TimeSinceLastRender;
-            double progress = Utils.GetProgress(_fadeEndTime, _fadeCurTime);
-            float toVol = GetFadeVolume(progress);
+            _fadeTime += SoundMixer.DeltaTime;
+            float progress = _fadeTime / _fadeDuration;
+            if (progress >= 1f)
+            {
+                progress = 1f;
+            }
+            float toVol = Utils.Lerp(_fadeFrom, _fadeTo, progress);
             float step = (toVol - fromVol) / numSamples;
             float level = fromVol;
             for (int j = 0; j < numSamples; j++)
@@ -151,7 +154,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                 level += step;
             }
             _fadeCurVolume = toVol;
-            if (progress >= 1) // Fade is finished
+            if (progress == 1f) // Fade is finished
             {
                 Volume = toVol;
                 IsFading = false;

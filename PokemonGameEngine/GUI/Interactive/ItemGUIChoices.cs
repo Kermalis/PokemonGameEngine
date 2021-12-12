@@ -1,10 +1,10 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Item;
+﻿using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
-using Silk.NET.OpenGL;
 using System;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Interactive
 {
@@ -18,31 +18,30 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             : base(command, isEnabled: isEnabled)
         {
             Font font = Font.Default;
-            ColorF[] colors = FontColors.DefaultDarkGray_I;
+            Vector4[] colors = FontColors.DefaultDarkGray_I;
             _itemName = new GUIString(ItemData.GetItemName(slot.Item), font, colors);
             string q = "x" + slot.Quantity.ToString();
             _quantityStr = new GUIString(q, font, colors);
             _quantityWidth = (int)font.MeasureString(q).Width;
         }
 
-        public void Render(GL gl, bool isSelected, int x1, int x2, int y, int height, int xOfs)
+        public void Render(bool isSelected, int x1, int x2, int y, int height, int xOfs)
         {
             if (isSelected)
             {
-                GUIRenderer.Instance.FillRectangle(ColorF.FromRGBA(255, 0, 0, 128), new Rect2D(new Pos2D(x1, y), new Pos2D(x2, y + height - 1)));
+                GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(255, 0, 0, 128), new Rect2D(new Pos2D(x1, y), new Pos2D(x2, y + height - 1)));
             }
             x1 += xOfs;
             x2 -= xOfs;
-            _itemName.Render(gl, new Pos2D(x1, y));
-            _quantityStr.Render(gl, new Pos2D(x2 - _quantityWidth, y));
+            _itemName.Render(new Pos2D(x1, y));
+            _quantityStr.Render(new Pos2D(x2 - _quantityWidth, y));
         }
 
         public override void Dispose()
         {
-            GL gl = Game.OpenGL;
             Command = null;
-            _itemName.Delete(gl);
-            _quantityStr.Delete(gl);
+            _itemName.Delete();
+            _quantityStr.Delete();
         }
     }
 
@@ -51,11 +50,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         public float X2;
         public float Y2;
 
-        public ColorF BackColor;
-        public ColorF BorderColor;
+        public Vector4 BackColor;
+        public Vector4 BorderColor;
 
         public ItemGUIChoices(float x1, float y1, float x2, float y2, float spacing,
-            in ColorF backColor, in ColorF borderColor,
+            in Vector4 backColor, in Vector4 borderColor,
             Action backCommand = null)
             : base(x1, y1, spacing, backCommand: backCommand)
         {
@@ -65,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             BorderColor = borderColor;
         }
 
-        public override void Render(GL gl)
+        public override void Render()
         {
             uint dstW = GLHelper.CurrentWidth;
             uint dstH = GLHelper.CurrentHeight;
@@ -89,7 +88,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                 ItemGUIChoice c = _choices[i];
                 bool isSelected = Selected == i;
                 int y = (int)(fy1 + (space * i) + yOfs);
-                c.Render(gl, isSelected, x1, x2, y, height, xOfs);
+                c.Render(isSelected, x1, x2, y, height, xOfs);
             }
         }
     }

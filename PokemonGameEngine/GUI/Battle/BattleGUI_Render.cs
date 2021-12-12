@@ -34,7 +34,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             s.Add(Sprite);
             BarPos = new RelPos2D(barX, barY);
             MonPos = new RelPos2D(monX, monY);
-            UpdateSpritePos(Game.RenderSize);
+            UpdateSpritePos(Display.RenderSize);
         }
 
         public void UpdateSpritePos(Size2D dstSize)
@@ -72,16 +72,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private Window _stringWindow;
         private StringPrinter _stringPrinter;
-        private int _autoAdvanceTimer;
+        private float _autoAdvanceTime;
 
         private ActionsGUI _actionsGUI;
 
         // 3D stuff
         private readonly Camera _camera;
-        private readonly LitModelShader _shader;
+        private readonly ModelShader _shader;
         private readonly List<Model> _models;
 
-        private readonly PointLight[] _testLights = new PointLight[LitModelShader.MAX_LIGHTS]
+        private readonly PointLight[] _testLights = new PointLight[ModelShader.MAX_LIGHTS]
         {
             new(new(-5, 3, -5), new(10, 134f/255, 5), new Vector3(1f, 0.01f, 0.002f)),
             new(new(5, 3, -5), new(218f/255, 134f/255, 4), new Vector3(1f, 0.01f, 0.002f)),
@@ -115,8 +115,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 0, 0, -2.0039f, 0);
 
             _camera = new Camera(PositionRotation.Default, projection);
-            //_shader = new ModelShader(Core.Program.OpenGL);
-            _shader = new LitModelShader(Game.OpenGL);
+            _shader = new ModelShader(Display.OpenGL);
 
             // Terrain:
             GetTerrainPath(battle.BattleTerrain, out string bgPath, out string allyPath, out string foePath);
@@ -246,7 +245,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         #endregion
 
-        public void FadeIn()
+        public void InitFadeIn()
         {
             OverworldGUI.ProcessDayTint(true); // Catch up time
             // Trainer sprite
@@ -258,14 +257,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     Image = img,
                     //DrawMethod = Renderer.Sprite_DrawWithShadow,
                     Pos = Pos2D.CenterXBottomY(0.73f, 0.51f, img.Size),
-                    Priority = int.MaxValue, // TODO
+                    Priority = int.MaxValue, // TODO: Make a textured plane as well
                     Tag = SpriteData_TrainerGoAway.Tag
                 };
                 _sprites.Add(sprite);
             }
-            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
-            Engine.Instance.SetCallback(CB_FadeInBattle);
-            Engine.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            Game.Instance.SetCallback(CB_FadeInBattle);
         }
         private void OnFadeInFinished()
         {
@@ -283,7 +281,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             Sprite s = _sprites.FirstWithTagOrDefault(SpriteData_TrainerGoAway.Tag);
             s.Data = new SpriteData_TrainerGoAway(1_000, s.Pos.X);
-            s.RCallback = Sprite_TrainerGoAway;
+            s.Callback = Sprite_TrainerGoAway;
             Begin();
         }
 
@@ -292,27 +290,27 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _stringWindow.IsInvisible = invisible;
         }
 
-        private void RCB_Fading(GL gl)
+        private void RenderFading()
         {
-            RCB_RenderTick(gl);
-            _fadeTransition.Render(gl);
+            RenderBattle();
+            _fadeTransition.Render();
         }
 
-        public void RCB_RenderTick(GL gl)
+        public void RenderBattle()
         {
             // Tasks
 
-            AnimatedImage.UpdateCurrentFrameForAll();
-            _sprites.DoRCallbacks();
+            AnimatedImage.UpdateAll();
+            _sprites.DoCallbacks();
             _renderTasks.RunTasks();
 
             // 3D
-
-            GLHelper.EnableDepthTest(gl, true);
-            GLHelper.EnableBlend(gl, true);
-            GLHelper.BlendFunc(gl, BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            GL gl = Display.OpenGL;
+            gl.Enable(EnableCap.DepthTest);
+            gl.Enable(EnableCap.Blend);
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             gl.BlendEquation(BlendEquationModeEXT.FuncAddExt);
-            GLHelper.ClearColor(gl, Colors.Black);
+            GLHelper.ClearColor(gl, Colors.Black3);
 #if DEBUG_BATTLE_WIREFRAME
             gl.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 #endif
@@ -322,7 +320,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _shader.Use(gl);
 
             uint ms = SDL2.SDL.SDL_GetTicks();
-            float rad = Utils.DegreesToRadiansF(ms % 5_000 / 5_000f * 360);
+            float rad = ms % 5_000 / 5_000f * 360 * Utils.DegToRad;
             // Move Test Lights
             _testLights[0].Pos.X = MathF.Sin(rad) * 20 - 10;
             _testLights[0].Pos.Z = MathF.Cos(rad) * 20 - 10;
@@ -337,17 +335,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             for (int i = 0; i < _models.Count; i++)
             {
                 Model m = _models[i];
-                _shader.SetModel(gl, m.GetTransformation());
+                _shader.SetTransform(gl, m.GetTransformation());
 
-                m.Draw(gl, _shader);
+                m.Render(_shader);
             }
 
-            GLHelper.EnableBlend(gl, false);
-            GLHelper.EnableDepthTest(gl, false);
+            gl.Disable(EnableCap.Blend);
+            gl.Disable(EnableCap.DepthTest);
 #if DEBUG_BATTLE_WIREFRAME
             gl.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill); // Reset
 #endif
-            gl.UseProgram(0);
 
             // 2D HUD
 
@@ -378,7 +375,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
 
 #if DEBUG_BATTLE_CAMERAPOS
-            _camera.PR.Debug_RenderPosition(gl);
+            _camera.PR.Debug_RenderPosition();
 #endif
         }
 

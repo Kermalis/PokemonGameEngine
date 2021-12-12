@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Core;
+﻿using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,16 +6,15 @@ using System.Collections.Generic;
 namespace Kermalis.PokemonGameEngine.Render
 {
     internal delegate void SpriteCallback(Sprite sprite);
-    internal delegate void SpriteDrawMethod(Sprite sprite, Pos2D translation = default);
 
-    internal class Sprite
+    internal sealed class Sprite
     {
         public Sprite Next;
         public Sprite Prev;
 
         public IImage Image;
         /// <summary>After this is updated, a call will need to be made to <see cref="SpriteList.SortByPriority"/>. Higher priorities are rendered last</summary>
-        public virtual int Priority { get; set; }
+        public int Priority;
         public Pos2D Pos;
         public bool IsInvisible;
         public bool XFlip;
@@ -23,9 +22,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public object Data;
         public object Tag;
-        public SpriteDrawMethod DrawMethod;
         public SpriteCallback Callback;
-        public SpriteCallback RCallback;
 
         public void Render(Pos2D translation = default)
         {
@@ -42,9 +39,8 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             // Do not dispose next or prev so we can continue looping after this gets removed
             Data = null;
-            DrawMethod = null;
             Callback = null;
-            Image?.DeductReference(Game.OpenGL);
+            Image?.DeductReference();
             Image = null;
         }
     }
@@ -175,25 +171,11 @@ namespace Kermalis.PokemonGameEngine.Render
                 s.Callback?.Invoke(s);
             }
         }
-        public void DoRCallbacks()
-        {
-            for (Sprite s = _first; s is not null; s = s.Next)
-            {
-                s.RCallback?.Invoke(s);
-            }
-        }
         public void DrawAll()
         {
             for (Sprite s = _first; s is not null; s = s.Next)
             {
-                if (s.DrawMethod is not null)
-                {
-                    s.DrawMethod(s);
-                }
-                else
-                {
-                    s.Render();
-                }
+                s.Render();
             }
         }
 

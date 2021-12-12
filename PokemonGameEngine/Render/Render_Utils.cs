@@ -1,7 +1,5 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
+﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
-using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -89,13 +87,6 @@ namespace Kermalis.PokemonGameEngine.Render
         public static int GetCoordinatesForEndAlign(uint dstSize, uint srcSize, float pos)
         {
             return (int)((uint)(dstSize * pos) - srcSize);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double GetAnimationProgress(TimeSpan end, ref TimeSpan cur)
-        {
-            cur += Game.RenderTimeSinceLastFrame;
-            return Utils.GetProgress(end, cur);
         }
     }
 }

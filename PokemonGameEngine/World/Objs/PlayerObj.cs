@@ -18,7 +18,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
     internal sealed class PlayerObj : VisualObj
     {
-        public static readonly PlayerObj Player = new();
+        public static readonly PlayerObj Instance = new();
 
         public PlayerObjState State;
 
@@ -34,10 +34,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
         public static void Init(in WorldPos pos, Map map)
         {
-            Player.State = PlayerObjState.Walking;
-            Player.Pos = pos;
-            Player.Map = map;
-            map.Objs.Add(Player);
+            Instance.State = PlayerObjState.Walking;
+            Instance.Pos = pos;
+            Instance.Map = map;
+            map.Objs.Add(Instance);
         }
 
         protected override void OnMapChanged(Map oldMap, Map newMap)
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 // ScriptTile
                 foreach (MapEvents.ScriptEvent se in Map.Events.ScriptTiles)
                 {
-                    if (playerPos.Equals(se.Pos) && se.VarConditional.Match(Engine.Instance.Save.Vars[se.Var], se.VarValue))
+                    if (playerPos.Equals(se.Pos) && se.VarConditional.Match(Game.Instance.Save.Vars[se.Var], se.VarValue))
                     {
                         string script = se.Script;
                         if (script != string.Empty)
@@ -98,7 +98,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
 
             // Battle
-            if (Encounter.CheckForWildBattle(false))
+            if (EncounterMaker.CheckForWildBattle(false))
             {
                 return true;
             }
@@ -108,17 +108,17 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 // Friendship
                 Friendship.UpdateFriendshipStep();
                 // Daycare
-                Engine.Instance.Save.Daycare.DoDaycareStep();
+                Game.Instance.Save.Daycare.DoDaycareStep();
                 // Egg
-                Engine.Instance.Save.Daycare.DoEggCycleStep();
+                Game.Instance.Save.Daycare.DoEggCycleStep();
                 // Hatch
-                Party pp = Engine.Instance.Save.PlayerParty;
+                Party pp = Game.Instance.Save.PlayerParty;
                 for (short i = 0; i < pp.Count; i++)
                 {
                     PartyPokemon p = pp[i];
                     if (p.IsEgg && p.Friendship == 0)
                     {
-                        Engine.Instance.Save.Vars[Var.SpecialVar1] = i;
+                        Game.Instance.Save.Vars[Var.SpecialVar1] = i;
                         ScriptLoader.LoadScript("Egg_Hatch");
                         return true;
                     }
@@ -127,7 +127,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
             return false;
         }
-        public override void LogicTick()
+        public override void Update()
         {
             if (!CanMoveWillingly)
             {
@@ -198,7 +198,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             bool run = State == PlayerObjState.Walking && InputManager.IsDown(Key.B);
             if (Move(facing, run, false))
             {
-                Engine.Instance.Save.GameStats[GameStat.StepsTaken]++;
+                Game.Instance.Save.GameStats[GameStat.StepsTaken]++;
                 _changedPosition = true;
             }
             _shouldRunTriggers = true;

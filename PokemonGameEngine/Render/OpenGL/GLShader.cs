@@ -30,9 +30,11 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
         }
         private static uint LoadShader(GL gl, ShaderType type, string asset)
         {
-            StreamReader sr = AssetLoader.GetAssetStreamText(asset);
-            string src = sr.ReadToEnd();
-            sr.Dispose();
+            string src;
+            using (StreamReader sr = AssetLoader.GetAssetStreamText(asset))
+            {
+                src = sr.ReadToEnd();
+            }
 
             uint handle = gl.CreateShader(type);
             gl.ShaderSource(handle, src);
@@ -47,7 +49,7 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             return handle;
         }
 
-        protected int GetUniformLocation(GL gl, string name, bool throwIfNotExists = true)
+        public int GetUniformLocation(GL gl, string name, bool throwIfNotExists = true)
         {
             int location = gl.GetUniformLocation(Program, name);
             if (throwIfNotExists && location == -1)

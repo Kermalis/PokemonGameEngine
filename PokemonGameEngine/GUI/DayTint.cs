@@ -1,6 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.World;
+﻿using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Numerics;
 
@@ -11,11 +9,6 @@ namespace Kermalis.PokemonGameEngine.GUI
         private static int _tintHour;
         private static int _tintMinute;
         private static Vector3 _mod;
-
-        static DayTint()
-        {
-            SetTintTime();
-        }
 
         // TODO: Colors by season
         // TODO: Generate lookup tables from colors to render faster?
@@ -47,16 +40,16 @@ namespace Kermalis.PokemonGameEngine.GUI
             new(0.160f, 0.180f, 0.330f)  // 23
         };
 
-        private static void SetTintTime()
+        public static void SetTintTime()
         {
-            DateTime time = Game.LogicTickTime;
+            DateTime time = DateTime.Now;
             _tintHour = OverworldTime.GetHour(time.Hour);
             _tintMinute = OverworldTime.GetMinute(time.Minute);
         }
 
-        public static void LogicTick(bool skipTransition)
+        public static void Update(bool skipTransition)
         {
-            DateTime time = Game.LogicTickTime;
+            DateTime time = DateTime.Now;
             int realMinute = OverworldTime.GetMinute(time.Minute);
             int realHour = OverworldTime.GetHour(time.Hour);
             int tintHour;
@@ -106,9 +99,9 @@ namespace Kermalis.PokemonGameEngine.GUI
             _mod = hourMod;
         }
 
-        public static unsafe void Render(uint* dst, uint dstW, uint dstH)
+        public static void Render()
         {
-            Renderer.ModulateRectangle(dst, dstW, dstH, _mod.X, _mod.Y, _mod.Z, 1);
+            //Renderer.ModulateRectangle(dst, dstW, dstH, _mod.X, _mod.Y, _mod.Z, 1); // TODO: Convert into a post process effect
         }
     }
 }

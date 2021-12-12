@@ -5,6 +5,7 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
+using Kermalis.PokemonGameEngine.World.Data;
 using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
@@ -14,7 +15,7 @@ namespace Kermalis.PokemonGameEngine.World
 {
     // TODO: CompoundEyes
     // TODO: StickyHold, SuctionCups
-    internal static class Encounter
+    internal static class EncounterMaker
     {
         private static bool TryGetEncounterType(BlocksetBlockBehavior behavior, out EncounterType type)
         {
@@ -23,11 +24,14 @@ namespace Kermalis.PokemonGameEngine.World
                 // Default
                 case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter:
                 case BlocksetBlockBehavior.Cave_Encounter:
-                case BlocksetBlockBehavior.Grass_Encounter: type = EncounterType.Default; return true;
+                case BlocksetBlockBehavior.Grass_Encounter:
+                    type = EncounterType.Default; return true;
                 // DarkGrass
-                case BlocksetBlockBehavior.Grass_SpecialEncounter: type = EncounterType.DarkGrass; return true;
+                case BlocksetBlockBehavior.Grass_SpecialEncounter:
+                    type = EncounterType.DarkGrass; return true;
                 // Surf
-                case BlocksetBlockBehavior.Surf: type = EncounterType.Surf; return true;
+                case BlocksetBlockBehavior.Surf:
+                    type = EncounterType.Surf; return true;
             }
             type = default;
             return false;
@@ -90,7 +94,8 @@ namespace Kermalis.PokemonGameEngine.World
                 case PBESpecies.Kyurem:
                 case PBESpecies.Keldeo:
                 case PBESpecies.Meloetta:
-                case PBESpecies.Genesect: return Song.LegendaryBattle;
+                case PBESpecies.Genesect:
+                    return Song.LegendaryBattle;
             }
             return Song.WildBattle;
         }
@@ -270,6 +275,20 @@ namespace Kermalis.PokemonGameEngine.World
             return PBEDataProvider.GlobalRandom.RandomElement(PBEDataUtils.AllNatures);
         }
 
+        private static void GetWildBattleFormat(EncounterType t, out int numWild, out PBEBattleFormat bf)
+        {
+            if (t == EncounterType.DarkGrass)
+            {
+                numWild = 2;
+                bf = PBEBattleFormat.Double;
+            }
+            else
+            {
+                numWild = 1;
+                bf = PBEBattleFormat.Single;
+            }
+        }
+
         private static bool CreateWildPkmn(EncounterType type, EncounterTable.Encounter[] tbl, ushort combinedChance, PartyPokemon leadPkmn, Party wildParty)
         {
             EncounterTable.Encounter encounter = GetAffectedEncounter(leadPkmn.Ability, tbl, combinedChance);
@@ -294,7 +313,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         public static bool CheckForWildBattle(bool ignoreAbilityOrItemOrBike)
         {
-            PlayerObj player = PlayerObj.Player;
+            PlayerObj player = PlayerObj.Instance;
             MapLayout.Block block = player.GetBlock();
             BlocksetBlockBehavior blockBehavior = block.BlocksetBlock.Behavior;
             if (!TryGetEncounterType(blockBehavior, out EncounterType t))
@@ -312,7 +331,7 @@ namespace Kermalis.PokemonGameEngine.World
             {
                 return false; // Return false if all of the encounters are disabled
             }
-            PartyPokemon leadPkmn = Engine.Instance.Save.PlayerParty[0];
+            PartyPokemon leadPkmn = Game.Instance.Save.PlayerParty[0];
             MapWeather weather = map.Details.Weather;
             int chance = tbl.ChanceOfPhenomenon;
             // This is an option because some encounters (like rock smash) do not use the ability to modify the rate
@@ -327,18 +346,7 @@ namespace Kermalis.PokemonGameEngine.World
 
             // We passed all the checks, now we get an encounter
             var wildParty = new Party();
-            int numWild;
-            PBEBattleFormat format;
-            if (t == EncounterType.DarkGrass)
-            {
-                numWild = 2;
-                format = PBEBattleFormat.Double;
-            }
-            else
-            {
-                numWild = 1;
-                format = PBEBattleFormat.Single;
-            }
+            GetWildBattleFormat(t, out int numWild, out PBEBattleFormat format);
             for (int i = 0; i < numWild; i++)
             {
                 if (!CreateWildPkmn(t, tbl.Encounters, combinedChance, leadPkmn, wildParty))
@@ -346,22 +354,22 @@ namespace Kermalis.PokemonGameEngine.World
                     return false; // Return false if an ability cancels the encounter
                 }
             }
-            Engine.Instance.CreateWildBattle(weather, blockBehavior, wildParty, format, GetWildBattleMusic(wildParty));
+            BattleMaker.CreateWildBattle(weather, blockBehavior, wildParty, format, GetWildBattleMusic(wildParty));
             return true;
         }
 
         public static void CreateStaticWildBattle(PBESpecies species, PBEForm form, byte level)
         {
-            PlayerObj player = PlayerObj.Player;
+            PlayerObj player = PlayerObj.Instance;
             MapLayout.Block block = player.GetBlock();
-            PartyPokemon leadPkmn = Engine.Instance.Save.PlayerParty[0];
+            PartyPokemon leadPkmn = Game.Instance.Save.PlayerParty[0];
             MapWeather weather = player.Map.Details.Weather;
             var bs = BaseStats.Get(species, form, true);
             PBEGender gender = GetAffectedGender(leadPkmn.Gender, leadPkmn.Ability, bs.GenderRatio);
             PBENature nature = GetAffectedNature(leadPkmn.Ability, leadPkmn.Nature);
             var wildPkmn = PartyPokemon.CreateWildMon(species, form, level, gender, nature, bs);
             var wildParty = new Party { wildPkmn };
-            Engine.Instance.CreateWildBattle(weather, block.BlocksetBlock.Behavior, wildParty, PBEBattleFormat.Single, GetWildBattleMusic(wildParty));
+            BattleMaker.CreateWildBattle(weather, block.BlocksetBlock.Behavior, wildParty, PBEBattleFormat.Single, GetWildBattleMusic(wildParty));
         }
     }
 }

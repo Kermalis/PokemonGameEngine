@@ -1,21 +1,21 @@
 {
   "Tileset": "TestTilesO",
-  "Duration": 40,
+  "Duration": 2,
   "Frames": [
     {
       "TilesetTile": 322,
       "Stops": [
         {
           "AnimTile": 394,
-          "Time": 10
+          "Time": 0.5
         },
         {
           "AnimTile": 426,
-          "Time": 20
+          "Time": 1
         },
         {
           "AnimTile": 458,
-          "Time": 30
+          "Time": 1.5
         }
       ]
     },
@@ -24,15 +24,15 @@
       "Stops": [
         {
           "AnimTile": 395,
-          "Time": 10
+          "Time": 0.5
         },
         {
           "AnimTile": 427,
-          "Time": 20
+          "Time": 1
         },
         {
           "AnimTile": 459,
-          "Time": 30
+          "Time": 1.5
         }
       ]
     },
@@ -41,15 +41,15 @@
       "Stops": [
         {
           "AnimTile": 410,
-          "Time": 10
+          "Time": 0.5
         },
         {
           "AnimTile": 442,
-          "Time": 20
+          "Time": 1
         },
         {
           "AnimTile": 474,
-          "Time": 30
+          "Time": 1.5
         }
       ]
     },
@@ -58,15 +58,15 @@
       "Stops": [
         {
           "AnimTile": 411,
-          "Time": 10
+          "Time": 0.5
         },
         {
           "AnimTile": 443,
-          "Time": 20
+          "Time": 1
         },
         {
           "AnimTile": 475,
-          "Time": 30
+          "Time": 1.5
         }
       ]
     }

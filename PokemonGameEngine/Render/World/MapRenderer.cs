@@ -35,16 +35,18 @@ namespace Kermalis.PokemonGameEngine.Render.World
             out Pos2D endBlock, // The last visible blocks offset from the current map
             out Pos2D startBlockPixel) // Pixel coords of the blocks to start rendering from
         {
-            cameraMap = cam.Map;
             Pos2D cameraXY = cam.Pos.XY;
-            int cameraPixelX = (cameraXY.X * Overworld.Block_NumPixelsX) - ((int)GLHelper.CurrentWidth / 2) + (Overworld.Block_NumPixelsX / 2) + cam.VisualProgress.X + CameraObj.CameraVisualOffset.X;
-            int cameraPixelY = (cameraXY.Y * Overworld.Block_NumPixelsY) - ((int)GLHelper.CurrentHeight / 2) + (Overworld.Block_NumPixelsY / 2) + cam.VisualProgress.Y + CameraObj.CameraVisualOffset.Y;
+            Size2D curSize = GLHelper.CurrentSize;
+
+            cameraMap = cam.Map;
+            int cameraPixelX = (cameraXY.X * Overworld.Block_NumPixelsX) - ((int)curSize.Width / 2) + (Overworld.Block_NumPixelsX / 2) + cam.VisualProgress.X + CameraObj.CameraVisualOffset.X;
+            int cameraPixelY = (cameraXY.Y * Overworld.Block_NumPixelsY) - ((int)curSize.Height / 2) + (Overworld.Block_NumPixelsY / 2) + cam.VisualProgress.Y + CameraObj.CameraVisualOffset.Y;
             int xpBX = cameraPixelX % Overworld.Block_NumPixelsX;
             int ypBY = cameraPixelY % Overworld.Block_NumPixelsY;
             startBlock.X = (cameraPixelX / Overworld.Block_NumPixelsX) - (xpBX >= 0 ? 0 : 1);
             startBlock.Y = (cameraPixelY / Overworld.Block_NumPixelsY) - (ypBY >= 0 ? 0 : 1);
-            int numBlocksX = ((int)GLHelper.CurrentWidth / Overworld.Block_NumPixelsX) + ((int)GLHelper.CurrentWidth % Overworld.Block_NumPixelsX == 0 ? 0 : 1);
-            int numBlocksY = ((int)GLHelper.CurrentHeight / Overworld.Block_NumPixelsY) + ((int)GLHelper.CurrentHeight % Overworld.Block_NumPixelsY == 0 ? 0 : 1);
+            int numBlocksX = ((int)curSize.Width / Overworld.Block_NumPixelsX) + ((int)curSize.Width % Overworld.Block_NumPixelsX == 0 ? 0 : 1);
+            int numBlocksY = ((int)curSize.Height / Overworld.Block_NumPixelsY) + ((int)curSize.Height % Overworld.Block_NumPixelsY == 0 ? 0 : 1);
             endBlock.X = startBlock.X + numBlocksX + (xpBX == 0 ? 0 : 1);
             endBlock.Y = startBlock.Y + numBlocksY + (ypBY == 0 ? 0 : 1);
             startBlockPixel.X = xpBX >= 0 ? -xpBX : -xpBX - Overworld.Block_NumPixelsX;
@@ -53,7 +55,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         public static void Render()
         {
-            GetVisible(CameraObj.Camera, out Map cameraMap, out Pos2D startBlock, out Pos2D endBlock, out Pos2D startBlockPixel);
+            Tileset.UpdateAnimations();
+
+            GetVisible(CameraObj.Instance, out Map cameraMap, out Pos2D startBlock, out Pos2D endBlock, out Pos2D startBlockPixel);
             UpdateVisualObjs(Obj.LoadedObjs, cameraMap, startBlock, endBlock, startBlockPixel);
             UpdateVisibleMapsAndBlocks(cameraMap, startBlock, endBlock, startBlockPixel);
 
@@ -70,7 +74,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 VisibleBlock[] vbY = _visibleBlocks[y];
                 for (int x = 0; x < _numVisibleBlocksX; x++)
                 {
-                    VisibleBlock vb = vbY[x];
+                    ref VisibleBlock vb = ref vbY[x];
                     if (vb.Block is not null) // No border would show pure black
                     {
                         vb.Block.BlocksetBlock.Render(elevation, vb.PositionOnScreen);
@@ -117,14 +121,14 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _visibleObjs.Clear();
 
             // Extra tolerance for wide/tall VisualObj
-            const int ToleranceX = 2;
-            const int ToleranceY = 2;
-            startBlock.X -= ToleranceX;
-            startBlock.Y -= ToleranceY;
-            endBlock.X += ToleranceX;
-            endBlock.Y += ToleranceY;
-            startBlockPixel.X -= ToleranceX * Overworld.Block_NumPixelsX;
-            startBlockPixel.Y -= ToleranceY * Overworld.Block_NumPixelsY;
+            const int TOLERANCE_X = 2;
+            const int TOLERANCE_Y = 2;
+            startBlock.X -= TOLERANCE_X;
+            startBlock.Y -= TOLERANCE_Y;
+            endBlock.X += TOLERANCE_X;
+            endBlock.Y += TOLERANCE_Y;
+            startBlockPixel.X -= TOLERANCE_X * Overworld.Block_NumPixelsX;
+            startBlockPixel.Y -= TOLERANCE_Y * Overworld.Block_NumPixelsY;
 
             Pos2D bXY;
             for (bXY.Y = startBlock.Y; bXY.Y < endBlock.Y; bXY.Y++)

@@ -3,9 +3,11 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
@@ -49,9 +51,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _nickname = new GUIString(p.Pkmn.KnownNickname, Font.Default, FontColors.DefaultWhite_I);
             }
 
-            public void Render(GL gl, RelPos2D pos, bool selected)
+            public void Render(RelPos2D pos, bool selected)
             {
-                ColorF enabledC = _ally ? ColorF.FromRGB(125, 100, 230) : ColorF.FromRGB(248, 80, 50);
+                Vector4 enabledC = _ally ? Colors.V4FromRGB(125, 100, 230) : Colors.V4FromRGB(248, 80, 50);
                 GUIRenderer.Instance.FillRectangle(enabledC, new Rect2D(pos.Absolute(), Size2D.FromRelative(0.24f, 0.2f)));
 
                 if (_pkmn is not null)
@@ -63,24 +65,24 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     pos2 = pos;
                     pos2.X += 0.075f;
                     pos2.Y += 0.05f;
-                    _nickname.Render(gl, pos2.Absolute());
+                    _nickname.Render(pos2.Absolute());
                 }
 
                 if (selected)
                 {
-                    ColorF selectedC = _ally ? ColorF.FromRGB(75, 60, 150) : ColorF.FromRGB(120, 30, 10);
+                    Vector4 selectedC = _ally ? Colors.V4FromRGB(75, 60, 150) : Colors.V4FromRGB(120, 30, 10);
                     GUIRenderer.Instance.DrawRectangle(selectedC, new Rect2D(pos.Absolute(), Size2D.FromRelative(0.24f, 0.2f))); // TODO: 2 THICKNESS
                 }
 
                 if (!Enabled)
                 {
-                    GUIRenderer.Instance.FillRectangle(ColorF.FromRGBA(0, 0, 0, 150), new Rect2D(pos.Absolute(), Size2D.FromRelative(0.24f, 0.2f)));
+                    GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 150), new Rect2D(pos.Absolute(), Size2D.FromRelative(0.24f, 0.2f)));
                 }
             }
 
-            public void Delete(GL gl)
+            public void Delete()
             {
-                _nickname?.Delete(gl);
+                _nickname?.Delete();
             }
         }
 
@@ -638,7 +640,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _selection = GetSelection();
         }
 
-        public void LogicTick()
+        public void HandleInputs()
         {
             if (InputManager.IsPressed(Key.A))
             {
@@ -714,12 +716,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
-        public void RenderTick(GL gl)
+        public void Render()
         {
-            var lineC = ColorF.FromRGB(156, 173, 247);
-            var selectC = ColorF.FromRGBA(48, 180, 255, 200);
+            Vector4 lineC = Colors.V4FromRGB(156, 173, 247);
+            Vector4 selectC = Colors.FromRGBA(48, 180, 255, 200);
 
-            GLHelper.ClearColor(gl, ColorF.FromRGBA(31, 31, 31, 151));
+            GL gl = Display.OpenGL;
+            GLHelper.ClearColor(gl, Colors.FromRGBA(31, 31, 31, 151));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
             #region Lines
@@ -761,34 +764,34 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
             if (_centerTargetsVisible)
             {
-                _targetFoeCenter.Render(gl, new RelPos2D(0.38f, 0.2f), _selection == TargetSelection.FoeCenter);
-                _targetAllyCenter.Render(gl, new RelPos2D(0.38f, 0.6f), _selection == TargetSelection.AllyCenter);
+                _targetFoeCenter.Render(new RelPos2D(0.38f, 0.2f), _selection == TargetSelection.FoeCenter);
+                _targetAllyCenter.Render(new RelPos2D(0.38f, 0.6f), _selection == TargetSelection.AllyCenter);
             }
-            _targetFoeRight.Render(gl, new RelPos2D(0.07f, 0.2f), _selection == TargetSelection.FoeRight);
-            _targetFoeLeft.Render(gl, new RelPos2D(0.69f, 0.2f), _selection == TargetSelection.FoeLeft);
-            _targetAllyLeft.Render(gl, new RelPos2D(0.07f, 0.6f), _selection == TargetSelection.AllyLeft);
-            _targetAllyRight.Render(gl, new RelPos2D(0.69f, 0.6f), _selection == TargetSelection.AllyRight);
+            _targetFoeRight.Render(new RelPos2D(0.07f, 0.2f), _selection == TargetSelection.FoeRight);
+            _targetFoeLeft.Render(new RelPos2D(0.69f, 0.2f), _selection == TargetSelection.FoeLeft);
+            _targetAllyLeft.Render(new RelPos2D(0.07f, 0.6f), _selection == TargetSelection.AllyLeft);
+            _targetAllyRight.Render(new RelPos2D(0.69f, 0.6f), _selection == TargetSelection.AllyRight);
 
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(50, 50, 50), new Rect2D(Pos2D.FromRelative(0.45f, 0.9f), Size2D.FromRelative(0.1f, 0.1f))); // Back
-            _backText.Render(gl);
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(50, 50, 50), new Rect2D(Pos2D.FromRelative(0.45f, 0.9f), Size2D.FromRelative(0.1f, 0.1f))); // Back
+            _backText.Render();
             if (_selection == TargetSelection.Back)
             {
                 GUIRenderer.Instance.DrawRectangle(selectC, new Rect2D(Pos2D.FromRelative(0.45f, 0.9f), Size2D.FromRelative(0.1f, 0.1f)));
             }
         }
 
-        public void Delete(GL gl)
+        public void Delete()
         {
-            _backText.Delete(gl);
+            _backText.Delete();
             if (_centerTargetsVisible)
             {
-                _targetFoeCenter.Delete(gl);
-                _targetAllyCenter.Delete(gl);
+                _targetFoeCenter.Delete();
+                _targetAllyCenter.Delete();
             }
-            _targetFoeRight.Delete(gl);
-            _targetFoeLeft.Delete(gl);
-            _targetAllyLeft.Delete(gl);
-            _targetAllyRight.Delete(gl);
+            _targetFoeRight.Delete();
+            _targetFoeLeft.Delete();
+            _targetAllyLeft.Delete();
+            _targetAllyRight.Delete();
         }
     }
 }

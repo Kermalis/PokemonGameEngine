@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System.Collections.Generic;
@@ -12,22 +13,21 @@ namespace Kermalis.PokemonGameEngine.Render.Images
 
         private Image(string asset)
         {
-            GL gl = Game.OpenGL;
             AssetLoader.GetAssetBitmap(asset, out Size2D size, out uint[] bitmap);
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-            Texture = GLHelper.GenTexture(gl);
+            GL gl = Display.OpenGL;
+            gl.ActiveTexture(TextureUnit.Texture0);
+            Texture = gl.GenTexture();
             Size = size;
-            UpdateGLTexture(bitmap);
+            UpdateGLTexture(gl, bitmap);
             _id = asset;
             _numReferences = 1;
             _loadedImages.Add(asset, this);
         }
 
-        private unsafe void UpdateGLTexture(uint[] bitmap)
+        private unsafe void UpdateGLTexture(GL gl, uint[] bitmap)
         {
-            GL gl = Game.OpenGL;
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-            GLHelper.BindTexture(gl, Texture);
+            gl.ActiveTexture(TextureUnit.Texture0);
+            gl.BindTexture(TextureTarget.Texture2D, Texture);
             fixed (void* imgdata = bitmap)
             {
                 GLTextureUtils.LoadTextureData(gl, imgdata, Size);
@@ -61,10 +61,11 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             return img;
         }
 
-        public void DeductReference(GL gl)
+        public void DeductReference()
         {
             if (--_numReferences <= 0)
             {
+                GL gl = Display.OpenGL;
                 gl.DeleteTexture(Texture);
                 _loadedImages.Remove(_id);
             }

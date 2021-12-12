@@ -10,6 +10,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
     // Some movements will break if the obj switches maps because of x/y changes
     internal sealed class EventObj : VisualObj
     {
+        private const float NO_MOVEMENT_TIMER = -1f;
+
         public ObjMovementType MovementType;
         public Pos2D OriginPos;
         public Pos2D MovementRange;
@@ -18,11 +20,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public string Script;
         public Flag Flag;
 
+        /// <summary>True if the player just interacted with this obj and is waiting for it to finish moving to begin the script</summary>
         public bool TalkedTo;
         public override bool CanMoveWillingly => !TalkedTo && base.CanMoveWillingly;
         public override bool ShouldUpdateMovement => TalkedTo || base.ShouldUpdateMovement;
 
-        private int _movementTypeTimer; // -1 means never run the tick, 0 means run the tick, >=1 means wait that many ticks
+        /// <summary><see cref="NO_MOVEMENT_TIMER"/> means don't update, 0 means update, >0 means wait that many seconds</summary>
+        private float _movementTypeTimer;
         private object _movementTypeArg;
 
         public EventObj(MapEvents.ObjEvent oe, Map map)
@@ -54,14 +58,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             switch (MovementType)
             {
-                case ObjMovementType.Face_South: Facing = FacingDirection.South; _movementTypeTimer = -1; break;
-                case ObjMovementType.Face_Southwest: Facing = FacingDirection.Southwest; _movementTypeTimer = -1; break;
-                case ObjMovementType.Face_Southeast: Facing = FacingDirection.Southeast; _movementTypeTimer = -1; break;
-                case ObjMovementType.Face_North: Facing = FacingDirection.North; _movementTypeTimer = -1; break;
-                case ObjMovementType.Face_Northwest: Facing = FacingDirection.Northwest; _movementTypeTimer = -1; break;
-                case ObjMovementType.Face_Northeast: Facing = FacingDirection.Northeast; _movementTypeTimer = -1; break;
-                case ObjMovementType.Face_West: Facing = FacingDirection.West; _movementTypeTimer = -1; break;
-                case ObjMovementType.Face_East: Facing = FacingDirection.East; _movementTypeTimer = -1; break;
+                case ObjMovementType.Face_South: Facing = FacingDirection.South; _movementTypeTimer = NO_MOVEMENT_TIMER; break;
+                case ObjMovementType.Face_Southwest: Facing = FacingDirection.Southwest; _movementTypeTimer = NO_MOVEMENT_TIMER; break;
+                case ObjMovementType.Face_Southeast: Facing = FacingDirection.Southeast; _movementTypeTimer = NO_MOVEMENT_TIMER; break;
+                case ObjMovementType.Face_North: Facing = FacingDirection.North; _movementTypeTimer = NO_MOVEMENT_TIMER; break;
+                case ObjMovementType.Face_Northwest: Facing = FacingDirection.Northwest; _movementTypeTimer = NO_MOVEMENT_TIMER; break;
+                case ObjMovementType.Face_Northeast: Facing = FacingDirection.Northeast; _movementTypeTimer = NO_MOVEMENT_TIMER; break;
+                case ObjMovementType.Face_West: Facing = FacingDirection.West; _movementTypeTimer = NO_MOVEMENT_TIMER; break;
+                case ObjMovementType.Face_East: Facing = FacingDirection.East; _movementTypeTimer = NO_MOVEMENT_TIMER; break;
                 case ObjMovementType.Face_Randomly:
                 case ObjMovementType.Wander_Randomly: Facing = GetRandomDirection(); _movementTypeTimer = GetRandomTimer(); break;
                 case ObjMovementType.Wander_SouthAndNorth: Facing = GetRandomDirection(FacingDirection.South, FacingDirection.North); _movementTypeTimer = GetRandomTimer(); break;
@@ -85,7 +89,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
         private static int GetRandomTimer()
         {
-            return PBEDataProvider.GlobalRandom.RandomInt(1 * Game.NumTicksPerSecond, 10 * Game.NumTicksPerSecond);
+            return PBEDataProvider.GlobalRandom.RandomInt(1, 10);
         }
 
         private void WanderSomewhere(FacingDirection[] allowed)
@@ -198,29 +202,25 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 Facing = FacingDirection.South;
                 _movementTypeArg = false;
             }
-            _movementTypeTimer = 25;
+            _movementTypeTimer = 1.75f;
         }
 
-        public override void LogicTick()
+        public override void Update()
         {
-            // Do not run tick if timer is -1 or we cannot move
             if (!CanMoveWillingly || MovementType == ObjMovementType.None)
             {
-                return;
+                return; // Cannot move
             }
-            int curTimer = _movementTypeTimer;
-            if (curTimer == -1)
+            float curTimer = _movementTypeTimer;
+            if (curTimer == NO_MOVEMENT_TIMER)
             {
-                return;
+                return; // No movement
             }
             // Deduct timer
-            if (curTimer > 0)
+            _movementTypeTimer = curTimer - Display.DeltaTime;
+            if (_movementTypeTimer > 0)
             {
-                _movementTypeTimer = curTimer - 1;
-                if (curTimer > 1)
-                {
-                    return;
-                }
+                return; // Not ready
             }
             // Do movement
             switch (MovementType)

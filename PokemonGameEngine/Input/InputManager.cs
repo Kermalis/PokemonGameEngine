@@ -11,9 +11,9 @@ namespace Kermalis.PokemonGameEngine.Input
             // Updated in real time
             public bool StickPressed;
             public bool NonStickPressed;
-            // Updated every logic tick
-            public bool IsNew; // True if this key was not active the previous tick but now is
-            public ulong PressTime; // The amount of ticks this key has been active
+            // Updated every frame
+            public bool IsNew; // True if this key was not active the previous frame but now is
+            //public ulong PressTime; // The amount of frames this key has been active
             public bool IsActive; // True if the key is active
         }
 
@@ -105,34 +105,34 @@ namespace Kermalis.PokemonGameEngine.Input
             p.NonStickPressed = down;
         }
 
-        public static void LogicTick()
+        public static void Update()
         {
             foreach (KeyValuePair<Key, KeyDownData> kvp in _pressed)
             {
                 KeyDownData p = kvp.Value;
                 bool active = p.NonStickPressed || p.StickPressed;
-                // Was active last tick
+                // Was active last frame
                 if (p.IsActive)
                 {
                     p.IsNew = false;
                     if (active)
                     {
-                        p.PressTime++;
+                        //p.PressTime++;
                     }
                     else
                     {
                         p.IsActive = false;
-                        p.PressTime = 0;
+                        //p.PressTime = 0;
                     }
                 }
-                // Not active last tick
+                // Not active last frame
                 else
                 {
                     if (active)
                     {
                         p.IsNew = true;
                         p.IsActive = true;
-                        p.PressTime = 0;
+                        //p.PressTime = 0;
                     }
                 }
             }
@@ -143,10 +143,10 @@ namespace Kermalis.PokemonGameEngine.Input
             KeyDownData p = _pressed[key];
             return p.IsActive && p.IsNew;
         }
-        public static bool IsDown(Key key, uint downTime = 0)
+        public static bool IsDown(Key key/*, uint downTime = 0*/)
         {
             KeyDownData p = _pressed[key];
-            return p.IsActive && p.PressTime >= downTime;
+            return p.IsActive/* && p.PressTime >= downTime*/;
         }
 
 #if DEBUG
@@ -156,7 +156,7 @@ namespace Kermalis.PokemonGameEngine.Input
             foreach (KeyValuePair<Key, KeyDownData> kvp in _pressed)
             {
                 KeyDownData p = kvp.Value;
-                s += string.Format("{0,-15}{1}{2}", kvp.Key, p.IsActive ? p.PressTime : null, Environment.NewLine);
+                s += string.Format("{0,-15}{1}{2}", kvp.Key, /*p.IsActive ? p.PressTime : */null, Environment.NewLine);
             }
             return s;
         }

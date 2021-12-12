@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Pkmn
 {
-    internal sealed class BoxMoveset : IReadOnlyList<BoxMoveset.BoxMovesetSlot>
+    internal sealed class BoxMoveset : IPBEMoveset, IPBEMoveset<BoxMoveset.BoxMovesetSlot>
     {
-        public sealed class BoxMovesetSlot
+        public sealed class BoxMovesetSlot : IPBEMovesetSlot
         {
             public PBEMove Move { get; set; }
             public byte PPUps { get; set; }
@@ -35,6 +35,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         private readonly BoxMovesetSlot[] _slots;
 
         public BoxMovesetSlot this[int index] => _slots[index];
+        IPBEMovesetSlot IReadOnlyList<IPBEMovesetSlot>.this[int index] => _slots[index];
         public int Count => _slots.Length;
 
         public BoxMoveset()
@@ -90,6 +91,10 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
 
         IEnumerator<BoxMovesetSlot> IEnumerable<BoxMovesetSlot>.GetEnumerator()
+        {
+            return ((IEnumerable<BoxMovesetSlot>)_slots).GetEnumerator();
+        }
+        public IEnumerator<IPBEMovesetSlot> GetEnumerator()
         {
             return ((IEnumerable<BoxMovesetSlot>)_slots).GetEnumerator();
         }

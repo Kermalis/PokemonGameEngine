@@ -1,12 +1,13 @@
-﻿#if DEBUG_OVERWORLD
-using Kermalis.PokemonGameEngine.Debug;
-#endif
-using Kermalis.PokemonGameEngine.Core;
+﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.World;
+using Kermalis.PokemonGameEngine.World.Data;
 using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
+#if DEBUG_OVERWORLD
+using Kermalis.PokemonGameEngine.Debug;
+#endif
 
 namespace Kermalis.PokemonGameEngine.Render.World
 {
@@ -14,11 +15,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
     {
         public sealed class Tile
         {
-            public const int NoAnim = -1;
-            public const int InvalidAnim = -2;
-
             public readonly int Id;
-            public int AnimId = NoAnim;
+            public int AnimId = TileAnimation.NO_ANIM_ID;
 
             public Tile(int id)
             {
@@ -26,11 +24,13 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
         }
 
+        public readonly int Id;
+
         public readonly Tile[] Tiles;
         public readonly uint Texture;
         public readonly Size2D TextureSize;
         public readonly int NumTilesX;
-        private readonly TileAnimationLive[] _animations;
+        private readonly TileAnimation[] _animations;
 
         private unsafe Tileset(int id, string name)
         {
@@ -38,15 +38,17 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Log.WriteLine("Loading tileset: " + name);
 #endif
 
+            Id = id;
+
             // Get texture
             AssetLoader.GetAssetBitmap(TilesetPath + name + TilesetExtension, out TextureSize, out uint[] bitmap);
             NumTilesX = (int)TextureSize.Width / Overworld.Tile_NumPixelsX;
 
             // Create gl texture
-            GL gl = Game.OpenGL;
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-            Texture = GLHelper.GenTexture(gl);
-            GLHelper.BindTexture(gl, Texture);
+            GL gl = Display.OpenGL;
+            gl.ActiveTexture(TextureUnit.Texture0);
+            Texture = gl.GenTexture();
+            gl.BindTexture(TextureTarget.Texture2D, Texture);
             fixed (uint* d = bitmap)
             {
                 GLTextureUtils.LoadTextureData(gl, d, TextureSize);
@@ -61,30 +63,21 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
 
             // Load animations if they exist
-            TileAnimation[] a = TileAnimation.Load(id);
-            if (a is not null)
-            {
-                _animations = new TileAnimationLive[a.Length];
-                for (int i = 0; i < a.Length; i++)
-                {
-                    _animations[i] = new TileAnimationLive(this, a[i]);
-                }
-            }
+            _animations = TilesetAnimationLoader.Load(this);
 
-            Id = id;
             _numReferences = 1;
             _loadedTilesets.Add(id, this);
         }
 
-        public static void AnimationTick()
+        public static void UpdateAnimations()
         {
             foreach (Tileset t in _loadedTilesets.Values)
             {
                 if (t._animations is not null)
                 {
-                    foreach (TileAnimationLive a in t._animations)
+                    foreach (TileAnimation a in t._animations)
                     {
-                        a.Tick();
+                        a.Update();
                     }
                 }
             }
@@ -92,7 +85,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         #region Cache
 
-        public readonly int Id;
         private int _numReferences;
 
         private const string TilesetExtension = ".png";
@@ -133,7 +125,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 #if DEBUG_OVERWORLD
             Log.WriteLine("Unloading tileset: " + _ids[Id]);
 #endif
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             gl.DeleteTexture(Texture);
             _loadedTilesets.Remove(Id);
         }

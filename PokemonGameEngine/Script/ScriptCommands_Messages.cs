@@ -12,7 +12,7 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             if (_messageBox is null)
             {
-                _messageBox = Window.CreateStandardMessageBox(Colors.White);
+                _messageBox = Window.CreateStandardMessageBox(Colors.White4);
             }
             _stringPrinter?.Delete();
             _stringPrinter = StringPrinter.CreateStandardMessageBox(_messageBox, text, Font.Default, FontColors.DefaultDarkGray_I);
@@ -38,22 +38,10 @@ namespace Kermalis.PokemonGameEngine.Script
         private void AwaitMessageCommand(bool complete)
         {
             _waitMessageBox = true;
-            _waitMessageComplete = complete;
+            _waitForMessageCompletion = complete;
         }
         private void CloseMessageCommand()
         {
-            // Set to false, since it's possible awaitmessage completely passes the "should stop running" check
-            // Avoids a crash
-            if (_waitMessageBox)
-            {
-                _waitMessageBox = false;
-                _onWaitMessageFinished?.Invoke();
-                _onWaitMessageFinished = null;
-                if (_isDisposed)
-                {
-                    return;
-                }
-            }
             _stringPrinter.Delete();
             _stringPrinter = null;
             _messageBox.Close();
@@ -70,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private void YesNoAction(bool value)
         {
-            Engine.Instance.Save.Vars[Var.SpecialVar_Result] = (short)(value ? 1 : 0);
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)(value ? 1 : 0);
             CloseChoices();
         }
         /*private void MultichoiceAction(short value)

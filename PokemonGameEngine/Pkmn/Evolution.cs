@@ -28,7 +28,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         private static bool IsNight()
         {
-            DateTime time = Game.LogicTickTime;
+            DateTime time = DateTime.Now;
             Month month = OverworldTime.GetMonth((Month)time.Month);
             Season season = OverworldTime.GetSeason(month);
             int hour = OverworldTime.GetHour(time.Hour);
@@ -228,13 +228,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public static void TryCreateShedinja(PartyPokemon nincada)
         {
-            Party party = Engine.Instance.Save.PlayerParty;
+            Party party = Game.Instance.Save.PlayerParty;
             if (party.Count >= PkmnConstants.PartyCapacity)
             {
                 return;
             }
 
-            Inventory<InventorySlotNew> inv = Engine.Instance.Save.PlayerInventory;
+            Inventory<InventorySlotNew> inv = Game.Instance.Save.PlayerInventory;
             if (!inv.TryRemove(ItemType.PokeBall, 1))
             {
                 return;
@@ -242,7 +242,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
             var shedinja = PartyPokemon.CreateShedinja(nincada);
             party.Add(shedinja);
-            Engine.Instance.Save.Pokedex.SetCaught(shedinja.Species, shedinja.Form, shedinja.Gender, shedinja.Shiny, shedinja.PID);
+            Game.Instance.Save.Pokedex.SetCaught(shedinja.Species, shedinja.Form, shedinja.Gender, shedinja.Shiny, shedinja.PID);
         }
     }
 }

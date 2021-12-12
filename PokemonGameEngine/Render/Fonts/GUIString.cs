@@ -1,24 +1,16 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
-using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.Fonts
 {
     internal sealed class GUIString
     {
-        private static readonly FontShader _shader;
-
-        static GUIString()
-        {
-            GL gl = Game.OpenGL;
-            _shader = new FontShader(gl);
-        }
-
         public readonly string Text;
         public readonly Font Font;
-        public ColorF[] Colors;
+        public Vector4[] Colors;
         public readonly Pos2D Origin;
         public Pos2D Translation;
         public readonly uint Scale;
@@ -31,7 +23,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
         public uint VisibleStart;
         public uint NumVisible;
 
-        public GUIString(string text, Font font, ColorF[] colors, Pos2D pos = default, uint scale = 1, bool allVisible = true)
+        public GUIString(string text, Font font, Vector4[] colors, Pos2D pos = default, uint scale = 1, bool allVisible = true)
         {
             Text = text;
             Font = font;
@@ -65,79 +57,71 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
             }
             NumVisible = allVisible ? _totalVisible : 0;
 
-            builder.Finish(Game.OpenGL, out _, out _vao, out _vbo, out _ebo);
+            builder.Finish(out _, out _vao, out _vbo, out _ebo);
         }
 
-        public static GUIString CreateCentered(string text, Font font, ColorF[] colors, float centerX, float centerY, uint scale = 1)
+        public static GUIString CreateCentered(string text, Font font, Vector4[] colors, float centerX, float centerY, uint scale = 1)
         {
             Size2D s = font.MeasureString(text);
             return new GUIString(text, font, colors, Pos2D.Center(centerX, centerY, s), scale: scale);
         }
-        public static void CreateAndRenderOneTimeString(GL gl, string text, Font font, ColorF[] colors, Pos2D pos, uint scale = 1)
+        public static void CreateAndRenderOneTimeString(string text, Font font, Vector4[] colors, Pos2D pos, uint scale = 1)
         {
             var s = new GUIString(text, font, colors, pos, scale: scale);
-            s.Render(gl);
-            s.Delete(gl);
+            s.Render();
+            s.Delete();
         }
-        public static void CreateAndRenderOneTimeGenderString(GL gl, PBEGender gender, Font font, Pos2D pos, uint scale = 1)
+        public static void CreateAndRenderOneTimeGenderString(PBEGender gender, Font font, Pos2D pos, uint scale = 1)
         {
             if (gender == PBEGender.Genderless)
             {
                 return;
             }
-            CreateAndRenderOneTimeString(gl, gender.ToSymbol(), font, gender == PBEGender.Male ? FontColors.DefaultBlue_O : FontColors.DefaultRed_O, pos, scale: scale);
+            CreateAndRenderOneTimeString(gender.ToSymbol(), font, gender == PBEGender.Male ? FontColors.DefaultBlue_O : FontColors.DefaultRed_O, pos, scale: scale);
         }
 
-        public void Render(GL gl, Pos2D translation)
+        public void Render(Pos2D translation)
         {
             Translation = translation;
-            Render(gl);
+            Render();
         }
-        public void Render(GL gl, Pos2D translation, ColorF[] colors)
+        public void Render(Pos2D translation, Vector4[] colors)
         {
             Colors = colors;
             Translation = translation;
-            Render(gl);
+            Render();
         }
-        public unsafe void Render(GL gl)
+        public unsafe void Render()
         {
             if (_totalVisible == 0 || NumVisible == 0)
             {
                 return;
             }
 
-            GLHelper.EnableBlend(gl, true);
-            GLHelper.BlendFunc(gl, BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-            GLHelper.BindTexture(gl, Font.Texture);
+            GL gl = Display.OpenGL;
+            gl.Enable(EnableCap.Blend);
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            gl.ActiveTexture(TextureUnit.Texture0);
+            gl.BindTexture(TextureTarget.Texture2D, Font.Texture);
             gl.BindVertexArray(_vao);
-            gl.EnableVertexAttribArray(0);
-            gl.EnableVertexAttribArray(1);
-            _shader.Use(gl);
-            _shader.SetResolution(gl);
-            _shader.SetTranslation(gl, ref Translation);
-            _shader.SetTextureUnit(gl, 0);
-            _shader.SetColors(gl, Colors);
+
+            FontShader shader = FontShader.Instance;
+            shader.Use(gl);
+            shader.SetResolution(gl);
+            shader.SetTranslation(gl, ref Translation);
+            shader.SetColors(gl, Colors);
 
             gl.DrawElements(PrimitiveType.Triangles, NumVisible * 6, DrawElementsType.UnsignedInt, (void*)(VisibleStart * 6 * sizeof(uint)));
 
-            GLHelper.EnableBlend(gl, false);
-            GLHelper.BindTexture(gl, 0);
-            gl.DisableVertexAttribArray(0);
-            gl.DisableVertexAttribArray(1);
-            gl.BindVertexArray(0);
-            gl.UseProgram(0);
+            gl.Disable(EnableCap.Blend);
         }
 
-        public void Delete(GL gl)
+        public void Delete()
         {
+            GL gl = Display.OpenGL;
             gl.DeleteVertexArray(_vao);
             gl.DeleteBuffer(_vbo);
             gl.DeleteBuffer(_ebo);
-        }
-        public static void GameExit(GL gl)
-        {
-            _shader.Delete(gl);
         }
     }
 }

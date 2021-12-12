@@ -21,8 +21,8 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
 
         public static string SaveScreenTextureAsImage(GL gl, uint texture, int w, int h, string path)
         {
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-            GLHelper.BindTexture(gl, texture);
+            gl.ActiveTexture(TextureUnit.Texture0);
+            gl.BindTexture(TextureTarget.Texture2D, texture);
             var data = new Rgba32[w * h];
             gl.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data.AsSpan());
             using (var img = Image.LoadPixelData(data, w, h))
@@ -32,14 +32,13 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
                 path = Path.GetFullPath(path);
                 img.SaveAsPng(path);
             }
-            GLHelper.BindTexture(gl, 0);
             return path;
         }
 #if DEBUG
         public static string Debug_SaveFontTextureAsImage(GL gl, uint texture, int w, int h, string path)
         {
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-            GLHelper.BindTexture(gl, texture);
+            gl.ActiveTexture(TextureUnit.Texture0);
+            gl.BindTexture(TextureTarget.Texture2D, texture);
             var data = new A8[w * h];
             gl.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.RedInteger, PixelType.UnsignedByte, data.AsSpan());
             using (var img = Image.LoadPixelData(data, w, h))
@@ -48,7 +47,6 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
                 path = Path.GetFullPath(path);
                 img.SaveAsPng(path);
             }
-            GLHelper.BindTexture(gl, 0);
             return path;
         }
 #endif

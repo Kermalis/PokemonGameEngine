@@ -1,13 +1,15 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI.Battle;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
+using System;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
@@ -15,7 +17,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
     {
         private readonly bool _usePartyPkmn;
         private readonly bool _isEgg;
-        private ColorF _color;
+        private Vector4 _color;
         private readonly PartyPokemon _partyPkmn;
         private readonly SpritedBattlePokemon _battlePkmn;
         private readonly Sprite _mini;
@@ -29,8 +31,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _color = GetColor();
             _mini = new Sprite()
             {
-                Image = PokemonImageLoader.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.IsEgg),
-                Pos = new Pos2D(0, Sprite_BounceDefY)
+                Image = PokemonImageLoader.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.IsEgg)
             };
             if (!_isEgg)
             {
@@ -38,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _mini.Data = new Sprite_BounceData();
             }
             sprites.Add(_mini);
-            _background = new WriteableImage(new Size2D((Game.RenderWidth / 2) - (Game.RenderWidth / 20), (Game.RenderHeight / 4) - (Game.RenderHeight / 20)));
+            _background = new WriteableImage(new Size2D((Display.RenderWidth / 2) - (Display.RenderWidth / 20), (Display.RenderHeight / 4) - (Display.RenderHeight / 20)));
             UpdateBackground();
         }
         public PartyGUIMember(SpritedBattlePokemon pkmn, SpriteList sprites)
@@ -49,8 +50,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _color = GetColor();
             _mini = new Sprite()
             {
-                Image = pkmn.Mini,
-                Pos = new Pos2D(0, Sprite_BounceDefY)
+                Image = pkmn.Mini
             };
             if (!_isEgg)
             {
@@ -58,101 +58,94 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _mini.Data = new Sprite_BounceData();
             }
             sprites.Add(_mini);
-            _background = new WriteableImage(new Size2D((Game.RenderWidth / 2) - (Game.RenderWidth / 20), (Game.RenderHeight / 4) - (Game.RenderHeight / 20)));
+            _background = new WriteableImage(new Size2D((Display.RenderWidth / 2) - (Display.RenderWidth / 20), (Display.RenderHeight / 4) - (Display.RenderHeight / 20)));
             UpdateBackground();
         }
 
         #region Sprite Callbacks
 
-        private const int Sprite_BounceMinY = 6;
-        private const int Sprite_BounceDefY = 7;
-        private const int Sprite_BounceMaxY = 8;
-        private class Sprite_BounceData { public bool Down = true; public int Target = Sprite_BounceMaxY; public int Speed = 1; public int Counter = 0; }
+        private const int SPRITE_BOUNCE_MID_Y = 7;
+        private const float SPRITE_BOUNCE_SPEED_BIG = 6f;
+        private const float SPRITE_BOUNCE_SPEED_SMALL = 4f;
+        private class Sprite_BounceData { public float Speed = SPRITE_BOUNCE_SPEED_SMALL; public float Counter; }
         private static void Sprite_Bounce(Sprite s)
         {
             var data = (Sprite_BounceData)s.Data;
-            if (data.Counter++ < 1)
+            data.Counter += Display.DeltaTime * data.Speed;
+            float f = MathF.Cos(data.Counter * MathF.PI * 2f);
+            int y;
+            if (f >= 0.5f)
             {
-                return;
+                y = +1;
             }
-            data.Counter = 0;
-            if (data.Down)
+            else if (f <= -0.5f)
             {
-                s.Pos.Y += data.Speed;
-                if (s.Pos.Y >= data.Target)
-                {
-                    s.Pos.Y = data.Target;
-                    data.Down = false;
-                    data.Target = Sprite_BounceMinY;
-                }
+                y = -1;
             }
             else
             {
-                s.Pos.Y -= data.Speed;
-                if (s.Pos.Y <= data.Target)
-                {
-                    s.Pos.Y = data.Target;
-                    data.Down = true;
-                    data.Target = Sprite_BounceMaxY;
-                }
+                y = 0;
             }
+            s.Pos.Y = SPRITE_BOUNCE_MID_Y + y;
         }
 
         public void SetBounce(bool big)
         {
-            // Don't bounce eggs or fainted mon
             if (_isEgg)
             {
-                return;
+                return; // Don't bounce eggs or fainted mon
             }
-            int speed;
+
+            float speed;
             if (_usePartyPkmn ? _partyPkmn.HP == 0 : _battlePkmn.Pkmn.HP == 0)
             {
-                speed = 0;
+                speed = 0f; // Pause bounce for fainted
             }
             else
             {
-                speed = big ? 2 : 1;
+                speed = big ? SPRITE_BOUNCE_SPEED_BIG : SPRITE_BOUNCE_SPEED_SMALL;
             }
-            ((Sprite_BounceData)_mini.Data).Speed = speed;
+            var data = (Sprite_BounceData)_mini.Data;
+            data.Speed = speed;
         }
 
         #endregion
 
         public void UpdateBackground()
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             _background.PushFrameBuffer(gl);
-
             GLHelper.ClearColor(gl, _color);
             gl.Clear(ClearBufferMask.ColorBufferBit);
             // TODO: Shadow
             //Renderer.FillEllipse_Points(dst, dstW, dstH, 3, 34, 29, 39, Renderer.Color(0, 0, 0, 100));
+
             // Nickname
             PartyPokemon p = _usePartyPkmn ? _partyPkmn : _battlePkmn.PartyPkmn;
-            GUIString.CreateAndRenderOneTimeString(gl, p.Nickname, Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(2, 3));
+            GUIString.CreateAndRenderOneTimeString(p.Nickname, Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(2, 3));
             if (_isEgg)
             {
                 goto bottom;
             }
+
             PBEBattlePokemon bPkmn = _usePartyPkmn ? null : _battlePkmn.Pkmn;
             // Gender
-            GUIString.CreateAndRenderOneTimeGenderString(gl, p.Gender, Font.Default, new Pos2D(61, -2));
+            GUIString.CreateAndRenderOneTimeGenderString(p.Gender, Font.Default, new Pos2D(61, -2));
             // Level
             const int lvX = 72;
-            GUIString.CreateAndRenderOneTimeString(gl, "[LV]", Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX, 3));
-            GUIString.CreateAndRenderOneTimeString(gl, (_usePartyPkmn ? p.Level : bPkmn.Level).ToString(), Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX + 12, 3));
+            GUIString.CreateAndRenderOneTimeString("[LV]", Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX, 3));
+            GUIString.CreateAndRenderOneTimeString((_usePartyPkmn ? p.Level : bPkmn.Level).ToString(), Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX + 12, 3));
             // Status
             PBEStatus1 status = _usePartyPkmn ? p.Status1 : bPkmn.Status1;
             if (status != PBEStatus1.None)
             {
-                GUIString.CreateAndRenderOneTimeString(gl, status.ToString(), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(61, 13));
+                GUIString.CreateAndRenderOneTimeString(status.ToString(), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(61, 13));
             }
             // Item
             ItemType item = _usePartyPkmn ? p.Item : (ItemType)bPkmn.Item;
             if (item != ItemType.None)
             {
-                GUIString.CreateAndRenderOneTimeString(gl, ItemData.GetItemName(item), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(61, 23));
+                GUIString.CreateAndRenderOneTimeString(ItemData.GetItemName(item), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(61, 23));
             }
         bottom:
             GLHelper.PopFrameBuffer(gl);
@@ -164,7 +157,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _color = GetColor();
             UpdateBackground();
         }
-        private ColorF GetColor()
+        private Vector4 GetColor()
         {
             if (_usePartyPkmn)
             {
@@ -191,21 +184,21 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
             return GetDefaultColor();
         }
-        private static ColorF GetDefaultColor()
+        private static Vector4 GetDefaultColor()
         {
-            return ColorF.FromRGBA(48, 48, 48, 128);
+            return Colors.FromRGBA(48, 48, 48, 128);
         }
-        private static ColorF GetFaintedColor()
+        private static Vector4 GetFaintedColor()
         {
-            return ColorF.FromRGBA(120, 30, 60, 196);
+            return Colors.FromRGBA(120, 30, 60, 196);
         }
-        private static ColorF GetActiveColor()
+        private static Vector4 GetActiveColor()
         {
-            return ColorF.FromRGBA(255, 192, 60, 96);
+            return Colors.FromRGBA(255, 192, 60, 96);
         }
-        private static ColorF GetStandByColor()
+        private static Vector4 GetStandByColor()
         {
-            return ColorF.FromRGBA(125, 255, 195, 100);
+            return Colors.FromRGBA(125, 255, 195, 100);
         }
 
         public void Render(Pos2D pos, bool selected)
@@ -213,18 +206,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _background.Render(pos);
             if (selected)
             {
-                GUIRenderer.Instance.DrawRectangle(ColorF.FromRGBA(48, 180, 255, 200), new Rect2D(pos, _background.Size));
+                GUIRenderer.Instance.DrawRectangle(Colors.FromRGBA(48, 180, 255, 200), new Rect2D(pos, _background.Size));
             }
             _mini.Render(pos);
         }
 
-        public void Delete(GL gl)
+        public void Delete()
         {
             if (_usePartyPkmn)
             {
-                _mini.Image.DeductReference(gl);
+                _mini.Image.DeductReference();
             }
-            _background.DeductReference(gl);
+            _background.DeductReference();
         }
     }
 }

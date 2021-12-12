@@ -1,16 +1,18 @@
-﻿#if DEBUG_DATA_CACHE
-using Kermalis.PokemonBattleEngine.Data.Utils;
-#endif
-using Kermalis.EndianBinaryIO;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
+#if DEBUG_DATA_CACHE
+using Kermalis.PokemonBattleEngine.Data.Utils;
+#endif
 
 namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
 {
     internal sealed class BaseStats : IPBEPokemonData
     {
+        private const int CACHE_LENGTH = 20;
+
         public PBESpecies Species { get; }
         public PBEForm Form { get; }
 
@@ -35,8 +37,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         private readonly List<PBEAbility> _abilities;
         public IReadOnlyList<PBEAbility> Abilities => _abilities;
 
-        private const int CacheSize = 20;
-        private static readonly List<BaseStats> _cache = new(CacheSize);
+        private static readonly List<BaseStats> _cache = new(CACHE_LENGTH);
 
         public static BaseStats Get(PBESpecies species, PBEForm form, bool cache)
         {
@@ -65,7 +66,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
             {
                 return bs;
             }
-            if (i < CacheSize - 1)
+            if (i < CACHE_LENGTH - 1)
             {
                 _cache.Add(bs); // Still room in the cache to add this at the end
 #if DEBUG_DATA_CACHE

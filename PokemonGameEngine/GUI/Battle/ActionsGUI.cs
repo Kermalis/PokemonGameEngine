@@ -5,9 +5,7 @@ using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.GUI.Pkmn;
 using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
-using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
-using Silk.NET.OpenGL;
 using System;
 using System.Linq;
 
@@ -43,15 +41,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _fightChoices.AddOne("Run", command, isEnabled: enabled);
         }
 
-        public void SetCallbacksForAllChoices()
+        public void SetCallbackForFightChoices()
         {
-            Engine.Instance.SetCallback(CB_All);
-            Engine.Instance.SetRCallback(RCB_All);
+            Game.Instance.SetCallback(CB_HandleFightChoices);
         }
-        private void SetCallbacksForMoves()
+        private void SetCallbackForMoveChoices()
         {
-            Engine.Instance.SetCallback(CB_Moves);
-            Engine.Instance.SetRCallback(RCB_Moves);
+            Game.Instance.SetCallback(CB_HandleMoveChoices);
         }
 
         private bool TryUseForcedMove()
@@ -76,7 +72,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             PBEBattleMoveset moves = _pkmn.Moves;
             PBEMove[] usableMoves = _pkmn.GetUsableMoves();
-            _moveChoices = new TextGUIChoices(0.75f, 0.75f, bottomAlign: true, backCommand: SetCallbacksForAllChoices,
+            _moveChoices = new TextGUIChoices(0.75f, 0.75f, bottomAlign: true, backCommand: SetCallbackForFightChoices,
                 font: Font.Default, textColors: FontColors.DefaultWhite_I, selectedColors: FontColors.DefaultYellow_O, disabledColors: FontColors.DefaultDisabled);
             for (int i = 0; i < PkmnConstants.NumMoves; i++)
             {
@@ -99,13 +95,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
 
             CreateMoveChoices();
-            SetCallbacksForMoves();
+            SetCallbackForMoveChoices();
         }
         private void PokemonChoice()
         {
-            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
-            Engine.Instance.SetCallback(CB_FadeToParty);
-            Engine.Instance.SetRCallback(RCB_FadingParty);
+            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            Game.Instance.SetCallback(CB_FadeToParty);
         }
         private void BagChoice()
         {
@@ -148,110 +143,127 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 void TargetSelected()
                 {
                     BattleGUI.Instance.ActionsLoop();
-                    _targetsGUI.Delete(Game.OpenGL);
+                    _targetsGUI.Delete();
                     _targetsGUI = null;
                     // no need to change callbacks since this ActionsGUI will get disposed in ActionsLoop
                 }
                 void TargetCancelled()
                 {
-                    _targetsGUI.Delete(Game.OpenGL);
+                    _targetsGUI.Delete();
                     _targetsGUI = null;
-                    SetCallbacksForMoves();
+                    SetCallbackForMoveChoices();
                 }
                 _targetsGUI = new TargetsGUI(_pkmn, possibleTargets, move, BattleGUI.Instance.SpritedParties, TargetSelected, TargetCancelled);
-                Engine.Instance.SetCallback(CB_Targets);
-                Engine.Instance.SetRCallback(RCB_Targets);
+                Game.Instance.SetCallback(CB_HandleTargetsSelection);
             }
         }
 
         private void OnPartyClosed()
         {
             OverworldGUI.ProcessDayTint(true); // Catch up time
-            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
-            Engine.Instance.SetCallback(CB_FadeFromParty);
-            short result = Engine.Instance.Save.Vars[Var.SpecialVar_Result];
-            if (result == -1) // No selection, display actions
+            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];
+            if (result == PartyGUI.NO_PKMN_CHOSEN)
             {
-                Engine.Instance.SetRCallback(RCB_FadingParty);
+                Game.Instance.SetCallback(CB_FadeFromParty); // No selection, display actions
             }
             else
             {
                 BattleGUI.Instance.ClearMessage();
-                Engine.Instance.SetRCallback(RCB_FadingPartyNoChoices);
+                Game.Instance.SetCallback(CB_FadeFromPartyNoChoices);
+            }
+        }
+        private void OnFadeFromPartyFinished()
+        {
+            _fadeTransition = null;
+            short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];
+            BattleGUI.Instance.SetMessageWindowVisibility(false);
+            if (result == PartyGUI.NO_PKMN_CHOSEN)
+            {
+                SetCallbackForFightChoices(); // No selection, display actions
+            }
+            else
+            {
+                PBEBattlePokemon p = _party.BattleParty[result];
+                _pkmn.TurnAction = new PBETurnAction(_pkmn, p);
+                BattleGUI.Instance.StandBy.Add(p);
+                BattleGUI.Instance.ActionsLoop();
             }
         }
 
-        private void CB_Moves()
+        private void CB_HandleMoveChoices()
         {
             OverworldGUI.ProcessDayTint(false);
+            BattleGUI.Instance.RenderBattle();
+            _moveChoices.Render();
+
             _moveChoices.HandleInputs();
         }
-        private void CB_Targets()
+        private void CB_HandleTargetsSelection()
         {
             OverworldGUI.ProcessDayTint(false);
-            _targetsGUI.LogicTick();
+            BattleGUI.Instance.RenderBattle();
+            _targetsGUI.Render();
+
+            _targetsGUI.HandleInputs();
         }
         private void CB_FadeToParty()
         {
             OverworldGUI.ProcessDayTint(false);
-            if (_fadeTransition.IsDone)
+            RenderFadingWithFightChoices();
+            if (!_fadeTransition.IsDone)
             {
-                _fadeTransition = null;
-                BattleGUI.Instance.SetMessageWindowVisibility(true);
-                _ = new PartyGUI(_party, PartyGUI.Mode.BattleSwitchIn, OnPartyClosed);
+                return;
             }
+
+            _fadeTransition = null;
+            BattleGUI.Instance.SetMessageWindowVisibility(true);
+            _ = new PartyGUI(_party, PartyGUI.Mode.BattleSwitchIn, OnPartyClosed);
         }
         private void CB_FadeFromParty()
         {
             OverworldGUI.ProcessDayTint(false);
-            if (_fadeTransition.IsDone)
+            RenderFadingWithFightChoices();
+            if (!_fadeTransition.IsDone)
             {
-                _fadeTransition = null;
-                short result = Engine.Instance.Save.Vars[Var.SpecialVar_Result];
-                BattleGUI.Instance.SetMessageWindowVisibility(false);
-                if (result == -1) // No selection, display actions
-                {
-                    SetCallbacksForAllChoices();
-                }
-                else
-                {
-                    PBEBattlePokemon p = _party.BattleParty[result];
-                    _pkmn.TurnAction = new PBETurnAction(_pkmn, p);
-                    BattleGUI.Instance.StandBy.Add(p);
-                    BattleGUI.Instance.ActionsLoop();
-                }
+                return;
             }
+
+            OnFadeFromPartyFinished();
         }
-        private void CB_All()
+        private void CB_FadeFromPartyNoChoices()
         {
             OverworldGUI.ProcessDayTint(false);
+            RenderFading();
+            if (!_fadeTransition.IsDone)
+            {
+                return;
+            }
+
+            OnFadeFromPartyFinished();
+        }
+        private void CB_HandleFightChoices()
+        {
+            OverworldGUI.ProcessDayTint(false);
+            RenderWithFightChoices();
             _fightChoices.HandleInputs();
         }
 
-        private void RCB_Moves(GL gl)
+        private void RenderFading()
         {
-            BattleGUI.Instance.RCB_RenderTick(gl);
-            _moveChoices.Render(gl);
+            BattleGUI.Instance.RenderBattle();
+            _fadeTransition.Render();
         }
-        private void RCB_Targets(GL gl)
+        private void RenderFadingWithFightChoices()
         {
-            BattleGUI.Instance.RCB_RenderTick(gl);
-            _targetsGUI.RenderTick(gl);
+            BattleGUI.Instance.RenderBattle();
+            _fightChoices.Render();
+            _fadeTransition.Render();
         }
-        private void RCB_FadingParty(GL gl)
+        private void RenderWithFightChoices()
         {
-            RCB_All(gl);
-            _fadeTransition.Render(gl);
-        }
-        private void RCB_FadingPartyNoChoices(GL gl)
-        {
-            BattleGUI.Instance.RCB_RenderTick(gl);
-            _fadeTransition.Render(gl);
-        }
-        private void RCB_All(GL gl)
-        {
-            BattleGUI.Instance.RCB_RenderTick(gl);
-            _fightChoices.Render(gl);
+            BattleGUI.Instance.RenderBattle();
+            _fightChoices.Render();
         }
 
         public void Dispose()

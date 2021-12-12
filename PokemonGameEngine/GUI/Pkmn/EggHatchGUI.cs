@@ -13,16 +13,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
     // TODO: Nickname
     internal sealed class EggHatchGUI
     {
-        private enum State : byte
-        {
-            FadeIn,
-            AnEggIsHatchingMsg,
-            FadeToWhite,
-            FadeToHatched,
-            PkmnHatchedMsg,
-            FadeOut
-        }
-        private State _state;
         private readonly PartyPokemon _pkmn;
 
         private FadeColorTransition _fadeTransition;
@@ -33,19 +23,19 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private AnimatedImage _img;
         private Pos2D _imgPos;
 
+        /// <summary>Will create an egg hatch GUI. Pkmn is determined by <see cref="Var.SpecialVar1"/>'s party index.</summary>
         public EggHatchGUI()
         {
-            _pkmn = Engine.Instance.Save.PlayerParty[Engine.Instance.Save.Vars[Var.SpecialVar1]];
+            _pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar1]];
             LoadPkmnImage();
-            _state = State.FadeIn;
-            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
-            Engine.Instance.SetCallback(CB_EggHatch);
-            Engine.Instance.SetRCallback(RCB_EggHatch);
+
+            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            Game.Instance.SetCallback(CB_FadeIn);
         }
 
         private void LoadPkmnImage()
         {
-            _img?.DeductReference(Game.OpenGL);
+            _img?.DeductReference();
             _img = PokemonImageLoader.GetPokemonImage(_pkmn.Species, _pkmn.Form, _pkmn.Gender, _pkmn.Shiny, false, false, _pkmn.PID, _pkmn.IsEgg);
             _imgPos = Pos2D.Center(0.5f, 0.5f, _img.Size);
         }
@@ -55,111 +45,109 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private bool ReadMessage()
         {
-            _stringPrinter.LogicTick();
+            _stringPrinter.Update();
             return _stringPrinter.IsDone;
         }
 
-        private void CB_EggHatch()
+        private void CB_FadeIn()
         {
-            switch (_state)
+            RenderFading();
+            if (!_fadeTransition.IsDone)
             {
-                case State.FadeIn:
-                {
-                    if (_fadeTransition.IsDone)
-                    {
-                        _fadeTransition = null;
-                        _stringWindow = Window.CreateStandardMessageBox(Colors.White);
-                        CreateMessage("An egg is hatching!");
-                        _state = State.AnEggIsHatchingMsg;
-                    }
-                    return;
-                }
-                case State.AnEggIsHatchingMsg:
-                {
-                    if (ReadMessage())
-                    {
-                        _stringPrinter.Delete();
-                        _stringPrinter = null;
-                        _fadeTransition = new FadeToColorTransition(1_000, ColorF.FromRGB(200, 200, 200));
-                        _state = State.FadeToWhite;
-                    }
-                    return;
-                }
-                case State.FadeToWhite:
-                {
-                    if (_fadeTransition.IsDone)
-                    {
-                        _fadeTransition = null;
-                        _pkmn.HatchEgg();
-                        LoadPkmnImage();
-                        _fadeTransition = new FadeFromColorTransition(1_000, ColorF.FromRGB(200, 200, 200));
-                        _state = State.FadeToHatched;
-                    }
-                    return;
-                }
-                case State.FadeToHatched:
-                {
-                    if (_fadeTransition.IsDone)
-                    {
-                        _fadeTransition = null;
-                        SoundControl.PlayCry(_pkmn.Species, _pkmn.Form);
-                        CreateMessage(string.Format("{0} hatched from the egg!", _pkmn.Nickname));
-                        _state = State.PkmnHatchedMsg;
-                    }
-                    return;
-                }
-                case State.PkmnHatchedMsg:
-                {
-                    if (ReadMessage())
-                    {
-                        _stringPrinter.Delete();
-                        _stringPrinter = null;
-                        _stringWindow.Close();
-                        _stringWindow = null;
-                        _fadeTransition = new FadeToColorTransition(500, Colors.Black);
-                        _state = State.FadeOut;
-                    }
-                    return;
-                }
-                case State.FadeOut:
-                {
-                    if (_fadeTransition.IsDone)
-                    {
-                        _fadeTransition = null;
-                        GL gl = Game.OpenGL;
-                        _img.DeductReference(gl);
-                        OverworldGUI.Instance.ReturnToFieldWithFadeIn();
-                    }
-                    return;
-                }
+                return;
             }
+
+            _fadeTransition = null;
+            _stringWindow = Window.CreateStandardMessageBox(Colors.White4);
+            CreateMessage("An egg is hatching!");
+            Game.Instance.SetCallback(CB_ReadEggHatchingMsg);
+        }
+        private void CB_ReadEggHatchingMsg()
+        {
+            RenderWithWindow();
+            if (!ReadMessage())
+            {
+                return;
+            }
+
+            _stringPrinter.Delete();
+            _stringPrinter = null;
+            _fadeTransition = new FadeToColorTransition(1f, Colors.V4FromRGB(200, 200, 200));
+            Game.Instance.SetCallback(CB_FadeWhiteToHatch);
+        }
+        private void CB_FadeWhiteToHatch()
+        {
+            RenderFading();
+            if (!_fadeTransition.IsDone)
+            {
+                return;
+            }
+
+            _fadeTransition = null;
+            _pkmn.HatchEgg();
+            LoadPkmnImage();
+            _fadeTransition = new FadeFromColorTransition(1f, Colors.V4FromRGB(200, 200, 200));
+            Game.Instance.SetCallback(CB_FadeToHatched);
+        }
+        private void CB_FadeToHatched()
+        {
+            RenderFading();
+            if (!_fadeTransition.IsDone)
+            {
+                return;
+            }
+
+            _fadeTransition = null;
+            SoundControl.PlayCry(_pkmn.Species, _pkmn.Form);
+            CreateMessage(string.Format("{0} hatched from the egg!", _pkmn.Nickname));
+            Game.Instance.SetCallback(CB_ReadHatchedMsg);
+        }
+        private void CB_ReadHatchedMsg()
+        {
+            RenderWithWindow();
+            if (!ReadMessage())
+            {
+                return;
+            }
+
+            _stringPrinter.Delete();
+            _stringPrinter = null;
+            _stringWindow.Close();
+            _stringWindow = null;
+            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            Game.Instance.SetCallback(CB_FadeOut);
+        }
+        private void CB_FadeOut()
+        {
+            RenderFading();
+            if (!_fadeTransition.IsDone)
+            {
+                return;
+            }
+
+            _fadeTransition = null;
+            _img.DeductReference();
+            OverworldGUI.Instance.ReturnToFieldWithFadeIn();
         }
 
-        private void RCB_EggHatch(GL gl)
+        private void RenderFading()
         {
-            GLHelper.ClearColor(gl, ColorF.FromRGB(31, 31, 31));
+            Render();
+            _fadeTransition.Render();
+        }
+        private void RenderWithWindow()
+        {
+            Render();
+            _stringWindow.Render();
+        }
+        private void Render()
+        {
+            GL gl = Display.OpenGL;
+            GLHelper.ClearColor(gl, Colors.FromRGB(31, 31, 31));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
-            AnimatedImage.UpdateCurrentFrameForAll();
+            _img.Update();
             _img.Render(_imgPos);
-
-            switch (_state)
-            {
-                case State.FadeIn:
-                case State.FadeToWhite:
-                case State.FadeToHatched:
-                case State.FadeOut:
-                {
-                    _fadeTransition.Render(gl);
-                    return;
-                }
-                case State.AnEggIsHatchingMsg:
-                case State.PkmnHatchedMsg:
-                {
-                    _stringWindow.Render();
-                    return;
-                }
-            }
         }
     }
 }

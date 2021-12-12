@@ -1,7 +1,5 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render;
+﻿using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Images;
-using Silk.NET.OpenGL;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
@@ -59,13 +57,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             shadowPos.Y += blockPos.Y + Overworld.Block_NumPixelsY; // Bottom align (starts in block under)
 
             // Draw shadow image
-            if (new Rect2D(shadowPos, s.ShadowSize).Intersects(Game.RenderSize))
+            if (new Rect2D(shadowPos, s.ShadowSize).Intersects(Display.RenderSize))
             {
                 shadow.Render(shadowPos, yFlip: true); // Flip y because OpenGL. We created the shadow in the top left
             }
             // Draw obj image
             var objRect = new Rect2D(pos, size);
-            if (objRect.Intersects(Game.RenderSize))
+            if (objRect.Intersects(Display.RenderSize))
             {
                 float t = MovementTimer;
                 bool showMoving = t != 1 && t >= 0.6f;
@@ -76,8 +74,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public override void Dispose()
         {
-            GL gl = Game.OpenGL;
-            _sheet.DeductReference(gl);
+            _sheet.DeductReference();
         }
     }
 }

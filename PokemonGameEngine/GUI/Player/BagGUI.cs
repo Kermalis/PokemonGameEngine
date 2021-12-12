@@ -6,6 +6,7 @@ using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System;
@@ -46,69 +47,79 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
             _bagText = new GUIString("BAG", Font.Default, FontColors.DefaultDarkGray_I, scale: 2);
 
             _onClosed = onClosed;
-            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
-            Engine.Instance.SetCallback(CB_FadeInBag);
-            Engine.Instance.SetRCallback(RCB_Fading);
+
+            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            Game.Instance.SetCallback(CB_FadeInBag);
         }
 
         private void LoadCashMoney()
         {
-            string str = Engine.Instance.Save.Money.ToString("$#,0");
-            _cashMoney?.Delete(Game.OpenGL);
+            string str = Game.Instance.Save.Money.ToString("$#,0");
+            _cashMoney?.Delete();
             _cashMoney = new GUIString(str, Font.DefaultSmall, FontColors.DefaultDarkGray_I);
             _cashMoneyWidth = (int)Font.DefaultSmall.MeasureString(str).Width;
         }
         private void LoadPouch(ItemPouchType pouch)
         {
-            _curPouchName?.Delete(Game.OpenGL);
+            _curPouchName?.Delete();
             _curPouchName = new GUIString(pouch.ToString(), Font.DefaultSmall, FontColors.DefaultDarkGray_I);
             _curPouch = _inv[pouch];
 
             _pouchChoices?.Dispose();
-            _pouchChoices = new ItemGUIChoices(0.60f, 0.18f, 0.97f, 0.97f, 0.07f, ColorF.FromRGB(245, 200, 37), ColorF.FromRGB(231, 163, 0));
+            _pouchChoices = new ItemGUIChoices(0.60f, 0.18f, 0.97f, 0.97f, 0.07f, Colors.V4FromRGB(245, 200, 37), Colors.V4FromRGB(231, 163, 0));
             foreach (InventorySlot s in _curPouch)
             {
                 _pouchChoices.Add(new ItemGUIChoice(s, null));
             }
         }
 
-        private void CloseMenu()
+        private void SetExitFadeOutCallback()
         {
-            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
-            Engine.Instance.SetCallback(CB_FadeOutBag);
-            Engine.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            Game.Instance.SetCallback(CB_FadeOutBag);
         }
 
         private void CB_FadeInBag()
         {
-            if (_fadeTransition.IsDone)
+            RenderFading();
+            if (!_fadeTransition.IsDone)
             {
-                _fadeTransition = null;
-                Engine.Instance.SetCallback(CB_LogicTick);
-                Engine.Instance.SetRCallback(RCB_RenderTick);
+                return;
             }
+
+            _fadeTransition = null;
+            Game.Instance.SetCallback(CB_HandleInputs);
         }
         private void CB_FadeOutBag()
         {
-            if (_fadeTransition.IsDone)
+            RenderFading();
+            if (!_fadeTransition.IsDone)
             {
-                _fadeTransition = null;
-                _partyChoices.Dispose();
-                GL gl = Game.OpenGL;
-                _bagText.Delete(gl);
-                _curPouchName.Delete(gl);
-                _cashMoney.Delete(gl);
-                _onClosed();
-                _onClosed = null;
+                return;
             }
+
+            _fadeTransition = null;
+            _partyChoices.Dispose();
+            _bagText.Delete();
+            _curPouchName.Delete();
+            _cashMoney.Delete();
+            _onClosed();
+            _onClosed = null;
         }
-        private void CB_LogicTick()
+        private void CB_HandleInputs()
+        {
+            HandleInputs();
+            Render();
+        }
+
+        private void HandleInputs()
         {
             if (InputManager.IsPressed(Key.B))
             {
-                CloseMenu();
+                SetExitFadeOutCallback();
                 return;
             }
+
             if (_isOnParty)
             {
                 if (InputManager.IsPressed(Key.Right))
@@ -129,37 +140,38 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
             }
         }
 
-        private void RCB_Fading(GL gl)
+        private void RenderFading()
         {
-            RCB_RenderTick(gl);
-            _fadeTransition.Render(gl);
+            Render();
+            _fadeTransition.Render();
         }
-        private void RCB_RenderTick(GL gl)
+        private void Render()
         {
+            GL gl = Display.OpenGL;
             // Background
             //Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(215, 231, 230, 255), Renderer.Color(231, 163, 0, 255), Renderer.Color(242, 182, 32, 255));
-            GLHelper.ClearColor(gl, ColorF.FromRGB(31, 31, 31));
+            GLHelper.ClearColor(gl, Colors.FromRGB(31, 31, 31));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
             // BAG
-            _bagText.Render(gl, Pos2D.FromRelative(0.02f, 0.01f));
+            _bagText.Render(Pos2D.FromRelative(0.02f, 0.01f));
 
-            _partyChoices.Render(gl);
+            _partyChoices.Render();
 
             // Draw pouch tabs background
             var rect = new Rect2D(Pos2D.FromRelative(0.60f, 0.03f), Pos2D.FromRelative(0.97f, 0.13f));
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(245, 200, 37), rect); // TODO: ROUNDED 10
-            GUIRenderer.Instance.DrawRectangle(ColorF.FromRGB(231, 163, 0), rect); // TODO: ROUNDED 10
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(245, 200, 37), rect); // TODO: ROUNDED 10
+            GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(231, 163, 0), rect); // TODO: ROUNDED 10
 
             // Draw pouch name
             var pos = Pos2D.FromRelative(0.62f, 0.14f);
-            _curPouchName.Render(gl, pos);
+            _curPouchName.Render(pos);
             // Draw cash money
             pos.X = rect.GetRight() + 1 - _cashMoneyWidth;
-            _cashMoney.Render(gl, pos);
+            _cashMoney.Render(pos);
 
             // Draw item list
-            _pouchChoices.Render(gl);
+            _pouchChoices.Render();
         }
     }
 }

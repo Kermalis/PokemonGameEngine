@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Core;
+﻿using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 
@@ -13,14 +13,14 @@ namespace Kermalis.PokemonGameEngine.Render.Images
 
         public unsafe WriteableImage(Size2D size)
         {
-            GL gl = Game.OpenGL;
             Size = size;
 
+            GL gl = Display.OpenGL;
             _fbo = gl.GenFramebuffer();
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, _fbo);
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-            Texture = GLHelper.GenTexture(gl);
-            GLHelper.BindTexture(gl, Texture);
+            gl.ActiveTexture(TextureUnit.Texture0);
+            Texture = gl.GenTexture();
+            gl.BindTexture(TextureTarget.Texture2D, Texture);
             gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, size.Width, size.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, null);
             gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
             gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
@@ -35,8 +35,8 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         public unsafe void LoadTextureData(GL gl, void* data)
         {
             PushFrameBuffer(gl);
-            GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-            GLHelper.BindTexture(gl, Texture);
+            gl.ActiveTexture(TextureUnit.Texture0);
+            gl.BindTexture(TextureTarget.Texture2D, Texture);
             GLTextureUtils.LoadTextureData(gl, data, Size);
             GLHelper.PopFrameBuffer(gl);
         }
@@ -46,8 +46,9 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             GUIRenderer.Instance.RenderTexture(Texture, new Rect2D(pos, Size), xFlip: xFlip, yFlip: !yFlip); // Flip yFlip since the GL texture is upside-down
         }
 
-        public void DeductReference(GL gl)
+        public void DeductReference()
         {
+            GL gl = Display.OpenGL;
             gl.DeleteTexture(Texture);
             gl.DeleteFramebuffer(_fbo);
         }

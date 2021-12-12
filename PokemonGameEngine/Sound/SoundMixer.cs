@@ -17,7 +17,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private static SoundChannel _channelList;
         private static DateTime _lastRenderTime;
-        public static TimeSpan TimeSinceLastRender;
+        public static float DeltaTime;
 
         public static void Init()
         {
@@ -34,7 +34,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             SDL.SDL_PauseAudioDevice(_audioDevice, 0); // Start playing
             _lastRenderTime = DateTime.Now;
         }
-        public static void DeInit()
+        public static void Quit()
         {
             SDL.SDL_CloseAudioDevice(_audioDevice);
             SDL.SDL_AudioQuit();
@@ -153,17 +153,24 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private static void MixAudio(IntPtr userdata, IntPtr stream, int len)
         {
-            DateTime renderTime = DateTime.Now;
-            if (renderTime <= _lastRenderTime)
+            // Calculate delta time
+            DateTime now = DateTime.Now;
+            if (now <= _lastRenderTime)
             {
-                TimeSinceLastRender = new TimeSpan(0, 0, 0, 0, SampleRate / 1_000); // Probably wrong
+                DeltaTime = 1f; // Assume 1 second passed
             }
             else
             {
-                TimeSinceLastRender = renderTime.Subtract(_lastRenderTime);
+                DeltaTime = (float)(now - _lastRenderTime).TotalSeconds;
+                if (DeltaTime > 1f)
+                {
+                    DeltaTime = 1f;
+                }
             }
-            SoundControl.SoundLogicTick(); // Run sound tasks
 
+            SoundControl.RunSoundTasks(); // Run sound tasks
+
+            // Mix audio
             int numSamplesTotal = len / sizeof(float);
             int numSamplesPerChannel = numSamplesTotal / 2; // 2 Channels
             Array.Clear(_buffer, 0, numSamplesTotal);
@@ -197,7 +204,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             // Marshal copy is at least twice as fast as sdl memset
             Marshal.Copy(_buffer, 0, stream, numSamplesTotal);
 
-            _lastRenderTime = renderTime;
+            _lastRenderTime = now;
         }
 
         #region Mixing Math

@@ -1,12 +1,12 @@
-﻿#if DEBUG_FRIENDSHIP
-using Kermalis.PokemonGameEngine.Debug;
-#endif
-using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.World;
 using System;
+#if DEBUG_FRIENDSHIP
+using Kermalis.PokemonGameEngine.Debug;
+#endif
 
 namespace Kermalis.PokemonGameEngine.Pkmn
 {
@@ -121,13 +121,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public static void UpdateFriendshipStep()
         {
-            short val = Engine.Instance.Save.Vars[Var.Friendship_Step_Counter];
+            short val = Game.Instance.Save.Vars[Var.Friendship_Step_Counter];
             val++;
             val %= 128;
-            Engine.Instance.Save.Vars[Var.Friendship_Step_Counter] = val;
+            Game.Instance.Save.Vars[Var.Friendship_Step_Counter] = val;
             if (val == 0)
             {
-                foreach (PartyPokemon p in Engine.Instance.Save.PlayerParty)
+                foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
                 {
                     if (!p.IsEgg)
                     {

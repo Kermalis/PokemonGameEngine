@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Pkmn
 {
-    internal sealed class Moveset : IPBEPartyMoveset<Moveset.MovesetSlot>, IPBEPartyMoveset, IPBEMoveset<Moveset.MovesetSlot>, IPBEMoveset
+    internal sealed class Moveset : IPBEPartyMoveset, IPBEPartyMoveset<Moveset.MovesetSlot>, IPBEMoveset, IPBEMoveset<Moveset.MovesetSlot>
     {
-        public sealed class MovesetSlot : IPBEPartyMovesetSlot, IPBEMovesetSlot
+        public sealed class MovesetSlot : IPBEPartyMovesetSlot
         {
             public PBEMove Move { get; set; }
             public int PP { get; set; }

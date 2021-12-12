@@ -105,7 +105,7 @@ namespace Kermalis.PokemonGameEngine.Script
         }
         private short ReadVarOrValue()
         {
-            return Engine.Instance.Save.Vars.GetVarOrValue(_reader.ReadInt32());
+            return Game.Instance.Save.Vars.GetVarOrValue(_reader.ReadInt32());
         }
 
         private uint? IfVar()
@@ -121,7 +121,7 @@ namespace Kermalis.PokemonGameEngine.Script
             uint offset = _reader.ReadUInt32();
             Flag flag = ReadVarOrEnum<Flag>();
             byte value = (byte)ReadVarOrValue();
-            if (Engine.Instance.Save.Flags[flag] ? value != 0 : value == 0)
+            if (Game.Instance.Save.Flags[flag] ? value != 0 : value == 0)
             {
                 return offset;
             }
@@ -183,80 +183,80 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private void DelayCommand()
         {
-            ushort delay = (ushort)ReadVarOrValue();
-            _delay = delay;
+            float delay = (float)_reader.ReadSingle();
+            _delayRemaining = delay;
         }
 
         private void SetFlagCommand()
         {
             Flag flag = ReadVarOrEnum<Flag>();
-            Engine.Instance.Save.Flags[flag] = true;
+            Game.Instance.Save.Flags[flag] = true;
         }
         private void ClearFlagCommand()
         {
             Flag flag = ReadVarOrEnum<Flag>();
-            Engine.Instance.Save.Flags[flag] = false;
+            Game.Instance.Save.Flags[flag] = false;
         }
 
         private void SetVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Engine.Instance.Save.Vars[var] = value;
+            Game.Instance.Save.Vars[var] = value;
         }
         private void AddVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Engine.Instance.Save.Vars[var] += value;
+            Game.Instance.Save.Vars[var] += value;
         }
         private void SubVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Engine.Instance.Save.Vars[var] -= value;
+            Game.Instance.Save.Vars[var] -= value;
         }
         private void MulVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Engine.Instance.Save.Vars[var] *= value;
+            Game.Instance.Save.Vars[var] *= value;
         }
         private void DivVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Engine.Instance.Save.Vars[var] /= value;
+            Game.Instance.Save.Vars[var] /= value;
         }
         private void RshiftVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Engine.Instance.Save.Vars[var] >>= value;
+            Game.Instance.Save.Vars[var] >>= value;
         }
         private void LshiftVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Engine.Instance.Save.Vars[var] <<= value;
+            Game.Instance.Save.Vars[var] <<= value;
         }
         private void AndVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Engine.Instance.Save.Vars[var] &= value;
+            Game.Instance.Save.Vars[var] &= value;
         }
         private void OrVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Engine.Instance.Save.Vars[var] |= value;
+            Game.Instance.Save.Vars[var] |= value;
         }
         private void XorVarCommand()
         {
             Var var = _reader.ReadEnum<Var>();
             short value = ReadVarOrValue();
-            Engine.Instance.Save.Vars[var] ^= value;
+            Game.Instance.Save.Vars[var] ^= value;
         }
         private void RandomizeVarCommand()
         {
@@ -264,18 +264,18 @@ namespace Kermalis.PokemonGameEngine.Script
             short min = ReadVarOrValue();
             short max = ReadVarOrValue();
             short value = (short)PBEDataProvider.GlobalRandom.RandomInt(min, max);
-            Engine.Instance.Save.Vars[var] = value;
+            Game.Instance.Save.Vars[var] = value;
         }
 
         private void BufferSeenCountCommand()
         {
             byte buffer = (byte)ReadVarOrValue();
-            Engine.Instance.StringBuffers.Buffers[buffer] = Engine.Instance.Save.Pokedex.GetSpeciesSeen().ToString();
+            Game.Instance.StringBuffers.Buffers[buffer] = Game.Instance.Save.Pokedex.GetSpeciesSeen().ToString();
         }
         private void BufferCaughtCountCommand()
         {
             byte buffer = (byte)ReadVarOrValue();
-            Engine.Instance.StringBuffers.Buffers[buffer] = Engine.Instance.Save.Pokedex.GetSpeciesCaught().ToString();
+            Game.Instance.StringBuffers.Buffers[buffer] = Game.Instance.Save.Pokedex.GetSpeciesCaught().ToString();
         }
 
         private void WildBattleCommand()
@@ -283,23 +283,23 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
-            Encounter.CreateStaticWildBattle(species, form, level);
+            EncounterMaker.CreateStaticWildBattle(species, form, level);
         }
 
         private void IncrementGameStatCommand()
         {
             GameStat stat = ReadVarOrEnum<GameStat>();
-            Engine.Instance.Save.GameStats[stat]++;
+            Game.Instance.Save.GameStats[stat]++;
         }
 
         private static void CountBadgesCommand()
         {
-            Engine.Instance.Save.Vars[Var.SpecialVar_Result] = (short)Engine.Instance.Save.Flags.GetNumBadges();
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = (short)Game.Instance.Save.Flags.GetNumBadges();
         }
         private void BufferBadgesCommand()
         {
             byte buffer = (byte)ReadVarOrValue();
-            Engine.Instance.StringBuffers.Buffers[buffer] = Engine.Instance.Save.Flags.GetNumBadges().ToString();
+            Game.Instance.StringBuffers.Buffers[buffer] = Game.Instance.Save.Flags.GetNumBadges().ToString();
         }
     }
 }

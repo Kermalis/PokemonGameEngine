@@ -1,19 +1,20 @@
-﻿#if DEBUG_OVERWORLD
-using Kermalis.PokemonGameEngine.Debug;
-#endif
-using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
+using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
-using Kermalis.PokemonGameEngine.Render;
+#if DEBUG_OVERWORLD
+using Kermalis.PokemonGameEngine.Debug;
+#endif
 
-namespace Kermalis.PokemonGameEngine.Core
+namespace Kermalis.PokemonGameEngine.Player
 {
     internal sealed class Save
     {
@@ -25,7 +26,7 @@ namespace Kermalis.PokemonGameEngine.Core
         public PCBoxes PCBoxes { get; private set; }
         public Daycare Daycare { get; private set; }
         public Party PlayerParty { get; private set; }
-        public Inventory<InventorySlotNew> PlayerInventory { get; private set; }
+        public PlayerInventory PlayerInventory { get; private set; }
         public uint Money { get; private set; }
 
         private static void InitPlayerWithDefaultLocation()
@@ -49,7 +50,7 @@ namespace Kermalis.PokemonGameEngine.Core
             Flags = new Flags();
             Vars = new Vars();
             OT = new OTInfo("Dawn", true);
-            PlayerInventory = Inventory<InventorySlotNew>.CreatePlayerInventory();
+            PlayerInventory = new PlayerInventory();
             PlayerInventory.Add(ItemType.DuskBall, 995);
             PlayerInventory.Add(ItemType.RockyHelmet, 42);
             PlayerInventory.Add(ItemType.Leftovers, 473);

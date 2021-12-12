@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.GUI.Interactive;
+using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,13 @@ namespace Kermalis.PokemonGameEngine.Script
         private readonly EndianBinaryReader _reader;
         private readonly Stack<long> _callStack = new();
         private bool _isDisposed;
-        private ushort _delay;
+
+        private float _delayRemaining;
+
         private Obj _waitMovementObj;
 
         private bool _waitMessageBox;
-        private bool _waitMessageComplete;
+        private bool _waitForMessageCompletion;
         private Action _onWaitMessageFinished;
 
         private bool _waitReturnToField;
@@ -38,113 +41,150 @@ namespace Kermalis.PokemonGameEngine.Script
             _allScripts.Add(this);
         }
 
-        private bool ShouldLeaveLogicTick(bool update)
+        private void CheckWaitCry(ref bool isWaiting)
+        {
+            if (_waitCry)
+            {
+                isWaiting = true; // Still waiting for cry to finish
+            }
+        }
+        private void CheckDelay(bool updateDelay, ref bool isWaiting)
+        {
+            if (_delayRemaining == 0f)
+            {
+                return; // Not waiting
+            }
+            if (updateDelay)
+            {
+                _delayRemaining -= Display.DeltaTime;
+                if (_delayRemaining <= 0f)
+                {
+                    _delayRemaining = 0f;
+                    return; // Don't wait anymore
+                }
+            }
+            isWaiting = true; // Still have time to wait
+        }
+        private void CheckWaitMovement(ref bool isWaiting)
+        {
+            if (_waitMovementObj is null)
+            {
+                return; // Not waiting
+            }
+            if (!_waitMovementObj.IsMoving)
+            {
+                _waitMovementObj = null;
+                return; // Just finished moving
+            }
+            isWaiting = true; // Still waiting for it to stop moving
+        }
+        private void CheckWaitMessageBox(ref bool isWaiting)
+        {
+            if (!_waitMessageBox)
+            {
+                return; // Not waiting
+            }
+            if (_stringPrinter is not null && (_waitForMessageCompletion ? !_stringPrinter.IsDone : !_stringPrinter.IsEnded))
+            {
+                isWaiting = true;
+                return; // String printer is still open and the message is not done
+            }
+            // Message box finished
+            _waitMessageBox = false;
+            _onWaitMessageFinished?.Invoke();
+            _onWaitMessageFinished = null;
+        }
+        private void CheckWaitMultichoice(ref bool isWaiting)
+        {
+            if (_multichoiceWindow is null)
+            {
+                return; // Not waiting
+            }
+
+            int s = _multichoice.Selected;
+            _multichoice.HandleInputs();
+            if (_multichoiceWindow is null)
+            {
+                return; // Window was just closed
+            }
+
+            if (s != _multichoice.Selected)
+            {
+                _multichoice.RenderChoicesOntoWindow(_multichoiceWindow); // Update selection if it has changed
+            }
+            isWaiting = true;
+        }
+        private void CheckWaitReturnToField(ref bool isWaiting)
+        {
+            if (!_waitReturnToField)
+            {
+                return; // Not waiting
+            }
+            if (!Game.Instance.IsOnOverworld)
+            {
+                isWaiting = true;
+                return; // Still didn't return to overworld
+            }
+            // Returned to overworld
+            _waitReturnToField = false;
+            _onWaitReturnToFieldFinished?.Invoke();
+            _onWaitReturnToFieldFinished = null;
+        }
+
+        private bool IsWaitingForSomething(bool updateDelay)
         {
             if (_isDisposed)
             {
                 return true;
             }
-            bool stopRunning = _waitCry; // Wait cry needs no logic
-            if (_delay != 0)
+            bool isWaiting = false;
+            CheckWaitCry(ref isWaiting);
+            CheckDelay(updateDelay, ref isWaiting);
+            CheckWaitMovement(ref isWaiting);
+            CheckWaitMessageBox(ref isWaiting);
+            if (_isDisposed)
             {
-                if (update)
-                {
-                    _delay--;
-                }
-                stopRunning = true;
+                return true; // Callback can close the script
             }
-            if (_waitMovementObj is not null)
+            CheckWaitMultichoice(ref isWaiting);
+            CheckWaitReturnToField(ref isWaiting);
+            if (_isDisposed)
             {
-                if (_waitMovementObj.IsMoving)
-                {
-                    stopRunning = true;
-                }
-                else if (update)
-                {
-                    _waitMovementObj = null;
-                }
+                return true; // Callback can close the script
             }
-            if (_waitMessageBox)
-            {
-                // If "AwaitMessage" are not the first to run this tick, they will not update and set _waitMessageBox to false
-                if (_stringPrinter is not null && (_waitMessageComplete ? !_stringPrinter.IsDone : !_stringPrinter.IsEnded))
-                {
-                    stopRunning = true;
-                }
-                else if (update)
-                {
-                    _waitMessageBox = false;
-                    _onWaitMessageFinished?.Invoke();
-                    _onWaitMessageFinished = null;
-                    if (_isDisposed)
-                    {
-                        return true;
-                    }
-                }
-            }
-            if (_multichoiceWindow is not null)
-            {
-                stopRunning = true;
-                if (update)
-                {
-                    int s = _multichoice.Selected;
-                    _multichoice.HandleInputs();
-                    if (_multichoiceWindow is not null) // Was not just closed
-                    {
-                        if (s != _multichoice.Selected)
-                        {
-                            _multichoice.RenderChoicesOntoWindow(_multichoiceWindow);
-                        }
-                    }
-                }
-            }
-            if (_waitReturnToField)
-            {
-                if (!Engine.Instance.IsOnOverworld)
-                {
-                    stopRunning = true;
-                }
-                else if (update)
-                {
-                    _waitReturnToField = false;
-                    _onWaitReturnToFieldFinished?.Invoke();
-                    _onWaitReturnToFieldFinished = null;
-                    if (_isDisposed)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return stopRunning;
+            return isWaiting;
         }
-        public void LogicTick()
+        public void Update()
         {
-            bool update = true;
-            while (!ShouldLeaveLogicTick(update))
+            bool updateDelay = true; // Should update delay at the start of each frame but not when a new one starts
+            while (!IsWaitingForSomething(updateDelay))
             {
-                update = false;
+                updateDelay = false;
                 RunNextCommand();
             }
+
         }
 
-        public static void ProcessAll()
+        public static void UpdateAll()
         {
             foreach (ScriptContext ctx in _allScripts.ToArray()) // Copy the list so a script ending/starting does not crash here
             {
-                ctx.LogicTick();
+                ctx.Update();
             }
         }
 
         public void Dispose()
         {
-            if (!_isDisposed)
+            if (_isDisposed)
             {
-                _isDisposed = true;
-                _allScripts.Remove(this);
-                _reader.Dispose();
-                _onWaitMessageFinished = null;
-                _onWaitReturnToFieldFinished = null;
+                return;
             }
+
+            _isDisposed = true;
+            _allScripts.Remove(this);
+            _reader.Dispose();
+            _onWaitMessageFinished = null;
+            _onWaitReturnToFieldFinished = null;
         }
     }
 }

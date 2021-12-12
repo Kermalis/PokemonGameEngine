@@ -1,4 +1,4 @@
-﻿namespace Kermalis.PokemonGameEngine.Core
+﻿namespace Kermalis.PokemonGameEngine.Player
 {
     public enum DaycareState : byte
     {

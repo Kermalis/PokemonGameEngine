@@ -58,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void UpdateMini()
         {
-            Mini?.DeductReference(Game.OpenGL);
+            Mini?.DeductReference();
             Mini = PokemonImageLoader.GetMini(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, PartyPkmn.IsEgg);
         }
         // TODO: Make substitute imgs separate
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             if (updateSprite && (!substitute || updateSpriteIfSubstituted))
             {
                 Sprite sprite = pos.Sprite;
-                sprite.Image?.DeductReference(Game.OpenGL);
+                sprite.Image?.DeductReference();
                 sprite.Image = PokemonImageLoader.GetPokemonImage(Pkmn.KnownSpecies, Pkmn.KnownForm, Pkmn.KnownGender, Pkmn.KnownShiny, _backImage,
                     substitute, status2.HasFlag(PBEStatus2.Disguised) ? DisguisedPID : PartyPkmn.PID, PartyPkmn.IsEgg);
             }
@@ -98,37 +98,38 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         }
         public void UpdateInfoBar()
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             InfoBarImg.PushFrameBuffer(gl);
-            GLHelper.ClearColor(gl, ColorF.FromRGBA(48, 48, 48, 128));
+            GLHelper.ClearColor(gl, Colors.FromRGBA(48, 48, 48, 128));
             gl.Clear(ClearBufferMask.ColorBufferBit);
+
             // Nickname
-            GUIString.CreateAndRenderOneTimeString(gl, Pkmn.KnownNickname, Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(2, 3));
+            GUIString.CreateAndRenderOneTimeString(Pkmn.KnownNickname, Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(2, 3));
             // Gender
             PBEGender gender = _useKnownInfo && !Pkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? Pkmn.KnownGender : Pkmn.Gender;
-            GUIString.CreateAndRenderOneTimeGenderString(gl, gender, Font.Default, new Pos2D(51, -2));
+            GUIString.CreateAndRenderOneTimeGenderString(gender, Font.Default, new Pos2D(51, -2));
             // Level
             const int lvX = 62;
-            GUIString.CreateAndRenderOneTimeString(gl, "[LV]", Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX, 3));
-            GUIString.CreateAndRenderOneTimeString(gl, Pkmn.Level.ToString(), Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX + 12, 3));
+            GUIString.CreateAndRenderOneTimeString("[LV]", Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX, 3));
+            GUIString.CreateAndRenderOneTimeString(Pkmn.Level.ToString(), Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX + 12, 3));
             // Caught
-            if (_useKnownInfo && Pkmn.IsWild && Engine.Instance.Save.Pokedex.IsCaught(Pkmn.KnownSpecies))
+            if (_useKnownInfo && Pkmn.IsWild && Game.Instance.Save.Pokedex.IsCaught(Pkmn.KnownSpecies))
             {
-                GUIString.CreateAndRenderOneTimeString(gl, "*", Font.Default, FontColors.DefaultRed_O, new Pos2D(2, 12));
+                GUIString.CreateAndRenderOneTimeString("*", Font.Default, FontColors.DefaultRed_O, new Pos2D(2, 12));
             }
             // Status
             PBEStatus1 status = Pkmn.Status1;
             if (status != PBEStatus1.None)
             {
-                GUIString.CreateAndRenderOneTimeString(gl, status.ToString(), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(30, 13));
+                GUIString.CreateAndRenderOneTimeString(status.ToString(), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(30, 13));
             }
             // HP
             if (!_useKnownInfo)
             {
                 string str = Pkmn.HP.ToString();
                 Size2D strS = Font.PartyNumbers.MeasureString(str);
-                GUIString.CreateAndRenderOneTimeString(gl, str, Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(45 - (int)strS.Width, 28));
-                GUIString.CreateAndRenderOneTimeString(gl, "/" + Pkmn.MaxHP, Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(46, 28));
+                GUIString.CreateAndRenderOneTimeString(str, Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(45 - (int)strS.Width, 28));
+                GUIString.CreateAndRenderOneTimeString("/" + Pkmn.MaxHP, Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(46, 28));
             }
 
             const int lineStartX = 9;
@@ -140,13 +141,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 Renderer.EXP_SingleLine(lineStartX, 37, lineW, Pkmn.EXP, Pkmn.Level, Pkmn.Species, Pkmn.RevertForm);
             }
+
+
             GLHelper.PopFrameBuffer(gl);
         }
 
-        public void Delete(GL gl)
+        public void Delete()
         {
-            InfoBarImg.DeductReference(gl);
-            Mini?.DeductReference(gl);
+            InfoBarImg.DeductReference();
+            Mini?.DeductReference();
         }
     }
 

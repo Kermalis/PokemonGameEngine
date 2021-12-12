@@ -5,7 +5,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal sealed class CameraObj : Obj
     {
-        public static readonly CameraObj Camera = new();
+        public static readonly CameraObj Instance = new();
         public static Pos2D CameraVisualOffset;
         public static Obj CameraAttachedTo { get; private set; }
 
@@ -15,10 +15,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
         public static void Init()
         {
-            CameraAttachedTo = PlayerObj.Player;
-            Camera.Pos = PlayerObj.Player.Pos;
-            Camera.Map = PlayerObj.Player.Map;
-            Camera.Map.Objs.Add(Camera);
+            CameraAttachedTo = PlayerObj.Instance;
+            Instance.Pos = PlayerObj.Instance.Pos;
+            Instance.Map = PlayerObj.Instance.Map;
+            Instance.Map.Objs.Add(Instance);
         }
 
         public static void CopyMovementIfAttachedTo(Obj obj)
@@ -28,20 +28,25 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 CameraCopyMovement();
             }
         }
-        public static void CameraCopyMovement()
+        // TODO: (#69) Causes shaking because Obj.UpdateMovement() is also called on the camera as well as the obj it's following, causing the camera to get ahead
+        // Will happen in scripts if the player moves and the camera is on the player
+        private static void CameraCopyMovement()
         {
-            CameraObj c = Camera;
+            CameraObj c = Instance;
             Obj other = CameraAttachedTo;
-            c.IsMovingSelf = other.IsMovingSelf;
-            c.IsScriptMoving = other.IsScriptMoving;
-            c.MovementTimer = other.MovementTimer;
-            c.MovementSpeed = other.MovementSpeed;
+
+            c.UpdateMap(other.Map);
+
             c.Pos = other.Pos;
             c.VisualOffset = other.VisualOffset;
             c.PrevPos = other.PrevPos;
             c.PrevVisualOffset = other.PrevVisualOffset;
+
+            c.IsMovingSelf = other.IsMovingSelf;
+            c.IsScriptMoving = other.IsScriptMoving;
+            c.MovementTimer = other.MovementTimer;
+            c.MovementSpeed = other.MovementSpeed;
             c.VisualProgress = other.VisualProgress;
-            c.UpdateMap(other.Map);
         }
         public static void SetCameraAttachedTo(Obj o)
         {

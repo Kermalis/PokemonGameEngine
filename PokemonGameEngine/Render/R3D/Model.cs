@@ -1,5 +1,4 @@
-﻿using Silk.NET.OpenGL;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.R3D
@@ -24,19 +23,19 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                 * Matrix4x4.CreateTranslation(PR.Position);
         }
 
-        public void Draw(GL gl, ModelShader shader)
+        public void Render(ModelShader shader)
         {
             for (int i = 0; i < _meshes.Count; i++)
             {
-                _meshes[i].Draw(gl, shader);
+                _meshes[i].Render(shader);
             }
         }
 
-        public void Delete(GL gl)
+        public void Delete()
         {
             for (int i = 0; i < _meshes.Count; i++)
             {
-                _meshes[i].Delete(gl);
+                _meshes[i].Delete();
             }
         }
     }

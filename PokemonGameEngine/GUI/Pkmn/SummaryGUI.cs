@@ -10,12 +10,14 @@ using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.World;
 using Silk.NET.OpenGL;
 using System;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
@@ -39,13 +41,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             Ribbons
         }
 
+        private const short NOT_SELECTING_MOVES = -1;
+        public const short NO_MOVE_CHOSEN = -1;
+        /// <summary>Index of the cancel button, or the index of the move to learn</summary>
+        private const short CANCEL_BUTTON_INDEX = PkmnConstants.NumMoves;
+
         private readonly Mode _mode;
         private Page _page;
         private readonly BoxPokemon _pcPkmn;
         private readonly PartyPokemon _pPkmn;
         private readonly SpritedBattlePokemon _bPkmn;
         private readonly PBEMove _learningMove;
-        private int _selectingMove = -1;
+        private short _moveSelection;
 
         private FadeColorTransition _fadeTransition;
         private Action _onClosed;
@@ -62,17 +69,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _mode = mode;
             if (mode == Mode.LearnMove)
             {
-                SetSelectionVar(-1);
+                SetSelectionVar(NO_MOVE_CHOSEN);
                 _page = Page.Moves;
-                _selectingMove = 0;
+                _moveSelection = 0;
                 _learningMove = learningMove;
             }
             else
             {
                 _page = Page.Info;
+                _moveSelection = NOT_SELECTING_MOVES;
             }
 
-            _pageImage = new WriteableImage(Size2D.FromRelative(PageImageWidth, PageImageHeight, Game.RenderWidth, Game.RenderHeight));
+            _pageImage = new WriteableImage(Size2D.FromRelative(PageImageWidth, PageImageHeight, Display.RenderWidth, Display.RenderHeight));
 
             if (pkmn is PartyPokemon pPkmn)
             {
@@ -90,48 +98,64 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             UpdatePageImage();
 
             _onClosed = onClosed;
-            _fadeTransition = new FadeFromColorTransition(500, Colors.Black);
-            Engine.Instance.SetCallback(CB_FadeInSummary);
-            Engine.Instance.SetRCallback(RCB_Fading);
+
+            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            Game.Instance.SetCallback(CB_FadeInSummary);
         }
 
-        private void CloseSummaryMenu()
+        private void SetExitFadeOutCallback()
         {
-            _fadeTransition = new FadeToColorTransition(500, Colors.Black);
-            Engine.Instance.SetCallback(CB_FadeOutSummary);
-            Engine.Instance.SetRCallback(RCB_Fading);
+            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            Game.Instance.SetCallback(CB_FadeOutSummary);
         }
 
         private void CB_FadeInSummary()
         {
-            if (_fadeTransition.IsDone)
+            RenderFading();
+            if (!_fadeTransition.IsDone)
             {
-                _fadeTransition = null;
-                PlayPkmnCry();
-                SetProperCallback();
-                Engine.Instance.SetRCallback(RCB_RenderTick);
+                return;
             }
+
+            _fadeTransition = null;
+            PlayPkmnCry();
+            SetProperCallback();
         }
         private void CB_FadeOutSummary()
         {
-            if (_fadeTransition.IsDone)
+            RenderFading();
+            if (!_fadeTransition.IsDone)
             {
-                _fadeTransition = null;
-                GL gl = Game.OpenGL;
-                _pageImage.DeductReference(gl);
-                _pkmnImage.DeductReference(gl);
-                _onClosed();
-                _onClosed = null;
+                return;
             }
+
+            _fadeTransition = null;
+            _pageImage.DeductReference();
+            _pkmnImage.DeductReference();
+            _onClosed();
+            _onClosed = null;
         }
 
-        private void RCB_Fading(GL gl)
+        private void RenderFading()
         {
-            RCB_RenderTick(gl);
-            _fadeTransition.Render(gl);
+            Render();
+            _fadeTransition.Render();
         }
 
         #endregion
+
+        private int GetNumMovesPkmnHas()
+        {
+            if (_pPkmn is not null)
+            {
+                return _pPkmn.Moveset.CountMoves();
+            }
+            else if (_pcPkmn is not null)
+            {
+                return _pcPkmn.Moveset.CountMoves();
+            }
+            return _bPkmn.Pkmn.Moves.CountMoves();
+        }
 
         private void LoadPkmnImage()
         {
@@ -170,7 +194,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 pid = pPkmn.PID;
                 egg = pPkmn.IsEgg;
             }
-            _pkmnImage?.DeductReference(Game.OpenGL);
+            _pkmnImage?.DeductReference();
             _pkmnImage = PokemonImageLoader.GetPokemonImage(species, form, gender, shiny, false, false, pid, egg);
         }
         private void PlayPkmnCry()
@@ -214,7 +238,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void SetProperCallback()
         {
-            MainCallback cb;
+            MainCallbackDelegate cb;
             switch (_page)
             {
                 case Page.Info: cb = CB_InfoPage; break;
@@ -223,7 +247,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 case Page.Moves: cb = CB_MovesPage; break;
                 default: throw new Exception();
             }
-            Engine.Instance.SetCallback(cb);
+            Game.Instance.SetCallback(cb);
         }
         private void SwapPage(Page newPage)
         {
@@ -233,27 +257,27 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private static void SetSelectionVar(short index)
         {
-            Engine.Instance.Save.Vars[Var.SpecialVar_Result] = index;
+            Game.Instance.Save.Vars[Var.SpecialVar_Result] = index;
         }
 
         private void UpdatePageImage()
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             _pageImage.PushFrameBuffer(gl);
             GLHelper.ClearColor(gl, Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
-            GUIString.CreateAndRenderOneTimeString(gl, _page.ToString(), Font.Default, FontColors.DefaultBlack_I, new Pos2D(0, 0), scale: 2);
+            GUIString.CreateAndRenderOneTimeString(_page.ToString(), Font.Default, FontColors.DefaultBlack_I, new Pos2D(0, 0), scale: 2);
 
             switch (_page)
             {
-                case Page.Info: DrawInfoPage(gl); break;
-                case Page.Personal: DrawPersonalPage(gl); break;
-                case Page.Stats: DrawStatsPage(gl); break;
-                case Page.Moves: DrawMovesPage(gl); break;
+                case Page.Info: DrawInfoPage(); break;
+                case Page.Personal: DrawPersonalPage(); break;
+                case Page.Stats: DrawStatsPage(); break;
+                case Page.Moves: DrawMovesPage(); break;
             }
             GLHelper.PopFrameBuffer(gl);
         }
-        private void DrawInfoPage(GL gl)
+        private void DrawInfoPage()
         {
             const float winX = 0.03f;
             const float winY = 0.15f;
@@ -270,24 +294,24 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             uint xpW = (uint)Renderer.RelXToAbsX(0.3f);
             int xpX = Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, xpW, rightColCenterX);
             int xpY = Renderer.RelYToAbsY(rightColY + 0.61f);
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(128, 215, 135), new Rect2D(Pos2D.FromRelative(winX, winY), Size2D.FromRelative(winW, winH))); // TODO: ROUNDED 15
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(210, 210, 210), new Rect2D(Pos2D.FromRelative(rightColX, rightColY), Size2D.FromRelative(rightColW, rightColH))); // TODO: ROUNDED 8
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(128, 215, 135), new Rect2D(Pos2D.FromRelative(winX, winY), Size2D.FromRelative(winW, winH))); // TODO: ROUNDED 15
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(210, 210, 210), new Rect2D(Pos2D.FromRelative(rightColX, rightColY), Size2D.FromRelative(rightColW, rightColH))); // TODO: ROUNDED 8
 
             Font leftColFont = Font.Default;
-            ColorF[] leftColColors = FontColors.DefaultWhite_DarkerOutline_I;
+            Vector4[] leftColColors = FontColors.DefaultWhite_DarkerOutline_I;
             Font rightColFont = Font.Default;
-            ColorF[] rightColColors = FontColors.DefaultBlack_I;
+            Vector4[] rightColColors = FontColors.DefaultBlack_I;
 
             void PlaceLeftCol(int i, string leftColStr)
             {
                 float y = textStartY + (i * textSpacingY);
-                GUIString.CreateAndRenderOneTimeString(gl, leftColStr, leftColFont, leftColColors, Pos2D.FromRelative(leftColX, y));
+                GUIString.CreateAndRenderOneTimeString(leftColStr, leftColFont, leftColColors, Pos2D.FromRelative(leftColX, y));
             }
-            void PlaceRightCol(int i, string rightColStr, ColorF[] colors)
+            void PlaceRightCol(int i, string rightColStr, Vector4[] colors)
             {
                 float y = textStartY + (i * textSpacingY);
                 Size2D size = rightColFont.MeasureString(rightColStr);
-                GUIString.CreateAndRenderOneTimeString(gl, rightColStr, rightColFont, colors,
+                GUIString.CreateAndRenderOneTimeString(rightColStr, rightColFont, colors,
                     new Pos2D(Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, size.Width, rightColCenterX), Renderer.RelYToAbsY(y)));
             }
 
@@ -367,7 +391,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             str = toNextLvl.ToString();
             PlaceRightCol(5, str, rightColColors);
         }
-        private void DrawPersonalPage(GL gl)
+        private void DrawPersonalPage()
         {
             const float winX = 0.08f;
             const float winY = 0.15f;
@@ -376,18 +400,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float leftColX = winX + 0.03f;
             const float textStartY = winY + 0.05f;
             const float textSpacingY = 0.1f;
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(145, 225, 225), new Rect2D(Pos2D.FromRelative(winX, winY), Size2D.FromRelative(winW, winH))); // TODO: ROUNDED 15
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(145, 225, 225), new Rect2D(Pos2D.FromRelative(winX, winY), Size2D.FromRelative(winW, winH))); // TODO: ROUNDED 15
 
             Font leftColFont = Font.Default;
-            ColorF[] leftColColors = FontColors.DefaultBlack_I;
-            ColorF[] highlightColors = FontColors.DefaultRed_I;
+            Vector4[] leftColColors = FontColors.DefaultBlack_I;
+            Vector4[] highlightColors = FontColors.DefaultRed_I;
 
-            void Place(int i, int xOff, string leftColStr, ColorF[] colors)
+            void Place(int i, int xOff, string leftColStr, Vector4[] colors)
             {
                 float y = textStartY + (i * textSpacingY);
                 var pos = Pos2D.FromRelative(leftColX, y);
                 pos.X += xOff;
-                GUIString.CreateAndRenderOneTimeString(gl, leftColStr, leftColFont, colors, pos);
+                GUIString.CreateAndRenderOneTimeString(leftColStr, leftColFont, colors, pos);
             }
 
             PBENature nature;
@@ -464,7 +488,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 Place(6, 0, str, leftColColors);
             }
         }
-        private void DrawStatsPage(GL gl)
+        private void DrawStatsPage()
         {
             const float winX = 0.03f;
             const float winY = 0.15f;
@@ -490,20 +514,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             uint hpW = (uint)Renderer.RelXToAbsX(0.3f);
             int hpX = Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, hpW, rightColCenterX);
             int hpY = Renderer.RelYToAbsY(rightColY + 0.09f);
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(135, 145, 250), new Rect2D(Pos2D.FromRelative(winX, winY), Size2D.FromRelative(winW, winH))); // TODO: ROUNDED 12
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(135, 145, 250), new Rect2D(Pos2D.FromRelative(winX, winY), Size2D.FromRelative(winW, winH))); // TODO: ROUNDED 12
             // Stats
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(210, 210, 210), new Rect2D(Pos2D.FromRelative(rightColX, rightColY), Size2D.FromRelative(rightColW, rightColH))); // TODO: ROUNDED 8
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(210, 210, 210), new Rect2D(Pos2D.FromRelative(rightColX, rightColY), Size2D.FromRelative(rightColW, rightColH))); // TODO: ROUNDED 8
             // Abil
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(210, 210, 210), new Rect2D(Pos2D.FromRelative(abilX, abilY), Size2D.FromRelative(abilW, abilH))); // TODO: ROUNDED 5
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(210, 210, 210), new Rect2D(Pos2D.FromRelative(abilX, abilY), Size2D.FromRelative(abilW, abilH))); // TODO: ROUNDED 5
             // Abil desc
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(210, 210, 210), new Rect2D(Pos2D.FromRelative(leftColX, abilDescY), Pos2D.FromRelative(0.945f, 0.97f))); // TODO: ROUNDED 5
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(210, 210, 210), new Rect2D(Pos2D.FromRelative(leftColX, abilDescY), Pos2D.FromRelative(0.945f, 0.97f))); // TODO: ROUNDED 5
 
             Font leftColFont = Font.Default;
-            ColorF[] leftColColors = FontColors.DefaultWhite_DarkerOutline_I;
+            Vector4[] leftColColors = FontColors.DefaultWhite_DarkerOutline_I;
             Font rightColFont = Font.Default;
-            ColorF[] rightColColors = FontColors.DefaultBlack_I;
-            ColorF[] boostedColors = FontColors.DefaultRed_Lighter_O;
-            ColorF[] dislikedColors = FontColors.DefaultCyan_O;
+            Vector4[] rightColColors = FontColors.DefaultBlack_I;
+            Vector4[] boostedColors = FontColors.DefaultRed_Lighter_O;
+            Vector4[] dislikedColors = FontColors.DefaultCyan_O;
 
             void PlaceLeftCol(int i, string leftColStr, bool boosted, bool disliked)
             {
@@ -520,7 +544,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     y = textStart2Y + (i * textSpacingY);
                 }
-                ColorF[] colors;
+                Vector4[] colors;
                 if (boosted)
                 {
                     colors = boostedColors;
@@ -533,13 +557,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     colors = leftColColors;
                 }
-                GUIString.CreateAndRenderOneTimeString(gl, leftColStr, leftColFont, colors, Pos2D.FromRelative(leftColX, y));
+                GUIString.CreateAndRenderOneTimeString(leftColStr, leftColFont, colors, Pos2D.FromRelative(leftColX, y));
             }
-            void PlaceRightCol(int i, string rightColStr, ColorF[] colors)
+            void PlaceRightCol(int i, string rightColStr, Vector4[] colors)
             {
                 float y = i == -2 ? textStartY : textStart2Y + (i * textSpacingY);
                 Size2D s = rightColFont.MeasureString(rightColStr);
-                GUIString.CreateAndRenderOneTimeString(gl, rightColStr, rightColFont, colors,
+                GUIString.CreateAndRenderOneTimeString(rightColStr, rightColFont, colors,
                     new Pos2D(Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, s.Width, rightColCenterX), Renderer.RelYToAbsY(y)));
             }
 
@@ -623,12 +647,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             PlaceRightCol(4, str, rightColColors);
             // Ability
             str = PBEDataProvider.Instance.GetAbilityName(abil).English;
-            GUIString.CreateAndRenderOneTimeString(gl, str, rightColFont, rightColColors, Pos2D.FromRelative(abilTextX, abilTextY));
+            GUIString.CreateAndRenderOneTimeString(str, rightColFont, rightColColors, Pos2D.FromRelative(abilTextX, abilTextY));
             // Ability desc
             str = PBEDefaultDataProvider.Instance.GetAbilityDescription(abil).English;
-            GUIString.CreateAndRenderOneTimeString(gl, str, leftColFont, rightColColors, Pos2D.FromRelative(abilDescX, abilDescY));
+            GUIString.CreateAndRenderOneTimeString(str, leftColFont, rightColColors, Pos2D.FromRelative(abilDescX, abilDescY));
         }
-        private void DrawMovesPage(GL gl)
+        private void DrawMovesPage()
         {
             const float winX = 0.08f;
             const float winY = 0.15f;
@@ -644,11 +668,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float ppNumX = 0.35f;
             const float ppY = itemSpacingY / 2;
             const float cancelY = winY + moveY + (PkmnConstants.NumMoves * itemSpacingY);
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(250, 128, 120), new Rect2D(Pos2D.FromRelative(winX, winY), Size2D.FromRelative(winW, winH))); // TODO: ROUNDED 15
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(250, 128, 120), new Rect2D(Pos2D.FromRelative(winX, winY), Size2D.FromRelative(winW, winH))); // TODO: ROUNDED 15
 
             Font moveFont = Font.Default;
-            ColorF[] moveColors = FontColors.DefaultWhite_DarkerOutline_I;
-            ColorF[] ppColors = FontColors.DefaultBlack_I;
+            Vector4[] moveColors = FontColors.DefaultWhite_DarkerOutline_I;
+            Vector4[] ppColors = FontColors.DefaultBlack_I;
 
             void Place(int i, PBEMove move, int pp, int maxPP)
             {
@@ -656,33 +680,34 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 float x = moveTextX;
                 float y = winY + moveY + (i * itemSpacingY);
                 string str = PBEDataProvider.Instance.GetTypeName(mData.Type).English;
-                GUIString.CreateAndRenderOneTimeString(gl, str, moveFont, moveColors, Pos2D.FromRelative(x, y));
+                GUIString.CreateAndRenderOneTimeString(str, moveFont, moveColors, Pos2D.FromRelative(x, y));
                 x += moveX;
                 str = PBEDataProvider.Instance.GetMoveName(move).English;
-                GUIString.CreateAndRenderOneTimeString(gl, str, moveFont, moveColors, Pos2D.FromRelative(x, y));
+                GUIString.CreateAndRenderOneTimeString(str, moveFont, moveColors, Pos2D.FromRelative(x, y));
                 x = moveTextX + ppX;
                 y += ppY;
                 str = "PP";
-                GUIString.CreateAndRenderOneTimeString(gl, str, moveFont, ppColors, Pos2D.FromRelative(x, y));
+                GUIString.CreateAndRenderOneTimeString(str, moveFont, ppColors, Pos2D.FromRelative(x, y));
                 x = moveTextX + ppNumX;
                 str = string.Format("{0}/{1}", pp, maxPP);
                 Size2D s = moveFont.MeasureString(str);
-                GUIString.CreateAndRenderOneTimeString(gl, str, moveFont, ppColors,
+                GUIString.CreateAndRenderOneTimeString(str, moveFont, ppColors,
                     new Pos2D(Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, s.Width, x), Renderer.RelYToAbsY(y)));
 
                 DrawSelection(i);
             }
+            // Draws the selection border only if this is the selected move
             void DrawSelection(int i)
             {
-                if (_selectingMove != i)
+                if (_moveSelection != i)
                 {
                     return;
                 }
                 float x = moveColX;
                 float y = winY + moveY + (i * itemSpacingY);
                 float w = moveColW;
-                float h = i == PkmnConstants.NumMoves ? itemSpacingY / 2 : itemSpacingY;
-                GUIRenderer.Instance.DrawRectangle(ColorF.FromRGBA(48, 180, 255, 200), new Rect2D(Pos2D.FromRelative(x, y), Size2D.FromRelative(w, h))); // TODO: ROUNDED 5
+                float h = i == CANCEL_BUTTON_INDEX ? itemSpacingY / 2 : itemSpacingY;
+                GUIRenderer.Instance.DrawRectangle(Colors.FromRGBA(48, 180, 255, 200), new Rect2D(Pos2D.FromRelative(x, y), Size2D.FromRelative(w, h))); // TODO: ROUNDED 5
             }
 
             // Moves
@@ -738,32 +763,61 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             // Cancel or new move
             if (_learningMove != PBEMove.None)
             {
-                ColorF[] learnColors = FontColors.DefaultBlue_I;
+                Vector4[] learnColors = FontColors.DefaultBlue_I;
                 IPBEMoveData mData = PBEDataProvider.Instance.GetMoveData(_learningMove);
                 float x = moveTextX;
                 string str = PBEDataProvider.Instance.GetTypeName(mData.Type).English;
-                GUIString.CreateAndRenderOneTimeString(gl, str, moveFont, learnColors, Pos2D.FromRelative(x, cancelY));
+                GUIString.CreateAndRenderOneTimeString(str, moveFont, learnColors, Pos2D.FromRelative(x, cancelY));
                 x += moveX;
                 str = PBEDataProvider.Instance.GetMoveName(_learningMove).English;
-                GUIString.CreateAndRenderOneTimeString(gl, str, moveFont, learnColors, Pos2D.FromRelative(x, cancelY));
-                DrawSelection(PkmnConstants.NumMoves);
+                GUIString.CreateAndRenderOneTimeString(str, moveFont, learnColors, Pos2D.FromRelative(x, cancelY));
+                DrawSelection(CANCEL_BUTTON_INDEX);
             }
             else
             {
-                if (_selectingMove != -1)
+                // Place cancel button if we're selecting a move
+                if (_moveSelection != NOT_SELECTING_MOVES)
                 {
                     string str = "Cancel";
-                    GUIString.CreateAndRenderOneTimeString(gl, str, moveFont, moveColors, Pos2D.FromRelative(moveTextX, cancelY));
-                    DrawSelection(PkmnConstants.NumMoves);
+                    GUIString.CreateAndRenderOneTimeString(str, moveFont, moveColors, Pos2D.FromRelative(moveTextX, cancelY));
+                    DrawSelection(CANCEL_BUTTON_INDEX);
                 }
             }
         }
 
         private void CB_InfoPage()
         {
+            HandleInputs_InfoPage();
+            Render();
+        }
+        private void CB_PersonalPage()
+        {
+            HandleInputs_PersonalPage();
+            Render();
+        }
+        private void CB_StatsPage()
+        {
+            HandleInputs_StatsPage();
+            Render();
+        }
+        private void CB_MovesPage()
+        {
+            if (_moveSelection == NOT_SELECTING_MOVES)
+            {
+                HandleInputs_MovesPage();
+            }
+            else
+            {
+                HandleInputs_MovesPage_SelectingMove();
+            }
+            Render();
+        }
+
+        private void HandleInputs_InfoPage()
+        {
             if (InputManager.IsPressed(Key.B))
             {
-                CloseSummaryMenu();
+                SetExitFadeOutCallback();
                 return;
             }
             if (InputManager.IsPressed(Key.Right))
@@ -772,11 +826,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 return;
             }
         }
-        private void CB_PersonalPage()
+        private void HandleInputs_PersonalPage()
         {
             if (InputManager.IsPressed(Key.B))
             {
-                CloseSummaryMenu();
+                SetExitFadeOutCallback();
                 return;
             }
             if (InputManager.IsPressed(Key.Left))
@@ -790,11 +844,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 return;
             }
         }
-        private void CB_StatsPage()
+        private void HandleInputs_StatsPage()
         {
             if (InputManager.IsPressed(Key.B))
             {
-                CloseSummaryMenu();
+                SetExitFadeOutCallback();
                 return;
             }
             if (InputManager.IsPressed(Key.Left))
@@ -808,80 +862,106 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 return;
             }
         }
-        private void CB_MovesPage()
+        private void HandleInputs_MovesPage()
         {
-            if (_selectingMove != -1)
+            // Start selecting a move
+            if (InputManager.IsPressed(Key.A))
             {
-                if (InputManager.IsPressed(Key.A))
-                {
-                    if (_mode == Mode.LearnMove)
-                    {
-                        SetSelectionVar((short)_selectingMove);
-                        CloseSummaryMenu();
-                    }
-                    else
-                    {
-                        if (_selectingMove == PkmnConstants.NumMoves)
-                        {
-                            _selectingMove = -1;
-                            UpdatePageImage();
-                        }
-                    }
-                    return;
-                }
-                if (InputManager.IsPressed(Key.B))
-                {
-                    _selectingMove = -1;
-                    UpdatePageImage();
-                    return;
-                }
-                if (InputManager.IsPressed(Key.Up))
-                {
-                    if (_selectingMove != 0)
-                    {
-                        _selectingMove--;
-                        UpdatePageImage();
-                    }
-                    return;
-                }
-                if (InputManager.IsPressed(Key.Down))
-                {
-                    if (_selectingMove != PkmnConstants.NumMoves)
-                    {
-                        _selectingMove++;
-                        UpdatePageImage();
-                    }
-                    return;
-                }
+                _moveSelection = 0;
+                UpdatePageImage();
+                return;
             }
-            else
+            // Exit summary
+            if (InputManager.IsPressed(Key.B))
             {
-                if (InputManager.IsPressed(Key.A))
+                SetExitFadeOutCallback();
+                return;
+            }
+            // Go to stats page
+            if (InputManager.IsPressed(Key.Left))
+            {
+                SwapPage(Page.Stats);
+                return;
+            }
+        }
+        private void HandleInputs_MovesPage_SelectingMove()
+        {
+            // Choose selected move
+            if (InputManager.IsPressed(Key.A))
+            {
+                if (_mode == Mode.LearnMove)
                 {
-                    _selectingMove = 0;
+                    if (_moveSelection == CANCEL_BUTTON_INDEX)
+                    {
+                        _moveSelection = NO_MOVE_CHOSEN;
+                    }
+                    SetSelectionVar(_moveSelection);
+                    SetExitFadeOutCallback();
+                }
+                else // Regular modes, only cancel does anything
+                {
+                    if (_moveSelection == CANCEL_BUTTON_INDEX)
+                    {
+                        _moveSelection = NOT_SELECTING_MOVES;
+                        UpdatePageImage();
+                    }
+                }
+                return;
+            }
+            // Stop selecting a move
+            if (InputManager.IsPressed(Key.B))
+            {
+                if (_mode == Mode.LearnMove)
+                {
+                    SetSelectionVar(NO_MOVE_CHOSEN);
+                    SetExitFadeOutCallback();
+                }
+                else // Regular modes
+                {
+                    _moveSelection = NOT_SELECTING_MOVES;
                     UpdatePageImage();
-                    return;
                 }
-                if (InputManager.IsPressed(Key.B))
+                return;
+            }
+            // Go up a move
+            if (InputManager.IsPressed(Key.Up))
+            {
+                if (_moveSelection == CANCEL_BUTTON_INDEX)
                 {
-                    CloseSummaryMenu();
-                    return;
+                    _moveSelection = (short)(GetNumMovesPkmnHas() - 1);
+                    UpdatePageImage();
                 }
-                if (InputManager.IsPressed(Key.Left))
+                else if (_moveSelection > 0)
                 {
-                    SwapPage(Page.Stats);
-                    return;
+                    _moveSelection--;
+                    UpdatePageImage();
                 }
+                return;
+            }
+            // Go down a move
+            if (InputManager.IsPressed(Key.Down))
+            {
+                if (_moveSelection != CANCEL_BUTTON_INDEX)
+                {
+                    _moveSelection++;
+                    if (_moveSelection >= GetNumMovesPkmnHas())
+                    {
+                        _moveSelection = CANCEL_BUTTON_INDEX;
+                    }
+                    UpdatePageImage();
+                }
+                return;
             }
         }
 
-        private void RCB_RenderTick(GL gl)
+        private void Render()
         {
+            GL gl = Display.OpenGL;
             //Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(215, 231, 230, 255), Renderer.Color(231, 163, 0, 255), Renderer.Color(242, 182, 32, 255));
-            GLHelper.ClearColor(gl, ColorF.FromRGB(31, 31, 31));
+            GLHelper.ClearColor(gl, Colors.FromRGB(31, 31, 31));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
-            AnimatedImage.UpdateCurrentFrameForAll();
+            _pkmnImage.Update();
             _pkmnImage.Render(Pos2D.CenterXBottomY(0.2f, 0.6f, _pkmnImage.Size));
 
             _pageImage.Render(Pos2D.FromRelative(1f - PageImageWidth, 1f - PageImageHeight));

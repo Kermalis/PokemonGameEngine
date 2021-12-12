@@ -5,11 +5,11 @@
     LockAllObjs
     MoveObj LOCALID_PLAYER TestMovement_FaceNorth
     AwaitObjMovement LOCALID_PLAYER
-    Delay 20
+    Delay 1
     PlayCry Species.Groudon 0
     Message TestText_GroudonGyaoo
     AwaitCry
-    Delay 10
+    Delay 0.5
     AwaitMessageComplete
     CloseMessage
     WildBattle Species.Groudon 0 70

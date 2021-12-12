@@ -1,16 +1,17 @@
-﻿#if DEBUG_DAYCARE_LOGEGG
-using Kermalis.PokemonGameEngine.Debug;
-#endif
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+#if DEBUG_DAYCARE_LOGEGG
+using Kermalis.PokemonGameEngine.Debug;
+#endif
 
-namespace Kermalis.PokemonGameEngine.Core
+namespace Kermalis.PokemonGameEngine.Player
 {
     internal sealed class Daycare
     {
@@ -53,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         public void GiveEgg()
         {
-            if (Engine.Instance.Save.PlayerParty.Add(new PartyPokemon(_offspring)) == -1)
+            if (Game.Instance.Save.PlayerParty.Add(new PartyPokemon(_offspring)) == -1)
             {
                 throw new Exception();
             }
@@ -152,7 +153,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         private static byte GetCompatibility_OvalCharm(BoxPokemon p0, BoxPokemon p1)
         {
-            bool hasCharm = Engine.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][ItemType.OvalCharm] is not null;
+            bool hasCharm = Game.Instance.Save.PlayerInventory[ItemPouchType.KeyItems][ItemType.OvalCharm] is not null;
             byte compat = GetCompatibility(p0, p1);
             if (hasCharm)
             {
@@ -244,7 +245,7 @@ namespace Kermalis.PokemonGameEngine.Core
         private static bool GetOffspringShininess(BoxPokemon p0, BoxPokemon p1)
         {
             int chance = 1;
-            if (Utils.HasShinyCharm())
+            if (Game.Instance.Save.PlayerInventory.HasShinyCharm())
             {
                 chance += 2;
             }
@@ -368,11 +369,11 @@ namespace Kermalis.PokemonGameEngine.Core
             AddMoves(defaultMoves);
 
             // Add moves that the parents both know, that the offspring can learn by level up
-            IEnumerable<PBEMove> GetNonNoneMoves(BoxPokemon bp)
+            IEnumerable<PBEMove> GetNonNoneMoves(IEnumerable<BoxMoveset.BoxMovesetSlot> moves)
             {
-                return bp.Moveset.Where(ms => ms.Move != PBEMove.None).Select(ms => ms.Move);
+                return moves.Where(ms => ms.Move != PBEMove.None).Select(ms => ms.Move);
             }
-            IEnumerable<PBEMove> shared = GetNonNoneMoves(p0).Intersect(GetNonNoneMoves(p1)).Where(m => levelUp.CanLearnMoveEventually(m));
+            IEnumerable<PBEMove> shared = GetNonNoneMoves(p0.Moveset).Intersect(GetNonNoneMoves(p1.Moveset)).Where(m => levelUp.CanLearnMoveEventually(m));
             AddMoves(shared);
 
             // TODO: TMHM from father or genderless parent
@@ -477,7 +478,7 @@ namespace Kermalis.PokemonGameEngine.Core
         // Egg hatch
         private static byte GetEggCyclesToSubtract()
         {
-            foreach (PartyPokemon p in Engine.Instance.Save.PlayerParty)
+            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
             {
                 if (p.IsEgg)
                 {
@@ -501,7 +502,7 @@ namespace Kermalis.PokemonGameEngine.Core
 
             _eggCycleCounter = 0;
             byte toRemove = GetEggCyclesToSubtract();
-            foreach (PartyPokemon p in Engine.Instance.Save.PlayerParty)
+            foreach (PartyPokemon p in Game.Instance.Save.PlayerParty)
             {
                 if (p.IsEgg && p.Friendship > 0)
                 {

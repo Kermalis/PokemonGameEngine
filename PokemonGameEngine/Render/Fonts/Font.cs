@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System.Collections.Generic;
 using System.IO;
@@ -17,11 +16,11 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
         private readonly Dictionary<ushort, Glyph> _glyphs;
         private readonly (string OldKey, ushort NewKey)[] _overrides;
 
-        public static Font Default { get; }
-        public static Font DefaultSmall { get; }
-        public static Font PartyNumbers { get; }
+        public static Font Default { get; private set; } = null!; // Initialized in Init()
+        public static Font DefaultSmall { get; private set; } = null!; // Initialized in Init()
+        public static Font PartyNumbers { get; private set; } = null!; // Initialized in Init()
 
-        static Font()
+        public static void Init()
         {
             Default = new Font("Fonts\\Default.kermfont", new Size2D(1024, 1024), new (string, ushort)[]
             {
@@ -83,13 +82,14 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
                     _glyphs.Add(key, g);
                     posInAtlas.X += g.CharWidth;
                 }
+
                 // Create the texture
+                GL gl = Display.OpenGL;
                 fixed (byte* dst = dest)
                 {
-                    GL gl = Game.OpenGL;
-                    GLHelper.ActiveTexture(gl, TextureUnit.Texture0);
-                    Texture = GLHelper.GenTexture(gl);
-                    GLHelper.BindTexture(gl, Texture);
+                    gl.ActiveTexture(TextureUnit.Texture0);
+                    Texture = gl.GenTexture();
+                    gl.BindTexture(TextureTarget.Texture2D, Texture);
                     gl.TexImage2D(TextureTarget.Texture2D, 0, (int)InternalFormat.R8ui, atlasSize.Width, atlasSize.Height, 0, PixelFormat.RedInteger, PixelType.UnsignedByte, dst);
                     gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
                     gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
@@ -171,7 +171,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
         {
             gl.DeleteTexture(Texture);
         }
-        public static void GameExit(GL gl)
+        public static void Quit(GL gl)
         {
             Default.Delete(gl);
             DefaultSmall.Delete(gl);

@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonGameEngine.Input;
-using Silk.NET.OpenGL;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -89,7 +88,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             }
         }
 
-        public abstract void Render(GL gl);
+        public abstract void Render();
 
         public virtual void Add(T c)
         {

@@ -1,6 +1,8 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
+using Kermalis.PokemonGameEngine.Render.GUIs;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
@@ -8,24 +10,24 @@ namespace Kermalis.PokemonGameEngine.Render
     {
         public static void HP_TripleLine(int x, int y, uint width, float percent)
         {
-            ColorF hpSides, hpMid;
+            Vector4 hpSides, hpMid;
             if (percent <= 0.20)
             {
-                hpSides = ColorF.FromRGB(148, 33, 49);
-                hpMid = ColorF.FromRGB(255, 49, 66);
+                hpSides = Colors.V4FromRGB(148, 33, 49);
+                hpMid = Colors.V4FromRGB(255, 49, 66);
             }
             else if (percent <= 0.50)
             {
-                hpSides = ColorF.FromRGB(156, 99, 16);
-                hpMid = ColorF.FromRGB(247, 181, 0);
+                hpSides = Colors.V4FromRGB(156, 99, 16);
+                hpMid = Colors.V4FromRGB(247, 181, 0);
             }
             else
             {
-                hpSides = ColorF.FromRGB(0, 140, 41);
-                hpMid = ColorF.FromRGB(0, 255, 74);
+                hpSides = Colors.V4FromRGB(0, 140, 41);
+                hpMid = Colors.V4FromRGB(0, 255, 74);
             }
-            GUIRenderer.Instance.DrawRectangle(ColorF.FromRGB(49, 49, 49), new Rect2D(new Pos2D(x, y), new Size2D(width, 5)));
-            GUIRenderer.Instance.FillRectangle(ColorF.FromRGB(33, 33, 33), new Rect2D(new Pos2D(x + 1, y + 1), new Size2D(width - 2, 3)));
+            GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(49, 49, 49), new Rect2D(new Pos2D(x, y), new Size2D(width, 5)));
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(33, 33, 33), new Rect2D(new Pos2D(x + 1, y + 1), new Size2D(width - 2, 3)));
             uint theW = (uint)((width - 2) * percent);
             if (theW == 0 && percent > 0)
             {
@@ -64,14 +66,14 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public static void EXP_SingleLine(int x, int y, uint width, float percent)
         {
-            GUIRenderer.Instance.DrawRectangle(ColorF.FromRGB(49, 49, 49), new Rect2D(new Pos2D(x, y), new Size2D(width, 3)));
-            GUIRenderer.Instance.DrawHorizontalLine_Width(ColorF.FromRGB(33, 33, 33), x + 1, y + 1, width - 2);
+            GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(49, 49, 49), new Rect2D(new Pos2D(x, y), new Size2D(width, 3)));
+            GUIRenderer.Instance.DrawHorizontalLine_Width(Colors.V4FromRGB(33, 33, 33), x + 1, y + 1, width - 2);
             uint theW = (uint)((width - 2) * percent);
             if (theW == 0 && percent > 0)
             {
                 theW = 1;
             }
-            GUIRenderer.Instance.DrawHorizontalLine_Width(ColorF.FromRGB(0, 160, 255), x + 1, y + 1, theW);
+            GUIRenderer.Instance.DrawHorizontalLine_Width(Colors.V4FromRGB(0, 160, 255), x + 1, y + 1, theW);
         }
     }
 }

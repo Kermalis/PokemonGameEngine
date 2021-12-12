@@ -13,11 +13,11 @@ namespace Kermalis.PokemonGameEngine.Script
         private bool IsTrainerDefeated(out Flag trainer)
         {
             trainer = ReadVarOrEnum<Flag>();
-            return Engine.Instance.Save.Flags[trainer];
+            return Game.Instance.Save.Flags[trainer];
         }
         private static void DisableEventObjMovement()
         {
-            ushort id = (ushort)Engine.Instance.Save.Vars[Var.LastTalked];
+            ushort id = (ushort)Game.Instance.Save.Vars[Var.LastTalked];
             if (id == Overworld.PlayerId)
             {
                 return;
@@ -39,14 +39,14 @@ namespace Kermalis.PokemonGameEngine.Script
         }
         private void OnTrainerBattleFinished_NoContinue(Flag trainer)
         {
-            Engine.Instance.Save.Flags[trainer] = true;
+            Game.Instance.Save.Flags[trainer] = true;
             DisableEventObjMovement();
             SetAllLock(false);
             Dispose();
         }
         private void OnTrainerBattleFinished_Continue(Flag trainer, uint continueOffset)
         {
-            Engine.Instance.Save.Flags[trainer] = true;
+            Game.Instance.Save.Flags[trainer] = true;
             DisableEventObjMovement();
             _reader.BaseStream.Position = continueOffset;
         }

@@ -1,9 +1,9 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render;
+﻿using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Interactive
 {
@@ -11,11 +11,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
     {
         public GUIString ArrowStr;
         public GUIString Str;
-        public ColorF[] TextColors;
-        public ColorF[] SelectedColors;
-        public ColorF[] DisabledColors;
+        public Vector4[] TextColors;
+        public Vector4[] SelectedColors;
+        public Vector4[] DisabledColors;
 
-        public TextGUIChoice(GUIString str, Action command, ColorF[] textColors, ColorF[] selectedColors, ColorF[] disabledColors, bool isEnabled)
+        public TextGUIChoice(GUIString str, Action command, Vector4[] textColors, Vector4[] selectedColors, Vector4[] disabledColors, bool isEnabled)
             : base(command, isEnabled)
         {
             ArrowStr = new GUIString("→", str.Font, null);
@@ -27,10 +27,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
 
         public override void Dispose()
         {
-            GL gl = Game.OpenGL;
             Command = null;
-            ArrowStr.Delete(gl);
-            Str.Delete(gl);
+            ArrowStr.Delete();
+            Str.Delete();
         }
     }
 
@@ -39,12 +38,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
     {
         public bool BottomAligned;
         public Font Font;
-        public ColorF[] TextColors;
-        public ColorF[] SelectedColors;
-        public ColorF[] DisabledColors;
+        public Vector4[] TextColors;
+        public Vector4[] SelectedColors;
+        public Vector4[] DisabledColors;
 
         public TextGUIChoices(float x, float y, float spacing = 3, bool bottomAlign = false, Action backCommand = null,
-            Font font = null, ColorF[] textColors = null, ColorF[] selectedColors = null, ColorF[] disabledColors = null)
+            Font font = null, Vector4[] textColors = null, Vector4[] selectedColors = null, Vector4[] disabledColors = null)
             : base(x, y, spacing, backCommand: backCommand)
         {
             Font = font;
@@ -55,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         }
 
         public void AddOne(string text, Action command, bool isEnabled = true,
-            Font font = null, ColorF[] textColors = null, ColorF[] selectedColors = null, ColorF[] disabledColors = null)
+            Font font = null, Vector4[] textColors = null, Vector4[] selectedColors = null, Vector4[] disabledColors = null)
         {
             font ??= Font;
             textColors ??= TextColors;
@@ -65,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             Add(new TextGUIChoice(str, command, textColors, selectedColors, disabledColors, isEnabled));
         }
 
-        public override void Render(GL gl)
+        public override void Render()
         {
             float y1 = Y * GLHelper.CurrentHeight;
             int x = Renderer.RelXToAbsX(X);
@@ -78,7 +77,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                 TextGUIChoice c = _choices[i];
                 Font font = c.Str.Font;
                 bool isSelected = Selected == i;
-                ColorF[] colors;
+                Vector4[] colors;
                 if (c.IsEnabled)
                 {
                     colors = isSelected ? c.SelectedColors : c.TextColors;
@@ -90,11 +89,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                 Size2D arrowSize = font.MeasureString("→ ");
                 // If this is bottom align, we need to adjust the y
                 int iy = BottomAligned ? (int)y - (int)arrowSize.Height : (int)y;
-                c.Str.Render(gl, new Pos2D(x + (int)arrowSize.Width, iy), colors);
+                c.Str.Render(new Pos2D(x + (int)arrowSize.Width, iy), colors);
                 // Draw selection arrow
                 if (isSelected)
                 {
-                    c.ArrowStr.Render(gl, new Pos2D(x, iy), colors);
+                    c.ArrowStr.Render(new Pos2D(x, iy), colors);
                 }
 
                 if (BottomAligned)
@@ -150,15 +149,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             choices.AddOne("Yes", () => clickAction(true));
             choices.AddOne("No", () => clickAction(false));
             Size2D s = choices.GetSize();
-            window = new Window(new RelPos2D(x, y), s, Colors.White);
+            window = new Window(new RelPos2D(x, y), s, Colors.White4);
             choices.RenderChoicesOntoWindow(window);
         }
         public void RenderChoicesOntoWindow(Window window)
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             window.Image.PushFrameBuffer(gl);
             window.ClearImagePushed(gl);
-            Render(gl);
+            Render();
             GLHelper.PopFrameBuffer(gl);
         }
     }

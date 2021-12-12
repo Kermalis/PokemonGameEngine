@@ -1,10 +1,10 @@
 #version 330 core
 
-out vec4 finalColor;
+out vec4 out_color;
 
 uniform vec4 color;
 
 void main()
 {
-    finalColor = color;
+    out_color = color;
 }

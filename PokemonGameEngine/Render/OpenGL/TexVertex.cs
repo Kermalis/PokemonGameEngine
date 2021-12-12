@@ -47,10 +47,11 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             _indices[_indexCount++] = vIndex + 3;
         }
 
-        public unsafe void Finish(GL gl, out uint indexCount, out uint vao, out uint vbo, out uint ebo)
+        public unsafe void Finish(out uint indexCount, out uint vao, out uint vbo, out uint ebo)
         {
             indexCount = _indexCount;
 
+            GL gl = Display.OpenGL;
             // Create vao
             vao = gl.GenVertexArray();
             gl.BindVertexArray(vao);
@@ -73,12 +74,8 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             // Now set attribs
             gl.EnableVertexAttribArray(0);
             gl.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, TexVertex.SizeOf, (void*)TexVertex.OffsetOfPos);
-            gl.DisableVertexAttribArray(0);
             gl.EnableVertexAttribArray(1);
             gl.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, TexVertex.SizeOf, (void*)TexVertex.OffsetOfTexCoords);
-            gl.DisableVertexAttribArray(1);
-
-            gl.BindVertexArray(0);
         }
     }
 }

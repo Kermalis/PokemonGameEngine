@@ -1,38 +1,42 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
-using Silk.NET.OpenGL;
-using System;
+using Kermalis.PokemonGameEngine.Render.GUIs;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
 {
     internal sealed class FadeToColorTransition : FadeColorTransition
     {
-        private TimeSpan _cur;
-        private readonly TimeSpan _end;
-        private readonly ColorF _color;
+        private readonly float _duration;
+        private readonly Vector4 _color;
+        private float _time;
 
-        public FadeToColorTransition(int totalMilliseconds, in ColorF color)
+        public FadeToColorTransition(float seconds, in Vector4 color)
         {
-            _cur = new TimeSpan();
-            _end = TimeSpan.FromMilliseconds(totalMilliseconds);
+            _duration = seconds;
             _color = color;
         }
 
-        public override void Render(GL gl)
+        public static FadeToColorTransition ToBlackStandard()
         {
-            if (IsDone)
-            {
-                GUIRenderer.Instance.FillRectangle(_color, new Rect2D(new Pos2D(0, 0), Size2D.FromRelative(1f, 1f)));
-                return;
-            }
-            float progress = (float)Renderer.GetAnimationProgress(_end, ref _cur);
-            ColorF c = _color;
-            c.A = progress;
-            GUIRenderer.Instance.FillRectangle(c, new Rect2D(new Pos2D(0, 0), Size2D.FromRelative(1f, 1f)));
+            return new FadeToColorTransition(0.5f, Colors.Black4);
+        }
 
-            if (!IsDone && progress >= 1)
+        public override void Render()
+        {
+            Vector4 c = _color;
+            if (!IsDone)
             {
-                IsDone = true;
+                _time += Display.DeltaTime;
+                float progress = _time / _duration;
+                if (progress >= 1f)
+                {
+                    progress = 1f;
+                    IsDone = true;
+                }
+
+                c.W = progress; // Set alpha
             }
+            GUIRenderer.Instance.FillRectangle(c, new Rect2D(new Pos2D(0, 0), Size2D.FromRelative(1f, 1f)));
         }
     }
 }

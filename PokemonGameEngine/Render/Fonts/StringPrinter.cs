@@ -5,6 +5,7 @@ using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI
 {
@@ -18,38 +19,37 @@ namespace Kermalis.PokemonGameEngine.GUI
 
     internal sealed class StringPrinter
     {
+        // Chars per second
+        private const float PRINT_SPEED_SLOW = 10f;
+        //private const float PRINT_SPEED_NORMAL = 40f;
+        private const float PRINT_SPEED_FAST = 70f;
+
         private static readonly List<StringPrinter> _allStringPrinters = new();
 
         private readonly Window _window;
 
         private readonly GUIString _str;
         private int _index;
+        private float _charTimer;
 
         private StringPrinterResult _result;
         private bool _pressedDone;
         public bool IsDone => _result == StringPrinterResult.Ended && _pressedDone;
         public bool IsEnded => _result == StringPrinterResult.Ended;
 
-        public StringPrinter(Window w, string str, Font font, ColorF[] strColors, Pos2D pos, uint scale = 1)
+        public StringPrinter(Window w, string str, Font font, Vector4[] strColors, Pos2D pos, uint scale = 1)
         {
             _window = w;
-            _str = new GUIString(Engine.Instance.StringBuffers.ApplyBuffers(str), font, strColors, pos: pos, allVisible: false, scale: scale);
+            _str = new GUIString(Game.Instance.StringBuffers.ApplyBuffers(str), font, strColors, pos: pos, allVisible: false, scale: scale);
             w.ClearImage();
             _allStringPrinters.Add(this);
         }
-        public static StringPrinter CreateStandardMessageBox(Window w, string str, Font font, ColorF[] strColors, uint scale = 1)
+        public static StringPrinter CreateStandardMessageBox(Window w, string str, Font font, Vector4[] strColors, uint scale = 1)
         {
             return new StringPrinter(w, str, font, strColors, Pos2D.FromRelative(0.05f, 0.01f), scale: scale);
         }
 
-        public void Delete()
-        {
-            GL gl = Game.OpenGL;
-            _str.Delete(gl);
-            _allStringPrinters.Remove(this);
-        }
-
-        public void LogicTick()
+        public void Update()
         {
             bool IsDown()
             {
@@ -63,7 +63,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 case StringPrinterResult.EnoughChars:
                 {
-                    int speed = IsDown() ? 3 : 1;
+                    float speed = IsDown() ? PRINT_SPEED_FAST : PRINT_SPEED_SLOW;
                     AdvanceAndDrawString(speed);
                     break;
                 }
@@ -98,14 +98,22 @@ namespace Kermalis.PokemonGameEngine.GUI
             }
         }
 
-        private void AdvanceAndDrawString(int count)
+        private void AdvanceAndDrawString(float speed)
         {
-            GL gl = Game.OpenGL;
+            _charTimer += Display.DeltaTime * speed;
+            int count = (int)_charTimer;
+            _charTimer %= 1f;
+            if (count < 1)
+            {
+                return;
+            }
+
+            GL gl = Display.OpenGL;
             _window.Image.PushFrameBuffer(gl);
-            _result = DrawNext(gl, count);
+            _result = DrawNext(count);
             GLHelper.PopFrameBuffer(gl);
         }
-        private StringPrinterResult DrawNext(GL gl, int count)
+        private StringPrinterResult DrawNext(int count)
         {
             int i = 0;
             uint nx = 0, ny = 0;
@@ -123,19 +131,25 @@ namespace Kermalis.PokemonGameEngine.GUI
                 if (glyph is not null)
                 {
                     _str.NumVisible++;
-                    _str.Render(gl);
+                    _str.Render();
                     i++;
                 }
             }
             return _index >= _str.Text.Length ? StringPrinterResult.Ended : StringPrinterResult.EnoughChars;
         }
 
-        public static void ProcessAll()
+        public static void UpdateAll()
         {
             foreach (StringPrinter s in _allStringPrinters.ToArray())
             {
-                s.LogicTick();
+                s.Update();
             }
+        }
+
+        public void Delete()
+        {
+            _str.Delete();
+            _allStringPrinters.Remove(this);
         }
     }
 }

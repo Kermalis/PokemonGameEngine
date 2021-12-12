@@ -65,7 +65,7 @@ namespace Kermalis.PokemonGameEngine.Trainer
 
         public static void CreateTrainerBattle_1v1(Flag trainer, string defeatText)
         {
-            PlayerObj player = PlayerObj.Player;
+            PlayerObj player = PlayerObj.Instance;
             Map map = player.Map;
             MapLayout.Block block = player.GetBlock();
             MapWeather weather = map.Details.Weather;
@@ -78,9 +78,9 @@ namespace Kermalis.PokemonGameEngine.Trainer
             PBEBattleFormat format = PBEBattleFormat.Single; // TODO
 
             var enemyInfo = new PBETrainerInfo(enemyParty, string.Format("{0} {1}", GetTrainerClassName(tc), name), false, inventory: inv);
-            var parties = new Party[] { Engine.Instance.Save.PlayerParty, enemyParty };
+            var parties = new Party[] { Game.Instance.Save.PlayerParty, enemyParty };
             Song song = GetTrainerClassSong(tc);
-            Engine.Instance.CreateTrainerBattle_1v1(weather, behavior, parties, enemyInfo, format, song, tc, defeatText);
+            BattleMaker.CreateTrainerBattle_1v1(weather, behavior, parties, enemyInfo, format, song, tc, defeatText);
         }
     }
 }

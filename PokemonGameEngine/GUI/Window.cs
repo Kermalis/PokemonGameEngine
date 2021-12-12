@@ -1,9 +1,9 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render;
+﻿using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI
 {
@@ -12,12 +12,12 @@ namespace Kermalis.PokemonGameEngine.GUI
         private static readonly List<Window> _allWindows = new();
 
         private readonly RelPos2D _pos;
-        private readonly ColorF _backColor;
+        private readonly Vector4 _backColor;
 
         public bool IsInvisible;
         public readonly WriteableImage Image;
 
-        public Window(RelPos2D pos, Size2D size, in ColorF backColor)
+        public Window(RelPos2D pos, Size2D size, in Vector4 backColor)
         {
             _pos = pos;
             _backColor = backColor;
@@ -25,14 +25,14 @@ namespace Kermalis.PokemonGameEngine.GUI
             ClearImage();
             _allWindows.Add(this);
         }
-        public static Window CreateStandardMessageBox(in ColorF backColor)
+        public static Window CreateStandardMessageBox(in Vector4 backColor)
         {
             return new Window(new RelPos2D(0f, 0.79f), Size2D.FromRelative(1f, 0.17f), backColor);
         }
 
         public void ClearImage()
         {
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             Image.PushFrameBuffer(gl);
             ClearImagePushed(gl);
             GLHelper.PopFrameBuffer(gl);
@@ -61,8 +61,7 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public void Close()
         {
-            GL gl = Game.OpenGL;
-            Image.DeductReference(gl);
+            Image.DeductReference();
             _allWindows.Remove(this);
         }
     }

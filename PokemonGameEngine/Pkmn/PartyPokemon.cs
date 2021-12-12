@@ -225,11 +225,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             MetLocation = Overworld.GetCurrentLocation();
             MetLevel = Level;
-            MetDate = Game.LogicTickTime.Date;
+            MetDate = DateTime.Today;
         }
         private void SetPlayerOT()
         {
-            OT = Engine.Instance.Save.OT;
+            OT = Game.Instance.Save.OT;
         }
         private void SetEmptyPokerus()
         {
@@ -350,7 +350,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void UpdateTimeBasedForms()
         {
-            DateTime time = Game.LogicTickTime;
+            DateTime time = DateTime.Now;
             Month month = OverworldTime.GetMonth((Month)time.Month);
             Season season = OverworldTime.GetSeason(month);
             int hour = OverworldTime.GetHour(time.Hour);
@@ -418,7 +418,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public void HatchEgg()
         {
-            Engine.Instance.Save.GameStats[GameStat.HatchedEggs]++;
+            Game.Instance.Save.GameStats[GameStat.HatchedEggs]++;
             IsEgg = false;
             Friendship = PkmnConstants.HatchFriendship;
             SetDefaultNickname();
@@ -432,7 +432,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void Evolve(EvolutionData.EvoData evo)
         {
-            Engine.Instance.Save.GameStats[GameStat.EvolvedPokemon]++;
+            Game.Instance.Save.GameStats[GameStat.EvolvedPokemon]++;
             bool nicknameShouldUpdate = HasDefaultNickname();
             Species = evo.Species;
             Form = evo.Form;

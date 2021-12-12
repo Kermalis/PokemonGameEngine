@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Kermalis.PokemonGameEngine.Render.R3D
+﻿namespace Kermalis.PokemonGameEngine.Render.R3D
 {
     internal interface IPositionRotationAnimator
     {
@@ -11,19 +9,18 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
 
     internal sealed class PositionRotationAnimator : IPositionRotationAnimator
     {
-        private TimeSpan _movementCur;
-        private readonly TimeSpan _movementEnd;
         private readonly PositionRotation _from;
         private readonly PositionRotation _to;
+        private readonly float _duration;
+        private float _time;
 
         public bool IsDone { get; private set; }
 
-        public PositionRotationAnimator(in PositionRotation from, in PositionRotation to, double milliseconds)
+        public PositionRotationAnimator(in PositionRotation from, in PositionRotation to, float seconds)
         {
             _from = from;
             _to = to;
-            _movementCur = new TimeSpan();
-            _movementEnd = TimeSpan.FromMilliseconds(milliseconds);
+            _duration = seconds;
         }
 
         public bool Update(ref PositionRotation result)
@@ -32,34 +29,38 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             {
                 return true;
             }
-            float progress = (float)Renderer.GetAnimationProgress(_movementEnd, ref _movementCur);
+
+            _time += Display.DeltaTime;
+            float progress = _time / _duration;
+            if (progress >= 1f)
+            {
+                progress = 1f;
+                IsDone = true;
+            }
             result.Slerp(_from, _to, progress);
-            IsDone = progress >= 1;
             return IsDone;
         }
     }
 
     internal sealed class PositionRotationAnimatorSplit : IPositionRotationAnimator
     {
-        private TimeSpan _positionCur;
-        private TimeSpan _movementCur;
-        private readonly TimeSpan _positionEnd;
-        private readonly TimeSpan _movementEnd;
         private readonly PositionRotation _from;
         private readonly PositionRotation _to;
+        private readonly float _posDuration;
+        private readonly float _rotDuration;
+        private float _posTime;
+        private float _rotTime;
 
         public bool IsPosDone;
         public bool IsRotDone;
         public bool IsDone => IsPosDone && IsRotDone;
 
-        public PositionRotationAnimatorSplit(in PositionRotation from, in PositionRotation to, double posMilliseconds, double rotMilliseconds)
+        public PositionRotationAnimatorSplit(in PositionRotation from, in PositionRotation to, float posSeconds, float rotSeconds)
         {
             _from = from;
             _to = to;
-            _positionCur = new TimeSpan();
-            _movementCur = new TimeSpan();
-            _positionEnd = TimeSpan.FromMilliseconds(posMilliseconds);
-            _movementEnd = TimeSpan.FromMilliseconds(rotMilliseconds);
+            _posDuration = posSeconds;
+            _rotDuration = rotSeconds;
         }
 
         public bool Update(ref PositionRotation result)
@@ -68,17 +69,28 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             {
                 return true;
             }
+
             if (!IsPosDone)
             {
-                float progress = (float)Renderer.GetAnimationProgress(_positionEnd, ref _positionCur);
+                _posTime += Display.DeltaTime;
+                float progress = _posTime / _posDuration;
+                if (progress >= 1f)
+                {
+                    progress = 1f;
+                    IsPosDone = true;
+                }
                 result.LerpPosition(_from.Position, _to.Position, progress);
-                IsPosDone = progress >= 1;
             }
             if (!IsRotDone)
             {
-                float progress = (float)Renderer.GetAnimationProgress(_movementEnd, ref _movementCur);
+                _rotTime += Display.DeltaTime;
+                float progress = _rotTime / _rotDuration;
+                if (progress >= 1f)
+                {
+                    progress = 1f;
+                    IsRotDone = true;
+                }
                 result.SlerpRotation(_from.Rotation, _to.Rotation, progress);
-                IsRotDone = progress >= 1;
             }
             return IsDone;
         }

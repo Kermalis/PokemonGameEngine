@@ -15,7 +15,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         #region Messages
 
-        private const int AutoAdvanceTicks = Game.NumTicksPerSecond * 3; // 3 seconds
+        private const float AUTO_ADVANCE_SECONDS = 3f;
 
         private sealed class TaskData_PrintMessage
         {
@@ -52,27 +52,31 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void Task_ReadOutMessage(BackTask task)
         {
-            _stringPrinter.LogicTick();
-            if (_stringPrinter.IsEnded)
+            _stringPrinter.Update();
+            if (!_stringPrinter.IsEnded)
             {
-                if (_stringPrinter.IsDone || ++_autoAdvanceTimer >= AutoAdvanceTicks)
-                {
-                    var data = (TaskData_PrintMessage)task.Data;
-                    _autoAdvanceTimer = 0;
-                    data.OnFinished();
-                    _tasks.RemoveAndDispose(task);
-                }
+                return;
+            }
+
+            if (_stringPrinter.IsDone || (_autoAdvanceTime += Display.DeltaTime) >= AUTO_ADVANCE_SECONDS)
+            {
+                var data = (TaskData_PrintMessage)task.Data;
+                _autoAdvanceTime = 0f;
+                data.OnFinished();
+                _tasks.RemoveAndDispose(task);
             }
         }
         private void Task_ReadOutStaticMessage(BackTask task)
         {
-            _stringPrinter.LogicTick();
-            if (_stringPrinter.IsEnded)
+            _stringPrinter.Update();
+            if (!_stringPrinter.IsEnded)
             {
-                var data = (TaskData_PrintMessage)task.Data;
-                data.OnFinished();
-                _tasks.RemoveAndDispose(task);
+                return;
             }
+
+            var data = (TaskData_PrintMessage)task.Data;
+            data.OnFinished();
+            _tasks.RemoveAndDispose(task);
         }
 
         #endregion
@@ -89,33 +93,33 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             public Action OnFinished;
             public IPositionRotationAnimator Animator;
 
-            public TaskData_MoveCamera(Camera c, in PositionRotation to, Action onFinished, double milliseconds)
+            public TaskData_MoveCamera(Camera c, in PositionRotation to, Action onFinished, float seconds)
             {
                 OnFinished = onFinished;
-                Animator = new PositionRotationAnimator(c.PR, to, milliseconds);
+                Animator = new PositionRotationAnimator(c.PR, to, seconds);
             }
-            public TaskData_MoveCamera(Camera c, in PositionRotation to, Action onFinished, double posMilliseconds, double rotMilliseconds)
+            public TaskData_MoveCamera(Camera c, in PositionRotation to, Action onFinished, float posSeconds, float rotSeconds)
             {
                 OnFinished = onFinished;
-                Animator = new PositionRotationAnimatorSplit(c.PR, to, posMilliseconds, rotMilliseconds);
+                Animator = new PositionRotationAnimatorSplit(c.PR, to, posSeconds, rotSeconds);
             }
         }
 
-        private void MoveCameraToDefaultPosition(Action onFinished, double milliseconds = 500)
+        private void MoveCameraToDefaultPosition(Action onFinished, float seconds = 0.5f)
         {
-            CreateCameraMotionTask(_defaultPosition, onFinished, milliseconds: milliseconds);
+            CreateCameraMotionTask(_defaultPosition, onFinished, seconds: seconds);
         }
         private void CreateCameraMotionTask(TaskData_MoveCamera data)
         {
             _renderTasks.Add(Task_CameraMotion, int.MaxValue, data: data, tag: TaskData_MoveCamera.Tag);
         }
-        private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, double milliseconds = 500)
+        private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, float seconds = 0.5f)
         {
-            CreateCameraMotionTask(new TaskData_MoveCamera(_camera, to, onFinished, milliseconds));
+            CreateCameraMotionTask(new TaskData_MoveCamera(_camera, to, onFinished, seconds));
         }
-        private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, double posMilliseconds, double rotMilliseconds)
+        private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, float posSeconds, float rotSeconds)
         {
-            CreateCameraMotionTask(new TaskData_MoveCamera(_camera, to, onFinished, posMilliseconds, rotMilliseconds));
+            CreateCameraMotionTask(new TaskData_MoveCamera(_camera, to, onFinished, posSeconds, rotSeconds));
         }
 
         private void Task_CameraMotion(BackTask task)
@@ -136,25 +140,23 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             public const int Tag = 0xDEE2;
 
-            public TimeSpan Cur;
-            public readonly TimeSpan End;
             public readonly int StartX;
+            public readonly float Speed; // Pixels per second
+            public float CurX;
 
-            public SpriteData_TrainerGoAway(double milliseconds, int startX)
+            public SpriteData_TrainerGoAway(int startX, float speed)
             {
-                Cur = new TimeSpan();
-                End = TimeSpan.FromMilliseconds(milliseconds);
                 StartX = startX;
+                Speed = speed;
             }
         }
 
         private void Sprite_TrainerGoAway(Sprite sprite)
         {
             var data = (SpriteData_TrainerGoAway)sprite.Data;
-            double progress = Renderer.GetAnimationProgress(data.End, ref data.Cur);
-            int x = (int)(progress * (GLHelper.CurrentWidth - data.StartX));
-            sprite.Pos.X = data.StartX + x;
-            if (progress >= 1)
+            data.CurX += Display.DeltaTime * data.Speed;
+            sprite.Pos.X = data.StartX + (int)data.CurX;
+            if (sprite.Pos.X >= GLHelper.CurrentWidth)
             {
                 _sprites.RemoveAndDispose(sprite); // Dispose callback and delete image texture
             }

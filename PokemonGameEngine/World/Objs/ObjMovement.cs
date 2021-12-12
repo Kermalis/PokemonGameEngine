@@ -6,6 +6,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal abstract partial class Obj
     {
+        // Move speed constants represent 1/x seconds to complete the movement
+        protected const float TURNING_MOVE_SPEED = 5f;
+        protected const float WALK_MOVE_SPEED = 4f;
+        protected const float RUN_MOVE_SPEED = 6f;
+        protected const float DIAGONAL_MOVE_SPEED_MOD = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
+        protected const float BLOCKED_MOVE_SPEED_MOD = 0.8f;
+        protected const int STAIR_Y_OFFSET = +6; // Any offset will work
+
         private static bool ElevationCheck(BlocksetBlockBehavior curBehavior, BlocksetBlockBehavior targetBehavior, byte curElevation, byte targetElevations)
         {
             if (targetElevations.HasElevation(curElevation))
@@ -254,14 +262,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             if (upStairBehavior == upBehavior)
             {
                 Pos.XY.Y--;
-                VisualOffset.Y = StairYOffset;
+                VisualOffset.Y = STAIR_Y_OFFSET;
                 return;
             }
             MapLayout.Block newBlock = Map.GetBlock_CrossMap(newXY, out _, out _);
             BlocksetBlockBehavior newBehavior = newBlock.BlocksetBlock.Behavior;
             if (newBehavior == downBehavior)
             {
-                VisualOffset.Y = StairYOffset;
+                VisualOffset.Y = STAIR_Y_OFFSET;
             }
             else
             {
@@ -300,28 +308,28 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 {
                     Pos.XY.X--;
                     Pos.XY.Y++;
-                    MovementSpeed *= DiagonalMovementSpeedModifier;
+                    MovementSpeed *= DIAGONAL_MOVE_SPEED_MOD;
                     break;
                 }
                 case FacingDirection.Southeast:
                 {
                     Pos.XY.X++;
                     Pos.XY.Y++;
-                    MovementSpeed *= DiagonalMovementSpeedModifier;
+                    MovementSpeed *= DIAGONAL_MOVE_SPEED_MOD;
                     break;
                 }
                 case FacingDirection.Northwest:
                 {
                     Pos.XY.X--;
                     Pos.XY.Y--;
-                    MovementSpeed *= DiagonalMovementSpeedModifier;
+                    MovementSpeed *= DIAGONAL_MOVE_SPEED_MOD;
                     break;
                 }
                 case FacingDirection.Northeast:
                 {
                     Pos.XY.X++;
                     Pos.XY.Y--;
-                    MovementSpeed *= DiagonalMovementSpeedModifier;
+                    MovementSpeed *= DIAGONAL_MOVE_SPEED_MOD;
                     break;
                 }
             }
@@ -358,17 +366,17 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             bool surfing = IsSurfing();
             IsMovingSelf = true;
-            MovementTimer = 0;
+            MovementTimer = 0f;
             Facing = facing;
             PrevPos = Pos;
             PrevVisualOffset = VisualOffset;
             bool success = ignoreLegalCheck || IsMovementLegal(facing, CanSurf());
             if (success)
             {
-                MovementSpeed = run ? RunningMovementSpeed : NormalMovementSpeed;
+                MovementSpeed = run ? RUN_MOVE_SPEED : WALK_MOVE_SPEED;
                 ApplyMovement(facing);
-                UpdateXYProgress();
-                CameraObj.CopyMovementIfAttachedTo(this);
+                UpdateVisualProgress();
+                CameraObj.CopyMovementIfAttachedTo(this); // Tell camera to move the same way
                 if (surfing && !Overworld.IsSurfable(GetBlock().BlocksetBlock.Behavior))
                 {
                     OnDismountFromWater();
@@ -376,7 +384,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             else
             {
-                MovementSpeed = NormalMovementSpeed * BlockedMovementSpeedModifier;
+                MovementSpeed = WALK_MOVE_SPEED * BLOCKED_MOVE_SPEED_MOD;
             }
             return success;
         }
@@ -385,11 +393,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             IsMovingSelf = true;
             MovementTimer = 0;
-            MovementSpeed = FaceMovementSpeed;
+            MovementSpeed = TURNING_MOVE_SPEED;
             Facing = facing;
             PrevPos = Pos;
             PrevVisualOffset = VisualOffset;
-            UpdateXYProgress();
+            UpdateVisualProgress();
         }
 
         private static FacingDirection GetDirectionToLook(Pos2D myXY, Pos2D otherXY)
@@ -439,7 +447,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Facing = GetDirectionToLook(myXY, otherXY);
         }
 
-        private void UpdateXYProgress()
+        private void UpdateVisualProgress()
         {
             Pos2D prevXY = PrevPos.XY;
             Pos2D prevOfs = PrevVisualOffset;
@@ -458,21 +466,27 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             VisualProgress.X = DoTheMath(xy.X, prevXY.X, ofs.X, prevOfs.X, Overworld.Block_NumPixelsX);
             VisualProgress.Y = DoTheMath(xy.Y, prevXY.Y, ofs.Y, prevOfs.Y, Overworld.Block_NumPixelsY);
+            // TODO: (#69) check CameraObj for details
+            //CameraObj.CopyMovementIfAttachedTo(this);
         }
         public void UpdateMovement()
         {
+            // If movement started but not finished
             if (MovementTimer < 1)
             {
-                MovementTimer += MovementSpeed;
+                MovementTimer += Display.DeltaTime * MovementSpeed;
                 if (MovementTimer < 1)
                 {
-                    UpdateXYProgress();
+                    // If it's still not finished, update the visual progress and return
+                    UpdateVisualProgress();
                     return;
                 }
+                // Finished movement just now
                 MovementTimer = 1;
-                UpdateXYProgress();
+                UpdateVisualProgress();
             }
 
+            // Reached here if we are not currently moving
             if (QueuedScriptMovements.Count > 0)
             {
                 RunNextScriptMovement();

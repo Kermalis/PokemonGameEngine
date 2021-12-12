@@ -471,12 +471,12 @@ public sealed partial class Build
             private sealed class Stop
             {
                 private readonly int AnimTile;
-                private readonly int Time;
+                private readonly float Time;
 
                 public Stop(JToken j)
                 {
                     AnimTile = j[nameof(AnimTile)].Value<int>();
-                    Time = j[nameof(Time)].Value<int>();
+                    Time = j[nameof(Time)].Value<float>();
                 }
 
                 public void Write(EndianBinaryWriter w)
@@ -512,13 +512,13 @@ public sealed partial class Build
             }
         }
         public readonly string Tileset; // Not written
-        private readonly int Duration;
+        private readonly float Duration;
         private readonly Frame[] Frames;
 
         public TileAnimation(JToken j)
         {
             Tileset = j[nameof(Tileset)].Value<string>();
-            Duration = j[nameof(Duration)].Value<int>();
+            Duration = j[nameof(Duration)].Value<float>();
             var frames = (JArray)j[nameof(Frames)];
             int numFrames = frames.Count;
             Frames = new Frame[numFrames];

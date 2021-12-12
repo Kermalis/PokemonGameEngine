@@ -1,12 +1,12 @@
 ﻿//This file is adapted from NAudio (https://github.com/naudio/NAudio) which uses the MIT license
-#if DEBUG
-using Kermalis.PokemonGameEngine.Debug;
-#endif
 using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
+#if DEBUG
+using Kermalis.PokemonGameEngine.Debug;
+#endif
 
 namespace Kermalis.PokemonGameEngine.Sound
 {

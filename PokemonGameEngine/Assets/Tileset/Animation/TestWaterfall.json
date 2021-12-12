@@ -1,21 +1,21 @@
 {
   "Tileset": "TestTilesO",
-  "Duration": 8,
+  "Duration": 0.4,
   "Frames": [
     {
       "TilesetTile": 128,
       "Stops": [
         {
           "AnimTile": 384,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 416,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 448,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -24,15 +24,15 @@
       "Stops": [
         {
           "AnimTile": 385,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 417,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 449,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -41,15 +41,15 @@
       "Stops": [
         {
           "AnimTile": 400,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 432,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 464,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -58,15 +58,15 @@
       "Stops": [
         {
           "AnimTile": 401,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 433,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 465,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -75,15 +75,15 @@
       "Stops": [
         {
           "AnimTile": 386,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 418,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 450,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -92,15 +92,15 @@
       "Stops": [
         {
           "AnimTile": 387,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 418,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 451,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -109,15 +109,15 @@
       "Stops": [
         {
           "AnimTile": 402,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 434,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 466,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -126,15 +126,15 @@
       "Stops": [
         {
           "AnimTile": 403,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 435,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 467,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -143,15 +143,15 @@
       "Stops": [
         {
           "AnimTile": 388,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 420,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 452,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -160,15 +160,15 @@
       "Stops": [
         {
           "AnimTile": 389,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 421,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 453,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -177,15 +177,15 @@
       "Stops": [
         {
           "AnimTile": 390,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 422,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 454,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -194,15 +194,15 @@
       "Stops": [
         {
           "AnimTile": 391,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 423,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 455,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -211,15 +211,15 @@
       "Stops": [
         {
           "AnimTile": 392,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 424,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 456,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -228,15 +228,15 @@
       "Stops": [
         {
           "AnimTile": 393,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 425,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 457,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -245,15 +245,15 @@
       "Stops": [
         {
           "AnimTile": 404,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 436,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 468,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -262,15 +262,15 @@
       "Stops": [
         {
           "AnimTile": 405,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 437,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 469,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -279,15 +279,15 @@
       "Stops": [
         {
           "AnimTile": 406,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 438,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 470,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -296,15 +296,15 @@
       "Stops": [
         {
           "AnimTile": 407,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 439,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 471,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -313,15 +313,15 @@
       "Stops": [
         {
           "AnimTile": 408,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 440,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 472,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     },
@@ -330,15 +330,15 @@
       "Stops": [
         {
           "AnimTile": 409,
-          "Time": 2
+          "Time": 0.1
         },
         {
           "AnimTile": 441,
-          "Time": 4
+          "Time": 0.2
         },
         {
           "AnimTile": 473,
-          "Time": 6
+          "Time": 0.3
         }
       ]
     }

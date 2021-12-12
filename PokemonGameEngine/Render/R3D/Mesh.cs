@@ -1,6 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
-using Silk.NET.OpenGL;
+﻿using Silk.NET.OpenGL;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Render.R3D
@@ -19,7 +17,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             _elementCount = (uint)indices.Length;
             _textures = textures;
 
-            GL gl = Game.OpenGL;
+            GL gl = Display.OpenGL;
             _vao = gl.GenVertexArray();
             gl.BindVertexArray(_vao);
 
@@ -43,37 +41,29 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             gl.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, AssimpVertex.SizeOf, (void*)AssimpVertex.OffsetOfNormal);
             gl.EnableVertexAttribArray(2);
             gl.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, AssimpVertex.SizeOf, (void*)AssimpVertex.OffsetOfUV);
-
-            gl.BindVertexArray(0);
         }
 
-        public unsafe void Draw(GL gl, ModelShader shader)
+        public unsafe void Render(ModelShader shader)
         {
-            // Activate all diffuse textures
+            GL gl = Display.OpenGL;
+
+            // Bind all diffuse textures
             for (int i = 0; i < _textures.Count; i++)
             {
-                shader.SetDiffuseTextureUnit(gl, i);
-                GLHelper.ActiveTexture(gl, i.ToTextureUnit());
-                GLHelper.BindTexture(gl, _textures[i].GLTex);
+                if (shader.SetDiffuseTextureUnit(gl, i))
+                {
+                    gl.ActiveTexture(i.ToTextureUnit());
+                    gl.BindTexture(TextureTarget.Texture2D, _textures[i].GLTex);
+                }
             }
 
-            // Draw
             gl.BindVertexArray(_vao);
-
             gl.DrawElements(PrimitiveType.Triangles, _elementCount, DrawElementsType.UnsignedInt, null);
-
-            gl.BindVertexArray(0);
-
-            // Deactivate all textures
-            for (int i = 0; i < _textures.Count; i++)
-            {
-                GLHelper.ActiveTexture(gl, i.ToTextureUnit());
-                GLHelper.BindTexture(gl, 0);
-            }
         }
 
-        public void Delete(GL gl)
+        public void Delete()
         {
+            GL gl = Display.OpenGL;
             gl.DeleteVertexArray(_vao);
             gl.DeleteBuffer(_vbo);
             gl.DeleteBuffer(_ebo);
