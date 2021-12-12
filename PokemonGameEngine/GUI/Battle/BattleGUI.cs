@@ -240,7 +240,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 m.Delete();
             }
-            _shader.Delete(Display.OpenGL);
+            _shader.Delete();
             // Copy our Pokémon back from battle, update teammates, update wild Pokémon
             // Could technically only update what we need (like caught mon, roaming mon, and following partners)
             for (int i = 0; i < SpritedParties.Length; i++)

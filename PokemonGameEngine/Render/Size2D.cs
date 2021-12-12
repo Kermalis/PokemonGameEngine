@@ -15,11 +15,11 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public static Size2D FromRelative(float w, float h)
         {
-            return FromRelative(w, h, GLHelper.CurrentWidth, GLHelper.CurrentHeight);
+            return FromRelative(w, h, FrameBuffer.Current.Size);
         }
-        public static Size2D FromRelative(float w, float h, uint totalW, uint totalH)
+        public static Size2D FromRelative(float w, float h, Size2D totalSize)
         {
-            return new Size2D((uint)(w * totalW), (uint)(h * totalH));
+            return new Size2D((uint)(w * totalSize.Width), (uint)(h * totalSize.Height));
         }
 
         public uint GetArea()
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public Size2D Absolute(Size2D size)
         {
-            return Size2D.FromRelative(Width, Height, size.Width, size.Height);
+            return Size2D.FromRelative(Width, Height, size);
         }
 
 #if DEBUG

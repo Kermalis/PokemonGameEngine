@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
-using Silk.NET.OpenGL;
 using System;
 using System.Numerics;
 
@@ -66,7 +65,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
 
         public override void Render()
         {
-            float y1 = Y * GLHelper.CurrentHeight;
+            float y1 = Y * FrameBuffer.Current.Size.Height;
             int x = Renderer.RelXToAbsX(X);
             float y = y1;
             float space = Spacing;
@@ -154,11 +153,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         }
         public void RenderChoicesOntoWindow(Window window)
         {
-            GL gl = Display.OpenGL;
-            window.Image.PushFrameBuffer(gl);
-            window.ClearImagePushed(gl);
+            window.Image.FrameBuffer.Push();
+            window.ClearImagePushed();
             Render();
-            GLHelper.PopFrameBuffer(gl);
+            FrameBuffer.Pop();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
                 _time += Display.DeltaTime;
                 _counter = (int)(_time / _secondsPerRect);
             }
-            SpiralTransitionLogic(GLHelper.CurrentSize);
+            SpiralTransitionLogic(FrameBuffer.Current.Size);
         }
 
         private void SpiralTransitionLogic(Size2D dstSize)

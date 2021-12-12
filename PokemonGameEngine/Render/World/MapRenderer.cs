@@ -36,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             out Pos2D startBlockPixel) // Pixel coords of the blocks to start rendering from
         {
             Pos2D cameraXY = cam.Pos.XY;
-            Size2D curSize = GLHelper.CurrentSize;
+            Size2D curSize = FrameBuffer.Current.Size;
 
             cameraMap = cam.Map;
             int cameraPixelX = (cameraXY.X * Overworld.Block_NumPixelsX) - ((int)curSize.Width / 2) + (Overworld.Block_NumPixelsX / 2) + cam.VisualProgress.X + CameraObj.CameraVisualOffset.X;

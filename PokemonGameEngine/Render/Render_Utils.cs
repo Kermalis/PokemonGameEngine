@@ -16,7 +16,7 @@ namespace Kermalis.PokemonGameEngine.Render
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AbsXToRelX(float x)
         {
-            return x / GLHelper.CurrentWidth;
+            return x / FrameBuffer.Current.Size.Width;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AbsXToRelX(float x, uint totalWidth)
@@ -32,12 +32,12 @@ namespace Kermalis.PokemonGameEngine.Render
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int RelXToAbsX(float x)
         {
-            return (int)(x * GLHelper.CurrentWidth);
+            return (int)(x * FrameBuffer.Current.Size.Width);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AbsYToRelY(float y)
         {
-            return y / GLHelper.CurrentHeight;
+            return y / FrameBuffer.Current.Size.Height;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AbsYToRelY(float y, uint totalHeight)
@@ -53,7 +53,7 @@ namespace Kermalis.PokemonGameEngine.Render
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int RelYToAbsY(float y)
         {
-            return (int)(y * GLHelper.CurrentHeight);
+            return (int)(y * FrameBuffer.Current.Size.Height);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -87,6 +87,15 @@ namespace Kermalis.PokemonGameEngine.Render
         public static int GetCoordinatesForEndAlign(uint dstSize, uint srcSize, float pos)
         {
             return (int)((uint)(dstSize * pos) - srcSize);
+        }
+
+        public static void ClearColor(this GL gl, in Vector3 color)
+        {
+            gl.ClearColor(color.X, color.Y, color.Z, 1f);
+        }
+        public static void ClearColor(this GL gl, in Vector4 color)
+        {
+            gl.ClearColor(color.X, color.Y, color.Z, color.W);
         }
     }
 }

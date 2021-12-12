@@ -633,18 +633,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             GL gl = Display.OpenGL;
             // Background
             //Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(222, 50, 60, 255), Renderer.Color(190, 40, 50, 255), Renderer.Color(255, 180, 200, 255));
-            GLHelper.ClearColor(gl, Colors.FromRGB(31, 31, 31));
+            gl.ClearColor(Colors.FromRGB(31, 31, 31));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
-            int dstW = (int)GLHelper.CurrentWidth;
-            int dstH = (int)GLHelper.CurrentHeight;
-            for (int i = 0; i < _members.Count; i++)
+            Size2D dstSize = FrameBuffer.Current.Size;
+            for (uint i = 0; i < _members.Count; i++)
             {
-                int col = i % 2;
-                int row = i / 2;
-                int x = col == 0 ? dstW / 40 : (dstW / 2) + (dstW / 40);
-                int y = row * (dstH / 4) + (dstH / 20);
-                _members[i].Render(new Pos2D(x, y), col == _selectionX && row == _selectionY);
+                uint col = i % 2;
+                uint row = i / 2;
+                uint x = col == 0 ? dstSize.Width / 40 : (dstSize.Width / 2) + (dstSize.Width / 40);
+                uint y = row * (dstSize.Height / 4) + (dstSize.Height / 20);
+                _members[(int)i].Render(new Pos2D((int)x, (int)y), col == _selectionX && row == _selectionY);
             }
 
             // Back button

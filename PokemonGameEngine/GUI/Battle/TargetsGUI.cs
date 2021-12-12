@@ -4,7 +4,6 @@ using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System;
 using System.Numerics;
@@ -722,7 +721,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             Vector4 selectC = Colors.FromRGBA(48, 180, 255, 200);
 
             GL gl = Display.OpenGL;
-            GLHelper.ClearColor(gl, Colors.FromRGBA(31, 31, 31, 151));
+            gl.ClearColor(Colors.FromRGBA(31, 31, 31, 151));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
             #region Lines

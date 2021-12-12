@@ -68,8 +68,9 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
         {
             gl.UseProgram(Program);
         }
-        public void Delete(GL gl)
+        public void Delete()
         {
+            GL gl = Display.OpenGL;
             gl.DeleteProgram(Program);
         }
     }

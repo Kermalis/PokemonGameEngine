@@ -7,38 +7,22 @@ namespace Kermalis.PokemonGameEngine.Render.Images
     /// <summary>Does not have a depth buffer</summary>
     internal sealed class WriteableImage : IImage
     {
-        public uint Texture { get; }
-        public Size2D Size { get; }
-        private readonly uint _fbo;
+        public uint Texture => FrameBuffer.ColorTexture;
+        public Size2D Size => FrameBuffer.Size;
+        public readonly FrameBuffer FrameBuffer;
 
         public unsafe WriteableImage(Size2D size)
         {
-            Size = size;
-
-            GL gl = Display.OpenGL;
-            _fbo = gl.GenFramebuffer();
-            gl.BindFramebuffer(FramebufferTarget.Framebuffer, _fbo);
-            gl.ActiveTexture(TextureUnit.Texture0);
-            Texture = gl.GenTexture();
-            gl.BindTexture(TextureTarget.Texture2D, Texture);
-            gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, size.Width, size.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, null);
-            gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-            gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-            gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, Texture, 0);
-        }
-
-        public void PushFrameBuffer(GL gl)
-        {
-            GLHelper.PushFrameBuffer(gl, _fbo, Size.Width, Size.Height);
+            FrameBuffer = FrameBuffer.CreateWithColor(size);
         }
 
         public unsafe void LoadTextureData(GL gl, void* data)
         {
-            PushFrameBuffer(gl);
+            FrameBuffer.Push();
             gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindTexture(TextureTarget.Texture2D, Texture);
             GLTextureUtils.LoadTextureData(gl, data, Size);
-            GLHelper.PopFrameBuffer(gl);
+            FrameBuffer.Pop();
         }
 
         public void Render(Pos2D pos, bool xFlip = false, bool yFlip = false)
@@ -50,7 +34,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         {
             GL gl = Display.OpenGL;
             gl.DeleteTexture(Texture);
-            gl.DeleteFramebuffer(_fbo);
+            FrameBuffer.Delete();
         }
     }
 }

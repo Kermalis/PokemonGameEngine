@@ -114,8 +114,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         public void UpdateBackground()
         {
             GL gl = Display.OpenGL;
-            _background.PushFrameBuffer(gl);
-            GLHelper.ClearColor(gl, _color);
+            _background.FrameBuffer.Push();
+            gl.ClearColor(_color);
             gl.Clear(ClearBufferMask.ColorBufferBit);
             // TODO: Shadow
             //Renderer.FillEllipse_Points(dst, dstW, dstH, 3, 34, 29, 39, Renderer.Color(0, 0, 0, 100));
@@ -148,7 +148,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 GUIString.CreateAndRenderOneTimeString(ItemData.GetItemName(item), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(61, 23));
             }
         bottom:
-            GLHelper.PopFrameBuffer(gl);
+            FrameBuffer.Pop();
         }
 
         // We shouldn't be redrawing on the logic thread, but it currently doesn't matter

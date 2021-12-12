@@ -188,10 +188,10 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         {
             gl.DeleteVertexArray(_texVAO);
             gl.DeleteBuffer(_texVBO);
-            _texShader.Delete(gl);
+            _texShader.Delete();
             gl.DeleteVertexArray(_quadVAO);
             gl.DeleteBuffer(_quadVBO);
-            _quadShader.Delete(gl);
+            _quadShader.Delete();
         }
     }
 }

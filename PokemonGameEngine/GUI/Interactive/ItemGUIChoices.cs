@@ -66,22 +66,21 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
 
         public override void Render()
         {
-            uint dstW = GLHelper.CurrentWidth;
-            uint dstH = GLHelper.CurrentHeight;
-            int x1 = (int)(X * dstW);
-            float fy1 = Y * dstH;
+            Size2D dstSize = FrameBuffer.Current.Size;
+            int x1 = (int)(X * dstSize.Width);
+            float fy1 = Y * dstSize.Height;
             int y1 = (int)fy1;
-            int x2 = (int)(X2 * dstW);
-            int y2 = (int)(Y2 * dstH);
+            int x2 = (int)(X2 * dstSize.Width);
+            int y2 = (int)(Y2 * dstSize.Height);
 
             // Draw background
             GUIRenderer.Instance.FillRectangle(BackColor, new Rect2D(new Pos2D(x1, y1), new Pos2D(x2, y2))); // TODO: Rounded 10
             GUIRenderer.Instance.DrawRectangle(BorderColor, new Rect2D(new Pos2D(x1, y1), new Pos2D(x2, y2))); // TODO: Rounded 10
 
-            int height = (int)(dstH * Spacing);
-            int xOfs = (int)(0.015f * dstW);
-            float yOfs = 0.015f * dstH;
-            float space = Spacing * dstH;
+            int height = (int)(dstSize.Height * Spacing);
+            int xOfs = (int)(0.015f * dstSize.Width);
+            float yOfs = 0.015f * dstSize.Height;
+            float space = Spacing * dstSize.Height;
             int count = _choices.Count;
             for (int i = 0; i < count; i++)
             {

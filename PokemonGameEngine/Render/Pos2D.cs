@@ -65,11 +65,11 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public static Pos2D FromRelative(float x, float y)
         {
-            return FromRelative(x, y, GLHelper.CurrentWidth, GLHelper.CurrentHeight);
+            return FromRelative(x, y, FrameBuffer.Current.Size);
         }
-        public static Pos2D FromRelative(float x, float y, uint w, uint h)
+        public static Pos2D FromRelative(float x, float y, Size2D totalSize)
         {
-            return new Pos2D((int)(x * w), (int)(y * h));
+            return new Pos2D((int)(x * totalSize.Width), (int)(y * totalSize.Height));
         }
 
         public static Pos2D FromSheet(uint imgIndex, Size2D imgSize, uint atlasWidth)
@@ -82,13 +82,15 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public static Pos2D Center(float centerX, float centerY, Size2D srcSize)
         {
-            return new Pos2D(Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, srcSize.Width, centerX),
-                Renderer.GetCoordinatesForCentering(GLHelper.CurrentHeight, srcSize.Height, centerY));
+            Size2D curSize = FrameBuffer.Current.Size;
+            return new Pos2D(Renderer.GetCoordinatesForCentering(curSize.Width, srcSize.Width, centerX),
+                Renderer.GetCoordinatesForCentering(curSize.Height, srcSize.Height, centerY));
         }
         public static Pos2D CenterXBottomY(float centerX, float bottomY, Size2D srcSize)
         {
-            return new Pos2D(Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, srcSize.Width, centerX),
-                Renderer.GetCoordinatesForEndAlign(GLHelper.CurrentHeight, srcSize.Height, bottomY));
+            Size2D curSize = FrameBuffer.Current.Size;
+            return new Pos2D(Renderer.GetCoordinatesForCentering(curSize.Width, srcSize.Width, centerX),
+                Renderer.GetCoordinatesForEndAlign(curSize.Height, srcSize.Height, bottomY));
         }
 
         public static Pos2D operator +(Pos2D a, Pos2D b)
@@ -130,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public Pos2D Absolute(Size2D size)
         {
-            return Pos2D.FromRelative(X, Y, size.Width, size.Height);
+            return Pos2D.FromRelative(X, Y, size);
         }
 
 #if DEBUG

@@ -4,7 +4,6 @@ using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
-using Silk.NET.OpenGL;
 using System;
 using System.Numerics;
 
@@ -47,8 +46,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         }
         public void Draw()
         {
-            GL gl = Display.OpenGL;
-            _drawn.PushFrameBuffer(gl);
+            _drawn.FrameBuffer.Push();
             Vector4 backColor = IsSelected ? Colors.V4FromRGB(200, 200, 200) : Colors.White4;
             GUIRenderer.Instance.FillRectangle(backColor, new Rect2D(new Pos2D(0, 0), Size2D.FromRelative(1f, 1f))); // TODO: Rounded of size (dstH / 2)
 
@@ -70,7 +68,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
 
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(99, 255, 99), new Rect2D(Pos2D.FromRelative(0.2f, 0.58f), Pos2D.FromRelative(0.7f, 0.64f)));
         bottom:
-            GLHelper.PopFrameBuffer(gl);
+            FrameBuffer.Pop();
         }
 
         public void Render(Pos2D pos)
@@ -134,16 +132,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
 
         public override void Render()
         {
-            uint dstW = GLHelper.CurrentWidth;
-            uint dstH = GLHelper.CurrentHeight;
-            int x1 = (int)(X * dstW);
-            float fy1 = Y * dstH;
+            Size2D dstSize = FrameBuffer.Current.Size;
+            int x1 = (int)(X * dstSize.Width);
+            float fy1 = Y * dstSize.Height;
 
-            float fHeight = (_y2 - Y) / PkmnConstants.PartyCapacity * dstH;
+            float fHeight = (_y2 - Y) / PkmnConstants.PartyCapacity * dstSize.Height;
             if (_dirtySizes)
             {
                 _dirtySizes = false;
-                var size = new Size2D((uint)((_x2 - X) * dstW), (uint)fHeight);
+                var size = new Size2D((uint)((_x2 - X) * dstSize.Width), (uint)fHeight);
                 foreach (PartyPkmnGUIChoice c in _choices)
                 {
                     if (c.IsDirty)
@@ -152,7 +149,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
                     }
                 }
             }
-            float space = Spacing * dstH;
+            float space = Spacing * dstSize.Height;
             int count = _choices.Count;
             for (int i = 0; i < count; i++)
             {

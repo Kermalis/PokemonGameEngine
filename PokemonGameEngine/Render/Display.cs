@@ -32,10 +32,7 @@ namespace Kermalis.PokemonGameEngine.Render
         public static readonly GL OpenGL;
         public static float DeltaTime;
 
-        private static uint _virtualFBO;
-        private static uint _virtualFBOTexture;
-        private static uint _virtualFBODepthTexture;
-        private static uint _virtualFBODepthBuffer;
+        private static FrameBuffer _virtualFBO;
 
         static Display()
         {
@@ -101,35 +98,8 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         private static unsafe void CreateGLFrameBuffer()
         {
-            GL gl = OpenGL;
-            _virtualFBO = gl.GenFramebuffer();
-            gl.BindFramebuffer(FramebufferTarget.Framebuffer, _virtualFBO);
-            gl.ActiveTexture(TextureUnit.Texture0);
-
-            // add texture attachment
-            _virtualFBOTexture = gl.GenTexture();
-            gl.BindTexture(TextureTarget.Texture2D, _virtualFBOTexture);
-            gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, RenderWidth, RenderHeight, 0, PixelFormat.Rgba, PixelType.UnsignedByte, null);
-            gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-            gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-            gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, _virtualFBOTexture, 0);
-
-            // add depth texture attachment
-            _virtualFBODepthTexture = gl.GenTexture();
-            gl.BindTexture(TextureTarget.Texture2D, _virtualFBODepthTexture);
-            gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.DepthComponent32, RenderWidth, RenderHeight, 0, PixelFormat.DepthComponent, PixelType.Float, null);
-            gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, _virtualFBODepthTexture, 0);
-
-            // add depth buffer attachment
-            _virtualFBODepthBuffer = gl.GenRenderbuffer();
-            gl.BindRenderbuffer(RenderbufferTarget.Renderbuffer, _virtualFBODepthBuffer);
-            gl.RenderbufferStorage(RenderbufferTarget.Renderbuffer, InternalFormat.DepthComponent, RenderWidth, RenderHeight);
-            gl.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, _virtualFBODepthBuffer);
-
-            // Finish
-            GLHelper.PushFrameBuffer(gl, _virtualFBO, RenderWidth, RenderHeight);
+            _virtualFBO = FrameBuffer.CreateWithColorAndDepth(RenderSize);
+            _virtualFBO.Push();
         }
 
         /// <summary>Returns true if the current frame should be skipped</summary>
@@ -161,7 +131,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
             // Set up virtual screen's framebuffer
             GL gl = OpenGL;
-            gl.BindFramebuffer(FramebufferTarget.Framebuffer, _virtualFBO);
+            gl.BindFramebuffer(FramebufferTarget.Framebuffer, _virtualFBO.Id);
             gl.Viewport(0, 0, RenderWidth, RenderHeight);
             gl.DrawBuffer(DrawBufferMode.ColorAttachment0);
             gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
@@ -173,7 +143,7 @@ namespace Kermalis.PokemonGameEngine.Render
             // Draw rendered frame to the actual screen's framebuffer
             GL gl = OpenGL;
             SDL.SDL_GetWindowSize(_window, out int w, out int h);
-            gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, _virtualFBO);
+            gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, _virtualFBO.Id);
             gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
             gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
             gl.DrawBuffer(DrawBufferMode.Back); // The default frame buffer isn't "ColorAttachment0", it's "Back" instead
@@ -186,7 +156,7 @@ namespace Kermalis.PokemonGameEngine.Render
         public static void SaveScreenshot()
         {
             string path = Path.Combine(SCREENSHOT_PATH, string.Format("Screenshot_{0:MM-dd-yyyy_HH-mm-ss-fff}.png", DateTime.Now));
-            path = GLTextureUtils.SaveScreenTextureAsImage(OpenGL, _virtualFBOTexture, RenderWidth, RenderHeight, path);
+            path = GLTextureUtils.SaveScreenTextureAsImage(OpenGL, _virtualFBO.ColorTexture, RenderWidth, RenderHeight, path);
 #if DEBUG
             Log.WriteLineWithTime(string.Format("Screenshot saved to {0}", path));
 #endif
@@ -227,11 +197,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public static void Quit()
         {
-            GL gl = OpenGL;
-            gl.DeleteFramebuffer(_virtualFBO);
-            gl.DeleteTexture(_virtualFBOTexture);
-            gl.DeleteTexture(_virtualFBODepthTexture);
-            gl.DeleteRenderbuffer(_virtualFBODepthBuffer);
+            _virtualFBO.Delete();
             SDL.SDL_GL_DeleteContext(_gl);
             SDL.SDL_DestroyWindow(_window);
             SDL.SDL_Quit();

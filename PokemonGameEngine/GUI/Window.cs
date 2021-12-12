@@ -32,14 +32,14 @@ namespace Kermalis.PokemonGameEngine.GUI
 
         public void ClearImage()
         {
-            GL gl = Display.OpenGL;
-            Image.PushFrameBuffer(gl);
-            ClearImagePushed(gl);
-            GLHelper.PopFrameBuffer(gl);
+            Image.FrameBuffer.Push();
+            ClearImagePushed();
+            FrameBuffer.Pop();
         }
-        public void ClearImagePushed(GL gl)
+        public void ClearImagePushed()
         {
-            GLHelper.ClearColor(gl, _backColor);
+            GL gl = Display.OpenGL;
+            gl.ClearColor(_backColor);
             gl.Clear(ClearBufferMask.ColorBufferBit);
         }
 

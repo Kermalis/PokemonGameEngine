@@ -7,7 +7,6 @@ using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System;
 using System.Numerics;
@@ -430,7 +429,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             GL gl = Display.OpenGL;
             // Background
             //Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(215, 231, 230, 255), Renderer.Color(231, 163, 0, 255), Renderer.Color(242, 182, 32, 255));
-            GLHelper.ClearColor(gl, Colors.FromRGB(31, 31, 31));
+            gl.ClearColor(Colors.FromRGB(31, 31, 31));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
             // PC

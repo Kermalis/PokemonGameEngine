@@ -156,7 +156,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             var data = (SpriteData_TrainerGoAway)sprite.Data;
             data.CurX += Display.DeltaTime * data.Speed;
             sprite.Pos.X = data.StartX + (int)data.CurX;
-            if (sprite.Pos.X >= GLHelper.CurrentWidth)
+            if (sprite.Pos.X >= FrameBuffer.Current.Size.Width)
             {
                 _sprites.RemoveAndDispose(sprite); // Dispose callback and delete image texture
             }

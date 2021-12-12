@@ -14,7 +14,8 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
 
         public void SetResolution(GL gl)
         {
-            gl.Uniform2(_lScreenSize, GLHelper.CurrentWidth, GLHelper.CurrentHeight);
+            Size2D curSize = FrameBuffer.Current.Size;
+            gl.Uniform2(_lScreenSize, curSize.Width, curSize.Height);
         }
     }
 }

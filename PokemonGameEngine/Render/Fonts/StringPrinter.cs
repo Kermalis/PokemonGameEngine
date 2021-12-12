@@ -3,7 +3,6 @@ using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
-using Silk.NET.OpenGL;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -108,10 +107,9 @@ namespace Kermalis.PokemonGameEngine.GUI
                 return;
             }
 
-            GL gl = Display.OpenGL;
-            _window.Image.PushFrameBuffer(gl);
+            _window.Image.FrameBuffer.Push();
             _result = DrawNext(count);
-            GLHelper.PopFrameBuffer(gl);
+            FrameBuffer.Pop();
         }
         private StringPrinterResult DrawNext(int count)
         {

@@ -9,7 +9,6 @@ using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Script;
 using Kermalis.PokemonGameEngine.Sound;
@@ -453,7 +452,7 @@ namespace Kermalis.PokemonGameEngine.GUI
         private static void Render()
         {
             GL gl = Display.OpenGL;
-            GLHelper.ClearColor(gl, Colors.Black3);
+            gl.ClearColor(Colors.Black3);
             gl.Clear(ClearBufferMask.ColorBufferBit);
             MapRenderer.Render();
             if (Overworld.ShouldRenderDayTint())

@@ -4,7 +4,6 @@ using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Images;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.R3D;
 using Kermalis.PokemonGameEngine.Trainer;
 using Silk.NET.OpenGL;
@@ -310,7 +309,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             gl.Enable(EnableCap.Blend);
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             gl.BlendEquation(BlendEquationModeEXT.FuncAddExt);
-            GLHelper.ClearColor(gl, Colors.Black3);
+            gl.ClearColor(Colors.Black3);
 #if DEBUG_BATTLE_WIREFRAME
             gl.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 #endif

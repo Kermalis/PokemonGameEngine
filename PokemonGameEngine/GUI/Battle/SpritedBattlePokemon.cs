@@ -99,8 +99,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         public void UpdateInfoBar()
         {
             GL gl = Display.OpenGL;
-            InfoBarImg.PushFrameBuffer(gl);
-            GLHelper.ClearColor(gl, Colors.FromRGBA(48, 48, 48, 128));
+            InfoBarImg.FrameBuffer.Push();
+            gl.ClearColor(Colors.FromRGBA(48, 48, 48, 128));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
             // Nickname
@@ -143,7 +143,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
 
 
-            GLHelper.PopFrameBuffer(gl);
+            FrameBuffer.Pop();
         }
 
         public void Delete()

@@ -80,7 +80,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _moveSelection = NOT_SELECTING_MOVES;
             }
 
-            _pageImage = new WriteableImage(Size2D.FromRelative(PageImageWidth, PageImageHeight, Display.RenderWidth, Display.RenderHeight));
+            _pageImage = new WriteableImage(Size2D.FromRelative(PageImageWidth, PageImageHeight, Display.RenderSize));
 
             if (pkmn is PartyPokemon pPkmn)
             {
@@ -263,8 +263,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void UpdatePageImage()
         {
             GL gl = Display.OpenGL;
-            _pageImage.PushFrameBuffer(gl);
-            GLHelper.ClearColor(gl, Colors.Transparent);
+            _pageImage.FrameBuffer.Push();
+            gl.ClearColor(Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
             GUIString.CreateAndRenderOneTimeString(_page.ToString(), Font.Default, FontColors.DefaultBlack_I, new Pos2D(0, 0), scale: 2);
 
@@ -275,7 +275,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 case Page.Stats: DrawStatsPage(); break;
                 case Page.Moves: DrawMovesPage(); break;
             }
-            GLHelper.PopFrameBuffer(gl);
+            FrameBuffer.Pop();
         }
         private void DrawInfoPage()
         {
@@ -291,8 +291,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float rightColCenterX = rightColX + (rightColW / 2f);
             const float textStartY = rightColY + 0.02f;
             const float textSpacingY = 0.1f;
+            Size2D curSize = FrameBuffer.Current.Size;
             uint xpW = (uint)Renderer.RelXToAbsX(0.3f);
-            int xpX = Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, xpW, rightColCenterX);
+            int xpX = Renderer.GetCoordinatesForCentering(curSize.Width, xpW, rightColCenterX);
             int xpY = Renderer.RelYToAbsY(rightColY + 0.61f);
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(128, 215, 135), new Rect2D(Pos2D.FromRelative(winX, winY), Size2D.FromRelative(winW, winH))); // TODO: ROUNDED 15
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(210, 210, 210), new Rect2D(Pos2D.FromRelative(rightColX, rightColY), Size2D.FromRelative(rightColW, rightColH))); // TODO: ROUNDED 8
@@ -312,7 +313,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 float y = textStartY + (i * textSpacingY);
                 Size2D size = rightColFont.MeasureString(rightColStr);
                 GUIString.CreateAndRenderOneTimeString(rightColStr, rightColFont, colors,
-                    new Pos2D(Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, size.Width, rightColCenterX), Renderer.RelYToAbsY(y)));
+                    new Pos2D(Renderer.GetCoordinatesForCentering(curSize.Width, size.Width, rightColCenterX), Renderer.RelYToAbsY(y)));
             }
 
             PlaceLeftCol(0, "Species");
@@ -511,8 +512,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float abilY = abilTextY;
             const float abilW = 0.95f - abilX;
             const float abilH = 0.075f;
+            Size2D curSize = FrameBuffer.Current.Size;
             uint hpW = (uint)Renderer.RelXToAbsX(0.3f);
-            int hpX = Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, hpW, rightColCenterX);
+            int hpX = Renderer.GetCoordinatesForCentering(curSize.Width, hpW, rightColCenterX);
             int hpY = Renderer.RelYToAbsY(rightColY + 0.09f);
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(135, 145, 250), new Rect2D(Pos2D.FromRelative(winX, winY), Size2D.FromRelative(winW, winH))); // TODO: ROUNDED 12
             // Stats
@@ -564,7 +566,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 float y = i == -2 ? textStartY : textStart2Y + (i * textSpacingY);
                 Size2D s = rightColFont.MeasureString(rightColStr);
                 GUIString.CreateAndRenderOneTimeString(rightColStr, rightColFont, colors,
-                    new Pos2D(Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, s.Width, rightColCenterX), Renderer.RelYToAbsY(y)));
+                    new Pos2D(Renderer.GetCoordinatesForCentering(curSize.Width, s.Width, rightColCenterX), Renderer.RelYToAbsY(y)));
             }
 
             BaseStats bs;
@@ -668,6 +670,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             const float ppNumX = 0.35f;
             const float ppY = itemSpacingY / 2;
             const float cancelY = winY + moveY + (PkmnConstants.NumMoves * itemSpacingY);
+            Size2D curSize = FrameBuffer.Current.Size;
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(250, 128, 120), new Rect2D(Pos2D.FromRelative(winX, winY), Size2D.FromRelative(winW, winH))); // TODO: ROUNDED 15
 
             Font moveFont = Font.Default;
@@ -692,7 +695,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 str = string.Format("{0}/{1}", pp, maxPP);
                 Size2D s = moveFont.MeasureString(str);
                 GUIString.CreateAndRenderOneTimeString(str, moveFont, ppColors,
-                    new Pos2D(Renderer.GetCoordinatesForCentering(GLHelper.CurrentWidth, s.Width, x), Renderer.RelYToAbsY(y)));
+                    new Pos2D(Renderer.GetCoordinatesForCentering(curSize.Width, s.Width, x), Renderer.RelYToAbsY(y)));
 
                 DrawSelection(i);
             }
@@ -958,7 +961,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             GL gl = Display.OpenGL;
             //Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(215, 231, 230, 255), Renderer.Color(231, 163, 0, 255), Renderer.Color(242, 182, 32, 255));
-            GLHelper.ClearColor(gl, Colors.FromRGB(31, 31, 31));
+            gl.ClearColor(Colors.FromRGB(31, 31, 31));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
             _pkmnImage.Update();
