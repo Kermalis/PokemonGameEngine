@@ -29,8 +29,8 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
                 ("[PK]", 0x2486),
                 ("[MN]", 0x2487)
             });
-            DefaultSmall = new Font("Fonts\\DefaultSmall.kermfont", new Size2D(1024, 512), Default._overrides);
-            PartyNumbers = new Font("Fonts\\PartyNumbers.kermfont", new Size2D(64, 32), new (string, ushort)[]
+            DefaultSmall = new Font("Fonts\\DefaultSmall.kermfont", new Size2D(1024, 1024), Default._overrides);
+            PartyNumbers = new Font("Fonts\\PartyNumbers.kermfont", new Size2D(64, 64), new (string, ushort)[]
             {
                 ("[ID]", 0x0049),
                 ("[LV]", 0x004C),
@@ -41,6 +41,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
         // Atlas size must be a power of 2
         private unsafe Font(string asset, Size2D atlasSize, (string, ushort)[] overrides)
         {
+            const int SPACING = 1;
             using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(asset), Endianness.LittleEndian))
             {
                 FontHeight = r.ReadByte();
@@ -72,7 +73,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
                     if (posInAtlas.X >= atlasSize.Width || posInAtlas.X + pg.CharWidth > atlasSize.Width)
                     {
                         posInAtlas.X = 0;
-                        posInAtlas.Y += FontHeight;
+                        posInAtlas.Y += FontHeight + SPACING;
                         if (posInAtlas.Y + FontHeight > atlasSize.Height)
                         {
                             throw new InvalidDataException();
@@ -80,7 +81,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
                     }
                     var g = new Glyph(dest, posInAtlas, atlasSize, this, pg);
                     _glyphs.Add(key, g);
-                    posInAtlas.X += g.CharWidth;
+                    posInAtlas.X += g.CharWidth + SPACING;
                 }
 
                 // Create the texture
