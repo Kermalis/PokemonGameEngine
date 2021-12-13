@@ -3,11 +3,12 @@ using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.GUIs
 {
+    /// <summary>A rect mesh that takes up the entire screen</summary>
     internal sealed class SimpleRectMesh
     {
         public static SimpleRectMesh Instance { get; private set; } = null!; // Set in RenderManager
 
-        private static readonly Vector2[] _positions = new Vector2[4]
+        private static readonly Vector2[] _vertices = new Vector2[4]
         {
             new Vector2(-1,  1), // Top Left
             new Vector2(-1, -1), // Bottom Left
@@ -29,7 +30,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             // Create vbo
             _vbo = gl.GenBuffer();
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _vbo);
-            fixed (void* d = _positions)
+            fixed (void* d = _vertices)
             {
                 gl.BufferData(BufferTargetARB.ArrayBuffer, (uint)sizeof(Vector2) * 4, d, BufferUsageARB.StaticDraw);
             }

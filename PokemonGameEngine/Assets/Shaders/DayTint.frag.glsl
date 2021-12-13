@@ -7,6 +7,7 @@ out vec4 out_color;
 uniform vec3 modification;
 uniform sampler2D colorTexture;
 
+
 void main()
 {
     out_color = texture(colorTexture, pass_uv);
