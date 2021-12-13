@@ -641,7 +641,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public void HandleInputs()
         {
-            if (InputManager.IsPressed(Key.A))
+            if (InputManager.JustPressed(Key.A))
             {
                 TargetInfo ti;
                 switch (_selection)
@@ -661,12 +661,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 return;
             }
-            if (InputManager.IsPressed(Key.B))
+            if (InputManager.JustPressed(Key.B))
             {
                 _cancelAction();
                 return;
             }
-            if (InputManager.IsPressed(Key.Left))
+            if (InputManager.JustPressed(Key.Left))
             {
                 if (_selectionX > 0)
                 {
@@ -675,7 +675,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 return;
             }
-            if (InputManager.IsPressed(Key.Right))
+            if (InputManager.JustPressed(Key.Right))
             {
                 int bounds = _centerTargetsVisible ? 2 : 1;
                 if (_selectionX < bounds)
@@ -685,7 +685,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 return;
             }
-            if (InputManager.IsPressed(Key.Down))
+            if (InputManager.JustPressed(Key.Down))
             {
                 if (_selectionY == 1)
                 {
@@ -699,7 +699,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 return;
             }
-            if (InputManager.IsPressed(Key.Up))
+            if (InputManager.JustPressed(Key.Up))
             {
                 if (_selectionY == -1)
                 {

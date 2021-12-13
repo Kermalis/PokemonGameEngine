@@ -818,12 +818,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private void HandleInputs_InfoPage()
         {
-            if (InputManager.IsPressed(Key.B))
+            if (InputManager.JustPressed(Key.B))
             {
                 SetExitFadeOutCallback();
                 return;
             }
-            if (InputManager.IsPressed(Key.Right))
+            if (InputManager.JustPressed(Key.Right))
             {
                 SwapPage(Page.Personal);
                 return;
@@ -831,17 +831,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void HandleInputs_PersonalPage()
         {
-            if (InputManager.IsPressed(Key.B))
+            if (InputManager.JustPressed(Key.B))
             {
                 SetExitFadeOutCallback();
                 return;
             }
-            if (InputManager.IsPressed(Key.Left))
+            if (InputManager.JustPressed(Key.Left))
             {
                 SwapPage(Page.Info);
                 return;
             }
-            if (InputManager.IsPressed(Key.Right))
+            if (InputManager.JustPressed(Key.Right))
             {
                 SwapPage(Page.Stats);
                 return;
@@ -849,17 +849,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void HandleInputs_StatsPage()
         {
-            if (InputManager.IsPressed(Key.B))
+            if (InputManager.JustPressed(Key.B))
             {
                 SetExitFadeOutCallback();
                 return;
             }
-            if (InputManager.IsPressed(Key.Left))
+            if (InputManager.JustPressed(Key.Left))
             {
                 SwapPage(Page.Personal);
                 return;
             }
-            if (InputManager.IsPressed(Key.Right))
+            if (InputManager.JustPressed(Key.Right))
             {
                 SwapPage(Page.Moves);
                 return;
@@ -868,20 +868,20 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void HandleInputs_MovesPage()
         {
             // Start selecting a move
-            if (InputManager.IsPressed(Key.A))
+            if (InputManager.JustPressed(Key.A))
             {
                 _moveSelection = 0;
                 UpdatePageImage();
                 return;
             }
             // Exit summary
-            if (InputManager.IsPressed(Key.B))
+            if (InputManager.JustPressed(Key.B))
             {
                 SetExitFadeOutCallback();
                 return;
             }
             // Go to stats page
-            if (InputManager.IsPressed(Key.Left))
+            if (InputManager.JustPressed(Key.Left))
             {
                 SwapPage(Page.Stats);
                 return;
@@ -890,7 +890,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void HandleInputs_MovesPage_SelectingMove()
         {
             // Choose selected move
-            if (InputManager.IsPressed(Key.A))
+            if (InputManager.JustPressed(Key.A))
             {
                 if (_mode == Mode.LearnMove)
                 {
@@ -912,7 +912,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 return;
             }
             // Stop selecting a move
-            if (InputManager.IsPressed(Key.B))
+            if (InputManager.JustPressed(Key.B))
             {
                 if (_mode == Mode.LearnMove)
                 {
@@ -927,7 +927,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 return;
             }
             // Go up a move
-            if (InputManager.IsPressed(Key.Up))
+            if (InputManager.JustPressed(Key.Up))
             {
                 if (_moveSelection == CANCEL_BUTTON_INDEX)
                 {
@@ -942,7 +942,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 return;
             }
             // Go down a move
-            if (InputManager.IsPressed(Key.Down))
+            if (InputManager.JustPressed(Key.Down))
             {
                 if (_moveSelection != CANCEL_BUTTON_INDEX)
                 {

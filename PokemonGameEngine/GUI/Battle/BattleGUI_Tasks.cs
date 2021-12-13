@@ -83,8 +83,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         #region Camera Motion
 
-        private static readonly PositionRotation _defaultPosition = new(new Vector3(7f, 7f, 15f), 0, 13, -22); // battle using bw2 matrix
-        //private static readonly PositionRotation _defaultPosition = new(new Vector3(6.5f, 9.5f, 14f), 0, 18, -22); // battle 1:1, 35fov
+        private static readonly PositionRotation _defaultPosition = new(new Vector3(7f, 7f, 15f), new Rotation(-22, 13, 0)); // battle using bw2 matrix
+        //private static readonly PositionRotation _defaultPosition = new(new Vector3(6.5f, 9.5f, 14f), new Rotation(-22, 18, 0)); // battle 1:1, 35fov
 
         private sealed class TaskData_MoveCamera
         {

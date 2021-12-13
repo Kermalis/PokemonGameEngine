@@ -219,13 +219,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _tasks.RunTasks();
 
 #if DEBUG_BATTLE_CAMERAPOS
-            if (InputManager.IsPressed(Key.Select))
+            if (InputManager.JustPressed(Key.Select))
             {
                 MoveCameraToDefaultPosition(null);
             }
             else
             {
-                //_camera.PR.Debug_Move(5f);
+                _camera.PR.Debug_Move(5f);
                 //_models[3].PR.Debug_Move(5f);
             }
 #endif

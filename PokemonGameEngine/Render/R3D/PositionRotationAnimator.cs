@@ -1,4 +1,6 @@
-﻿namespace Kermalis.PokemonGameEngine.Render.R3D
+﻿using System.Numerics;
+
+namespace Kermalis.PokemonGameEngine.Render.R3D
 {
     internal interface IPositionRotationAnimator
     {
@@ -79,7 +81,7 @@
                     progress = 1f;
                     IsPosDone = true;
                 }
-                result.LerpPosition(_from.Position, _to.Position, progress);
+                result.Position = Vector3.Lerp(_from.Position, _to.Position, progress);
             }
             if (!IsRotDone)
             {
@@ -90,7 +92,7 @@
                     progress = 1f;
                     IsRotDone = true;
                 }
-                result.SlerpRotation(_from.Rotation, _to.Rotation, progress);
+                result.Rotation.Set(Quaternion.Slerp(_from.Rotation.Value, _to.Rotation.Value, progress));
             }
             return IsDone;
         }

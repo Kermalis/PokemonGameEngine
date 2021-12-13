@@ -113,7 +113,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
 
         private void HandleInputs()
         {
-            if (InputManager.IsPressed(Key.B))
+            if (InputManager.JustPressed(Key.B))
             {
                 SetExitFadeOutCallback();
                 return;
@@ -121,7 +121,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
 
             if (_isOnParty)
             {
-                if (InputManager.IsPressed(Key.Right))
+                if (InputManager.JustPressed(Key.Right))
                 {
                     _isOnParty = false;
                     return;
@@ -130,7 +130,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
             }
             else
             {
-                if (InputManager.IsPressed(Key.Left))
+                if (InputManager.JustPressed(Key.Left))
                 {
                     _isOnParty = true;
                     return;

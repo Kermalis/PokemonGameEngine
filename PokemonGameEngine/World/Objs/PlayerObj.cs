@@ -138,7 +138,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return;
             }
 
-            if (InputManager.IsPressed(Key.Start))
+            if (InputManager.JustPressed(Key.Start))
             {
                 OverworldGUI.Instance.OpenStartMenu();
                 return;
@@ -263,7 +263,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         private bool CheckForAInteraction()
         {
-            if (!InputManager.IsPressed(Key.A))
+            if (!InputManager.JustPressed(Key.A))
             {
                 return false;
             }

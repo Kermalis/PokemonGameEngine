@@ -532,7 +532,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void CB_CantUseFieldMove()
         {
             // Wait for input to advance the message
-            if (InputManager.IsPressed(Key.A) || InputManager.IsPressed(Key.B))
+            if (InputManager.JustPressed(Key.A) || InputManager.JustPressed(Key.B))
             {
                 int index = SelectionCoordsToPartyIndex(_selectionX, _selectionY);
                 // Assume Mode.PkmnMenu
@@ -549,7 +549,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private void HandleInputs()
         {
-            if (InputManager.IsPressed(Key.A))
+            if (InputManager.JustPressed(Key.A))
             {
                 if (_selectionY == NO_PKMN_CHOSEN)
                 {
@@ -565,12 +565,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 }
                 return;
             }
-            if (_allowBack && InputManager.IsPressed(Key.B))
+            if (_allowBack && InputManager.JustPressed(Key.B))
             {
                 ClosePartyMenu();
                 return;
             }
-            if (InputManager.IsPressed(Key.Left))
+            if (InputManager.JustPressed(Key.Left))
             {
                 if (_selectionX == 1)
                 {
@@ -579,7 +579,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 }
                 return;
             }
-            if (InputManager.IsPressed(Key.Right))
+            if (InputManager.JustPressed(Key.Right))
             {
                 if (_selectionX == 0 && SelectionCoordsToPartyIndex(1, _selectionY) != NO_PKMN_CHOSEN)
                 {
@@ -588,7 +588,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 }
                 return;
             }
-            if (InputManager.IsPressed(Key.Down))
+            if (InputManager.JustPressed(Key.Down))
             {
                 int oldY = _selectionY;
                 if (oldY != NO_PKMN_CHOSEN)
@@ -609,7 +609,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 }
                 return;
             }
-            if (InputManager.IsPressed(Key.Up))
+            if (InputManager.JustPressed(Key.Up))
             {
                 int oldY = _selectionY;
                 if (oldY == NO_PKMN_CHOSEN)

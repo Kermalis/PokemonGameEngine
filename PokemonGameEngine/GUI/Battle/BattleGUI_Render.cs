@@ -125,11 +125,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 new Model(bgPath),
                 new Model(foePath)
                 {
-                    PR = new PositionRotation(new Vector3(0, 0, -15), Quaternion.Identity)
+                    PR = new PositionRotation(new Vector3(0, 0, -15), Rotation.Default)
                 },
                 new Model(allyPath)
                 {
-                    PR = new PositionRotation(new(0, 0, 3), Quaternion.Identity)
+                    PR = new PositionRotation(new(0, 0, 3), Rotation.Default)
                 },
                 // You'd add more models here if you wanted. File paths for now
             };

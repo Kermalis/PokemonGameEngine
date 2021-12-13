@@ -54,9 +54,9 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 return InputManager.IsDown(Key.A) || InputManager.IsDown(Key.B);
             }
-            bool IsPressed()
+            bool JustPressed()
             {
-                return InputManager.IsPressed(Key.A) || InputManager.IsPressed(Key.B);
+                return InputManager.JustPressed(Key.A) || InputManager.JustPressed(Key.B);
             }
             switch (_result)
             {
@@ -68,7 +68,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 }
                 case StringPrinterResult.FormFeed:
                 {
-                    if (IsPressed())
+                    if (JustPressed())
                     {
                         _window.ClearImage();
                         _str.VisibleStart = _str.NumVisible;
@@ -79,7 +79,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 }
                 case StringPrinterResult.VerticalTab:
                 {
-                    if (IsPressed())
+                    if (JustPressed())
                     {
                         _result = StringPrinterResult.EnoughChars;
                     }
@@ -87,7 +87,7 @@ namespace Kermalis.PokemonGameEngine.GUI
                 }
                 case StringPrinterResult.Ended:
                 {
-                    if (IsPressed())
+                    if (JustPressed())
                     {
                         _pressedDone = true;
                         return;

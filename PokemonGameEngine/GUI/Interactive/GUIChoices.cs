@@ -46,10 +46,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
 
         public void HandleInputs()
         {
-            bool down = InputManager.IsPressed(Key.Down);
-            bool up = InputManager.IsPressed(Key.Up);
-            bool a = InputManager.IsPressed(Key.A);
-            bool b = InputManager.IsPressed(Key.B);
+            bool down = InputManager.JustPressed(Key.Down);
+            bool up = InputManager.JustPressed(Key.Up);
+            bool a = InputManager.JustPressed(Key.A);
+            bool b = InputManager.JustPressed(Key.B);
             if (!down && !up && !a && !b)
             {
                 return;

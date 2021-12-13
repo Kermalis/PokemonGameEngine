@@ -19,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         }
         public static Matrix4x4 CreateViewMatrix(in PositionRotation pr)
         {
-            return CreateViewMatrix(pr.Position, pr.Rotation);
+            return CreateViewMatrix(pr.Position, pr.Rotation.Value);
         }
         public static Matrix4x4 CreateViewMatrix(in Vector3 pos, in Quaternion rot)
         {

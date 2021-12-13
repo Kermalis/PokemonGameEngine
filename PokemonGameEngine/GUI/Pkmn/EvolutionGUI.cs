@@ -69,7 +69,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private bool CancelRequested()
         {
-            return _canCancel && InputManager.IsPressed(Key.B);
+            return _canCancel && InputManager.JustPressed(Key.B);
         }
 
         private void OnSummaryClosed()

@@ -332,7 +332,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private void HandleInputs()
         {
-            if (InputManager.IsPressed(Key.B))
+            if (InputManager.JustPressed(Key.B))
             {
                 SetExitFadeOutCallback();
                 return;
@@ -340,7 +340,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             if (_partyVisible && _isOnParty)
             {
-                if (InputManager.IsPressed(Key.Start))
+                if (InputManager.JustPressed(Key.Start))
                 {
                     _isOnParty = false;
                     return;
@@ -349,7 +349,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
             else
             {
-                if (_partyVisible && InputManager.IsPressed(Key.Start))
+                if (_partyVisible && InputManager.JustPressed(Key.Start))
                 {
                     _isOnParty = true;
                     return;
@@ -359,11 +359,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void HandlePCInputs()
         {
-            if (InputManager.IsPressed(Key.A))
+            if (InputManager.JustPressed(Key.A))
             {
                 BringUpBoxPkmnActions(GetSelectedBoxPkmn());
             }
-            if (InputManager.IsPressed(Key.R))
+            if (InputManager.JustPressed(Key.R))
             {
                 if (++_selectedBox >= PkmnConstants.NumBoxes)
                 {
@@ -372,7 +372,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 LoadBoxContents();
                 return;
             }
-            if (InputManager.IsPressed(Key.L))
+            if (InputManager.JustPressed(Key.L))
             {
                 if (--_selectedBox < 0)
                 {
@@ -381,12 +381,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 LoadBoxContents();
                 return;
             }
-            if (InputManager.IsPressed(Key.Select))
+            if (InputManager.JustPressed(Key.Select))
             {
                 _partyVisible = !_partyVisible;
                 return;
             }
-            if (InputManager.IsPressed(Key.Right))
+            if (InputManager.JustPressed(Key.Right))
             {
                 if (++_selectedRow >= NumPerRow)
                 {
@@ -395,7 +395,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 LoadPkmnContents(GetSelectedBoxPkmn());
                 return;
             }
-            if (InputManager.IsPressed(Key.Left))
+            if (InputManager.JustPressed(Key.Left))
             {
                 if (--_selectedRow < 0)
                 {
@@ -404,7 +404,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 LoadPkmnContents(GetSelectedBoxPkmn());
                 return;
             }
-            if (InputManager.IsPressed(Key.Down))
+            if (InputManager.JustPressed(Key.Down))
             {
                 if (++_selectedCol >= NumColumns)
                 {
@@ -413,7 +413,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 LoadPkmnContents(GetSelectedBoxPkmn());
                 return;
             }
-            if (InputManager.IsPressed(Key.Up))
+            if (InputManager.JustPressed(Key.Up))
             {
                 if (--_selectedCol < 0)
                 {

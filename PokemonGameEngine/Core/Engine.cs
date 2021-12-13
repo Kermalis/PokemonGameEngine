@@ -12,9 +12,6 @@ namespace Kermalis.PokemonGameEngine.Core
     {
         public static bool QuitRequested;
 
-        private static IntPtr _controller;
-        private static int _controllerId;
-
         #region Temp Tasks are here for now since some resources are destroyed in the finalizer, which is the wrong thread. Need to manually control resources
 
         private static readonly List<Action> _tempTasks = new();
@@ -44,7 +41,7 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             Display.Init(); // Inits SDL
             SoundMixer.Init(); // Init SDL Audio
-            AttachFirstController();
+            InputManager.Init(); // Attach controller if there is one
             AssetLoader.InitBattleEngine();
             RenderManager.Init();
             _ = new Game();
@@ -59,7 +56,7 @@ namespace Kermalis.PokemonGameEngine.Core
             while (!QuitRequested) // Break if quit was requested by game
             {
                 DoTempTasks();
-                InputManager.Update();
+                InputManager.Prepare();
 
                 // Grab all OS events
                 if (HandleOSEvents())
@@ -83,8 +80,7 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             SoundMixer.Quit();
             AssimpLoader.Quit();
-            SDL.SDL_GameControllerClose(_controller);
-
+            InputManager.Quit();
             Display.Quit(); // Quits SDL altogether
         }
 
@@ -99,85 +95,48 @@ namespace Kermalis.PokemonGameEngine.Core
                         QuitRequested = true;
                         return true;
                     }
-                    case SDL.SDL_EventType.SDL_CONTROLLERDEVICEREMOVED:
-                    {
-                        if (e.cdevice.which == _controllerId)
-                        {
-                            SDL.SDL_GameControllerClose(_controller);
-                            _controller = IntPtr.Zero;
-                            _controllerId = -1;
-                        }
-                        break;
-                    }
                     case SDL.SDL_EventType.SDL_CONTROLLERDEVICEADDED:
                     {
-                        if (_controller == IntPtr.Zero)
-                        {
-                            AttachFirstController();
-                        }
+                        Controller.OnControllerAdded();
+                        break;
+                    }
+                    case SDL.SDL_EventType.SDL_CONTROLLERDEVICEREMOVED:
+                    {
+                        Controller.OnControllerRemoved(e.cdevice.which);
                         break;
                     }
                     case SDL.SDL_EventType.SDL_CONTROLLERAXISMOTION:
                     {
-                        if (e.caxis.which == _controllerId)
-                        {
-                            InputManager.OnAxis(e.caxis);
-                        }
+                        Controller.OnAxisChanged(e.caxis);
                         break;
                     }
                     case SDL.SDL_EventType.SDL_CONTROLLERBUTTONDOWN:
                     {
-                        if (e.cbutton.which == _controllerId)
-                        {
-                            var button = (SDL.SDL_GameControllerButton)e.cbutton.button;
-                            InputManager.OnButtonDown(button, true);
-                        }
+                        Controller.OnButtonChanged(e.cbutton, true);
                         break;
                     }
                     case SDL.SDL_EventType.SDL_CONTROLLERBUTTONUP:
                     {
-                        if (e.cbutton.which == _controllerId)
-                        {
-                            var button = (SDL.SDL_GameControllerButton)e.cbutton.button;
-                            InputManager.OnButtonDown(button, false);
-                        }
+                        Controller.OnButtonChanged(e.cbutton, false);
                         break;
                     }
                     case SDL.SDL_EventType.SDL_KEYDOWN:
                     {
-                        SDL.SDL_Keycode sym = e.key.keysym.sym;
-                        switch (sym)
+                        // Don't accept repeat events
+                        if (e.key.repeat == 0)
                         {
-                            case SDL.SDL_Keycode.SDLK_F12: Display.SaveScreenshot(); break;
-                            default: InputManager.OnKeyDown(sym, true); break;
+                            Keyboard.OnKeyChanged(e.key.keysym.sym, true);
                         }
                         break;
                     }
                     case SDL.SDL_EventType.SDL_KEYUP:
                     {
-                        SDL.SDL_Keycode sym = e.key.keysym.sym;
-                        InputManager.OnKeyDown(sym, false);
+                        Keyboard.OnKeyChanged(e.key.keysym.sym, false);
                         break;
                     }
                 }
             }
             return false;
-        }
-        private static void AttachFirstController()
-        {
-            int num = SDL.SDL_NumJoysticks();
-            for (int i = 0; i < num; i++)
-            {
-                if (SDL.SDL_IsGameController(i) == SDL.SDL_bool.SDL_TRUE)
-                {
-                    _controller = SDL.SDL_GameControllerOpen(i);
-                    if (_controller != IntPtr.Zero)
-                    {
-                        _controllerId = SDL.SDL_JoystickInstanceID(SDL.SDL_GameControllerGetJoystick(_controller));
-                        break;
-                    }
-                }
-            }
         }
     }
 }

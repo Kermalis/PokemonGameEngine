@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using System.Numerics;
+﻿using System.Numerics;
 #if DEBUG
 using System;
 using Kermalis.PokemonGameEngine.Input;
@@ -10,136 +9,56 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
 {
     internal struct PositionRotation
     {
-        public static PositionRotation Default { get; } = new(Vector3.Zero, Quaternion.Identity);
+        public static PositionRotation Default { get; } = new(Vector3.Zero, Rotation.Default);
 
         public Vector3 Position;
-        public Quaternion Rotation;
+        public Rotation Rotation;
 
-        private float _rollDegrees;
-        private float _rollRadians;
-        private float _pitchDegrees;
-        private float _pitchRadians;
-        private float _yawDegrees;
-        private float _yawRadians;
-
-        public PositionRotation(in Vector3 pos, in Quaternion rot)
-            : this()
+        public PositionRotation(in Vector3 pos, in Rotation rot)
         {
             Position = pos;
-            SetRotation(rot);
-        }
-        public PositionRotation(in Vector3 pos, float rollDegrees, float pitchDegrees, float yawDegrees)
-            : this()
-        {
-            Position = pos;
-            SetRotation(rollDegrees, pitchDegrees, yawDegrees);
-        }
-
-        public void ResetRotation()
-        {
-            _rollDegrees = 0;
-            _rollRadians = 0;
-            _pitchDegrees = 0;
-            _pitchRadians = 0;
-            _yawDegrees = 0;
-            _yawRadians = 0;
-            Rotation = Quaternion.Identity;
-        }
-        public void SetRotation(in Quaternion rot)
-        {
             Rotation = rot;
-            _rollRadians = -rot.GetRollRadians();
-            _rollDegrees = _rollRadians * Utils.RadToDeg;
-            _pitchRadians = -rot.GetPitchRadians();
-            _pitchDegrees = _pitchRadians * Utils.RadToDeg;
-            _yawRadians = -rot.GetYawRadians();
-            _yawDegrees = _yawRadians * Utils.RadToDeg;
-        }
-        public void SetRotation(float rollDegrees, float pitchDegrees, float yawDegrees)
-        {
-            _rollDegrees = rollDegrees;
-            _rollRadians = rollDegrees * Utils.DegToRad;
-            _pitchDegrees = pitchDegrees;
-            _pitchRadians = pitchDegrees * Utils.DegToRad;
-            _yawDegrees = yawDegrees;
-            _yawRadians = yawDegrees * Utils.DegToRad;
-            Rotation = CreateRotation(_yawRadians, _pitchRadians, _rollRadians);
-        }
-        public void UpdateRollDegrees(float degrees)
-        {
-            _rollDegrees = degrees;
-            _rollRadians = degrees * Utils.DegToRad;
-            UpdateRotation();
-        }
-        public void UpdatePitchDegrees(float degrees)
-        {
-            _pitchDegrees = degrees;
-            _pitchRadians = degrees * Utils.DegToRad;
-            UpdateRotation();
-        }
-        public void UpdateYawDegrees(float degrees)
-        {
-            _yawDegrees = degrees;
-            _yawRadians = degrees * Utils.DegToRad;
-            UpdateRotation();
         }
 
-        public static Quaternion CreateRotation(float yawRadians, float pitchRadians, float rollRadians)
-        {
-            return Quaternion.CreateFromYawPitchRoll(-yawRadians, -pitchRadians, -rollRadians);
-        }
-        private void UpdateRotation()
-        {
-            Rotation = Quaternion.CreateFromYawPitchRoll(-_yawRadians, -_pitchRadians, -_rollRadians);
-        }
-
-        public void LerpPosition(in Vector3 from, in Vector3 to, float progress)
-        {
-            Position = Vector3.Lerp(from, to, progress);
-        }
-        public void SlerpRotation(in Quaternion from, in Quaternion to, float progress)
-        {
-            SetRotation(Quaternion.Slerp(from, to, progress));
-        }
         public void Slerp(in PositionRotation from, in PositionRotation to, float progress)
         {
-            LerpPosition(from.Position, to.Position, progress);
-            SlerpRotation(from.Rotation, to.Rotation, progress);
+            Position = Vector3.Lerp(from.Position, to.Position, progress);
+            Rotation.Set(Quaternion.Slerp(from.Rotation.Value, to.Rotation.Value, progress));
         }
 
         #region Movement
 
         public void MoveForward(float value)
         {
-            Position += Vector3.Transform(new Vector3(0, 0, -1), Rotation) * value;
+            Position += Vector3.Transform(new Vector3(0, 0, -1), Rotation.Value) * value;
         }
         public void MoveForwardZ(float value)
         {
-            Position.Z += value;
+            Position.Z -= value;
         }
         public void MoveBackward(float value)
         {
-            Position += Vector3.Transform(new Vector3(0, 0, 1), Rotation) * value;
+            Position += Vector3.Transform(new Vector3(0, 0, +1), Rotation.Value) * value;
         }
         public void MoveBackwardZ(float value)
         {
-            Position.Z -= value;
+            Position.Z += value;
         }
         public void MoveLeft(float value)
         {
-            Position += Vector3.Transform(new Vector3(-1, 0, 0), Rotation) * value;
+            Position += Vector3.Transform(new Vector3(-1, 0, 0), Rotation.Value) * value;
         }
         public void MoveLeftX(float value)
-        {
-            Position.X += value;
-        }
-        public void MoveRightX(float value)
         {
             Position.X -= value;
         }
         public void MoveRight(float value)
         {
-            Position += Vector3.Transform(new Vector3(1, 0, 0), Rotation) * value;
+            Position += Vector3.Transform(new Vector3(+1, 0, 0), Rotation.Value) * value;
+        }
+        public void MoveRightX(float value)
+        {
+            Position.X += value;
         }
         public void MoveUpY(float value)
         {
@@ -156,13 +75,13 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         public void Debug_Move(float moveSpeed)
         {
             // Reset roll pitch and yaw
-            if (InputManager.IsPressed(Key.Y))
+            if (InputManager.JustPressed(Key.Y))
             {
-                ResetRotation();
+                Rotation.Reset();
                 return;
             }
             // Reset position
-            if (InputManager.IsPressed(Key.B))
+            if (InputManager.JustPressed(Key.B))
             {
                 Position = default;
                 return;
@@ -170,31 +89,46 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             // Roll, Pitch, Yaw
             if (InputManager.IsDown(Key.R))
             {
+                moveSpeed *= 5f;
                 // Pitch
                 if (InputManager.IsDown(Key.Up))
                 {
-                    if (_pitchDegrees < 89)
+                    float pitch = Rotation.Pitch + (Display.DeltaTime * moveSpeed);
+                    if (pitch > 89f)
                     {
-                        UpdatePitchDegrees(_pitchDegrees + 1);
+                        pitch = 89f;
                     }
+                    Rotation.Set(Rotation.Yaw, pitch, Rotation.Roll);
                 }
                 else if (InputManager.IsDown(Key.Down))
                 {
-                    if (_pitchDegrees > -89)
+                    float pitch = Rotation.Pitch - (Display.DeltaTime * moveSpeed);
+                    if (pitch < -89f)
                     {
-                        UpdatePitchDegrees(_pitchDegrees - 1);
+                        pitch = -89f;
                     }
+                    Rotation.Set(Rotation.Yaw, pitch, Rotation.Roll);
                 }
                 if (InputManager.IsDown(Key.X))
                 {
                     // Roll
                     if (InputManager.IsDown(Key.Left))
                     {
-                        UpdateRollDegrees(_rollDegrees == 0 ? 359 : _rollDegrees - 1);
+                        float roll = Rotation.Roll - (Display.DeltaTime * moveSpeed);
+                        while (roll < 0f)
+                        {
+                            roll += 360f;
+                        }
+                        Rotation.Set(Rotation.Yaw, Rotation.Pitch, roll);
                     }
                     else if (InputManager.IsDown(Key.Right))
                     {
-                        UpdateRollDegrees(_rollDegrees == 359 ? 0 : _rollDegrees + 1);
+                        float roll = Rotation.Roll + (Display.DeltaTime * moveSpeed);
+                        while (roll >= 360f)
+                        {
+                            roll -= 360f;
+                        }
+                        Rotation.Set(Rotation.Yaw, Rotation.Pitch, roll);
                     }
                 }
                 else
@@ -202,11 +136,21 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                     // Yaw
                     if (InputManager.IsDown(Key.Left))
                     {
-                        UpdateYawDegrees(_yawDegrees == 0 ? 359 : _yawDegrees - 1);
+                        float yaw = Rotation.Yaw - (Display.DeltaTime * moveSpeed);
+                        while (yaw < 0f)
+                        {
+                            yaw += 360f;
+                        }
+                        Rotation.Set(yaw, Rotation.Pitch, Rotation.Roll);
                     }
                     else if (InputManager.IsDown(Key.Right))
                     {
-                        UpdateYawDegrees(_yawDegrees == 359 ? 0 : _yawDegrees + 1);
+                        float yaw = Rotation.Yaw + (Display.DeltaTime * moveSpeed);
+                        while (yaw >= 360f)
+                        {
+                            yaw -= 360f;
+                        }
+                        Rotation.Set(yaw, Rotation.Pitch, Rotation.Roll);
                     }
                 }
                 return;
@@ -214,60 +158,55 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             // Move along axis
             if (InputManager.IsDown(Key.L))
             {
-                const float xMove = 0.1f;
-                const float yMove = 0.1f;
-                const float zMove = 0.1f;
-
                 if (InputManager.IsDown(Key.Up))
                 {
                     if (InputManager.IsDown(Key.X))
                     {
-                        MoveUpY(yMove * moveSpeed);
+                        MoveUpY(Display.DeltaTime * moveSpeed);
                     }
                     else
                     {
-                        MoveForwardZ(zMove * moveSpeed);
+                        MoveForwardZ(Display.DeltaTime * moveSpeed);
                     }
                 }
                 else if (InputManager.IsDown(Key.Down))
                 {
                     if (InputManager.IsDown(Key.X))
                     {
-                        MoveDownY(yMove * moveSpeed);
+                        MoveDownY(Display.DeltaTime * moveSpeed);
                     }
                     else
                     {
-                        MoveBackwardZ(zMove * moveSpeed);
+                        MoveBackwardZ(Display.DeltaTime * moveSpeed);
                     }
                 }
                 if (InputManager.IsDown(Key.Left))
                 {
-                    MoveLeftX(xMove * moveSpeed);
+                    MoveLeftX(Display.DeltaTime * moveSpeed);
                 }
                 else if (InputManager.IsDown(Key.Right))
                 {
-                    MoveRightX(xMove * moveSpeed);
+                    MoveRightX(Display.DeltaTime * moveSpeed);
                 }
                 return;
             }
             // Move along our camera angle
             {
-                const float forwardMove = 0.1f;
                 if (InputManager.IsDown(Key.Up))
                 {
-                    MoveForward(forwardMove * moveSpeed);
+                    MoveForward(Display.DeltaTime * moveSpeed);
                 }
                 else if (InputManager.IsDown(Key.Down))
                 {
-                    MoveBackward(forwardMove * moveSpeed);
+                    MoveBackward(Display.DeltaTime * moveSpeed);
                 }
                 if (InputManager.IsDown(Key.Left))
                 {
-                    MoveLeft(forwardMove * moveSpeed);
+                    MoveLeft(Display.DeltaTime * moveSpeed);
                 }
                 else if (InputManager.IsDown(Key.Right))
                 {
-                    MoveRight(forwardMove * moveSpeed);
+                    MoveRight(Display.DeltaTime * moveSpeed);
                 }
                 return;
             }
@@ -275,9 +214,9 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
 
         public override string ToString()
         {
-            return string.Format("X: {0}\nY: {1}\nZ: {2}\nRoll: {3}\nPitch: {4}\nYaw: {5}",
+            return string.Format("X: {0}\nY: {1}\nZ: {2}\n{3}",
                 MathF.Round(Position.X, 2), MathF.Round(Position.Y, 2), MathF.Round(Position.Z, 2),
-                _rollDegrees, _pitchDegrees, _yawDegrees);
+                Rotation);
         }
         public void Debug_RenderPosition()
         {
