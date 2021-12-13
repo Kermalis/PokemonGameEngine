@@ -16,12 +16,12 @@ namespace Kermalis.PokemonGameEngine.Render
 
         // A block is 16x16 pixels (2x2 tiles, and a tile is 8x8 pixels)
         // You can have different sized blocks and tiles if you wish, but this table is demonstrating defaults
-        // GB/GBC         -  160 x 144 resolution (10:9) - 10 x  9   blocks
-        // GBA            -  240 x 160 resolution ( 3:2) - 15 x 10   blocks
-        // NDS            -  256 x 192 resolution ( 4:3) - 16 x 12   blocks
-        // 3DS (Lower)    -  320 x 240 resolution ( 4:3) - 20 x 15   blocks
-        // 3DS (Upper)    -  400 x 240 resolution ( 5:3) - 25 x 15   blocks
-        // Default below  -  384 x 216 resolution (16:9) - 24 x 13.5 blocks
+        // GB/GBC        - 160 x 144 resolution (10:9) - 10 x  9   blocks
+        // GBA           - 240 x 160 resolution ( 3:2) - 15 x 10   blocks
+        // NDS           - 256 x 192 resolution ( 4:3) - 16 x 12   blocks
+        // 3DS (Lower)   - 320 x 240 resolution ( 4:3) - 20 x 15   blocks
+        // 3DS (Upper)   - 400 x 240 resolution ( 5:3) - 25 x 15   blocks
+        // Default below - 384 x 216 resolution (16:9) - 24 x 13.5 blocks
         public const int RenderWidth = 384;
         public const int RenderHeight = 216;
         public static readonly Size2D RenderSize = new(RenderWidth, RenderHeight);
@@ -94,10 +94,6 @@ namespace Kermalis.PokemonGameEngine.Render
         public static void Init()
         {
             OpenGL.Viewport(0, 0, RenderWidth, RenderHeight);
-            CreateGLFrameBuffer();
-        }
-        private static unsafe void CreateGLFrameBuffer()
-        {
             _virtualFBO = FrameBuffer.CreateWithColorAndDepth(RenderSize);
             _virtualFBO.Push();
         }
@@ -147,7 +143,19 @@ namespace Kermalis.PokemonGameEngine.Render
             gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
             gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
             gl.DrawBuffer(DrawBufferMode.Back); // The default frame buffer isn't "ColorAttachment0", it's "Back" instead
-            gl.BlitFramebuffer(0, 0, RenderWidth, RenderHeight, 0, 0, w, h, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
+
+            // Maintain aspect ratio of the virtual screen
+            float ratioX = w / (float)RenderWidth;
+            float ratioY = h / (float)RenderHeight;
+            float ratio = ratioX < ratioY ? ratioX : ratioY;
+            int dstX = (int)((w - (RenderWidth * ratio)) / 2);
+            int dstY = (int)((h - (RenderHeight * ratio)) / 2);
+            int dstW = (int)(RenderWidth * ratio);
+            int dstH = (int)(RenderHeight * ratio);
+
+            gl.ClearColor(Colors.Black3);
+            gl.Clear(ClearBufferMask.ColorBufferBit);
+            gl.BlitFramebuffer(0, 0, RenderWidth, RenderHeight, dstX, dstY, dstX + dstW, dstY + dstH, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
 
             // Present to window
             SDL.SDL_GL_SwapWindow(_window);
