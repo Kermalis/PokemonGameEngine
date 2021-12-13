@@ -148,8 +148,8 @@ namespace Kermalis.PokemonGameEngine.Render
             float ratioX = w / (float)RenderWidth;
             float ratioY = h / (float)RenderHeight;
             float ratio = ratioX < ratioY ? ratioX : ratioY;
-            int dstX = (int)((w - (RenderWidth * ratio)) / 2);
-            int dstY = (int)((h - (RenderHeight * ratio)) / 2);
+            int dstX = (int)((w - (RenderWidth * ratio)) * 0.5f);
+            int dstY = (int)((h - (RenderHeight * ratio)) * 0.5f);
             int dstW = (int)(RenderWidth * ratio);
             int dstH = (int)(RenderHeight * ratio);
 
