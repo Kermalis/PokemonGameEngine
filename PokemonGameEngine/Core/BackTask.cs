@@ -11,7 +11,8 @@
         public object Data;
         public object Tag;
 
-        public readonly int Priority; // Higher priorities go first
+        /// <summary>Higher priorities go first</summary>
+        public readonly int Priority;
 
         public BackTask(BackTaskAction action, int priority, object data = null, object tag = null)
         {
@@ -51,11 +52,11 @@
                     // The new task has a higher priority than t, so insert new before t
                     if (t == _first)
                     {
-                        _first = t;
+                        _first = task; // new is now the first task
                     }
                     else
                     {
-                        BackTask prev = t.Prev;
+                        BackTask prev = t.Prev; // Connect the one before and one after with the new task
                         task.Prev = prev;
                         prev.Next = task;
                     }
@@ -86,19 +87,19 @@
             if (task == _first)
             {
                 BackTask next = task.Next;
-                if (next is not null)
+                if (next is not null) // This was not the only task
                 {
-                    next.Prev = null;
+                    next.Prev = null; // Make the next one the first one
                 }
                 _first = next;
             }
-            else
+            else // Not the first one so we have a previous one
             {
                 BackTask prev = task.Prev;
                 BackTask next = task.Next;
-                if (next is not null)
+                if (next is not null) // This was not last
                 {
-                    next.Prev = prev;
+                    next.Prev = prev; // Connect the previous and next together
                 }
                 prev.Next = next;
             }

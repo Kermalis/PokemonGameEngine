@@ -13,7 +13,7 @@ namespace Kermalis.PokemonGameEngine.Render
         public Sprite Prev;
 
         public IImage Image;
-        /// <summary>After this is updated, a call will need to be made to <see cref="SpriteList.SortByPriority"/>. Higher priorities are rendered last</summary>
+        /// <summary>After this is updated, a call will need to be made to <see cref="SpriteList.SortByPriority"/>. Higher priorities are rendered last to appear above everything else</summary>
         public int Priority;
         public Pos2D Pos;
         public bool IsInvisible;
@@ -66,11 +66,11 @@ namespace Kermalis.PokemonGameEngine.Render
                     // The new sprite has a lower priority than s, so insert new before s
                     if (s == _first)
                     {
-                        _first = sprite;
+                        _first = sprite; // new is now the first sprite
                     }
                     else
                     {
-                        Sprite prev = s.Prev;
+                        Sprite prev = s.Prev; // Connect the one before and one after with the new sprite
                         sprite.Prev = prev;
                         prev.Next = sprite;
                     }
@@ -97,19 +97,19 @@ namespace Kermalis.PokemonGameEngine.Render
             if (sprite == _first)
             {
                 Sprite next = sprite.Next;
-                if (next is not null)
+                if (next is not null) // This was not the only sprite
                 {
-                    next.Prev = null;
+                    next.Prev = null; // Make the next one the first one
                 }
                 _first = next;
             }
-            else
+            else // Not the first one so we have a previous one
             {
                 Sprite prev = sprite.Prev;
                 Sprite next = sprite.Next;
-                if (next is not null)
+                if (next is not null) // This was not last
                 {
-                    next.Prev = prev;
+                    next.Prev = prev; // Connect the previous and next together
                 }
                 prev.Next = next;
             }
