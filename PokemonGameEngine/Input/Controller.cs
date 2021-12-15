@@ -112,7 +112,7 @@ namespace Kermalis.PokemonGameEngine.Input
                 default: return;
             }
 
-            _buttons[key].Update(down);
+            _buttons[key].OnChanged(down);
         }
 
         public static void TryAttachController()

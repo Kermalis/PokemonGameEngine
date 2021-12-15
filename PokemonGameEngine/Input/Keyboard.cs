@@ -61,7 +61,7 @@ namespace Kermalis.PokemonGameEngine.Input
                 default: return;
             }
 
-            _keys[key].Update(down);
+            _keys[key].OnChanged(down);
         }
     }
 }

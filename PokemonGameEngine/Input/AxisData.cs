@@ -20,6 +20,25 @@ namespace Kermalis.PokemonGameEngine.Input
         {
             PressData.PrepareMany(_dpadSimulation.Values);
         }
+        private void Set(Key key, bool down)
+        {
+            PressData d = _dpadSimulation[key];
+            // Only send state changes
+            if (down)
+            {
+                if (!d.IsPressed)
+                {
+                    d.OnChanged(true); // Sets IsNew to true
+                }
+            }
+            else
+            {
+                if (d.IsPressed)
+                {
+                    d.OnChanged(false); // Sets WasReleased to true
+                }
+            }
+        }
         public void Update(bool isX, float value)
         {
             // Left/Up activated
@@ -28,14 +47,14 @@ namespace Kermalis.PokemonGameEngine.Input
                 if (isX)
                 {
                     X = value;
-                    _dpadSimulation[Key.Left].Update(true);
-                    _dpadSimulation[Key.Right].Update(false);
+                    Set(Key.Left, true);
+                    Set(Key.Right, false);
                 }
                 else
                 {
                     Y = value;
-                    _dpadSimulation[Key.Up].Update(true);
-                    _dpadSimulation[Key.Down].Update(false);
+                    Set(Key.Up, true);
+                    Set(Key.Down, false);
                 }
             }
             // Right/down activated
@@ -44,14 +63,14 @@ namespace Kermalis.PokemonGameEngine.Input
                 if (isX)
                 {
                     X = value;
-                    _dpadSimulation[Key.Left].Update(false);
-                    _dpadSimulation[Key.Right].Update(true);
+                    Set(Key.Left, false);
+                    Set(Key.Right, true);
                 }
                 else
                 {
                     Y = value;
-                    _dpadSimulation[Key.Up].Update(false);
-                    _dpadSimulation[Key.Down].Update(true);
+                    Set(Key.Up, false);
+                    Set(Key.Down, true);
                 }
             }
             // Not reached past deadzone, kill to 0
@@ -60,14 +79,14 @@ namespace Kermalis.PokemonGameEngine.Input
                 if (isX)
                 {
                     X = 0f;
-                    _dpadSimulation[Key.Left].Update(false);
-                    _dpadSimulation[Key.Right].Update(false);
+                    Set(Key.Left, false);
+                    Set(Key.Right, false);
                 }
                 else
                 {
                     Y = 0f;
-                    _dpadSimulation[Key.Up].Update(false);
-                    _dpadSimulation[Key.Down].Update(false);
+                    Set(Key.Up, false);
+                    Set(Key.Down, false);
                 }
             }
         }

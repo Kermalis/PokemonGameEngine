@@ -16,7 +16,7 @@ namespace Kermalis.PokemonGameEngine.Input
             IsNew = false;
             WasReleased = false;
         }
-        public void Update(bool down)
+        public void OnChanged(bool down)
         {
             IsPressed = down;
             if (down)
