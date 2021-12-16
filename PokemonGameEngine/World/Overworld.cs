@@ -39,7 +39,11 @@ namespace Kermalis.PokemonGameEngine.World
 
         public static bool ShouldRenderDayTint()
         {
+#if DEBUG_DISABLE_DAYTINT
+            return false;
+#else
             return CameraObj.Instance.Map.Details.Flags.HasFlag(MapFlags.DayTint);
+#endif
         }
         public static PBEWeather GetPBEWeatherFromMap(MapWeather mapWeather)
         {
