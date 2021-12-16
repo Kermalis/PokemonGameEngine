@@ -1,7 +1,7 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.SimpleGIF;
 
-namespace Kermalis.PokemonGameEngine.Render
+namespace Kermalis.PokemonGameEngine.Render.Images
 {
     internal static unsafe class SpindaSpotRenderer
     {
@@ -99,10 +99,10 @@ namespace Kermalis.PokemonGameEngine.Render
                 }
                 return arr;
             }
-            _rightEye = Load("Sprites\\SpindaSpot_RightEye.png");
-            _leftEye = Load("Sprites\\SpindaSpot_LeftEye.png");
-            _rightEar = Load("Sprites\\SpindaSpot_RightEar.png");
-            _leftEar = Load("Sprites\\SpindaSpot_LeftEar.png");
+            _rightEye = Load(@"Sprites\SpindaSpot_RightEye.png");
+            _leftEye = Load(@"Sprites\SpindaSpot_LeftEye.png");
+            _rightEar = Load(@"Sprites\SpindaSpot_RightEar.png");
+            _leftEar = Load(@"Sprites\SpindaSpot_LeftEar.png");
         }
 
         private static (uint color, uint replacement)[] SpindaSpotColorsFromShininess(bool shiny)
