@@ -8,19 +8,6 @@ namespace Kermalis.PokemonGameEngine.Render
 
         #region Raw Drawing
 
-        public static void ModulatePoint_Unchecked(uint* dst, float rMod, float gMod, float bMod, float aMod)
-        {
-            uint current = *dst;
-            uint r = GetR(current);
-            uint g = GetG(current);
-            uint b = GetB(current);
-            uint a = GetA(current);
-            r = (byte)(r * rMod);
-            g = (byte)(g * gMod);
-            b = (byte)(b * bMod);
-            a = (byte)(a * aMod);
-            *dst = RawColor(r, g, b, a);
-        }
         public static void DrawPoint_Unchecked(uint* dst, uint color)
         {
             uint aIn = GetA(color);
@@ -46,36 +33,6 @@ namespace Kermalis.PokemonGameEngine.Render
             uint b = (bIn * aIn / 0xFF) + (bOld * aOld * (0xFF - aIn) / (0xFF * 0xFF));
             uint a = aIn + (aOld * (0xFF - aIn) / 0xFF);
             *dst = RawColor(r, g, b, a);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DrawPoint_Checked(uint* dst, uint dstW, uint dstH, int x, int y, uint color)
-        {
-            if (y >= 0 && y < dstH && x >= 0 && x < dstW)
-            {
-                DrawPoint_Unchecked(GetPixelAddress(dst, dstW, x, y), color);
-            }
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void OverwritePoint_Checked(uint* dst, uint dstW, uint dstH, int x, int y, uint color)
-        {
-            if (y >= 0 && y < dstH && x >= 0 && x < dstW)
-            {
-                *GetPixelAddress(dst, dstW, x, y) = color;
-            }
-        }
-
-        public static uint[] GetBitmap_Unchecked(uint* src, uint srcW, Pos2D pos, Size2D size)
-        {
-            uint[] arr = new uint[size.GetArea()];
-            for (int py = 0; py < size.Height; py++)
-            {
-                for (int px = 0; px < size.Width; px++)
-                {
-                    arr[GetPixelIndex(size.Width, px, py)] = *GetPixelAddress(src, srcW, pos.X + px, pos.Y + py);
-                }
-            }
-            return arr;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
