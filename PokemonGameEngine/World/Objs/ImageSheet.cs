@@ -11,7 +11,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public readonly Image Images;
         public readonly Size2D ImageSize;
         public readonly WriteableImage ShadowImage;
-        public readonly Size2D ShadowSize;
         public readonly Pos2D ShadowOffset;
 
         private unsafe ImageSheet(string id)
@@ -22,13 +21,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 Images = Image.LoadOrGet(SheetsPath + r.ReadStringNullTerminated());
                 ImageSize = new Size2D(r.ReadUInt32(), r.ReadUInt32());
                 ShadowOffset = new Pos2D(r.ReadInt32(), r.ReadInt32());
-                ShadowSize = new Size2D(r.ReadUInt32(), r.ReadUInt32());
-                Size2D shadowSizePOT = ShadowSize.PowerOfTwoize();
-                ShadowImage = new WriteableImage(shadowSizePOT);
-                uint[] bmp = new uint[shadowSizePOT.GetArea()];
+                var shadowSize = new Size2D(r.ReadUInt32(), r.ReadUInt32());
+                ShadowImage = new WriteableImage(shadowSize);
+                uint[] bmp = new uint[shadowSize.GetArea()];
                 fixed (uint* dst = bmp)
                 {
-                    Renderer.FillEllipse_Points(dst, shadowSizePOT, new Pos2D(0, 0), new Pos2D((int)ShadowSize.Width - 1, (int)ShadowSize.Height - 1), Renderer.RawColor(0, 0, 0, 160));
+                    Renderer.FillEllipse_Points(dst, shadowSize, new Pos2D(0, 0), new Pos2D((int)shadowSize.Width - 1, (int)shadowSize.Height - 1), Renderer.RawColor(0, 0, 0, 160));
                     ShadowImage.LoadTextureData(Display.OpenGL, dst);
                 }
             }
