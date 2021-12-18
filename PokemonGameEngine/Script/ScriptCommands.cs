@@ -151,7 +151,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private void GoToIfCommand()
         {
             uint? offset = IfVar();
-            if (offset.HasValue)
+            if (offset is not null)
             {
                 _reader.BaseStream.Position = offset.Value;
             }
@@ -159,7 +159,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private void GoToIfFlagCommand()
         {
             uint? offset = IfFlag();
-            if (offset.HasValue)
+            if (offset is not null)
             {
                 _reader.BaseStream.Position = offset.Value;
             }
@@ -167,7 +167,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private void CallIfCommand()
         {
             uint? offset = IfVar();
-            if (offset.HasValue)
+            if (offset is not null)
             {
                 PushPosition(offset.Value);
             }
@@ -175,7 +175,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private void CallIfFlagCommand()
         {
             uint? offset = IfFlag();
-            if (offset.HasValue)
+            if (offset is not null)
             {
                 PushPosition(offset.Value);
             }
