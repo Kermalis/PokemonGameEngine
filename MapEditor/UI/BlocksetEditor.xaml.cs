@@ -221,36 +221,38 @@ namespace Kermalis.MapEditor.UI
         private void OnFlipChanged(bool xFlipChanged)
         {
             bool? nv = xFlipChanged ? _xFlip : _yFlip;
-            if (nv.HasValue)
+            if (nv is null)
             {
-                bool value = nv.Value;
-                TileLayerImage tli = _tileLayerImage;
-                Blockset.Block.Tile[][] c = tli.Clipboard;
-                bool changed = false;
-                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
+                return;
+            }
+
+            bool value = nv.Value;
+            TileLayerImage tli = _tileLayerImage;
+            Blockset.Block.Tile[][] c = tli.Clipboard;
+            bool changed = false;
+            for (int y = 0; y < Overworld.Block_NumTilesY; y++)
+            {
+                Blockset.Block.Tile[] arrY = c[y];
+                for (int x = 0; x < Overworld.Block_NumTilesX; x++)
                 {
-                    Blockset.Block.Tile[] arrY = c[y];
-                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
+                    Blockset.Block.Tile t = arrY[x];
+                    if (t.TilesetTile is not null)
                     {
-                        Blockset.Block.Tile t = arrY[x];
-                        if (t.TilesetTile is not null)
+                        changed = true;
+                        if (xFlipChanged)
                         {
-                            changed = true;
-                            if (xFlipChanged)
-                            {
-                                t.XFlip = value;
-                            }
-                            else
-                            {
-                                t.YFlip = value;
-                            }
+                            t.XFlip = value;
+                        }
+                        else
+                        {
+                            t.YFlip = value;
                         }
                     }
                 }
-                if (changed)
-                {
-                    DrawClipboard();
-                }
+            }
+            if (changed)
+            {
+                DrawClipboard();
             }
         }
         private void Blockset_OnChanged(Blockset blockset, Blockset.Block block)
@@ -318,63 +320,67 @@ namespace Kermalis.MapEditor.UI
         }
         private void TilesetImage_SelectionCompleted(object sender, Tileset.Tile[][] e)
         {
-            if (e is not null)
+            if (e is null)
             {
-                TileLayerImage tli = _tileLayerImage;
-                Blockset.Block.Tile[][] c = tli.Clipboard;
-                bool xV = _xFlip.HasValue;
-                bool yV = _yFlip.HasValue;
-                for (int y = 0; y < Overworld.Block_NumTilesY; y++)
-                {
-                    Blockset.Block.Tile[] cy = c[y];
-                    for (int x = 0; x < Overworld.Block_NumTilesX; x++)
-                    {
-                        Blockset.Block.Tile t = cy[x];
-                        if (y < e.Length)
-                        {
-                            Tileset.Tile[] ey = e[y];
-                            if (x < ey.Length)
-                            {
-                                t.TilesetTile = e[y][x];
-                                if (xV)
-                                {
-                                    t.XFlip = _xFlip.Value;
-                                }
-                                if (yV)
-                                {
-                                    t.YFlip = _yFlip.Value;
-                                }
-                                continue;
-                            }
-                        }
-                        t.TilesetTile = null;
-                    }
-                }
-                DrawClipboard();
+                return;
             }
+
+            TileLayerImage tli = _tileLayerImage;
+            Blockset.Block.Tile[][] c = tli.Clipboard;
+            bool xV = _xFlip is not null;
+            bool yV = _yFlip is not null;
+            for (int y = 0; y < Overworld.Block_NumTilesY; y++)
+            {
+                Blockset.Block.Tile[] cy = c[y];
+                for (int x = 0; x < Overworld.Block_NumTilesX; x++)
+                {
+                    Blockset.Block.Tile t = cy[x];
+                    if (y < e.Length)
+                    {
+                        Tileset.Tile[] ey = e[y];
+                        if (x < ey.Length)
+                        {
+                            t.TilesetTile = e[y][x];
+                            if (xV)
+                            {
+                                t.XFlip = _xFlip.Value;
+                            }
+                            if (yV)
+                            {
+                                t.YFlip = _yFlip.Value;
+                            }
+                            continue;
+                        }
+                    }
+                    t.TilesetTile = null;
+                }
+            }
+            DrawClipboard();
         }
         private void BlocksetImage_SelectionCompleted(object sender, Blockset.Block[][] e)
         {
             Blockset.Block block = e[0][0];
-            if (block is not null && block != _selectedBlock)
+            if (block is null || block == _selectedBlock)
             {
-                _selectedBlock = block;
-                _ignoreChange = true;
-                SelectedBehavior = block.Behavior;
-                _ignoreChange = false;
-                _tileLayerImage.SetBlock(block);
-                CountSubLayers();
-                for (int i = 0; i < SubLayers.Count; i++)
-                {
-                    SubLayers[i].SetBlock(block);
-                }
-                _subLayerComboBox.ForceRedraw();
-                for (int i = 0; i < ELayers.Length; i++)
-                {
-                    ELayers[i].SetBlock(block);
-                }
-                _eLayerComboBox.ForceRedraw();
+                return;
             }
+
+            _selectedBlock = block;
+            _ignoreChange = true;
+            SelectedBehavior = block.Behavior;
+            _ignoreChange = false;
+            _tileLayerImage.SetBlock(block);
+            CountSubLayers();
+            for (int i = 0; i < SubLayers.Count; i++)
+            {
+                SubLayers[i].SetBlock(block);
+            }
+            _subLayerComboBox.ForceRedraw();
+            for (int i = 0; i < ELayers.Length; i++)
+            {
+                ELayers[i].SetBlock(block);
+            }
+            _eLayerComboBox.ForceRedraw();
         }
         private unsafe void DrawClipboard()
         {
