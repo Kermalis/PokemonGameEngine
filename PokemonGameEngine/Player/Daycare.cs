@@ -314,11 +314,11 @@ namespace Kermalis.PokemonGameEngine.Player
 
             PBEStat? p0PowerItem = ItemData.GetPowerItemStat(p0.Item);
             PBEStat? p1PowerItem = ItemData.GetPowerItemStat(p1.Item);
-            if (!p0PowerItem.HasValue && !p1PowerItem.HasValue)
+            if (p0PowerItem is null && p1PowerItem is null)
             {
                 CopyParentIV(RandomParent(), RandomStat());
             }
-            else if (p0PowerItem.HasValue && !p1PowerItem.HasValue)
+            else if (p0PowerItem is not null && p1PowerItem is null)
             {
                 CopyParentIV(0, p0PowerItem.Value);
             }
@@ -333,7 +333,7 @@ namespace Kermalis.PokemonGameEngine.Player
                 do
                 {
                     s = RandomStat();
-                } while (ivs[(int)s].HasValue);
+                } while (ivs[(int)s] is not null);
                 CopyParentIV(RandomParent(), s);
             }
 
