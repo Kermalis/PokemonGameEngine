@@ -14,10 +14,10 @@
         }
         public AtlasPos(in Rect2D rect, Size2D atlasSize, bool xFlip = false, bool yFlip = false)
         {
-            Start.X = Renderer.AbsXToRelX(xFlip ? rect.GetExclusiveRight() : rect.TopLeft.X, atlasSize.Width);
-            Start.Y = Renderer.AbsYToRelY(yFlip ? rect.GetExclusiveBottom() : rect.TopLeft.Y, atlasSize.Height);
-            End.X = Renderer.AbsXToRelX(xFlip ? rect.TopLeft.X : rect.GetExclusiveRight(), atlasSize.Width);
-            End.Y = Renderer.AbsYToRelY(yFlip ? rect.TopLeft.Y : rect.GetExclusiveBottom(), atlasSize.Height);
+            Start.X = (float)(xFlip ? rect.GetExclusiveRight() : rect.TopLeft.X) / atlasSize.Width;
+            Start.Y = (float)(yFlip ? rect.GetExclusiveBottom() : rect.TopLeft.Y) / atlasSize.Height;
+            End.X = (float)(xFlip ? rect.TopLeft.X : rect.GetExclusiveRight()) / atlasSize.Width;
+            End.Y = (float)(yFlip ? rect.TopLeft.Y : rect.GetExclusiveBottom()) / atlasSize.Height;
         }
 
         public RelPos2D GetBottomLeft()
