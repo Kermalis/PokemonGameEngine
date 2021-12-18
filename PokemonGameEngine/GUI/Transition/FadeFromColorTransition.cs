@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.GUIs;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
 using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
@@ -38,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
 
             Vector4 c = _color;
             c.W = -progress + 1f; // Modify alpha
-            GUIRenderer.Instance.FillRectangle(c, new Rect2D(new Pos2D(0, 0), Size2D.FromRelative(1f, 1f)));
+            GUIRenderer.Instance.FillRectangle(c, new Rect2D(new Pos2D(0, 0), FrameBuffer.Current.Size));
         }
     }
 }
