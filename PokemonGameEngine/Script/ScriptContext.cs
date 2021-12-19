@@ -15,6 +15,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private readonly EndianBinaryReader _reader;
         private readonly Stack<long> _callStack = new();
+        private ushort _msgScale = 1;
         private bool _isDisposed;
 
         private float _delayRemaining;

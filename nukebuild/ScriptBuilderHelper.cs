@@ -53,6 +53,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.ClearFlag, new[] { typeof(Flag) } }, // Flag
         { ScriptCommand.Warp, new[] { typeof(string), typeof(int), typeof(int), typeof(byte) } }, // Map id, x, y, elevation
         { ScriptCommand.Message, new[] { typeof(void*) } }, // String data offset
+        { ScriptCommand.MessageScale, new[] { typeof(sbyte) } }, // Scale
         { ScriptCommand.AwaitMessageRead, Array.Empty<Type>() },
         { ScriptCommand.AwaitMessageComplete, Array.Empty<Type>() },
         { ScriptCommand.LockObj, new[] { typeof(ushort) } }, // Id

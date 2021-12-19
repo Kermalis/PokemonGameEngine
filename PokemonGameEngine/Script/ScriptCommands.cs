@@ -32,6 +32,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.ClearFlag: ClearFlagCommand(); break;
                 case ScriptCommand.Warp: WarpCommand(); break;
                 case ScriptCommand.Message: MessageCommand(); break;
+                case ScriptCommand.MessageScale: MessageScaleCommand(); break;
                 case ScriptCommand.AwaitMessageRead: AwaitMessageCommand(false); break;
                 case ScriptCommand.AwaitMessageComplete: AwaitMessageCommand(true); break;
                 case ScriptCommand.LockObj: LockObjCommand(); break;
