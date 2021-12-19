@@ -37,26 +37,6 @@ namespace Kermalis.PokemonGameEngine.World
             return season.ToDeerlingSawsbuckForm();
         }
 
-        public static bool ShouldRenderDayTint()
-        {
-#if DEBUG_DISABLE_DAYTINT
-            return false;
-#else
-            return CameraObj.Instance.Map.Details.Flags.HasFlag(MapFlags.DayTint);
-#endif
-        }
-        public static PBEWeather GetPBEWeatherFromMap(MapWeather mapWeather)
-        {
-            switch (mapWeather)
-            {
-                case MapWeather.Drought: return PBEWeather.HarshSunlight;
-                case MapWeather.Rain_Light:
-                case MapWeather.Rain_Medium: return PBEWeather.Rain;
-                case MapWeather.Sandstorm: return PBEWeather.Sandstorm;
-                case MapWeather.Snow_Hail: return PBEWeather.Hailstorm;
-            }
-            return PBEWeather.None;
-        }
         public static PBEBattleTerrain GetPBEBattleTerrainFromBlock(BlocksetBlockBehavior behavior)
         {
             switch (behavior)

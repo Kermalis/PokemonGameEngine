@@ -43,9 +43,9 @@ namespace Kermalis.PokemonGameEngine.GUI
             w.ClearImage();
             _allStringPrinters.Add(this);
         }
-        public static StringPrinter CreateStandardMessageBox(Window w, string str, Font font, Vector4[] strColors, uint scale = 1)
+        public static StringPrinter CreateStandardMessageBox(Window w, string str, Font font, Vector4[] strColors, Size2D totalSize, uint scale = 1)
         {
-            return new StringPrinter(w, str, font, strColors, Pos2D.FromRelative(0.05f, 0.01f), scale: scale);
+            return new StringPrinter(w, str, font, strColors, Pos2D.FromRelative(0.05f, 0.01f, totalSize), scale: scale);
         }
 
         public void Update()
@@ -107,9 +107,10 @@ namespace Kermalis.PokemonGameEngine.GUI
                 return;
             }
 
-            _window.Image.FrameBuffer.Push();
+            FrameBuffer oldFBO = FrameBuffer.Current;
+            _window.Image.FrameBuffer.Use();
             _result = DrawNext(count);
-            FrameBuffer.Pop();
+            oldFBO.Use();
         }
         private StringPrinterResult DrawNext(int count)
         {

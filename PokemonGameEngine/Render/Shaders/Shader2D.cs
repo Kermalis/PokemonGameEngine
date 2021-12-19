@@ -1,6 +1,7 @@
-﻿using Silk.NET.OpenGL;
+﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Silk.NET.OpenGL;
 
-namespace Kermalis.PokemonGameEngine.Render.OpenGL
+namespace Kermalis.PokemonGameEngine.Render.Shaders
 {
     internal class Shader2D : GLShader
     {

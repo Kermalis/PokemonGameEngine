@@ -1,13 +1,13 @@
-﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
+﻿using Kermalis.PokemonGameEngine.Render.R3D;
 using Silk.NET.OpenGL;
 using System.Numerics;
 
-namespace Kermalis.PokemonGameEngine.Render.R3D
+namespace Kermalis.PokemonGameEngine.Render.Shaders
 {
     internal sealed class ModelShader : GLShader
     {
-        private const string VERTEX_SHADER_PATH = @"Shaders\Model.vert.glsl";
-        private const string FRAGMENT_SHADER_PATH = @"Shaders\Model.frag.glsl";
+        private const string VERTEX_SHADER_PATH = @"Model.vert.glsl";
+        private const string FRAGMENT_SHADER_PATH = @"Model.frag.glsl";
 
         public const int MAX_LIGHTS = 4;
 

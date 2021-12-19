@@ -1,13 +1,12 @@
-﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
-using Silk.NET.OpenGL;
+﻿using Silk.NET.OpenGL;
 using System.Numerics;
 
-namespace Kermalis.PokemonGameEngine.Render.World
+namespace Kermalis.PokemonGameEngine.Render.Shaders
 {
     internal sealed class DayTintShader : GLShader
     {
-        private const string VERTEX_SHADER_PATH = @"Shaders\EntireScreen.vert.glsl";
-        private const string FRAGMENT_SHADER_PATH = @"Shaders\DayTint.frag.glsl";
+        private const string VERTEX_SHADER_PATH = @"EntireScreen.vert.glsl";
+        private const string FRAGMENT_SHADER_PATH = @"DayTint.frag.glsl";
 
         public static DayTintShader Instance { get; private set; } = null!; // Initialized in RenderManager
 

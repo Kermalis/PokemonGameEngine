@@ -1,11 +1,9 @@
 ﻿using Silk.NET.OpenGL;
-using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Render.OpenGL
 {
     internal sealed class FrameBuffer
     {
-        private static readonly Stack<FrameBuffer> _fbos = new();
         public static FrameBuffer Current;
 
         public readonly uint Id;
@@ -28,6 +26,8 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             GL gl = Display.OpenGL;
             uint fbo = gl.GenFramebuffer();
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, fbo);
+            gl.DrawBuffer(DrawBufferMode.ColorAttachment0);
+            gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
             gl.ActiveTexture(TextureUnit.Texture0);
 
             // Add color texture attachment
@@ -38,6 +38,9 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, colorTexture, 0);
 
+            // Done, reset bound FBO
+            gl.BindFramebuffer(FramebufferTarget.Framebuffer, Current is null ? 0 : Current.Id);
+
             return new FrameBuffer(fbo, size, colorTexture, null, null);
         }
         public static unsafe FrameBuffer CreateWithColorAndDepth(Size2D size)
@@ -45,6 +48,8 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             GL gl = Display.OpenGL;
             uint fbo = gl.GenFramebuffer();
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, fbo);
+            gl.DrawBuffer(DrawBufferMode.ColorAttachment0);
+            gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
             gl.ActiveTexture(TextureUnit.Texture0);
 
             // Add color texture attachment
@@ -69,27 +74,41 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.RenderbufferStorage(RenderbufferTarget.Renderbuffer, InternalFormat.DepthComponent, size.Width, size.Height);
             gl.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, depthBuffer);
 
+            // Done, reset bound FBO
+            gl.BindFramebuffer(FramebufferTarget.Framebuffer, Current is null ? 0 : Current.Id);
+
             return new FrameBuffer(fbo, size, colorTexture, depthTexture, depthBuffer);
         }
 
-        public void Push()
+        public void Use()
         {
             GL gl = Display.OpenGL;
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, Id);
-            gl.DrawBuffer(DrawBufferMode.ColorAttachment0);
-            gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
             gl.Viewport(0, 0, Size.Width, Size.Height);
-            _fbos.Push(Current);
             Current = this;
         }
-        public static void Pop()
+
+        public void RenderToScreen()
         {
+            // Maintain aspect ratio of the fbo
+            Size2D windowSize = Display.GetWindowSize();
+            float ratioX = windowSize.Width / (float)Size.Width;
+            float ratioY = windowSize.Height / (float)Size.Height;
+            float ratio = ratioX < ratioY ? ratioX : ratioY;
+            int dstX = (int)((windowSize.Width - (Size.Width * ratio)) * 0.5f);
+            int dstY = (int)((windowSize.Height - (Size.Height * ratio)) * 0.5f);
+            int dstW = (int)(Size.Width * ratio);
+            int dstH = (int)(Size.Height * ratio);
+
             GL gl = Display.OpenGL;
-            Current = _fbos.Pop();
-            gl.BindFramebuffer(FramebufferTarget.Framebuffer, Current.Id);
-            gl.DrawBuffer(DrawBufferMode.ColorAttachment0);
-            gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
-            gl.Viewport(0, 0, Current.Size.Width, Current.Size.Height);
+            gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, Id); // Read from this fbo
+            gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);  // Write to screen
+
+            gl.ClearColor(Colors.Black3);
+            gl.Clear(ClearBufferMask.ColorBufferBit);
+            gl.BlitFramebuffer(0, 0, (int)Size.Width, (int)Size.Height, dstX, dstY, dstX + dstW, dstY + dstH, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
+
+            gl.BindFramebuffer(FramebufferTarget.Framebuffer, Id); // Done, bind this fbo to read/draw again
         }
 
         public void Delete()
@@ -97,13 +116,18 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             GL gl = Display.OpenGL;
             gl.DeleteFramebuffer(Id);
             gl.DeleteTexture(ColorTexture);
-            if (DepthTexture.HasValue)
+            if (DepthTexture is not null)
             {
                 gl.DeleteTexture(DepthTexture.Value);
             }
-            if (DepthBuffer.HasValue)
+            if (DepthBuffer is not null)
             {
                 gl.DeleteRenderbuffer(DepthBuffer.Value);
+            }
+            if (Current == this)
+            {
+                Current = null;
+                gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             }
         }
     }

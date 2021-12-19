@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
-using Kermalis.PokemonGameEngine.World;
+﻿using Kermalis.PokemonGameEngine.World;
 using System;
 
 namespace Kermalis.PokemonGameEngine.Render
@@ -63,10 +62,6 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
 
-        public static Pos2D FromRelative(float x, float y)
-        {
-            return FromRelative(x, y, FrameBuffer.Current.Size);
-        }
         public static Pos2D FromRelative(float x, float y, Size2D totalSize)
         {
             return new Pos2D((int)(x * totalSize.Width), (int)(y * totalSize.Height));
@@ -80,17 +75,15 @@ namespace Kermalis.PokemonGameEngine.Render
             return new Pos2D((int)x, (int)y);
         }
 
-        public static Pos2D Center(float centerX, float centerY, Size2D srcSize)
+        public static Pos2D Center(float centerX, float centerY, Size2D srcSize, Size2D totalSize)
         {
-            Size2D curSize = FrameBuffer.Current.Size;
-            return new Pos2D(Renderer.GetCoordinatesForCentering(curSize.Width, srcSize.Width, centerX),
-                Renderer.GetCoordinatesForCentering(curSize.Height, srcSize.Height, centerY));
+            return new Pos2D(RenderUtils.GetCoordinatesForCentering(totalSize.Width, srcSize.Width, centerX),
+                RenderUtils.GetCoordinatesForCentering(totalSize.Height, srcSize.Height, centerY));
         }
-        public static Pos2D CenterXBottomY(float centerX, float bottomY, Size2D srcSize)
+        public static Pos2D CenterXBottomY(float centerX, float bottomY, Size2D srcSize, Size2D totalSize)
         {
-            Size2D curSize = FrameBuffer.Current.Size;
-            return new Pos2D(Renderer.GetCoordinatesForCentering(curSize.Width, srcSize.Width, centerX),
-                Renderer.GetCoordinatesForEndAlign(curSize.Height, srcSize.Height, bottomY));
+            return new Pos2D(RenderUtils.GetCoordinatesForCentering(totalSize.Width, srcSize.Width, centerX),
+                RenderUtils.GetCoordinatesForEndAlign(totalSize.Height, srcSize.Height, bottomY));
         }
 
         public static Pos2D operator +(Pos2D a, Pos2D b)
@@ -126,13 +119,9 @@ namespace Kermalis.PokemonGameEngine.Render
             Y = y;
         }
 
-        public Pos2D Absolute()
+        public Pos2D Absolute(Size2D totalSize)
         {
-            return Pos2D.FromRelative(X, Y);
-        }
-        public Pos2D Absolute(Size2D size)
-        {
-            return Pos2D.FromRelative(X, Y, size);
+            return Pos2D.FromRelative(X, Y, totalSize);
         }
 
 #if DEBUG

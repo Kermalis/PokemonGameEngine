@@ -9,6 +9,7 @@ using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.Images;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Sound;
 using Silk.NET.OpenGL;
 using System.Collections.Generic;
@@ -17,6 +18,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
     internal sealed class EvolutionGUI
     {
+        private static readonly Size2D _renderSize = new(384, 216); // 16:9
+        private readonly FrameBuffer _frameBuffer;
+
         private readonly PartyPokemon _pkmn;
         private readonly string _oldNickname;
         private readonly EvolutionData.EvoData _evo;
@@ -37,25 +41,28 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         public EvolutionGUI(PartyPokemon pkmn, EvolutionData.EvoData evo)
         {
+            _frameBuffer = FrameBuffer.CreateWithColor(_renderSize);
+            _frameBuffer.Use();
+
             _pkmn = pkmn;
             _evo = evo;
             _oldNickname = pkmn.Nickname;
             _canCancel = Evolution.CanCancelEvolution(evo.Method);
-            LoadPkmnImage();
+            UpdatePkmnImage();
 
             _fadeTransition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeIn);
         }
 
-        private void LoadPkmnImage()
+        private void UpdatePkmnImage()
         {
             _img?.DeductReference();
-            _img = PokemonImageLoader.GetPokemonImage(_pkmn.Species, _pkmn.Form, _pkmn.Gender, _pkmn.Shiny, false, false, _pkmn.PID, _pkmn.IsEgg);
-            _imgPos = Pos2D.Center(0.5f, 0.5f, _img.Size);
+            _img = PokemonImageLoader.GetPokemonImage(_pkmn.Species, _pkmn.Form, _pkmn.Gender, _pkmn.Shiny, _pkmn.PID, false);
+            _imgPos = Pos2D.Center(0.5f, 0.5f, _img.Size, _renderSize);
         }
         private void CreateMessage(string msg)
         {
-            _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, msg, Font.Default, FontColors.DefaultDarkGray_I);
+            _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, msg, Font.Default, FontColors.DefaultDarkGray_I, _renderSize);
         }
         private bool ReadMessage()
         {
@@ -180,20 +187,26 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private void CB_FadeIn()
         {
-            RenderFading();
+            Render();
+            _fadeTransition.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!_fadeTransition.IsDone)
             {
                 return;
             }
 
             _fadeTransition = null;
-            _stringWindow = Window.CreateStandardMessageBox(Colors.White4);
+            _stringWindow = Window.CreateStandardMessageBox(Colors.White4, _renderSize);
             CreateMessage(string.Format("{0} is evolving!", _oldNickname));
             Game.Instance.SetCallback(CB_ReadIsEvolvingMsg);
         }
         private void CB_ReadIsEvolvingMsg()
         {
-            RenderWithWindow();
+            Render();
+            _stringWindow.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!ReadMessage())
             {
                 return;
@@ -206,7 +219,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void CB_FadeWhiteToEvolution()
         {
-            RenderFading();
+            Render();
+            _fadeTransition.Render();
+            _frameBuffer.RenderToScreen();
+
             if (CancelRequested()) // Check if the player cancelled
             {
                 _fadeTransition = null;
@@ -225,13 +241,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 Evolution.TryCreateShedinja(_pkmn);
             }
             _pkmn.Evolve(_evo);
-            LoadPkmnImage();
+            UpdatePkmnImage();
             _fadeTransition = new FadeFromColorTransition(1f, Colors.V4FromRGB(200, 200, 200));
             Game.Instance.SetCallback(CB_FadeToEvolution);
         }
         private void CB_FadeToEvolution()
         {
-            RenderFading();
+            Render();
+            _fadeTransition.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!_fadeTransition.IsDone)
             {
                 return;
@@ -244,7 +263,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void CB_ReadEvolvedMsg()
         {
-            RenderWithWindow();
+            Render();
+            _stringWindow.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!ReadMessage())
             {
                 return;
@@ -259,7 +281,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private void CB_ReadCancelledEvoMsg()
         {
-            RenderWithWindow();
+            Render();
+            _stringWindow.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!ReadMessage())
             {
                 return;
@@ -271,7 +296,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void CB_FadeOut()
         {
-            RenderFading();
+            Render();
+            _fadeTransition.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!_fadeTransition.IsDone)
             {
                 return;
@@ -279,28 +307,39 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             _fadeTransition = null;
             _img.DeductReference();
+            _frameBuffer.Delete();
             OverworldGUI.Instance.ReturnToFieldWithFadeInAfterEvolutionCheck();
         }
 
         private void CB_LearnMove_ReadWantsToLearnMsg()
         {
-            RenderWithWindow();
+            Render();
+            _stringWindow.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!ReadMessageEnded())
             {
                 return;
             }
 
-            TextGUIChoices.CreateStandardYesNoChoices(ShouldLearnMoveAction, out _textChoices, out _textChoicesWindow);
+            TextGUIChoices.CreateStandardYesNoChoices(ShouldLearnMoveAction, _renderSize, out _textChoices, out _textChoicesWindow);
             Game.Instance.SetCallback(CB_LearnMove_HandleMultichoice);
         }
         private void CB_LearnMove_HandleMultichoice()
         {
-            RenderWithWindowAndChoices();
+            Render();
+            _stringWindow.Render();
+            _textChoicesWindow.Render();
+            _frameBuffer.RenderToScreen();
+
             HandleMultichoice();
         }
         private void CB_LearnMove_FadeToSummary()
         {
-            RenderFading();
+            Render();
+            _fadeTransition.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!_fadeTransition.IsDone)
             {
                 return;
@@ -318,7 +357,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void CB_LearnMove_FadeFromSummary()
         {
-            RenderFading();
+            Render();
+            _fadeTransition.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!_fadeTransition.IsDone)
             {
                 return;
@@ -346,18 +388,24 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void CB_LearnMove_ReadGiveUpLearningMsg()
         {
-            RenderWithWindow();
+            Render();
+            _stringWindow.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!ReadMessageEnded())
             {
                 return;
             }
 
-            TextGUIChoices.CreateStandardYesNoChoices(ShouldGiveUpMoveAction, out _textChoices, out _textChoicesWindow);
+            TextGUIChoices.CreateStandardYesNoChoices(ShouldGiveUpMoveAction, _renderSize, out _textChoices, out _textChoicesWindow);
             Game.Instance.SetCallback(CB_LearnMove_HandleMultichoice);
         }
         private void CB_LearnMove_ReadMessageThenCheckForMoreLearnableMoves()
         {
-            RenderWithWindow();
+            Render();
+            _stringWindow.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!ReadMessage())
             {
                 return;
@@ -368,22 +416,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             CheckForMoreLearnableMoves();
         }
 
-        private void RenderFading()
-        {
-            Render();
-            _fadeTransition.Render();
-        }
-        private void RenderWithWindow()
-        {
-            Render();
-            _stringWindow.Render();
-        }
-        private void RenderWithWindowAndChoices()
-        {
-            Render();
-            _stringWindow.Render();
-            _textChoicesWindow.Render();
-        }
         private void Render()
         {
             GL gl = Display.OpenGL;

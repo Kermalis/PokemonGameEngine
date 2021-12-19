@@ -18,11 +18,12 @@ namespace Kermalis.PokemonGameEngine.Render.Images
 
         public unsafe void LoadTextureData(GL gl, void* data)
         {
-            FrameBuffer.Push();
+            FrameBuffer oldFBO = FrameBuffer.Current;
+            FrameBuffer.Use();
             gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindTexture(TextureTarget.Texture2D, Texture);
             GLTextureUtils.LoadTextureData(gl, data, Size);
-            FrameBuffer.Pop();
+            oldFBO?.Use(); // Can be null, since this runs at init (PlayerObj)
         }
 
         public void Render(Pos2D pos, bool xFlip = false, bool yFlip = false)

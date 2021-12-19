@@ -8,11 +8,14 @@
             {
                 return;
             }
-            for (int px = x1; px <= x2; px++)
+
+            Pos2D pos;
+            pos.Y = y;
+            for (pos.X = x1; pos.X <= x2; pos.X++)
             {
-                if (px >= 0 && px < dstSize.Width)
+                if (pos.X >= 0 && pos.X < dstSize.Width)
                 {
-                    DrawPoint_Unchecked(GetPixelAddress(dst, dstSize.Width, px, y), color);
+                    DrawPoint_Unchecked(GetPixelAddress(dst, dstSize.Width, pos), color);
                 }
             }
         }

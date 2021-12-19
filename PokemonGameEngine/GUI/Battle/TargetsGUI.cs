@@ -22,7 +22,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             AllyRight,
             Back
         }
-
         private sealed class TargetInfo
         {
             private readonly bool _ally;
@@ -32,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
             public PBETurnTarget Targets;
 
-            private SpritedBattlePokemon _pkmn;
+            private BattlePokemon _pkmn;
             private GUIString _nickname;
 
             public TargetInfo(bool ally)
@@ -40,42 +39,42 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _ally = ally;
             }
 
-            public void SetMonAndCreateGUIStr(SpritedBattlePokemon p)
+            public void SetMonAndCreateGUIStr(BattlePokemon p)
             {
                 _pkmn = p;
                 if (p is null)
                 {
                     return;
                 }
-                _nickname = new GUIString(p.Pkmn.KnownNickname, Font.Default, FontColors.DefaultWhite_I);
+                _nickname = new GUIString(p.PBEPkmn.KnownNickname, Font.Default, FontColors.DefaultWhite_I);
             }
 
             public void Render(RelPos2D pos, bool selected)
             {
                 Vector4 enabledC = _ally ? Colors.V4FromRGB(125, 100, 230) : Colors.V4FromRGB(248, 80, 50);
-                GUIRenderer.Instance.FillRectangle(enabledC, new Rect2D(pos.Absolute(), Size2D.FromRelative(0.24f, 0.2f)));
+                GUIRenderer.Instance.FillRectangle(enabledC, new Rect2D(pos.Absolute(_renderSize), Size2D.FromRelative(0.24f, 0.2f, _renderSize)));
 
                 if (_pkmn is not null)
                 {
                     RelPos2D pos2 = pos;
                     pos2.Y += 0.025f;
-                    _pkmn.Mini.Render(pos2.Absolute());
+                    _pkmn.Mini.Render(pos2.Absolute(_renderSize));
 
                     pos2 = pos;
                     pos2.X += 0.075f;
                     pos2.Y += 0.05f;
-                    _nickname.Render(pos2.Absolute());
+                    _nickname.Render(pos2.Absolute(_renderSize));
                 }
 
                 if (selected)
                 {
                     Vector4 selectedC = _ally ? Colors.V4FromRGB(75, 60, 150) : Colors.V4FromRGB(120, 30, 10);
-                    GUIRenderer.Instance.DrawRectangle(selectedC, new Rect2D(pos.Absolute(), Size2D.FromRelative(0.24f, 0.2f))); // TODO: 2 THICKNESS
+                    GUIRenderer.Instance.DrawRectangle(selectedC, new Rect2D(pos.Absolute(_renderSize), Size2D.FromRelative(0.24f, 0.2f, _renderSize))); // TODO: 2 THICKNESS
                 }
 
                 if (!Enabled)
                 {
-                    GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 150), new Rect2D(pos.Absolute(), Size2D.FromRelative(0.24f, 0.2f)));
+                    GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 150), new Rect2D(pos.Absolute(_renderSize), Size2D.FromRelative(0.24f, 0.2f, _renderSize)));
                 }
             }
 
@@ -84,6 +83,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 _nickname?.Delete();
             }
         }
+
+        private static readonly Size2D _renderSize = BattleGUI.RenderSize;
 
         private readonly TargetInfo _targetAllyLeft = new(true);
         private readonly TargetInfo _targetAllyCenter;
@@ -104,29 +105,29 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private readonly GUIString _backText;
 
-        public TargetsGUI(PBEBattlePokemon pkmn, PBEMoveTarget possibleTargets, PBEMove move, SpritedBattlePokemonParty[] spritedParties,
+        public TargetsGUI(PBEBattlePokemon pkmn, PBEMoveTarget possibleTargets, PBEMove move, BattlePokemonParty[] parties,
             Action selectAction, Action cancelAction)
         {
-            SpritedBattlePokemon GetSprited(bool ally, PBEFieldPosition pos)
+            BattlePokemon GetBattleMon(bool ally, PBEFieldPosition pos)
             {
                 PBETeam deTeem = ally ? pkmn.Trainer.Team : pkmn.Trainer.Team.OpposingTeam;
                 if (deTeem.TryGetPokemon(pos, out PBEBattlePokemon dePokeMone))
                 {
-                    return spritedParties[dePokeMone.Trainer.Id][dePokeMone];
+                    return parties[dePokeMone.Trainer.Id][dePokeMone];
                 }
                 return null; // Return null because it'll be disabled anyway
             }
 
-            _backText = GUIString.CreateCentered("Back", Font.Default, FontColors.DefaultWhite_I, 0.5f, 0.95f);
+            _backText = GUIString.CreateCentered("Back", Font.Default, FontColors.DefaultWhite_I, 0.5f, 0.95f, _renderSize);
 
             _pkmn = pkmn;
             _fightMove = move;
             _selectAction = selectAction;
             _cancelAction = cancelAction;
-            _targetAllyLeft.SetMonAndCreateGUIStr(GetSprited(true, PBEFieldPosition.Left));
-            _targetAllyRight.SetMonAndCreateGUIStr(GetSprited(true, PBEFieldPosition.Right));
-            _targetFoeLeft.SetMonAndCreateGUIStr(GetSprited(false, PBEFieldPosition.Left));
-            _targetFoeRight.SetMonAndCreateGUIStr(GetSprited(false, PBEFieldPosition.Right));
+            _targetAllyLeft.SetMonAndCreateGUIStr(GetBattleMon(true, PBEFieldPosition.Left));
+            _targetAllyRight.SetMonAndCreateGUIStr(GetBattleMon(true, PBEFieldPosition.Right));
+            _targetFoeLeft.SetMonAndCreateGUIStr(GetBattleMon(false, PBEFieldPosition.Left));
+            _targetFoeRight.SetMonAndCreateGUIStr(GetBattleMon(false, PBEFieldPosition.Right));
 
             if (pkmn.Battle.BattleFormat == PBEBattleFormat.Double)
             {
@@ -289,9 +290,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             else // Triple
             {
                 _targetAllyCenter = new TargetInfo(true);
-                _targetAllyCenter.SetMonAndCreateGUIStr(GetSprited(true, PBEFieldPosition.Center));
+                _targetAllyCenter.SetMonAndCreateGUIStr(GetBattleMon(true, PBEFieldPosition.Center));
                 _targetFoeCenter = new TargetInfo(false);
-                _targetFoeCenter.SetMonAndCreateGUIStr(GetSprited(false, PBEFieldPosition.Center));
+                _targetFoeCenter.SetMonAndCreateGUIStr(GetBattleMon(false, PBEFieldPosition.Center));
                 _centerTargetsVisible = true;
                 switch (possibleTargets)
                 {
@@ -641,6 +642,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public void HandleInputs()
         {
+            // Select target
             if (InputManager.JustPressed(Key.A))
             {
                 TargetInfo ti;
@@ -652,15 +654,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     case TargetSelection.FoeLeft: ti = _targetFoeLeft; break;
                     case TargetSelection.FoeCenter: ti = _targetFoeCenter; break;
                     case TargetSelection.FoeRight: ti = _targetFoeRight; break;
-                    default: _cancelAction(); return;
+                    default: _cancelAction(); return; // Cancel button
                 }
                 if (ti.Enabled)
                 {
-                    _pkmn.TurnAction = new PBETurnAction(_pkmn, _fightMove, ti.Targets);
+                    BattleGUI.Instance.ActionsBuilder.PushMove(_fightMove, ti.Targets);
                     _selectAction();
                 }
                 return;
             }
+            // Cancel target selection
             if (InputManager.JustPressed(Key.B))
             {
                 _cancelAction();
@@ -717,45 +720,45 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public void Render()
         {
-            Vector4 lineC = Colors.V4FromRGB(156, 173, 247);
-            Vector4 selectC = Colors.FromRGBA(48, 180, 255, 200);
-
             GL gl = Display.OpenGL;
             gl.ClearColor(Colors.FromRGBA(31, 31, 31, 151));
             gl.Clear(ClearBufferMask.ColorBufferBit);
+
+            Vector4 lineC = Colors.V4FromRGB(156, 173, 247);
+            Vector4 selectC = Colors.FromRGBA(48, 180, 255, 200);
 
             #region Lines
 
             if (_targetFoeRight.LineDownVisible)
             {
-                GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.14f, 0.3f), Size2D.FromRelative(0.1f, 0.4f)));
+                GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.14f, 0.3f, _renderSize), Size2D.FromRelative(0.1f, 0.4f, _renderSize)));
             }
             if (_targetFoeLeft.LineDownVisible)
             {
-                GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.76f, 0.3f), Size2D.FromRelative(0.1f, 0.4f)));
+                GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.76f, 0.3f, _renderSize), Size2D.FromRelative(0.1f, 0.4f, _renderSize)));
             }
             float w = _centerTargetsVisible ? 0.31f : 0.62f;
             if (_targetFoeRight.LineRightVisible)
             {
-                GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.19f, 0.25f), Size2D.FromRelative(w, 0.1f)));
+                GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.19f, 0.25f, _renderSize), Size2D.FromRelative(w, 0.1f, _renderSize)));
             }
             if (_targetAllyLeft.LineRightVisible)
             {
-                GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.19f, 0.65f), Size2D.FromRelative(w, 0.1f)));
+                GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.19f, 0.65f, _renderSize), Size2D.FromRelative(w, 0.1f, _renderSize)));
             }
             if (_centerTargetsVisible)
             {
                 if (_targetFoeCenter.LineDownVisible)
                 {
-                    GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.45f, 0.3f), Size2D.FromRelative(0.1f, 0.4f)));
+                    GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.45f, 0.3f, _renderSize), Size2D.FromRelative(0.1f, 0.4f, _renderSize)));
                 }
                 if (_targetFoeCenter.LineRightVisible)
                 {
-                    GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.5f, 0.25f), Size2D.FromRelative(w, 0.1f)));
+                    GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.5f, 0.25f, _renderSize), Size2D.FromRelative(w, 0.1f, _renderSize)));
                 }
                 if (_targetAllyCenter.LineRightVisible)
                 {
-                    GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.5f, 0.65f), Size2D.FromRelative(w, 0.1f)));
+                    GUIRenderer.Instance.FillRectangle(lineC, new Rect2D(Pos2D.FromRelative(0.5f, 0.65f, _renderSize), Size2D.FromRelative(w, 0.1f, _renderSize)));
                 }
             }
 
@@ -771,11 +774,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _targetAllyLeft.Render(new RelPos2D(0.07f, 0.6f), _selection == TargetSelection.AllyLeft);
             _targetAllyRight.Render(new RelPos2D(0.69f, 0.6f), _selection == TargetSelection.AllyRight);
 
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(50, 50, 50), new Rect2D(Pos2D.FromRelative(0.45f, 0.9f), Size2D.FromRelative(0.1f, 0.1f))); // Back
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(50, 50, 50), new Rect2D(Pos2D.FromRelative(0.45f, 0.9f, _renderSize), Size2D.FromRelative(0.1f, 0.1f, _renderSize))); // Back
             _backText.Render();
             if (_selection == TargetSelection.Back)
             {
-                GUIRenderer.Instance.DrawRectangle(selectC, new Rect2D(Pos2D.FromRelative(0.45f, 0.9f), Size2D.FromRelative(0.1f, 0.1f)));
+                GUIRenderer.Instance.DrawRectangle(selectC, new Rect2D(Pos2D.FromRelative(0.45f, 0.9f, _renderSize), Size2D.FromRelative(0.1f, 0.1f, _renderSize)));
             }
         }
 

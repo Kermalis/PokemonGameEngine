@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.World;
 using System;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
@@ -19,6 +20,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Instance.Pos = PlayerObj.Instance.Pos;
             Instance.Map = PlayerObj.Instance.Map;
             Instance.Map.Objs.Add(Instance);
+            Instance.ToggleDayTint();
         }
 
         public static void CopyMovementIfAttachedTo(Obj obj)
@@ -61,9 +63,18 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             return false;
         }
+        protected override void OnMapChanged()
+        {
+            ToggleDayTint();
+        }
         protected override bool CanSurf()
         {
             return true;
+        }
+
+        private void ToggleDayTint()
+        {
+            DayTint.IsEnabled = Map.Details.Flags.HasFlag(MapFlags.DayTint);
         }
 
         public override void Dispose()

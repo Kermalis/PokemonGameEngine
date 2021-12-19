@@ -11,13 +11,13 @@ namespace Kermalis.PokemonGameEngine.GUI
     {
         private static readonly List<Window> _allWindows = new();
 
-        private readonly RelPos2D _pos;
+        private readonly Pos2D _pos;
         private readonly Vector4 _backColor;
 
         public bool IsInvisible;
         public readonly WriteableImage Image;
 
-        public Window(RelPos2D pos, Size2D size, in Vector4 backColor)
+        public Window(Pos2D pos, Size2D size, in Vector4 backColor)
         {
             _pos = pos;
             _backColor = backColor;
@@ -25,16 +25,17 @@ namespace Kermalis.PokemonGameEngine.GUI
             ClearImage();
             _allWindows.Add(this);
         }
-        public static Window CreateStandardMessageBox(in Vector4 backColor)
+        public static Window CreateStandardMessageBox(in Vector4 backColor, Size2D totalSize)
         {
-            return new Window(new RelPos2D(0f, 0.79f), Size2D.FromRelative(1f, 0.17f), backColor);
+            return new Window(Pos2D.FromRelative(0f, 0.79f, totalSize), Size2D.FromRelative(1f, 0.17f, totalSize), backColor);
         }
 
         public void ClearImage()
         {
-            Image.FrameBuffer.Push();
+            FrameBuffer oldFBO = FrameBuffer.Current;
+            Image.FrameBuffer.Use();
             ClearImagePushed();
-            FrameBuffer.Pop();
+            oldFBO.Use();
         }
         public void ClearImagePushed()
         {
@@ -49,7 +50,7 @@ namespace Kermalis.PokemonGameEngine.GUI
             {
                 return;
             }
-            Image.Render(_pos.Absolute());
+            Image.Render(_pos);
         }
         public static void RenderAll()
         {

@@ -30,8 +30,9 @@ namespace Kermalis.PokemonGameEngine.Core
             Save.Debug_Create(); // Load/initialize Save
             StringBuffers = new StringBuffers();
 
-            // Set initial callbacks
+            // Set initial callback
             OverworldGUI.Debug_InitOverworldGUI();
+            //OverworldGUI.Debug_InitTestBattle();
         }
 
 #if DEBUG_CALLBACKS

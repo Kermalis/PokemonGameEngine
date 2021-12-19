@@ -12,8 +12,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public const int HatchFriendship = 120;
 
         #region Boxes
-        public const int NumBoxes = 27;
-        public const int BoxCapacity = 25;
+        public const int NumBoxes = 22;
+        public const int BoxCapacity = 30;
         #endregion
 
         public static readonly PBESettings PBESettings;

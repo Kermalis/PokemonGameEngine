@@ -14,21 +14,73 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         {
             public const float STAY_FOREVER = -1f;
 
-            public readonly uint Texture;
             public readonly float SecondsVisible;
+            public readonly uint Texture;
 
             public unsafe Frame(GL gl, DecodedGIF.Frame frame, Size2D size)
             {
+                int? d = frame.Delay;
+                SecondsVisible = d is null ? STAY_FOREVER : d.Value / 1_000f;
+
                 Texture = gl.GenTexture();
                 gl.BindTexture(TextureTarget.Texture2D, Texture);
-                fixed (void* imgdata = frame.Bitmap)
+                fixed (uint* imgdata = frame.Bitmap)
                 {
+#if DEBUG_ANIMIMG_HITBOX
+                    Debug_AddHitbox(imgdata, size);
+#endif
                     GLTextureUtils.LoadTextureData(gl, imgdata, size);
                 }
-
-                int? d = frame.Delay;
-                SecondsVisible = d is null ? STAY_FOREVER : d.Value / 1000f;
             }
+
+#if DEBUG_ANIMIMG_HITBOX
+            private unsafe void Debug_AddHitbox(uint* imgdata, Size2D size)
+            {
+                Pos2D pos;
+                for (pos.Y = 0; pos.Y < size.Height; pos.Y++)
+                {
+                    for (pos.X = 0; pos.X < size.Width; pos.X++)
+                    {
+                        uint* p = Renderer.GetPixelAddress(imgdata, size.Width, pos);
+                        if (*p != 0)
+                        {
+                            continue;
+                        }
+                        if ((pos.X == 0 && pos.Y == 0)
+                            || (pos.X == 0 && pos.Y == size.Height - 1)
+                            || (pos.X == size.Width - 1 && pos.Y == 0)
+                            || (pos.X == size.Width - 1 && pos.Y == size.Height - 1))
+                        {
+                            *p = Renderer.RawColor(0, 0, 255, 255); // Corners
+                        }
+                        else if (pos.X == 0 || pos.Y == 0
+                            || pos.X == size.Width - 1 || pos.Y == size.Height - 1)
+                        {
+                            *p = Renderer.RawColor(255, 0, 0, 255); // Borders
+                        }
+                        else // Inside
+                        {
+                            uint a = (uint)(pos.X % 4 / 3f * 255);
+                            uint b = (uint)(pos.Y % 4 / 3f * 255);
+                            bool horizontal = true;
+                            bool vertical = true;
+                            if (horizontal && vertical)
+                            {
+                                *p = Renderer.RawColor(a, b, a, 255);
+                            }
+                            else if (horizontal)
+                            {
+                                *p = Renderer.RawColor(0, b, 0, 255);
+                            }
+                            else if (vertical)
+                            {
+                                *p = Renderer.RawColor(a, 0, a, 255);
+                            }
+                        }
+                    }
+                }
+            }
+#endif
         }
         private sealed class Image
         {
@@ -42,7 +94,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             {
                 DecodedGIF gif = GIFRenderer.DecodeAllFrames(AssetLoader.GetAssetStream(asset), ColorFormat.RGBA);
 
-                if (spindaSpots.HasValue)
+                if (spindaSpots is not null)
                 {
                     (uint pid, bool shiny) = spindaSpots.Value;
                     SpindaSpotRenderer.Render(gif, pid, shiny);
@@ -72,7 +124,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             {
                 // Add spinda spot data to the asset to use it uniquely
                 string id;
-                if (spindaSpots.HasValue)
+                if (spindaSpots is not null)
                 {
                     (uint pid, bool shiny) = spindaSpots.Value;
                     id = asset + string.Format("_{0:X8}_{1}", pid, shiny);
@@ -124,7 +176,11 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         public AnimatedImage(string asset, (uint PID, bool Shiny)? spindaSpots = null, bool isPaused = false, float speedModifier = 1, int? repeatCount = null)
         {
             _img = Image.LoadOrGet(asset, spindaSpots);
-            if (!isPaused)
+            if (isPaused)
+            {
+                IsPaused = true;
+            }
+            else
             {
                 Restart();
             }
@@ -156,7 +212,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             }
         }
 
-        private void Update_Private()
+        private void Update_Internal()
         {
             int curFrameIndex = _curFrameIndex;
             float curFrameLen = _img.Frames[curFrameIndex].SecondsVisible;
@@ -169,7 +225,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             // Advance time remaining by the speed modifier
             // If the time is <= 0, it's time for a new frame (multiple could've been skipped)
             _curFrameTimeRemaining -= Display.DeltaTime * SpeedModifier;
-            while (_curFrameTimeRemaining <= 0)
+            while (_curFrameTimeRemaining <= 0f)
             {
                 if (curFrameIndex + 1 >= _img.Frames.Length)
                 {
@@ -203,7 +259,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         {
             if (!IsPaused)
             {
-                Update_Private();
+                Update_Internal();
             }
         }
         public static void UpdateAll()
@@ -212,7 +268,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             {
                 if (!i.IsPaused)
                 {
-                    i.Update_Private();
+                    i.Update_Internal();
                 }
             }
         }

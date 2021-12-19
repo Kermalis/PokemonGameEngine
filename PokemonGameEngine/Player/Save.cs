@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
@@ -73,21 +72,33 @@ namespace Kermalis.PokemonGameEngine.Player
             Daycare.StorePokemon(PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Ditto, 0, 82));
             PlayerParty = new Party();
             {
+                // To pummel
+                var pkmn1 = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Rayquaza, 0, 67);
+                pkmn1.Ability = PBEAbility.Compoundeyes;
+                //pkmn1.Item = ItemType.Leftovers;
+                pkmn1.Moveset[0].Move = PBEMove.Bounce;
+                pkmn1.Moveset[1].Move = PBEMove.ZenHeadbutt;
+                pkmn1.Moveset[2].Move = PBEMove.Surf;
+                pkmn1.Moveset[3].Move = PBEMove.VCreate;
+                // To pummel 2
+                var pkmn2 = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Kyurem, PBEForm.Kyurem_Black, 67);
+                // To pummel 3
+                var pkmn3 = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Thundurus, PBEForm.Thundurus_Therian, 67);
+                // To pummel 4
+                var pkmn4 = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Togepi, 0, 67);
+                // To pummel 5
+                var pkmn5 = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Togepi, 0, 67);
                 // To test evolution
                 var evomon = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Chimchar, 0, 19);
                 evomon.Item = ItemType.Leftovers;
                 evomon.EXP = PBEDataProvider.Instance.GetEXPRequired(BaseStats.Get(evomon.Species, evomon.Form, true).GrowthRate, 20) - 1;
+
                 GivePokemon(evomon);
-                // To pummel
-                var victini = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Victini, 0, 67);
-                victini.Ability = PBEAbility.Compoundeyes;
-                victini.Item = ItemType.Leftovers;
-                victini.Status1 = PBEStatus1.BadlyPoisoned;
-                victini.Moveset[0].Move = PBEMove.Bounce;
-                victini.Moveset[1].Move = PBEMove.ZenHeadbutt;
-                victini.Moveset[2].Move = PBEMove.Surf;
-                victini.Moveset[3].Move = PBEMove.VCreate;
-                GivePokemon(victini);
+                GivePokemon(pkmn1);
+                GivePokemon(pkmn2);
+                GivePokemon(pkmn3);
+                GivePokemon(pkmn4);
+                GivePokemon(pkmn5);
             }
             for (int i = 0; i < 44; i++)
             {

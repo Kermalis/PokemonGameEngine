@@ -1,4 +1,5 @@
-﻿using Silk.NET.OpenGL;
+﻿using Kermalis.PokemonGameEngine.Render.Shaders;
+using Silk.NET.OpenGL;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Render.R3D

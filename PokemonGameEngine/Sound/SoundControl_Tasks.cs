@@ -59,6 +59,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                 return;
             }
 
+            _tasks.RemoveAndDispose(task);
             SoundMixer.StopChannel(_overworldBGM.Channel);
             if (data.Song == Song.None)
             {
@@ -70,7 +71,6 @@ namespace Kermalis.PokemonGameEngine.Sound
                 _overworldBGM.Channel = new SoundChannel(_overworldBGM.Data);
                 SoundMixer.AddChannel(_overworldBGM.Channel);
             }
-            _tasks.RemoveAndDispose(task);
         }
 
         private static void Task_FadeBattleBGMToOverworldBGM(BackTask task)
@@ -81,6 +81,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                 return;
             }
 
+            _tasks.RemoveAndDispose(task);
             SoundMixer.StopChannel(_battleBGM.Channel);
             _battleBGM = null;
             if (_overworldBGM is not null)
@@ -89,7 +90,6 @@ namespace Kermalis.PokemonGameEngine.Sound
                 _overworldBGM.Channel.BeginFade(1f, 0f, 1f);
                 _overworldBGM.Channel.IsPaused = false;
             }
-            _tasks.RemoveAndDispose(task);
         }
     }
 }

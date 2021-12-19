@@ -46,15 +46,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
         }
         public void Draw()
         {
-            _drawn.FrameBuffer.Push();
-            Vector4 backColor = IsSelected ? Colors.V4FromRGB(200, 200, 200) : Colors.White4;
-            GUIRenderer.Instance.FillRectangle(backColor, new Rect2D(new Pos2D(0, 0), Size2D.FromRelative(1f, 1f))); // TODO: Rounded of size (dstH / 2)
+            FrameBuffer oldFBO = FrameBuffer.Current;
+            _drawn.FrameBuffer.Use();
+            Size2D totalSize = _drawn.Size;
 
-            _mini.Render(Pos2D.FromRelative(0f, -0.15f));
+            Vector4 backColor = IsSelected ? Colors.V4FromRGB(200, 200, 200) : Colors.White4;
+            GUIRenderer.Instance.FillRectangle(backColor, new Rect2D(new Pos2D(0, 0), totalSize)); // TODO: Rounded of size (dstH / 2)
+
+            _mini.Render(Pos2D.FromRelative(0f, -0.15f, totalSize));
 
             Font fontDefault = Font.Default;
             Vector4[] defaultDark = FontColors.DefaultDarkGray_I;
-            GUIString.CreateAndRenderOneTimeString(_pkmn.Nickname, fontDefault, defaultDark, Pos2D.FromRelative(0.2f, 0.01f));
+            GUIString.CreateAndRenderOneTimeString(_pkmn.Nickname, fontDefault, defaultDark, Pos2D.FromRelative(0.2f, 0.01f, totalSize));
 
             if (_pkmn.IsEgg)
             {
@@ -62,13 +65,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             }
 
             Font fontPartyNumbers = Font.PartyNumbers;
-            GUIString.CreateAndRenderOneTimeString(_pkmn.HP + "/" + _pkmn.MaxHP, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.2f, 0.65f));
-            GUIString.CreateAndRenderOneTimeString("[LV] " + _pkmn.Level, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.7f, 0.65f));
-            GUIString.CreateAndRenderOneTimeGenderString(_pkmn.Gender, fontDefault, Pos2D.FromRelative(0.7f, 0.01f));
+            GUIString.CreateAndRenderOneTimeString(_pkmn.HP + "/" + _pkmn.MaxHP, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.2f, 0.65f, totalSize));
+            GUIString.CreateAndRenderOneTimeString("[LV] " + _pkmn.Level, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.7f, 0.65f, totalSize));
+            GUIString.CreateAndRenderOneTimeGenderString(_pkmn.Gender, fontDefault, Pos2D.FromRelative(0.7f, 0.01f, totalSize));
 
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(99, 255, 99), new Rect2D(Pos2D.FromRelative(0.2f, 0.58f), Pos2D.FromRelative(0.7f, 0.64f)));
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(99, 255, 99), new Rect2D(Pos2D.FromRelative(0.2f, 0.58f, totalSize), Pos2D.FromRelative(0.7f, 0.64f, totalSize)));
+
         bottom:
-            FrameBuffer.Pop();
+            oldFBO.Use();
         }
 
         public void Render(Pos2D pos)

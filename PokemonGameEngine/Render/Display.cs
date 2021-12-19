@@ -12,29 +12,20 @@ namespace Kermalis.PokemonGameEngine.Render
 {
     internal static class Display
     {
+        private const string WINDOW_TITLE = "Pokémon Game Engine";
+        private const int DEFAULT_WINDOW_WIDTH = 1200; // 16:9
+        private const int DEFAULT_WINDOW_HEIGHT = 675;
         private const string SCREENSHOT_PATH = @"Screenshots";
+        private static readonly bool _screenshotScreenSize = false;
 
-        // A block is 16x16 pixels (2x2 tiles, and a tile is 8x8 pixels)
-        // You can have different sized blocks and tiles if you wish, but this table is demonstrating defaults
-        // GB/GBC        - 160 x 144 resolution (10:9) - 10 x  9   blocks
-        // GBA           - 240 x 160 resolution ( 3:2) - 15 x 10   blocks
-        // NDS           - 256 x 192 resolution ( 4:3) - 16 x 12   blocks
-        // 3DS (Lower)   - 320 x 240 resolution ( 4:3) - 20 x 15   blocks
-        // 3DS (Upper)   - 400 x 240 resolution ( 5:3) - 25 x 15   blocks
-        // Default below - 384 x 216 resolution (16:9) - 24 x 13.5 blocks
-        public const int RenderWidth = 384;
-        public const int RenderHeight = 216;
-        public static readonly Size2D RenderSize = new(RenderWidth, RenderHeight);
+        private static IntPtr _window;
+        private static IntPtr _gl;
 
-        private static readonly IntPtr _window;
-        private static readonly IntPtr _gl;
-
-        public static readonly GL OpenGL;
+        public static GL OpenGL;
         public static float DeltaTime;
+        public static bool ScreenshotRequested;
 
-        private static FrameBuffer _virtualFBO;
-
-        static Display()
+        public static void Init()
         {
             // SDL 2
             if (SDL.SDL_Init(SDL.SDL_INIT_AUDIO | SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_GAMECONTROLLER) != 0)
@@ -56,8 +47,8 @@ namespace Kermalis.PokemonGameEngine.Render
                 Print_SDL_Error("Could not set OpenGL's profile!");
             }
 
-            // TODO: Find out why fullscreen is broken (window is gone when alt tabbing back and forth)
-            _window = SDL.SDL_CreateWindow("Pokémon Game Engine", SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED, RenderWidth, RenderHeight,
+            // TODO: Find out why actual fullscreen is broken (window is gone when alt tabbing back and forth)
+            _window = SDL.SDL_CreateWindow(WINDOW_TITLE, SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT,
                 SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL.SDL_WindowFlags.SDL_WINDOW_RESIZABLE
 #if FULLSCREEN
                 | SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP
@@ -91,11 +82,10 @@ namespace Kermalis.PokemonGameEngine.Render
 #endif
         }
 
-        public static void Init()
+        public static Size2D GetWindowSize()
         {
-            OpenGL.Viewport(0, 0, RenderWidth, RenderHeight);
-            _virtualFBO = FrameBuffer.CreateWithColorAndDepth(RenderSize);
-            _virtualFBO.Push();
+            SDL.SDL_GetWindowSize(_window, out int w, out int h);
+            return new Size2D((uint)w, (uint)h);
         }
 
         /// <summary>Returns true if the current frame should be skipped</summary>
@@ -124,47 +114,36 @@ namespace Kermalis.PokemonGameEngine.Render
 #endif
                 }
             }
-
-            // Set up virtual screen's framebuffer
-            GL gl = OpenGL;
-            gl.BindFramebuffer(FramebufferTarget.Framebuffer, _virtualFBO.Id);
-            gl.Viewport(0, 0, RenderWidth, RenderHeight);
-            gl.DrawBuffer(DrawBufferMode.ColorAttachment0);
-            gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
-
             return false;
         }
         public static void PresentFrame()
         {
-            // Draw rendered frame to the actual screen's framebuffer
-            GL gl = OpenGL;
-            SDL.SDL_GetWindowSize(_window, out int w, out int h);
-            gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, _virtualFBO.Id);
-            gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
-            gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-            gl.DrawBuffer(DrawBufferMode.Back); // The default frame buffer isn't "ColorAttachment0", it's "Back" instead
-
-            // Maintain aspect ratio of the virtual screen
-            float ratioX = w / (float)RenderWidth;
-            float ratioY = h / (float)RenderHeight;
-            float ratio = ratioX < ratioY ? ratioX : ratioY;
-            int dstX = (int)((w - (RenderWidth * ratio)) * 0.5f);
-            int dstY = (int)((h - (RenderHeight * ratio)) * 0.5f);
-            int dstW = (int)(RenderWidth * ratio);
-            int dstH = (int)(RenderHeight * ratio);
-
-            gl.ClearColor(Colors.Black3);
-            gl.Clear(ClearBufferMask.ColorBufferBit);
-            gl.BlitFramebuffer(0, 0, RenderWidth, RenderHeight, dstX, dstY, dstX + dstW, dstY + dstH, ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
-
-            // Present to window
+            if (ScreenshotRequested)
+            {
+                ScreenshotRequested = false;
+                SaveScreenshot();
+            }
             SDL.SDL_GL_SwapWindow(_window);
         }
 
-        public static void SaveScreenshot()
+        private static void SaveScreenshot()
         {
+            if (FrameBuffer.Current is null)
+            {
+                return; // Sanity check just in case
+            }
+
             string path = Path.Combine(SCREENSHOT_PATH, string.Format("Screenshot_{0:MM-dd-yyyy_HH-mm-ss-fff}.png", DateTime.Now));
-            path = GLTextureUtils.SaveScreenTextureAsImage(OpenGL, _virtualFBO.ColorTexture, RenderWidth, RenderHeight, path);
+            if (_screenshotScreenSize)
+            {
+                OpenGL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
+                path = GLTextureUtils.SaveReadBufferAsImage(OpenGL, GetWindowSize(), path);
+                OpenGL.BindFramebuffer(FramebufferTarget.Framebuffer, FrameBuffer.Current.Id);
+            }
+            else
+            {
+                path = GLTextureUtils.SaveReadBufferAsImage(OpenGL, FrameBuffer.Current.Size, path);
+            }
 #if DEBUG
             Log.WriteLineWithTime(string.Format("Screenshot saved to {0}", path));
 #endif
@@ -186,6 +165,11 @@ namespace Kermalis.PokemonGameEngine.Render
             {
                 return;
             }
+            // Pixel-path performance warning: Pixel transfer is synchronized with 3D rendering.
+            if (id == 131154)
+            {
+                return; // Ignore NVIDIA driver warning. Happens when taking a screenshot with the entire screen
+            }
             // Program/shader state performance warning: Vertex shader in program {num} is being recompiled based on GL state.
             if (id == 131218)
             {
@@ -205,7 +189,6 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public static void Quit()
         {
-            _virtualFBO.Delete();
             SDL.SDL_GL_DeleteContext(_gl);
             SDL.SDL_DestroyWindow(_window);
             SDL.SDL_Quit();

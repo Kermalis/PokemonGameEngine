@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.R3D;
 using System;
 using System.Numerics;
@@ -11,7 +10,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
     internal sealed partial class BattleGUI
     {
         private readonly TaskList _tasks = new();
-        private readonly TaskList _renderTasks = new();
 
         #region Messages
 
@@ -22,7 +20,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             public Action OnFinished;
         }
 
-        public void ClearMessage()
+        private void ClearMessage()
         {
             _stringPrinter?.Delete();
             _stringPrinter = null;
@@ -33,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _stringPrinter = null;
             if (str is not null)
             {
-                _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, str, Font.Default, FontColors.DefaultWhite_I);
+                _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, str, Font.Default, FontColors.DefaultWhite_I, RenderSize);
                 var data = new TaskData_PrintMessage
                 {
                     OnFinished = onRead
@@ -60,10 +58,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
             if (_stringPrinter.IsDone || (_autoAdvanceTime += Display.DeltaTime) >= AUTO_ADVANCE_SECONDS)
             {
-                var data = (TaskData_PrintMessage)task.Data;
                 _autoAdvanceTime = 0f;
-                data.OnFinished();
+                var data = (TaskData_PrintMessage)task.Data;
                 _tasks.RemoveAndDispose(task);
+                data.OnFinished();
             }
         }
         private void Task_ReadOutStaticMessage(BackTask task)
@@ -75,13 +73,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
 
             var data = (TaskData_PrintMessage)task.Data;
-            data.OnFinished();
             _tasks.RemoveAndDispose(task);
+            data.OnFinished();
         }
 
         #endregion
 
         #region Camera Motion
+
+        private const float CAM_SPEED_DEFAULT = 0.5f;
 
         private static readonly PositionRotation _defaultPosition = new(new Vector3(7f, 7f, 15f), new Rotation(-22, 13, 0)); // battle using bw2 matrix
         //private static readonly PositionRotation _defaultPosition = new(new Vector3(6.5f, 9.5f, 14f), new Rotation(-22, 18, 0)); // battle 1:1, 35fov
@@ -105,15 +105,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
-        private void MoveCameraToDefaultPosition(Action onFinished, float seconds = 0.5f)
-        {
-            CreateCameraMotionTask(_defaultPosition, onFinished, seconds: seconds);
-        }
         private void CreateCameraMotionTask(TaskData_MoveCamera data)
         {
-            _renderTasks.Add(Task_CameraMotion, int.MaxValue, data: data, tag: TaskData_MoveCamera.Tag);
+            _tasks.Add(Task_CameraMotion, int.MaxValue, data: data, tag: TaskData_MoveCamera.Tag);
         }
-        private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, float seconds = 0.5f)
+        private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, float seconds)
         {
             CreateCameraMotionTask(new TaskData_MoveCamera(_camera, to, onFinished, seconds));
         }
@@ -127,7 +123,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             var data = (TaskData_MoveCamera)task.Data;
             if (data.Animator.Update(ref _camera.PR))
             {
-                _renderTasks.RemoveAndDispose(task);
+                _tasks.RemoveAndDispose(task);
                 data.OnFinished?.Invoke();
             }
         }
@@ -136,30 +132,66 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         #region Trainer Sprite
 
-        private sealed class SpriteData_TrainerGoAway
+        private sealed class TaskData_TrainerReveal
         {
-            public const int Tag = 0xDEE2;
+            public const float DELAY = 0.75f; // In seconds
+            public const float SPEED = 1.00f;
 
-            public readonly int StartX;
-            public readonly float Speed; // Pixels per second
-            public float CurX;
+            public float DelayProgress;
+            public float ColorProgress;
+        }
+        private sealed class TaskData_TrainerGoAway
+        {
+            public readonly float StartZ;
+            public readonly float EndZ;
+            public float Progress;
 
-            public SpriteData_TrainerGoAway(int startX, float speed)
+            public TaskData_TrainerGoAway(float startZ)
             {
-                StartX = startX;
-                Speed = speed;
+                StartZ = startZ;
+                EndZ = startZ - 7.5f;
             }
         }
 
-        private void Sprite_TrainerGoAway(Sprite sprite)
+        private void Task_TrainerReveal(BackTask task)
         {
-            var data = (SpriteData_TrainerGoAway)sprite.Data;
-            data.CurX += Display.DeltaTime * data.Speed;
-            sprite.Pos.X = data.StartX + (int)data.CurX;
-            if (sprite.Pos.X >= FrameBuffer.Current.Size.Width)
+            var data = (TaskData_TrainerReveal)task.Data;
+            // Update delay first
+            if (data.DelayProgress < 1f)
             {
-                _sprites.RemoveAndDispose(sprite); // Dispose callback and delete image texture
+                data.DelayProgress += Display.DeltaTime;
+                if (data.DelayProgress < 1f)
+                {
+                    return;
+                }
+                data.ColorProgress = (data.DelayProgress - 1f) * TaskData_TrainerReveal.SPEED;
+                data.DelayProgress = 1f;
             }
+            else
+            {
+                data.ColorProgress += Display.DeltaTime * TaskData_TrainerReveal.SPEED;
+            }
+            if (data.ColorProgress >= 1f)
+            {
+                _trainerSprite.MaskColorAmt = 0f;
+                _trainerSprite.AnimImage.IsPaused = false;
+                _tasks.RemoveAndDispose(task);
+                return;
+            }
+            _trainerSprite.MaskColorAmt = 1f - data.ColorProgress;
+        }
+        private void Task_TrainerGoAway(BackTask task)
+        {
+            var data = (TaskData_TrainerGoAway)task.Data;
+            data.Progress += Display.DeltaTime;
+            if (data.Progress >= 1f)
+            {
+                _trainerSprite.IsVisible = false;
+                _tasks.RemoveAndDispose(task); // Don't delete sprite here since we can reuse it for taunts in-battle
+                return;
+            }
+            _trainerSprite.Pos.Z = Utils.Lerp(data.StartZ, data.EndZ, data.Progress);
+            _trainerSprite.Opacity = 1f - data.Progress;
         }
 
         #endregion

@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.Render.Shaders;
 using Kermalis.PokemonGameEngine.World;
 using Silk.NET.OpenGL;
 using System;
@@ -13,7 +14,11 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private static int _tintMinute;
         private static Vector3 _mod;
 
-        private static FrameBuffer _frameBuffer;
+        public static bool IsEnabled; // Gets set by CameraObj
+        /// <summary>Signals that the next render should instantly be the current daytint with no transition. Will be reset on the next render</summary>
+        public static bool CatchUpTime;
+
+        #region Color data
 
         // TODO: Colors by season
         // TODO: Generate lookup tables from colors to render faster?
@@ -45,10 +50,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             new(0.160f, 0.180f, 0.330f)  // 23
         };
 
-        public static void Init()
-        {
-            _frameBuffer = FrameBuffer.CreateWithColor(Display.RenderSize);
-        }
+        #endregion
 
         public static void SetTintTime()
         {
@@ -56,8 +58,16 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _tintHour = OverworldTime.GetHour(time.Hour);
             _tintMinute = OverworldTime.GetMinute(time.Minute);
         }
+        private static bool IsEffectivelyEnabled()
+        {
+#if DEBUG_DISABLE_DAYTINT
+            return false;
+#else
+            return IsEnabled;
+#endif
+        }
 
-        public static void Update(bool skipTransition)
+        private static void Update(bool skipTransition)
         {
             DateTime time = DateTime.Now;
             int realMinute = OverworldTime.GetMinute(time.Minute);
@@ -109,25 +119,33 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _mod = hourMod;
         }
 
-        public static void Render()
+        public static void Render(FrameBuffer dayTintFrameBuffer)
         {
+            bool catchUpTime = CatchUpTime;
+            CatchUpTime = false;
+            if (!IsEffectivelyEnabled())
+            {
+                return;
+            }
+            Update(catchUpTime);
+
             GL gl = Display.OpenGL;
-            // Set shader uniform
             DayTintShader shader = DayTintShader.Instance;
             shader.Use(gl);
             shader.SetModification(gl, ref _mod);
 
             // Bind current fbo's texture
+            FrameBuffer c = FrameBuffer.Current;
             gl.ActiveTexture(TextureUnit.Texture0);
-            gl.BindTexture(TextureTarget.Texture2D, FrameBuffer.Current.ColorTexture);
+            gl.BindTexture(TextureTarget.Texture2D, c.ColorTexture);
 
-            // Render to DayTint's fbo
-            _frameBuffer.Push();
+            // Render to DayTint fbo
+            dayTintFrameBuffer.Use();
             SimpleRectMesh.Instance.Render();
 
             // Copy rendered result back to the previous fbo (its texture is still bound)
-            gl.CopyTexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, 0, 0, Display.RenderWidth, Display.RenderHeight);
-            FrameBuffer.Pop();
+            gl.CopyTexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, 0, 0, c.Size.Width, c.Size.Height);
+            c.Use();
         }
     }
 }

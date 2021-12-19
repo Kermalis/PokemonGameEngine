@@ -354,7 +354,7 @@ namespace Kermalis.PokemonGameEngine.World
                     return false; // Return false if an ability cancels the encounter
                 }
             }
-            BattleMaker.CreateWildBattle(weather, blockBehavior, wildParty, format, GetWildBattleMusic(wildParty));
+            BattleMaker.CreateWildBattle(wildParty, weather, blockBehavior, format, GetWildBattleMusic(wildParty));
             return true;
         }
 
@@ -369,7 +369,22 @@ namespace Kermalis.PokemonGameEngine.World
             PBENature nature = GetAffectedNature(leadPkmn.Ability, leadPkmn.Nature);
             var wildPkmn = PartyPokemon.CreateWildMon(species, form, level, gender, nature, bs);
             var wildParty = new Party { wildPkmn };
-            BattleMaker.CreateWildBattle(weather, block.BlocksetBlock.Behavior, wildParty, PBEBattleFormat.Single, GetWildBattleMusic(wildParty));
+            BattleMaker.CreateWildBattle(wildParty, weather, block.BlocksetBlock.Behavior, PBEBattleFormat.Single, GetWildBattleMusic(wildParty));
+        }
+
+        public static void Debug_CreateTestWildBattle()
+        {
+            BlocksetBlockBehavior blockBehavior = BlocksetBlockBehavior.Cave_Encounter;
+            MapWeather weather = MapWeather.None;
+            PBEBattleFormat format = PBEBattleFormat.Single;
+
+            var bs = BaseStats.Get(PBESpecies.Thundurus, PBEForm.Thundurus_Therian, true);
+            PBEGender gender = PBEGender.Male;
+            PBENature nature = PBENature.Bashful;
+            var wildPkmn1 = PartyPokemon.CreateWildMon(bs.Species, bs.Form, 1, gender, nature, bs);
+
+            var wildParty = new Party { wildPkmn1 };
+            BattleMaker.CreateWildBattle(wildParty, weather, blockBehavior, format, GetWildBattleMusic(wildParty));
         }
     }
 }

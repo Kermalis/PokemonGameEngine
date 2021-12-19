@@ -7,6 +7,7 @@ using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System;
 using System.Numerics;
@@ -15,7 +16,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
     internal sealed class PCBoxesGUI
     {
-        private const int NumPerRow = 5;
+        private static readonly Size2D _renderSize = new(480, 270); // 16:9
+        private readonly FrameBuffer _frameBuffer;
+
+        private const int NumPerRow = 6;
         private const int NumColumns = PkmnConstants.BoxCapacity / NumPerRow; // Won't work if it's not evenly divisible
 
         private readonly PCBoxes _boxes;
@@ -47,6 +51,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         public PCBoxesGUI(PCBoxes boxes, Party party, Action onClosed)
         {
+            _frameBuffer = FrameBuffer.CreateWithColor(_renderSize);
+            _frameBuffer.Use();
+
             _boxes = boxes;
             _party = party;
 
@@ -71,7 +78,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private void CB_FadeInPC()
         {
-            RenderFading();
+            Render();
+            _fadeTransition.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!_fadeTransition.IsDone)
             {
                 return;
@@ -82,7 +92,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         }
         private void CB_FadeOutPC()
         {
-            RenderFading();
+            Render();
+            _fadeTransition.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!_fadeTransition.IsDone)
             {
                 return;
@@ -94,14 +107,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _helpText.Delete();
             _selectedBoxText.Delete();
             _selectedMainImage?.DeductReference();
+            _frameBuffer.Delete();
             _onClosed();
             _onClosed = null;
-        }
-
-        private void RenderFading()
-        {
-            Render();
-            _fadeTransition.Render();
         }
 
         #endregion
@@ -164,7 +172,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void CreateDoWhatWithChoices(string nickname)
         {
             Size2D s = _textChoices.GetSize();
-            _textChoicesWindow = new Window(new RelPos2D(0.6f, 0.3f), s, Colors.White4);
+            _textChoicesWindow = new Window(Pos2D.FromRelative(0.6f, 0.3f, _renderSize), s, Colors.White4);
             RenderChoicesOntoWindow();
             string msg = string.Format("Do what with {0}?", nickname);
             _staticStringBackup = msg;
@@ -190,8 +198,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private void CreateStringPrinterAndWindow(string message, bool isStaticMsg, MainCallbackDelegate doneCallback)
         {
-            _stringWindow = Window.CreateStandardMessageBox(Colors.FromRGBA(49, 49, 49, 192));
-            _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, message, Font.Default, FontColors.DefaultWhite_I);
+            _stringWindow = Window.CreateStandardMessageBox(Colors.FromRGBA(49, 49, 49, 192), _renderSize);
+            _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, message, Font.Default, FontColors.DefaultWhite_I, _renderSize);
             _stringReadCallback = doneCallback;
             if (isStaticMsg)
             {
@@ -205,7 +213,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void OverwriteStaticString(string message, MainCallbackDelegate curCallback, MainCallbackDelegate doneCallback)
         {
             _stringPrinter.Delete();
-            _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, message, Font.Default, FontColors.DefaultWhite_I);
+            _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, message, Font.Default, FontColors.DefaultWhite_I, _renderSize);
             _stringReadCallback = doneCallback;
             Game.Instance.SetCallback(curCallback);
         }
@@ -274,7 +282,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _selectedMainImage = null;
                 return;
             }
-            _selectedMainImage = PokemonImageLoader.GetPokemonImage(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, false, false, pkmn.PID, pkmn.IsEgg);
+            if (pkmn.IsEgg)
+            {
+                _selectedMainImage = PokemonImageLoader.GetEggImage();
+            }
+            else
+            {
+                _selectedMainImage = PokemonImageLoader.GetPokemonImage(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.PID, false);
+            }
         }
 
         private void CB_Choices()
@@ -288,6 +303,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
 
             Render();
+            _frameBuffer.RenderToScreen();
         }
         private void CB_ReadOutStaticMessage()
         {
@@ -299,6 +315,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
 
             Render();
+            _frameBuffer.RenderToScreen();
         }
         private void CB_ReadOutMessageThenCloseWindow()
         {
@@ -311,6 +328,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
 
             Render();
+            _frameBuffer.RenderToScreen();
         }
         private void CB_ReadOutMessageThenRestoreStaticBackup()
         {
@@ -323,11 +341,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
 
             Render();
+            _frameBuffer.RenderToScreen();
         }
         private void CB_HandleInputs()
         {
             HandleInputs();
+
             Render();
+            _frameBuffer.RenderToScreen();
         }
 
         private void HandleInputs()
@@ -433,7 +454,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
             // PC
-            _selectedBoxText.Render(Pos2D.FromRelative(0.02f, 0.01f));
+            _selectedBoxText.Render(Pos2D.FromRelative(0.02f, 0.01f, _renderSize));
 
             if (_partyVisible)
             {
@@ -444,14 +465,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 if (_selectedMainImage is not null)
                 {
                     _selectedMainImage.Update();
-                    _selectedMainImage.Render(Pos2D.CenterXBottomY(0.24f, 0.6f, _selectedMainImage.Size));
+                    _selectedMainImage.Render(Pos2D.CenterXBottomY(0.24f, 0.6f, _selectedMainImage.Size, _renderSize));
                 }
-                _helpText.Render(Pos2D.FromRelative(0.015f, 0.62f));
+                _helpText.Render(Pos2D.FromRelative(0.015f, 0.62f, _renderSize));
             }
 
             // Draw boxes
-            int boxStartX = Renderer.RelXToAbsX(0.48f);
-            int boxStartY = Renderer.RelYToAbsY(0.05f);
+            int boxStartX = (int)(0.48f * _renderSize.Width);
+            int boxStartY = (int)(0.05f * _renderSize.Height);
             for (int i = 0; i < PkmnConstants.BoxCapacity; i++)
             {
                 int x = i % NumPerRow;
@@ -472,11 +493,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             // Dim the side we're not using
             if (_isOnParty)
             {
-                GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 128), new Rect2D(Pos2D.FromRelative(0.48f, 0f), Size2D.FromRelative(0.52f, 1f)));
+                GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 128), new Rect2D(Pos2D.FromRelative(0.48f, 0f, _renderSize), Size2D.FromRelative(0.52f, 1f, _renderSize)));
             }
             else if (_partyVisible)
             {
-                GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 128), new Rect2D(new Pos2D(0, 0), Size2D.FromRelative(0.48f, 1f)));
+                GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 128), new Rect2D(new Pos2D(0, 0), Size2D.FromRelative(0.48f, 1f, _renderSize)));
             }
 
             Window.RenderAll();

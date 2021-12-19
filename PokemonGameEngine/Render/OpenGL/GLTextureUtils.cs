@@ -19,13 +19,11 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
         }
 
-        public static string SaveScreenTextureAsImage(GL gl, uint texture, int w, int h, string path)
+        public static string SaveReadBufferAsImage(GL gl, Size2D size, string path)
         {
-            gl.ActiveTexture(TextureUnit.Texture0);
-            gl.BindTexture(TextureTarget.Texture2D, texture);
-            var data = new Rgba32[w * h];
-            gl.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data.AsSpan());
-            using (var img = Image.LoadPixelData(data, w, h))
+            var data = new Rgb24[size.GetArea()];
+            gl.ReadPixels(0, 0, size.Width, size.Height, PixelFormat.Rgb, PixelType.UnsignedByte, data.AsSpan());
+            using (var img = Image.LoadPixelData(data, (int)size.Width, (int)size.Height))
             {
                 img.Mutate(x => x.Flip(FlipMode.Vertical));
                 Directory.CreateDirectory(Path.GetDirectoryName(path));

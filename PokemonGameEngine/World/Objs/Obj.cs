@@ -111,8 +111,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 curMap.Objs.Remove(this);
                 newMap.Objs.Add(this);
                 Map = newMap;
+                OnMapChanged();
             }
         }
+        protected virtual void OnMapChanged() { }
         public virtual bool CollidesWithOthers()
         {
             return true;

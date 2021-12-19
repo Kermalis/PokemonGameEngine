@@ -5,7 +5,7 @@ layout(location = 1) in vec2 in_uv;
 
 out vec2 pass_uv;
 
-uniform ivec2 relPos;
+uniform ivec2 translation;
 uniform uvec2 screenSize;
 
 
@@ -20,7 +20,7 @@ vec2 RelToGL(vec2 v)
 
 void main()
 {
-    vec2 relPos = AbsToRel(in_position + relPos, screenSize);
+    vec2 relPos = AbsToRel(in_position + translation, screenSize);
     gl_Position = vec4(RelToGL(relPos), 0, 1);
     pass_uv = in_uv;
 }

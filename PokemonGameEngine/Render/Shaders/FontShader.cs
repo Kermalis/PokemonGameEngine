@@ -1,18 +1,17 @@
-﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
-using Silk.NET.OpenGL;
+﻿using Silk.NET.OpenGL;
 using System.Numerics;
 
-namespace Kermalis.PokemonGameEngine.Render.Fonts
+namespace Kermalis.PokemonGameEngine.Render.Shaders
 {
     internal sealed class FontShader : Shader2D
     {
-        private const string VERTEX_SHADER_PATH = @"Shaders\Font.vert.glsl";
-        private const string FRAGMENT_SHADER_PATH = @"Shaders\Font.frag.glsl";
+        private const string VERTEX_SHADER_PATH = @"Font.vert.glsl";
+        private const string FRAGMENT_SHADER_PATH = @"Font.frag.glsl";
 
         public static FontShader Instance { get; private set; } = null!; // Initialized in RenderManager
 
         private readonly int _lFontTexture;
-        private readonly int _lRelPos;
+        private readonly int _lTranslation;
         private readonly int _lNumFontColors;
         private readonly int[] _lFontColors;
 
@@ -22,7 +21,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
             Instance = this;
 
             _lFontTexture = GetUniformLocation(gl, "fontTexture");
-            _lRelPos = GetUniformLocation(gl, "relPos");
+            _lTranslation = GetUniformLocation(gl, "translation");
             _lNumFontColors = GetUniformLocation(gl, "numFontColors");
             _lFontColors = new int[256];
             for (int i = 0; i < 256; i++)
@@ -37,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
 
         public void SetTranslation(GL gl, ref Pos2D t)
         {
-            gl.Uniform2(_lRelPos, t.X, t.Y);
+            gl.Uniform2(_lTranslation, t.X, t.Y);
         }
         public void SetColors(GL gl, Vector4[] colors)
         {

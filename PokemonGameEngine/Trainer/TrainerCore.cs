@@ -16,7 +16,8 @@ namespace Kermalis.PokemonGameEngine.Trainer
         {
             switch (c)
             {
-                case TrainerClass.Leader: return Song.GymBattle;
+                case TrainerClass.Leader:
+                    return Song.GymBattle;
             }
             return Song.TrainerBattle;
         }
@@ -80,7 +81,40 @@ namespace Kermalis.PokemonGameEngine.Trainer
             var enemyInfo = new PBETrainerInfo(enemyParty, string.Format("{0} {1}", GetTrainerClassName(tc), name), false, inventory: inv);
             var parties = new Party[] { Game.Instance.Save.PlayerParty, enemyParty };
             Song song = GetTrainerClassSong(tc);
-            BattleMaker.CreateTrainerBattle_1v1(weather, behavior, parties, enemyInfo, format, song, tc, defeatText);
+            BattleMaker.CreateTrainerBattle_1v1(enemyInfo, parties, weather, behavior, format, song, tc, defeatText);
+        }
+
+        public static void Debug_CreateTestTrainerBattle()
+        {
+            MapWeather weather = MapWeather.None;
+            BlocksetBlockBehavior behavior = BlocksetBlockBehavior.Cave_Encounter;
+            PBEBattleFormat format = PBEBattleFormat.Double;
+
+            TrainerClass tc = TrainerClass.Lady;
+            Song song = Song.LegendaryBattle;
+            string name = "Ur Mom";
+            string defeatText = "Bruh";
+
+            (PBEItem, uint)[] inv = null;
+            var enemyParty = new Party();
+
+            BaseStats bs;
+            PartyPokemon p;
+            bs = BaseStats.Get(PBESpecies.Kyogre, 0, true);
+            p = PartyPokemon.CreateWildMon(bs.Species, bs.Form, 1, PBEGender.Male, PBENature.Bashful, bs);
+            enemyParty.Add(p);
+
+            bs = BaseStats.Get(PBESpecies.Rayquaza, 0, true);
+            p = PartyPokemon.CreateWildMon(bs.Species, bs.Form, 1, PBEGender.Male, PBENature.Bashful, bs);
+            enemyParty.Add(p);
+
+            bs = BaseStats.Get(PBESpecies.Groudon, 0, true);
+            p = PartyPokemon.CreateWildMon(bs.Species, bs.Form, 1, PBEGender.Male, PBENature.Bashful, bs);
+            enemyParty.Add(p);
+
+            var enemyInfo = new PBETrainerInfo(enemyParty, string.Format("{0} {1}", GetTrainerClassName(tc), name), false, inventory: inv);
+            var parties = new Party[] { Game.Instance.Save.PlayerParty, enemyParty };
+            BattleMaker.CreateTrainerBattle_1v1(enemyInfo, parties, weather, behavior, format, song, tc, defeatText);
         }
     }
 }

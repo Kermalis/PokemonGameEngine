@@ -36,14 +36,14 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetPixelIndex(uint srcW, int x, int y)
+        public static int GetPixelIndex(uint srcW, Pos2D pos)
         {
-            return (int)(x + (y * srcW));
+            return pos.X + (pos.Y * (int)srcW);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint* GetPixelAddress(uint* src, uint srcW, int x, int y)
+        public static uint* GetPixelAddress(uint* src, uint srcW, Pos2D pos)
         {
-            return src + GetPixelIndex(srcW, x, y);
+            return src + GetPixelIndex(srcW, pos);
         }
 
         #endregion

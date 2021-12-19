@@ -38,12 +38,13 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
 
             int curBit = 0;
             int curByte = 0;
-            for (int py = 0; py < parent.FontHeight; py++)
+            Pos2D pos;
+            for (pos.Y = 0; pos.Y < parent.FontHeight; pos.Y++)
             {
-                for (int px = 0; px < CharWidth; px++)
+                for (pos.X = 0; pos.X < CharWidth; pos.X++)
                 {
                     int colorIndex = (packed[curByte] >> (8 - bpp - curBit)) % (1 << bpp);
-                    dst[Renderer.GetPixelIndex(atlasSize.Width, px + posInAtlas.X, py + posInAtlas.Y)] = (byte)colorIndex; // Only set the R component
+                    dst[Renderer.GetPixelIndex(atlasSize.Width, pos + posInAtlas)] = (byte)colorIndex; // Only set the R component
                     curBit = (curBit + bpp) % 8;
                     if (curBit == 0)
                     {

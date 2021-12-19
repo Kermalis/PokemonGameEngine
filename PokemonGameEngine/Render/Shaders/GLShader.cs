@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Numerics;
 
-namespace Kermalis.PokemonGameEngine.Render.OpenGL
+namespace Kermalis.PokemonGameEngine.Render.Shaders
 {
     internal abstract class GLShader
     {
@@ -31,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
         private static uint LoadShader(GL gl, ShaderType type, string asset)
         {
             string src;
-            using (StreamReader sr = AssetLoader.GetAssetStreamText(asset))
+            using (StreamReader sr = AssetLoader.GetAssetStreamText(@"Shaders\" + asset))
             {
                 src = sr.ReadToEnd();
             }

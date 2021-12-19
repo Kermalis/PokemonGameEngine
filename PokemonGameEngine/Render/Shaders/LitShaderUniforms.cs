@@ -1,7 +1,7 @@
-﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
+﻿using Kermalis.PokemonGameEngine.Render.R3D;
 using Silk.NET.OpenGL;
 
-namespace Kermalis.PokemonGameEngine.Render.R3D
+namespace Kermalis.PokemonGameEngine.Render.Shaders
 {
     internal struct LitShaderUniforms
     {

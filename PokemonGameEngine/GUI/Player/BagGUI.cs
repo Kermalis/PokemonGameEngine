@@ -7,6 +7,7 @@ using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System;
 
@@ -14,6 +15,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
 {
     internal sealed class BagGUI
     {
+        private static readonly Size2D _renderSize = new(480, 270); // 16:9
+        private readonly FrameBuffer _frameBuffer;
+
         private readonly Inventory<InventorySlotNew> _inv;
 
         private FadeColorTransition _fadeTransition;
@@ -32,6 +36,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
 
         public BagGUI(Inventory<InventorySlotNew> inv, Party party, Action onClosed)
         {
+            _frameBuffer = FrameBuffer.CreateWithColor(_renderSize);
+            _frameBuffer.Use();
+
             _inv = inv;
 
             _partyChoices = new PartyPkmnGUIChoices(0.03f, 0.18f, 0.47f, 0.97f, 0.004f);
@@ -80,7 +87,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
 
         private void CB_FadeInBag()
         {
-            RenderFading();
+            Render();
+            _fadeTransition.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!_fadeTransition.IsDone)
             {
                 return;
@@ -91,7 +101,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
         }
         private void CB_FadeOutBag()
         {
-            RenderFading();
+            Render();
+            _fadeTransition.Render();
+            _frameBuffer.RenderToScreen();
+
             if (!_fadeTransition.IsDone)
             {
                 return;
@@ -102,13 +115,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
             _bagText.Delete();
             _curPouchName.Delete();
             _cashMoney.Delete();
+            _frameBuffer.Delete();
             _onClosed();
             _onClosed = null;
         }
         private void CB_HandleInputs()
         {
             HandleInputs();
+
             Render();
+            _frameBuffer.RenderToScreen();
         }
 
         private void HandleInputs()
@@ -139,11 +155,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
             }
         }
 
-        private void RenderFading()
-        {
-            Render();
-            _fadeTransition.Render();
-        }
         private void Render()
         {
             GL gl = Display.OpenGL;
@@ -153,17 +164,17 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
             // BAG
-            _bagText.Render(Pos2D.FromRelative(0.02f, 0.01f));
+            _bagText.Render(Pos2D.FromRelative(0.02f, 0.01f, _renderSize));
 
             _partyChoices.Render();
 
             // Draw pouch tabs background
-            var rect = new Rect2D(Pos2D.FromRelative(0.60f, 0.03f), Pos2D.FromRelative(0.97f, 0.13f));
+            var rect = new Rect2D(Pos2D.FromRelative(0.60f, 0.03f, _renderSize), Pos2D.FromRelative(0.97f, 0.13f, _renderSize));
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(245, 200, 37), rect); // TODO: ROUNDED 10
             GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(231, 163, 0), rect); // TODO: ROUNDED 10
 
             // Draw pouch name
-            var pos = Pos2D.FromRelative(0.62f, 0.14f);
+            var pos = Pos2D.FromRelative(0.62f, 0.14f, _renderSize);
             _curPouchName.Render(pos);
             // Draw cash money
             pos.X = rect.GetRight() + 1 - _cashMoneyWidth;

@@ -54,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.Input
                 {
                     if (down)
                     {
-                        Display.SaveScreenshot();
+                        Display.ScreenshotRequested = true;
                     }
                     return;
                 }

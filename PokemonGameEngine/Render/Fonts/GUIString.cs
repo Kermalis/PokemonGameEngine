@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.Render.Shaders;
 using Silk.NET.OpenGL;
 using System.Numerics;
 
@@ -60,10 +61,10 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
             builder.Finish(out _, out _vao, out _vbo, out _ebo);
         }
 
-        public static GUIString CreateCentered(string text, Font font, Vector4[] colors, float centerX, float centerY, uint scale = 1)
+        public static GUIString CreateCentered(string text, Font font, Vector4[] colors, float centerX, float centerY, Size2D totalSize, uint scale = 1)
         {
             Size2D s = font.MeasureString(text);
-            return new GUIString(text, font, colors, Pos2D.Center(centerX, centerY, s), scale: scale);
+            return new GUIString(text, font, colors, Pos2D.Center(centerX, centerY, s, totalSize), scale: scale);
         }
         public static void CreateAndRenderOneTimeString(string text, Font font, Vector4[] colors, Pos2D pos, uint scale = 1)
         {

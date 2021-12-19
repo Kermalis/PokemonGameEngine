@@ -15,11 +15,14 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 {
     internal sealed class PartyGUIMember
     {
+        private const uint WIDTH = (384 / 2) - (384 / 20);
+        private const uint HEIGHT = (216 / 4) - (216 / 20);
+
         private readonly bool _usePartyPkmn;
         private readonly bool _isEgg;
         private Vector4 _color;
         private readonly PartyPokemon _partyPkmn;
-        private readonly SpritedBattlePokemon _battlePkmn;
+        private readonly BattlePokemon _battlePkmn;
         private readonly Sprite _mini;
         private readonly WriteableImage _background;
 
@@ -39,10 +42,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _mini.Data = new Sprite_BounceData();
             }
             sprites.Add(_mini);
-            _background = new WriteableImage(new Size2D((Display.RenderWidth / 2) - (Display.RenderWidth / 20), (Display.RenderHeight / 4) - (Display.RenderHeight / 20)));
+            _background = new WriteableImage(new Size2D(WIDTH, HEIGHT));
             UpdateBackground();
         }
-        public PartyGUIMember(SpritedBattlePokemon pkmn, SpriteList sprites)
+        public PartyGUIMember(BattlePokemon pkmn, SpriteList sprites)
         {
             _usePartyPkmn = false;
             _isEgg = pkmn.PartyPkmn.IsEgg;
@@ -58,7 +61,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 _mini.Data = new Sprite_BounceData();
             }
             sprites.Add(_mini);
-            _background = new WriteableImage(new Size2D((Display.RenderWidth / 2) - (Display.RenderWidth / 20), (Display.RenderHeight / 4) - (Display.RenderHeight / 20)));
+            _background = new WriteableImage(new Size2D(WIDTH, HEIGHT));
             UpdateBackground();
         }
 
@@ -97,7 +100,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
 
             float speed;
-            if (_usePartyPkmn ? _partyPkmn.HP == 0 : _battlePkmn.Pkmn.HP == 0)
+            if (_usePartyPkmn ? _partyPkmn.HP == 0 : _battlePkmn.PBEPkmn.HP == 0)
             {
                 speed = 0f; // Pause bounce for fainted
             }
@@ -114,7 +117,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         public void UpdateBackground()
         {
             GL gl = Display.OpenGL;
-            _background.FrameBuffer.Push();
+            FrameBuffer oldFBO = FrameBuffer.Current;
+            _background.FrameBuffer.Use();
             gl.ClearColor(_color);
             gl.Clear(ClearBufferMask.ColorBufferBit);
             // TODO: Shadow
@@ -128,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 goto bottom;
             }
 
-            PBEBattlePokemon bPkmn = _usePartyPkmn ? null : _battlePkmn.Pkmn;
+            PBEBattlePokemon bPkmn = _usePartyPkmn ? null : _battlePkmn.PBEPkmn;
             // Gender
             GUIString.CreateAndRenderOneTimeGenderString(p.Gender, Font.Default, new Pos2D(61, -2));
             // Level
@@ -148,7 +152,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 GUIString.CreateAndRenderOneTimeString(ItemData.GetItemName(item), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(61, 23));
             }
         bottom:
-            FrameBuffer.Pop();
+            oldFBO.Use();
         }
 
         // We shouldn't be redrawing on the logic thread, but it currently doesn't matter
@@ -169,16 +173,22 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 return GetDefaultColor();
             }
 
-            SpritedBattlePokemon s = _battlePkmn;
-            if (!_isEgg && s.Pkmn.HP == 0)
+            BattlePokemon s = _battlePkmn;
+            if (!_isEgg && s.PBEPkmn.HP == 0)
             {
                 return GetFaintedColor();
             }
-            if (s.Pkmn.FieldPosition != PBEFieldPosition.None)
+            if (s.PBEPkmn.FieldPosition != PBEFieldPosition.None)
             {
                 return GetActiveColor();
             }
-            if (BattleGUI.Instance.StandBy.Contains(s.Pkmn))
+            ActionsBuilder a = BattleGUI.Instance.ActionsBuilder;
+            if (a is not null && a.IsStandBy(s.PBEPkmn))
+            {
+                return GetStandByColor();
+            }
+            SwitchesBuilder sb = BattleGUI.Instance.SwitchesBuilder;
+            if (sb is not null && sb.IsStandBy(s.PBEPkmn))
             {
                 return GetStandByColor();
             }

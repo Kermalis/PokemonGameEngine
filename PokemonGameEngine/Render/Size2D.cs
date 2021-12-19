@@ -1,6 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
-
-namespace Kermalis.PokemonGameEngine.Render
+﻿namespace Kermalis.PokemonGameEngine.Render
 {
     internal struct Size2D
     {
@@ -13,10 +11,6 @@ namespace Kermalis.PokemonGameEngine.Render
             Height = h;
         }
 
-        public static Size2D FromRelative(float w, float h)
-        {
-            return FromRelative(w, h, FrameBuffer.Current.Size);
-        }
         public static Size2D FromRelative(float w, float h, Size2D totalSize)
         {
             return new Size2D((uint)(w * totalSize.Width), (uint)(h * totalSize.Height));
@@ -25,10 +19,6 @@ namespace Kermalis.PokemonGameEngine.Render
         public uint GetArea()
         {
             return Width * Height;
-        }
-        public Size2D PowerOfTwoize()
-        {
-            return new Size2D(Renderer.PowerOfTwoize(Width), Renderer.PowerOfTwoize(Height));
         }
 
 #if DEBUG
@@ -50,13 +40,9 @@ namespace Kermalis.PokemonGameEngine.Render
             Height = h;
         }
 
-        public Size2D Absolute()
+        public Size2D Absolute(Size2D totalSize)
         {
-            return Size2D.FromRelative(Width, Height);
-        }
-        public Size2D Absolute(Size2D size)
-        {
-            return Size2D.FromRelative(Width, Height, size);
+            return Size2D.FromRelative(Width, Height, totalSize);
         }
 
 #if DEBUG

@@ -4,10 +4,11 @@ using Kermalis.PokemonGameEngine.GUI.Transition;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Images;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.R3D;
+using Kermalis.PokemonGameEngine.Render.Shaders;
 using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Trainer;
-using Kermalis.PokemonGameEngine.World;
 using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
@@ -15,199 +16,117 @@ using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Battle
 {
-    internal sealed class PkmnPosition
-    {
-        public const int AllyTag = 1932;
-        public const int FoeTag = 1933;
-
-        public bool InfoVisible;
-        /// <summary>This is separate from <see cref="Sprite.IsInvisible"/> because it can be true while the sprite isn't visible (dig for example)</summary>
-        public bool PkmnVisible; // TODO: Use
-        public SpritedBattlePokemon SPkmn;
-        public readonly Sprite Sprite; // X and Y refer to center points
-
-        public readonly RelPos2D BarPos;
-        public readonly RelPos2D MonPos;
-
-        public PkmnPosition(SpriteList s, float barX, float barY, float monX, float monY, bool ally)
-        {
-            Sprite = new Sprite { IsInvisible = true, Tag = ally ? AllyTag : FoeTag }; // TODO
-            s.Add(Sprite);
-            BarPos = new RelPos2D(barX, barY);
-            MonPos = new RelPos2D(monX, monY);
-            UpdateSpritePos(Display.RenderSize);
-        }
-
-        public void UpdateSpritePos(Size2D dstSize)
-        {
-            Sprite.Pos = MonPos.Absolute(dstSize);
-        }
-        public void UpdateAnimationSpeed(PBEBattlePokemon pkmn)
-        {
-            PBEStatus1 s = pkmn.Status1;
-            var img = (AnimatedImage)Sprite.Image;
-            if (s == PBEStatus1.Frozen)
-            {
-                img.IsPaused = true;
-            }
-            else
-            {
-                img.SpeedModifier = s == PBEStatus1.Paralyzed || s == PBEStatus1.Asleep || pkmn.HPPercentage <= 0.25f ? 2 : 1;
-                img.IsPaused = false;
-            }
-        }
-
-        public void RenderMonInfo()
-        {
-            SPkmn.InfoBarImg.Render(BarPos.Absolute());
-        }
-    }
-
     internal sealed partial class BattleGUI
     {
+        public static readonly Size2D RenderSize = new(480, 270); // 16:9
+        private readonly FrameBuffer _frameBuffer;
+        private readonly FrameBuffer _dayTintFrameBuffer;
+
         private FadeColorTransition _fadeTransition;
 
         private readonly PkmnPosition[][] _positions;
-        public readonly SpritedBattlePokemonParty[] SpritedParties;
-        private readonly SpriteList _sprites = new();
+        private readonly BattlePokemonParty[] _parties;
+        private BattleSprite _trainerSprite;
 
         private Window _stringWindow;
         private StringPrinter _stringPrinter;
         private float _autoAdvanceTime;
 
-        private ActionsGUI _actionsGUI;
-
-        // 3D stuff
         private readonly Camera _camera;
-        private readonly ModelShader _shader;
+        private readonly ModelShader _modelShader;
+        private readonly BattleSpriteShader _spriteShader;
+        private readonly BattleSpriteMesh _spriteMesh;
         private readonly List<Model> _models;
 
         private readonly PointLight[] _testLights = new PointLight[ModelShader.MAX_LIGHTS]
         {
-            new(new(-5, 3, -5), new(10, 134f/255, 5), new Vector3(1f, 0.01f, 0.002f)),
-            new(new(5, 3, -5), new(218f/255, 134f/255, 4), new Vector3(1f, 0.01f, 0.002f)),
-            new(new(-5, 3, 5), new(218f/255, 134f/255, 226f/255), new Vector3(1f, 0.01f, 0.002f)),
-            new(new(5, 3, 5), new(218f/255, 134f/255, 226f/255), new Vector3(1f, 0.01f, 0.002f)),
+            new(new Vector3(-5, 3, -5), new Vector3(5.00f, 2.25f, 0.60f), new Vector3(1f, 0.01f, 0.002f)),
+            new(new Vector3( 5, 3, -5), new Vector3(0.85f, 0.52f, 4.00f), new Vector3(1f, 0.01f, 0.002f)),
+            new(new Vector3(-5, 3,  5), new Vector3(0.85f, 3.52f, 0.88f), new Vector3(1f, 0.01f, 0.002f)),
+            new(new Vector3( 5, 3,  5), new Vector3(0.85f, 0.52f, 0.88f), new Vector3(1f, 0.01f, 0.002f)),
         };
 
         private BattleGUI(PBEBattle battle, IReadOnlyList<Party> trainerParties)
         {
             Battle = battle;
             Trainer = battle.Trainers[0]; // Set before ShouldUseKnownInfo()
-            _positions = CreatePositions(battle.BattleFormat, _sprites);
-            SpritedParties = new SpritedBattlePokemonParty[battle.Trainers.Count];
+            _positions = PkmnPosition.CreatePositions(battle.BattleFormat);
+            _parties = new BattlePokemonParty[battle.Trainers.Count];
             for (int i = 0; i < battle.Trainers.Count; i++)
             {
                 PBETrainer trainer = battle.Trainers[i];
-                SpritedParties[i] = new SpritedBattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team), ShouldUseKnownInfo(trainer), this);
+                _parties[i] = new BattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team), ShouldUseKnownInfo(trainer), this);
             }
 
-            // Projection matrix
-            /*const float FOV = 35;
-            var projection = Matrix4x4.CreatePerspectiveFieldOfView(Utils.DegreesToRadiansF(FOV),
-                1,
-                0.1f, 1_000f);*/
-            // Used in BW2 battles:
-            // aspect ratio: 4f/2.96275f or 1.3501f
-            // fov: 25.98999f
-            var projection = new Matrix4x4(3.2095f, 0, 0, 0,
-                0, 4.3333f, 0, 0,
-                0, 0, -1.0039f, -1,
-                0, 0, -2.0039f, 0);
+            // Projection matrix used in BW2 battles:
+            // It doesn't match pixel-perfect most likely because of the DS's rounding precision (12 fractional bits)
+            // But it's pretty close, and positions look identical if you don't try to look for differences
+            var projection = new Matrix4x4(3.20947265625f,              0f,           0f,  0f,
+                                                       0f, 4.333251953125f,           0f,  0f,
+                                                       0f,              0f, -1.00390625f, -1f,
+                                                       0f,              0f, -2.00390625f,  0f);
 
-            _camera = new Camera(PositionRotation.Default, projection);
-            _shader = new ModelShader(Display.OpenGL);
+            GL gl = Display.OpenGL;
+            _camera = new Camera(_defaultPosition, projection); // cam pos doesn't matter here since we will set it later
+            _modelShader = new ModelShader(gl);
+            _spriteShader = new BattleSpriteShader(gl);
+            _spriteMesh = new BattleSpriteMesh(gl);
+
+            _frameBuffer = FrameBuffer.CreateWithColorAndDepth(RenderSize); // Gets used at InitFadeIn()
+            _dayTintFrameBuffer = FrameBuffer.CreateWithColor(RenderSize);
 
             // Terrain:
-            GetTerrainPath(battle.BattleTerrain, out string bgPath, out string allyPath, out string foePath);
+            GetTerrainPaths(battle.BattleTerrain, battle.BattleFormat == PBEBattleFormat.Rotation,
+                out string bgPath, out string allyPlatformPath, out string foePlatformPath);
+            GetPlatformTransforms(battle.BattleFormat,
+                out float platformScale, out Vector3 foePos, out Vector3 allyPos);
             _models = new()
             {
                 new Model(bgPath),
-                new Model(foePath)
+                new Model(foePlatformPath)
                 {
-                    PR = new PositionRotation(new Vector3(0, 0, -15), Rotation.Default)
+                    Scale = new Vector3(platformScale),
+                    PR = new PositionRotation(foePos, Rotation.Default)
                 },
-                new Model(allyPath)
+                new Model(allyPlatformPath)
                 {
-                    PR = new PositionRotation(new(0, 0, 3), Rotation.Default)
+                    Scale = new Vector3(platformScale),
+                    PR = new PositionRotation(allyPos, Rotation.Default)
                 },
-                // You'd add more models here if you wanted. File paths for now
+                // You'd add more models here if you wanted
             };
-        }
-
-        private static PkmnPosition[][] CreatePositions(PBEBattleFormat f, SpriteList s)
-        {
-            var a = new PkmnPosition[2][];
-            switch (f)
-            {
-                case PBEBattleFormat.Single:
-                {
-                    a[0] = new PkmnPosition[1]
-                    {
-                        new PkmnPosition(s, 0.015f, 0.25f, 0.40f, 0.95f, true) // Center
-                    };
-                    a[1] = new PkmnPosition[1]
-                    {
-                        new PkmnPosition(s, 0.10f, 0.015f, 0.73f, 0.51f, false) // Center
-                    };
-                    break;
-                }
-                case PBEBattleFormat.Double:
-                {
-                    a[0] = new PkmnPosition[2]
-                    {
-                        new PkmnPosition(s, 0.015f, 0.25f, 0.25f, 0.92f, true), // Left
-                        new PkmnPosition(s, 0.295f, 0.27f, 0.58f, 0.96f, true) // Right
-                    };
-                    a[1] = new PkmnPosition[2]
-                    {
-                        new PkmnPosition(s, 0.38f, 0.035f, 0.85f, 0.53f, false), // Left
-                        new PkmnPosition(s, 0.10f, 0.015f, 0.63f, 0.52f, false) // Right
-                    };
-                    break;
-                }
-                case PBEBattleFormat.Triple:
-                {
-                    a[0] = new PkmnPosition[3]
-                    {
-                        new PkmnPosition(s, 0.015f, 0.25f, 0.12f, 0.96f, true), // Left
-                        new PkmnPosition(s, 0.295f, 0.27f, 0.38f, 0.89f, true), // Center
-                        new PkmnPosition(s, 0.575f, 0.29f, 0.7f, 0.94f, true) // Right
-                    };
-                    a[1] = new PkmnPosition[3]
-                    {
-                        new PkmnPosition(s, 0.66f, 0.055f, 0.91f, 0.525f, false), // Left
-                        new PkmnPosition(s, 0.38f, 0.035f, 0.75f, 0.55f, false), // Center
-                        new PkmnPosition(s, 0.10f, 0.015f, 0.56f, 0.53f, false) // Right
-                    };
-                    break;
-                }
-                case PBEBattleFormat.Rotation:
-                {
-                    a[0] = new PkmnPosition[3]
-                    {
-                        new PkmnPosition(s, 0.015f, 0.25f, 0.06f, 0.99f, true), // Left
-                        new PkmnPosition(s, 0.295f, 0.27f, 0.4f, 0.89f, true), // Center
-                        new PkmnPosition(s, 0.575f, 0.29f, 0.88f, 1.025f, true) // Right
-                    };
-                    a[1] = new PkmnPosition[3]
-                    {
-                        new PkmnPosition(s, 0.66f, 0.055f, 0.97f, 0.48f, false), // Left
-                        new PkmnPosition(s, 0.38f, 0.035f, 0.75f, 0.55f, false), // Center
-                        new PkmnPosition(s, 0.10f, 0.015f, 0.5f, 0.49f, false) // Right
-                    };
-                    break;
-                }
-                default: throw new ArgumentOutOfRangeException(nameof(f));
-            }
-            return a;
         }
 
         #region Terrain
 
-        private static bool TerrainHasSpecificPlatforms(PBEBattleTerrain terrain)
+        private static void GetPlatformTransforms(PBEBattleFormat f, out float scale, out Vector3 foePos, out Vector3 allyPos)
         {
-            switch (terrain)
+            switch (f)
+            {
+                case PBEBattleFormat.Single:
+                case PBEBattleFormat.Rotation:
+                    scale = 1f; break;
+                case PBEBattleFormat.Double:
+                    scale = 1.2f; break;
+                case PBEBattleFormat.Triple:
+                    scale = 1.5f; break;
+                default: throw new ArgumentOutOfRangeException(nameof(f));
+            }
+            const float floorY = -0.20f;
+            switch (f)
+            {
+                case PBEBattleFormat.Single:
+                case PBEBattleFormat.Double:
+                case PBEBattleFormat.Triple:
+                    foePos = new Vector3(0, floorY, -15); allyPos = new(0, floorY, 3); break;
+                case PBEBattleFormat.Rotation:
+                    foePos = new Vector3(0, floorY, -17.25f); allyPos = new(0, floorY, 8f); break;
+                default: throw new ArgumentOutOfRangeException(nameof(f));
+            }
+        }
+        private static bool TerrainHasTeamSpecificPlatforms(PBEBattleTerrain t)
+        {
+            switch (t)
             {
                 case PBEBattleTerrain.Cave:
                 case PBEBattleTerrain.Grass:
@@ -215,25 +134,31 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             return false;
         }
-        private static string GetTerrainName(PBEBattleTerrain terrain)
+        private static string GetTerrainName(PBEBattleTerrain t)
         {
-            switch (terrain)
+            switch (t)
             {
                 case PBEBattleTerrain.Cave: return "Cave";
                 case PBEBattleTerrain.Grass: return "Grass";
                 default: return "Dark";
             }
         }
-        private static void GetTerrainPath(PBEBattleTerrain terrain, out string bgPath, out string allyPlatformPath, out string foePlatformPath)
+        private static void GetTerrainPaths(PBEBattleTerrain t, bool rotation, out string bgPath, out string allyPlatformPath, out string foePlatformPath)
         {
-            string name = GetTerrainName(terrain);
-            bool specificPlat = TerrainHasSpecificPlatforms(terrain);
+            string name = GetTerrainName(t);
             bgPath = string.Format("BattleBG\\{0}\\{0}.dae", name);
+            if (rotation)
+            {
+                allyPlatformPath = foePlatformPath = @"BattleBG\PlatformRotation\Rotation.dae";
+                return;
+            }
+            // Load specific platforms for non-rotation battles
+            bool teamSpecificPlatforms = TerrainHasTeamSpecificPlatforms(t);
             string FormatPlatform(string team)
             {
                 return string.Format("BattleBG\\Platform{0}{1}\\{0}{1}.dae", name, team);
             }
-            if (specificPlat)
+            if (teamSpecificPlatforms)
             {
                 allyPlatformPath = FormatPlatform("Ally");
                 foePlatformPath = FormatPlatform("Foe");
@@ -248,65 +173,58 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public void InitFadeIn()
         {
-            OverworldGUI.UpdateDayTint(true); // Catch up time
+            _frameBuffer.Use();
+            DayTint.CatchUpTime = true;
             // Trainer sprite
             if (Battle.BattleType == PBEBattleType.Trainer)
             {
-                var img = new AnimatedImage(TrainerCore.GetTrainerClassAsset(_trainerClass), isPaused: true);
-                var sprite = new Sprite
-                {
-                    Image = img,
-                    //DrawMethod = Renderer.Sprite_DrawWithShadow,
-                    Pos = Pos2D.CenterXBottomY(0.73f, 0.51f, img.Size),
-                    Priority = int.MaxValue, // TODO: Make a textured plane as well
-                    Tag = SpriteData_TrainerGoAway.Tag
-                };
-                _sprites.Add(sprite);
+                InitTrainerSpriteAtBattleStart();
             }
-            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            _fadeTransition = new FadeFromColorTransition(1f, Colors.Black4);
             Game.Instance.SetCallback(CB_FadeInBattle);
+        }
+        private void InitTrainerSpriteAtBattleStart()
+        {
+            var img = new AnimatedImage(TrainerCore.GetTrainerClassAsset(_trainerClass), isPaused: true);
+            _trainerSprite = new BattleSprite(new Vector2(0.03660f, 0.04800f), new Vector3(0.75f, 0.25f, -12.0f), true) // Same as 1v1 foe pos
+            {
+                AnimImage = img,
+                MaskColor = Colors.Black3,
+                MaskColorAmt = 1f
+            };
+            var data = new TaskData_TrainerReveal();
+            _tasks.Add(Task_TrainerReveal, 0, data: data);
         }
         private void OnFadeInFinished()
         {
             if (Battle.BattleType == PBEBattleType.Trainer)
             {
-                ((AnimatedImage)_sprites.FirstWithTagOrDefault(SpriteData_TrainerGoAway.Tag).Image).IsPaused = false;
-                SetMessage(string.Format("You are challenged by {0}!", Battle.Teams[1].CombinedName), DestroyTrainerSpriteAndBegin);
+                SetMessage(string.Format("You are challenged by {0}!", Battle.Teams[1].CombinedName), InitTrainerSpriteFadeAwayAndBegin);
             }
             else
             {
                 Begin();
             }
         }
-        private void DestroyTrainerSpriteAndBegin()
+        private void InitTrainerSpriteFadeAwayAndBegin()
         {
-            Sprite s = _sprites.FirstWithTagOrDefault(SpriteData_TrainerGoAway.Tag);
-            s.Data = new SpriteData_TrainerGoAway(1_000, s.Pos.X);
-            s.Callback = Sprite_TrainerGoAway;
+            var data = new TaskData_TrainerGoAway(_trainerSprite.Pos.Z);
+            _tasks.Add(Task_TrainerGoAway, 0, data: data);
             Begin();
         }
 
-        public void SetMessageWindowVisibility(bool invisible)
+        private void SetMessageWindowVisibility(bool invisible)
         {
             _stringWindow.IsInvisible = invisible;
         }
 
-        private void RenderFading()
+        private void RenderBattle()
         {
-            RenderBattle();
-            _fadeTransition.Render();
-        }
-
-        public void RenderBattle()
-        {
-            // Tasks
-
             AnimatedImage.UpdateAll();
-            _sprites.DoCallbacks();
-            _renderTasks.RunTasks();
+
+            GL gl = Display.OpenGL;
 
             // 3D
-            GL gl = Display.OpenGL;
             gl.Enable(EnableCap.DepthTest);
             gl.Enable(EnableCap.Blend);
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
@@ -318,7 +236,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             // Set up shader
-            _shader.Use(gl);
+            _modelShader.Use(gl);
 
             uint ms = SDL2.SDL.SDL_GetTicks();
             float rad = ms % 5_000 / 5_000f * 360 * Utils.DegToRad;
@@ -327,18 +245,39 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _testLights[0].Pos.Z = MathF.Cos(rad) * 20 - 10;
             _testLights[1].Pos.X = MathF.Cos(rad * 2) * 20 - 6;
             _testLights[1].Pos.Z = MathF.Sin(rad * 2) * 20 - 6;
-            _shader.SetCamera(gl, _camera); // Set projection, view, and camera position
-            _shader.SetLights(gl, _testLights);
-            _shader.SetShineDamper(gl, 5f);
-            _shader.SetReflectivity(gl, 0f);
+            _modelShader.SetCamera(gl, _camera); // Set projection, view, and camera position
+            _modelShader.SetLights(gl, _testLights);
+            _modelShader.SetShineDamper(gl, 5f);
+            _modelShader.SetReflectivity(gl, 0f);
 
             // Draw models
             for (int i = 0; i < _models.Count; i++)
             {
                 Model m = _models[i];
-                _shader.SetTransform(gl, m.GetTransformation());
+                _modelShader.SetTransform(gl, m.GetTransformation());
 
-                m.Render(_shader);
+                m.Render(_modelShader);
+            }
+
+            // Draw battle sprites
+            _spriteShader.Use(gl);
+            gl.ActiveTexture(TextureUnit.Texture0);
+            Matrix4x4 view = _camera.CreateViewMatrix();
+            // Render trainer sprite if there is one
+            if (_trainerSprite is not null && _trainerSprite.IsVisible)
+            {
+                _trainerSprite.Render(gl, _spriteMesh, _spriteShader, _camera.Projection, view);
+            }
+            // Render pkmn
+            foreach (PkmnPosition[] ps in _positions)
+            {
+                foreach (PkmnPosition p in ps)
+                {
+                    if (p.Sprite.IsVisible)
+                    {
+                        p.Sprite.Render(gl, _spriteMesh, _spriteShader, _camera.Projection, view);
+                    }
+                }
             }
 
             gl.Disable(EnableCap.Blend);
@@ -347,17 +286,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             gl.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill); // Reset
 #endif
 
+            DayTint.Render(_dayTintFrameBuffer);
+
             // 2D HUD
 
-            _sprites.SortByPriority();
-            _sprites.DrawAll();
-
-            if (Overworld.ShouldRenderDayTint())
-            {
-                DayTint.Render();
-            }
-
-            void DoTeam(int i)
+            void RenderTeamInfo(int i)
             {
                 foreach (PkmnPosition p in _positions[i])
                 {
@@ -367,8 +300,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     }
                 }
             }
-            DoTeam(1);
-            DoTeam(0);
+            RenderTeamInfo(1);
+            RenderTeamInfo(0);
 
             if (_stringPrinter is not null)
             {
@@ -391,7 +324,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             return team.Id == 0 ? owner != 1 : owner == 1; // Spectators/replays view from team 0's perspective
         }
 
-        internal PkmnPosition GetPkmnPosition(PBEBattlePokemon pkmn, PBEFieldPosition position)
+        internal PkmnPosition GetPkmnPosition(PBEBattlePokemon pbePkmn, PBEFieldPosition position)
         {
             int i;
             switch (Battle.BattleFormat)
@@ -414,65 +347,82 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 default: throw new Exception();
             }
-            return _positions[pkmn.Team.Id][i];
+            return _positions[pbePkmn.Team.Id][i];
         }
-        private void UpdatePokemon(PBEBattlePokemon pkmn, PkmnPosition pos, bool info, bool sprite,
-            bool spriteImage, bool spriteImageIfSubstituted, bool spriteMini, bool spriteVisibility)
+        private void UpdatePokemon_Internal(PBEBattlePokemon pbePkmn, PkmnPosition pos, bool info = false,
+            bool spriteImage = false, bool spriteImageIfSubstituted = false, bool spriteMini = false, bool spriteVisibility = false, bool spriteColor = false)
         {
-            SpritedBattlePokemon sPkmn = SpritedParties[pkmn.Trainer.Id][pkmn];
+            BattlePokemon bPkmn = _parties[pbePkmn.Trainer.Id][pbePkmn];
             if (info)
             {
-                sPkmn.UpdateInfoBar();
+                bPkmn.UpdateInfoBar();
             }
-            if (sprite)
+            if (spriteImage || spriteMini || spriteVisibility || spriteColor)
             {
-                sPkmn.UpdateSprites(pos, spriteImage, spriteImageIfSubstituted, spriteMini, spriteVisibility);
+                bPkmn.UpdateVisuals(pos.Sprite, spriteImage, spriteImageIfSubstituted, spriteMini, spriteVisibility, spriteColor);
             }
-            pos.SPkmn = sPkmn;
+            pos.BattlePkmn = bPkmn;
         }
         // pkmn.FieldPosition must be updated before calling these
         private void ShowPokemon(PBEBattlePokemon pkmn)
         {
             PkmnPosition pos = GetPkmnPosition(pkmn, pkmn.FieldPosition);
-            UpdatePokemon(pkmn, pos, true, true, true, true, true, true);
+            UpdatePokemon_Internal(pkmn, pos,
+                info: true,
+                spriteImage: true, spriteImageIfSubstituted: true,
+                spriteMini: true,
+                spriteVisibility: true,
+                spriteColor: true);
+
             pos.InfoVisible = true;
-            pos.PkmnVisible = true;
-            pos.UpdateAnimationSpeed(pkmn);
+            pos.UpdateAnimationSpeed();
         }
         private void ShowWildPokemon(PBEBattlePokemon pkmn)
         {
             PkmnPosition pos = GetPkmnPosition(pkmn, pkmn.FieldPosition);
-            UpdatePokemon(pkmn, pos, true, false, false, false, false, false); // Only set the info to visible because the sprite is already loaded and visible
+            UpdatePokemon_Internal(pkmn, pos,
+                info: true); // Only update and set the info to visible because the sprite is already loaded and visible
+
             pos.InfoVisible = true;
         }
         private void HidePokemon(PBEBattlePokemon pkmn, PBEFieldPosition oldPosition)
         {
             PkmnPosition pos = GetPkmnPosition(pkmn, oldPosition);
-            var img = (AnimatedImage)pos.Sprite.Image;
             pos.InfoVisible = false;
-            pos.PkmnVisible = false;
-            img.IsPaused = true;
+            pos.Sprite.IsVisible = false;
+            pos.Sprite.AnimImage = null;
+            pos.BattlePkmn = null;
         }
-        private void UpdatePokemon(PBEBattlePokemon pkmn, bool info, bool sprite,
-            bool spriteImage, bool spriteImageIfSubstituted, bool spriteMini, bool spriteVisibility)
+        private void UpdatePokemon(PBEBattlePokemon pkmn, bool info = false,
+            bool spriteImg = false, bool spriteImgIfSubstituted = false, bool spriteMini = false, bool spriteVisibility = false, bool spriteColor = false)
         {
             PkmnPosition pos = GetPkmnPosition(pkmn, pkmn.FieldPosition);
-            UpdatePokemon(pkmn, pos, info, sprite, spriteImage, spriteImageIfSubstituted, spriteMini, spriteVisibility);
+            UpdatePokemon_Internal(pkmn, pos, info, spriteImg, spriteImgIfSubstituted, spriteMini, spriteVisibility, spriteColor);
         }
         private void MovePokemon(PBEBattlePokemon pkmn, PBEFieldPosition oldPosition)
         {
+            // Old pos
             PkmnPosition pos = GetPkmnPosition(pkmn, oldPosition);
             pos.InfoVisible = false;
-            pos.PkmnVisible = false;
+            pos.Sprite.IsVisible = false;
+            pos.Sprite.AnimImage = null;
+            pos.BattlePkmn = null;
+            // New pos
+            // Update sprite within new pos but not info since that's in the BattlePokemon
             pos = GetPkmnPosition(pkmn, pkmn.FieldPosition);
-            UpdatePokemon(pkmn, pos, true, true, true, true, true, true);
+            UpdatePokemon_Internal(pkmn, pos,
+                spriteImage: true, spriteImageIfSubstituted: true,
+                spriteMini: true,
+                spriteVisibility: true,
+                spriteColor: true);
+
             pos.InfoVisible = true;
-            pos.PkmnVisible = true;
+            pos.UpdateAnimationSpeed();
         }
         private void UpdateAnimationSpeed(PBEBattlePokemon pkmn)
         {
             PkmnPosition pos = GetPkmnPosition(pkmn, pkmn.FieldPosition);
-            pos.UpdateAnimationSpeed(pkmn);
+            pos.UpdateAnimationSpeed();
         }
     }
 }

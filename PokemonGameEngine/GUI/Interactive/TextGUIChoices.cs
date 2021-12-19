@@ -65,8 +65,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
 
         public override void Render()
         {
-            float y1 = Y * FrameBuffer.Current.Size.Height;
-            int x = Renderer.RelXToAbsX(X);
+            Size2D totalSize = FrameBuffer.Current.Size;
+            float y1 = Y * totalSize.Height;
+            int x = (int)(X * totalSize.Width);
             float y = y1;
             float space = Spacing;
             int count = _choices.Count;
@@ -142,21 +143,22 @@ namespace Kermalis.PokemonGameEngine.GUI.Interactive
             return s;
         }
 
-        public static void CreateStandardYesNoChoices(Action<bool> clickAction, out TextGUIChoices choices, out Window window, float x = 0.8f, float y = 0.4f)
+        public static void CreateStandardYesNoChoices(Action<bool> clickAction, Size2D totalSize, out TextGUIChoices choices, out Window window, float x = 0.8f, float y = 0.4f)
         {
             choices = new TextGUIChoices(0, 0, font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
             choices.AddOne("Yes", () => clickAction(true));
             choices.AddOne("No", () => clickAction(false));
             Size2D s = choices.GetSize();
-            window = new Window(new RelPos2D(x, y), s, Colors.White4);
+            window = new Window(Pos2D.FromRelative(x, y, totalSize), s, Colors.White4);
             choices.RenderChoicesOntoWindow(window);
         }
         public void RenderChoicesOntoWindow(Window window)
         {
-            window.Image.FrameBuffer.Push();
+            FrameBuffer oldFBO = FrameBuffer.Current;
+            window.Image.FrameBuffer.Use();
             window.ClearImagePushed();
             Render();
-            FrameBuffer.Pop();
+            oldFBO.Use();
         }
     }
 }
