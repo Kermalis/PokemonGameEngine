@@ -91,7 +91,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         {
             if (value)
             {
-                _fadeTransition = new FadeToColorTransition(1f, Colors.Black4);
+                _fadeTransition = new FadeToColorTransition(1f, Colors.Black3);
                 Game.Instance.SetCallback(CB_LearnMove_FadeToSummary);
             }
             else
@@ -214,7 +214,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             _stringPrinter.Delete();
             _stringPrinter = null;
-            _fadeTransition = new FadeToColorTransition(1f, Colors.V4FromRGB(200, 200, 200));
+            _fadeTransition = new FadeToColorTransition(1f, Colors.FromRGB(200, 200, 200));
             Game.Instance.SetCallback(CB_FadeWhiteToEvolution);
         }
         private void CB_FadeWhiteToEvolution()
@@ -242,7 +242,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             }
             _pkmn.Evolve(_evo);
             UpdatePkmnImage();
-            _fadeTransition = new FadeFromColorTransition(1f, Colors.V4FromRGB(200, 200, 200));
+            _fadeTransition = new FadeFromColorTransition(1f, Colors.FromRGB(200, 200, 200));
             Game.Instance.SetCallback(CB_FadeToEvolution);
         }
         private void CB_FadeToEvolution()

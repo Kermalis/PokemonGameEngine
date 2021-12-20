@@ -141,7 +141,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
             // Render to DayTint fbo
             dayTintFrameBuffer.Use();
-            SimpleRectMesh.Instance.Render();
+            EntireScreenMesh.Instance.Render();
 
             // Copy rendered result back to the previous fbo (its texture is still bound)
             gl.CopyTexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, 0, 0, c.Size.Width, c.Size.Height);

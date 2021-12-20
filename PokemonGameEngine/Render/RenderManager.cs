@@ -13,10 +13,11 @@ namespace Kermalis.PokemonGameEngine.Render
             // Init shader instances
             _ = new FontShader(gl);
             _ = new DayTintShader(gl);
+            _ = new FadeColorShader(gl);
 
             // Init other instances
             _ = new GUIRenderer(gl);
-            _ = new SimpleRectMesh(gl);
+            _ = new EntireScreenMesh(gl);
             Font.Init();
         }
     }

@@ -91,7 +91,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             _stringPrinter.Delete();
             _stringPrinter = null;
-            _fadeTransition = new FadeToColorTransition(1f, Colors.V4FromRGB(200, 200, 200));
+            _fadeTransition = new FadeToColorTransition(1f, Colors.FromRGB(200, 200, 200));
             Game.Instance.SetCallback(CB_FadeWhiteToHatch);
         }
         private void CB_FadeWhiteToHatch()
@@ -108,7 +108,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _fadeTransition = null;
             _pkmn.HatchEgg();
             UpdatePkmnImage();
-            _fadeTransition = new FadeFromColorTransition(1f, Colors.V4FromRGB(200, 200, 200));
+            _fadeTransition = new FadeFromColorTransition(1f, Colors.FromRGB(200, 200, 200));
             Game.Instance.SetCallback(CB_FadeToHatched);
         }
         private void CB_FadeToHatched()

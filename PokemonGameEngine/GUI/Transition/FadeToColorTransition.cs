@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.GUIs;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.Render.Shaders;
+using Silk.NET.OpenGL;
 using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
@@ -8,36 +9,51 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
     internal sealed class FadeToColorTransition : FadeColorTransition
     {
         private readonly float _duration;
-        private readonly Vector4 _color;
         private float _time;
 
-        public FadeToColorTransition(float seconds, in Vector4 color)
+        public FadeToColorTransition(float seconds, in Vector3 color)
         {
             _duration = seconds;
-            _color = color;
+
+            GL gl = Display.OpenGL;
+            FadeColorShader shader = FadeColorShader.Instance;
+            shader.Use(gl);
+            shader.SetColor(gl, color);
         }
 
         public static FadeToColorTransition ToBlackStandard()
         {
-            return new FadeToColorTransition(0.5f, Colors.Black4);
+            return new FadeToColorTransition(0.5f, Colors.Black3);
         }
 
         public override void Render()
         {
-            Vector4 c = _color;
-            if (!IsDone)
+            float progress;
+            if (IsDone)
+            {
+                progress = 1f;
+            }
+            else
             {
                 _time += Display.DeltaTime;
-                float progress = _time / _duration;
+                progress = _time / _duration;
                 if (progress >= 1f)
                 {
                     progress = 1f;
                     IsDone = true;
                 }
-
-                c.W = progress; // Set alpha
             }
-            GUIRenderer.Instance.FillRectangle(c, new Rect2D(new Pos2D(0, 0), FrameBuffer.Current.Size));
+
+            GL gl = Display.OpenGL;
+            FadeColorShader shader = FadeColorShader.Instance;
+            shader.Use(gl);
+            shader.SetProgress(gl, progress);
+
+            gl.Enable(EnableCap.Blend);
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            gl.BlendEquation(BlendEquationModeEXT.FuncAddExt);
+            EntireScreenMesh.Instance.Render();
+            gl.Disable(EnableCap.Blend);
         }
     }
 }

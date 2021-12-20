@@ -4,9 +4,9 @@ using System.Numerics;
 namespace Kermalis.PokemonGameEngine.Render.GUIs
 {
     /// <summary>A rect mesh that takes up the entire screen</summary>
-    internal sealed class SimpleRectMesh
+    internal sealed class EntireScreenMesh
     {
-        public static SimpleRectMesh Instance { get; private set; } = null!; // Set in RenderManager
+        public static EntireScreenMesh Instance { get; private set; } = null!; // Set in RenderManager
 
         private static readonly Vector2[] _vertices = new Vector2[4]
         {
@@ -19,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         private readonly uint _vao;
         private readonly uint _vbo;
 
-        public unsafe SimpleRectMesh(GL gl)
+        public unsafe EntireScreenMesh(GL gl)
         {
             Instance = this;
 

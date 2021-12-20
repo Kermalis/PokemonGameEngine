@@ -180,7 +180,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 InitTrainerSpriteAtBattleStart();
             }
-            _fadeTransition = new FadeFromColorTransition(1f, Colors.Black4);
+            _fadeTransition = new FadeFromColorTransition(1f, Colors.Black3);
             Game.Instance.SetCallback(CB_FadeInBattle);
         }
         private void InitTrainerSpriteAtBattleStart()
