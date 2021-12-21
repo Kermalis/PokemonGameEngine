@@ -203,7 +203,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             // EXP
             if (!_useKnownInfo)
             {
-                Renderer.EXP_SingleLine(lineStartX, 37, lineW, PBEPkmn.EXP, PBEPkmn.Level, PBEPkmn.Species, PBEPkmn.RevertForm);
+                Renderer.EXP_SingleLine(lineStartX, 37, lineW, PBEPkmn.EXP, PBEPkmn.Level, PBEPkmn.OriginalSpecies, PBEPkmn.RevertForm);
             }
 
             oldFBO.Use();
