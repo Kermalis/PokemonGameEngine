@@ -122,6 +122,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             // Will deduct reference on the old image
             sprite.UpdateImage(newImg);
+            UpdateAnimationSpeed(newImg);
         }
         private static bool ShouldBeVisible(bool substitute, PBEStatus2 status2)
         {
