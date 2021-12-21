@@ -74,7 +74,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
         }
 
-        private void UpdateMini()
+        public void UpdateMini()
         {
             Mini?.DeductReference(); // Will be null on creation
             Mini = PokemonImageLoader.GetMini(PBEPkmn.KnownSpecies, PBEPkmn.KnownForm, PBEPkmn.KnownGender, PBEPkmn.KnownShiny, PartyPkmn.IsEgg);

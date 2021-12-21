@@ -270,8 +270,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
                 case PBEPkmnSwitchOutPacket psop:
                 {
-                    PBEBattlePokemon pkmn = psop.PokemonTrainer.GetPokemon(psop.Pokemon);
-                    HidePokemon(pkmn, psop.OldPosition);
+                    PBEBattlePokemon pbePkmn = psop.PokemonTrainer.GetPokemon(psop.Pokemon);
+                    HidePokemon(pbePkmn, psop.OldPosition);
+                    BattlePokemon bPkmn = _parties[pbePkmn.Trainer.Id][pbePkmn];
+                    bPkmn.UpdateMini();
                     break;
                 }
                 case PBEWildPkmnAppearedPacket wpap:
