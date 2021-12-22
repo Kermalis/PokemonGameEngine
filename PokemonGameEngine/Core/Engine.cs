@@ -42,7 +42,7 @@ namespace Kermalis.PokemonGameEngine.Core
             Display.Init(); // Inits SDL
             SoundMixer.Init(); // Init SDL Audio
             InputManager.Init(); // Attach controller if there is one
-            AssetLoader.InitBattleEngine();
+            AssetLoader.InitBattleEngineProvider();
             RenderManager.Init();
             _ = new Game();
         }

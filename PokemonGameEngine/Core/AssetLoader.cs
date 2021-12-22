@@ -12,7 +12,7 @@ namespace Kermalis.PokemonGameEngine.Core
     {
         private const string AssetPath = "Assets";
 
-        public static void InitBattleEngine()
+        public static void InitBattleEngineProvider()
         {
             _ = new BattleEngineDataProvider(AssetPath);
         }
