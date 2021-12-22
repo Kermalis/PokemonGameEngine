@@ -1,5 +1,5 @@
-﻿using Kermalis.PokemonGameEngine.GUI;
-using Kermalis.PokemonGameEngine.Player;
+﻿using Kermalis.PokemonGameEngine.Player;
+using Kermalis.PokemonGameEngine.Render.World;
 #if DEBUG_CALLBACKS
 using Kermalis.PokemonGameEngine.Debug;
 using System.IO;

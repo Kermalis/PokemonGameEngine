@@ -1,7 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Player;
+using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Trainer;
 using Kermalis.PokemonGameEngine.World;
 

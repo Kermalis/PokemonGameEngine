@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using System.Collections.Generic;
 using System.Numerics;

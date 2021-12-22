@@ -1,5 +1,5 @@
-﻿using Kermalis.PokemonGameEngine.GUI;
-using Kermalis.PokemonGameEngine.Render;
+﻿using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
