@@ -16,7 +16,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             public const uint SizeOf = OffsetOfTexCoords + (2 * sizeof(float));
 
             public Pos2D Pos;
-            public RelPos2D TexCoords;
+            public Vector2 UV;
         }
         private struct QuadStruct
         {
@@ -83,13 +83,13 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         private unsafe void RenderOneTexture(GL gl, uint texture, Rect2D rect, AtlasPos texPos)
         {
             gl.BindTexture(TextureTarget.Texture2D, texture);
-            _texCache[0].TexCoords = texPos.Start;
+            _texCache[0].UV = texPos.Start;
             _texCache[0].Pos = rect.TopLeft;
-            _texCache[1].TexCoords = texPos.GetBottomLeft();
+            _texCache[1].UV = texPos.GetBottomLeft();
             _texCache[1].Pos = rect.GetExclusiveBottomLeft();
-            _texCache[2].TexCoords = texPos.GetTopRight();
+            _texCache[2].UV = texPos.GetTopRight();
             _texCache[2].Pos = rect.GetExclusiveTopRight();
-            _texCache[3].TexCoords = texPos.GetBottomRight();
+            _texCache[3].UV = texPos.GetBottomRight();
             _texCache[3].Pos = rect.GetExclusiveBottomRight();
             fixed (void* d = _texCache)
             {

@@ -48,14 +48,14 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 _nickname = new GUIString(p.PBEPkmn.KnownNickname, Font.Default, FontColors.DefaultWhite_I);
             }
 
-            public void Render(RelPos2D pos, bool selected)
+            public void Render(Vector2 pos, bool selected)
             {
                 Vector4 enabledC = _ally ? Colors.V4FromRGB(125, 100, 230) : Colors.V4FromRGB(248, 80, 50);
                 GUIRenderer.Instance.FillRectangle(enabledC, new Rect2D(pos.Absolute(_renderSize), Size2D.FromRelative(0.24f, 0.2f, _renderSize)));
 
                 if (_pkmn is not null)
                 {
-                    RelPos2D pos2 = pos;
+                    Vector2 pos2 = pos;
                     pos2.Y += 0.025f;
                     _pkmn.Mini.Render(pos2.Absolute(_renderSize));
 
@@ -765,13 +765,13 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             if (_centerTargetsVisible)
             {
-                _targetFoeCenter.Render(new RelPos2D(0.38f, 0.2f), _selection == TargetSelection.FoeCenter);
-                _targetAllyCenter.Render(new RelPos2D(0.38f, 0.6f), _selection == TargetSelection.AllyCenter);
+                _targetFoeCenter.Render(new Vector2(0.38f, 0.2f), _selection == TargetSelection.FoeCenter);
+                _targetAllyCenter.Render(new Vector2(0.38f, 0.6f), _selection == TargetSelection.AllyCenter);
             }
-            _targetFoeRight.Render(new RelPos2D(0.07f, 0.2f), _selection == TargetSelection.FoeRight);
-            _targetFoeLeft.Render(new RelPos2D(0.69f, 0.2f), _selection == TargetSelection.FoeLeft);
-            _targetAllyLeft.Render(new RelPos2D(0.07f, 0.6f), _selection == TargetSelection.AllyLeft);
-            _targetAllyRight.Render(new RelPos2D(0.69f, 0.6f), _selection == TargetSelection.AllyRight);
+            _targetFoeRight.Render(new Vector2(0.07f, 0.2f), _selection == TargetSelection.FoeRight);
+            _targetFoeLeft.Render(new Vector2(0.69f, 0.2f), _selection == TargetSelection.FoeLeft);
+            _targetAllyLeft.Render(new Vector2(0.07f, 0.6f), _selection == TargetSelection.AllyLeft);
+            _targetAllyRight.Render(new Vector2(0.69f, 0.6f), _selection == TargetSelection.AllyRight);
 
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(50, 50, 50), new Rect2D(Pos2D.FromRelative(0.45f, 0.9f, _renderSize), Size2D.FromRelative(0.1f, 0.1f, _renderSize))); // Back
             _backText.Render();

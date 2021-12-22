@@ -1,9 +1,11 @@
-﻿namespace Kermalis.PokemonGameEngine.Render
+﻿using System.Numerics;
+
+namespace Kermalis.PokemonGameEngine.Render
 {
     internal struct AtlasPos
     {
-        public readonly RelPos2D Start;
-        public readonly RelPos2D End;
+        public readonly Vector2 Start;
+        public readonly Vector2 End;
 
         public AtlasPos(bool xFlip, bool yFlip)
         {
@@ -20,17 +22,17 @@
             End.Y = (float)(yFlip ? rect.TopLeft.Y : rect.GetExclusiveBottom()) / atlasSize.Height;
         }
 
-        public RelPos2D GetBottomLeft()
+        public Vector2 GetBottomLeft()
         {
-            return new RelPos2D(Start.X, End.Y);
+            return new Vector2(Start.X, End.Y);
         }
-        public RelPos2D GetTopRight()
+        public Vector2 GetTopRight()
         {
-            return new RelPos2D(End.X, Start.Y);
+            return new Vector2(End.X, Start.Y);
         }
-        public RelPos2D GetBottomRight()
+        public Vector2 GetBottomRight()
         {
-            return new RelPos2D(End.X, End.Y);
+            return new Vector2(End.X, End.Y);
         }
 
 #if DEBUG

@@ -1,4 +1,5 @@
 ﻿using Silk.NET.OpenGL;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.OpenGL
 {
@@ -9,12 +10,12 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
         public const uint SizeOf = OffsetOfTexCoords + (2 * sizeof(float));
 
         public readonly Pos2D Pos;
-        public readonly RelPos2D TexCoords;
+        public readonly Vector2 UV;
 
-        public TexVertex(Pos2D pos, RelPos2D tex)
+        public TexVertex(Pos2D pos, Vector2 uv)
         {
             Pos = pos;
-            TexCoords = tex;
+            UV = uv;
         }
     }
 

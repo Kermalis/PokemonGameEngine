@@ -107,28 +107,4 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 #endif
     }
-
-    internal struct RelPos2D
-    {
-        public float X;
-        public float Y;
-
-        public RelPos2D(float x, float y)
-        {
-            X = x;
-            Y = y;
-        }
-
-        public Pos2D Absolute(Size2D totalSize)
-        {
-            return Pos2D.FromRelative(X, Y, totalSize);
-        }
-
-#if DEBUG
-        public override string ToString()
-        {
-            return string.Format("[X: {0}, Y: {1}]", X, Y);
-        }
-#endif
-    }
 }

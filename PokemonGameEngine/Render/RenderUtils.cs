@@ -23,6 +23,11 @@ namespace Kermalis.PokemonGameEngine.Render
             return (int)((uint)(dstSize * pos) - srcSize);
         }
 
+        public static Pos2D Absolute(this Vector2 v, Size2D totalSize)
+        {
+            return Pos2D.FromRelative(v.X, v.Y, totalSize);
+        }
+
         public static void ClearColor(this GL gl, in Vector3 color)
         {
             gl.ClearColor(color.X, color.Y, color.Z, 1f);
