@@ -5,6 +5,7 @@ using Kermalis.PokemonGameEngine.Sound;
 using SDL2;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
@@ -39,8 +40,9 @@ namespace Kermalis.PokemonGameEngine.Core
         // Initializes the first callback, the window, and instances
         private static void Init()
         {
-            Display.Init(); // Inits SDL
-            SoundMixer.Init(); // Init SDL Audio
+            RuntimeHelpers.RunClassConstructor(typeof(Display).TypeHandle); // Inits Display static constructor & SDL
+            RuntimeHelpers.RunClassConstructor(typeof(SoundMixer).TypeHandle); // Init SoundMixer static constructor & SDL Audio
+            RuntimeHelpers.RunClassConstructor(typeof(AssimpLoader).TypeHandle); // Init AssimpLoader static constructor
             InputManager.Init(); // Attach controller if there is one
             AssetLoader.InitBattleEngineProvider();
             RenderManager.Init();

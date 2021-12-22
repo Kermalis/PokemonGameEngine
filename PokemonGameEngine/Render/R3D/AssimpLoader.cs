@@ -29,7 +29,12 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
     }
     internal unsafe static class AssimpLoader
     {
-        private static readonly Assimp _assimp = Assimp.GetApi();
+        private static readonly Assimp _assimp;
+
+        static AssimpLoader()
+        {
+            _assimp = Assimp.GetApi();
+        }
 
         public static List<Mesh> ImportModel(string asset)
         {

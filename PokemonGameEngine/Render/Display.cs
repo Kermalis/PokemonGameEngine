@@ -18,14 +18,14 @@ namespace Kermalis.PokemonGameEngine.Render
         private const string SCREENSHOT_PATH = @"Screenshots";
         private static readonly bool _screenshotScreenSize = false;
 
-        private static IntPtr _window;
-        private static IntPtr _gl;
+        private static readonly IntPtr _window;
+        private static readonly IntPtr _gl;
 
-        public static GL OpenGL;
+        public static readonly GL OpenGL;
         public static float DeltaTime;
         public static bool ScreenshotRequested;
 
-        public static void Init()
+        static Display()
         {
             // SDL 2
             if (SDL.SDL_Init(SDL.SDL_INIT_AUDIO | SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_GAMECONTROLLER) != 0)

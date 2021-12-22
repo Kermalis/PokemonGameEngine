@@ -10,16 +10,16 @@ namespace Kermalis.PokemonGameEngine.Sound
         private const int SampleRate = 48000;
         public const float SampleRateReciprocal = 1f / SampleRate;
 
-        private static uint _audioDevice;
-        private static SDL.SDL_AudioSpec _audioSpec;
-        private static float[] _buffer;
-        private static float[] _tempBuffer;
+        private static readonly uint _audioDevice;
+        private static readonly SDL.SDL_AudioSpec _audioSpec;
+        private static readonly float[] _buffer;
+        private static readonly float[] _tempBuffer;
 
         private static SoundChannel _channelList;
         private static DateTime _lastRenderTime;
         public static float DeltaTime;
 
-        public static void Init()
+        static SoundMixer()
         {
             var spec = new SDL.SDL_AudioSpec();
             spec.freq = SampleRate;
