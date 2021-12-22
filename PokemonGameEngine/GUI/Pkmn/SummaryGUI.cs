@@ -60,7 +60,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private readonly PBEMove _learningMove;
         private short _moveSelection;
 
-        private FadeColorTransition _fadeTransition;
+        private ITransition _transition;
         private Action _onClosed;
 
         private AnimatedImage _pkmnImage;
@@ -105,43 +105,44 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             _onClosed = onClosed;
 
-            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeInSummary);
         }
 
         private void SetExitFadeOutCallback()
         {
-            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutSummary);
         }
 
         private void CB_FadeInSummary()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             PlayPkmnCry();
             SetProperCallback();
         }
         private void CB_FadeOutSummary()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
             _pageImage.DeductReference();
             _pkmnImage.DeductReference();
             _frameBuffer.Delete();

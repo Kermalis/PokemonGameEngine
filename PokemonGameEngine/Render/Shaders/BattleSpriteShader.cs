@@ -16,6 +16,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
 
         private readonly int _lMaskColor;
         private readonly int _lMaskColorAmt;
+        private readonly int _lPixelateAmt;
 
         public BattleSpriteShader(GL gl)
             : base(gl, VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
@@ -28,6 +29,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
 
             _lMaskColor = GetUniformLocation(gl, "maskColor");
             _lMaskColorAmt = GetUniformLocation(gl, "maskColorAmt");
+            _lPixelateAmt = GetUniformLocation(gl, "pixelateAmt");
 
             Use(gl);
             gl.Uniform1(_lImgTexture, 0); // Set texture unit now
@@ -49,6 +51,10 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
         public void SetMaskColorAmt(GL gl, float amt)
         {
             gl.Uniform1(_lMaskColorAmt, amt);
+        }
+        public void SetPixelateAmt(GL gl, float amt)
+        {
+            gl.Uniform1(_lPixelateAmt, amt);
         }
     }
 }

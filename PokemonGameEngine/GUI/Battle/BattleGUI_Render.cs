@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private readonly FrameBuffer _frameBuffer;
         private readonly FrameBuffer _dayTintFrameBuffer;
 
-        private FadeColorTransition _fadeTransition;
+        private ITransition _transition;
 
         private readonly PkmnPosition[][] _positions;
         private readonly BattlePokemonParty[] _parties;
@@ -49,13 +49,13 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private BattleGUI(PBEBattle battle, IReadOnlyList<Party> trainerParties)
         {
             Battle = battle;
-            Trainer = battle.Trainers[0]; // Set before ShouldUseKnownInfo()
+            _trainer = battle.Trainers[0]; // Set before ShouldUseKnownInfo()
             _positions = PkmnPosition.CreatePositions(battle.BattleFormat);
             _parties = new BattlePokemonParty[battle.Trainers.Count];
             for (int i = 0; i < battle.Trainers.Count; i++)
             {
                 PBETrainer trainer = battle.Trainers[i];
-                _parties[i] = new BattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team), ShouldUseKnownInfo(trainer), this);
+                _parties[i] = new BattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team.Id), ShouldUseKnownInfo(trainer), this);
             }
 
             // Projection matrix used in BW2 battles:
@@ -180,7 +180,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 InitTrainerSpriteAtBattleStart();
             }
-            _fadeTransition = new FadeFromColorTransition(1f, Colors.Black3);
+            _transition = new FadeFromColorTransition(1f, Colors.Black3);
             Game.Instance.SetCallback(CB_FadeInBattle);
         }
         private void InitTrainerSpriteAtBattleStart()
@@ -216,6 +216,42 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         private void SetMessageWindowVisibility(bool invisible)
         {
             _stringWindow.IsInvisible = invisible;
+        }
+
+        private bool ShouldUseKnownInfo(PBETrainer trainer)
+        {
+            const bool HIDE_NON_OWNED = true;
+            return trainer != _trainer && HIDE_NON_OWNED;
+        }
+        private bool IsBackImage(byte teamId)
+        {
+            byte? owner = _trainer?.Team.Id;
+            return teamId == 0 ? owner != 1 : owner == 1; // Spectators/replays view from team 0's perspective
+        }
+        public PkmnPosition GetPkmnPosition(byte teamId, PBEFieldPosition position)
+        {
+            int i;
+            switch (Battle.BattleFormat)
+            {
+                case PBEBattleFormat.Single:
+                {
+                    i = 0;
+                    break;
+                }
+                case PBEBattleFormat.Double:
+                {
+                    i = position == PBEFieldPosition.Left ? 0 : 1;
+                    break;
+                }
+                case PBEBattleFormat.Triple:
+                case PBEBattleFormat.Rotation:
+                {
+                    i = position == PBEFieldPosition.Left ? 0 : position == PBEFieldPosition.Center ? 1 : 2;
+                    break;
+                }
+                default: throw new Exception();
+            }
+            return _positions[teamId][i];
         }
 
         private void RenderBattle()
@@ -311,118 +347,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 #if DEBUG_BATTLE_CAMERAPOS
             _camera.PR.Debug_RenderPosition();
 #endif
-        }
-
-        private bool ShouldUseKnownInfo(PBETrainer trainer)
-        {
-            const bool hideNonOwned = true;
-            return trainer != Trainer && hideNonOwned;
-        }
-        private bool IsBackImage(PBETeam team)
-        {
-            byte? owner = Trainer?.Team.Id;
-            return team.Id == 0 ? owner != 1 : owner == 1; // Spectators/replays view from team 0's perspective
-        }
-
-        internal PkmnPosition GetPkmnPosition(PBEBattlePokemon pbePkmn, PBEFieldPosition position)
-        {
-            int i;
-            switch (Battle.BattleFormat)
-            {
-                case PBEBattleFormat.Single:
-                {
-                    i = 0;
-                    break;
-                }
-                case PBEBattleFormat.Double:
-                {
-                    i = position == PBEFieldPosition.Left ? 0 : 1;
-                    break;
-                }
-                case PBEBattleFormat.Triple:
-                case PBEBattleFormat.Rotation:
-                {
-                    i = position == PBEFieldPosition.Left ? 0 : position == PBEFieldPosition.Center ? 1 : 2;
-                    break;
-                }
-                default: throw new Exception();
-            }
-            return _positions[pbePkmn.Team.Id][i];
-        }
-        private void UpdatePokemon_Internal(PBEBattlePokemon pbePkmn, PkmnPosition pos, bool info = false,
-            bool spriteImage = false, bool spriteImageIfSubstituted = false, bool spriteMini = false, bool spriteVisibility = false, bool spriteColor = false)
-        {
-            BattlePokemon bPkmn = _parties[pbePkmn.Trainer.Id][pbePkmn];
-            if (info)
-            {
-                bPkmn.UpdateInfoBar();
-            }
-            if (spriteImage || spriteMini || spriteVisibility || spriteColor)
-            {
-                bPkmn.UpdateVisuals(pos.Sprite, spriteImage, spriteImageIfSubstituted, spriteMini, spriteVisibility, spriteColor);
-            }
-            pos.BattlePkmn = bPkmn;
-        }
-        // pkmn.FieldPosition must be updated before calling these
-        private void ShowPokemon(PBEBattlePokemon pkmn)
-        {
-            PkmnPosition pos = GetPkmnPosition(pkmn, pkmn.FieldPosition);
-            UpdatePokemon_Internal(pkmn, pos,
-                info: true,
-                spriteImage: true, spriteImageIfSubstituted: true,
-                spriteMini: true,
-                spriteVisibility: true,
-                spriteColor: true);
-
-            pos.InfoVisible = true;
-            pos.UpdateAnimationSpeed();
-        }
-        private void ShowWildPokemon(PBEBattlePokemon pkmn)
-        {
-            PkmnPosition pos = GetPkmnPosition(pkmn, pkmn.FieldPosition);
-            UpdatePokemon_Internal(pkmn, pos,
-                info: true); // Only update and set the info to visible because the sprite is already loaded and visible
-
-            pos.InfoVisible = true;
-        }
-        private void HidePokemon(PBEBattlePokemon pkmn, PBEFieldPosition oldPosition)
-        {
-            PkmnPosition pos = GetPkmnPosition(pkmn, oldPosition);
-            pos.InfoVisible = false;
-            pos.Sprite.IsVisible = false;
-            pos.Sprite.AnimImage = null;
-            pos.BattlePkmn = null;
-        }
-        private void UpdatePokemon(PBEBattlePokemon pkmn, bool info = false,
-            bool spriteImg = false, bool spriteImgIfSubstituted = false, bool spriteMini = false, bool spriteVisibility = false, bool spriteColor = false)
-        {
-            PkmnPosition pos = GetPkmnPosition(pkmn, pkmn.FieldPosition);
-            UpdatePokemon_Internal(pkmn, pos, info, spriteImg, spriteImgIfSubstituted, spriteMini, spriteVisibility, spriteColor);
-        }
-        private void MovePokemon(PBEBattlePokemon pkmn, PBEFieldPosition oldPosition)
-        {
-            // Old pos
-            PkmnPosition pos = GetPkmnPosition(pkmn, oldPosition);
-            pos.InfoVisible = false;
-            pos.Sprite.IsVisible = false;
-            pos.Sprite.AnimImage = null;
-            pos.BattlePkmn = null;
-            // New pos
-            // Update sprite within new pos but not info since that's in the BattlePokemon
-            pos = GetPkmnPosition(pkmn, pkmn.FieldPosition);
-            UpdatePokemon_Internal(pkmn, pos,
-                spriteImage: true, spriteImageIfSubstituted: true,
-                spriteMini: true,
-                spriteVisibility: true,
-                spriteColor: true);
-
-            pos.InfoVisible = true;
-            pos.UpdateAnimationSpeed();
-        }
-        private void UpdateAnimationSpeed(PBEBattlePokemon pkmn)
-        {
-            PkmnPosition pos = GetPkmnPosition(pkmn, pkmn.FieldPosition);
-            pos.UpdateAnimationSpeed();
         }
     }
 }

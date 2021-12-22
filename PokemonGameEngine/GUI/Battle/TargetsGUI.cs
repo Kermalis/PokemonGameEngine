@@ -105,7 +105,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private readonly GUIString _backText;
 
-        public TargetsGUI(PBEBattlePokemon pkmn, PBEMoveTarget possibleTargets, PBEMove move, BattlePokemonParty[] parties,
+        public TargetsGUI(PBEBattlePokemon pkmn, PBEMoveTarget possibleTargets, PBEMove move,
             Action selectAction, Action cancelAction)
         {
             BattlePokemon GetBattleMon(bool ally, PBEFieldPosition pos)
@@ -113,7 +113,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 PBETeam deTeem = ally ? pkmn.Trainer.Team : pkmn.Trainer.Team.OpposingTeam;
                 if (deTeem.TryGetPokemon(pos, out PBEBattlePokemon dePokeMone))
                 {
-                    return parties[dePokeMone.Trainer.Id][dePokeMone];
+                    return BattleGUI.Instance.GetBattlePokemon(dePokeMone);
                 }
                 return null; // Return null because it'll be disabled anyway
             }

@@ -70,7 +70,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private readonly List<PartyGUIMember> _members;
         private readonly SpriteList _sprites;
 
-        private FadeColorTransition _fadeTransition;
+        private ITransition _transition;
         private Action _onClosed;
         private int _selectionForSummary;
 
@@ -129,35 +129,36 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             _onClosed = onClosed;
 
-            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeInParty);
         }
 
         private void ClosePartyMenu()
         {
-            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutParty);
         }
         private void OnSummaryClosed()
         {
             _frameBuffer.Use();
             _textChoicesWindow.IsInvisible = false;
-            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeInThenGoToChoicesCB);
         }
 
         private void CB_FadeInParty()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             if (_mode == Mode.BattleReplace)
             {
                 BattleGUI.Instance.SwitchesBuilder.SwitchesLoop(); // Init switches loop
@@ -170,15 +171,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void CB_FadeOutParty()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
             foreach (PartyGUIMember m in _members)
             {
                 m.Delete();
@@ -194,29 +195,31 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void CB_FadeInThenGoToChoicesCB()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             Game.Instance.SetCallback(CB_Choices);
         }
         private void CB_FadeOutToSummary()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             _textChoicesWindow.IsInvisible = true;
             if (_useGamePartyData)
             {
@@ -289,10 +292,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void SetBattleReplacementMessage()
         {
             SetMessage(string.Format("You must send in {0} Pokémon.", BattleGUI.Instance.SwitchesBuilder.GetNumRemaining()));
-        }
-        private static bool CanUsePositionForBattle(PBEFieldPosition pos)
-        {
-            return !BattleGUI.Instance.SwitchesBuilder.IsStandBy(pos) && BattleGUI.Instance.Trainer.OwnsSpot(pos) && !BattleGUI.Instance.Trainer.Team.IsSpotOccupied(pos);
         }
         private void SelectForBattleReplacement(PBEBattlePokemon pkmn, PBEFieldPosition pos)
         {
@@ -411,7 +410,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                 {
                     BattlePokemonParty party = _battleParty.Party;
                     PBEBattlePokemon p = party.PBEParty[index];
-                    switch (BattleGUI.Instance.Battle.BattleFormat)
+                    BattleGUI bg = BattleGUI.Instance;
+                    switch (bg.Battle.BattleFormat)
                     {
                         case PBEBattleFormat.Single:
                         {
@@ -420,8 +420,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                         }
                         case PBEBattleFormat.Double:
                         {
-                            bool left = CanUsePositionForBattle(PBEFieldPosition.Left);
-                            bool right = CanUsePositionForBattle(PBEFieldPosition.Right);
+                            bool left = bg.CanUsePositionForBattleReplacement(PBEFieldPosition.Left);
+                            bool right = bg.CanUsePositionForBattleReplacement(PBEFieldPosition.Right);
                             if (left && !right)
                             {
                                 SelectForBattleReplacement(p, PBEFieldPosition.Left);
@@ -438,9 +438,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
                         case PBEBattleFormat.Triple:
                         case PBEBattleFormat.Rotation:
                         {
-                            bool left = CanUsePositionForBattle(PBEFieldPosition.Left);
-                            bool center = CanUsePositionForBattle(PBEFieldPosition.Center);
-                            bool right = CanUsePositionForBattle(PBEFieldPosition.Right);
+                            bool left = bg.CanUsePositionForBattleReplacement(PBEFieldPosition.Left);
+                            bool center = bg.CanUsePositionForBattleReplacement(PBEFieldPosition.Center);
+                            bool right = bg.CanUsePositionForBattleReplacement(PBEFieldPosition.Right);
                             if (left && !center && !right)
                             {
                                 SelectForBattleReplacement(p, PBEFieldPosition.Left);
@@ -468,7 +468,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void Action_BringUpSummary(int index)
         {
             _selectionForSummary = index;
-            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutToSummary);
         }
 

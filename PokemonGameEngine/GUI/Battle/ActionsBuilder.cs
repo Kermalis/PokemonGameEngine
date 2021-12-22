@@ -14,11 +14,9 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public ActionsBuilder(PBETrainer trainer)
         {
-            BattleGUI.Instance.ActionsBuilder = this; // Set here so it's set before the constructor ends
             _pkmn = trainer.ActiveBattlersOrdered.ToArray();
             _actions = new PBETurnAction[_pkmn.Length];
             _standBy = new PBEBattlePokemon[_pkmn.Length];
-            ActionsLoop();
         }
 
         public bool IsStandBy(PBEBattlePokemon p)
@@ -63,17 +61,15 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             ActionsLoop();
         }
 
-        private void ActionsLoop()
+        public void ActionsLoop()
         {
-            BattleGUI bg = BattleGUI.Instance;
             if (_index == _pkmn.Length)
             {
-                bg.ActionsBuilder = null;
-                bg.SubmitActions(_actions);
+                BattleGUI.Instance.SubmitActions(_actions);
             }
             else
             {
-                bg.NextAction(_index, _pkmn[_index]);
+                BattleGUI.Instance.NextAction(_index, _pkmn[_index]);
             }
         }
     }

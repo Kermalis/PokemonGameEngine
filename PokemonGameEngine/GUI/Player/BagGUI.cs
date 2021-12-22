@@ -20,7 +20,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
 
         private readonly Inventory<InventorySlotNew> _inv;
 
-        private FadeColorTransition _fadeTransition;
+        private ITransition _transition;
         private Action _onClosed;
 
         private bool _isOnParty = false;
@@ -54,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
 
             _onClosed = onClosed;
 
-            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeInBag);
         }
 
@@ -81,36 +81,37 @@ namespace Kermalis.PokemonGameEngine.GUI.Player
 
         private void SetExitFadeOutCallback()
         {
-            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutBag);
         }
 
         private void CB_FadeInBag()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             Game.Instance.SetCallback(CB_HandleInputs);
         }
         private void CB_FadeOutBag()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
             _partyChoices.Dispose();
             _bagText.Delete();
             _curPouchName.Delete();

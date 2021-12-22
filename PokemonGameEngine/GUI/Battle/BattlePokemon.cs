@@ -15,51 +15,70 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
     {
         public PartyPokemon PartyPkmn { get; }
         public PBEBattlePokemon PBEPkmn { get; }
-        public uint DisguisedPID { get; set; }
-        public Image Mini { get; private set; }
-        public WriteableImage InfoBarImg { get; }
+        public BattlePokemonParty BParty { get; }
         private readonly bool _useBackImage;
         private readonly bool _useKnownInfo;
 
-        private BattlePokemon(PBEBattlePokemon pbePkmn, PartyPokemon pPkmn, bool backImage, bool useKnownInfo)
+        public uint DisguisedPID { get; private set; }
+        public Image Mini { get; private set; }
+        public WriteableImage InfoBarImg { get; }
+        public PkmnPosition Pos { get; private set; }
+
+        private BattlePokemon(PBEBattlePokemon pbePkmn, PartyPokemon pPkmn, BattlePokemonParty bParty, bool backImage, bool useKnownInfo)
         {
             PartyPkmn = pPkmn;
             PBEPkmn = pbePkmn;
-            DisguisedPID = pPkmn.PID; // By default, use our own PID (for example, wild disguised pkmn)
+            BParty = bParty;
             _useBackImage = backImage;
             _useKnownInfo = useKnownInfo;
+
+            DisguisedPID = pPkmn.PID; // By default, use our own PID (for example, wild disguised pkmn)
+            UpdateMini();
             InfoBarImg = new WriteableImage(new Size2D(100, useKnownInfo ? 30u : 42));
             UpdateInfoBar();
-            UpdateMini();
         }
 
-        public static BattlePokemon CreateForTrainerMon(PBEBattlePokemon pbePkmn, PartyPokemon pPkmn, bool backImage, bool useKnownInfo)
+        public static BattlePokemon CreateForTrainerMon(PBEBattlePokemon pbePkmn, PartyPokemon pPkmn, BattlePokemonParty bParty, bool backImage, bool useKnownInfo)
         {
-            return new BattlePokemon(pbePkmn, pPkmn, backImage, useKnownInfo);
+            return new BattlePokemon(pbePkmn, pPkmn, bParty, backImage, useKnownInfo);
         }
-        public static BattlePokemon CreateForWildMon(PBEBattlePokemon pbePkmn, PartyPokemon pPkmn, bool backImage, bool useKnownInfo, PkmnPosition wildPos)
+        public static BattlePokemon CreateForWildMon(PBEBattlePokemon pbePkmn, PartyPokemon pPkmn, BattlePokemonParty bParty, bool backImage, bool useKnownInfo, PkmnPosition wildPos)
         {
-            var bPkmn = new BattlePokemon(pbePkmn, pPkmn, backImage, useKnownInfo);
-            bPkmn.UpdateVisuals(wildPos.Sprite, true, true, false, true, true); // wildPos has the pkmn already set up so we need to set the img (mini was updated in constructor)
-            wildPos.BattlePkmn = bPkmn;
-            bPkmn.UpdateAnimationSpeed(wildPos.Sprite.AnimImage); // Ensure the proper speed is set upon entering battle (roamers can be low hp or have status, for example)
+            // wildPos has the pkmn already set up so we need to set the img (mini was updated in constructor)
+            // The proper animation speed is set by UpdateSprite() upon entering battle (roamers can be low hp or have status, for example)
+            var bPkmn = new BattlePokemon(pbePkmn, pPkmn, bParty, backImage, useKnownInfo);
+            bPkmn.AttachPos(wildPos);
+            bPkmn.UpdateSprite(img: true, imgIfSubstituted: true, visibility: true, color: true);
             return bPkmn;
         }
 
-        public void UpdateDisguisedPID(BattlePokemonParty bParty)
+        public void AttachPos(PkmnPosition pos)
+        {
+            Pos = pos;
+            pos.BattlePkmn = this;
+        }
+        public PkmnPosition DetachPos()
+        {
+            PkmnPosition oldPos = Pos;
+            Pos.BattlePkmn = null;
+            Pos = null;
+            return oldPos;
+        }
+
+        public void UpdateDisguisedPID()
         {
             if (PBEPkmn.Status2.HasFlag(PBEStatus2.Disguised))
             {
-                PBEBattlePokemon p = PBEPkmn.GetPkmnWouldDisguiseAs();
-                DisguisedPID = p is null ? PartyPkmn.PID : bParty[p].PartyPkmn.PID;
+                DisguisedPID = BParty[PBEPkmn.GetPkmnWouldDisguiseAs()].PartyPkmn.PID;
             }
             else
             {
                 DisguisedPID = PartyPkmn.PID; // Set back to normal
             }
         }
-        public void UpdateAnimationSpeed(AnimatedImage animImg)
+        public void UpdateAnimationSpeed()
         {
+            AnimatedImage animImg = Pos.Sprite.AnimImage;
             PBEBattlePokemon pkmn = PBEPkmn;
             PBEStatus1 s = pkmn.Status1;
             if (s == PBEStatus1.Frozen)
@@ -73,38 +92,32 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 animImg.IsPaused = false;
             }
         }
-
         public void UpdateMini()
         {
             Mini?.DeductReference(); // Will be null on creation
             Mini = PokemonImageLoader.GetMini(PBEPkmn.KnownSpecies, PBEPkmn.KnownForm, PBEPkmn.KnownGender, PBEPkmn.KnownShiny, PartyPkmn.IsEgg);
         }
 
-        public void UpdateVisuals(BattleSprite sprite, bool spriteImg, bool spriteImgIfSubstituted, bool mini, bool visibility, bool color)
+        public void UpdateSprite(bool img = false, bool imgIfSubstituted = false, bool visibility = false, bool color = false)
         {
-            if (mini)
-            {
-                UpdateMini();
-            }
-
             PBEStatus2 status2 = _useKnownInfo ? PBEPkmn.KnownStatus2 : PBEPkmn.Status2;
             bool substitute = status2.HasFlag(PBEStatus2.Substitute);
-            if (spriteImg)
+            if (img)
             {
-                UpdateImageIfRequired(sprite, substitute, status2, spriteImgIfSubstituted);
+                UpdateImageIfRequired(substitute, status2, imgIfSubstituted);
             }
 
             if (visibility)
             {
-                sprite.IsVisible = ShouldBeVisible(substitute, status2);
+                Pos.Sprite.IsVisible = ShouldBeVisible(substitute, status2);
             }
 
             if (color)
             {
-                UpdateMaskColor(sprite, substitute, PBEPkmn.Status1);
+                UpdateMaskColor(substitute, PBEPkmn.Status1);
             }
         }
-        private void UpdateImageIfRequired(BattleSprite sprite, bool substitute, PBEStatus2 status2, bool spriteImgIfSubstituted)
+        private void UpdateImageIfRequired(bool substitute, PBEStatus2 status2, bool spriteImgIfSubstituted)
         {
             AnimatedImage newImg;
             if (substitute)
@@ -121,8 +134,8 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     status2.HasFlag(PBEStatus2.Disguised) ? DisguisedPID : PartyPkmn.PID, _useBackImage);
             }
             // Will deduct reference on the old image
-            sprite.UpdateImage(newImg);
-            UpdateAnimationSpeed(newImg);
+            Pos.Sprite.UpdateImage(newImg);
+            UpdateAnimationSpeed(); // Doesn't matter what speed the substitute is at since it's not animated
         }
         private static bool ShouldBeVisible(bool substitute, PBEStatus2 status2)
         {
@@ -139,7 +152,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             return true; // Visible
         }
-        private static void UpdateMaskColor(BattleSprite sprite, bool substitute, PBEStatus1 status1)
+        private void UpdateMaskColor(bool substitute, PBEStatus1 status1)
         {
             Vector3? color = null;
             bool animateIt = false;
@@ -155,6 +168,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 }
             }
 
+            BattleSprite sprite = Pos.Sprite;
+            if (sprite.MaskColor == color && sprite.AnimateMaskColor == animateIt)
+            {
+                return; // If it's already set, don't restart the animation
+            }
             sprite.MaskColor = color;
             sprite.AnimateMaskColor = animateIt;
             sprite.MaskColorAmt = !animateIt && color is not null ? BattleSprite.MASK_COLOR_AMPLITUDE : 0f;

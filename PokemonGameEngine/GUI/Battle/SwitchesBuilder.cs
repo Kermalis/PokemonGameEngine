@@ -15,7 +15,6 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public SwitchesBuilder(byte amount)
         {
-            BattleGUI.Instance.SwitchesBuilder = this; // Set here so it's set before the constructor ends
             _switchesRequired = amount;
             _switches = new PBESwitchIn[amount];
             _standBy = new PBEBattlePokemon[amount];
@@ -66,9 +65,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public void Submit()
         {
-            BattleGUI bg = BattleGUI.Instance;
-            bg.SwitchesBuilder = null;
-            bg.SubmitSwitches(_switches);
+            BattleGUI.Instance.SubmitSwitches(_switches);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Kermalis.PokemonGameEngine.Render
             _ = new FontShader(gl);
             _ = new DayTintShader(gl);
             _ = new FadeColorShader(gl);
+            _ = new BattleTransitionShader_Liquid(gl);
 
             // Init other instances
             _ = new GUIRenderer(gl);

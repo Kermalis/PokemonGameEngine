@@ -22,6 +22,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public bool IsVisible;
         public float Opacity;
+        public float PixelateAmt;
         public Vector3? MaskColor;
         public bool AnimateMaskColor;
         public float MaskColorAmt;
@@ -62,6 +63,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
             shader.SetMatrices(gl, projection, transform * view);
             shader.SetOpacity(gl, Opacity);
+            shader.SetPixelateAmt(gl, PixelateAmt);
             if (MaskColor is null)
             {
                 shader.SetMaskColorAmt(gl, 0f);

@@ -6,10 +6,12 @@ using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
 {
-    internal sealed class FadeFromColorTransition : FadeColorTransition
+    internal sealed class FadeFromColorTransition : ITransition
     {
         private readonly float _duration;
         private float _time;
+
+        public bool IsDone { get; private set; }
 
         public FadeFromColorTransition(float seconds, in Vector3 color)
         {
@@ -26,7 +28,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             return new FadeFromColorTransition(0.5f, Colors.Black3);
         }
 
-        public override void Render()
+        public void Render()
         {
             if (IsDone)
             {
@@ -51,6 +53,11 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             gl.BlendEquation(BlendEquationModeEXT.FuncAddExt);
             EntireScreenMesh.Instance.Render();
             gl.Disable(EnableCap.Blend);
+        }
+
+        public void Dispose()
+        {
+            //
         }
     }
 }

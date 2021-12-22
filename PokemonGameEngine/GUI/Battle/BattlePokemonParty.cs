@@ -24,12 +24,12 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                 PartyPokemon pPkmn = party[i];
                 if (pbePkmn.IsWild)
                 {
-                    PkmnPosition wildPos = battleGUI.GetPkmnPosition(pbePkmn, pbePkmn.FieldPosition);
-                    BattleParty[i] = BattlePokemon.CreateForWildMon(pbePkmn, pPkmn, backImage, useKnownInfo, wildPos);
+                    PkmnPosition wildPos = battleGUI.GetPkmnPosition(pbePkmn.Team.Id, pbePkmn.FieldPosition);
+                    BattleParty[i] = BattlePokemon.CreateForWildMon(pbePkmn, pPkmn, this, backImage, useKnownInfo, wildPos); // Attaches pos also
                 }
                 else
                 {
-                    BattleParty[i] = BattlePokemon.CreateForTrainerMon(pbePkmn, pPkmn, backImage, useKnownInfo);
+                    BattleParty[i] = BattlePokemon.CreateForTrainerMon(pbePkmn, pPkmn, this, backImage, useKnownInfo);
                 }
             }
         }

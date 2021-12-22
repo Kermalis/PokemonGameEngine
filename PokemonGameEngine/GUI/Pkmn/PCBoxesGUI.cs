@@ -25,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private readonly PCBoxes _boxes;
         private readonly Party _party;
 
-        private FadeColorTransition _fadeTransition;
+        private ITransition _transition;
         private Action _onClosed;
 
         private Window _textChoicesWindow;
@@ -66,42 +66,43 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             _onClosed = onClosed;
 
-            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeInPC);
         }
 
         private void SetExitFadeOutCallback()
         {
-            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutPC);
         }
 
         private void CB_FadeInPC()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             Game.Instance.SetCallback(CB_HandleInputs);
         }
         private void CB_FadeOutPC()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
             DisposePartyChoices();
             DeleteMinis();
             _helpText.Delete();

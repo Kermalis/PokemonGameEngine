@@ -22,16 +22,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             Sprite = new BattleSprite(spriteScale, defaultPos, false);
         }
 
-        public void UpdateAnimationSpeed()
+        /// <summary>Assumes <see cref="BattlePokemon.DetachPos"/> was called first</summary>
+        public void Clear()
         {
-            BattlePkmn.UpdateAnimationSpeed(Sprite.AnimImage);
+            InfoVisible = false;
+            Sprite.IsVisible = false;
+            Sprite.AnimImage = null;
         }
 
         public void RenderMonInfo()
         {
             BattlePkmn.InfoBarImg.Render(_barPos.Absolute(BattleGUI.RenderSize));
         }
-
 
         public static PkmnPosition[][] CreatePositions(PBEBattleFormat f)
         {

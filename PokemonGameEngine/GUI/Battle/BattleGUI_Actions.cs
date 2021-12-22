@@ -24,9 +24,10 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public void SubmitActions(PBETurnAction[] acts)
         {
+            ActionsBuilder = null;
             RemoveActionsGUI();
             Game.Instance.SetCallback(CB_RunTasksAndEvents);
-            CreateBattleThread(() => Trainer.SelectActionsIfValid(out _, acts));
+            CreateBattleThread(() => _trainer.SelectActionsIfValid(out _, acts));
         }
 
         private void RemoveActionsGUI()
@@ -200,7 +201,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
                     _frameBuffer.Use();
                     Game.Instance.SetCallback(CB_HandleMoveChoices);
                 }
-                _targetsGUI = new TargetsGUI(_curActionPkmn, possibleTargets, move, _parties, TargetSelected, TargetCancelled);
+                _targetsGUI = new TargetsGUI(_curActionPkmn, possibleTargets, move, TargetSelected, TargetCancelled);
                 Game.Instance.SetCallback(CB_HandleTargetsSelection);
             }
         }
@@ -214,17 +215,18 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             _tasks.RunTasks();
             RenderBattle();
             _allChoices.Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             SetMessageWindowVisibility(true);
-            _ = new PartyGUI(_parties[Trainer.Id], PartyGUI.Mode.BattleSwitchIn, OnPartyBrowsingClosed);
+            _ = new PartyGUI(_parties[_trainer.Id], PartyGUI.Mode.BattleSwitchIn, OnPartyBrowsingClosed);
         }
         private void CB_FadeFromPartyForBrowsing()
         {
@@ -242,15 +244,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             {
                 _allChoices.Render();
             }
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];
             SetMessageWindowVisibility(false);
             if (result == PartyGUI.NO_PKMN_CHOSEN)
@@ -259,7 +262,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             else
             {
-                ActionsBuilder.PushSwitch(_parties[Trainer.Id].PBEParty[result]);
+                ActionsBuilder.PushSwitch(_parties[_trainer.Id].PBEParty[result]);
             }
         }
 
@@ -267,7 +270,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             _frameBuffer.Use();
             DayTint.CatchUpTime = true;
-            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            _transition = FadeFromColorTransition.FromBlackStandard();
             short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];
             if (result == PartyGUI.NO_PKMN_CHOSEN)
             {
@@ -282,7 +285,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         private void ActionsMenu_PartyChoice()
         {
-            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeToPartyForBrowsing);
         }
 
@@ -304,7 +307,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
         {
             RemoveActionsGUI();
             Game.Instance.SetCallback(CB_RunTasksAndEvents);
-            CreateBattleThread(() => Trainer.SelectFleeIfValid(out _));
+            CreateBattleThread(() => _trainer.SelectFleeIfValid(out _));
         }
 
         #endregion

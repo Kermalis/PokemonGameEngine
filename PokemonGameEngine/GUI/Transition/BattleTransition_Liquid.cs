@@ -1,31 +1,23 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.GUIs;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Shaders;
 using Silk.NET.OpenGL;
-using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.GUI.Transition
 {
-    internal sealed class FadeToColorTransition : ITransition
+    internal sealed class BattleTransition_Liquid : ITransition
     {
+        private readonly FrameBuffer _frameBuffer;
         private readonly float _duration;
         private float _time;
 
         public bool IsDone { get; private set; }
 
-        public FadeToColorTransition(float seconds, in Vector3 color)
+        public BattleTransition_Liquid(float duration = 2.5f)
         {
-            _duration = seconds;
-
-            GL gl = Display.OpenGL;
-            FadeColorShader shader = FadeColorShader.Instance;
-            shader.Use(gl);
-            shader.SetColor(gl, color);
-        }
-
-        public static FadeToColorTransition ToBlackStandard()
-        {
-            return new FadeToColorTransition(0.5f, Colors.Black3);
+            _frameBuffer = FrameBuffer.CreateWithColor(FrameBuffer.Current.Size); // Use current fbo's size
+            _duration = duration;
         }
 
         public void Render()
@@ -47,20 +39,27 @@ namespace Kermalis.PokemonGameEngine.GUI.Transition
             }
 
             GL gl = Display.OpenGL;
-            FadeColorShader shader = FadeColorShader.Instance;
+            BattleTransitionShader_Liquid shader = BattleTransitionShader_Liquid.Instance;
             shader.Use(gl);
             shader.SetProgress(gl, progress);
 
-            gl.Enable(EnableCap.Blend);
-            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            gl.BlendEquation(BlendEquationModeEXT.FuncAddExt);
+            // Bind current fbo's texture
+            FrameBuffer c = FrameBuffer.Current;
+            gl.ActiveTexture(TextureUnit.Texture0);
+            gl.BindTexture(TextureTarget.Texture2D, c.ColorTexture);
+
+            // Render to DayTint fbo
+            _frameBuffer.Use();
             EntireScreenMesh.Instance.Render();
-            gl.Disable(EnableCap.Blend);
+
+            // Copy rendered result back to the previous fbo (its texture is still bound)
+            gl.CopyTexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, 0, 0, c.Size.Width, c.Size.Height);
+            c.Use();
         }
 
         public void Dispose()
         {
-            //
+            _frameBuffer.Delete();
         }
     }
 }

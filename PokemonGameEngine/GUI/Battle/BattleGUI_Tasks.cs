@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonGameEngine.Core;
+﻿using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.R3D;
@@ -192,6 +193,56 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
             }
             _trainerSprite.Pos.Z = Utils.Lerp(data.StartZ, data.EndZ, data.Progress);
             _trainerSprite.Opacity = 1f - data.Progress;
+        }
+
+        #endregion
+
+        #region Pokemon Sprite
+
+        private sealed class TaskData_ChangeSprite
+        {
+            public readonly IPBEPacket Packet;
+            public Action<BattlePokemon> Reveal;
+            public readonly BattlePokemon Pkmn;
+            public float Progress;
+
+            public TaskData_ChangeSprite(IPBEPacket packet, Action<BattlePokemon> reveal, BattlePokemon pkmn)
+            {
+                Packet = packet;
+                Reveal = reveal;
+                Pkmn = pkmn;
+            }
+        }
+
+        private void Task_ChangeSprite_Start(BackTask task)
+        {
+            var data = (TaskData_ChangeSprite)task.Data;
+            data.Progress += Display.DeltaTime;
+            if (data.Progress >= 1f)
+            {
+                data.Progress = 0f;
+                data.Pkmn.Pos.Sprite.PixelateAmt = 1f;
+                data.Reveal(data.Pkmn);
+                data.Reveal = null;
+                task.Action = Task_ChangeSprite_End;
+                return;
+            }
+
+            data.Pkmn.Pos.Sprite.PixelateAmt = data.Progress;
+        }
+        private void Task_ChangeSprite_End(BackTask task)
+        {
+            var data = (TaskData_ChangeSprite)task.Data;
+            data.Progress += Display.DeltaTime;
+            if (data.Progress >= 1f)
+            {
+                data.Pkmn.Pos.Sprite.PixelateAmt = 0f;
+                _tasks.RemoveAndDispose(task);
+                ShowPacketMessageThenResumeBattleThread(data.Packet);
+                return;
+            }
+
+            data.Pkmn.Pos.Sprite.PixelateAmt = 1f - data.Progress;
         }
 
         #endregion

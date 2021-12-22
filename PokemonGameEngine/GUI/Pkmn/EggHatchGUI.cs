@@ -18,7 +18,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
         private readonly PartyPokemon _pkmn;
 
-        private FadeColorTransition _fadeTransition;
+        private ITransition _transition;
 
         private Window _stringWindow;
         private StringPrinter _stringPrinter;
@@ -35,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar1]];
             UpdatePkmnImage();
 
-            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeIn);
         }
 
@@ -65,15 +65,16 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
         private void CB_FadeIn()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             _stringWindow = Window.CreateStandardMessageBox(Colors.White4, _renderSize);
             CreateMessage("An egg is hatching!");
             Game.Instance.SetCallback(CB_ReadEggHatchingMsg);
@@ -91,38 +92,39 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
 
             _stringPrinter.Delete();
             _stringPrinter = null;
-            _fadeTransition = new FadeToColorTransition(1f, Colors.FromRGB(200, 200, 200));
+            _transition = new FadeToColorTransition(1f, Colors.FromRGB(200, 200, 200));
             Game.Instance.SetCallback(CB_FadeWhiteToHatch);
         }
         private void CB_FadeWhiteToHatch()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
             _pkmn.HatchEgg();
             UpdatePkmnImage();
-            _fadeTransition = new FadeFromColorTransition(1f, Colors.FromRGB(200, 200, 200));
+            _transition = new FadeFromColorTransition(1f, Colors.FromRGB(200, 200, 200));
             Game.Instance.SetCallback(CB_FadeToHatched);
         }
         private void CB_FadeToHatched()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             SoundControl.PlayCry(_pkmn.Species, _pkmn.Form);
             CreateMessage(string.Format("{0} hatched from the egg!", _pkmn.Nickname));
             Game.Instance.SetCallback(CB_ReadHatchedMsg);
@@ -142,21 +144,21 @@ namespace Kermalis.PokemonGameEngine.GUI.Pkmn
             _stringPrinter = null;
             _stringWindow.Close();
             _stringWindow = null;
-            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOut);
         }
         private void CB_FadeOut()
         {
             Render();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
             _img.DeductReference();
             _frameBuffer.Delete();
             OverworldGUI.Instance.ReturnToFieldWithFadeIn();

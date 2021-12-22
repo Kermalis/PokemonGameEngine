@@ -12,53 +12,61 @@ namespace Kermalis.PokemonGameEngine.GUI.Battle
 
         public void SubmitSwitches(PBESwitchIn[] switches)
         {
+            SwitchesBuilder = null;
             Game.Instance.SetCallback(CB_RunTasksAndEvents);
-            CreateBattleThread(() => Trainer.SelectSwitchesIfValid(out _, switches));
+            CreateBattleThread(() => _trainer.SelectSwitchesIfValid(out _, switches));
+        }
+
+        public bool CanUsePositionForBattleReplacement(PBEFieldPosition pos)
+        {
+            return !SwitchesBuilder.IsStandBy(pos) && _trainer.OwnsSpot(pos) && !_trainer.Team.IsSpotOccupied(pos);
         }
 
         private void InitFadeToPartyForReplacement()
         {
             // TODO: Run from wild?
-            _fadeTransition = FadeToColorTransition.ToBlackStandard();
+            _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeToPartyForReplacement);
         }
         private void CB_FadeToPartyForReplacement()
         {
             _tasks.RunTasks();
             RenderBattle();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             SetMessageWindowVisibility(true);
-            _ = new PartyGUI(_parties[Trainer.Id], PartyGUI.Mode.BattleReplace, OnPartyReplacementClosed);
+            _ = new PartyGUI(_parties[_trainer.Id], PartyGUI.Mode.BattleReplace, OnPartyReplacementClosed);
         }
 
         private void OnPartyReplacementClosed()
         {
             _frameBuffer.Use();
             DayTint.CatchUpTime = true;
-            _fadeTransition = FadeFromColorTransition.FromBlackStandard();
+            _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeFromPartyReplacement);
         }
         private void CB_FadeFromPartyReplacement()
         {
             _tasks.RunTasks();
             RenderBattle();
-            _fadeTransition.Render();
+            _transition.Render();
             _frameBuffer.RenderToScreen();
 
-            if (!_fadeTransition.IsDone)
+            if (!_transition.IsDone)
             {
                 return;
             }
 
-            _fadeTransition = null;
+            _transition.Dispose();
+            _transition = null;
             SetMessageWindowVisibility(false);
             SwitchesBuilder.Submit(); // Calls SubmitSwitches()
         }
