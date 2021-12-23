@@ -7,7 +7,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
     /// <summary>Does not have a depth buffer</summary>
     internal sealed class WriteableImage : IImage
     {
-        public uint Texture => FrameBuffer.ColorTexture;
+        public uint Texture => FrameBuffer.ColorTexture.Value;
         public Size2D Size => FrameBuffer.Size;
         public readonly FrameBuffer FrameBuffer;
 

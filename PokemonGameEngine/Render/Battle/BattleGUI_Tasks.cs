@@ -238,6 +238,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             {
                 data.Pkmn.Pos.Sprite.PixelateAmt = 0f;
                 _tasks.RemoveAndDispose(task);
+                _hudInvisible = false;
                 ShowPacketMessageThenResumeBattleThread(data.Packet);
                 return;
             }

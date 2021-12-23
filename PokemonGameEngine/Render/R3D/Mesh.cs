@@ -44,16 +44,17 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             gl.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, AssimpVertex.SizeOf, (void*)AssimpVertex.OffsetOfUV);
         }
 
-        public unsafe void Render(ModelShader shader)
+        public unsafe void Render(BattleModelShader shader)
         {
             GL gl = Display.OpenGL;
 
             // Bind all diffuse textures
             for (int i = 0; i < _textures.Count; i++)
             {
-                if (shader.SetDiffuseTextureUnit(gl, i))
+                int textureUnit = i + 2; // +2 because shadow textures are the first two
+                if (shader.SetDiffuseTextureUnit(gl, i, textureUnit))
                 {
-                    gl.ActiveTexture(i.ToTextureUnit());
+                    gl.ActiveTexture(textureUnit.ToTextureUnit());
                     gl.BindTexture(TextureTarget.Texture2D, _textures[i].GLTex);
                 }
             }

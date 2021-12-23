@@ -92,7 +92,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void CB_FadeInBattle()
         {
             _tasks.RunTasks();
-            RenderBattle();
+            RenderBattleAndHUD();
             _transition.Render();
             _frameBuffer.RenderToScreen();
 
@@ -110,7 +110,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void CB_FadeOutBattle()
         {
             _tasks.RunTasks();
-            RenderBattle();
+            RenderBattleAndHUD();
             _transition.Render();
             _frameBuffer.RenderToScreen();
 
@@ -141,12 +141,12 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             }
             else
             {
-                _camera.PR.Debug_Move(5f);
+                _camera.PR.Debug_Move(10f);
                 //_models[3].PR.Debug_Move(5f);
             }
 #endif
 
-            RenderBattle();
+            RenderBattleAndHUD();
             _frameBuffer.RenderToScreen();
         }
 
@@ -160,7 +160,10 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             }
             _modelShader.Delete();
             _spriteShader.Delete();
+            _spriteShadowShader.Delete();
             _spriteMesh.Delete();
+            _dayTintFrameBuffer.Delete();
+            _shadowFrameBuffer.Delete();
             // Copy our Pokémon back from battle, update teammates, update wild Pokémon
             // Could technically only update what we need (like caught mon, roaming mon, and following partners)
             for (int i = 0; i < _parties.Length; i++)

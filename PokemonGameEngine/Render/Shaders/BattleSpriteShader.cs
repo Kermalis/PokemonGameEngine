@@ -35,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
             gl.Uniform1(_lImgTexture, 0); // Set texture unit now
         }
 
-        public void SetMatrices(GL gl, Matrix4x4 projection, Matrix4x4 transformView)
+        public void SetMatrices(GL gl, in Matrix4x4 projection, in Matrix4x4 transformView)
         {
             Matrix4(gl, _lProjection, projection);
             Matrix4(gl, _lTransformView, transformView);

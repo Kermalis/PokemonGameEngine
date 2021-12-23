@@ -31,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void CB_FadeToPartyForReplacement()
         {
             _tasks.RunTasks();
-            RenderBattle();
+            RenderBattleAndHUD();
             _transition.Render();
             _frameBuffer.RenderToScreen();
 
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void CB_FadeFromPartyReplacement()
         {
             _tasks.RunTasks();
-            RenderBattle();
+            RenderBattleAndHUD();
             _transition.Render();
             _frameBuffer.RenderToScreen();
 

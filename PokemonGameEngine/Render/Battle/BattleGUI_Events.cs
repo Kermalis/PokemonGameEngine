@@ -128,6 +128,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             }
             else
             {
+                _hudInvisible = true;
                 var data = new TaskData_ChangeSprite(packet, reveal, bPkmn);
                 _tasks.Add(Task_ChangeSprite_Start, 0, data: data);
             }

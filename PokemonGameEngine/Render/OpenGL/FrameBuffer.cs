@@ -8,17 +8,15 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
 
         public readonly uint Id;
         public readonly Size2D Size;
-        public readonly uint ColorTexture;
+        public readonly uint? ColorTexture;
         public readonly uint? DepthTexture;
-        public readonly uint? DepthBuffer;
 
-        private FrameBuffer(uint id, Size2D size, uint colorTexture, uint? depthTexture, uint? depthBuffer)
+        private FrameBuffer(uint id, Size2D size, uint? colorTexture, uint? depthTexture)
         {
             Id = id;
             Size = size;
             ColorTexture = colorTexture;
             DepthTexture = depthTexture;
-            DepthBuffer = depthBuffer;
         }
 
         public static unsafe FrameBuffer CreateWithColor(Size2D size)
@@ -28,7 +26,6 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, fbo);
             gl.DrawBuffer(DrawBufferMode.ColorAttachment0);
             gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
-            gl.ActiveTexture(TextureUnit.Texture0);
 
             // Add color texture attachment
             uint colorTexture = gl.GenTexture();
@@ -41,7 +38,7 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             // Done, reset bound FBO
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, Current is null ? 0 : Current.Id);
 
-            return new FrameBuffer(fbo, size, colorTexture, null, null);
+            return new FrameBuffer(fbo, size, colorTexture, null);
         }
         public static unsafe FrameBuffer CreateWithColorAndDepth(Size2D size)
         {
@@ -50,7 +47,6 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, fbo);
             gl.DrawBuffer(DrawBufferMode.ColorAttachment0);
             gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
-            gl.ActiveTexture(TextureUnit.Texture0);
 
             // Add color texture attachment
             uint colorTexture = gl.GenTexture();
@@ -66,18 +62,14 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.DepthComponent32, size.Width, size.Height, 0, PixelFormat.DepthComponent, PixelType.Float, null);
             gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
             gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+            gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
             gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, depthTexture, 0);
-
-            // Add depth buffer attachment
-            uint depthBuffer = gl.GenRenderbuffer();
-            gl.BindRenderbuffer(RenderbufferTarget.Renderbuffer, depthBuffer);
-            gl.RenderbufferStorage(RenderbufferTarget.Renderbuffer, InternalFormat.DepthComponent, size.Width, size.Height);
-            gl.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, depthBuffer);
 
             // Done, reset bound FBO
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, Current is null ? 0 : Current.Id);
 
-            return new FrameBuffer(fbo, size, colorTexture, depthTexture, depthBuffer);
+            return new FrameBuffer(fbo, size, colorTexture, depthTexture);
         }
 
         public void Use()
@@ -115,14 +107,13 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
         {
             GL gl = Display.OpenGL;
             gl.DeleteFramebuffer(Id);
-            gl.DeleteTexture(ColorTexture);
+            if (ColorTexture is not null)
+            {
+                gl.DeleteTexture(ColorTexture.Value);
+            }
             if (DepthTexture is not null)
             {
                 gl.DeleteTexture(DepthTexture.Value);
-            }
-            if (DepthBuffer is not null)
-            {
-                gl.DeleteRenderbuffer(DepthBuffer.Value);
             }
             if (Current == this)
             {

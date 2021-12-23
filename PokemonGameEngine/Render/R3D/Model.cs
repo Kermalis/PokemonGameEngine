@@ -24,7 +24,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                 * Matrix4x4.CreateTranslation(PR.Position);
         }
 
-        public void Render(ModelShader shader)
+        public void Render(BattleModelShader shader)
         {
             for (int i = 0; i < _meshes.Count; i++)
             {

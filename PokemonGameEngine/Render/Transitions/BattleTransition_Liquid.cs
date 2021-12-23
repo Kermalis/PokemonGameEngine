@@ -45,7 +45,7 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
             // Bind current fbo's texture
             FrameBuffer c = FrameBuffer.Current;
             gl.ActiveTexture(TextureUnit.Texture0);
-            gl.BindTexture(TextureTarget.Texture2D, c.ColorTexture);
+            gl.BindTexture(TextureTarget.Texture2D, c.ColorTexture.Value);
 
             // Render to DayTint fbo
             _frameBuffer.Use();

@@ -45,7 +45,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void CB_HandleAllChoices()
         {
             _tasks.RunTasks();
-            RenderBattle();
+            RenderBattleAndHUD();
             _allChoices.Render();
             _frameBuffer.RenderToScreen();
 
@@ -54,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void CB_HandleTargetsSelection()
         {
             _tasks.RunTasks();
-            RenderBattle();
+            RenderBattleAndHUD();
             _targetsGUI.Render();
             FrameBuffer.Current.RenderToScreen(); // Render targetsGUI framebuffer
 
@@ -104,7 +104,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void CB_HandleMoveChoices()
         {
             _tasks.RunTasks();
-            RenderBattle();
+            RenderBattleAndHUD();
             _moveChoices.Render();
             _frameBuffer.RenderToScreen();
 
@@ -213,7 +213,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void CB_FadeToPartyForBrowsing()
         {
             _tasks.RunTasks();
-            RenderBattle();
+            RenderBattleAndHUD();
             _allChoices.Render();
             _transition.Render();
             _frameBuffer.RenderToScreen();
@@ -239,7 +239,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void FadeFromPartyForBrowsing(bool showChoices)
         {
             _tasks.RunTasks();
-            RenderBattle();
+            RenderBattleAndHUD();
             if (showChoices)
             {
                 _allChoices.Render();

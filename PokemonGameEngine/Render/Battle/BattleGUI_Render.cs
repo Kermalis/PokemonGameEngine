@@ -20,8 +20,10 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
     internal sealed partial class BattleGUI
     {
         public static readonly Size2D RenderSize = new(480, 270); // 16:9
+        private const uint SHADOW_TEXTURE_SIZE = 512;
         private readonly FrameBuffer _frameBuffer;
         private readonly FrameBuffer _dayTintFrameBuffer;
+        private readonly FrameBuffer _shadowFrameBuffer;
 
         private ITransition _transition;
 
@@ -32,14 +34,17 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private Window _stringWindow;
         private StringPrinter _stringPrinter;
         private float _autoAdvanceTime;
+        private bool _hudInvisible;
 
         private readonly Camera _camera;
-        private readonly ModelShader _modelShader;
+        private readonly Matrix4x4 _shadowViewProjection;
+        private readonly BattleModelShader _modelShader;
         private readonly BattleSpriteShader _spriteShader;
+        private readonly BattleSpriteShadowShader _spriteShadowShader;
         private readonly BattleSpriteMesh _spriteMesh;
         private readonly List<Model> _models;
 
-        private readonly PointLight[] _testLights = new PointLight[ModelShader.MAX_LIGHTS]
+        private readonly PointLight[] _testLights = new PointLight[BattleModelShader.MAX_LIGHTS]
         {
             new(new Vector3(-5, 3, -5), new Vector3(5.00f, 2.25f, 0.60f), new Vector3(1f, 0.01f, 0.002f)),
             new(new Vector3( 5, 3, -5), new Vector3(0.85f, 0.52f, 4.00f), new Vector3(1f, 0.01f, 0.002f)),
@@ -69,12 +74,16 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             GL gl = Display.OpenGL;
             _camera = new Camera(_defaultPosition, projection); // cam pos doesn't matter here since we will set it later
-            _modelShader = new ModelShader(gl);
+            _modelShader = new BattleModelShader(gl);
             _spriteShader = new BattleSpriteShader(gl);
+            _spriteShadowShader = new BattleSpriteShadowShader(gl);
             _spriteMesh = new BattleSpriteMesh(gl);
 
             _frameBuffer = FrameBuffer.CreateWithColorAndDepth(RenderSize); // Gets used at InitFadeIn()
             _dayTintFrameBuffer = FrameBuffer.CreateWithColor(RenderSize);
+            _shadowFrameBuffer = FrameBuffer.CreateWithColorAndDepth(new Size2D(SHADOW_TEXTURE_SIZE, SHADOW_TEXTURE_SIZE));
+
+            InitShadows(gl, out _shadowViewProjection);
 
             // Terrain:
             GetTerrainPaths(battle.BattleTerrain, battle.BattleFormat == PBEBattleFormat.Rotation,
@@ -113,15 +122,36 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     scale = 1.5f; break;
                 default: throw new ArgumentOutOfRangeException(nameof(f));
             }
-            const float floorY = -0.20f;
             switch (f)
             {
                 case PBEBattleFormat.Single:
+                {
+                    const float floorY = -0.20f;
+                    foePos = new Vector3(0, floorY, -15);
+                    allyPos = new(0, floorY, 3);
+                    break;
+                }
                 case PBEBattleFormat.Double:
+                {
+                    const float floorY = -0.25f;
+                    foePos = new Vector3(0, floorY, -15);
+                    allyPos = new(0, floorY, 3);
+                    break;
+                }
                 case PBEBattleFormat.Triple:
-                    foePos = new Vector3(0, floorY, -15); allyPos = new(0, floorY, 3); break;
+                {
+                    const float floorY = -0.30f;
+                    foePos = new Vector3(0, floorY, -15);
+                    allyPos = new(0, floorY, 3);
+                    break;
+                }
                 case PBEBattleFormat.Rotation:
-                    foePos = new Vector3(0, floorY, -17.25f); allyPos = new(0, floorY, 8f); break;
+                {
+                    const float floorY = -0.20f;
+                    foePos = new Vector3(0, floorY, -17.25f);
+                    allyPos = new(0, floorY, 8f);
+                    break;
+                }
                 default: throw new ArgumentOutOfRangeException(nameof(f));
             }
         }
@@ -169,6 +199,24 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 allyPlatformPath = foePlatformPath = FormatPlatform(string.Empty);
             }
         }
+        private static void GetTrainerSpritePos(PBEBattleFormat f, out Vector2 scale, out Vector3 pos)
+        {
+            // Pos is same as 1v1 foe
+            switch (f)
+            {
+                // Scale just happens to be similar for these 3, because of similar floor heights
+                case PBEBattleFormat.Single:
+                case PBEBattleFormat.Triple:
+                    scale = new Vector2(0.03660f, 0.04850f); pos.Y = 0.02f; break;
+                case PBEBattleFormat.Double:
+                    scale = new Vector2(0.03660f, 0.04850f); pos.Y = 0.015f; break;
+                case PBEBattleFormat.Rotation:
+                    scale = new Vector2(0.0f, 0.0f); pos.Y = 0.5f; break; // TODO
+                default: throw new ArgumentOutOfRangeException(nameof(f));
+            }
+            pos.X = 0.75f;
+            pos.Z = -12.0f;
+        }
 
         #endregion
 
@@ -187,12 +235,13 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void InitTrainerSpriteAtBattleStart()
         {
             var img = new AnimatedImage(TrainerCore.GetTrainerClassAsset(_trainerClass), isPaused: true);
-            _trainerSprite = new BattleSprite(new Vector2(0.03660f, 0.04800f), new Vector3(0.75f, 0.25f, -12.0f), true) // Same as 1v1 foe pos
+            GetTrainerSpritePos(Battle.BattleFormat, out Vector2 scale, out Vector3 pos);
+            _trainerSprite = new BattleSprite(scale, pos, true)
             {
-                AnimImage = img,
                 MaskColor = Colors.Black3,
                 MaskColorAmt = 1f
             };
+            _trainerSprite.UpdateImage(img);
             var data = new TaskData_TrainerReveal();
             _tasks.Add(Task_TrainerReveal, 0, data: data);
         }
@@ -255,13 +304,47 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             return _positions[teamId][i];
         }
 
-        private void RenderBattle()
+        private void InitShadows(GL gl, out Matrix4x4 shadowViewProjection)
+        {
+            var centerOfWorld = new Vector3(0f, 0f, -5f);
+            // The light that creates our shadows doesn't actually emit light, it is just a position
+            // If the light pos moved, such as with the daytime, this would all need to be updated every frame instead
+            var fakeLightPos = new Vector3(-2f, 15f, 20f);
+            var lightDir = Vector3.Normalize(-fakeLightPos);
+            // Do math to create a view matrix which is coming from the light with the center of the battle as the middle of our view
+            float pitchRad = MathF.Acos(new Vector2(lightDir.X, lightDir.Z).Length());
+            float yawDeg = MathF.Atan(lightDir.X / lightDir.Z) * Utils.RadToDeg;
+            if (lightDir.Z > 0)
+            {
+                yawDeg -= 180;
+            }
+            Matrix4x4 shadowView = Matrix4x4.CreateTranslation(Vector3.Negate(centerOfWorld))
+                * Matrix4x4.CreateRotationY(-yawDeg * Utils.DegToRad)
+                * Matrix4x4.CreateRotationX(pitchRad);
+
+            // Projection matrix is orthographic, now based around the fake light
+            shadowViewProjection = shadowView * Matrix4x4.CreateOrthographic(30, 30, 0, 30);
+            // The magic below converts from GL coords to relative coords (+0.5 * 0.5) so we can sample on the shadow FBO's textures
+            Matrix4x4 magic = Matrix4x4.CreateScale(0.5f)
+                * Matrix4x4.CreateTranslation(new Vector3(0.5f, 0.5f, 0.5f));
+
+            _modelShader.Use(gl);
+            _modelShader.SetShadowConversion(gl, shadowViewProjection * magic);
+        }
+
+        private void RenderBattleAndHUD()
         {
             AnimatedImage.UpdateAll();
 
+            Render_3D();
+            if (!_hudInvisible)
+            {
+                Render_HUD();
+            }
+        }
+        private void Render_3D()
+        {
             GL gl = Display.OpenGL;
-
-            // 3D
             gl.Enable(EnableCap.DepthTest);
             gl.Enable(EnableCap.Blend);
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
@@ -272,50 +355,49 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 #endif
             gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            // Set up shader
+            Render_3D_UpdateLights();
+
+            Matrix4x4 camView = _camera.CreateViewMatrix();
+
+            // Clear shadow buffer
+            _shadowFrameBuffer.Use();
+            gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            #region Draw sprites to shadow buffer
+
+            _spriteShadowShader.Use(gl);
+            gl.ActiveTexture(TextureUnit.Texture0);
+            Render_3D_BattleSprites(s => s.RenderShadow(gl, _spriteMesh, _spriteShadowShader, _shadowViewProjection, camView));
+
+            #endregion
+
+            #region Draw models (shadows will be placed on top of them now)
+
+            _frameBuffer.Use();
             _modelShader.Use(gl);
-
-            uint ms = SDL2.SDL.SDL_GetTicks();
-            float rad = ms % 5_000 / 5_000f * 360 * Utils.DegToRad;
-            // Move Test Lights
-            _testLights[0].Pos.X = MathF.Sin(rad) * 20 - 10;
-            _testLights[0].Pos.Z = MathF.Cos(rad) * 20 - 10;
-            _testLights[1].Pos.X = MathF.Cos(rad * 2) * 20 - 6;
-            _testLights[1].Pos.Z = MathF.Sin(rad * 2) * 20 - 6;
-            _modelShader.SetCamera(gl, _camera); // Set projection, view, and camera position
+            _modelShader.SetCamera(gl, _camera.Projection, camView, _camera.PR.Position);
             _modelShader.SetLights(gl, _testLights);
-            _modelShader.SetShineDamper(gl, 5f);
-            _modelShader.SetReflectivity(gl, 0f);
 
-            // Draw models
+            gl.ActiveTexture(TextureUnit.Texture0);
+            gl.BindTexture(TextureTarget.Texture2D, _shadowFrameBuffer.ColorTexture.Value);
+            gl.ActiveTexture(TextureUnit.Texture1);
+            gl.BindTexture(TextureTarget.Texture2D, _shadowFrameBuffer.DepthTexture.Value);
             for (int i = 0; i < _models.Count; i++)
             {
                 Model m = _models[i];
                 _modelShader.SetTransform(gl, m.GetTransformation());
-
                 m.Render(_modelShader);
             }
 
-            // Draw battle sprites
+            #endregion
+
+            #region Draw battle sprites now on top of the terrain
+
             _spriteShader.Use(gl);
             gl.ActiveTexture(TextureUnit.Texture0);
-            Matrix4x4 view = _camera.CreateViewMatrix();
-            // Render trainer sprite if there is one
-            if (_trainerSprite is not null && _trainerSprite.IsVisible)
-            {
-                _trainerSprite.Render(gl, _spriteMesh, _spriteShader, _camera.Projection, view);
-            }
-            // Render pkmn
-            foreach (PkmnPosition[] ps in _positions)
-            {
-                foreach (PkmnPosition p in ps)
-                {
-                    if (p.Sprite.IsVisible)
-                    {
-                        p.Sprite.Render(gl, _spriteMesh, _spriteShader, _camera.Projection, view);
-                    }
-                }
-            }
+            Render_3D_BattleSprites(s => s.Render(gl, _spriteMesh, _spriteShader, _camera.Projection, camView));
+
+            #endregion
 
             gl.Disable(EnableCap.Blend);
             gl.Disable(EnableCap.DepthTest);
@@ -324,12 +406,13 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 #endif
 
             DayTint.Render(_dayTintFrameBuffer);
-
-            // 2D HUD
-
-            void RenderTeamInfo(int i)
+        }
+        private void Render_HUD()
+        {
+            // Render info bars
+            foreach (PkmnPosition[] ps in _positions)
             {
-                foreach (PkmnPosition p in _positions[i])
+                foreach (PkmnPosition p in ps)
                 {
                     if (p.InfoVisible)
                     {
@@ -337,9 +420,8 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     }
                 }
             }
-            RenderTeamInfo(1);
-            RenderTeamInfo(0);
 
+            // Message
             if (_stringPrinter is not null)
             {
                 _stringWindow.Render();
@@ -348,6 +430,35 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 #if DEBUG_BATTLE_CAMERAPOS
             _camera.PR.Debug_RenderPosition();
 #endif
+        }
+
+        private void Render_3D_UpdateLights()
+        {
+            uint ms = SDL2.SDL.SDL_GetTicks();
+            float rad = ms % 5_000 / 5_000f * 360 * Utils.DegToRad;
+            _testLights[0].Pos.X = MathF.Sin(rad) * 20 - 10;
+            _testLights[0].Pos.Z = MathF.Cos(rad) * 20 - 10;
+            _testLights[1].Pos.X = MathF.Cos(rad * 2) * 20 - 6;
+            _testLights[1].Pos.Z = MathF.Sin(rad * 2) * 20 - 6;
+        }
+        private void Render_3D_BattleSprites(Action<BattleSprite> action)
+        {
+            // Render trainer sprite if there is one
+            if (_trainerSprite is not null && _trainerSprite.IsVisible)
+            {
+                action(_trainerSprite);
+            }
+            // Render pkmn
+            foreach (PkmnPosition[] ps in _positions)
+            {
+                foreach (PkmnPosition p in ps)
+                {
+                    if (p.Sprite.IsVisible)
+                    {
+                        action(p.Sprite);
+                    }
+                }
+            }
         }
     }
 }
