@@ -414,6 +414,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         public void ReturnToFieldAndUseSurf()
         {
+            _frameBuffer.Use();
             _startMenuWindow?.Close();
             _startMenuWindow = null;
             foreach (Obj o in Obj.LoadedObjs)

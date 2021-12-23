@@ -186,7 +186,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _backStr.Delete();
             DeleteMessage();
             _frameBuffer.Delete();
-            // Choices should be closed so no need to dispose
+            // Choices should be closed so no need to dispose them
             Instance = null;
             _onClosed();
             _onClosed = null;
