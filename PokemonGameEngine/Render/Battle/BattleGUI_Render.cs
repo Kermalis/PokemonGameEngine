@@ -309,7 +309,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             var centerOfWorld = new Vector3(0f, 0f, -5f);
             // The light that creates our shadows doesn't actually emit light, it is just a position
             // If the light pos moved, such as with the daytime, this would all need to be updated every frame instead
-            var fakeLightPos = new Vector3(-2f, 15f, 20f);
+            var fakeLightPos = new Vector3(7f, 10f, 20f);
             var lightDir = Vector3.Normalize(-fakeLightPos);
             // Do math to create a view matrix which is coming from the light with the center of the battle as the middle of our view
             float pitchRad = MathF.Acos(new Vector2(lightDir.X, lightDir.Z).Length());

@@ -73,7 +73,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     a[0] = new PkmnPosition[3]
                     {
                         new PkmnPosition(new Vector3(-2.00f, floorY,   1.0f), new Vector2(0.04545f, 0.05990f), new Vector2(0.015f, 0.25f)), // Left   (cam dist sqrd = 325.720400)
-                        new PkmnPosition(new Vector3( 0.50f, floorY,  -0.5f), new Vector2(0.04660f, 0.06140f), new Vector2(0.295f, 0.27f)), // Center (cam dist sqrd = 331.220400)
+                        new PkmnPosition(new Vector3( 0.50f, floorY,   1.0f), new Vector2(0.04310f, 0.05650f), new Vector2(0.295f, 0.27f)), // Center (cam dist sqrd = 286.970400)
                         new PkmnPosition(new Vector3( 3.25f, floorY,   1.0f), new Vector2(0.04050f, 0.05320f), new Vector2(0.575f, 0.29f))  // Right  (cam dist sqrd = 258.782900)
                     };
                     a[1] = new PkmnPosition[3]
