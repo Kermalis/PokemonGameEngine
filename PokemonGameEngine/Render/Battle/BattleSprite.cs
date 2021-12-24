@@ -64,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         public void Render(GL gl, BattleSpriteMesh mesh, BattleSpriteShader shader, in Matrix4x4 projection, in Matrix4x4 camView)
         {
             gl.BindTexture(TextureTarget.Texture2D, AnimImage.Texture);
-            shader.SetMatrices(gl, projection, _transformCache * camView);
+            shader.SetMatrix(gl, _transformCache * camView * projection);
             shader.SetOpacity(gl, Opacity);
             shader.SetPixelateAmt(gl, PixelateAmt);
             if (MaskColor is null)
@@ -89,13 +89,13 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             }
             mesh.Render();
         }
-        public void RenderShadow(GL gl, BattleSpriteMesh mesh, BattleSpriteShadowShader shader, in Matrix4x4 viewProjection, in Matrix4x4 camView)
+        public void RenderShadow(GL gl, BattleSpriteMesh mesh, BattleSpriteShader shader, in Matrix4x4 viewProjection, in Matrix4x4 camView)
         {
             UpdateTransform(camView);
 
             gl.BindTexture(TextureTarget.Texture2D, AnimImage.Texture);
             shader.SetMatrix(gl, _transformCache * viewProjection);
-            shader.SetSpriteOpacity(gl, Opacity);
+            shader.SetOpacity(gl, Opacity);
             shader.SetPixelateAmt(gl, PixelateAmt);
             mesh.Render();
         }

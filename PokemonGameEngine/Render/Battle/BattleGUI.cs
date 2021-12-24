@@ -160,7 +160,6 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             }
             _modelShader.Delete();
             _spriteShader.Delete();
-            _spriteShadowShader.Delete();
             _spriteMesh.Delete();
             _dayTintFrameBuffer.Delete();
             _shadowFrameBuffer.Delete();

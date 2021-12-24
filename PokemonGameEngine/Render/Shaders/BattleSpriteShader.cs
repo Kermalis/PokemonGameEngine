@@ -8,9 +8,9 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
         private const string VERTEX_SHADER_PATH = @"BattleSprite.vert.glsl";
         private const string FRAGMENT_SHADER_PATH = @"BattleSprite.frag.glsl";
 
-        private readonly int _lProjection;
-        private readonly int _lTransformView;
+        private readonly int _lTransformViewProjection;
 
+        private readonly int _lOutputShadow;
         private readonly int _lImgTexture;
         private readonly int _lOpacity;
 
@@ -21,9 +21,9 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
         public BattleSpriteShader(GL gl)
             : base(gl, VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
         {
-            _lProjection = GetUniformLocation(gl, "projection");
-            _lTransformView = GetUniformLocation(gl, "transformView");
+            _lTransformViewProjection = GetUniformLocation(gl, "transformViewProjection");
 
+            _lOutputShadow = GetUniformLocation(gl, "outputShadow");
             _lImgTexture = GetUniformLocation(gl, "imgTexture");
             _lOpacity = GetUniformLocation(gl, "opacity");
 
@@ -35,10 +35,13 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
             gl.Uniform1(_lImgTexture, 0); // Set texture unit now
         }
 
-        public void SetMatrices(GL gl, in Matrix4x4 projection, in Matrix4x4 transformView)
+        public void SetMatrix(GL gl, in Matrix4x4 transformViewProjection)
         {
-            Matrix4(gl, _lProjection, projection);
-            Matrix4(gl, _lTransformView, transformView);
+            Matrix4(gl, _lTransformViewProjection, transformViewProjection);
+        }
+        public void SetOutputShadow(GL gl, bool b)
+        {
+            gl.Uniform1(_lOutputShadow, b ? 1 : 0);
         }
         public void SetOpacity(GL gl, float opacity)
         {

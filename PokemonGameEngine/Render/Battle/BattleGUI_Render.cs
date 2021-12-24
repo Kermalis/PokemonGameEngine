@@ -40,7 +40,6 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private readonly Matrix4x4 _shadowViewProjection;
         private readonly BattleModelShader _modelShader;
         private readonly BattleSpriteShader _spriteShader;
-        private readonly BattleSpriteShadowShader _spriteShadowShader;
         private readonly BattleSpriteMesh _spriteMesh;
         private readonly List<Model> _models;
 
@@ -76,7 +75,6 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _camera = new Camera(_defaultPosition, projection); // cam pos doesn't matter here since we will set it later
             _modelShader = new BattleModelShader(gl);
             _spriteShader = new BattleSpriteShader(gl);
-            _spriteShadowShader = new BattleSpriteShadowShader(gl);
             _spriteMesh = new BattleSpriteMesh(gl);
 
             _frameBuffer = FrameBuffer.CreateWithColorAndDepth(RenderSize); // Gets used at InitFadeIn()
@@ -365,9 +363,10 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             #region Draw sprites to shadow buffer
 
-            _spriteShadowShader.Use(gl);
+            _spriteShader.Use(gl);
+            _spriteShader.SetOutputShadow(gl, true);
             gl.ActiveTexture(TextureUnit.Texture0);
-            Render_3D_BattleSprites(s => s.RenderShadow(gl, _spriteMesh, _spriteShadowShader, _shadowViewProjection, camView));
+            Render_3D_BattleSprites(s => s.RenderShadow(gl, _spriteMesh, _spriteShader, _shadowViewProjection, camView));
 
             #endregion
 
@@ -394,6 +393,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             #region Draw battle sprites now on top of the terrain
 
             _spriteShader.Use(gl);
+            _spriteShader.SetOutputShadow(gl, false);
             gl.ActiveTexture(TextureUnit.Texture0);
             Render_3D_BattleSprites(s => s.Render(gl, _spriteMesh, _spriteShader, _camera.Projection, camView));
 

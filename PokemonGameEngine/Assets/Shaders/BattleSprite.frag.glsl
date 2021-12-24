@@ -7,6 +7,7 @@ in vec2 pass_uv;
 
 out vec4 out_color;
 
+uniform int outputShadow;
 uniform sampler2D imgTexture;
 uniform float opacity;
 uniform vec3 maskColor;
@@ -28,11 +29,19 @@ vec2 pixelate()
 
 void main()
 {
+    // First modify UVs and then sample
     out_color = texture(imgTexture, pixelate());
     if (out_color.a < 1)
     {
-        discard;
+        discard; // Discard transparent pixels
     }
+    // If we're writing to the shadow textures:
+    if (outputShadow != 0)
+    {
+        out_color = vec4(opacity, 0, 0, 1); // Store opacity in r of the shadow FBO's color texture
+        return;
+    }
+    // Normal output below
     out_color.a *= opacity;
     out_color.rgb = mix(out_color.rgb, maskColor, maskColorAmt);
 }
