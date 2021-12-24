@@ -49,26 +49,51 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private static string GetCryAsset(PBESpecies species, PBEForm form)
         {
+            string dir = @"Sound\Cries\";
             if (species == PBESpecies.Shaymin && form == PBEForm.Shaymin_Sky)
             {
-                return "Sound\\Cries\\Shaymin_Sky.wav";
+                return dir + "Shaymin_Sky.wav";
             }
-            return "Sound\\Cries\\" + species + ".wav";
+            if (species == PBESpecies.Tornadus && form == PBEForm.Tornadus_Therian)
+            {
+                return dir + "Tornadus_Therian.wav";
+            }
+            if (species == PBESpecies.Thundurus && form == PBEForm.Thundurus_Therian)
+            {
+                return dir + "Thundurus_Therian.wav";
+            }
+            if (species == PBESpecies.Landorus && form == PBEForm.Landorus_Therian)
+            {
+                return dir + "Landorus_Therian.wav";
+            }
+            if (species == PBESpecies.Kyurem)
+            {
+                if (form == PBEForm.Kyurem_White)
+                {
+                    return dir + "Kyurem_White.wav";
+                }
+                if (form == PBEForm.Kyurem_Black)
+                {
+                    return dir + "Kyurem_Black.wav";
+                }
+            }
+            return dir + species + ".wav";
         }
         private static string GetSongAsset(Song song)
         {
+            string dir = @"Sound\BGM\";
             switch (song)
             {
                 // Locations
                 case Song.Route1: // TODO
-                case Song.Town1: return "Sound\\BGM\\Town1.wav";
-                case Song.Cave1: return "Sound\\BGM\\Cave1.wav";
+                case Song.Town1: return dir + "Town1.wav";
+                case Song.Cave1: return dir + "Cave1.wav";
                 // Battles
                 case Song.WildBattle: // TODO
                 case Song.WildBattle_Multi: // TODO
-                case Song.TrainerBattle: return "Sound\\BGM\\TrainerBattle.wav";
+                case Song.TrainerBattle: return dir + "TrainerBattle.wav";
                 case Song.LegendaryBattle: // TODO
-                case Song.GymBattle: return "Sound\\BGM\\GymBattle.wav";
+                case Song.GymBattle: return dir + "GymBattle.wav";
             }
             throw new ArgumentOutOfRangeException(nameof(song));
         }
