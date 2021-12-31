@@ -4,7 +4,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
 {
     internal sealed class Camera
     {
-        public Matrix4x4 Projection;
+        public readonly Matrix4x4 Projection;
         public PositionRotation PR;
 
         public Camera(in PositionRotation pr, in Matrix4x4 projection)

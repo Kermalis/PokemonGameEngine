@@ -39,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             _vertices[vIndex + 0] = new TexVertex(pos.TopLeft, tex.Start);
             _vertices[vIndex + 1] = new TexVertex(pos.GetExclusiveBottomLeft(), tex.GetBottomLeft());
             _vertices[vIndex + 2] = new TexVertex(pos.GetExclusiveTopRight(), tex.GetTopRight());
-            _vertices[vIndex + 3] = new TexVertex(pos.GetExclusiveBottomRight(), tex.GetBottomRight());
+            _vertices[vIndex + 3] = new TexVertex(pos.GetExclusiveBottomRight(), tex.End);
             _indices[_indexCount++] = vIndex + 0;
             _indices[_indexCount++] = vIndex + 1;
             _indices[_indexCount++] = vIndex + 2;

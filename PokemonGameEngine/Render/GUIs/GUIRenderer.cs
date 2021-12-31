@@ -89,7 +89,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             _texCache[1].Pos = rect.GetExclusiveBottomLeft();
             _texCache[2].UV = texPos.GetTopRight();
             _texCache[2].Pos = rect.GetExclusiveTopRight();
-            _texCache[3].UV = texPos.GetBottomRight();
+            _texCache[3].UV = texPos.End;
             _texCache[3].Pos = rect.GetExclusiveBottomRight();
             fixed (void* d = _texCache)
             {

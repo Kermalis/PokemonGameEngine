@@ -84,8 +84,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private const float CAM_SPEED_DEFAULT = 0.5f;
 
-        private static readonly PositionRotation _defaultPosition = new(new Vector3(7f, 7f, 15f), new Rotation(-22, 13, 0)); // battle using bw2 matrix
-        //private static readonly PositionRotation _defaultPosition = new(new Vector3(6.5f, 9.5f, 14f), new Rotation(-22, 18, 0)); // battle 1:1, 35fov
+        public static readonly PositionRotation DefaultCamPosition = new(new Vector3(7f, 7f, 15f), new Rotation(-22, 13, 0));
 
         private sealed class TaskData_MoveCamera
         {
@@ -112,17 +111,17 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         }
         private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, float seconds)
         {
-            CreateCameraMotionTask(new TaskData_MoveCamera(_camera, to, onFinished, seconds));
+            CreateCameraMotionTask(new TaskData_MoveCamera(Camera, to, onFinished, seconds));
         }
         private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, float posSeconds, float rotSeconds)
         {
-            CreateCameraMotionTask(new TaskData_MoveCamera(_camera, to, onFinished, posSeconds, rotSeconds));
+            CreateCameraMotionTask(new TaskData_MoveCamera(Camera, to, onFinished, posSeconds, rotSeconds));
         }
 
         private void Task_CameraMotion(BackTask task)
         {
             var data = (TaskData_MoveCamera)task.Data;
-            if (data.Animator.Update(ref _camera.PR))
+            if (data.Animator.Update(ref Camera.PR))
             {
                 _tasks.RemoveAndDispose(task);
                 data.OnFinished?.Invoke();
@@ -175,7 +174,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             if (data.ColorProgress >= 1f)
             {
                 _trainerSprite.MaskColorAmt = 0f;
-                _trainerSprite.AnimImage.IsPaused = false;
+                _trainerSprite.Image.IsPaused = false;
                 _tasks.RemoveAndDispose(task);
                 return;
             }

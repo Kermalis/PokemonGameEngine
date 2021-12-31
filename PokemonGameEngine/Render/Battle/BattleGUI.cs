@@ -56,8 +56,6 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _trainerDefeatText = trainerDefeatText;
             battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
             battle.OnStateChanged += SinglePlayerBattle_OnStateChanged;
-
-            Instance = this;
         }
 
         public static void CreateWildBattle(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties)
@@ -137,11 +135,11 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 #if DEBUG_BATTLE_CAMERAPOS
             if (InputManager.JustPressed(Key.Select))
             {
-                CreateCameraMotionTask(_defaultPosition, null, CAM_SPEED_DEFAULT);
+                CreateCameraMotionTask(DefaultCamPosition, null, CAM_SPEED_DEFAULT);
             }
             else
             {
-                _camera.PR.Debug_Move(10f);
+                Camera.PR.Debug_Move(10f);
                 //_models[3].PR.Debug_Move(5f);
             }
 #endif
@@ -153,7 +151,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         /// <summary>Run after the fade out, and deletes the info bars etc, but also does Pokerus, updating the bag, everything else</summary>
         private void CleanUpStuffAfterFadeOut()
         {
-            _trainerSprite?.AnimImage.DeductReference();
+            _trainerSprite?.Image.DeductReference();
             foreach (Model m in _models)
             {
                 m.Delete();

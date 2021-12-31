@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.World;
 using System;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
@@ -62,6 +63,10 @@ namespace Kermalis.PokemonGameEngine.Render
             }
         }
 
+        public static Pos2D FromRelative(Vector2 v, Size2D totalSize)
+        {
+            return FromRelative(v.X, v.Y, totalSize);
+        }
         public static Pos2D FromRelative(float x, float y, Size2D totalSize)
         {
             return new Pos2D((int)(x * totalSize.Width), (int)(y * totalSize.Height));

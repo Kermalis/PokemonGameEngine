@@ -1,4 +1,6 @@
-﻿namespace Kermalis.PokemonGameEngine.Render
+﻿using System.Numerics;
+
+namespace Kermalis.PokemonGameEngine.Render
 {
     internal struct Size2D
     {
@@ -11,6 +13,10 @@
             Height = h;
         }
 
+        public static Size2D FromRelative(Vector2 v, Size2D totalSize)
+        {
+            return FromRelative(v.X, v.Y, totalSize);
+        }
         public static Size2D FromRelative(float w, float h, Size2D totalSize)
         {
             return new Size2D((uint)(w * totalSize.Width), (uint)(h * totalSize.Height));
@@ -21,28 +27,9 @@
             return Width * Height;
         }
 
-#if DEBUG
-        public override string ToString()
+        public static Vector2 operator *(Vector2 a, Size2D b)
         {
-            return string.Format("[W: {0}, H: {1}]", Width, Height);
-        }
-#endif
-    }
-
-    internal struct RelSize2D
-    {
-        public float Width;
-        public float Height;
-
-        public RelSize2D(float w, float h)
-        {
-            Width = w;
-            Height = h;
-        }
-
-        public Size2D Absolute(Size2D totalSize)
-        {
-            return Size2D.FromRelative(Width, Height, totalSize);
+            return new Vector2(a.X * b.Width, a.Y * b.Height);
         }
 
 #if DEBUG

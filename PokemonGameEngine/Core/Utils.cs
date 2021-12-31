@@ -23,6 +23,16 @@ namespace Kermalis.PokemonGameEngine.Core
             return MathF.Asin((2 * q.X * q.Y) + (2 * q.Z * q.W));
         }
 
+        public static Vector4 MulMatrixAndVec4(in Matrix4x4 m, in Vector4 v)
+        {
+            Vector4 ret;
+            ret.X = v.X * m.M11 + v.Y * m.M21 + v.Z * m.M31 + v.W * m.M41;
+            ret.Y = v.X * m.M12 + v.Y * m.M22 + v.Z * m.M32 + v.W * m.M42;
+            ret.Z = v.X * m.M13 + v.Y * m.M23 + v.Z * m.M33 + v.W * m.M43;
+            ret.W = v.X * m.M14 + v.Y * m.M24 + v.Z * m.M34 + v.W * m.M44;
+            return ret;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Lerp(float from, float to, float progress)
         {

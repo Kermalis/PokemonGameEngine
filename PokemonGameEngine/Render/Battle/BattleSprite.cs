@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render.Images;
+using Kermalis.PokemonGameEngine.Render.R3D;
 using Kermalis.PokemonGameEngine.Render.Shaders;
 using Silk.NET.OpenGL;
 using System.Numerics;
@@ -11,12 +12,14 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private const float MASK_COLOR_SPEED = 0.1f; // Takes 10 seconds to complete the loop
         public const float MASK_COLOR_AMPLITUDE = 0.65f; // 65% of the MaskColor
 
-        public readonly Vector2 Scale; // Only accurate for the default Display.RenderSize
+        private readonly Vector2 _posScale;
 
-        public AnimatedImage AnimImage;
+        public AnimatedImage Image;
         public Vector3 Pos;
         /// <summary>Represents rotation in degrees around the z-axis for the image (positive rotates counter-clockwise)</summary>
-        public float Rotation2D;
+        public float Rotation;
+        /// <summary>Visual scale of the sprite meant to be used with animations</summary>
+        public Vector2 Scale = Vector2.One;
 
         public bool IsVisible;
         public float Opacity;
@@ -28,23 +31,54 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private Matrix4x4 _scaleCache;
         private Matrix4x4 _transformCache;
 
-        public BattleSprite(Vector2 scale, in Vector3 startPos, bool isVisible)
+        public BattleSprite(in Vector3 startPos, bool isVisible, float scale = 1f)
         {
-            Scale = scale;
             Pos = startPos;
             Opacity = 1f;
             IsVisible = isVisible;
+            _posScale = GetPosScale(scale);
+        }
+
+        /// <summary>This creates the scale that will make the sprite always be its original size when in its starting position and the camera is in the default position.
+        /// This will happen regardless of resolution or projection matrix (unless they change afterwards)</summary>
+        private Vector2 GetPosScale(float scale)
+        {
+            Matrix4x4 view = Camera.CreateViewMatrix(BattleGUI.DefaultCamPosition);
+            Matrix4x4 transformViewProjection = CreateTranslation(view)
+                * view
+                * BattleGUI.Instance.Camera.Projection;
+
+            Vector2 bottomLeft = GetAbsolutePixelForVertex(transformViewProjection, new Vector2(-0.5f, 0f)); // Vertices taken from BattleSpriteMesh
+            Vector2 topRight = GetAbsolutePixelForVertex(transformViewProjection, new Vector2(0.5f, 1f));
+
+            float spriteW = topRight.X - bottomLeft.X;
+            float spriteH = topRight.Y - bottomLeft.Y;
+            return new Vector2(scale / spriteW, scale / spriteH);
+        }
+        private static Vector2 GetAbsolutePixelForVertex(in Matrix4x4 transformViewProjection, Vector2 v)
+        {
+            Vector4 v4 = Utils.MulMatrixAndVec4(in transformViewProjection, new Vector4(v.X, v.Y, 0f, 1f));
+            v4 /= v4.W; // Scale back from 4d
+            var v2 = new Vector2(v4.X, v4.Y);
+
+            // Convert from GL to relative
+            v2 *= 0.5f;
+            v2 += new Vector2(0.5f, 0.5f);
+
+            // Convert from relative to absolute
+            v2 *= BattleGUI.RenderSize;
+            return v2;
         }
 
         public void UpdateImage(AnimatedImage img)
         {
-            AnimImage?.DeductReference();
-            AnimImage = img;
-            Size2D imgSize = img.Size;
-            _scaleCache = Matrix4x4.CreateScale(imgSize.Width * Scale.X, imgSize.Height * Scale.Y, 1f);
+            Image?.DeductReference();
+            Image = img;
+            Vector2 scale = _posScale * Scale * img.Size;
+            _scaleCache = Matrix4x4.CreateScale(scale.X, scale.Y, 1f);
         }
 
-        private void UpdateTransform(in Matrix4x4 camView)
+        private Matrix4x4 CreateTranslation(in Matrix4x4 camView)
         {
             var translation = Matrix4x4.CreateTranslation(Pos);
             // Remove x/y rotation when they get multiplied together so the sprite always faces the camera
@@ -57,13 +91,17 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             translation.M31 = camView.M13;
             translation.M32 = camView.M23;
             translation.M33 = camView.M33;
+            return translation;
+        }
+        private void UpdateTransform(in Matrix4x4 camView)
+        {
             _transformCache = _scaleCache
-                * Matrix4x4.CreateRotationZ(Rotation2D * Utils.DegToRad)
-                * translation;
+                * Matrix4x4.CreateRotationZ(Rotation * Utils.DegToRad)
+                * CreateTranslation(camView);
         }
         public void Render(GL gl, BattleSpriteMesh mesh, BattleSpriteShader shader, in Matrix4x4 projection, in Matrix4x4 camView)
         {
-            gl.BindTexture(TextureTarget.Texture2D, AnimImage.Texture);
+            gl.BindTexture(TextureTarget.Texture2D, Image.Texture);
             shader.SetMatrix(gl, _transformCache * camView * projection);
             shader.SetOpacity(gl, Opacity);
             shader.SetPixelateAmt(gl, PixelateAmt);
@@ -93,7 +131,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             UpdateTransform(camView);
 
-            gl.BindTexture(TextureTarget.Texture2D, AnimImage.Texture);
+            gl.BindTexture(TextureTarget.Texture2D, Image.Texture);
             shader.SetMatrix(gl, _transformCache * viewProjection);
             shader.SetOpacity(gl, Opacity);
             shader.SetPixelateAmt(gl, PixelateAmt);

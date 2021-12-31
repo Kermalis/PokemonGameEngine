@@ -51,29 +51,29 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             public void Render(Vector2 pos, bool selected)
             {
                 Vector4 enabledC = _ally ? Colors.V4FromRGB(125, 100, 230) : Colors.V4FromRGB(248, 80, 50);
-                GUIRenderer.Instance.FillRectangle(enabledC, new Rect2D(pos.Absolute(_renderSize), Size2D.FromRelative(0.24f, 0.2f, _renderSize)));
+                GUIRenderer.Instance.FillRectangle(enabledC, new Rect2D(Pos2D.FromRelative(pos, _renderSize), Size2D.FromRelative(0.24f, 0.2f, _renderSize)));
 
                 if (_pkmn is not null)
                 {
                     Vector2 pos2 = pos;
                     pos2.Y += 0.025f;
-                    _pkmn.Mini.Render(pos2.Absolute(_renderSize));
+                    _pkmn.Mini.Render(Pos2D.FromRelative(pos2, _renderSize));
 
                     pos2 = pos;
                     pos2.X += 0.075f;
                     pos2.Y += 0.05f;
-                    _nickname.Render(pos2.Absolute(_renderSize));
+                    _nickname.Render(Pos2D.FromRelative(pos2, _renderSize));
                 }
 
                 if (selected)
                 {
                     Vector4 selectedC = _ally ? Colors.V4FromRGB(75, 60, 150) : Colors.V4FromRGB(120, 30, 10);
-                    GUIRenderer.Instance.DrawRectangle(selectedC, new Rect2D(pos.Absolute(_renderSize), Size2D.FromRelative(0.24f, 0.2f, _renderSize))); // TODO: 2 THICKNESS
+                    GUIRenderer.Instance.DrawRectangle(selectedC, new Rect2D(Pos2D.FromRelative(pos, _renderSize), Size2D.FromRelative(0.24f, 0.2f, _renderSize))); // TODO: 2 THICKNESS
                 }
 
                 if (!Enabled)
                 {
-                    GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 150), new Rect2D(pos.Absolute(_renderSize), Size2D.FromRelative(0.24f, 0.2f, _renderSize)));
+                    GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 150), new Rect2D(Pos2D.FromRelative(pos, _renderSize), Size2D.FromRelative(0.24f, 0.2f, _renderSize)));
                 }
             }
 

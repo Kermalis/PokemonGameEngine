@@ -36,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private float _autoAdvanceTime;
         private bool _hudInvisible;
 
-        private readonly Camera _camera;
+        public readonly Camera Camera;
         private readonly Matrix4x4 _shadowViewProjection;
         private readonly BattleModelShader _modelShader;
         private readonly BattleSpriteShader _spriteShader;
@@ -53,15 +53,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private BattleGUI(PBEBattle battle, IReadOnlyList<Party> trainerParties)
         {
-            Battle = battle;
-            _trainer = battle.Trainers[0]; // Set before ShouldUseKnownInfo()
-            _positions = PkmnPosition.CreatePositions(battle.BattleFormat);
-            _parties = new BattlePokemonParty[battle.Trainers.Count];
-            for (int i = 0; i < battle.Trainers.Count; i++)
-            {
-                PBETrainer trainer = battle.Trainers[i];
-                _parties[i] = new BattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team.Id), ShouldUseKnownInfo(trainer), this);
-            }
+            Instance = this;
 
             // Projection matrix used in BW2 battles:
             // It doesn't match pixel-perfect most likely because of the DS's rounding precision (12 fractional bits)
@@ -72,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                                                        0f,              0f, -2.00390625f,  0f);
 
             GL gl = Display.OpenGL;
-            _camera = new Camera(_defaultPosition, projection); // cam pos doesn't matter here since we will set it later
+            Camera = new Camera(DefaultCamPosition, projection); // cam pos doesn't matter here since we will set it later
             _modelShader = new BattleModelShader(gl);
             _spriteShader = new BattleSpriteShader(gl);
             _spriteMesh = new BattleSpriteMesh(gl);
@@ -82,6 +74,17 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _shadowFrameBuffer = FrameBuffer.CreateWithColorAndDepth(new Size2D(SHADOW_TEXTURE_SIZE, SHADOW_TEXTURE_SIZE));
 
             InitShadows(gl, out _shadowViewProjection);
+
+            // Set battle stuff now
+            Battle = battle;
+            _trainer = battle.Trainers[0]; // Set before ShouldUseKnownInfo()
+            _positions = PkmnPosition.CreatePositions(battle.BattleFormat);
+            _parties = new BattlePokemonParty[battle.Trainers.Count];
+            for (int i = 0; i < battle.Trainers.Count; i++)
+            {
+                PBETrainer trainer = battle.Trainers[i];
+                _parties[i] = new BattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team.Id), ShouldUseKnownInfo(trainer), this);
+            }
 
             // Terrain:
             GetTerrainPaths(battle.BattleTerrain, battle.BattleFormat == PBEBattleFormat.Rotation,
@@ -197,23 +200,25 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 allyPlatformPath = foePlatformPath = FormatPlatform(string.Empty);
             }
         }
-        private static void GetTrainerSpritePos(PBEBattleFormat f, out Vector2 scale, out Vector3 pos)
+        private static Vector3 GetTrainerSpritePos(PBEBattleFormat f)
         {
+            Vector3 pos;
             // Pos is same as 1v1 foe
             switch (f)
             {
                 // Scale just happens to be similar for these 3, because of similar floor heights
                 case PBEBattleFormat.Single:
                 case PBEBattleFormat.Triple:
-                    scale = new Vector2(0.03660f, 0.04850f); pos.Y = 0.02f; break;
+                    pos.Y = 0.02f; break;
                 case PBEBattleFormat.Double:
-                    scale = new Vector2(0.03660f, 0.04850f); pos.Y = 0.015f; break;
+                    pos.Y = 0.015f; break;
                 case PBEBattleFormat.Rotation:
-                    scale = new Vector2(0.0f, 0.0f); pos.Y = 0.5f; break; // TODO
+                    pos.Y = 0.5f; break; // TODO
                 default: throw new ArgumentOutOfRangeException(nameof(f));
             }
             pos.X = 0.75f;
             pos.Z = -12.0f;
+            return pos;
         }
 
         #endregion
@@ -233,8 +238,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void InitTrainerSpriteAtBattleStart()
         {
             var img = new AnimatedImage(TrainerCore.GetTrainerClassAsset(_trainerClass), isPaused: true);
-            GetTrainerSpritePos(Battle.BattleFormat, out Vector2 scale, out Vector3 pos);
-            _trainerSprite = new BattleSprite(scale, pos, true)
+            _trainerSprite = new BattleSprite(GetTrainerSpritePos(Battle.BattleFormat), true)
             {
                 MaskColor = Colors.Black3,
                 MaskColorAmt = 1f
@@ -355,7 +359,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             Render_3D_UpdateLights();
 
-            Matrix4x4 camView = _camera.CreateViewMatrix();
+            Matrix4x4 camView = Camera.CreateViewMatrix();
 
             // Clear shadow buffer
             _shadowFrameBuffer.Use();
@@ -374,7 +378,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             _frameBuffer.Use();
             _modelShader.Use(gl);
-            _modelShader.SetCamera(gl, _camera.Projection, camView, _camera.PR.Position);
+            _modelShader.SetCamera(gl, Camera.Projection, camView, Camera.PR.Position);
             _modelShader.SetLights(gl, _testLights);
 
             gl.ActiveTexture(TextureUnit.Texture0);
@@ -395,7 +399,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _spriteShader.Use(gl);
             _spriteShader.SetOutputShadow(gl, false);
             gl.ActiveTexture(TextureUnit.Texture0);
-            Render_3D_BattleSprites(s => s.Render(gl, _spriteMesh, _spriteShader, _camera.Projection, camView));
+            Render_3D_BattleSprites(s => s.Render(gl, _spriteMesh, _spriteShader, Camera.Projection, camView));
 
             #endregion
 
@@ -428,7 +432,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             }
 
 #if DEBUG_BATTLE_CAMERAPOS
-            _camera.PR.Debug_RenderPosition();
+            Camera.PR.Debug_RenderPosition();
 #endif
         }
 

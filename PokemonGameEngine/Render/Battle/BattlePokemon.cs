@@ -77,18 +77,18 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         }
         public void UpdateAnimationSpeed()
         {
-            AnimatedImage animImg = Pos.Sprite.AnimImage;
+            AnimatedImage img = Pos.Sprite.Image;
             PBEBattlePokemon pkmn = PBEPkmn;
             PBEStatus1 s = pkmn.Status1;
             if (s == PBEStatus1.Frozen)
             {
-                animImg.IsPaused = true;
+                img.IsPaused = true;
             }
             else
             {
                 bool shouldBeSlowed = s == PBEStatus1.Paralyzed || s == PBEStatus1.Asleep || pkmn.HPPercentage <= 0.25f;
-                animImg.SpeedModifier = shouldBeSlowed ? 0.5f : 1f;
-                animImg.IsPaused = false;
+                img.SpeedModifier = shouldBeSlowed ? 0.5f : 1f;
+                img.IsPaused = false;
             }
         }
         public void UpdateMini()

@@ -13,12 +13,12 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         public BattlePokemon BattlePkmn;
         public readonly BattleSprite Sprite;
 
-        public PkmnPosition(in Vector3 defaultPos, Vector2 spriteScale, Vector2 barPos)
+        public PkmnPosition(in Vector3 defaultPos, Vector2 barPos, bool ally)
         {
             DefaultPosition = defaultPos;
             _barPos = barPos;
 
-            Sprite = new BattleSprite(spriteScale, defaultPos, false);
+            Sprite = new BattleSprite(defaultPos, false, scale: ally ? 2f : 1f); // Double size of ally
         }
 
         /// <summary>Assumes <see cref="BattlePokemon.DetachPos"/> was called first</summary>
@@ -26,12 +26,12 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             InfoVisible = false;
             Sprite.IsVisible = false;
-            Sprite.AnimImage = null;
+            Sprite.Image = null;
         }
 
         public void RenderMonInfo()
         {
-            BattlePkmn.InfoBarImg.Render(_barPos.Absolute(BattleGUI.RenderSize));
+            BattlePkmn.InfoBarImg.Render(Pos2D.FromRelative(_barPos, BattleGUI.RenderSize));
         }
 
         public static PkmnPosition[][] CreatePositions(PBEBattleFormat f)
@@ -44,11 +44,11 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     const float floorY = 0.02f;
                     a[0] = new PkmnPosition[1]
                     {
-                        new PkmnPosition(new Vector3( 0.00f, floorY,   2.0f), new Vector2(0.04120f, 0.05430f), new Vector2(0.015f, 0.25f))  // Center (cam dist sqrd = 266.720400)
+                        new PkmnPosition(new Vector3( 0.00f, floorY,   2.0f), new Vector2(0.015f, 0.25f), true)  // Center
                     };
                     a[1] = new PkmnPosition[1]
                     {
-                        new PkmnPosition(new Vector3( 0.75f, floorY, -12.0f), new Vector2(0.03660f, 0.04850f), new Vector2(0.10f, 0.015f))  // Center (cam dist sqrd = 816.782900)
+                        new PkmnPosition(new Vector3( 0.75f, floorY, -12.0f), new Vector2(0.10f, 0.015f), false)  // Center
                     };
                     break;
                 }
@@ -57,13 +57,13 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     const float floorY = 0.015f;
                     a[0] = new PkmnPosition[2]
                     {
-                        new PkmnPosition(new Vector3(-1.50f, floorY,   1.5f), new Vector2(0.04370f, 0.05750f), new Vector2(0.015f, 0.250f)), // Left  (cam dist sqrd = 303.290222)
-                        new PkmnPosition(new Vector3( 2.25f, floorY,   1.5f), new Vector2(0.04025f, 0.05300f), new Vector2(0.295f, 0.270f))  // Right (cam dist sqrd = 253.602722)
+                        new PkmnPosition(new Vector3(-1.50f, floorY,   1.5f), new Vector2(0.015f, 0.250f), true), // Left
+                        new PkmnPosition(new Vector3( 2.25f, floorY,   1.5f), new Vector2(0.295f, 0.270f), true)  // Right
                     };
                     a[1] = new PkmnPosition[2]
                     {
-                        new PkmnPosition(new Vector3( 1.75f, floorY, -12.5f), new Vector2(0.03671f, 0.04860f), new Vector2(0.380f, 0.035f)), // Left  (cam dist sqrd = 832.602700)
-                        new PkmnPosition(new Vector3(-1.75f, floorY, -12.5f), new Vector2(0.03845f, 0.05040f), new Vector2(0.100f, 0.015f))  // Right (cam dist sqrd = 881.602700)
+                        new PkmnPosition(new Vector3( 1.75f, floorY, -12.5f), new Vector2(0.380f, 0.035f), false), // Left
+                        new PkmnPosition(new Vector3(-1.75f, floorY, -12.5f), new Vector2(0.100f, 0.015f), false)  // Right
                     };
                     break;
                 }
@@ -72,15 +72,15 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     const float floorY = 0.02f;
                     a[0] = new PkmnPosition[3]
                     {
-                        new PkmnPosition(new Vector3(-2.00f, floorY,   1.0f), new Vector2(0.04545f, 0.05990f), new Vector2(0.015f, 0.25f)), // Left   (cam dist sqrd = 325.720400)
-                        new PkmnPosition(new Vector3( 0.50f, floorY,   1.0f), new Vector2(0.04310f, 0.05650f), new Vector2(0.295f, 0.27f)), // Center (cam dist sqrd = 286.970400)
-                        new PkmnPosition(new Vector3( 3.25f, floorY,   1.0f), new Vector2(0.04050f, 0.05320f), new Vector2(0.575f, 0.29f))  // Right  (cam dist sqrd = 258.782900)
+                        new PkmnPosition(new Vector3(-2.00f, floorY,   1.0f), new Vector2(0.015f, 0.25f), true), // Left
+                        new PkmnPosition(new Vector3( 0.50f, floorY,   1.0f), new Vector2(0.295f, 0.27f), true), // Center
+                        new PkmnPosition(new Vector3( 3.25f, floorY,   1.0f), new Vector2(0.575f, 0.29f), true)  // Right
                     };
                     a[1] = new PkmnPosition[3]
                     {
-                        new PkmnPosition(new Vector3( 3.25f, floorY, -12.5f), new Vector2(0.03600f, 0.04730f), new Vector2(0.66f, 0.055f)), // Left   (cam dist sqrd = 819.032900)
-                        new PkmnPosition(new Vector3( 0.75f, floorY, -11.0f), new Vector2(0.03550f, 0.04700f), new Vector2(0.38f, 0.035f)), // Center (cam dist sqrd = 763.782900)
-                        new PkmnPosition(new Vector3(-2.75f, floorY, -12.5f), new Vector2(0.03880f, 0.05130f), new Vector2(0.10f, 0.015f))  // Right  (cam dist sqrd = 900.032900)
+                        new PkmnPosition(new Vector3( 3.25f, floorY, -12.5f), new Vector2(0.66f, 0.055f), false), // Left
+                        new PkmnPosition(new Vector3( 0.75f, floorY, -11.0f), new Vector2(0.38f, 0.035f), false), // Center
+                        new PkmnPosition(new Vector3(-2.75f, floorY, -12.5f), new Vector2(0.10f, 0.015f), false)  // Right
                     };
                     break;
                 }
@@ -89,15 +89,15 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     const float floorY = 0.5f; // TODO
                     a[0] = new PkmnPosition[3]
                     {
-                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.00000f, 0.00000f), new Vector2(0.015f, 0.25f)), // Left
-                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.00000f, 0.00000f), new Vector2(0.295f, 0.27f)), // Center
-                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.00000f, 0.00000f), new Vector2(0.575f, 0.29f))  // Right
+                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.015f, 0.25f), true), // Left
+                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.295f, 0.27f), true), // Center
+                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.575f, 0.29f), true)  // Right
                     };
                     a[1] = new PkmnPosition[3]
                     {
-                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.00000f, 0.00000f), new Vector2(0.66f, 0.055f)), // Left
-                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.00000f, 0.00000f), new Vector2(0.38f, 0.035f)), // Center
-                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.00000f, 0.00000f), new Vector2(0.10f, 0.015f))  // Right
+                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.66f, 0.055f), false), // Left
+                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.38f, 0.035f), false), // Center
+                        new PkmnPosition(new Vector3( 0.00f, floorY,   0.0f), new Vector2(0.10f, 0.015f), false)  // Right
                     };
                     break;
                 }

@@ -30,10 +30,6 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return new Vector2(End.X, Start.Y);
         }
-        public Vector2 GetBottomRight()
-        {
-            return new Vector2(End.X, End.Y);
-        }
 
 #if DEBUG
         public override string ToString()
