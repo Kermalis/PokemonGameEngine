@@ -436,10 +436,14 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             uint ms = SDL2.SDL.SDL_GetTicks();
             float rad = ms % 5_000 / 5_000f * 360 * Utils.DegToRad;
-            _testLights[0].Pos.X = MathF.Sin(rad) * 20 - 10;
-            _testLights[0].Pos.Z = MathF.Cos(rad) * 20 - 10;
-            _testLights[1].Pos.X = MathF.Cos(rad * 2) * 20 - 6;
-            _testLights[1].Pos.Z = MathF.Sin(rad * 2) * 20 - 6;
+
+            (float sin, float cos) = MathF.SinCos(rad);
+            _testLights[0].Pos.X = Utils.Lerp(-20, 20, sin * 0.5f + 0.5f);
+            _testLights[0].Pos.Z = Utils.Lerp(-20, 20, cos * 0.5f + 0.5f);
+
+            (sin, cos) = MathF.SinCos(rad * 2);
+            _testLights[1].Pos.X = Utils.Lerp(-6, 6, sin * 0.5f + 0.5f);
+            _testLights[1].Pos.Z = Utils.Lerp(-6, 6, cos * 0.5f + 0.5f);
         }
         private void Render_3D_BattleSprites(Action<BattleSprite> action)
         {
