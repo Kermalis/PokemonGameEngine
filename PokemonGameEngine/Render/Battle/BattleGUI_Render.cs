@@ -33,8 +33,8 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private Window _stringWindow;
         private StringPrinter _stringPrinter;
-        /// <summary>Allows or disallows the messages to continue after being finished.
-        /// Example: The player cannot skip the trainer challenge message until the trainer is done animating</summary>
+        /// <summary>Allows or disallows the messages to continue after finishing.
+        /// Example: The trainer challenge message cannot advance until the trainer is done animating</summary>
         private bool _canAdvanceMsg = true;
         private float _autoAdvanceTime;
         private bool _hudInvisible;
