@@ -33,6 +33,9 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private Window _stringWindow;
         private StringPrinter _stringPrinter;
+        /// <summary>Allows or disallows the messages to continue after being finished.
+        /// Example: The player cannot skip the trainer challenge message until the trainer is done animating</summary>
+        private bool _canAdvanceMsg = true;
         private float _autoAdvanceTime;
         private bool _hudInvisible;
 
@@ -203,10 +206,8 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private static Vector3 GetTrainerSpritePos(PBEBattleFormat f)
         {
             Vector3 pos;
-            // Pos is same as 1v1 foe
             switch (f)
             {
-                // Scale just happens to be similar for these 3, because of similar floor heights
                 case PBEBattleFormat.Single:
                 case PBEBattleFormat.Triple:
                     pos.Y = 0.02f; break;
@@ -216,7 +217,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     pos.Y = 0.5f; break; // TODO
                 default: throw new ArgumentOutOfRangeException(nameof(f));
             }
-            pos.X = 0.75f;
+            pos.X = 0.75f; // X/Z is same as 1v1 foe
             pos.Z = -12.0f;
             return pos;
         }
@@ -238,6 +239,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void InitTrainerSpriteAtBattleStart()
         {
             var img = new AnimatedImage(TrainerCore.GetTrainerClassAsset(_trainerClass), isPaused: true);
+            _canAdvanceMsg = false; // Don't advance message till anim done
             _trainerSprite = new BattleSprite(GetTrainerSpritePos(Battle.BattleFormat), true)
             {
                 MaskColor = Colors.Black3,

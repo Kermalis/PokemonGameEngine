@@ -52,7 +52,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void Task_ReadOutMessage(BackTask task)
         {
             _stringPrinter.Update();
-            if (!_stringPrinter.IsEnded)
+            if (!_stringPrinter.IsEnded || !_canAdvanceMsg)
             {
                 return;
             }
@@ -68,7 +68,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void Task_ReadOutStaticMessage(BackTask task)
         {
             _stringPrinter.Update();
-            if (!_stringPrinter.IsEnded)
+            if (!_stringPrinter.IsEnded || !_canAdvanceMsg)
             {
                 return;
             }
@@ -175,10 +175,21 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             {
                 _trainerSprite.MaskColorAmt = 0f;
                 _trainerSprite.Image.IsPaused = false;
-                _tasks.RemoveAndDispose(task);
+                task.Data = null;
+                task.Action = Task_TrainerWaitAnim;
                 return;
             }
             _trainerSprite.MaskColorAmt = 1f - data.ColorProgress;
+        }
+        private void Task_TrainerWaitAnim(BackTask task)
+        {
+            if (!_trainerSprite.Image.IsPaused)
+            {
+                return;
+            }
+
+            _canAdvanceMsg = true;
+            _tasks.RemoveAndDispose(task);
         }
         private void Task_TrainerGoAway(BackTask task)
         {
