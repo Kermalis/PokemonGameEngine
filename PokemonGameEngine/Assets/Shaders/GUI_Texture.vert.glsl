@@ -8,10 +8,6 @@ out vec2 pass_uv;
 uniform uvec2 screenSize;
 
 
-vec2 AbsToRel(ivec2 v, uvec2 res)
-{
-    return vec2(float(v.x) / res.x, float(v.y) / res.y);
-}
 vec2 RelToGL(vec2 v)
 {
     return vec2(v.x * 2 - 1, v.y * -2 + 1);
@@ -19,7 +15,7 @@ vec2 RelToGL(vec2 v)
 
 void main()
 {
-    vec2 relPos = AbsToRel(in_position, screenSize);
+    vec2 relPos = vec2(in_position) / screenSize; // Abs to Rel
     gl_Position = vec4(RelToGL(relPos), 0, 1);
     pass_uv = in_uv;
 }
