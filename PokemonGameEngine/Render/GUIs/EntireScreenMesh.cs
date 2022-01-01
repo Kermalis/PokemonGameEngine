@@ -32,7 +32,6 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         }
         private static Vector2[] CreateVertices()
         {
-            // Center x align, Bottom y align
             return new Vector2[4]
             {
                 new Vector2(-1,  1), // Top Left
