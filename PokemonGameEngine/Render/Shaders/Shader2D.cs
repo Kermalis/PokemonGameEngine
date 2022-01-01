@@ -1,10 +1,11 @@
-﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
-using Silk.NET.OpenGL;
+﻿using Silk.NET.OpenGL;
 
 namespace Kermalis.PokemonGameEngine.Render.Shaders
 {
     internal class Shader2D : GLShader
     {
+        public static Size2D ViewportSize;
+
         private readonly int _lScreenSize;
 
         public Shader2D(GL gl, string vertexAsset, string fragmentAsset)
@@ -13,10 +14,9 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
             _lScreenSize = GetUniformLocation(gl, "screenSize");
         }
 
-        public void SetResolution(GL gl)
+        public void UpdateViewport(GL gl)
         {
-            Size2D curSize = FrameBuffer.Current.Size;
-            gl.Uniform2(_lScreenSize, curSize.Width, curSize.Height);
+            gl.Uniform2(_lScreenSize, ViewportSize.Width, ViewportSize.Height);
         }
     }
 }

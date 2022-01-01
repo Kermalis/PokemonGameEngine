@@ -35,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.Player
             Log.ModifyIndent(+1);
 #endif
             var map = Map.LoadOrGet(0);
-            PlayerObj.Init(new WorldPos(new Pos2D(2, 29), 0), map);
+            PlayerObj.Init(new WorldPos(new Pos2D(2, 29), 0), map, PlayerObjState.Walking);
             CameraObj.Init();
 #if DEBUG_OVERWORLD
             Log.ModifyIndent(-1);

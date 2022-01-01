@@ -67,6 +67,10 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return new Pos2D(a.X + b.X, a.Y + b.Y);
         }
+        public static Pos2D operator *(Pos2D a, int b)
+        {
+            return new Pos2D(a.X * b, a.Y * b);
+        }
 
         public override bool Equals(object obj)
         {

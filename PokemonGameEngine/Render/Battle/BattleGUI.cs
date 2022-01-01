@@ -92,7 +92,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _tasks.RunTasks();
             RenderBattleAndHUD();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -110,7 +110,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _tasks.RunTasks();
             RenderBattleAndHUD();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -145,7 +145,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 #endif
 
             RenderBattleAndHUD();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
         }
 
         /// <summary>Run after the fade out, and deletes the info bars etc, but also does Pokerus, updating the bag, everything else</summary>

@@ -33,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _tasks.RunTasks();
             RenderBattleAndHUD();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -58,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _tasks.RunTasks();
             RenderBattleAndHUD();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {

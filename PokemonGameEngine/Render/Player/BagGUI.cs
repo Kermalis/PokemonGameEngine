@@ -88,7 +88,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
         {
             Render();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -103,7 +103,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
         {
             Render();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -124,7 +124,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             HandleInputs();
 
             Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
         }
 
         private void HandleInputs()

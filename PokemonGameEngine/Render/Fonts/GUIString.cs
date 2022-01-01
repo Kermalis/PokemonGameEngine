@@ -108,7 +108,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
 
             FontShader shader = FontShader.Instance;
             shader.Use(gl);
-            shader.SetResolution(gl);
+            shader.UpdateViewport(gl);
             shader.SetTranslation(gl, ref Translation);
             shader.SetColors(gl, Colors);
 

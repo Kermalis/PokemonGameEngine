@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             gl.Enable(EnableCap.Blend);
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             _texShader.Use(gl);
-            _texShader.SetResolution(gl);
+            _texShader.UpdateViewport(gl);
             gl.BindVertexArray(_texVAO);
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _texVBO);
             _texShader.SetTextureUnit(gl, 0);
@@ -123,7 +123,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             gl.Enable(EnableCap.Blend);
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             _quadShader.Use(gl);
-            _texShader.SetResolution(gl);
+            _texShader.UpdateViewport(gl);
             gl.BindVertexArray(_quadVAO);
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _quadVBO);
             _quadShader.SetColor(gl, color);

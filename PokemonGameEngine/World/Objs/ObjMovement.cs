@@ -45,9 +45,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 return false;
             }
+            // Check if we are blocked by an obj at the position
             byte newElevation = Overworld.GetElevationIfMovedTo(curElevation, targetElevations);
-            // Check if we can pass through objs at the position
-            if (CollidesWithAny_InBounds(targetMap, new WorldPos(targetXY, newElevation)))
+            if (targetMap.GetNonCamObj_InBounds(new WorldPos(targetXY, newElevation), true) is not null)
             {
                 return false;
             }
@@ -91,9 +91,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 BlocksetBlockBehavior upStairBehavior = upStairBlock.BlocksetBlock.Behavior;
                 if (upStairBehavior == upBehavior)
                 {
-                    // Check if we can pass through objs on the position
+                    // Check if we are blocked by an obj at the position
                     byte newElevation = Overworld.GetElevationIfMovedTo(p.Elevation, upStairBlock.Elevations);
-                    if (CollidesWithAny_InBounds(upStairMap, new WorldPos(upStairPos, newElevation)))
+                    if (upStairMap.GetNonCamObj_InBounds(new WorldPos(upStairPos, newElevation), true) is not null)
                     {
                         return false;
                     }
@@ -153,9 +153,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 return false;
             }
+            // Check if we are blocked by an obj at the position
             byte newElevation = Overworld.GetElevationIfMovedTo(curElevation, targetElevations);
-            // Check if we can pass through objs at the position
-            if (CollidesWithAny_InBounds(targetMap, new WorldPos(targetXY, newElevation)))
+            if (targetMap.GetNonCamObj_InBounds(new WorldPos(targetXY, newElevation), true) is not null)
             {
                 return false;
             }
@@ -185,8 +185,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 return false;
             }
-            // Check if we can pass through objs at the position (only checks current elevation, not the target elevation or any other elevations)
-            if (CollidesWithAny_InBounds(targetMap, new WorldPos(targetXY, pos.Elevation)))
+            // Check if we are blocked by an obj at the position (only checks current elevation, not the target elevation or any other elevations)
+            if (targetMap.GetNonCamObj_InBounds(new WorldPos(targetXY, pos.Elevation), true) is not null)
             {
                 return false;
             }
@@ -262,18 +262,18 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             if (upStairBehavior == upBehavior)
             {
                 Pos.XY.Y--;
-                VisualOffset.Y = STAIR_Y_OFFSET;
+                VisualOfs.Y = STAIR_Y_OFFSET;
                 return;
             }
             MapLayout.Block newBlock = Map.GetBlock_CrossMap(newXY, out _, out _);
             BlocksetBlockBehavior newBehavior = newBlock.BlocksetBlock.Behavior;
             if (newBehavior == downBehavior)
             {
-                VisualOffset.Y = STAIR_Y_OFFSET;
+                VisualOfs.Y = STAIR_Y_OFFSET;
             }
             else
             {
-                VisualOffset.Y = 0;
+                VisualOfs.Y = 0;
             }
         }
         private void ApplyMovement(FacingDirection facing)
@@ -347,8 +347,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Map = newMap;
 
             Pos.XY = newXY;
-            PrevPos.XY.X += newXY.X - curXY.X;
-            PrevPos.XY.Y += newXY.Y - curXY.Y;
+            MovingFromPos.XY.X += newXY.X - curXY.X;
+            MovingFromPos.XY.Y += newXY.Y - curXY.Y;
             OnMapChanged(curMap, newMap);
         }
 
@@ -368,15 +368,15 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             IsMovingSelf = true;
             MovementTimer = 0f;
             Facing = facing;
-            PrevPos = Pos;
-            PrevVisualOffset = VisualOffset;
+            MovingFromPos = Pos;
+            MovingFromVisualOfs = VisualOfs;
             bool success = ignoreLegalCheck || IsMovementLegal(facing, CanSurf());
             if (success)
             {
                 MovementSpeed = run ? RUN_MOVE_SPEED : WALK_MOVE_SPEED;
                 ApplyMovement(facing);
                 UpdateVisualProgress();
-                CameraObj.CopyMovementIfAttachedTo(this); // Tell camera to move the same way
+                CameraObj.Instance.CopyMovementIfAttachedTo(this); // Tell camera to move the same way
                 if (surfing && !Overworld.IsSurfable(GetBlock().BlocksetBlock.Behavior))
                 {
                     OnDismountFromWater();
@@ -395,8 +395,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             MovementTimer = 0;
             MovementSpeed = TURNING_MOVE_SPEED;
             Facing = facing;
-            PrevPos = Pos;
-            PrevVisualOffset = VisualOffset;
+            MovingFromPos = Pos;
+            MovingFromVisualOfs = VisualOfs;
             UpdateVisualProgress();
         }
 
@@ -449,23 +449,23 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         private void UpdateVisualProgress()
         {
-            Pos2D prevXY = PrevPos.XY;
-            Pos2D prevOfs = PrevVisualOffset;
+            Pos2D fromXY = MovingFromPos.XY;
+            Pos2D fromOfs = MovingFromVisualOfs;
             Pos2D xy = Pos.XY;
-            Pos2D ofs = VisualOffset;
+            Pos2D ofs = VisualOfs;
             float t = MovementTimer; // Goes from 0% to 100%
-            int DoTheMath(int cur, int prev, int curOfs, int prevOfs, int numPixelsInBlock)
+            int DoTheMath(int cur, int from, int curOfs, int fromOfs, int numPixelsInBlock)
             {
-                int blockDiff = (prev - cur) * numPixelsInBlock;
-                int prevVisualOfs = blockDiff + prevOfs;
+                int blockDiff = (from - cur) * numPixelsInBlock;
+                int prevVisualOfs = blockDiff + fromOfs;
                 // If we are going from 6 to -10, visualOfsScale would be -16
                 // If we are going from 6 to  00, visualOfsScale would be -06
                 int visualOfsScale = curOfs - prevVisualOfs;
                 // Scale from previous value to new value based on % of transition
                 return (int)(prevVisualOfs + (t * visualOfsScale));
             }
-            VisualProgress.X = DoTheMath(xy.X, prevXY.X, ofs.X, prevOfs.X, Overworld.Block_NumPixelsX);
-            VisualProgress.Y = DoTheMath(xy.Y, prevXY.Y, ofs.Y, prevOfs.Y, Overworld.Block_NumPixelsY);
+            VisualProgress.X = DoTheMath(xy.X, fromXY.X, ofs.X, fromOfs.X, Overworld.Block_NumPixelsX);
+            VisualProgress.Y = DoTheMath(xy.Y, fromXY.Y, ofs.Y, fromOfs.Y, Overworld.Block_NumPixelsY);
             // TODO: (#69) check CameraObj for details
             //CameraObj.CopyMovementIfAttachedTo(this);
         }
@@ -483,6 +483,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
                 // Finished movement just now
                 MovementTimer = 1;
+                MovingFromPos = Pos;
+                MovingFromVisualOfs = VisualOfs;
                 UpdateVisualProgress();
             }
 

@@ -7,14 +7,19 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Render.World
 {
-    // TODO: Why do border blocks tank framerate so much? Even cross map blocks don't
-    internal static class MapRenderer
+    // TODO: Border blocks tank framerate so much because they search the entire connections list for a block there
+    // Then the maps get unloaded since they're unused, but then they are reloaded again every time connections are checked for the border blocks
+    internal sealed partial class MapRenderer
     {
         private struct VisibleBlock
         {
             /// <summary>Can be null, as in no border</summary>
             public MapLayout.Block Block;
             public Pos2D PositionOnScreen;
+#if DEBUG_OVERWORLD
+            public Map Map;
+            public Pos2D MapPos;
+#endif
         }
         private struct VisibleObj
         {
@@ -22,12 +27,27 @@ namespace Kermalis.PokemonGameEngine.Render.World
             public Pos2D PositionOnScreen;
         }
 
+        // Extra tolerance for wide/tall VisualObj
+        private const int OBJ_TOLERANCE_X = 2;
+        private const int OBJ_TOLERANCE_Y = 2;
+
+        public static MapRenderer Instance { get; private set; } = null!; // Set in constructor
+
         /// <summary>This list keeps references to all visible maps, so that they are not constantly unloaded/reloaded while parsing the map connections</summary>
-        private static List<Map> _visibleMaps;
-        private static readonly List<VisibleObj> _visibleObjs = new();
-        private static int _numVisibleBlocksX;
-        private static int _numVisibleBlocksY;
-        private static VisibleBlock[][] _visibleBlocks = Array.Empty<VisibleBlock[]>();
+        private List<Map> _visibleMaps;
+        private readonly List<VisibleObj> _visibleObjs = new();
+        private int _numVisibleBlocksX;
+        private int _numVisibleBlocksY;
+        private VisibleBlock[][] _visibleBlocks = Array.Empty<VisibleBlock[]>();
+
+        public MapRenderer()
+        {
+            Instance = this;
+
+#if DEBUG_OVERWORLD
+            _debugFrameBuffer = FrameBuffer.CreateWithColor(OverworldGUI.RenderSize * DEBUG_FBO_SCALE);
+#endif
+        }
 
         private static void GetVisible(CameraObj cam,
             out Map cameraMap, // The map the camera is currently on
@@ -39,8 +59,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Size2D curSize = FrameBuffer.Current.Size;
 
             cameraMap = cam.Map;
-            int cameraPixelX = (cameraXY.X * Overworld.Block_NumPixelsX) - ((int)curSize.Width / 2) + (Overworld.Block_NumPixelsX / 2) + cam.VisualProgress.X + CameraObj.CameraVisualOffset.X;
-            int cameraPixelY = (cameraXY.Y * Overworld.Block_NumPixelsY) - ((int)curSize.Height / 2) + (Overworld.Block_NumPixelsY / 2) + cam.VisualProgress.Y + CameraObj.CameraVisualOffset.Y;
+            int cameraPixelX = (cameraXY.X * Overworld.Block_NumPixelsX) - ((int)curSize.Width / 2) + (Overworld.Block_NumPixelsX / 2) + cam.VisualProgress.X + cam.CamVisualOfs.X;
+            int cameraPixelY = (cameraXY.Y * Overworld.Block_NumPixelsY) - ((int)curSize.Height / 2) + (Overworld.Block_NumPixelsY / 2) + cam.VisualProgress.Y + cam.CamVisualOfs.Y;
             int xpBX = cameraPixelX % Overworld.Block_NumPixelsX;
             int ypBY = cameraPixelY % Overworld.Block_NumPixelsY;
             startBlock.X = (cameraPixelX / Overworld.Block_NumPixelsX) - (xpBX >= 0 ? 0 : 1);
@@ -53,7 +73,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             startBlockPixel.Y = ypBY >= 0 ? -ypBY : -ypBY - Overworld.Block_NumPixelsY;
         }
 
-        public static void Render()
+        public void Render()
         {
             Tileset.UpdateAnimations();
 
@@ -67,7 +87,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 RenderObjs(e);
             }
         }
-        private static void RenderBlocks(byte elevation)
+        private void RenderBlocks(byte elevation)
         {
             for (int y = 0; y < _numVisibleBlocksY; y++)
             {
@@ -82,20 +102,19 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 }
             }
         }
-        private static void RenderObjs(byte elevation)
+        private void RenderObjs(byte elevation)
         {
             for (int i = 0; i < _visibleObjs.Count; i++)
             {
                 VisibleObj vo = _visibleObjs[i];
-                if (vo.Obj.Pos.Elevation != elevation)
+                if (vo.Obj.Pos.Elevation == elevation)
                 {
-                    continue;
+                    vo.Obj.Draw(vo.PositionOnScreen);
                 }
-                vo.Obj.Draw(vo.PositionOnScreen);
             }
         }
 
-        private static void UpdateVisibleMapsAndBlocks(Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
+        private void UpdateVisibleMapsAndBlocks(Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
         {
             List<Map> oldMaps = _visibleMaps;
             var newMaps = new List<Map>();
@@ -116,19 +135,16 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _visibleMaps = newMaps;
         }
 
-        private static void UpdateVisualObjs(List<Obj> objs, Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
+        private void UpdateVisualObjs(List<Obj> objs, Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
         {
             _visibleObjs.Clear();
 
-            // Extra tolerance for wide/tall VisualObj
-            const int TOLERANCE_X = 2;
-            const int TOLERANCE_Y = 2;
-            startBlock.X -= TOLERANCE_X;
-            startBlock.Y -= TOLERANCE_Y;
-            endBlock.X += TOLERANCE_X;
-            endBlock.Y += TOLERANCE_Y;
-            startBlockPixel.X -= TOLERANCE_X * Overworld.Block_NumPixelsX;
-            startBlockPixel.Y -= TOLERANCE_Y * Overworld.Block_NumPixelsY;
+            startBlock.X -= OBJ_TOLERANCE_X;
+            startBlock.Y -= OBJ_TOLERANCE_Y;
+            endBlock.X += OBJ_TOLERANCE_X;
+            endBlock.Y += OBJ_TOLERANCE_Y;
+            startBlockPixel.X -= OBJ_TOLERANCE_X * Overworld.Block_NumPixelsX;
+            startBlockPixel.Y -= OBJ_TOLERANCE_Y * Overworld.Block_NumPixelsY;
 
             Pos2D bXY;
             for (bXY.Y = startBlock.Y; bXY.Y < endBlock.Y; bXY.Y++)
@@ -156,7 +172,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
         }
 
-        private static void UpdateVisibleBlocksBounds(Pos2D startBlock, Pos2D endBlock)
+        private void UpdateVisibleBlocksBounds(Pos2D startBlock, Pos2D endBlock)
         {
             _numVisibleBlocksX = endBlock.X - startBlock.X;
             _numVisibleBlocksY = endBlock.Y - startBlock.Y;
@@ -183,23 +199,26 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 }
             }
         }
-        private static void UpdateVisibleBlocks(Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel, List<Map> oldMaps, List<Map> newMaps)
+        private void UpdateVisibleBlocks(Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel, List<Map> oldMaps, List<Map> newMaps)
         {
             UpdateVisibleBlocksBounds(startBlock, endBlock);
 
             Pos2D pixel = startBlockPixel;
             Pos2D bXY;
-            int blockYIndex = 0;
-            for (bXY.Y = startBlock.Y; bXY.Y < endBlock.Y; bXY.Y++, blockYIndex++)
+            for (bXY.Y = startBlock.Y; bXY.Y < endBlock.Y; bXY.Y++)
             {
-                VisibleBlock[] vbY = _visibleBlocks[blockYIndex];
-                int blockXIndex = 0;
-                for (bXY.X = startBlock.X; bXY.X < endBlock.X; bXY.X++, blockXIndex++)
+                VisibleBlock[] vbY = _visibleBlocks[bXY.Y - startBlock.Y];
+                for (bXY.X = startBlock.X; bXY.X < endBlock.X; bXY.X++)
                 {
                     VisibleBlock vb;
-                    vb.Block = cameraMap.GetBlock_CrossMap(bXY, out _, out Map map);
+                    vb.Block = cameraMap.GetBlock_CrossMap(bXY, out Pos2D newXY, out Map map);
                     vb.PositionOnScreen = pixel;
-                    vbY[blockXIndex] = vb;
+#if DEBUG_OVERWORLD
+                    vb.Map = map;
+                    vb.MapPos = newXY;
+#endif
+                    vbY[bXY.X - startBlock.X] = vb;
+
                     if (!newMaps.Contains(map))
                     {
                         newMaps.Add(map);

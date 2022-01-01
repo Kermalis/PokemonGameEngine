@@ -18,7 +18,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
     internal sealed class PlayerObj : VisualObj
     {
-        public static readonly PlayerObj Instance = new();
+        public static PlayerObj Instance { get; private set; } = null!; // Set in Init()
 
         public PlayerObjState State;
 
@@ -32,9 +32,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             : base(Overworld.PlayerId, "Player")
         {
         }
-        public static void Init(in WorldPos pos, Map map)
+        public static void Init(in WorldPos pos, Map map, PlayerObjState state)
         {
-            Instance.State = PlayerObjState.Walking;
+            Instance = new PlayerObj();
+            Instance.State = state;
             Instance.Pos = pos;
             Instance.Map = map;
             map.Objs.Add(Instance);
@@ -277,12 +278,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
 
             // Talk to someone on our elevation
-            foreach (EventObj o in talkMap.GetObjs_InBounds(new WorldPos(talkXY, p.Elevation), this, false))
+            Obj o = talkMap.GetNonCamObj_InBounds(new WorldPos(talkXY, p.Elevation), false);
+            if (o is EventObj eo)
             {
-                string script = o.Script;
+                string script = eo.Script;
                 if (script != string.Empty)
                 {
-                    OverworldGUI.Instance.SetInteractiveScript(o, script);
+                    OverworldGUI.Instance.SetInteractiveScript(eo, script);
                     return true;
                 }
             }

@@ -47,7 +47,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _tasks.RunTasks();
             RenderBattleAndHUD();
             _allChoices.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             _allChoices.HandleInputs();
         }
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _tasks.RunTasks();
             RenderBattleAndHUD();
             _targetsGUI.Render();
-            FrameBuffer.Current.RenderToScreen(); // Render targetsGUI framebuffer
+            FrameBuffer.Current.BlitToScreen(); // TargetsGUI's framebuffer
 
             _targetsGUI.HandleInputs();
         }
@@ -106,7 +106,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _tasks.RunTasks();
             RenderBattleAndHUD();
             _moveChoices.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             _moveChoices.HandleInputs();
         }
@@ -216,7 +216,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             RenderBattleAndHUD();
             _allChoices.Render();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -245,7 +245,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 _allChoices.Render();
             }
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {

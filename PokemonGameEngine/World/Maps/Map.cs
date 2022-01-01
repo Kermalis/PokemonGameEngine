@@ -187,7 +187,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         {
             foreach (Obj o in Objs)
             {
-                if (o.Id != Overworld.CameraId && o != CameraObj.CameraAttachedTo)
+                if (o.Id != Overworld.CameraId && o.Id != CameraObj.Instance.CamAttachedTo.Id)
                 {
                     Obj.LoadedObjs.Remove(o);
                     o.Dispose();
@@ -211,23 +211,18 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             UnloadObjEvents();
         }
 
-        // TODO: (#68) Crash if the camera is fixated on an eventobj and the player talks to that eventobj, cannot cast a camera to an eventobj
-        /// <summary>
-        /// <paramref name="exceptThisOne"/> is used so objs aren't checking if they collide with themselves.
-        /// <para>The camera is not hardcoded here because we can have some objs disable collisions, plus someone might want to get the camera from this.</para>
-        /// <paramref name="checkMovingPrevPos"/> checks if an obj is moving from its <see cref="Obj.PrevPos"/> (that matches the coords we are looking at).
-        /// </summary> 
-        public List<Obj> GetObjs_InBounds(in WorldPos pos, Obj exceptThisOne, bool checkMovingPrevPos)
+        public Obj GetNonCamObj_InBounds(in WorldPos pos, bool checkMovingFrom)
         {
-            var list = new List<Obj>();
             foreach (Obj o in Objs)
             {
-                if (o != exceptThisOne && (pos.Equals(o.Pos) || (checkMovingPrevPos && o.IsMoving && pos.Equals(o.PrevPos))))
+                if (o.Id != Overworld.CameraId
+                    && (pos.Equals(o.Pos) || (checkMovingFrom && pos.Equals(o.MovingFromPos)))
+                    )
                 {
-                    list.Add(o);
+                    return o;
                 }
             }
-            return list;
+            return null;
         }
 
         #region Cache

@@ -79,7 +79,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             Render();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -94,7 +94,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             Render();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -303,7 +303,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
         }
         private void CB_ReadOutStaticMessage()
         {
@@ -315,7 +315,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
         }
         private void CB_ReadOutMessageThenCloseWindow()
         {
@@ -328,7 +328,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
         }
         private void CB_ReadOutMessageThenRestoreStaticBackup()
         {
@@ -341,14 +341,14 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
         }
         private void CB_HandleInputs()
         {
             HandleInputs();
 
             Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
         }
 
         private void HandleInputs()

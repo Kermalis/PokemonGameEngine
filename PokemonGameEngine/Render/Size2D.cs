@@ -31,6 +31,10 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return new Vector2(a.X * b.Width, a.Y * b.Height);
         }
+        public static Size2D operator *(Size2D a, uint b)
+        {
+            return new Size2D(a.Width * b, a.Height * b);
+        }
 
 #if DEBUG
         public override string ToString()

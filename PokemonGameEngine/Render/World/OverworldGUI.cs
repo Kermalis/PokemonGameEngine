@@ -33,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         // 3DS (Lower)   - 320 x 240 resolution ( 4:3) - 20 x 15   blocks
         // 3DS (Upper)   - 400 x 240 resolution ( 5:3) - 25 x 15   blocks
         // Default below - 384 x 216 resolution (16:9) - 24 x 13.5 blocks
-        private static readonly Size2D _renderSize = new(384, 216);
+        public static readonly Size2D RenderSize = new(384, 216);
 
         private readonly FrameBuffer _frameBuffer;
         private readonly FrameBuffer _dayTintFrameBuffer;
@@ -51,9 +51,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
         {
             Instance = this;
 
-            _frameBuffer = FrameBuffer.CreateWithColorAndDepth(_renderSize);
+            _frameBuffer = FrameBuffer.CreateWithColorAndDepth(RenderSize);
             _frameBuffer.Use();
-            _dayTintFrameBuffer = FrameBuffer.CreateWithColor(_renderSize);
+            _dayTintFrameBuffer = FrameBuffer.CreateWithColor(RenderSize);
+            _ = new MapRenderer(); // Init
             SetupStartMenuChoices();
             DayTint.SetTintTime();
         }
@@ -108,7 +109,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void SetupStartMenuWindow()
         {
             Size2D s = _startMenuChoices.GetSize();
-            _startMenuWindow = new Window(Pos2D.FromRelative(0.72f, 0.05f, _renderSize), s, Colors.White4);
+            _startMenuWindow = new Window(Pos2D.FromRelative(0.72f, 0.05f, RenderSize), s, Colors.White4);
             RenderStartMenuChoicesOntoWindow();
         }
         private void RenderStartMenuChoicesOntoWindow()
@@ -211,8 +212,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private void CB_FadeIn()
         {
-            RenderFading();
-            _frameBuffer.RenderToScreen();
+            Render();
+            _transition.Render();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -226,8 +228,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_FadeInToStartMenu()
         {
-            RenderFading();
-            _frameBuffer.RenderToScreen();
+            Render();
+            _transition.Render();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -241,8 +244,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_FadeOutToWarp()
         {
-            RenderFading();
-            _frameBuffer.RenderToScreen();
+            Render();
+            _transition.Render();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -263,8 +267,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_FadeOutToEggHatchScreen()
         {
-            RenderFading();
-            _frameBuffer.RenderToScreen();
+            Render();
+            _transition.Render();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -277,8 +282,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_FadeOutToParty_PkmnMenu()
         {
-            RenderFading();
-            _frameBuffer.RenderToScreen();
+            Render();
+            _transition.Render();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -293,8 +299,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_FadeOutToParty_SelectDaycare()
         {
-            RenderFading();
-            _frameBuffer.RenderToScreen();
+            Render();
+            _transition.Render();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -307,8 +314,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_FadeOutToBag()
         {
-            RenderFading();
-            _frameBuffer.RenderToScreen();
+            Render();
+            _transition.Render();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -323,8 +331,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_FadeOutToPC()
         {
-            RenderFading();
-            _frameBuffer.RenderToScreen();
+            Render();
+            _transition.Render();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -339,8 +348,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_FadeOutToBattle()
         {
-            RenderFading();
-            _frameBuffer.RenderToScreen();
+            Render();
+            _transition.Render();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -359,7 +369,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
             ProcessObjs();
 
             Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
+#if DEBUG_OVERWORLD
+            MapRenderer.Instance.Debug_RenderBlocks();
+#endif
         }
         private void CB_StartMenu()
         {
@@ -372,7 +385,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
 
             Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
         }
 
         private void ProcessObjs()
@@ -427,8 +440,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_FadeInToUseSurf()
         {
-            RenderFading();
-            _frameBuffer.RenderToScreen();
+            Render();
+            _transition.Render();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -472,7 +486,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             player.QueuedScriptMovements.Enqueue(Obj.GetWalkMovement(player.Facing));
             player.RunNextScriptMovement();
             player.IsScriptMoving = true;
-            CameraObj.CopyMovementIfAttachedTo(player); // Tell camera to move the same way
+            CameraObj.Instance.CopyMovementIfAttachedTo(player); // Tell camera to move the same way
             task.Action = Task_Surf_WaitMovement;
         }
         private void Task_Surf_WaitMovement(BackTask task)
@@ -491,17 +505,12 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         #endregion
 
-        private void RenderFading()
-        {
-            Render();
-            _transition.Render();
-        }
         private void Render()
         {
             GL gl = Display.OpenGL;
             gl.ClearColor(Colors.Black3);
             gl.Clear(ClearBufferMask.ColorBufferBit);
-            MapRenderer.Render();
+            MapRenderer.Instance.Render();
             DayTint.Render(_dayTintFrameBuffer);
             Window.RenderAll();
         }

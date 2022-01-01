@@ -6,9 +6,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal sealed class CameraObj : Obj
     {
-        public static readonly CameraObj Instance = new();
-        public static Pos2D CameraVisualOffset;
-        public static Obj CameraAttachedTo { get; private set; }
+        public static CameraObj Instance { get; private set; } = null!; // Set in Init()
+
+        public Pos2D CamVisualOfs;
+        public Obj CamAttachedTo { get; private set; }
 
         private CameraObj()
             : base(Overworld.CameraId)
@@ -16,63 +17,59 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
         public static void Init()
         {
-            CameraAttachedTo = PlayerObj.Instance;
+            Instance = new CameraObj();
+            Instance.CamAttachedTo = PlayerObj.Instance;
             Instance.Pos = PlayerObj.Instance.Pos;
             Instance.Map = PlayerObj.Instance.Map;
             Instance.Map.Objs.Add(Instance);
-            Instance.ToggleDayTint();
+            Instance.UpdateDayTint();
         }
 
-        public static void CopyMovementIfAttachedTo(Obj obj)
+        public void CopyMovementIfAttachedTo(Obj obj)
         {
-            if (CameraAttachedTo == obj)
+            if (CamAttachedTo.Id == obj.Id)
             {
-                CameraCopyMovement();
+                CopyAttachedToMovement();
             }
         }
         // TODO: (#69) Causes shaking because Obj.UpdateMovement() is also called on the camera as well as the obj it's following, causing the camera to get ahead
         // Will happen in scripts if the player moves and the camera is on the player
-        private static void CameraCopyMovement()
+        private void CopyAttachedToMovement()
         {
-            CameraObj c = Instance;
-            Obj other = CameraAttachedTo;
+            Obj other = CamAttachedTo;
 
-            c.UpdateMap(other.Map);
+            UpdateMap(other.Map);
 
-            c.Pos = other.Pos;
-            c.VisualOffset = other.VisualOffset;
-            c.PrevPos = other.PrevPos;
-            c.PrevVisualOffset = other.PrevVisualOffset;
+            Pos = other.Pos;
+            VisualOfs = other.VisualOfs;
+            MovingFromPos = other.MovingFromPos;
+            MovingFromVisualOfs = other.MovingFromVisualOfs;
 
-            c.IsMovingSelf = other.IsMovingSelf;
-            c.IsScriptMoving = other.IsScriptMoving;
-            c.MovementTimer = other.MovementTimer;
-            c.MovementSpeed = other.MovementSpeed;
-            c.VisualProgress = other.VisualProgress;
+            IsMovingSelf = other.IsMovingSelf;
+            IsScriptMoving = other.IsScriptMoving;
+            MovementTimer = other.MovementTimer;
+            MovementSpeed = other.MovementSpeed;
+            VisualProgress = other.VisualProgress;
         }
-        public static void SetCameraAttachedTo(Obj o)
+        public void SetAttachedToThenCopyMovement(Obj o)
         {
-            CameraAttachedTo = o;
+            CamAttachedTo = o;
             if (o is not null)
             {
-                CameraCopyMovement();
+                CopyAttachedToMovement();
             }
         }
 
-        public override bool CollidesWithOthers()
-        {
-            return false;
-        }
         protected override void OnMapChanged()
         {
-            ToggleDayTint();
+            UpdateDayTint();
         }
         protected override bool CanSurf()
         {
             return true;
         }
 
-        private void ToggleDayTint()
+        private void UpdateDayTint()
         {
             DayTint.IsEnabled = Map.Details.Flags.HasFlag(MapFlags.DayTint);
         }

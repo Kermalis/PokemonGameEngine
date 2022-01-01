@@ -68,7 +68,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             Render();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -85,7 +85,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             Render();
             _stringWindow.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!ReadMessage())
             {
@@ -101,7 +101,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             Render();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -118,7 +118,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             Render();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {
@@ -135,7 +135,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             Render();
             _stringWindow.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!ReadMessage())
             {
@@ -153,7 +153,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             Render();
             _transition.Render();
-            _frameBuffer.RenderToScreen();
+            _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
             {

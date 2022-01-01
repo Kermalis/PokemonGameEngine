@@ -18,10 +18,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public FacingDirection Facing;
         public Map Map;
         public WorldPos Pos;
-        /// <summary>VisualOffset and PrevVisualOffset are for stairs for example, where the obj is slightly offset from the normal position</summary>
-        public Pos2D VisualOffset;
-        public WorldPos PrevPos;
-        public Pos2D PrevVisualOffset;
+        /// <summary><see cref="VisualOfs"/> and <see cref="MovingFromVisualOfs"/> are for stairs for example, where the obj is slightly offset from the normal position</summary>
+        public Pos2D VisualOfs;
+        public WorldPos MovingFromPos;
+        public Pos2D MovingFromVisualOfs;
 
         public virtual bool CanMoveWillingly => !IsLocked && !IsMoving;
         // Do not move locked Objs unless they're being moved by scripts
@@ -45,7 +45,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         protected Obj(ushort id, WorldPos pos)
         {
             Id = id;
-            PrevPos = Pos = pos;
+            MovingFromPos = Pos = pos;
             LoadedObjs.Add(this);
         }
 
@@ -97,9 +97,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
             UpdateMap(newMap);
             Pos = newPos;
-            PrevPos = newPos;
-            PrevVisualOffset = VisualOffset;
-            CameraObj.CopyMovementIfAttachedTo(this); // Update camera map and pos
+            MovingFromPos = newPos;
+            MovingFromVisualOfs = VisualOfs;
+            CameraObj.Instance.CopyMovementIfAttachedTo(this); // Update camera map and pos
             WarpInProgress.EndCurrent();
         }
 
@@ -115,24 +115,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
         }
         protected virtual void OnMapChanged() { }
-        public virtual bool CollidesWithOthers()
-        {
-            return true;
-        }
-        public bool CollidesWithAny_InBounds(Map map, in WorldPos pos)
-        {
-            if (CollidesWithOthers())
-            {
-                foreach (Obj o in map.GetObjs_InBounds(pos, this, true))
-                {
-                    if (o.CollidesWithOthers())
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
 
         public virtual void Update() { }
 
