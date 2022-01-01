@@ -306,31 +306,31 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 case FacingDirection.South:
                 {
                     return CanInteract_Cardinal(curMap, curXY,
-                        curXY.South(), BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_N,
+                        curXY.Move(0, 1), BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_N,
                         out targetXY, out targetMap);
                 }
                 case FacingDirection.North:
                 {
                     return CanInteract_Cardinal(curMap, curXY,
-                        curXY.North(), BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_S,
+                        curXY.Move(0, -1), BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_S,
                         out targetXY, out targetMap);
                 }
                 case FacingDirection.West:
                 {
                     return CanInteract_Cardinal(curMap, curXY,
-                        curXY.West(), BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_E,
+                        curXY.Move(-1, 0), BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_E,
                         out targetXY, out targetMap);
                 }
                 case FacingDirection.East:
                 {
                     return CanInteract_Cardinal(curMap, curXY,
-                        curXY.East(), BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_W,
+                        curXY.Move(1, 0), BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_W,
                         out targetXY, out targetMap);
                 }
                 case FacingDirection.Southwest:
                 {
                     return CanInteract_Diagonal(curMap, curXY,
-                        curXY.Southwest(), LayoutBlockPassage.SoutheastPassage, curXY.West(), LayoutBlockPassage.NorthwestPassage, curXY.South(),
+                        curXY.Move(-1, 1), LayoutBlockPassage.SoutheastPassage, curXY.Move(-1, 0), LayoutBlockPassage.NorthwestPassage, curXY.Move(0, 1),
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_SW,
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_NE,
                         BlocksetBlockBehavior.Blocked_SE, BlocksetBlockBehavior.Blocked_NW,
@@ -339,7 +339,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 case FacingDirection.Southeast:
                 {
                     return CanInteract_Diagonal(curMap, curXY,
-                        curXY.Southeast(), LayoutBlockPassage.SouthwestPassage, curXY.East(), LayoutBlockPassage.NortheastPassage, curXY.South(),
+                        curXY.Move(1, 1), LayoutBlockPassage.SouthwestPassage, curXY.Move(1, 0), LayoutBlockPassage.NortheastPassage, curXY.Move(0, 1),
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_SE,
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_NW,
                         BlocksetBlockBehavior.Blocked_SW, BlocksetBlockBehavior.Blocked_NE,
@@ -348,7 +348,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 case FacingDirection.Northwest:
                 {
                     return CanInteract_Diagonal(curMap, curXY,
-                        curXY.Northwest(), LayoutBlockPassage.NortheastPassage, curXY.West(), LayoutBlockPassage.SouthwestPassage, curXY.North(),
+                        curXY.Move(-1, -1), LayoutBlockPassage.NortheastPassage, curXY.Move(-1, 0), LayoutBlockPassage.SouthwestPassage, curXY.Move(0, -1),
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_NW,
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_SE,
                         BlocksetBlockBehavior.Blocked_NE, BlocksetBlockBehavior.Blocked_SW,
@@ -357,7 +357,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 case FacingDirection.Northeast:
                 {
                     return CanInteract_Diagonal(curMap, curXY,
-                        curXY.Northeast(), LayoutBlockPassage.NorthwestPassage, curXY.East(), LayoutBlockPassage.SoutheastPassage, curXY.North(),
+                        curXY.Move(1, -1), LayoutBlockPassage.NorthwestPassage, curXY.Move(1, 0), LayoutBlockPassage.SoutheastPassage, curXY.Move(0, -1),
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_NE,
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_SW,
                         BlocksetBlockBehavior.Blocked_NW, BlocksetBlockBehavior.Blocked_SE,

@@ -84,7 +84,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return false;
             }
             // Stairs - check if we can go up a stair that's above our target
-            Map.GetXYMap(targetXY.North(), out Pos2D upStairPos, out Map upStairMap);
+            Map.GetXYMap(targetXY.Move(0, -1), out Pos2D upStairPos, out Map upStairMap);
             MapLayout.Block upStairBlock = upStairMap.GetBlock_InBounds(upStairPos);
             if ((upStairBlock.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
             {
@@ -200,46 +200,46 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 case FacingDirection.South:
                 {
-                    return CanMoveTo_Cardinal(xy.South(), allowSurf, BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_N);
+                    return CanMoveTo_Cardinal(xy.Move(0, 1), allowSurf, BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_N);
                 }
                 case FacingDirection.North:
                 {
-                    return CanMoveTo_Cardinal(xy.North(), allowSurf, BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_S);
+                    return CanMoveTo_Cardinal(xy.Move(0, -1), allowSurf, BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_S);
                 }
                 case FacingDirection.West:
                 {
-                    return CanMoveTo_Cardinal_ConsiderStairs(xy.West(), allowSurf, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_E,
+                    return CanMoveTo_Cardinal_ConsiderStairs(xy.Move(-1, 0), allowSurf, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_E,
                         BlocksetBlockBehavior.Stair_W, BlocksetBlockBehavior.Stair_E);
                 }
                 case FacingDirection.East:
                 {
-                    return CanMoveTo_Cardinal_ConsiderStairs(xy.East(), allowSurf, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_W,
+                    return CanMoveTo_Cardinal_ConsiderStairs(xy.Move(1, 0), allowSurf, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_W,
                         BlocksetBlockBehavior.Stair_E, BlocksetBlockBehavior.Stair_W);
                 }
                 case FacingDirection.Southwest:
                 {
-                    return CanMoveTo_Diagonal(xy.Southwest(), allowSurf, LayoutBlockPassage.SoutheastPassage, xy.West(), LayoutBlockPassage.NorthwestPassage, xy.South(),
+                    return CanMoveTo_Diagonal(xy.Move(-1, 1), allowSurf, LayoutBlockPassage.SoutheastPassage, xy.Move(-1, 0), LayoutBlockPassage.NorthwestPassage, xy.Move(0, 1),
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_SW,
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_NE,
                         BlocksetBlockBehavior.Blocked_SE, BlocksetBlockBehavior.Blocked_NW);
                 }
                 case FacingDirection.Southeast:
                 {
-                    return CanMoveTo_Diagonal(xy.Southeast(), allowSurf, LayoutBlockPassage.SouthwestPassage, xy.East(), LayoutBlockPassage.NortheastPassage, xy.South(),
+                    return CanMoveTo_Diagonal(xy.Move(1, 1), allowSurf, LayoutBlockPassage.SouthwestPassage, xy.Move(1, 0), LayoutBlockPassage.NortheastPassage, xy.Move(0, 1),
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_SE,
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_NW,
                         BlocksetBlockBehavior.Blocked_SW, BlocksetBlockBehavior.Blocked_NE);
                 }
                 case FacingDirection.Northwest:
                 {
-                    return CanMoveTo_Diagonal(xy.Northwest(), allowSurf, LayoutBlockPassage.NortheastPassage, xy.West(), LayoutBlockPassage.SouthwestPassage, xy.North(),
+                    return CanMoveTo_Diagonal(xy.Move(-1, -1), allowSurf, LayoutBlockPassage.NortheastPassage, xy.Move(-1, 0), LayoutBlockPassage.SouthwestPassage, xy.Move(0, -1),
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_NW,
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_SE,
                         BlocksetBlockBehavior.Blocked_NE, BlocksetBlockBehavior.Blocked_SW);
                 }
                 case FacingDirection.Northeast:
                 {
-                    return CanMoveTo_Diagonal(xy.Northeast(), allowSurf, LayoutBlockPassage.NorthwestPassage, xy.East(), LayoutBlockPassage.SoutheastPassage, xy.North(),
+                    return CanMoveTo_Diagonal(xy.Move(1, -1), allowSurf, LayoutBlockPassage.NorthwestPassage, xy.Move(1, 0), LayoutBlockPassage.SoutheastPassage, xy.Move(0, -1),
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_NE,
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_SW,
                         BlocksetBlockBehavior.Blocked_NW, BlocksetBlockBehavior.Blocked_SE);
@@ -257,7 +257,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 Pos.XY.Y++;
             }
             Pos2D newXY = Pos.XY;
-            MapLayout.Block upStairBlock = Map.GetBlock_CrossMap(newXY.North(), out _, out _);
+            MapLayout.Block upStairBlock = Map.GetBlock_CrossMap(newXY.Move(0, -1), out _, out _);
             BlocksetBlockBehavior upStairBehavior = upStairBlock.BlocksetBlock.Behavior;
             if (upStairBehavior == upBehavior)
             {

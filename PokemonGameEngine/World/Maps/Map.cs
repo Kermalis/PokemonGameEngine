@@ -77,7 +77,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                                 MapLayout l = m.Layout;
                                 if (xy.X >= c.Offset && xy.X < c.Offset + l.BlocksWidth)
                                 {
-                                    m.GetXYMap(xy.Northwest(c.Offset, curL.BlocksHeight), out newXY, out newMap);
+                                    m.GetXYMap(xy.Move(-c.Offset, -curL.BlocksHeight), out newXY, out newMap);
                                     return;
                                 }
                             }
@@ -91,7 +91,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                                 MapLayout l = m.Layout;
                                 if (xy.X >= c.Offset && xy.X < c.Offset + l.BlocksWidth)
                                 {
-                                    m.GetXYMap(xy.Southwest(c.Offset, l.BlocksHeight), out newXY, out newMap);
+                                    m.GetXYMap(xy.Move(-c.Offset, l.BlocksHeight), out newXY, out newMap);
                                     return;
                                 }
                             }
@@ -105,7 +105,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                                 MapLayout l = m.Layout;
                                 if (xy.Y >= c.Offset && xy.Y < c.Offset + l.BlocksHeight)
                                 {
-                                    m.GetXYMap(xy.Northeast(l.BlocksWidth, c.Offset), out newXY, out newMap);
+                                    m.GetXYMap(xy.Move(l.BlocksWidth, -c.Offset), out newXY, out newMap);
                                     return;
                                 }
                             }
@@ -119,7 +119,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                                 MapLayout l = m.Layout;
                                 if (xy.Y >= c.Offset && xy.Y < c.Offset + l.BlocksHeight)
                                 {
-                                    m.GetXYMap(xy.Northwest(curL.BlocksWidth, c.Offset), out newXY, out newMap);
+                                    m.GetXYMap(xy.Move(-curL.BlocksWidth, -c.Offset), out newXY, out newMap);
                                     return;
                                 }
                             }

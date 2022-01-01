@@ -216,12 +216,12 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             const int lineStartX = 9;
             const int lineW = 82;
-            Renderer.HP_TripleLine(lineStartX, 23, lineW, PBEPkmn.HPPercentage);
+            Renderer.HP_TripleLine(new Pos2D(lineStartX, 23), lineW, PBEPkmn.HPPercentage);
 
             // EXP
             if (!_useKnownInfo)
             {
-                Renderer.EXP_SingleLine(lineStartX, 37, lineW, PBEPkmn.EXP, PBEPkmn.Level, PBEPkmn.OriginalSpecies, PBEPkmn.RevertForm);
+                Renderer.EXP_SingleLine(new Pos2D(lineStartX, 37), lineW, PBEPkmn.EXP, PBEPkmn.Level, PBEPkmn.OriginalSpecies, PBEPkmn.RevertForm);
             }
 
             oldFBO.Use();

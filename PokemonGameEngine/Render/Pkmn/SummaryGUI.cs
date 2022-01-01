@@ -316,8 +316,9 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
             Size2D curSize = FrameBuffer.Current.Size;
             uint xpW = (uint)(0.3f * curSize.Width);
-            int xpX = RenderUtils.GetCoordinatesForCentering(curSize.Width, xpW, rightColCenterX);
-            int xpY = (int)((rightColY + 0.61f) * curSize.Height);
+            var xpPos = new Pos2D(
+                RenderUtils.GetCoordinatesForCentering(curSize.Width, xpW, rightColCenterX),
+                (int)((rightColY + 0.61f) * curSize.Height));
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(128, 215, 135), new Rect2D(Pos2D.FromRelative(winX, winY, curSize), Size2D.FromRelative(winW, winH, curSize))); // TODO: ROUNDED 15
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(210, 210, 210), new Rect2D(Pos2D.FromRelative(rightColX, rightColY, curSize), Size2D.FromRelative(rightColW, rightColH, curSize))); // TODO: ROUNDED 8
 
@@ -383,13 +384,13 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             if (level >= PkmnConstants.MaxLevel)
             {
                 toNextLvl = 0;
-                Renderer.EXP_SingleLine(xpX, xpY, xpW, 0);
+                Renderer.EXP_SingleLine(xpPos, xpW, 0);
             }
             else
             {
                 PBEGrowthRate gr = bs.GrowthRate;
                 toNextLvl = PBEDataProvider.Instance.GetEXPRequired(gr, (byte)(level + 1)) - exp;
-                Renderer.EXP_SingleLine(xpX, xpY, xpW, exp, level, gr);
+                Renderer.EXP_SingleLine(xpPos, xpW, exp, level, gr);
             }
 
             // Species
@@ -540,8 +541,9 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
             Size2D curSize = FrameBuffer.Current.Size;
             uint hpW = (uint)(0.3f * curSize.Width);
-            int hpX = RenderUtils.GetCoordinatesForCentering(curSize.Width, hpW, rightColCenterX);
-            int hpY = (int)((rightColY + 0.09f) * curSize.Height);
+            var hpPos = new Pos2D(
+                RenderUtils.GetCoordinatesForCentering(curSize.Width, hpW, rightColCenterX),
+                (int)((rightColY + 0.09f) * curSize.Height));
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(135, 145, 250), new Rect2D(Pos2D.FromRelative(winX, winY, curSize), Size2D.FromRelative(winW, winH, curSize))); // TODO: ROUNDED 12
             // Stats
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(210, 210, 210), new Rect2D(Pos2D.FromRelative(rightColX, rightColY, curSize), Size2D.FromRelative(rightColW, rightColH, curSize))); // TODO: ROUNDED 8
@@ -657,7 +659,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             string str = string.Format("{0}/{1}", hp, maxHP);
             PlaceRightCol(-2, str, rightColColors);
             float percent = (float)hp / maxHP;
-            Renderer.HP_TripleLine(hpX, hpY, hpW, percent);
+            Renderer.HP_TripleLine(hpPos, hpW, percent);
             // Attack
             str = atk.ToString();
             PlaceRightCol(0, str, rightColColors);

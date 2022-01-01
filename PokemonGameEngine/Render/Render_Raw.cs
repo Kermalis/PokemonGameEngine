@@ -75,38 +75,6 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return color >> 24;
         }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint SetR(uint color, uint newR)
-        {
-            uint g = GetG(color);
-            uint b = GetB(color);
-            uint a = GetA(color);
-            return RawColor(newR, g, b, a);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint SetG(uint color, uint newG)
-        {
-            uint r = GetR(color);
-            uint b = GetB(color);
-            uint a = GetA(color);
-            return RawColor(r, newG, b, a);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint SetB(uint color, uint newB)
-        {
-            uint r = GetR(color);
-            uint g = GetG(color);
-            uint a = GetA(color);
-            return RawColor(r, g, newB, a);
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint SetA(uint color, uint newA)
-        {
-            uint r = GetR(color);
-            uint g = GetG(color);
-            uint b = GetB(color);
-            return RawColor(r, g, b, newA);
-        }
 
         #endregion
     }

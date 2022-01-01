@@ -15,50 +15,22 @@ namespace Kermalis.PokemonGameEngine.Render
             Y = y;
         }
 
-        public Pos2D South(int amt = 1)
+        public Pos2D Move(int x, int y)
         {
-            return new Pos2D(X, Y + amt);
-        }
-        public Pos2D North(int amt = 1)
-        {
-            return new Pos2D(X, Y - amt);
-        }
-        public Pos2D West(int amt = 1)
-        {
-            return new Pos2D(X - amt, Y);
-        }
-        public Pos2D East(int amt = 1)
-        {
-            return new Pos2D(X + amt, Y);
-        }
-        public Pos2D Southwest(int xAmt = 1, int yAmt = 1)
-        {
-            return new Pos2D(X - xAmt, Y + yAmt);
-        }
-        public Pos2D Southeast(int xAmt = 1, int yAmt = 1)
-        {
-            return new Pos2D(X + xAmt, Y + yAmt);
-        }
-        public Pos2D Northwest(int xAmt = 1, int yAmt = 1)
-        {
-            return new Pos2D(X - xAmt, Y - yAmt);
-        }
-        public Pos2D Northeast(int xAmt = 1, int yAmt = 1)
-        {
-            return new Pos2D(X + xAmt, Y - yAmt);
+            return new Pos2D(X + x, Y + y);
         }
         public Pos2D Move(FacingDirection dir)
         {
             switch (dir)
             {
-                case FacingDirection.South: return South();
-                case FacingDirection.North: return North();
-                case FacingDirection.West: return West();
-                case FacingDirection.East: return East();
-                case FacingDirection.Southwest: return Southwest();
-                case FacingDirection.Southeast: return Southeast();
-                case FacingDirection.Northwest: return Northwest();
-                case FacingDirection.Northeast: return Northeast();
+                case FacingDirection.South: return Move(0, 1);
+                case FacingDirection.North: return Move(0, -1);
+                case FacingDirection.West: return Move(-1, 0);
+                case FacingDirection.East: return Move(1, 0);
+                case FacingDirection.Southwest: return Move(-1, 1);
+                case FacingDirection.Southeast: return Move(1, 1);
+                case FacingDirection.Northwest: return Move(-1, -1);
+                case FacingDirection.Northeast: return Move(1, -1);
                 default: throw new ArgumentOutOfRangeException(nameof(dir));
             }
         }

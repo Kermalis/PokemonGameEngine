@@ -61,7 +61,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Size2D renderSize = FrameBuffer.Current.Size;
             if (new Rect2D(shadowPos, shadow.Size).Intersects(renderSize))
             {
-                shadow.Render(shadowPos);
+                shadow.Render(shadowPos, yFlip: true);
             }
             // Draw obj image
             var objRect = new Rect2D(pos, size);

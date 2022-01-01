@@ -157,18 +157,18 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             RenderOneQuad(gl, rect);
             RenderQuadEnd(gl);
         }
-        public void DrawHorizontalLine_Width(in Vector4 color, int absDstX, int absDstY, uint absDstW)
+        public void DrawHorizontalLine_Width(in Vector4 color, Pos2D absDstPos, uint absDstW)
         {
             GL gl = Display.OpenGL;
             RenderQuadStart(gl, color);
-            RenderOneQuad(gl, new Rect2D(new Pos2D(absDstX, absDstY), new Size2D(absDstW, 1)));
+            RenderOneQuad(gl, new Rect2D(absDstPos, new Size2D(absDstW, 1)));
             RenderQuadEnd(gl);
         }
-        public void DrawVerticalLine_Height(in Vector4 color, int absDstX, int absDstY, uint absDstH)
+        public void DrawVerticalLine_Height(in Vector4 color, Pos2D absDstPos, uint absDstH)
         {
             GL gl = Display.OpenGL;
             RenderQuadStart(gl, color);
-            RenderOneQuad(gl, new Rect2D(new Pos2D(absDstX, absDstY), new Size2D(1, absDstH)));
+            RenderOneQuad(gl, new Rect2D(absDstPos, new Size2D(1, absDstH)));
             RenderQuadEnd(gl);
         }
         public void DrawRectangle(in Vector4 color, Rect2D rect)
