@@ -26,7 +26,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 uint[] bmp = new uint[shadowSize.GetArea()];
                 fixed (uint* dst = bmp)
                 {
-                    Renderer.FillEllipse_Points(dst, shadowSize, new Pos2D(0, 0), new Pos2D((int)shadowSize.Width - 1, (int)shadowSize.Height - 1), Renderer.RawColor(0, 0, 0, 160));
+                    UnsafeRenderer.FillEllipse_Points(dst, shadowSize, new Rect2D(new Pos2D(0, 0), shadowSize), UnsafeRenderer.RawColor(0, 0, 0, 160));
                     ShadowImage.LoadTextureData(Display.OpenGL, dst);
                 }
             }

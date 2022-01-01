@@ -33,7 +33,14 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             : base(command, isEnabled: isEnabled)
         {
             _pkmn = pkmn;
-            _mini = PokemonImageLoader.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.IsEgg);
+            if (pkmn.IsEgg)
+            {
+                _mini = PokemonImageLoader.GetEggMini();
+            }
+            else
+            {
+                _mini = PokemonImageLoader.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny);
+            }
 
             IsDirty = true;
         }

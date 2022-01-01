@@ -8,14 +8,6 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
     {
         public static EntireScreenMesh Instance { get; private set; } = null!; // Set in RenderManager
 
-        private static readonly Vector2[] _vertices = new Vector2[4]
-        {
-            new Vector2(-1,  1), // Top Left
-            new Vector2(-1, -1), // Bottom Left
-            new Vector2( 1,  1), // Top Right
-            new Vector2( 1, -1)  // Bottom Right
-        };
-
         private readonly uint _vao;
         private readonly uint _vbo;
 
@@ -30,13 +22,24 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             // Create vbo
             _vbo = gl.GenBuffer();
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _vbo);
-            fixed (void* d = _vertices)
+            fixed (void* vertices = CreateVertices())
             {
-                gl.BufferData(BufferTargetARB.ArrayBuffer, (uint)sizeof(Vector2) * 4, d, BufferUsageARB.StaticDraw);
+                gl.BufferData(BufferTargetARB.ArrayBuffer, (uint)sizeof(Vector2) * 4, vertices, BufferUsageARB.StaticDraw);
             }
 
             gl.EnableVertexAttribArray(0);
             gl.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, (uint)sizeof(Vector2), null);
+        }
+        private static Vector2[] CreateVertices()
+        {
+            // Center x align, Bottom y align
+            return new Vector2[4]
+            {
+                new Vector2(-1,  1), // Top Left
+                new Vector2(-1, -1), // Bottom Left
+                new Vector2( 1,  1), // Top Right
+                new Vector2( 1, -1)  // Bottom Right
+            };
         }
 
         public void Render()

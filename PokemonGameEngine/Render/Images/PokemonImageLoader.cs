@@ -4,16 +4,19 @@ using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Kermalis.PokemonGameEngine.Render.Images
 {
     internal sealed class PokemonImageLoader
     {
-        public const string SubstituteFrontAsset = @"Pkmn\STATUS2_Substitute_F.gif";
-        public const string SubstituteBackAsset = @"Pkmn\STATUS2_Substitute_B.gif";
-        public const string EggFrontAsset = @"Pkmn\Egg_F.gif";
-        public const string EggBackAsset = @"Pkmn\Egg_B.gif";
-        public const string EggMiniAsset = @"Pkmn\Egg_Mini.png";
+        private const string SUBSTITUTE_B_ASSET = @"Pkmn\STATUS2_Substitute_B.gif";
+        private const string SUBSTITUTE_F_ASSET = @"Pkmn\STATUS2_Substitute_F.gif";
+        private const string EGG_F_ASSET = @"Pkmn\Egg_F.gif";
+        private const string EGG_MINI_ASSET = @"Pkmn\Egg_Mini.png";
+
+        private static readonly List<PBESpecies> _femaleMiniLookup = new();
+        private static readonly List<PBESpecies> _femaleVersionLookup = new();
 
         static PokemonImageLoader()
         {
@@ -36,49 +39,76 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             Add(@"Pkmn\FemaleSpriteLookup.txt", _femaleVersionLookup);
         }
 
-        private static readonly object _femaleLookupLockObj = new();
-        private static readonly List<PBESpecies> _femaleMiniLookup = new();
-        private static readonly List<PBESpecies> _femaleVersionLookup = new();
         public static bool HasFemaleVersion(PBESpecies species, bool mini)
         {
-            lock (_femaleLookupLockObj)
-            {
-                return (mini ? _femaleMiniLookup : _femaleVersionLookup).Contains(species);
-            }
+            return (mini ? _femaleMiniLookup : _femaleVersionLookup).Contains(species);
         }
-        public static Image GetMini(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool isEgg)
-        {
-            return Image.LoadOrGet(GetMiniAsset(species, form, gender, shiny, isEgg));
-        }
-        public static string GetMiniAsset(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool isEgg)
-        {
-            if (isEgg)
-            {
-                return EggMiniAsset;
-            }
-            string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
-            string genderStr = gender == PBEGender.Female && HasFemaleVersion(species, true) ? "_F" : string.Empty;
-            return "Pkmn\\PKMN_" + speciesStr + (shiny ? "_S" : string.Empty) + genderStr + ".png";
-        }
+
         public static AnimatedImage GetSubstituteImage(bool backImage)
         {
-            return new AnimatedImage(backImage ? SubstituteBackAsset : SubstituteFrontAsset);
+            return new AnimatedImage(backImage ? SUBSTITUTE_B_ASSET : SUBSTITUTE_F_ASSET);
         }
-        public static AnimatedImage GetEggImage(bool backImage = false)
+        public static AnimatedImage GetEggImage()
         {
-            return new AnimatedImage(backImage ? EggBackAsset : EggFrontAsset);
+            return new AnimatedImage(EGG_F_ASSET);
         }
+        // Manaphy egg not considered but it can be
+        public static Image GetEggMini()
+        {
+            return Image.LoadOrGet(EGG_MINI_ASSET);
+        }
+
+        public static Image GetMini(PBESpecies species, PBEForm form, PBEGender gender, bool shiny)
+        {
+            return Image.LoadOrGet(GetMiniAsset(species, form, gender, shiny));
+        }
+        public static string GetMiniAsset(PBESpecies species, PBEForm form, PBEGender gender, bool shiny)
+        {
+            StringBuilder sb = StartAssetString();
+            AppendSpeciesPart(species, form, sb);
+            AppendShinyPart(shiny, sb);
+            AppendGenderPart(species, gender, true, sb);
+            sb.Append(".png");
+            return sb.ToString();
+        }
+
         public static AnimatedImage GetPokemonImage(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, uint pid, bool backImage)
         {
-            bool doSpindaSpots = species == PBESpecies.Spinda && !backImage;
-            return new AnimatedImage(GetPokemonImageAsset(species, form, gender, shiny, backImage), doSpindaSpots ? (pid, shiny) : null);
+            bool spindaSpots = species == PBESpecies.Spinda && !backImage;
+            return new AnimatedImage(GetPokemonImageAsset(species, form, gender, shiny, backImage), spindaSpots ? (pid, shiny) : null);
         }
         public static string GetPokemonImageAsset(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, bool backImage)
         {
-            string speciesStr = PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString();
-            string genderStr = gender == PBEGender.Female && HasFemaleVersion(species, false) ? "_F" : string.Empty;
-            string orientation = backImage ? "_B" : "_F";
-            return "Pkmn\\PKMN_" + speciesStr + orientation + (shiny ? "_S" : string.Empty) + genderStr + ".gif";
+            StringBuilder sb = StartAssetString();
+            AppendSpeciesPart(species, form, sb);
+            sb.Append(backImage ? "_B" : "_F");
+            AppendShinyPart(shiny, sb);
+            AppendGenderPart(species, gender, false, sb);
+            sb.Append(".gif");
+            return sb.ToString();
+        }
+
+        private static StringBuilder StartAssetString()
+        {
+            return new StringBuilder(@"Pkmn\PKMN_");
+        }
+        private static void AppendSpeciesPart(PBESpecies species, PBEForm form, StringBuilder sb)
+        {
+            sb.Append(PBEDataUtils.GetNameOfForm(species, form) ?? species.ToString());
+        }
+        private static void AppendShinyPart(bool shiny, StringBuilder sb)
+        {
+            if (shiny)
+            {
+                sb.Append("_S");
+            }
+        }
+        private static void AppendGenderPart(PBESpecies species, PBEGender gender, bool mini, StringBuilder sb)
+        {
+            if (gender == PBEGender.Female && HasFemaleVersion(species, mini))
+            {
+                sb.Append("_F");
+            }
         }
     }
 }

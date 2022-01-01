@@ -7,7 +7,6 @@ using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Pkmn;
 using Kermalis.PokemonGameEngine.Render.Transitions;
-using Silk.NET.OpenGL;
 using System;
 
 namespace Kermalis.PokemonGameEngine.Render.Player
@@ -16,6 +15,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
     {
         private static readonly Size2D _renderSize = new(480, 270); // 16:9
         private readonly FrameBuffer _frameBuffer;
+        private readonly TripleColorBackground _tripleColorBG;
 
         private readonly Inventory<InventorySlotNew> _inv;
 
@@ -37,6 +37,9 @@ namespace Kermalis.PokemonGameEngine.Render.Player
         {
             _frameBuffer = FrameBuffer.CreateWithColor(_renderSize);
             _frameBuffer.Use();
+
+            _tripleColorBG = new TripleColorBackground();
+            _tripleColorBG.SetColors(Colors.FromRGB(215, 230, 230), Colors.FromRGB(230, 165, 0), Colors.FromRGB(245, 180, 30));
 
             _inv = inv;
 
@@ -111,6 +114,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             }
 
             _transition.Dispose();
+            _tripleColorBG.Delete();
             _partyChoices.Dispose();
             _bagText.Delete();
             _curPouchName.Delete();
@@ -157,11 +161,8 @@ namespace Kermalis.PokemonGameEngine.Render.Player
 
         private void Render()
         {
-            GL gl = Display.OpenGL;
             // Background
-            //Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(215, 231, 230, 255), Renderer.Color(231, 163, 0, 255), Renderer.Color(242, 182, 32, 255));
-            gl.ClearColor(Colors.FromRGB(31, 31, 31));
-            gl.Clear(ClearBufferMask.ColorBufferBit);
+            _tripleColorBG.Render();
 
             // BAG
             _bagText.Render(Pos2D.FromRelative(0.02f, 0.01f, _renderSize));

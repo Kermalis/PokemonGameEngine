@@ -44,7 +44,7 @@ namespace Kermalis.PokemonGameEngine.Render.Fonts
                 for (pos.X = 0; pos.X < CharWidth; pos.X++)
                 {
                     int colorIndex = (packed[curByte] >> (8 - bpp - curBit)) % (1 << bpp);
-                    dst[Renderer.GetPixelIndex(atlasSize.Width, pos + posInAtlas)] = (byte)colorIndex; // Only set the R component
+                    dst[UnsafeRenderer.GetPixelIndex(atlasSize.Width, pos + posInAtlas)] = (byte)colorIndex; // Only set the R component
                     curBit = (curBit + bpp) % 8;
                     if (curBit == 0)
                     {

@@ -42,6 +42,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         private static readonly Size2D _renderSize = new(480, 270); // 16:9
         private readonly FrameBuffer _frameBuffer;
+        private readonly TripleColorBackground _tripleColorBG;
 
         private const short NOT_SELECTING_MOVES = -1;
         public const short NO_MOVE_CHOSEN = -1;
@@ -85,6 +86,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
             _frameBuffer = FrameBuffer.CreateWithColor(_renderSize);
             _frameBuffer.Use();
+            _tripleColorBG = new TripleColorBackground();
+            _tripleColorBG.SetColors(Colors.FromRGB(80, 100, 140), Colors.FromRGB(0, 145, 200), Colors.FromRGB(125, 180, 200));
             _pageImage = new WriteableImage(Size2D.FromRelative(PAGE_IMG_WIDTH, PAGE_IMG_HEIGHT, _renderSize));
 
             if (pkmn is PartyPokemon pPkmn)
@@ -142,6 +145,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             _transition.Dispose();
+            _tripleColorBG.Delete();
             _pageImage.DeductReference();
             _pkmnImage.DeductReference();
             _frameBuffer.Delete();
@@ -384,13 +388,13 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             if (level >= PkmnConstants.MaxLevel)
             {
                 toNextLvl = 0;
-                Renderer.EXP_SingleLine(xpPos, xpW, 0);
+                RenderUtils.EXP_SingleLine(xpPos, xpW, 0);
             }
             else
             {
                 PBEGrowthRate gr = bs.GrowthRate;
                 toNextLvl = PBEDataProvider.Instance.GetEXPRequired(gr, (byte)(level + 1)) - exp;
-                Renderer.EXP_SingleLine(xpPos, xpW, exp, level, gr);
+                RenderUtils.EXP_SingleLine(xpPos, xpW, exp, level, gr);
             }
 
             // Species
@@ -659,7 +663,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             string str = string.Format("{0}/{1}", hp, maxHP);
             PlaceRightCol(-2, str, rightColColors);
             float percent = (float)hp / maxHP;
-            Renderer.HP_TripleLine(hpPos, hpW, percent);
+            RenderUtils.HP_TripleLine(hpPos, hpW, percent);
             // Attack
             str = atk.ToString();
             PlaceRightCol(0, str, rightColColors);
@@ -996,10 +1000,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         private void Render()
         {
-            GL gl = Display.OpenGL;
-            //Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(215, 231, 230, 255), Renderer.Color(231, 163, 0, 255), Renderer.Color(242, 182, 32, 255));
-            gl.ClearColor(Colors.FromRGB(31, 31, 31));
-            gl.Clear(ClearBufferMask.ColorBufferBit);
+            _tripleColorBG.Render();
 
             _pkmnImage.Update();
             _pkmnImage.Render(Pos2D.CenterXBottomY(0.2f, 0.6f, _pkmnImage.Size, _renderSize));

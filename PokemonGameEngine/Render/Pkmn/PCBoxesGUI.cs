@@ -7,7 +7,6 @@ using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Transitions;
-using Silk.NET.OpenGL;
 using System;
 using System.Numerics;
 
@@ -17,6 +16,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
     {
         private static readonly Size2D _renderSize = new(480, 270); // 16:9
         private readonly FrameBuffer _frameBuffer;
+        private readonly TripleColorBackground _tripleColorBG;
 
         private const int NumPerRow = 6;
         private const int NumColumns = PkmnConstants.BoxCapacity / NumPerRow; // Won't work if it's not evenly divisible
@@ -52,6 +52,9 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             _frameBuffer = FrameBuffer.CreateWithColor(_renderSize);
             _frameBuffer.Use();
+
+            _tripleColorBG = new TripleColorBackground();
+            _tripleColorBG.SetColors(Colors.FromRGB(235, 230, 255), Colors.FromRGB(180, 240, 140), Colors.FromRGB(0, 255, 140));
 
             _boxes = boxes;
             _party = party;
@@ -102,6 +105,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             _transition.Dispose();
+            _tripleColorBG.Delete();
             DisposePartyChoices();
             DeleteMinis();
             _helpText.Delete();
@@ -270,7 +274,14 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 {
                     continue;
                 }
-                _selectedBoxMinis[i] = PokemonImageLoader.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.IsEgg);
+                if (pkmn.IsEgg)
+                {
+                    _selectedBoxMinis[i] = PokemonImageLoader.GetEggMini();
+                }
+                else
+                {
+                    _selectedBoxMinis[i] = PokemonImageLoader.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny);
+                }
             }
             LoadPkmnContents(GetSelectedBoxPkmn());
         }
@@ -447,11 +458,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         private void Render()
         {
-            GL gl = Display.OpenGL;
             // Background
-            //Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(215, 231, 230, 255), Renderer.Color(231, 163, 0, 255), Renderer.Color(242, 182, 32, 255));
-            gl.ClearColor(Colors.FromRGB(31, 31, 31));
-            gl.Clear(ClearBufferMask.ColorBufferBit);
+            _tripleColorBG.Render();
 
             // PC
             _selectedBoxText.Render(Pos2D.FromRelative(0.02f, 0.01f, _renderSize));

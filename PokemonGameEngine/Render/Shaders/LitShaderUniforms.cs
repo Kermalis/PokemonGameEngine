@@ -26,7 +26,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
 
         public void SetLights(GL gl, PointLight[] lights)
         {
-            gl.Uniform1(_lNumLights, (uint)(lights.Length));
+            gl.Uniform1(_lNumLights, (uint)lights.Length);
             for (int i = 0; i < lights.Length; i++)
             {
                 PointLight l = lights[i];

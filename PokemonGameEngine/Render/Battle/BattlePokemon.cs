@@ -94,7 +94,14 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         public void UpdateMini()
         {
             Mini?.DeductReference(); // Will be null on creation
-            Mini = PokemonImageLoader.GetMini(PBEPkmn.KnownSpecies, PBEPkmn.KnownForm, PBEPkmn.KnownGender, PBEPkmn.KnownShiny, PartyPkmn.IsEgg);
+            if (PartyPkmn.IsEgg)
+            {
+                Mini = PokemonImageLoader.GetEggMini();
+            }
+            else
+            {
+                Mini = PokemonImageLoader.GetMini(PBEPkmn.KnownSpecies, PBEPkmn.KnownForm, PBEPkmn.KnownGender, PBEPkmn.KnownShiny);
+            }
         }
 
         public void UpdateSprite(bool img = false, bool imgIfSubstituted = false, bool visibility = false, bool color = false)
@@ -216,12 +223,12 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             const int lineStartX = 9;
             const int lineW = 82;
-            Renderer.HP_TripleLine(new Pos2D(lineStartX, 23), lineW, PBEPkmn.HPPercentage);
+            RenderUtils.HP_TripleLine(new Pos2D(lineStartX, 23), lineW, PBEPkmn.HPPercentage);
 
             // EXP
             if (!_useKnownInfo)
             {
-                Renderer.EXP_SingleLine(new Pos2D(lineStartX, 37), lineW, PBEPkmn.EXP, PBEPkmn.Level, PBEPkmn.OriginalSpecies, PBEPkmn.RevertForm);
+                RenderUtils.EXP_SingleLine(new Pos2D(lineStartX, 37), lineW, PBEPkmn.EXP, PBEPkmn.Level, PBEPkmn.OriginalSpecies, PBEPkmn.RevertForm);
             }
 
             oldFBO.Use();

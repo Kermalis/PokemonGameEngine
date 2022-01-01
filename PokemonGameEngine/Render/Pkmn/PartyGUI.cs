@@ -10,7 +10,6 @@ using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Transitions;
 using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.World.Objs;
-using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 
@@ -57,6 +56,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         private static readonly Size2D _renderSize = new(384, 216); // 16:9
         private FrameBuffer _frameBuffer;
+        private readonly TripleColorBackground _tripleColorBG;
 
         /// <summary>The return value of selection modes, also the y index of the cancel/back button</summary>
         public const short NO_PKMN_CHOSEN = -1;
@@ -93,6 +93,9 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
             _gameParty = new GamePartyData(party, _members, _sprites);
 
+            _tripleColorBG = new TripleColorBackground();
+            _tripleColorBG.SetColors(Colors.FromRGB(222, 50, 60), Colors.FromRGB(190, 40, 50), Colors.FromRGB(255, 180, 200));
+
             if (mode == Mode.SelectDaycare)
             {
                 SetSelectionVar(NO_PKMN_CHOSEN);
@@ -108,6 +111,9 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _sprites = new();
             _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
             _battleParty = new BattlePartyData(party, _members, _sprites);
+
+            _tripleColorBG = new TripleColorBackground();
+            _tripleColorBG.SetColors(Colors.FromRGB(85, 0, 115), Colors.FromRGB(145, 0, 195), Colors.FromRGB(100, 65, 255));
 
             if (mode == Mode.BattleSwitchIn)
             {
@@ -179,6 +185,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             _transition.Dispose();
+            _tripleColorBG.Delete();
             foreach (PartyGUIMember m in _members)
             {
                 m.Delete();
@@ -693,11 +700,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             _sprites.DoCallbacks();
 
-            GL gl = Display.OpenGL;
-            // Background
-            //Renderer.ThreeColorBackground(dst, dstW, dstH, Renderer.Color(222, 50, 60, 255), Renderer.Color(190, 40, 50, 255), Renderer.Color(255, 180, 200, 255));
-            gl.ClearColor(Colors.FromRGB(31, 31, 31));
-            gl.Clear(ClearBufferMask.ColorBufferBit);
+            _tripleColorBG.Render();
 
             Size2D dstSize = FrameBuffer.Current.Size;
             for (uint i = 0; i < _members.Count; i++)

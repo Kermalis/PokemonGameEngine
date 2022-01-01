@@ -83,7 +83,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         {
             static bool[,] Load(string asset)
             {
-                uint spotColor = Renderer.RawColor(0, 255, 255, 255);
+                uint spotColor = UnsafeRenderer.RawColor(0, 255, 255, 255);
 
                 AssetLoader.GetAssetBitmap(asset, out Size2D size, out uint[] bitmap);
                 bool[,] arr = new bool[size.Height, size.Width];
@@ -94,7 +94,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                     {
                         for (pos.X = 0; pos.X < size.Width; pos.X++)
                         {
-                            arr[pos.Y, pos.X] = *Renderer.GetPixelAddress(src, size.Width, pos) == spotColor;
+                            arr[pos.Y, pos.X] = *UnsafeRenderer.GetPixelAddress(src, size.Width, pos) == spotColor;
                         }
                     }
                 }
@@ -108,10 +108,10 @@ namespace Kermalis.PokemonGameEngine.Render.Images
 
         private static (uint color, uint replacement)[] SpindaSpotColorsFromShininess(bool shiny)
         {
-            uint color1 = Renderer.RawColor(230, 214, 165, 255);
-            uint color1Replacement = shiny ? Renderer.RawColor(165, 206, 16, 255) : Renderer.RawColor(239, 82, 74, 255);
-            uint color2 = Renderer.RawColor(206, 165, 115, 255);
-            uint color2Replacement = shiny ? Renderer.RawColor(123, 156, 0, 255) : Renderer.RawColor(189, 74, 49, 255);
+            uint color1 = UnsafeRenderer.RawColor(230, 214, 165, 255);
+            uint color1Replacement = shiny ? UnsafeRenderer.RawColor(165, 206, 16, 255) : UnsafeRenderer.RawColor(239, 82, 74, 255);
+            uint color2 = UnsafeRenderer.RawColor(206, 165, 115, 255);
+            uint color2Replacement = shiny ? UnsafeRenderer.RawColor(123, 156, 0, 255) : UnsafeRenderer.RawColor(189, 74, 49, 255);
             return new[] { (color1, color1Replacement), (color2, color2Replacement) };
         }
         public static void Render(DecodedGIF img, uint pid, bool shiny)
@@ -160,7 +160,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                     {
                         continue;
                     }
-                    uint* dstPix = Renderer.GetPixelAddress(dst, dstSize.Width, bmpPos);
+                    uint* dstPix = UnsafeRenderer.GetPixelAddress(dst, dstSize.Width, bmpPos);
                     uint curColor = *dstPix;
                     for (int i = 0; i < colors.Length; i++)
                     {

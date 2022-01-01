@@ -19,6 +19,7 @@ namespace Kermalis.PokemonGameEngine.Render
             // Init other instances
             _ = new GUIRenderer(gl);
             _ = new EntireScreenMesh(gl);
+            _ = new TripleColorBackgroundMesh(gl);
             Font.Init();
         }
     }

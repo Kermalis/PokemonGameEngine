@@ -31,10 +31,15 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _isEgg = pkmn.IsEgg;
             _partyPkmn = pkmn;
             _color = GetColor();
-            _mini = new Sprite()
+            _mini = new Sprite();
+            if (pkmn.IsEgg)
             {
-                Image = PokemonImageLoader.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny, pkmn.IsEgg)
-            };
+                _mini.Image = PokemonImageLoader.GetEggMini();
+            }
+            else
+            {
+                _mini.Image = PokemonImageLoader.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny);
+            }
             if (!_isEgg)
             {
                 _mini.Callback = Sprite_Bounce;
