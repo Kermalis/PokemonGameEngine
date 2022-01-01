@@ -651,8 +651,6 @@ namespace Kermalis.MapEditor.Core
         private Map(string name, int id)
         {
             var json = JObject.Parse(File.ReadAllText(Path.Combine(MapPath, name + ".json")));
-            MapLayout = Layout.LoadOrGet(json[nameof(Layout)].Value<string>());
-            MapDetails = new Details(json[nameof(Details)]);
             var cons = (JArray)json[nameof(Connections)];
             int numConnections = cons.Count;
             Connections = new List<Connection>(numConnections);
@@ -660,8 +658,10 @@ namespace Kermalis.MapEditor.Core
             {
                 Connections.Add(new Connection(cons[i]));
             }
-            Encounters = new EncounterGroups(json[nameof(Encounters)]);
+            MapLayout = Layout.LoadOrGet(json[nameof(Layout)].Value<string>());
             MapEvents = new Events(json[nameof(Events)]);
+            MapDetails = new Details(json[nameof(Details)]);
+            Encounters = new EncounterGroups(json[nameof(Encounters)]);
             Name = name;
             Id = id;
         }
@@ -669,11 +669,11 @@ namespace Kermalis.MapEditor.Core
         {
             Id = Ids.Add(name);
             _loadedMaps.Add(Id, new WeakReference<Map>(this));
-            MapLayout = layout;
-            MapDetails = new Details();
             Connections = new List<Connection>();
-            Encounters = new EncounterGroups();
+            MapLayout = layout;
             MapEvents = new Events();
+            MapDetails = new Details();
+            Encounters = new EncounterGroups();
             Name = name;
             Save();
             Ids.Save();
@@ -721,10 +721,6 @@ namespace Kermalis.MapEditor.Core
             using (var w = new JsonTextWriter(File.CreateText(Path.Combine(MapPath, Name + ".json"))) { Formatting = Formatting.Indented })
             {
                 w.WriteStartObject();
-                w.WritePropertyName(nameof(Layout));
-                w.WriteValue(MapLayout.Name);
-                w.WritePropertyName(nameof(Details));
-                MapDetails.Write(w);
                 w.WritePropertyName(nameof(Connections));
                 w.WriteStartArray();
                 foreach (Connection c in Connections)
@@ -732,10 +728,14 @@ namespace Kermalis.MapEditor.Core
                     c.Write(w);
                 }
                 w.WriteEndArray();
-                w.WritePropertyName(nameof(Encounters));
-                Encounters.Write(w);
+                w.WritePropertyName(nameof(Layout));
+                w.WriteValue(MapLayout.Name);
                 w.WritePropertyName(nameof(Events));
                 MapEvents.Write(w);
+                w.WritePropertyName(nameof(Details));
+                MapDetails.Write(w);
+                w.WritePropertyName(nameof(Encounters));
+                Encounters.Write(w);
                 w.WriteEndObject();
             }
         }

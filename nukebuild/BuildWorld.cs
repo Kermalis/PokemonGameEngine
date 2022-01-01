@@ -100,6 +100,19 @@ public sealed partial class Build
     }
     private sealed class Layout
     {
+        public int Width;
+        public int Height;
+
+        public Layout(string name)
+        {
+            using (var r = new EndianBinaryReader(File.OpenRead(Path.Combine(LayoutPath, name + ".pgelayout"))))
+            {
+                Width = r.ReadInt32();
+                Height = r.ReadInt32();
+                // Don't need the rest. Only using this to embed within Map data
+            }
+        }
+
         public static readonly AbsolutePath LayoutPath = AssetPath / "Layout";
         public static IdList Ids { get; } = new IdList(LayoutPath / "LayoutIds.txt");
     }
@@ -391,8 +404,6 @@ public sealed partial class Build
         public Map(string name)
         {
             var json = JObject.Parse(File.ReadAllText(MapPath / (name + ".json")));
-            Layout = json[nameof(Layout)].Value<string>();
-            Details = new Details(json[nameof(Details)]);
             var cons = (JArray)json[nameof(Connections)];
             int numConnections = cons.Count;
             Connections = new Connection[numConnections];
@@ -400,8 +411,10 @@ public sealed partial class Build
             {
                 Connections[i] = new Connection(cons[i]);
             }
-            Encounters = new EncounterGroups(json[nameof(Encounters)]);
+            Layout = json[nameof(Layout)].Value<string>();
             Events = new Events(json[nameof(Events)]);
+            Details = new Details(json[nameof(Details)]);
+            Encounters = new EncounterGroups(json[nameof(Encounters)]);
 
             _name = name;
         }
@@ -411,18 +424,38 @@ public sealed partial class Build
 
         public void Save()
         {
-            using (var w = new EndianBinaryWriter(File.Create(MapPath / (_name + ".bin"))))
+            const int HEADER_SIZE = sizeof(int) + sizeof(int);
+
+            using (var fw = new EndianBinaryWriter(File.Create(MapPath / (_name + ".bin"))))
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms))
             {
-                w.Write(Build.Layout.Ids[Layout]);
-                Details.Write(w);
+                // Always loaded
+                var l = new Layout(Layout);
+                w.Write(l.Width); // Include width and height in map data so it can be used without loading the layout
+                w.Write(l.Height);
                 byte numConnections = (byte)Connections.Length;
                 w.Write(numConnections);
                 for (int i = 0; i < numConnections; i++)
                 {
                     Connections[i].Write(w);
                 }
-                Encounters.Write(w);
+
+                // Loaded when visible
+                uint visibleMapStart = (uint)(w.BaseStream.Position + HEADER_SIZE);
+                w.Write(Build.Layout.Ids[Layout]); // Write Layout ID
                 Events.Write(w);
+
+                // Loaded when the map is where the player is
+                uint currentMapStart = (uint)(w.BaseStream.Position + HEADER_SIZE);
+                Details.Write(w);
+                Encounters.Write(w);
+
+                // Create file header
+                fw.Write(visibleMapStart);
+                fw.Write(currentMapStart);
+                ms.Position = 0;
+                ms.CopyTo(fw.BaseStream);
             }
         }
     }

@@ -341,7 +341,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 return;
             }
-            // Map crossing - Update Map, Pos, and PrevPos
+            // Map crossing - Update Map, Pos, and MovingFromPos
             curMap.Objs.Remove(this);
             newMap.Objs.Add(this);
             Map = newMap;

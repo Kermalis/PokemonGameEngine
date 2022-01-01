@@ -27,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
         private static PBEBattleTerrain UpdateBattleSetting(BlocksetBlockBehavior blockBehavior)
         {
-            PBEBattleTerrain terrain = Overworld.GetPBEBattleTerrainFromBlock(blockBehavior);
+            PBEBattleTerrain terrain = Overworld.GetPBEBattleTerrain(blockBehavior);
             BattleEngineDataProvider.Instance.UpdateBattleSetting(isCave: terrain == PBEBattleTerrain.Cave,
                 isDarkGrass: blockBehavior == BlocksetBlockBehavior.Grass_SpecialEncounter,
                 isFishing: false,

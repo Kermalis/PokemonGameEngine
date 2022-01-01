@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.World;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,6 @@ namespace Kermalis.PokemonGameEngine.World.Maps
     {
         public sealed class Block
         {
-            /// <summary>Currently unused, but may be needed when we are changing Blocks and need to update stuff</summary>
-            public readonly MapLayout _parent; // public so we don't get a warning to remove private members
-
             public readonly byte Elevations;
             public readonly LayoutBlockPassage Passage;
 
@@ -22,10 +20,8 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             private readonly Blockset _blockset;
             public readonly Blockset.Block BlocksetBlock;
 
-            public Block(MapLayout parent, EndianBinaryReader r, List<Blockset> used)
+            public Block(EndianBinaryReader r, List<Blockset> used)
             {
-                _parent = parent;
-
                 Elevations = r.ReadByte();
                 Passage = r.ReadEnum<LayoutBlockPassage>();
                 int blocksetId = r.ReadInt32();
@@ -79,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                     var arrY = new Block[BlocksWidth];
                     for (int x = 0; x < BlocksWidth; x++)
                     {
-                        arrY[x] = new Block(this, r, _usedBlocksets);
+                        arrY[x] = new Block(r, _usedBlocksets);
                     }
                     Blocks[y] = arrY;
                 }
@@ -99,12 +95,45 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                         var arrY = new Block[BorderWidth];
                         for (int x = 0; x < BorderWidth; x++)
                         {
-                            arrY[x] = new Block(this, r, _usedBlocksets);
+                            arrY[x] = new Block(r, _usedBlocksets);
                         }
                         BorderBlocks[y] = arrY;
                     }
                 }
             }
+        }
+
+        public Block GetBlock_InBounds(Pos2D xy)
+        {
+            bool north = xy.Y < 0;
+            bool south = xy.Y >= BlocksHeight;
+            bool west = xy.X < 0;
+            bool east = xy.X >= BlocksWidth;
+            // In bounds
+            if (!north && !south && !west && !east)
+            {
+                return Blocks[xy.Y][xy.X];
+            }
+            // Border blocks
+            byte bw = BorderWidth;
+            byte bh = BorderHeight;
+            // No border should render pure black
+            if (bw == 0 || bh == 0)
+            {
+                return null;
+            }
+            // Has a border
+            xy.X %= bw;
+            if (west)
+            {
+                xy.X *= -1;
+            }
+            xy.Y %= bh;
+            if (north)
+            {
+                xy.Y *= -1;
+            }
+            return BorderBlocks[xy.Y][xy.X];
         }
 
         public void Delete()

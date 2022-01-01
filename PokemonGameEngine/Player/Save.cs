@@ -73,10 +73,10 @@ namespace Kermalis.PokemonGameEngine.Player
             PlayerParty = new Party();
             {
                 // To pummel
-                var pkmn1 = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Rayquaza, 0, 67);
-                pkmn1.Ability = PBEAbility.Compoundeyes;
+                var pkmn1 = PartyPokemon.CreatePlayerOwnedMon(PBESpecies.Mew, 0, 67);
+                pkmn1.Ability = PBEAbility.Imposter;
                 //pkmn1.Item = ItemType.Leftovers;
-                pkmn1.Moveset[0].Move = PBEMove.Bounce;
+                pkmn1.Moveset[0].Move = PBEMove.Transform;
                 pkmn1.Moveset[1].Move = PBEMove.ZenHeadbutt;
                 pkmn1.Moveset[2].Move = PBEMove.Surf;
                 pkmn1.Moveset[3].Move = PBEMove.VCreate;
@@ -93,19 +93,19 @@ namespace Kermalis.PokemonGameEngine.Player
                 evomon.Item = ItemType.Leftovers;
                 evomon.EXP = PBEDataProvider.Instance.GetEXPRequired(BaseStats.Get(evomon.Species, evomon.Form, true).GrowthRate, 20) - 1;
 
-                GivePokemon(evomon);
                 GivePokemon(pkmn1);
                 GivePokemon(pkmn2);
                 GivePokemon(pkmn3);
                 GivePokemon(pkmn4);
                 GivePokemon(pkmn5);
+                GivePokemon(evomon);
             }
             for (int i = 0; i < 44; i++)
             {
                 Debug_GiveRandomPokemon(i == 0 || i == 1 || i == 35);
             }
 
-            Overworld.UpdateGiratinaForms(); // Not really necessary, including for debug though
+            Overworld.UpdatePartyGiratinaForms(); // Not really necessary, including for debug though
         }
 
         private void Debug_GiveRandomPokemon(bool egg)

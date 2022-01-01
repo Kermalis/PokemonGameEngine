@@ -4,7 +4,6 @@ using Kermalis.PokemonGameEngine.Render.R3D;
 using Kermalis.PokemonGameEngine.Sound;
 using SDL2;
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Core
@@ -12,30 +11,6 @@ namespace Kermalis.PokemonGameEngine.Core
     internal static class Engine
     {
         public static bool QuitRequested;
-
-        #region Temp Tasks are here for now since some resources are destroyed in the finalizer, which is the wrong thread. Need to manually control resources
-
-        private static readonly List<Action> _tempTasks = new();
-        public static void AddTempTask(Action a)
-        {
-            lock (_tempTasks)
-            {
-                _tempTasks.Add(a);
-            }
-        }
-        private static void DoTempTasks()
-        {
-            lock (_tempTasks)
-            {
-                foreach (Action a in _tempTasks)
-                {
-                    a();
-                }
-                _tempTasks.Clear();
-            }
-        }
-
-        #endregion
 
         // Initializes the first callback, the window, and instances
         private static void Init()
@@ -57,7 +32,6 @@ namespace Kermalis.PokemonGameEngine.Core
             DateTime time = DateTime.Now;
             while (!QuitRequested) // Break if quit was requested by game
             {
-                DoTempTasks();
                 InputManager.Prepare();
 
                 // Grab all OS events

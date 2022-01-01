@@ -13,7 +13,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 {
     internal sealed partial class MapRenderer
     {
-        private enum DebugBlockStatus
+        private enum DebugBlockStatus : byte
         {
             None,
             Occupied,

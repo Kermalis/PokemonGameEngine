@@ -47,7 +47,6 @@ namespace Kermalis.PokemonGameEngine.Render
                 Print_SDL_Error("Could not set OpenGL's profile!");
             }
 
-            // TODO: Find out why actual fullscreen is broken (window is gone when alt tabbing back and forth)
             _window = SDL.SDL_CreateWindow(WINDOW_TITLE, SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT,
                 SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL.SDL_WindowFlags.SDL_WINDOW_RESIZABLE
 #if FULLSCREEN

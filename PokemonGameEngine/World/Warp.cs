@@ -2,6 +2,7 @@
 
 namespace Kermalis.PokemonGameEngine.World
 {
+    // Currently, warps can only be used by the player
     internal readonly struct Warp
     {
         public readonly int DestMapId;
@@ -24,6 +25,7 @@ namespace Kermalis.PokemonGameEngine.World
         {
             Destination = dest;
             DestMapLoaded = Map.LoadOrGet(dest.DestMapId);
+            DestMapLoaded.OnWarpingMap();
         }
         public static WarpInProgress Start(in Warp dest)
         {

@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.World;
+using Kermalis.PokemonGameEngine.World.Maps;
 using System;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
@@ -38,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             Obj other = CamAttachedTo;
 
-            UpdateMap(other.Map);
+            SetMap(other.Map);
 
             Pos = other.Pos;
             VisualOfs = other.VisualOfs;
@@ -60,7 +61,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
         }
 
-        protected override void OnMapChanged()
+        protected override void OnMapChanged(Map oldMap, Map newMap)
         {
             UpdateDayTint();
         }

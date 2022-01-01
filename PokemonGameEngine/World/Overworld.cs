@@ -6,15 +6,12 @@ using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
-#if DEBUG_OVERWORLD
-using Kermalis.PokemonGameEngine.Debug;
-#endif
 
 namespace Kermalis.PokemonGameEngine.World
 {
     internal static partial class Overworld
     {
-        public const string SurfScript = "Surf_Interaction";
+        public const string SCRIPT_SURF = "Surf_Interaction";
 
         public static MapSection GetCurrentLocation()
         {
@@ -37,59 +34,33 @@ namespace Kermalis.PokemonGameEngine.World
             return season.ToDeerlingSawsbuckForm();
         }
 
-        public static PBEBattleTerrain GetPBEBattleTerrainFromBlock(BlocksetBlockBehavior behavior)
+        public static PBEBattleTerrain GetPBEBattleTerrain(BlocksetBlockBehavior behavior)
         {
             switch (behavior)
             {
                 // Cave
                 case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter:
-                case BlocksetBlockBehavior.Cave_Encounter: return PBEBattleTerrain.Cave;
+                case BlocksetBlockBehavior.Cave_Encounter:
+                    return PBEBattleTerrain.Cave;
                 // Grass
                 case BlocksetBlockBehavior.Grass_Encounter:
-                case BlocksetBlockBehavior.Grass_SpecialEncounter: return PBEBattleTerrain.Grass;
+                case BlocksetBlockBehavior.Grass_SpecialEncounter:
+                    return PBEBattleTerrain.Grass;
                 // Water
-                case BlocksetBlockBehavior.Surf: return PBEBattleTerrain.Water;
+                case BlocksetBlockBehavior.Surf:
+                    return PBEBattleTerrain.Water;
             }
             return PBEBattleTerrain.Plain;
         }
 
-        // Returns true if the behavior is a stair (but not a sideways stair)
-        public static bool AllowsElevationChange(BlocksetBlockBehavior behavior)
+        public static void OnPlayerMapChanged(Map oldMap, Map map)
         {
-            switch (behavior)
-            {
-                case BlocksetBlockBehavior.AllowElevationChange:
-                case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter: return true;
-            }
-            return false;
-        }
-        public static bool IsSurfable(BlocksetBlockBehavior behavior)
-        {
-            switch (behavior)
-            {
-                case BlocksetBlockBehavior.Surf:
-                case BlocksetBlockBehavior.Waterfall: return true;
-            }
-            return false;
-        }
-        public static string GetBlockBehaviorScript(BlocksetBlockBehavior behavior)
-        {
-            switch (behavior)
-            {
-                case BlocksetBlockBehavior.Surf: return SurfScript;
-            }
-            return null;
-        }
-
-        public static void DoEnteredMapThings(Map map)
-        {
-#if DEBUG_OVERWORLD
-            Log.WriteLine("Player is now on  map: " + map.Name);
-#endif
+            oldMap.OnNoLongerCurrentMap();
+            map.OnCurrentMap();
             SoundControl.SetOverworldBGM(map.Details.Music);
-            UpdateGiratinaForms();
+            UpdatePartyGiratinaForms();
         }
-        public static void UpdateGiratinaForms()
+        public static void UpdatePartyGiratinaForms()
         {
             foreach (PartyPokemon pkmn in Game.Instance.Save.PlayerParty)
             {
@@ -115,8 +86,35 @@ namespace Kermalis.PokemonGameEngine.World
             return false;
         }
 
-        #region Movement
-
+        // Returns true if the behavior is a stair (but not a sideways stair)
+        public static bool AllowsElevationChange(BlocksetBlockBehavior behavior)
+        {
+            switch (behavior)
+            {
+                case BlocksetBlockBehavior.AllowElevationChange:
+                case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter:
+                    return true;
+            }
+            return false;
+        }
+        public static bool IsSurfable(BlocksetBlockBehavior behavior)
+        {
+            switch (behavior)
+            {
+                case BlocksetBlockBehavior.Surf:
+                case BlocksetBlockBehavior.Waterfall:
+                    return true;
+            }
+            return false;
+        }
+        public static string GetBlockBehaviorScript(BlocksetBlockBehavior behavior)
+        {
+            switch (behavior)
+            {
+                case BlocksetBlockBehavior.Surf: return SCRIPT_SURF;
+            }
+            return null;
+        }
         public static byte GetElevationIfMovedTo(byte curElevation, byte targetElevations)
         {
             if (!targetElevations.HasElevation(curElevation))
@@ -125,7 +123,5 @@ namespace Kermalis.PokemonGameEngine.World
             }
             return curElevation;
         }
-
-        #endregion
     }
 }

@@ -64,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _ = new OverworldGUI(); // Create
 
             DayTint.CatchUpTime = true;
-            LoadMapMusic();
+            StartMapMusic();
             Instance._transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(Instance.CB_FadeIn);
         }
@@ -73,7 +73,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _ = new OverworldGUI(); // Create
 
             DayTint.CatchUpTime = true;
-            LoadMapMusic();
+            StartMapMusic();
             //EncounterMaker.Debug_CreateTestWildBattle();
             TrainerCore.Debug_CreateTestTrainerBattle();
         }
@@ -171,10 +171,14 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _transition = new BattleTransition_Liquid();
             Game.Instance.SetCallback(CB_FadeOutToBattle);
         }
-        public void TempWarp(in Warp warp)
+        public void StartPlayerWarp(in Warp warp)
         {
             var w = WarpInProgress.Start(warp);
-            SoundControl.SetOverworldBGM(w.DestMapLoaded.Details.Music);
+            Song newMusic = w.DestMapLoaded.Details.Music;
+            if (newMusic != PlayerObj.Instance.Map.Details.Music)
+            {
+                SoundControl.SetOverworldBGM(newMusic);
+            }
             _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutToWarp);
         }
@@ -205,7 +209,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Game.Instance.SetCallback(CB_FadeIn);
         }
 
-        private static void LoadMapMusic()
+        private static void StartMapMusic()
         {
             SoundControl.SetOverworldBGM(PlayerObj.Instance.Map.Details.Music);
         }
@@ -255,7 +259,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
             _transition.Dispose();
             DayTint.CatchUpTime = true;
-            Obj player = PlayerObj.Instance;
+            PlayerObj player = PlayerObj.Instance;
             player.Warp();
             if (player.QueuedScriptMovements.Count > 0)
             {

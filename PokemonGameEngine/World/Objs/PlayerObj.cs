@@ -4,6 +4,7 @@ using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Script;
+using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World.Maps;
 using System;
 
@@ -38,12 +39,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Instance.State = state;
             Instance.Pos = pos;
             Instance.Map = map;
+            map.OnMapNowVisible();
             map.Objs.Add(Instance);
+            map.OnCurrentMap();
         }
 
         protected override void OnMapChanged(Map oldMap, Map newMap)
         {
-            Overworld.DoEnteredMapThings(newMap);
+            Overworld.OnPlayerMapChanged(oldMap, newMap);
         }
         protected override void OnDismountFromWater()
         {
@@ -58,6 +61,38 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return State == PlayerObjState.Surfing;
         }
 
+        public void Warp()
+        {
+            WarpInProgress wip = WarpInProgress.Current;
+            Map newMap = wip.DestMapLoaded;
+            WorldPos newPos = wip.Destination.DestPos;
+            MapLayout.Block block = newMap.GetBlock_InBounds(newPos.XY);
+
+            // Facing is of the original direction unless the block behavior says otherwise
+            // All QueuedScriptMovements will be run after the warp is complete
+            switch (block.BlocksetBlock.Behavior)
+            {
+                case BlocksetBlockBehavior.Warp_WalkSouthOnExit:
+                {
+                    Facing = FacingDirection.South;
+                    QueuedScriptMovements.Enqueue(ScriptMovement.Walk_S);
+                    break;
+                }
+                case BlocksetBlockBehavior.Warp_NoOccupancy_S:
+                {
+                    Facing = FacingDirection.North;
+                    newPos.XY.Y--;
+                    break;
+                }
+            }
+
+            SetMap(newMap);
+            Pos = newPos;
+            MovingFromPos = newPos;
+            MovingFromVisualOfs = VisualOfs;
+            CameraObj.Instance.CopyMovementIfAttachedTo(this); // Update camera map and pos
+            WarpInProgress.EndCurrent();
+        }
         private bool CheckForThingsAfterMovement()
         {
             if (!_shouldRunTriggers)
@@ -92,7 +127,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 {
                     if (playerPos.Equals(warp.Pos))
                     {
-                        OverworldGUI.Instance.TempWarp(warp.Warp);
+                        OverworldGUI.Instance.StartPlayerWarp(warp.Warp);
                         return true;
                     }
                 }
@@ -248,7 +283,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 return false;
             }
-            if (script == Overworld.SurfScript)
+            if (script == Overworld.SCRIPT_SURF)
             {
                 if (isSurfing)
                 {

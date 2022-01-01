@@ -68,7 +68,7 @@ namespace Kermalis.PokemonGameEngine.Script
             int x = _reader.ReadInt32();
             int y = _reader.ReadInt32();
             byte elevation = (byte)ReadVarOrValue();
-            OverworldGUI.Instance.TempWarp(new Warp(mapId, new WorldPos(new Pos2D(x, y), elevation)));
+            OverworldGUI.Instance.StartPlayerWarp(new Warp(mapId, new WorldPos(new Pos2D(x, y), elevation)));
         }
 
         private void SetLock(bool locked)

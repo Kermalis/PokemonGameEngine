@@ -8,7 +8,6 @@ using System.Collections.Generic;
 namespace Kermalis.PokemonGameEngine.Render.World
 {
     // TODO: Border blocks tank framerate so much because they search the entire connections list for a block there
-    // Then the maps get unloaded since they're unused, but then they are reloaded again every time connections are checked for the border blocks
     internal sealed partial class MapRenderer
     {
         private struct VisibleBlock
@@ -33,12 +32,12 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         public static MapRenderer Instance { get; private set; } = null!; // Set in constructor
 
-        /// <summary>This list keeps references to all visible maps, so that they are not constantly unloaded/reloaded while parsing the map connections</summary>
-        private List<Map> _visibleMaps;
-        private readonly List<VisibleObj> _visibleObjs = new();
+        private readonly List<Map> _curVisibleMaps;
+        private readonly List<Map> _prevVisibleMaps;
+        private readonly List<VisibleObj> _visibleObjs;
         private int _numVisibleBlocksX;
         private int _numVisibleBlocksY;
-        private VisibleBlock[][] _visibleBlocks = Array.Empty<VisibleBlock[]>();
+        private VisibleBlock[][] _visibleBlocks;
 
         public MapRenderer()
         {
@@ -47,6 +46,14 @@ namespace Kermalis.PokemonGameEngine.Render.World
 #if DEBUG_OVERWORLD
             _debugFrameBuffer = FrameBuffer.CreateWithColor(OverworldGUI.RenderSize * DEBUG_FBO_SCALE);
 #endif
+
+            _curVisibleMaps = new List<Map>()
+            {
+                PlayerObj.Instance.Map // Put player's map in right away since it's loaded already
+            };
+            _prevVisibleMaps = new List<Map>();
+            _visibleObjs = new List<VisibleObj>();
+            _visibleBlocks = Array.Empty<VisibleBlock[]>();
         }
 
         private static void GetVisible(CameraObj cam,
@@ -78,8 +85,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Tileset.UpdateAnimations();
 
             GetVisible(CameraObj.Instance, out Map cameraMap, out Pos2D startBlock, out Pos2D endBlock, out Pos2D startBlockPixel);
-            UpdateVisualObjs(Obj.LoadedObjs, cameraMap, startBlock, endBlock, startBlockPixel);
             UpdateVisibleMapsAndBlocks(cameraMap, startBlock, endBlock, startBlockPixel);
+            UpdateVisualObjs(Obj.LoadedObjs, cameraMap, startBlock, endBlock, startBlockPixel);
 
             for (byte e = 0; e < Overworld.NumElevations; e++)
             {
@@ -116,23 +123,19 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private void UpdateVisibleMapsAndBlocks(Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
         {
-            List<Map> oldMaps = _visibleMaps;
-            var newMaps = new List<Map>();
-            UpdateVisibleBlocks(cameraMap, startBlock, endBlock, startBlockPixel, oldMaps, newMaps);
+            _prevVisibleMaps.AddRange(_curVisibleMaps);
+            _curVisibleMaps.Clear();
+            UpdateVisibleBlocks(cameraMap, startBlock, endBlock, startBlockPixel);
 
-            // Would be null on the first load
-            if (oldMaps is not null)
+            foreach (Map m in _curVisibleMaps)
             {
-                foreach (Map m in newMaps)
-                {
-                    oldMaps.Remove(m);
-                }
-                foreach (Map m in oldMaps)
-                {
-                    m.OnMapNoLongerVisible();
-                }
+                _prevVisibleMaps.Remove(m);
             }
-            _visibleMaps = newMaps;
+            foreach (Map m in _prevVisibleMaps)
+            {
+                m.OnMapNoLongerVisible();
+            }
+            _prevVisibleMaps.Clear();
         }
 
         private void UpdateVisualObjs(List<Obj> objs, Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
@@ -199,7 +202,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 }
             }
         }
-        private void UpdateVisibleBlocks(Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel, List<Map> oldMaps, List<Map> newMaps)
+        private void UpdateVisibleBlocks(Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
         {
             UpdateVisibleBlocksBounds(startBlock, endBlock);
 
@@ -210,8 +213,18 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 VisibleBlock[] vbY = _visibleBlocks[bXY.Y - startBlock.Y];
                 for (bXY.X = startBlock.X; bXY.X < endBlock.X; bXY.X++)
                 {
+                    cameraMap.GetXYMap(bXY, out Pos2D newXY, out Map map);
+                    if (!_curVisibleMaps.Contains(map))
+                    {
+                        _curVisibleMaps.Add(map);
+                        if (!_prevVisibleMaps.Contains(map))
+                        {
+                            map.OnMapNowVisible();
+                        }
+                    }
+
                     VisibleBlock vb;
-                    vb.Block = cameraMap.GetBlock_CrossMap(bXY, out Pos2D newXY, out Map map);
+                    vb.Block = map.GetBlock_InBounds(newXY);
                     vb.PositionOnScreen = pixel;
 #if DEBUG_OVERWORLD
                     vb.Map = map;
@@ -219,14 +232,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
 #endif
                     vbY[bXY.X - startBlock.X] = vb;
 
-                    if (!newMaps.Contains(map))
-                    {
-                        newMaps.Add(map);
-                        if (oldMaps is null || !oldMaps.Contains(map))
-                        {
-                            map.OnMapNowVisible();
-                        }
-                    }
                     pixel.X += Overworld.Block_NumPixelsX;
                 }
                 pixel.X = startBlockPixel.X;

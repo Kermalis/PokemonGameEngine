@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World.Maps;
 using System;
 using System.Collections.Generic;
@@ -70,40 +69,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return Map.GetBlock_CrossMap(Pos.XY.Move(Facing), out _, out _);
         }
 
-        public void Warp()
-        {
-            WarpInProgress wip = WarpInProgress.Current;
-            Map newMap = wip.DestMapLoaded;
-            WorldPos newPos = wip.Destination.DestPos;
-            MapLayout.Block block = newMap.GetBlock_InBounds(newPos.XY);
-
-            // Facing is of the original direction unless the block behavior says otherwise
-            // All QueuedScriptMovements will be run after the warp is complete
-            switch (block.BlocksetBlock.Behavior)
-            {
-                case BlocksetBlockBehavior.Warp_WalkSouthOnExit:
-                {
-                    Facing = FacingDirection.South;
-                    QueuedScriptMovements.Enqueue(ScriptMovement.Walk_S);
-                    break;
-                }
-                case BlocksetBlockBehavior.Warp_NoOccupancy_S:
-                {
-                    Facing = FacingDirection.North;
-                    newPos.XY.Y--;
-                    break;
-                }
-            }
-
-            UpdateMap(newMap);
-            Pos = newPos;
-            MovingFromPos = newPos;
-            MovingFromVisualOfs = VisualOfs;
-            CameraObj.Instance.CopyMovementIfAttachedTo(this); // Update camera map and pos
-            WarpInProgress.EndCurrent();
-        }
-
-        protected void UpdateMap(Map newMap)
+        protected void SetMap(Map newMap)
         {
             Map curMap = Map;
             if (curMap != newMap)
@@ -111,10 +77,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 curMap.Objs.Remove(this);
                 newMap.Objs.Add(this);
                 Map = newMap;
-                OnMapChanged();
+                OnMapChanged(curMap, newMap);
             }
         }
-        protected virtual void OnMapChanged() { }
 
         public virtual void Update() { }
 
