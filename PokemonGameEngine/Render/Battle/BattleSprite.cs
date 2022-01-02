@@ -57,13 +57,13 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         }
         private static Vector2 GetAbsolutePixelForVertex(in Matrix4x4 transformViewProjection, Vector2 v)
         {
-            Vector4 v4 = Utils.MulMatrixAndVec4(in transformViewProjection, new Vector4(v.X, v.Y, 0f, 1f));
+            Vector4 v4 = Utils.MulMatrixAndVec4(transformViewProjection, new Vector4(v.X, v.Y, 0f, 1f));
             v4 /= v4.W; // Scale back from 4d
             var v2 = new Vector2(v4.X, v4.Y);
 
             // Convert from GL to relative
             v2 *= 0.5f;
-            v2 += new Vector2(0.5f, 0.5f);
+            v2 += new Vector2(0.5f);
 
             // Convert from relative to absolute
             v2 *= BattleGUI.RenderSize;
