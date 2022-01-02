@@ -17,7 +17,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             _pendingEvolutions.Enqueue((pkmn, evo));
         }
-        public static bool GetNextPendingEvolution(out (PartyPokemon, EvolutionData.EvoData) evo)
+        public static bool TryGetNextPendingEvolution(out (PartyPokemon, EvolutionData.EvoData) evo)
         {
             return _pendingEvolutions.TryDequeue(out evo);
         }
