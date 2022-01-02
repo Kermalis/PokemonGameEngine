@@ -56,6 +56,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _trainerDefeatText = trainerDefeatText;
             battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
             battle.OnStateChanged += SinglePlayerBattle_OnStateChanged;
+            Engine.OnQuitRequested += OnGameQuitRequested;
         }
 
         public static void CreateWildBattle(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties)
@@ -151,6 +152,9 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         /// <summary>Run after the fade out, and deletes the info bars etc, but also does Pokerus, updating the bag, everything else</summary>
         private void CleanUpStuffAfterFadeOut()
         {
+            Battle.OnNewEvent -= SinglePlayerBattle_OnNewEvent;
+            Battle.OnStateChanged -= SinglePlayerBattle_OnStateChanged;
+            Engine.OnQuitRequested -= OnGameQuitRequested;
             _trainerSprite?.Image.DeductReference();
             foreach (Model m in _models)
             {

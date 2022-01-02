@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Threading;
 
@@ -12,26 +13,39 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private PBEBattleState? _newState;
         private readonly ManualResetEvent _resumeProcessing = new(false);
 
+        private void OnGameQuitRequested()
+        {
+            Battle.OnNewEvent -= SinglePlayerBattle_OnNewEvent;
+            Battle.OnStateChanged -= SinglePlayerBattle_OnStateChanged;
+            Engine.OnQuitRequested -= OnGameQuitRequested;
+            _resumeProcessing.Set(); // Allow battle thread to continue and die
+        }
+
         private void SinglePlayerBattle_OnNewEvent(PBEBattle _, IPBEPacket packet)
         {
+            if (Engine.QuitRequested)
+            {
+                return;
+            }
             _newPacket = packet;
             _resumeProcessing.Reset(); // Pause battle thread
             _resumeProcessing.WaitOne(); // Wait for permission to continue
-            // TODO: Will keep the game alive even if close is pressed
         }
         private void SinglePlayerBattle_OnStateChanged(PBEBattle battle)
         {
+            if (Engine.QuitRequested)
+            {
+                return;
+            }
             _newState = battle.BattleState;
             // Let this thread die; we will create a new one if the battle is to continue
         }
 
-        /// <summary>
-        /// Using this is necessary to prevent the battle state from changing on the main thread.
-        /// Whatever GL calls we make must be on the main thread though, which is why we delegate the packets and states back.
-        /// </summary>
+        /// <summary>Using this is necessary to prevent the battle state from changing on the main thread.
+        /// Whatever GL calls we make must be on the main thread though, which is why we delegate the packets and states back</summary>
         private static void CreateBattleThread(ThreadStart start)
         {
-            new Thread(start) { Name = "Battle Thread" }.Start(); // TODO: Need to implement cancellation tokens in PBE... thread causes the game to hang when closed
+            new Thread(start) { Name = "Battle Thread" }.Start();
         }
         private void ResumeBattleThread()
         {

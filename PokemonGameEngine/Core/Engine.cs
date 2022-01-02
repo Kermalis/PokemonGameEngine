@@ -10,7 +10,8 @@ namespace Kermalis.PokemonGameEngine.Core
 {
     internal static class Engine
     {
-        public static bool QuitRequested;
+        public static bool QuitRequested { get; private set; }
+        public static event Action OnQuitRequested;
 
         // Initializes the first callback, the window, and instances
         private static void Init()
@@ -68,7 +69,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 {
                     case SDL.SDL_EventType.SDL_QUIT:
                     {
-                        QuitRequested = true;
+                        RequestQuit();
                         return true;
                     }
                     case SDL.SDL_EventType.SDL_CONTROLLERDEVICEADDED:
@@ -113,6 +114,12 @@ namespace Kermalis.PokemonGameEngine.Core
                 }
             }
             return false;
+        }
+
+        public static void RequestQuit()
+        {
+            QuitRequested = true;
+            OnQuitRequested?.Invoke();
         }
     }
 }

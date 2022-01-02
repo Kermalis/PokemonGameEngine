@@ -30,7 +30,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void StartMenu_DebugQuitSelected()
         {
-            Engine.QuitRequested = true;
+            Engine.RequestQuit();
         }
         private void SetupStartMenuChoices()
         {
