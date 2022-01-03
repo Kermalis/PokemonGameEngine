@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
@@ -19,11 +18,11 @@ namespace Kermalis.PokemonGameEngine.Render.World
             {
                 private readonly bool _xFlip;
                 private readonly bool _yFlip;
-                private readonly Tileset _tileset;
-                private readonly Tileset.Tile _tilesetTile;
+                // There are usually more blockset tiles than tileset tiles, so storing the tileset here would just waste memory
+                public readonly Tileset.Tile TilesetTile;
 
                 // Cache AtlasPos for less calculations
-                private AtlasPos _atlasPos;
+                public AtlasPos AtlasPos;
                 private int _atlasPosId = TileAnimation.INVALID_ANIM_ID;
 
                 public Tile(EndianBinaryReader r, List<Tileset> used)
@@ -34,13 +33,13 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     int tileId = r.ReadInt32();
 
                     // Load tileset if it's not loaded already by this blockset
-                    _tileset = used.Find(t => t.Id == tilesetId);
-                    if (_tileset is null)
+                    Tileset tileset = used.Find(t => t.Id == tilesetId);
+                    if (tileset is null)
                     {
-                        _tileset = Tileset.LoadOrGet(tilesetId);
-                        used.Add(_tileset);
+                        tileset = Tileset.LoadOrGet(tilesetId);
+                        used.Add(tileset);
                     }
-                    _tilesetTile = _tileset.Tiles[tileId];
+                    TilesetTile = tileset.Tiles[tileId];
                 }
 
                 private static AtlasPos MakeAtlasPos(Pos2D tilePixelPos, Size2D tilesetSize, bool xFlip, bool yFlip)
@@ -52,22 +51,24 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     return new Pos2D(tileId % numTilesX * Overworld.Tile_NumPixelsX, tileId / numTilesX * Overworld.Tile_NumPixelsY);
                 }
 
-                public void Render(Pos2D pos)
+                public void UpdateAtlasPos()
                 {
-                    // Update _atlasPos if it needs updating
-                    int id = _tilesetTile.AnimId;
-                    if (id == TileAnimation.NO_ANIM_ID)
+                    int id;
+                    if (TilesetTile is Tileset.AnimatedTile at && at.AnimId != TileAnimation.NO_ANIM_ID)
                     {
-                        id = _tilesetTile.Id;
+                        id = at.AnimId;
                     }
+                    else
+                    {
+                        id = TilesetTile.Id;
+                    }
+                    Tileset tileset = TilesetTile.Tileset;
                     if (id != _atlasPosId)
                     {
-                        Pos2D pp = GetPixelPos(id, _tileset.NumTilesX);
-                        _atlasPos = MakeAtlasPos(pp, _tileset.TextureSize, _xFlip, _yFlip);
+                        Pos2D pp = GetPixelPos(id, tileset.NumTilesX);
+                        AtlasPos = MakeAtlasPos(pp, tileset.TextureSize, _xFlip, _yFlip);
                         _atlasPosId = id;
                     }
-                    // Render
-                    GUIRenderer.Instance.RenderTexture(_tileset.Texture, new Rect2D(pos, new Size2D(Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY)), _atlasPos);
                 }
             }
 
@@ -107,30 +108,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
                         arrE[y] = arrY;
                     }
                     Tiles[e] = arrE;
-                }
-            }
-
-            public void Render(byte elevation, Pos2D pos)
-            {
-                Tile[][][] arrE = Tiles[elevation];
-                Pos2D bPos;
-                Pos2D tilePos;
-
-                for (bPos.Y = 0; bPos.Y < Overworld.Block_NumTilesY; bPos.Y++)
-                {
-                    Tile[][] arrY = arrE[bPos.Y];
-                    tilePos.Y = pos.Y + (bPos.Y * Overworld.Tile_NumPixelsY);
-
-                    for (bPos.X = 0; bPos.X < Overworld.Block_NumTilesX; bPos.X++)
-                    {
-                        Tile[] subLayers = arrY[bPos.X];
-                        tilePos.X = pos.X + (bPos.X * Overworld.Tile_NumPixelsX);
-
-                        for (int t = 0; t < subLayers.Length; t++)
-                        {
-                            subLayers[t].Render(tilePos);
-                        }
-                    }
                 }
             }
         }
@@ -181,20 +158,20 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private static readonly Dictionary<int, Blockset> _loadedBlocksets = new();
         public static Blockset LoadOrGet(int id)
         {
-            string name = _ids[id];
-            if (name is null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(id));
-            }
             if (_loadedBlocksets.TryGetValue(id, out Blockset b))
             {
                 b._numReferences++;
 #if DEBUG_OVERWORLD
-                Log.WriteLine("Adding reference to blockset: " + name + " (new count is " + b._numReferences + ")");
+                Log.WriteLine("Adding reference to blockset: " + _ids[b.Id] + " (new count is " + b._numReferences + ")");
 #endif
             }
             else
             {
+                string name = _ids[id];
+                if (name is null)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(id));
+                }
                 b = new Blockset(id, name);
             }
             return b;

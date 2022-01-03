@@ -31,9 +31,9 @@ namespace Kermalis.PokemonGameEngine.World.Data
             return new EndianBinaryReader(AssetLoader.GetAssetStream(FILE), encoding: EncodingType.UTF16);
         }
 
-        public static TileAnimation[] Load(Tileset t)
+        public static TileAnimation[] Load(int tilesetId)
         {
-            if (!_offsets.TryGetValue(t.Id, out uint[] offsets))
+            if (!_offsets.TryGetValue(tilesetId, out uint[] offsets))
             {
                 return null;
             }
@@ -44,7 +44,7 @@ namespace Kermalis.PokemonGameEngine.World.Data
                 for (int i = 0; i < offsets.Length; i++)
                 {
                     r.BaseStream.Position = offsets[i];
-                    arr[i] = new TileAnimation(t, new TileAnimationData(r));
+                    arr[i] = new TileAnimation(new TileAnimationData(r));
                 }
                 return arr;
             }

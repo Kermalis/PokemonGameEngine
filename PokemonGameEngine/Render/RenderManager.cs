@@ -11,6 +11,7 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             GL gl = Display.OpenGL;
             // Init shader instances
+            _ = new EntireScreenTextureShader(gl);
             _ = new FontShader(gl);
             _ = new DayTintShader(gl);
             _ = new FadeColorShader(gl);

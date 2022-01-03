@@ -321,7 +321,7 @@ namespace Kermalis.PokemonGameEngine.World
                 return false; // Return false if the block does not create battles
             }
             Map map = player.Map;
-            EncounterTable tbl = map.Encounters.GetEncounterTable(t);
+            EncounterTable tbl = map.Encounters?.GetEncounterTable(t); // If encounters aren't loaded, Map Details aren't either (below)
             if (tbl is null)
             {
                 return false; // Return false if there are no encounters for this block on this map

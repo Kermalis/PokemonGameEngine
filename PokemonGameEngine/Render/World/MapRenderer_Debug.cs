@@ -7,6 +7,7 @@ using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using Silk.NET.OpenGL;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.World
@@ -17,12 +18,31 @@ namespace Kermalis.PokemonGameEngine.Render.World
         {
             None,
             Occupied,
-            WasOccupied
+            WasOccupied,
+            ScreenCorner
+        }
+        private struct DebugVisibleBlock
+        {
+            /// <summary>Can be <see langword="null"/>, as in no border</summary>
+            public MapLayout.Block Block;
+            public Pos2D PositionOnScreen;
+            public Map Map;
+            public Pos2D MapPos;
+        }
+        private struct DebugVisibleObj
+        {
+            public Pos2D PositionOnScreen;
+            public Pos2D? PositionOnScreen_MovingFrom;
         }
 
         private const int DEBUG_FBO_SCALE = 4;
 
         private readonly FrameBuffer _debugFrameBuffer;
+
+        private int _debugNumVisibleBlocksX;
+        private int _debugNumVisibleBlocksY;
+        private DebugVisibleBlock[][] _debugVisibleBlocks;
+        private readonly List<DebugVisibleObj> _debugVisibleObjs;
 
         private static Vector4 Debug_GetBlockStatusColor(DebugBlockStatus status)
         {
@@ -30,49 +50,106 @@ namespace Kermalis.PokemonGameEngine.Render.World
             {
                 case DebugBlockStatus.Occupied: return new Vector4(1f, 0f, 0.5f, 0.8f);
                 case DebugBlockStatus.WasOccupied: return new Vector4(1f, 0f, 0.2f, 0.8f);
+                case DebugBlockStatus.ScreenCorner: return new Vector4(0.2f, 0.2f, 1f, 0.8f);
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
         }
-        private DebugBlockStatus Debug_IsBlockOccupied(Map map, in Pos2D mapXY)
+
+        private void Debug_UpdateVisibleBlocksBounds(Pos2D startBlock, Pos2D endBlock)
         {
-            for (int i = 0; i < _visibleObjs.Count; i++)
+            _debugNumVisibleBlocksX = endBlock.X - startBlock.X + 1;
+            _debugNumVisibleBlocksY = endBlock.Y - startBlock.Y + 1;
+
+            if (_debugVisibleBlocks.Length < _debugNumVisibleBlocksY)
             {
-                VisualObj o = _visibleObjs[i].Obj;
-                if (o.Map == map)
+                Array.Resize(ref _debugVisibleBlocks, _debugNumVisibleBlocksY);
+            }
+            for (int y = 0; y < _debugNumVisibleBlocksY; y++)
+            {
+                if (_debugVisibleBlocks[y] is null)
                 {
-                    if (o.Pos.XY.Equals(mapXY))
-                    {
-                        return DebugBlockStatus.Occupied;
-                    }
-                    if (o.MovingFromPos.XY.Equals(mapXY))
-                    {
-                        return DebugBlockStatus.WasOccupied;
-                    }
+                    _debugVisibleBlocks[y] = new DebugVisibleBlock[_debugNumVisibleBlocksX];
+                }
+                else if (_debugVisibleBlocks[y].Length < _debugNumVisibleBlocksX)
+                {
+                    Array.Resize(ref _debugVisibleBlocks[y], _debugNumVisibleBlocksX);
                 }
             }
-            return DebugBlockStatus.None;
+        }
+        private void Debug_UpdateVisibleBlocks(Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
+        {
+            Debug_UpdateVisibleBlocksBounds(startBlock, endBlock);
+
+            Pos2D pixel = startBlockPixel;
+            Pos2D bXY;
+            for (bXY.Y = startBlock.Y; bXY.Y <= endBlock.Y; bXY.Y++)
+            {
+                DebugVisibleBlock[] vbY = _debugVisibleBlocks[bXY.Y - startBlock.Y];
+                for (bXY.X = startBlock.X; bXY.X <= endBlock.X; bXY.X++)
+                {
+                    DebugVisibleBlock vb;
+                    vb.Block = cameraMap.GetBlock_CrossMap(bXY, out Pos2D newXY, out Map map);
+                    vb.PositionOnScreen = pixel;
+                    vb.Map = map;
+                    vb.MapPos = newXY;
+                    vbY[bXY.X - startBlock.X] = vb;
+
+                    pixel.X += Overworld.Block_NumPixelsX;
+                }
+                pixel.X = startBlockPixel.X;
+                pixel.Y += Overworld.Block_NumPixelsY;
+            }
         }
 
-        public void Debug_RenderBlocks()
+        private void Debug_AddVisualObj(VisualObj v, Pos2D pixelPos)
         {
-            FrameBuffer c = FrameBuffer.Current;
-            _debugFrameBuffer.Use();
-            GL gl = Display.OpenGL;
-            gl.ClearColor(Colors.Transparent);
-            gl.Clear(ClearBufferMask.ColorBufferBit);
-
-            for (int y = 0; y < _numVisibleBlocksY; y++)
+            DebugVisibleObj vo;
+            vo.PositionOnScreen = pixelPos;
+            Pos2D cur = v.Pos.XY;
+            Pos2D from = v.MovingFromPos.XY;
+            if (cur.Equals(from))
             {
-                VisibleBlock[] vbY = _visibleBlocks[y];
-                for (int x = 0; x < _numVisibleBlocksX; x++)
-                {
-                    ref VisibleBlock vb = ref vbY[x];
+                vo.PositionOnScreen_MovingFrom = null;
+            }
+            else
+            {
+                vo.PositionOnScreen_MovingFrom = vo.PositionOnScreen - ((cur - from) * Overworld.Block_NumPixels);
+            }
+            _debugVisibleObjs.Add(vo);
+        }
 
-                    var posRect = new Rect2D(vb.PositionOnScreen * DEBUG_FBO_SCALE, new Size2D(Overworld.Block_NumPixelsX * DEBUG_FBO_SCALE, Overworld.Block_NumPixelsY * DEBUG_FBO_SCALE));
-                    DebugBlockStatus status = Debug_IsBlockOccupied(vb.Map, vb.MapPos);
-                    if (status != DebugBlockStatus.None)
+        private static Rect2D Debug_GetPositionRect(Pos2D pos)
+        {
+            return new Rect2D(pos * DEBUG_FBO_SCALE, Overworld.Block_NumPixels * DEBUG_FBO_SCALE);
+        }
+        private void Debug_RenderObjs()
+        {
+            for (int i = 0; i < _debugVisibleObjs.Count; i++)
+            {
+                DebugVisibleObj vo = _debugVisibleObjs[i];
+                GUIRenderer.Instance.FillRectangle(Debug_GetBlockStatusColor(DebugBlockStatus.Occupied), Debug_GetPositionRect(vo.PositionOnScreen));
+                // Also color MovingFromPos
+                if (vo.PositionOnScreen_MovingFrom is not null)
+                {
+                    GUIRenderer.Instance.FillRectangle(Debug_GetBlockStatusColor(DebugBlockStatus.WasOccupied), Debug_GetPositionRect(vo.PositionOnScreen_MovingFrom.Value));
+                }
+            }
+        }
+        private void Debug_RenderBlocks()
+        {
+            for (int y = 0; y < _debugNumVisibleBlocksY; y++)
+            {
+                bool yCorner = y == 0 || y == _debugNumVisibleBlocksY - 1;
+                DebugVisibleBlock[] vbY = _debugVisibleBlocks[y];
+                for (int x = 0; x < _debugNumVisibleBlocksX; x++)
+                {
+                    bool xCorner = x == 0 || x == _debugNumVisibleBlocksX - 1;
+                    ref DebugVisibleBlock vb = ref vbY[x];
+
+                    Rect2D posRect = Debug_GetPositionRect(vb.PositionOnScreen);
+                    if (xCorner && yCorner)
                     {
-                        GUIRenderer.Instance.FillRectangle(Debug_GetBlockStatusColor(status), posRect);
+                        GUIRenderer.Instance.FillRectangle(Debug_GetBlockStatusColor(DebugBlockStatus.ScreenCorner), posRect);
                     }
                     GUIRenderer.Instance.DrawRectangle(Colors.Black4, posRect);
 
@@ -82,9 +159,27 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     GUIString.CreateAndRenderOneTimeString(vb.MapPos.ToString(), f, fc, posRect.TopLeft.Move(1, 9));
                 }
             }
+        }
+        public void Debug_Render()
+        {
+            FrameBuffer c = FrameBuffer.Current;
+
+            _debugFrameBuffer.Use();
+            GL gl = Display.OpenGL;
+            gl.ClearColor(Colors.Transparent);
+            gl.Clear(ClearBufferMask.ColorBufferBit);
+
+            Debug_RenderObjs();
+            Debug_RenderBlocks();
 
             _debugFrameBuffer.RenderToScreen();
             c.Use();
+
+            // Clear data
+            for (int y = 0; y < _debugNumVisibleBlocksY; y++)
+            {
+                Array.Clear(_debugVisibleBlocks[y]);
+            }
         }
     }
 }

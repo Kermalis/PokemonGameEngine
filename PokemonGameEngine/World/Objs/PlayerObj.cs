@@ -39,14 +39,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Instance.State = state;
             Instance.Pos = pos;
             Instance.Map = map;
-            map.OnMapNowVisible();
             map.Objs.Add(Instance);
-            map.OnCurrentMap();
         }
 
         protected override void OnMapChanged(Map oldMap, Map newMap)
         {
-            Overworld.OnPlayerMapChanged(oldMap, newMap);
+            Overworld.OnPlayerMapChanged();
         }
         protected override void OnDismountFromWater()
         {
@@ -64,7 +62,12 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public void Warp()
         {
             WarpInProgress wip = WarpInProgress.Current;
-            Map newMap = wip.DestMapLoaded;
+            WarpInProgress.EndCurrent();
+            Map newMap = wip.DestMap;
+            // Load map data
+            SetMap(newMap);
+            CameraObj.Instance.SetMap(newMap); // Camera must be attached to us to warp in the first place
+
             WorldPos newPos = wip.Destination.DestPos;
             MapLayout.Block block = newMap.GetBlock_InBounds(newPos.XY);
 
@@ -86,12 +89,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
             }
 
-            SetMap(newMap);
             Pos = newPos;
             MovingFromPos = newPos;
             MovingFromVisualOfs = VisualOfs;
-            CameraObj.Instance.CopyMovementIfAttachedTo(this); // Update camera map and pos
-            WarpInProgress.EndCurrent();
+            CameraObj.Instance.CopyAttachedToMovement(); // Update camera pos
         }
         private bool CheckForThingsAfterMovement()
         {

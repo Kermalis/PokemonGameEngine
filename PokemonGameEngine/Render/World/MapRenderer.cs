@@ -1,31 +1,19 @@
-﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
+﻿using Kermalis.PokemonGameEngine.Render.GUIs;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.Render.Shaders;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
+using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Render.World
 {
-    // TODO: Border blocks tank framerate so much because they search the entire connections list for a block there
+    // LIMITATION: No more than 12 tilesets per layout (that's more than you'll ever use at once anyway)
+    // LIMITATION: Infinite hallway of the same map connecting to itself does not work
     internal sealed partial class MapRenderer
     {
-        private struct VisibleBlock
-        {
-            /// <summary>Can be null, as in no border</summary>
-            public MapLayout.Block Block;
-            public Pos2D PositionOnScreen;
-#if DEBUG_OVERWORLD
-            public Map Map;
-            public Pos2D MapPos;
-#endif
-        }
-        private struct VisibleObj
-        {
-            public VisualObj Obj;
-            public Pos2D PositionOnScreen;
-        }
-
         // Extra tolerance for wide/tall VisualObj
         private const int OBJ_TOLERANCE_X = 2;
         private const int OBJ_TOLERANCE_Y = 2;
@@ -34,10 +22,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private readonly List<Map> _curVisibleMaps;
         private readonly List<Map> _prevVisibleMaps;
-        private readonly List<VisibleObj> _visibleObjs;
-        private int _numVisibleBlocksX;
-        private int _numVisibleBlocksY;
-        private VisibleBlock[][] _visibleBlocks;
+
+        private readonly MapLayoutShader _layoutShader;
+        private readonly FrameBuffer[] _layoutFrameBuffers;
+        private readonly FrameBuffer[] _objFrameBuffers;
 
         public MapRenderer()
         {
@@ -45,6 +33,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
 #if DEBUG_OVERWORLD
             _debugFrameBuffer = FrameBuffer.CreateWithColor(OverworldGUI.RenderSize * DEBUG_FBO_SCALE);
+            _debugVisibleBlocks = Array.Empty<DebugVisibleBlock[]>();
+            _debugVisibleObjs = new List<DebugVisibleObj>();
 #endif
 
             _curVisibleMaps = new List<Map>()
@@ -52,81 +42,116 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 PlayerObj.Instance.Map // Put player's map in right away since it's loaded already
             };
             _prevVisibleMaps = new List<Map>();
-            _visibleObjs = new List<VisibleObj>();
-            _visibleBlocks = Array.Empty<VisibleBlock[]>();
+
+            _layoutShader = new MapLayoutShader(Display.OpenGL);
+            _layoutFrameBuffers = new FrameBuffer[Overworld.NumElevations];
+            _objFrameBuffers = new FrameBuffer[Overworld.NumElevations];
+            for (int i = 0; i < Overworld.NumElevations; i++)
+            {
+                _layoutFrameBuffers[i] = FrameBuffer.CreateWithColor(OverworldGUI.RenderSize);
+                _objFrameBuffers[i] = FrameBuffer.CreateWithColor(OverworldGUI.RenderSize);
+            }
         }
 
-        private static void GetVisible(CameraObj cam,
+        private static void GetCameraRect(CameraObj cam, Size2D screenSize,
             out Map cameraMap, // The map the camera is currently on
-            out Pos2D startBlock, // The first visible blocks offset from the current map
-            out Pos2D endBlock, // The last visible blocks offset from the current map
-            out Pos2D startBlockPixel) // Pixel coords of the blocks to start rendering from
+            out Pos2D startBlock, // The top left visible block (relative to the camera's map)
+            out Pos2D endBlock, // The bottom right visible block (relative to the camera's map)
+            out Pos2D startBlockPixel) // Screen coords of the top left block
         {
             Pos2D cameraXY = cam.Pos.XY;
-            Size2D curSize = FrameBuffer.Current.Size;
-
             cameraMap = cam.Map;
-            int cameraPixelX = (cameraXY.X * Overworld.Block_NumPixelsX) - ((int)curSize.Width / 2) + (Overworld.Block_NumPixelsX / 2) + cam.VisualProgress.X + cam.CamVisualOfs.X;
-            int cameraPixelY = (cameraXY.Y * Overworld.Block_NumPixelsY) - ((int)curSize.Height / 2) + (Overworld.Block_NumPixelsY / 2) + cam.VisualProgress.Y + cam.CamVisualOfs.Y;
+
+            // Negated amount of pixels to move the current map away from the top left of the screen
+            // Example: move the map 8 pixels right, cameraPixelX is -8
+            int cameraPixelX = (cameraXY.X * Overworld.Block_NumPixelsX) - ((int)screenSize.Width / 2) + (Overworld.Block_NumPixelsX / 2) + cam.VisualProgress.X + cam.CamVisualOfs.X;
+            int cameraPixelY = (cameraXY.Y * Overworld.Block_NumPixelsY) - ((int)screenSize.Height / 2) + (Overworld.Block_NumPixelsY / 2) + cam.VisualProgress.Y + cam.CamVisualOfs.Y;
+            // Value to check if we are exactly at the start of a block
             int xpBX = cameraPixelX % Overworld.Block_NumPixelsX;
             int ypBY = cameraPixelY % Overworld.Block_NumPixelsY;
-            startBlock.X = (cameraPixelX / Overworld.Block_NumPixelsX) - (xpBX >= 0 ? 0 : 1);
-            startBlock.Y = (cameraPixelY / Overworld.Block_NumPixelsY) - (ypBY >= 0 ? 0 : 1);
-            int numBlocksX = ((int)curSize.Width / Overworld.Block_NumPixelsX) + ((int)curSize.Width % Overworld.Block_NumPixelsX == 0 ? 0 : 1);
-            int numBlocksY = ((int)curSize.Height / Overworld.Block_NumPixelsY) + ((int)curSize.Height % Overworld.Block_NumPixelsY == 0 ? 0 : 1);
-            endBlock.X = startBlock.X + numBlocksX + (xpBX == 0 ? 0 : 1);
-            endBlock.Y = startBlock.Y + numBlocksY + (ypBY == 0 ? 0 : 1);
+
+            // Calculate where the starting block is relative to the map
+            // If the remainders of the above values are negative, we want to start rendering the block to the left/up
+            // If they're positive, we are still rendering the same block as if they were 0
+            startBlock.X = (cameraPixelX / Overworld.Block_NumPixelsX) - (xpBX < 0 ? 1 : 0);
+            startBlock.Y = (cameraPixelY / Overworld.Block_NumPixelsY) - (ypBY < 0 ? 1 : 0);
+            // Calculate where the top left block is on the screen
             startBlockPixel.X = xpBX >= 0 ? -xpBX : -xpBX - Overworld.Block_NumPixelsX;
             startBlockPixel.Y = ypBY >= 0 ? -ypBY : -ypBY - Overworld.Block_NumPixelsY;
+
+            // Calculate amount of blocks currently on the screen
+            int xSize = (int)screenSize.Width - startBlockPixel.X;
+            int ySize = (int)screenSize.Height - startBlockPixel.Y;
+            int numBlocksX = (xSize / Overworld.Block_NumPixelsX) + (xSize % Overworld.Block_NumPixelsX != 0 ? 1 : 0);
+            int numBlocksY = (ySize / Overworld.Block_NumPixelsY) + (ySize % Overworld.Block_NumPixelsY != 0 ? 1 : 0);
+            // Calculate bottom right block
+            endBlock.X = startBlock.X + numBlocksX - 1;
+            endBlock.Y = startBlock.Y + numBlocksY - 1;
         }
 
-        public void Render()
+        // TODO: BORDER BLOCKS EZZZZZZZ
+        // TODO: Tile animations
+        // TODO: Obj shader
+        public void Render(FrameBuffer targetFrameBuffer)
         {
             Tileset.UpdateAnimations();
 
-            GetVisible(CameraObj.Instance, out Map cameraMap, out Pos2D startBlock, out Pos2D endBlock, out Pos2D startBlockPixel);
-            UpdateVisibleMapsAndBlocks(cameraMap, startBlock, endBlock, startBlockPixel);
-            UpdateVisualObjs(Obj.LoadedObjs, cameraMap, startBlock, endBlock, startBlockPixel);
+            GetCameraRect(CameraObj.Instance, targetFrameBuffer.Size,
+                out Map cameraMap, out Pos2D startBlock, out Pos2D endBlock, out Pos2D startBlockPixel);
 
-            for (byte e = 0; e < Overworld.NumElevations; e++)
+            GL gl = Display.OpenGL;
+            gl.ClearColor(Colors.Transparent);
+            for (int i = 0; i < Overworld.NumElevations; i++)
             {
-                RenderBlocks(e);
-                RenderObjs(e);
+                _layoutFrameBuffers[i].Use();
+                gl.Clear(ClearBufferMask.ColorBufferBit);
+                _objFrameBuffers[i].Use();
+                gl.Clear(ClearBufferMask.ColorBufferBit);
             }
-        }
-        private void RenderBlocks(byte elevation)
-        {
-            for (int y = 0; y < _numVisibleBlocksY; y++)
+
+            RenderLayouts(gl, targetFrameBuffer.Size, cameraMap, startBlock, startBlockPixel);
+            RenderObjs(Obj.LoadedObjs.ToArray(), CameraObj.Instance.Pos.XY, startBlock, endBlock, startBlockPixel);
+
+#if DEBUG_OVERWORLD
+            Debug_UpdateVisibleBlocks(cameraMap, startBlock, endBlock, startBlockPixel);
+#endif
+
+            gl.Enable(EnableCap.Blend);
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
+            // Finish render
+            targetFrameBuffer.Use();
+            EntireScreenTextureShader.Instance.Use(gl);
+            gl.ActiveTexture(TextureUnit.Texture0);
+
+            for (int i = 0; i < Overworld.NumElevations; i++)
             {
-                VisibleBlock[] vbY = _visibleBlocks[y];
-                for (int x = 0; x < _numVisibleBlocksX; x++)
-                {
-                    ref VisibleBlock vb = ref vbY[x];
-                    if (vb.Block is not null) // No border would show pure black
-                    {
-                        vb.Block.BlocksetBlock.Render(elevation, vb.PositionOnScreen);
-                    }
-                }
+                gl.BindTexture(TextureTarget.Texture2D, _layoutFrameBuffers[i].ColorTexture.Value);
+                EntireScreenMesh.Instance.Render();
+                gl.BindTexture(TextureTarget.Texture2D, _objFrameBuffers[i].ColorTexture.Value);
+                EntireScreenMesh.Instance.Render();
             }
-        }
-        private void RenderObjs(byte elevation)
-        {
-            for (int i = 0; i < _visibleObjs.Count; i++)
-            {
-                VisibleObj vo = _visibleObjs[i];
-                if (vo.Obj.Pos.Elevation == elevation)
-                {
-                    vo.Obj.Draw(vo.PositionOnScreen);
-                }
-            }
+            gl.Disable(EnableCap.Blend);
+#if DEBUG_OVERWORLD
+            _debugVisibleObjs.Clear();
+#endif
         }
 
-        private void UpdateVisibleMapsAndBlocks(Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
+        private void RenderLayouts(GL gl, Size2D screenSize, Map cameraMap, Pos2D startBlock, Pos2D startBlockPixel)
         {
+            gl.Enable(EnableCap.Blend);
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            _layoutShader.Use(gl);
+            _layoutShader.UpdateViewport(gl);
+
+            // Set up visible map lists
             _prevVisibleMaps.AddRange(_curVisibleMaps);
             _curVisibleMaps.Clear();
-            UpdateVisibleBlocks(cameraMap, startBlock, endBlock, startBlockPixel);
 
+            var basePos = new Pos2D((-startBlock.X * Overworld.Block_NumPixelsX) + startBlockPixel.X, (-startBlock.Y * Overworld.Block_NumPixelsY) + startBlockPixel.Y);
+            RenderLayoutAndVisibleConnections(screenSize, basePos, cameraMap);
+
+            // Mark maps out of view as no longer visible if they were previously visible
             foreach (Map m in _curVisibleMaps)
             {
                 _prevVisibleMaps.Remove(m);
@@ -136,12 +161,55 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 m.OnMapNoLongerVisible();
             }
             _prevVisibleMaps.Clear();
+
+        }
+        private void RenderLayout(MapLayout layout, Pos2D translation)
+        {
+            GL gl = Display.OpenGL;
+            _layoutShader.SetTranslation(gl, translation);
+            layout.BindTilesetTextures(gl);
+            for (byte e = 0; e < Overworld.NumElevations; e++)
+            {
+                _layoutFrameBuffers[e].Use();
+                layout.RenderElevation(gl, e);
+            }
+        }
+        private void RenderLayoutAndVisibleConnections(Size2D screenSize, Pos2D basePos, Map map)
+        {
+            // Mark map as visible since we're rendering it
+            _curVisibleMaps.Add(map);
+            if (!_prevVisibleMaps.Contains(map))
+            {
+                map.OnMapNowVisible();
+            }
+            // Render it
+            RenderLayout(map.Layout, basePos + (map.BlockOffsetFromCurrentMap * Overworld.Block_NumPixels));
+
+            // Check connected maps to see if they're visible, and repeat if they are
+            MapConnection[] connections = map.Connections;
+            for (int i = 0; i < connections.Length; i++)
+            {
+                MapConnection con = connections[i];
+                var conMap = Map.LoadOrGet(con.MapId);
+                if (_curVisibleMaps.Contains(conMap))
+                {
+                    continue; // Don't render more than once
+                }
+
+                // Visibility check
+                var rect = new Rect2D(basePos + (conMap.BlockOffsetFromCurrentMap * Overworld.Block_NumPixels),
+                    new Size2D((uint)conMap.Width * Overworld.Block_NumPixelsX, (uint)conMap.Height * Overworld.Block_NumPixelsY));
+                if (rect.Intersects(screenSize))
+                {
+                    RenderLayoutAndVisibleConnections(screenSize, basePos, conMap);
+                }
+            }
         }
 
-        private void UpdateVisualObjs(List<Obj> objs, Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
+        // TODO: Allocating array every frame = bad, plus I have to sort them every frame by y coordinate
+        // Hopefully we can solve that with depth testing with their shader. Just render them with the depth being their coordinate
+        private void RenderObjs(Obj[] objs, Pos2D cameraXY, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
         {
-            _visibleObjs.Clear();
-
             startBlock.X -= OBJ_TOLERANCE_X;
             startBlock.Y -= OBJ_TOLERANCE_Y;
             endBlock.X += OBJ_TOLERANCE_X;
@@ -149,93 +217,39 @@ namespace Kermalis.PokemonGameEngine.Render.World
             startBlockPixel.X -= OBJ_TOLERANCE_X * Overworld.Block_NumPixelsX;
             startBlockPixel.Y -= OBJ_TOLERANCE_Y * Overworld.Block_NumPixelsY;
 
-            Pos2D bXY;
-            for (bXY.Y = startBlock.Y; bXY.Y < endBlock.Y; bXY.Y++)
+            Array.Sort(objs, (o1, o2) => o1.Pos.XY.Y.CompareTo(o2.Pos.XY.Y));
+            for (int i = 0; i < objs.Length; i++)
             {
-                for (bXY.X = startBlock.X; bXY.X < endBlock.X; bXY.X++)
+                // We don't need to check MovingFromPos to prevent it from popping in/out of existence
+                // The tolerance covers enough pixels so we can confidently check Pos only
+                // It'd only mess up if Pos and MovingFromPos were farther apart from each other than the tolerance
+                Obj o = objs[i];
+                if (o is not VisualObj v)
                 {
-                    cameraMap.GetXYMap(bXY, out Pos2D xy, out Map map);
-                    for (int i = 0; i < objs.Count; i++)
-                    {
-                        // We don't need to check PrevPos to prevent it from popping in/out of existence
-                        // The tolerance covers enough pixels where we can confidently check Pos only
-                        // It'd only mess up if Pos and PrevPos were farther apart from each other than the tolerance
-                        Obj o = objs[i];
-                        if (o is not VisualObj v || v.Map != map || !v.Pos.XY.Equals(xy))
-                        {
-                            continue;
-                        }
-                        VisibleObj vo;
-                        vo.Obj = v;
-                        vo.PositionOnScreen.X = ((bXY.X - startBlock.X) * Overworld.Block_NumPixelsX) + v.VisualProgress.X + startBlockPixel.X;
-                        vo.PositionOnScreen.Y = ((bXY.Y - startBlock.Y) * Overworld.Block_NumPixelsY) + v.VisualProgress.Y + startBlockPixel.Y;
-                        _visibleObjs.Add(vo);
-                    }
+                    continue;
                 }
-            }
-        }
 
-        private void UpdateVisibleBlocksBounds(Pos2D startBlock, Pos2D endBlock)
-        {
-            _numVisibleBlocksX = endBlock.X - startBlock.X;
-            _numVisibleBlocksY = endBlock.Y - startBlock.Y;
-
-            Array.Clear(_visibleBlocks, 0, _visibleBlocks.Length);
-            if (_visibleBlocks.Length < _numVisibleBlocksY)
-            {
-                Array.Resize(ref _visibleBlocks, _numVisibleBlocksY);
-            }
-            for (int y = 0; y < _numVisibleBlocksY; y++)
-            {
-                VisibleBlock[] arrX = _visibleBlocks[y];
-                if (arrX is null)
+                Pos2D currentMapXY = v.Pos.XY + v.Map.BlockOffsetFromCurrentMap;
+                if (currentMapXY.X < startBlock.X || currentMapXY.Y < startBlock.Y
+                    || currentMapXY.X > endBlock.X || currentMapXY.Y > endBlock.Y)
                 {
-                    _visibleBlocks[y] = new VisibleBlock[_numVisibleBlocksX];
+                    continue; // Make sure it's within the tolerance rect
                 }
-                else
-                {
-                    Array.Clear(arrX, 0, arrX.Length);
-                    if (arrX.Length < _numVisibleBlocksX)
-                    {
-                        Array.Resize(ref arrX, _numVisibleBlocksX);
-                    }
-                }
-            }
-        }
-        private void UpdateVisibleBlocks(Map cameraMap, Pos2D startBlock, Pos2D endBlock, Pos2D startBlockPixel)
-        {
-            UpdateVisibleBlocksBounds(startBlock, endBlock);
 
-            Pos2D pixel = startBlockPixel;
-            Pos2D bXY;
-            for (bXY.Y = startBlock.Y; bXY.Y < endBlock.Y; bXY.Y++)
-            {
-                VisibleBlock[] vbY = _visibleBlocks[bXY.Y - startBlock.Y];
-                for (bXY.X = startBlock.X; bXY.X < endBlock.X; bXY.X++)
-                {
-                    cameraMap.GetXYMap(bXY, out Pos2D newXY, out Map map);
-                    if (!_curVisibleMaps.Contains(map))
-                    {
-                        _curVisibleMaps.Add(map);
-                        if (!_prevVisibleMaps.Contains(map))
-                        {
-                            map.OnMapNowVisible();
-                        }
-                    }
+                Pos2D blockPixel;
+                blockPixel.X = startBlockPixel.X + ((currentMapXY.X - startBlock.X) * Overworld.Block_NumPixelsX);
+                blockPixel.Y = startBlockPixel.Y + ((currentMapXY.Y - startBlock.Y) * Overworld.Block_NumPixelsY);
+                Pos2D posOnScreen;
+                posOnScreen.X = blockPixel.X + v.VisualProgress.X;
+                posOnScreen.Y = blockPixel.Y + v.VisualProgress.Y;
+                // Draw
+                _objFrameBuffers[v.Pos.Elevation].Use();
+                v.Draw(posOnScreen);
 
-                    VisibleBlock vb;
-                    vb.Block = map.GetBlock_InBounds(newXY);
-                    vb.PositionOnScreen = pixel;
+                // Add to debug data
 #if DEBUG_OVERWORLD
-                    vb.Map = map;
-                    vb.MapPos = newXY;
+                Debug_AddVisualObj(v, blockPixel);
 #endif
-                    vbY[bXY.X - startBlock.X] = vb;
-
-                    pixel.X += Overworld.Block_NumPixelsX;
-                }
-                pixel.X = startBlockPixel.X;
-                pixel.Y += Overworld.Block_NumPixelsY;
             }
         }
     }

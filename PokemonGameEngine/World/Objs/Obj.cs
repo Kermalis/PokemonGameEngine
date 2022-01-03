@@ -69,7 +69,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return Map.GetBlock_CrossMap(Pos.XY.Move(Facing), out _, out _);
         }
 
-        protected void SetMap(Map newMap)
+        public void SetMap(Map newMap)
         {
             Map curMap = Map;
             if (curMap != newMap)

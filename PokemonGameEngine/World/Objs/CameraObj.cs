@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.World.Maps;
 using System;
 
@@ -23,7 +22,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Instance.Pos = PlayerObj.Instance.Pos;
             Instance.Map = PlayerObj.Instance.Map;
             Instance.Map.Objs.Add(Instance);
-            Instance.UpdateDayTint();
+            Instance.Map.OnCurrentMap();
+            Overworld.UpdateDayTint();
         }
 
         public void CopyMovementIfAttachedTo(Obj obj)
@@ -35,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         }
         // TODO: (#69) Causes shaking because Obj.UpdateMovement() is also called on the camera as well as the obj it's following, causing the camera to get ahead
         // Will happen in scripts if the player moves and the camera is on the player
-        private void CopyAttachedToMovement()
+        public void CopyAttachedToMovement()
         {
             Obj other = CamAttachedTo;
 
@@ -63,16 +63,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         protected override void OnMapChanged(Map oldMap, Map newMap)
         {
-            UpdateDayTint();
+            Overworld.OnCameraMapChanged(oldMap, newMap);
         }
         protected override bool CanSurf()
         {
             return true;
-        }
-
-        private void UpdateDayTint()
-        {
-            DayTint.IsEnabled = Map.Details.Flags.HasFlag(MapFlags.DayTint);
         }
 
         public override void Dispose()

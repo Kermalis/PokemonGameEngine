@@ -2,7 +2,7 @@
 
 namespace Kermalis.PokemonGameEngine.World
 {
-    // Currently, warps can only be used by the player
+    // Currently, warps can only be used by the player (if the camera is attached to it)
     internal readonly struct Warp
     {
         public readonly int DestMapId;
@@ -19,13 +19,13 @@ namespace Kermalis.PokemonGameEngine.World
         public static WarpInProgress Current { get; private set; }
 
         public readonly Warp Destination;
-        public readonly Map DestMapLoaded;
+        public readonly Map DestMap;
 
         private WarpInProgress(in Warp dest)
         {
             Destination = dest;
-            DestMapLoaded = Map.LoadOrGet(dest.DestMapId);
-            DestMapLoaded.OnWarpingMap();
+            DestMap = Map.LoadOrGet(dest.DestMapId);
+            DestMap.OnWarpingMap(); // Load map details now
         }
         public static WarpInProgress Start(in Warp dest)
         {

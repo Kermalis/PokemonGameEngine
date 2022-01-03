@@ -13,11 +13,10 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
             : base(gl, VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
         {
             _lGUITexture = GetUniformLocation(gl, "guiTexture");
-        }
 
-        public void SetTextureUnit(GL gl, int t)
-        {
-            gl.Uniform1(_lGUITexture, t);
+            // Set texture unit now
+            Use(gl);
+            gl.Uniform1(_lGUITexture, 0);
         }
     }
 }

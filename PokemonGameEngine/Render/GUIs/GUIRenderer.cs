@@ -18,13 +18,6 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             public Pos2D Pos;
             public Vector2 UV;
         }
-        private struct QuadStruct
-        {
-            public const int OffsetOfPos = 0;
-            public const uint SizeOf = OffsetOfPos + 2 * sizeof(int);
-
-            public Pos2D Pos;
-        }
 
         #endregion
 
@@ -40,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         private readonly uint _quadVBO;
         private readonly GUIQuadShader _quadShader;
         /// <summary>Top left, bottom left, top right, bottom right</summary>
-        private readonly QuadStruct[] _quadCache = new QuadStruct[4];
+        private readonly Pos2D[] _quadCache = new Pos2D[4];
 
         public unsafe GUIRenderer(GL gl)
         {
@@ -64,32 +57,31 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             _quadVBO = gl.GenBuffer();
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _quadVBO);
             gl.EnableVertexAttribArray(0);
-            gl.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, QuadStruct.SizeOf, (void*)QuadStruct.OffsetOfPos);
+            gl.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, (uint)sizeof(Pos2D), null);
 
             _quadShader = new GUIQuadShader(gl);
         }
 
         private void RenderTextureStart(GL gl)
         {
-            gl.ActiveTexture(TextureUnit.Texture0);
-            gl.Enable(EnableCap.Blend);
-            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             _texShader.Use(gl);
             _texShader.UpdateViewport(gl);
+            gl.Enable(EnableCap.Blend);
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindVertexArray(_texVAO);
-            gl.BindBuffer(BufferTargetARB.ArrayBuffer, _texVBO);
-            _texShader.SetTextureUnit(gl, 0);
+            gl.BindBuffer(BufferTargetARB.ArrayBuffer, _texVBO); // Bind buffer so we can BufferData
         }
-        private unsafe void RenderOneTexture(GL gl, uint texture, Rect2D rect, AtlasPos texPos)
+        private unsafe void RenderOneTexture(GL gl, uint texture, Rect2D rect, AtlasPos uv)
         {
             gl.BindTexture(TextureTarget.Texture2D, texture);
-            _texCache[0].UV = texPos.Start;
+            _texCache[0].UV = uv.Start;
             _texCache[0].Pos = rect.TopLeft;
-            _texCache[1].UV = texPos.GetBottomLeft();
+            _texCache[1].UV = uv.GetBottomLeft();
             _texCache[1].Pos = rect.GetExclusiveBottomLeft();
-            _texCache[2].UV = texPos.GetTopRight();
+            _texCache[2].UV = uv.GetTopRight();
             _texCache[2].Pos = rect.GetExclusiveTopRight();
-            _texCache[3].UV = texPos.End;
+            _texCache[3].UV = uv.End;
             _texCache[3].Pos = rect.GetExclusiveBottomRight();
             fixed (void* d = _texCache)
             {
@@ -109,39 +101,34 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             RenderOneTexture(gl, texture, rect, new AtlasPos(xFlip, yFlip));
             RenderTextureEnd(gl);
         }
-        public void RenderTexture(uint texture, Rect2D rect, AtlasPos texPos)
+        public void RenderTexture(uint texture, Rect2D rect, AtlasPos uv)
         {
             GL gl = Display.OpenGL;
             RenderTextureStart(gl);
-            RenderOneTexture(gl, texture, rect, texPos);
+            RenderOneTexture(gl, texture, rect, uv);
             RenderTextureEnd(gl);
         }
 
 
         private void RenderQuadStart(GL gl, in Vector4 color)
         {
+            _quadShader.Use(gl);
+            _quadShader.UpdateViewport(gl);
+            _quadShader.SetColor(gl, color);
             gl.Enable(EnableCap.Blend);
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            _quadShader.Use(gl);
-            _texShader.UpdateViewport(gl);
             gl.BindVertexArray(_quadVAO);
-            gl.BindBuffer(BufferTargetARB.ArrayBuffer, _quadVBO);
-            _quadShader.SetColor(gl, color);
+            gl.BindBuffer(BufferTargetARB.ArrayBuffer, _quadVBO); // Bind buffer so we can BufferData
         }
         private unsafe void RenderOneQuad(GL gl, Rect2D rect)
         {
-            _quadCache[0].Pos = rect.TopLeft;
-            _quadCache[1].Pos = rect.GetBottomLeft();
-            _quadCache[2].Pos = rect.GetTopRight();
-            _quadCache[3].Pos = rect.GetBottomRight();
-            // Set bounds due to how gl works
-            _quadCache[1].Pos.Y++;
-            _quadCache[2].Pos.X++;
-            _quadCache[3].Pos.X++;
-            _quadCache[3].Pos.Y++;
+            _quadCache[0] = rect.TopLeft;
+            _quadCache[1] = rect.GetExclusiveBottomLeft();
+            _quadCache[2] = rect.GetExclusiveTopRight();
+            _quadCache[3] = rect.GetExclusiveBottomRight();
             fixed (void* d = _quadCache)
             {
-                gl.BufferData(BufferTargetARB.ArrayBuffer, QuadStruct.SizeOf * 4, d, BufferUsageARB.StreamDraw);
+                gl.BufferData(BufferTargetARB.ArrayBuffer, (uint)sizeof(Pos2D) * 4, d, BufferUsageARB.StreamDraw);
             }
             gl.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
         }

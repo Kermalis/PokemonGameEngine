@@ -4,6 +4,11 @@
       "Direction": "West",
       "Map": "TestMapW",
       "Offset": 20
+    },
+    {
+      "Direction": "South",
+      "Map": "TestMapShort",
+      "Offset": 22
     }
   ],
   "Layout": "TestLayoutC",

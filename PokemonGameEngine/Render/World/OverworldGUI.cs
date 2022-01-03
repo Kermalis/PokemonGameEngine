@@ -46,7 +46,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         {
             Instance = this;
 
-            _frameBuffer = FrameBuffer.CreateWithColorAndDepth(RenderSize);
+            _frameBuffer = FrameBuffer.CreateWithColor(RenderSize);
             _frameBuffer.Use();
             _dayTintFrameBuffer = FrameBuffer.CreateWithColor(RenderSize);
             _ = new MapRenderer(); // Init
@@ -109,8 +109,12 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         public void StartPlayerWarp(in Warp warp)
         {
+            if (CameraObj.Instance.CamAttachedTo?.Id != Overworld.PlayerId)
+            {
+                throw new InvalidOperationException("Tried to warp without the camera.");
+            }
             var w = WarpInProgress.Start(warp);
-            Song newMusic = w.DestMapLoaded.Details.Music;
+            Song newMusic = w.DestMap.Details.Music;
             if (newMusic != PlayerObj.Instance.Map.Details.Music)
             {
                 SoundControl.SetOverworldBGM(newMusic);
@@ -239,7 +243,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Render();
             _frameBuffer.BlitToScreen();
 #if DEBUG_OVERWORLD
-            MapRenderer.Instance.Debug_RenderBlocks();
+            MapRenderer.Instance.Debug_Render();
 #endif
         }
 
@@ -283,7 +287,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             GL gl = Display.OpenGL;
             gl.ClearColor(Colors.Black3);
             gl.Clear(ClearBufferMask.ColorBufferBit);
-            MapRenderer.Instance.Render();
+            MapRenderer.Instance.Render(_frameBuffer);
             DayTint.Render(_dayTintFrameBuffer);
             Window.RenderAll();
         }

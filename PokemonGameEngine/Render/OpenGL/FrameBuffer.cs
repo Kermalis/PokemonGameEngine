@@ -82,6 +82,11 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
 
         public void Use()
         {
+            if (Current == this)
+            {
+                return;
+            }
+
             GL gl = Display.OpenGL;
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, Id);
             Viewport(gl, new Rect2D(new Pos2D(0, 0), Size));
@@ -128,7 +133,13 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             Viewport(gl, dst);
 
-            GUIRenderer.Instance.RenderTexture(ColorTexture.Value, new Rect2D(new Pos2D(0, 0), dst.Size), yFlip: true);
+            gl.Enable(EnableCap.Blend);
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            gl.ActiveTexture(TextureUnit.Texture0);
+            gl.BindTexture(TextureTarget.Texture2D, ColorTexture.Value);
+            EntireScreenTextureShader.Instance.Use(gl);
+            EntireScreenMesh.Instance.Render();
+            gl.Disable(EnableCap.Blend);
 
             // Done, bind current fbo again
             Viewport(gl, new Rect2D(new Pos2D(0, 0), Current.Size));

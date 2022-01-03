@@ -2,6 +2,8 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
@@ -12,6 +14,7 @@ namespace Kermalis.PokemonGameEngine.World
     internal static partial class Overworld
     {
         public const string SCRIPT_SURF = "Surf_Interaction";
+        public static readonly Size2D Block_NumPixels = new(Block_NumPixelsX, Block_NumPixelsX);
 
         public static MapSection GetPlayerMapSection()
         {
@@ -53,12 +56,21 @@ namespace Kermalis.PokemonGameEngine.World
             return PBEBattleTerrain.Plain;
         }
 
-        public static void OnPlayerMapChanged(Map oldMap, Map map)
+        public static void OnCameraMapChanged(Map oldMap, Map map)
         {
             oldMap.OnNoLongerCurrentMap();
             map.OnCurrentMap();
+            UpdateDayTint();
             SoundControl.SetOverworldBGM(map.Details.Music);
+        }
+        public static void OnPlayerMapChanged()
+        {
             UpdatePartyGiratinaForms();
+        }
+
+        public static void UpdateDayTint()
+        {
+            DayTint.IsEnabled = CameraObj.Instance.Map.Details.Flags.HasFlag(MapFlags.DayTint);
         }
         public static void UpdatePartyGiratinaForms()
         {

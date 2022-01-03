@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.World;
+using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,8 +46,11 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         public readonly byte BorderHeight;
         public readonly Block[][] BorderBlocks;
 
+        private readonly LayoutElevationMesh[] _elevationMeshes;
         /// <summary>Keeps track of which tilesets are loaded so they can be unloaded later.</summary>
         private readonly List<Blockset> _usedBlocksets;
+        /// <summary>This list is used to give each tileset a local texture id when rendering</summary>
+        private readonly List<Tileset> _usedTilesets;
 
         public MapLayout(int id)
         {
@@ -101,6 +105,9 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                     }
                 }
             }
+            _usedTilesets = new List<Tileset>();
+            _elevationMeshes = new LayoutElevationMesh[Overworld.NumElevations];
+            CreateElevationMeshes();
         }
 
         public Block GetBlock_InBounds(Pos2D xy)
@@ -136,8 +143,38 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             return BorderBlocks[xy.Y][xy.X];
         }
 
+        private void CreateElevationMeshes()
+        {
+            for (byte e = 0; e < Overworld.NumElevations; e++)
+            {
+                _elevationMeshes[e] = new LayoutElevationMesh(this, e, _usedTilesets);
+            }
+        }
+        private void DeleteElevationMeshes()
+        {
+            for (int i = 0; i < Overworld.NumElevations; i++)
+            {
+                _elevationMeshes[i].Delete();
+            }
+        }
+
+        public void BindTilesetTextures(GL gl)
+        {
+            for (int i = 0; i < _usedTilesets.Count; i++)
+            {
+                Tileset t = _usedTilesets[i];
+                gl.ActiveTexture(i.ToTextureUnit());
+                gl.BindTexture(TextureTarget.Texture2D, t.Texture);
+            }
+        }
+        public void RenderElevation(GL gl, byte elevation)
+        {
+            _elevationMeshes[elevation].Render(gl);
+        }
+
         public void Delete()
         {
+            DeleteElevationMeshes();
             foreach (Blockset b in _usedBlocksets)
             {
                 b.DeductReference();

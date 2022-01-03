@@ -9,6 +9,8 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
 {
     internal static class GLTextureUtils
     {
+        public const int MAX_ACTIVE_TEXTURES = 12; // If this is changed, you must also change the value in MapLayout.frag.glsl
+
         public static unsafe void LoadTextureData(GL gl, void* data, Size2D size)
         {
             gl.TexImage2D(TextureTarget.Texture2D, 0, (int)InternalFormat.Rgba8, size.Width, size.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);

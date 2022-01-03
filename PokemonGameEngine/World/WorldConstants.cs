@@ -166,7 +166,8 @@ namespace Kermalis.PokemonGameEngine.World
         None,
         TestMapC,
         TestMapW,
-        TestCave
+        TestCave,
+        TestMapS
     }
 
     public enum BlocksetBlockBehavior : byte

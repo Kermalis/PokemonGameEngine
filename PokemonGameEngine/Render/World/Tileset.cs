@@ -13,24 +13,34 @@ namespace Kermalis.PokemonGameEngine.Render.World
 {
     internal sealed class Tileset
     {
-        public sealed class Tile
+        public class Tile
         {
+            public readonly Tileset Tileset; // Store here to save memory (there are usually way more Blockset.Block.Tile)
             public readonly int Id;
+
+            public Tile(Tileset t, int id)
+            {
+                Tileset = t;
+                Id = id;
+            }
+        }
+        public sealed class AnimatedTile : Tile
+        {
             public int AnimId = TileAnimation.NO_ANIM_ID;
 
-            public Tile(int id)
+            public AnimatedTile(Tileset t, int id)
+                : base(t, id)
             {
-                Id = id;
             }
         }
 
         public readonly int Id;
 
+        private readonly TileAnimation[] _animations;
         public readonly Tile[] Tiles;
         public readonly uint Texture;
         public readonly Size2D TextureSize;
         public readonly int NumTilesX;
-        private readonly TileAnimation[] _animations;
 
         private unsafe Tileset(int id, string name)
         {
@@ -54,19 +64,33 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 GLTextureUtils.LoadTextureData(gl, d, TextureSize);
             }
 
+            // Load animations if they exist
+            _animations = TilesetAnimationLoader.Load(id);
+
             // Create tiles
             uint numTiles = TextureSize.Width / Overworld.Tile_NumPixelsX * (TextureSize.Height / Overworld.Tile_NumPixelsY);
             Tiles = new Tile[numTiles];
             for (int i = 0; i < numTiles; i++)
             {
-                Tiles[i] = new Tile(i);
+                Tiles[i] = IsAnimated(i) ? new AnimatedTile(this, i) : new Tile(this, i);
             }
-
-            // Load animations if they exist
-            _animations = TilesetAnimationLoader.Load(this);
 
             _numReferences = 1;
             _loadedTilesets.Add(id, this);
+        }
+        private bool IsAnimated(int tileId)
+        {
+            if (_animations is not null)
+            {
+                for (int i = 0; i < _animations.Length; i++)
+                {
+                    if (_animations[i].ContainsTile(tileId))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public static void UpdateAnimations()
@@ -77,7 +101,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 {
                     foreach (TileAnimation a in t._animations)
                     {
-                        a.Update();
+                        a.Update(t);
                     }
                 }
             }
@@ -93,20 +117,20 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private static readonly Dictionary<int, Tileset> _loadedTilesets = new();
         public static Tileset LoadOrGet(int id)
         {
-            string name = _ids[id];
-            if (name is null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(id));
-            }
             if (_loadedTilesets.TryGetValue(id, out Tileset t))
             {
                 t._numReferences++;
 #if DEBUG_OVERWORLD
-                Log.WriteLine("Adding reference to tileset: " + name + " (new count is " + t._numReferences + ")");
+                Log.WriteLine("Adding reference to tileset: " + _ids[t.Id] + " (new count is " + t._numReferences + ")");
 #endif
             }
             else
             {
+                string name = _ids[id];
+                if (name is null)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(id));
+                }
                 t = new Tileset(id, name);
             }
             return t;

@@ -7,25 +7,35 @@ namespace Kermalis.PokemonGameEngine.Render.World
         public const int NO_ANIM_ID = -1;
         public const int INVALID_ANIM_ID = -1;
 
-        private readonly Tileset _tileset;
         private readonly TileAnimationData _data;
 
         private float _time;
 
-        public TileAnimation(Tileset tileset, in TileAnimationData data)
+        public TileAnimation(in TileAnimationData data)
         {
-            _tileset = tileset;
             _data = data;
         }
 
-        public void Update()
+        public bool ContainsTile(int tileId)
+        {
+            for (int i = 0; i < _data.Frames.Length; i++)
+            {
+                if (_data.Frames[i].TilesetTile == tileId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void Update(Tileset tileset)
         {
             float t = (_time + Display.DeltaTime) % _data.Duration;
             _time = t;
             for (int f = 0; f < _data.Frames.Length; f++)
             {
                 ref TileAnimationData.Frame frame = ref _data.Frames[f];
-                Tileset.Tile tile = _tileset.Tiles[frame.TilesetTile];
+                var tile = (Tileset.AnimatedTile)tileset.Tiles[frame.TilesetTile];
                 for (int s = frame.Stops.Length - 1; s >= 0; s--)
                 {
                     ref TileAnimationData.Frame.Stop stop = ref frame.Stops[s];
