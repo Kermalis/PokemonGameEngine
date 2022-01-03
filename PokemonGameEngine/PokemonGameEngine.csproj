@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0</TargetFrameworks>
-		<OutputType>Exe</OutputType>
 		<RootNamespace>Kermalis.PokemonGameEngine</RootNamespace>
 		<Authors>Kermalis</Authors>
 		<Copyright>Kermalis</Copyright>
@@ -24,11 +23,13 @@
 	<!--DEBUG_CALLBACKS;DEBUG_BATTLE_WIREFRAME;DEBUG_BATTLE_CAMERAPOS;DEBUG_DAYCARE_LOGEGG;DEBUG_FRIENDSHIP;DEBUG_AUDIO_LOG;DEBUG_OVERWORLD;DEBUG_DATA_CACHE-->
 	<!--DEBUG_DISABLE_DAYTINT;DEBUG_ANIMIMG_HITBOX-->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
+		<OutputType>Exe</OutputType>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG;DEBUG_DAYCARE_LOGEGG;DEBUG_FRIENDSHIP</DefineConstants>
 	</PropertyGroup>
 
 	<!--Release defines-->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
+		<OutputType>WinExe</OutputType> <!--No console window-->
 		<DefineConstants>$(DefineConstants)</DefineConstants>
 	</PropertyGroup>
 
