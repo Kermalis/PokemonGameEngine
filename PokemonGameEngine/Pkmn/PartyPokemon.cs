@@ -223,7 +223,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         private void SetCurrentMetLocation()
         {
-            MetLocation = Overworld.GetCurrentLocation();
+            MetLocation = Overworld.GetPlayerMapSection();
             MetLevel = Level;
             MetDate = DateTime.Today;
         }

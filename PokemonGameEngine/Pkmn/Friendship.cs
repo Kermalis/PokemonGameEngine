@@ -79,7 +79,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 {
                     mod++;
                 }
-                if (metLocation == Overworld.GetCurrentLocation())
+                if (metLocation == Overworld.GetPlayerMapSection())
                 {
                     mod++;
                 }

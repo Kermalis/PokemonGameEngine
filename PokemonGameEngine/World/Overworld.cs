@@ -13,7 +13,7 @@ namespace Kermalis.PokemonGameEngine.World
     {
         public const string SCRIPT_SURF = "Surf_Interaction";
 
-        public static MapSection GetCurrentLocation()
+        public static MapSection GetPlayerMapSection()
         {
             return PlayerObj.Instance.Map.Details.Section;
         }

@@ -36,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         private static bool IsNosepassMagnetonLocation()
         {
-            MapSection mapSection = Overworld.GetCurrentLocation();
+            MapSection mapSection = Overworld.GetPlayerMapSection();
             return mapSection == MapSection.TestCave;
         }
         // TODO
