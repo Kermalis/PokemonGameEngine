@@ -12,7 +12,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private const float MASK_COLOR_SPEED = 0.1f; // Takes 10 seconds to complete the loop
         public const float MASK_COLOR_AMPLITUDE = 0.65f; // 65% of the MaskColor
 
-        private readonly Vector2 _posScale;
+        private readonly Vector2 _baseScale;
 
         public AnimatedImage Image;
         public Vector3 Pos;
@@ -36,12 +36,12 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             Pos = startPos;
             Opacity = 1f;
             IsVisible = isVisible;
-            _posScale = GetPosScale(scale);
+            _baseScale = GetBaseScale(scale);
         }
 
         /// <summary>This creates the scale that will make the sprite always be its original size when in its starting position and the camera is in the default position.
         /// This will happen regardless of resolution or projection matrix (unless they change afterwards)</summary>
-        private Vector2 GetPosScale(float scale)
+        private Vector2 GetBaseScale(float scale)
         {
             Matrix4x4 view = Camera.CreateViewMatrix(BattleGUI.DefaultCamPosition);
             Matrix4x4 transformViewProjection = CreateTranslation(view)
@@ -74,7 +74,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             Image?.DeductReference();
             Image = img;
-            Vector2 scale = _posScale * Scale * img.Size;
+            Vector2 scale = _baseScale * Scale * img.Size;
             _scaleCache = Matrix4x4.CreateScale(scale.X, scale.Y, 1f);
         }
 
