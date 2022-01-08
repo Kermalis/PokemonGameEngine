@@ -8,20 +8,25 @@ namespace Kermalis.PokemonGameEngine.Render.Images
 {
     internal sealed class Image : IImage
     {
+        private static readonly Dictionary<string, Image> _loadedImages = new();
+
+        private readonly string _id;
+        private int _numReferences;
+
         public uint Texture { get; }
-        public Size2D Size { get; }
+        public Vec2I Size { get; }
 
         private Image(string asset)
         {
-            AssetLoader.GetAssetBitmap(asset, out Size2D size, out uint[] bitmap);
-            GL gl = Display.OpenGL;
-            gl.ActiveTexture(TextureUnit.Texture0);
-            Texture = gl.GenTexture();
-            Size = size;
-            UpdateGLTexture(gl, bitmap);
             _id = asset;
             _numReferences = 1;
             _loadedImages.Add(asset, this);
+
+            GL gl = Display.OpenGL;
+            Texture = gl.GenTexture();
+            uint[] bitmap = AssetLoader.GetAssetBitmap(asset, out Vec2I size);
+            Size = size;
+            UpdateGLTexture(gl, bitmap);
         }
 
         private unsafe void UpdateGLTexture(GL gl, uint[] bitmap)
@@ -34,20 +39,15 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             }
         }
 
-        public void Render(Pos2D pos, bool xFlip = false, bool yFlip = false)
+        public void Render(Vec2I pos, bool xFlip = false, bool yFlip = false)
         {
-            GUIRenderer.Instance.RenderTexture(Texture, new Rect2D(pos, Size), xFlip: xFlip, yFlip: yFlip);
+            GUIRenderer.Instance.RenderTexture(Texture, Rect.FromSize(pos, Size), xFlip: xFlip, yFlip: yFlip);
         }
-        public void Render(Rect2D rect, AtlasPos part)
+        public void Render(in Rect rect, in UV part)
         {
             GUIRenderer.Instance.RenderTexture(Texture, rect, part);
         }
 
-        #region Cache
-
-        private readonly string _id;
-        private int _numReferences;
-        private static readonly Dictionary<string, Image> _loadedImages = new();
         public static Image LoadOrGet(string asset)
         {
             if (_loadedImages.TryGetValue(asset, out Image img))
@@ -60,7 +60,6 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             }
             return img;
         }
-
         public void DeductReference()
         {
             if (--_numReferences <= 0)
@@ -70,7 +69,5 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                 _loadedImages.Remove(_id);
             }
         }
-
-        #endregion
     }
 }

@@ -8,7 +8,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
     {
         public static CameraObj Instance { get; private set; } = null!; // Set in Init()
 
-        public Pos2D CamVisualOfs;
+        public Vec2I CamVisualOfs;
         public Obj CamAttachedTo { get; private set; }
 
         private CameraObj()
@@ -48,7 +48,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
             IsMovingSelf = other.IsMovingSelf;
             IsScriptMoving = other.IsScriptMoving;
-            MovementTimer = other.MovementTimer;
+            MovementProgress = other.MovementProgress;
             MovementSpeed = other.MovementSpeed;
             VisualProgress = other.VisualProgress;
         }

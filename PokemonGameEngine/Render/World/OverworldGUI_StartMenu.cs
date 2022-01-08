@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Pkmn;
 using Kermalis.PokemonGameEngine.Render.Player;
@@ -34,7 +33,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void SetupStartMenuChoices()
         {
-            _startMenuChoices = new TextGUIChoices(0, 0, backCommand: CloseStartMenuAndSetCB, font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
+            _startMenuChoices = new TextGUIChoices(0f, 0f, backCommand: CloseStartMenuAndSetCB,
+                font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
             _startMenuChoices.AddOne("Pokémon", () => OpenPartyMenu(PartyGUI.Mode.PkmnMenu));
             _startMenuChoices.AddOne("Bag", StartMenu_DebugBagSelected);
             _startMenuChoices.AddOne("PC", StartMenu_DebugPCSelected);
@@ -44,8 +44,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private void SetupStartMenuWindow()
         {
-            Size2D s = _startMenuChoices.GetSize();
-            _startMenuWindow = new Window(Pos2D.FromRelative(0.72f, 0.05f, RenderSize), s, Colors.White4);
+            Vec2I s = _startMenuChoices.GetSize();
+            _startMenuWindow = new Window(Vec2I.FromRelative(0.72f, 0.05f, RenderSize), s, Colors.White4);
             RenderStartMenuChoicesOntoWindow();
         }
         private void RenderStartMenuChoicesOntoWindow()
@@ -61,9 +61,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private void ReturnToStartMenuWithFadeIn()
         {
-            _frameBuffer.Use();
             DayTint.CatchUpTime = true;
             SetupStartMenuWindow();
+
             _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeInToStartMenu);
         }
@@ -71,7 +71,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void CB_FadeInToStartMenu()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -87,7 +87,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void CB_FadeOutToParty_PkmnMenu()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -104,7 +104,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void CB_FadeOutToParty_SelectDaycare()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -119,7 +119,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void CB_FadeOutToBag()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -136,7 +136,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void CB_FadeOutToPC()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -152,6 +152,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_StartMenu()
         {
+            Render();
+            _frameBuffer.BlitToScreen();
+
             int s = _startMenuChoices.Selected;
             _startMenuChoices.HandleInputs();
             // Check if the window was just closed
@@ -159,9 +162,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
             {
                 RenderStartMenuChoicesOntoWindow(); // Update selection if it has changed
             }
-
-            Render();
-            _frameBuffer.BlitToScreen();
         }
     }
 }

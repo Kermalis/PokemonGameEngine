@@ -2,7 +2,6 @@
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render.Battle;
-using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
@@ -14,8 +13,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 {
     internal sealed class PartyGUIMember
     {
-        private const uint WIDTH = (384 / 2) - (384 / 20);
-        private const uint HEIGHT = (216 / 4) - (216 / 20);
+        private const int WIDTH = (384 / 2) - (384 / 20);
+        private const int HEIGHT = (216 / 4) - (216 / 20);
 
         private readonly bool _usePartyPkmn;
         private readonly bool _isEgg;
@@ -23,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private readonly PartyPokemon _partyPkmn;
         private readonly BattlePokemon _battlePkmn;
         private readonly Sprite _mini;
-        private readonly WriteableImage _background;
+        private readonly FrameBuffer2DColor _frameBuffer;
 
         public PartyGUIMember(PartyPokemon pkmn, SpriteList sprites)
         {
@@ -46,7 +45,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 _mini.Data = new Sprite_BounceData();
             }
             sprites.Add(_mini);
-            _background = new WriteableImage(new Size2D(WIDTH, HEIGHT));
+            _frameBuffer = new FrameBuffer2DColor(new Vec2I(WIDTH, HEIGHT));
             UpdateBackground();
         }
         public PartyGUIMember(BattlePokemon pkmn, SpriteList sprites)
@@ -65,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 _mini.Data = new Sprite_BounceData();
             }
             sprites.Add(_mini);
-            _background = new WriteableImage(new Size2D(WIDTH, HEIGHT));
+            _frameBuffer = new FrameBuffer2DColor(new Vec2I(WIDTH, HEIGHT));
             UpdateBackground();
         }
 
@@ -120,9 +119,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         public void UpdateBackground()
         {
+            _frameBuffer.Use();
             GL gl = Display.OpenGL;
-            FrameBuffer oldFBO = FrameBuffer.Current;
-            _background.FrameBuffer.Use();
             gl.ClearColor(_color);
             gl.Clear(ClearBufferMask.ColorBufferBit);
             // TODO: Shadow
@@ -130,33 +128,31 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
             // Nickname
             PartyPokemon p = _usePartyPkmn ? _partyPkmn : _battlePkmn.PartyPkmn;
-            GUIString.CreateAndRenderOneTimeString(p.Nickname, Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(2, 3));
+            GUIString.CreateAndRenderOneTimeString(p.Nickname, Font.DefaultSmall, FontColors.DefaultWhite_I, new Vec2I(2, 3));
             if (_isEgg)
             {
-                goto bottom;
+                return;
             }
 
             PBEBattlePokemon bPkmn = _usePartyPkmn ? null : _battlePkmn.PBEPkmn;
             // Gender
-            GUIString.CreateAndRenderOneTimeGenderString(p.Gender, Font.Default, new Pos2D(61, -2));
+            GUIString.CreateAndRenderOneTimeGenderString(p.Gender, Font.Default, new Vec2I(61, -2));
             // Level
             const int lvX = 72;
-            GUIString.CreateAndRenderOneTimeString("[LV]", Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX, 3));
-            GUIString.CreateAndRenderOneTimeString((_usePartyPkmn ? p.Level : bPkmn.Level).ToString(), Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX + 12, 3));
+            GUIString.CreateAndRenderOneTimeString("[LV]", Font.PartyNumbers, FontColors.DefaultWhite_I, new Vec2I(lvX, 3));
+            GUIString.CreateAndRenderOneTimeString((_usePartyPkmn ? p.Level : bPkmn.Level).ToString(), Font.PartyNumbers, FontColors.DefaultWhite_I, new Vec2I(lvX + 12, 3));
             // Status
             PBEStatus1 status = _usePartyPkmn ? p.Status1 : bPkmn.Status1;
             if (status != PBEStatus1.None)
             {
-                GUIString.CreateAndRenderOneTimeString(status.ToString(), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(61, 13));
+                GUIString.CreateAndRenderOneTimeString(status.ToString(), Font.DefaultSmall, FontColors.DefaultWhite_I, new Vec2I(61, 13));
             }
             // Item
             ItemType item = _usePartyPkmn ? p.Item : (ItemType)bPkmn.Item;
             if (item != ItemType.None)
             {
-                GUIString.CreateAndRenderOneTimeString(ItemData.GetItemName(item), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(61, 23));
+                GUIString.CreateAndRenderOneTimeString(ItemData.GetItemName(item), Font.DefaultSmall, FontColors.DefaultWhite_I, new Vec2I(61, 23));
             }
-        bottom:
-            oldFBO.Use();
         }
 
         // We shouldn't be redrawing on the logic thread, but it currently doesn't matter
@@ -215,23 +211,23 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             return Colors.FromRGBA(125, 255, 195, 100);
         }
 
-        public void Render(Pos2D pos, bool selected)
+        public void Render(Vec2I pos, bool selected)
         {
-            _background.Render(pos);
+            _frameBuffer.RenderColorTexture(pos);
             if (selected)
             {
-                GUIRenderer.Instance.DrawRectangle(Colors.FromRGBA(48, 180, 255, 200), new Rect2D(pos, _background.Size));
+                GUIRenderer.Instance.DrawRectangle(Colors.FromRGBA(48, 180, 255, 200), Rect.FromSize(pos, _frameBuffer.Size));
             }
             _mini.Render(pos);
         }
 
         public void Delete()
         {
+            _frameBuffer.Delete();
             if (_usePartyPkmn)
             {
                 _mini.Image.DeductReference();
             }
-            _background.DeductReference();
         }
     }
 }

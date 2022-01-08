@@ -1,9 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
 
 namespace Kermalis.PokemonGameEngine.Script
 {
@@ -11,13 +8,12 @@ namespace Kermalis.PokemonGameEngine.Script
     {
         private void CreateMessageBox(string text)
         {
-            Size2D totalSize = FrameBuffer.Current.Size;
             if (_messageBox is null)
             {
-                _messageBox = Window.CreateStandardMessageBox(Colors.White4, totalSize);
+                _messageBox = Window.CreateStandardMessageBox(Colors.White4, _viewSize);
             }
             _stringPrinter?.Delete();
-            _stringPrinter = StringPrinter.CreateStandardMessageBox(_messageBox, text, Font.Default, FontColors.DefaultDarkGray_I, totalSize, scale: _msgScale);
+            _stringPrinter = StringPrinter.CreateStandardMessageBox(_messageBox, text, Font.Default, FontColors.DefaultDarkGray_I, _viewSize, scale: _msgScale);
         }
         private string ReadString()
         {
@@ -74,7 +70,7 @@ namespace Kermalis.PokemonGameEngine.Script
         }*/
         private void YesNoChoiceCommand()
         {
-            TextGUIChoices.CreateStandardYesNoChoices(YesNoAction, FrameBuffer.Current.Size, out _multichoice, out _multichoiceWindow);
+            TextGUIChoices.CreateStandardYesNoChoices(YesNoAction, _viewSize, out _multichoice, out _multichoiceWindow);
         }
     }
 }

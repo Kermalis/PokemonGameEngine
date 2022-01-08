@@ -3,7 +3,7 @@
     internal interface IImage
     {
         uint Texture { get; }
-        Size2D Size { get; }
+        Vec2I Size { get; }
 
         void DeductReference();
     }

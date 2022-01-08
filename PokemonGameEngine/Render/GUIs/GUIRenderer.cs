@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render.Shaders;
+﻿using Kermalis.PokemonGameEngine.Render.Shaders.GUIs;
 using Silk.NET.OpenGL;
 using System.Numerics;
 
@@ -15,7 +15,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             public const int OffsetOfTexCoords = OffsetOfPos + 2 * sizeof(int);
             public const uint SizeOf = OffsetOfTexCoords + (2 * sizeof(float));
 
-            public Pos2D Pos;
+            public Vec2I Pos;
             public Vector2 UV;
         }
 
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         private readonly uint _quadVBO;
         private readonly GUIQuadShader _quadShader;
         /// <summary>Top left, bottom left, top right, bottom right</summary>
-        private readonly Pos2D[] _quadCache = new Pos2D[4];
+        private readonly Vec2I[] _quadCache = new Vec2I[4];
 
         public unsafe GUIRenderer(GL gl)
         {
@@ -57,7 +57,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             _quadVBO = gl.GenBuffer();
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _quadVBO);
             gl.EnableVertexAttribArray(0);
-            gl.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, (uint)sizeof(Pos2D), null);
+            gl.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, (uint)sizeof(Vec2I), null);
 
             _quadShader = new GUIQuadShader(gl);
         }
@@ -65,14 +65,14 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         private void RenderTextureStart(GL gl)
         {
             _texShader.Use(gl);
-            _texShader.UpdateViewport(gl);
+            _texShader.UpdateViewport(gl, Display.ViewportSize);
             gl.Enable(EnableCap.Blend);
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindVertexArray(_texVAO);
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _texVBO); // Bind buffer so we can BufferData
         }
-        private unsafe void RenderOneTexture(GL gl, uint texture, Rect2D rect, AtlasPos uv)
+        private unsafe void RenderOneTexture(GL gl, uint texture, in Rect rect, in UV uv)
         {
             gl.BindTexture(TextureTarget.Texture2D, texture);
             _texCache[0].UV = uv.Start;
@@ -94,14 +94,14 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             gl.Disable(EnableCap.Blend);
         }
 
-        public void RenderTexture(uint texture, Rect2D rect, bool xFlip = false, bool yFlip = false)
+        public void RenderTexture(uint texture, in Rect rect, bool xFlip = false, bool yFlip = false)
         {
             GL gl = Display.OpenGL;
             RenderTextureStart(gl);
-            RenderOneTexture(gl, texture, rect, new AtlasPos(xFlip, yFlip));
+            RenderOneTexture(gl, texture, rect, new UV(xFlip, yFlip));
             RenderTextureEnd(gl);
         }
-        public void RenderTexture(uint texture, Rect2D rect, AtlasPos uv)
+        public void RenderTexture(uint texture, in Rect rect, in UV uv)
         {
             GL gl = Display.OpenGL;
             RenderTextureStart(gl);
@@ -113,14 +113,14 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         private void RenderQuadStart(GL gl, in Vector4 color)
         {
             _quadShader.Use(gl);
-            _quadShader.UpdateViewport(gl);
+            _quadShader.UpdateViewport(gl, Display.ViewportSize);
             _quadShader.SetColor(gl, color);
             gl.Enable(EnableCap.Blend);
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             gl.BindVertexArray(_quadVAO);
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _quadVBO); // Bind buffer so we can BufferData
         }
-        private unsafe void RenderOneQuad(GL gl, Rect2D rect)
+        private unsafe void RenderOneQuad(GL gl, in Rect rect)
         {
             _quadCache[0] = rect.TopLeft;
             _quadCache[1] = rect.GetExclusiveBottomLeft();
@@ -128,7 +128,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             _quadCache[3] = rect.GetExclusiveBottomRight();
             fixed (void* d = _quadCache)
             {
-                gl.BufferData(BufferTargetARB.ArrayBuffer, (uint)sizeof(Pos2D) * 4, d, BufferUsageARB.StreamDraw);
+                gl.BufferData(BufferTargetARB.ArrayBuffer, (uint)sizeof(Vec2I) * 4, d, BufferUsageARB.StreamDraw);
             }
             gl.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
         }
@@ -137,38 +137,39 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             gl.Disable(EnableCap.Blend);
         }
 
-        public void FillRectangle(in Vector4 color, Rect2D rect)
+        public void FillRectangle(in Vector4 color, in Rect rect)
         {
             GL gl = Display.OpenGL;
             RenderQuadStart(gl, color);
             RenderOneQuad(gl, rect);
             RenderQuadEnd(gl);
         }
-        public void DrawHorizontalLine_Width(in Vector4 color, Pos2D absDstPos, uint absDstW)
+        public void DrawHorizontalLine_Width(in Vector4 color, Vec2I absDstPos, int absDstW)
         {
             GL gl = Display.OpenGL;
             RenderQuadStart(gl, color);
-            RenderOneQuad(gl, new Rect2D(absDstPos, new Size2D(absDstW, 1)));
+            RenderOneQuad(gl, Rect.FromSize(absDstPos, new Vec2I(absDstW, 1)));
             RenderQuadEnd(gl);
         }
-        public void DrawVerticalLine_Height(in Vector4 color, Pos2D absDstPos, uint absDstH)
+        public void DrawVerticalLine_Height(in Vector4 color, Vec2I absDstPos, int absDstH)
         {
             GL gl = Display.OpenGL;
             RenderQuadStart(gl, color);
-            RenderOneQuad(gl, new Rect2D(absDstPos, new Size2D(1, absDstH)));
+            RenderOneQuad(gl, Rect.FromSize(absDstPos, new Vec2I(1, absDstH)));
             RenderQuadEnd(gl);
         }
-        public void DrawRectangle(in Vector4 color, Rect2D rect)
+        public void DrawRectangle(in Vector4 color, in Rect rect)
         {
             GL gl = Display.OpenGL;
             RenderQuadStart(gl, color);
+            Vec2I size = rect.GetSize();
             // The two vert lines
-            RenderOneQuad(gl, new Rect2D(rect.TopLeft, new Size2D(1, rect.Size.Height)));
-            RenderOneQuad(gl, new Rect2D(rect.GetTopRight(), new Size2D(1, rect.Size.Height)));
+            RenderOneQuad(gl, Rect.FromSize(rect.TopLeft, new Vec2I(1, size.Y)));
+            RenderOneQuad(gl, Rect.FromSize(new Vec2I(rect.BottomRight.X, rect.TopLeft.Y), new Vec2I(1, size.Y)));
             // The two hori lines (don't overlap the vert lines)
             // TODO: This will overlap if the rect is very small
-            RenderOneQuad(gl, new Rect2D(new Pos2D(rect.TopLeft.X + 1, rect.TopLeft.Y), new Size2D(rect.Size.Width - 2, 1)));
-            RenderOneQuad(gl, new Rect2D(new Pos2D(rect.TopLeft.X + 1, rect.GetBottom()), new Size2D(rect.Size.Width - 2, 1)));
+            RenderOneQuad(gl, Rect.FromSize(new Vec2I(rect.TopLeft.X + 1, rect.TopLeft.Y), new Vec2I(size.X - 2, 1)));
+            RenderOneQuad(gl, Rect.FromSize(new Vec2I(rect.TopLeft.X + 1, rect.BottomRight.Y), new Vec2I(size.X - 2, 1)));
             RenderQuadEnd(gl);
         }
     }

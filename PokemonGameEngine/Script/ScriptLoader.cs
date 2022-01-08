@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render;
 using System;
 using System.Collections.Generic;
 
@@ -30,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.Script
             return new EndianBinaryReader(AssetLoader.GetAssetStream(_scriptFile), encoding: EncodingType.UTF16);
         }
 
-        public static void LoadScript(string label)
+        public static ScriptContext LoadScript(string label, Vec2I viewSize)
         {
             if (!_globalScriptOffsets.TryGetValue(label, out uint offset))
             {
@@ -38,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             EndianBinaryReader r = GetReader();
             r.BaseStream.Position = offset;
-            _ = new ScriptContext(r);
+            return new ScriptContext(viewSize, r);
         }
     }
 }

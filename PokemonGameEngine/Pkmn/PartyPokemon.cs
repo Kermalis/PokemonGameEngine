@@ -23,7 +23,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public OTInfo OT { get; set; }
         public MapSection MetLocation { get; set; }
         public byte MetLevel { get; set; }
-        public DateTime MetDate { get; set; }
+        public DateOnly MetDate { get; set; }
 
         public PBESpecies Species { get; set; }
         public PBEForm Form { get; set; }
@@ -225,7 +225,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             MetLocation = Overworld.GetPlayerMapSection();
             MetLevel = Level;
-            MetDate = DateTime.Today;
+            MetDate = DateOnly.FromDateTime(DateTime.Today);
         }
         private void SetPlayerOT()
         {

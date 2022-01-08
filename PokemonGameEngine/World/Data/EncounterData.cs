@@ -26,12 +26,17 @@ namespace Kermalis.PokemonGameEngine.World.Data
             }
         }
 
+        private const string ENCOUNTER_TABLE_PATH = @"Encounter\";
+
+        private static readonly IdList _ids = new(ENCOUNTER_TABLE_PATH + "EncounterTableIds.txt");
+        private static readonly Dictionary<int, WeakReference<EncounterTable>> _loadedEncounterTables = new();
+
         public byte ChanceOfPhenomenon;
         public readonly Encounter[] Encounters;
 
         private EncounterTable(string name)
         {
-            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(EncounterTablePath + name + ".bin")))
+            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(ENCOUNTER_TABLE_PATH + name + ".bin")))
             {
                 ChanceOfPhenomenon = r.ReadByte();
                 byte count = r.ReadByte();
@@ -53,11 +58,6 @@ namespace Kermalis.PokemonGameEngine.World.Data
             return sum;
         }
 
-        #region Cache
-
-        private const string EncounterTablePath = "Encounter\\";
-        private static readonly IdList _ids = new(EncounterTablePath + "EncounterTableIds.txt");
-        private static readonly Dictionary<int, WeakReference<EncounterTable>> _loadedEncounterTables = new();
         public static EncounterTable LoadOrGet(int id)
         {
             string name = _ids[id];
@@ -78,8 +78,6 @@ namespace Kermalis.PokemonGameEngine.World.Data
             }
             return e;
         }
-
-        #endregion
     }
 
     internal sealed class EncounterGroups

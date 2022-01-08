@@ -17,20 +17,22 @@ namespace Kermalis.PokemonGameEngine.Render
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetCoordinatesForCentering(uint dstSize, uint srcSize, float pos)
+        public static int GetCoordinatesForCentering(int dstSize, int srcSize, float pos)
         {
-            return (int)((uint)(dstSize * pos) - (srcSize / 2));
+            return (int)(dstSize * pos) - (srcSize / 2);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetCoordinatesForEndAlign(uint dstSize, uint srcSize, float pos)
+        public static int GetCoordinatesForEndAlign(int dstSize, int srcSize, float pos)
         {
-            return (int)((uint)(dstSize * pos) - srcSize);
+            return (int)(dstSize * pos) - srcSize;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ClearColor(this GL gl, in Vector3 color)
         {
             gl.ClearColor(color.X, color.Y, color.Z, 1f);
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ClearColor(this GL gl, in Vector4 color)
         {
             gl.ClearColor(color.X, color.Y, color.Z, color.W);
@@ -38,7 +40,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         #region Specials
 
-        public static void HP_TripleLine(Pos2D pos, uint width, float percent)
+        public static void HP_TripleLine(Vec2I pos, int width, float percent)
         {
             Vector4 hpSides, hpMid;
             if (percent <= 0.20)
@@ -56,19 +58,19 @@ namespace Kermalis.PokemonGameEngine.Render
                 hpSides = Colors.V4FromRGB(0, 140, 41);
                 hpMid = Colors.V4FromRGB(0, 255, 74);
             }
-            GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(49, 49, 49), new Rect2D(pos, new Size2D(width, 5)));
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(33, 33, 33), new Rect2D(pos.Move(1, 1), new Size2D(width - 2, 3)));
-            uint theW = (uint)((width - 2) * percent);
+            GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(49, 49, 49), Rect.FromSize(pos, new Vec2I(width, 5)));
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(33, 33, 33), Rect.FromSize(pos.Plus(1, 1), new Vec2I(width - 2, 3)));
+            int theW = (int)((width - 2) * percent);
             if (theW == 0 && percent > 0)
             {
                 theW = 1;
             }
-            GUIRenderer.Instance.DrawHorizontalLine_Width(hpSides, pos.Move(1, 1), theW);
-            GUIRenderer.Instance.DrawHorizontalLine_Width(hpMid, pos.Move(1, 2), theW);
-            GUIRenderer.Instance.DrawHorizontalLine_Width(hpSides, pos.Move(1, 3), theW);
+            GUIRenderer.Instance.DrawHorizontalLine_Width(hpSides, pos.Plus(1, 1), theW);
+            GUIRenderer.Instance.DrawHorizontalLine_Width(hpMid, pos.Plus(1, 2), theW);
+            GUIRenderer.Instance.DrawHorizontalLine_Width(hpSides, pos.Plus(1, 3), theW);
         }
 
-        public static void EXP_SingleLine(Pos2D pos, uint width, uint exp, byte level, PBESpecies species, PBEForm form)
+        public static void EXP_SingleLine(Vec2I pos, int width, uint exp, byte level, PBESpecies species, PBEForm form)
         {
             if (level >= PkmnConstants.MaxLevel)
             {
@@ -78,7 +80,7 @@ namespace Kermalis.PokemonGameEngine.Render
             PBEGrowthRate gr = BaseStats.Get(species, form, true).GrowthRate;
             EXP_SingleLine(pos, width, exp, level, gr);
         }
-        public static void EXP_SingleLine(Pos2D pos, uint width, uint exp, byte level, PBEGrowthRate gr)
+        public static void EXP_SingleLine(Vec2I pos, int width, uint exp, byte level, PBEGrowthRate gr)
         {
             float percent;
             if (level >= PkmnConstants.MaxLevel)
@@ -94,16 +96,16 @@ namespace Kermalis.PokemonGameEngine.Render
             }
             EXP_SingleLine(pos, width, percent);
         }
-        public static void EXP_SingleLine(Pos2D pos, uint width, float percent)
+        public static void EXP_SingleLine(Vec2I pos, int width, float percent)
         {
-            GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(49, 49, 49), new Rect2D(pos, new Size2D(width, 3)));
-            GUIRenderer.Instance.DrawHorizontalLine_Width(Colors.V4FromRGB(33, 33, 33), pos.Move(1, 1), width - 2);
-            uint theW = (uint)((width - 2) * percent);
+            GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(49, 49, 49), Rect.FromSize(pos, new Vec2I(width, 3)));
+            GUIRenderer.Instance.DrawHorizontalLine_Width(Colors.V4FromRGB(33, 33, 33), pos.Plus(1, 1), width - 2);
+            int theW = (int)((width - 2) * percent);
             if (theW == 0 && percent > 0)
             {
                 theW = 1;
             }
-            GUIRenderer.Instance.DrawHorizontalLine_Width(Colors.V4FromRGB(0, 160, 255), pos.Move(1, 1), theW);
+            GUIRenderer.Instance.DrawHorizontalLine_Width(Colors.V4FromRGB(0, 160, 255), pos.Plus(1, 1), theW);
         }
 
         #endregion

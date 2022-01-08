@@ -2,9 +2,7 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
-using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Pkmn;
 using Kermalis.PokemonGameEngine.Render.Transitions;
 using Kermalis.PokemonGameEngine.Render.World;
@@ -46,7 +44,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             _tasks.RunTasks();
             RenderBattleAndHUD();
-            _allChoices.Render();
+            _allChoices.Render(RenderSize);
             _frameBuffer.BlitToScreen();
 
             _allChoices.HandleInputs();
@@ -56,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _tasks.RunTasks();
             RenderBattleAndHUD();
             _targetsGUI.Render();
-            FrameBuffer.Current.BlitToScreen(); // TargetsGUI's framebuffer
+            _frameBuffer.BlitToScreen();
 
             _targetsGUI.HandleInputs();
         }
@@ -105,7 +103,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             _tasks.RunTasks();
             RenderBattleAndHUD();
-            _moveChoices.Render();
+            _moveChoices.Render(RenderSize);
             _frameBuffer.BlitToScreen();
 
             _moveChoices.HandleInputs();
@@ -191,14 +189,12 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 {
                     _targetsGUI.Delete();
                     _targetsGUI = null;
-                    _frameBuffer.Use();
-                    // TODO: ?? no need to change callbacks since this ActionsGUI will get disposed in ActionsLoop
+                    // No need to change callbacks, it is set in NextAction() or SubmitActions()
                 }
                 void TargetCancelled()
                 {
                     _targetsGUI.Delete();
                     _targetsGUI = null;
-                    _frameBuffer.Use();
                     Game.Instance.SetCallback(CB_HandleMoveChoices);
                 }
                 _targetsGUI = new TargetsGUI(_curActionPkmn, possibleTargets, move, TargetSelected, TargetCancelled);
@@ -214,8 +210,8 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             _tasks.RunTasks();
             RenderBattleAndHUD();
-            _allChoices.Render();
-            _transition.Render();
+            _allChoices.Render(RenderSize);
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -242,9 +238,9 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             RenderBattleAndHUD();
             if (showChoices)
             {
-                _allChoices.Render();
+                _allChoices.Render(RenderSize);
             }
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -268,7 +264,6 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private void OnPartyBrowsingClosed()
         {
-            _frameBuffer.Use();
             DayTint.CatchUpTime = true;
             _transition = FadeFromColorTransition.FromBlackStandard();
             short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];

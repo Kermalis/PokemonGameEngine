@@ -92,7 +92,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             _tasks.RunTasks();
             RenderBattleAndHUD();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -110,7 +110,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             _tasks.RunTasks();
             RenderBattleAndHUD();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -119,11 +119,23 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             }
 
             _transition.Dispose();
+            _frameBuffer.Delete();
+            _shadowFrameBuffer.Delete();
+            _dayTintFrameBuffer.Delete();
             _stringPrinter?.Delete();
             _stringWindow.Close();
             RemoveActionsGUI();
+            Battle.OnNewEvent -= SinglePlayerBattle_OnNewEvent;
+            Battle.OnStateChanged -= SinglePlayerBattle_OnStateChanged;
+            Engine.OnQuitRequested -= OnGameQuitRequested;
+            _trainerSprite?.Image.DeductReference();
+            foreach (Model m in _models)
+            {
+                m.Delete();
+            }
+            _modelShader.Delete();
+            _spriteShader.Delete();
             CleanUpStuffAfterFadeOut();
-            _frameBuffer.Delete();
             Instance = null;
             _onClosed();
             _onClosed = null;
@@ -152,19 +164,6 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         /// <summary>Run after the fade out, and deletes the info bars etc, but also does Pokerus, updating the bag, everything else</summary>
         private void CleanUpStuffAfterFadeOut()
         {
-            Battle.OnNewEvent -= SinglePlayerBattle_OnNewEvent;
-            Battle.OnStateChanged -= SinglePlayerBattle_OnStateChanged;
-            Engine.OnQuitRequested -= OnGameQuitRequested;
-            _trainerSprite?.Image.DeductReference();
-            foreach (Model m in _models)
-            {
-                m.Delete();
-            }
-            _modelShader.Delete();
-            _spriteShader.Delete();
-            _spriteMesh.Delete();
-            _dayTintFrameBuffer.Delete();
-            _shadowFrameBuffer.Delete();
             // Copy our Pokémon back from battle, update teammates, update wild Pokémon
             // Could technically only update what we need (like caught mon, roaming mon, and following partners)
             for (int i = 0; i < _parties.Length; i++)

@@ -40,22 +40,23 @@ namespace Kermalis.PokemonGameEngine.Core
             return form == 0 ? species.ToString() : PBEDataUtils.GetNameOfForm(species, form);
         }
 
-        public static unsafe void GetAssetBitmap(string asset, out Size2D size, out uint[] dstBmp)
+        public static unsafe uint[] GetAssetBitmap(string asset, out Vec2I size)
         {
             using (FileStream s = GetAssetStream(asset))
             using (var img = SixLabors.ImageSharp.Image.Load<Rgba32>(s))
             {
-                size.Width = (uint)img.Width;
-                size.Height = (uint)img.Height;
-                dstBmp = new uint[size.GetArea()];
+                size.X = img.Width;
+                size.Y = img.Height;
+                uint[] dstBmp = new uint[size.GetArea()];
                 fixed (uint* dst = dstBmp)
                 {
-                    uint len = size.GetArea() * sizeof(uint);
+                    uint len = (uint)dstBmp.Length * sizeof(uint);
                     fixed (void* data = &MemoryMarshal.GetReference(img.GetPixelRowSpan(0)))
                     {
                         Buffer.MemoryCopy(data, dst, len, len);
                     }
                 }
+                return dstBmp;
             }
         }
     }

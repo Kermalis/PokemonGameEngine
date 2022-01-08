@@ -5,7 +5,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
     internal sealed class EntireScreenTextureShader : GLShader
     {
         private const string VERTEX_SHADER_PATH = @"EntireScreenTexture.vert.glsl";
-        private const string FRAGMENT_SHADER_PATH = @"GUI_Texture.frag.glsl";
+        private const string FRAGMENT_SHADER_PATH = @"GUIs\GUI_Texture.frag.glsl";
 
         public static EntireScreenTextureShader Instance { get; private set; } = null!; // Initialized in RenderManager
 

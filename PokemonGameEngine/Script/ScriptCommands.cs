@@ -15,7 +15,7 @@ namespace Kermalis.PokemonGameEngine.Script
             ScriptCommand cmd = _reader.ReadEnum<ScriptCommand>();
             switch (cmd)
             {
-                case ScriptCommand.End: Dispose(); break;
+                case ScriptCommand.End: Delete(); break;
                 case ScriptCommand.GoTo: GoToCommand(); break;
                 case ScriptCommand.Call: CallCommand(); break;
                 case ScriptCommand.Return: PopPosition(); break;

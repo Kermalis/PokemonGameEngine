@@ -156,7 +156,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                 {
                     fixed (void* imgdata = &MemoryMarshal.GetReference(img.GetPixelRowSpan(0)))
                     {
-                        GLTextureUtils.LoadTextureData(gl, imgdata, new Size2D((uint)img.Width, (uint)img.Height));
+                        GLTextureUtils.LoadTextureData(gl, imgdata, new Vec2I(img.Width, img.Height));
                     }
                 }
                 texture.Path = sPath;

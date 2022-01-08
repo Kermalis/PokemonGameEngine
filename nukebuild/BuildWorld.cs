@@ -61,6 +61,9 @@ public sealed partial class Build
             }
         }
 
+        public static readonly AbsolutePath EncounterTablePath = AssetPath / "Encounter";
+        public static IdList Ids { get; } = new IdList(EncounterTablePath / "EncounterTableIds.txt");
+
         private readonly string _name;
 
         private readonly byte ChanceOfPhenomenon;
@@ -81,9 +84,6 @@ public sealed partial class Build
             _name = name;
         }
 
-        public static readonly AbsolutePath EncounterTablePath = AssetPath / "Encounter";
-        public static IdList Ids { get; } = new IdList(EncounterTablePath / "EncounterTableIds.txt");
-
         public void Save()
         {
             using (var w = new EndianBinaryWriter(File.Create(EncounterTablePath / (_name + ".bin"))))
@@ -100,6 +100,9 @@ public sealed partial class Build
     }
     private sealed class Layout
     {
+        public static readonly AbsolutePath LayoutPath = AssetPath / "Layout";
+        public static IdList Ids { get; } = new IdList(LayoutPath / "LayoutIds.txt");
+
         public int Width;
         public int Height;
 
@@ -112,9 +115,6 @@ public sealed partial class Build
                 // Don't need the rest. Only using this to embed within Map data
             }
         }
-
-        public static readonly AbsolutePath LayoutPath = AssetPath / "Layout";
-        public static IdList Ids { get; } = new IdList(LayoutPath / "LayoutIds.txt");
     }
     private sealed class Tileset
     {
@@ -393,6 +393,9 @@ public sealed partial class Build
     }
     private sealed class Map
     {
+        public static readonly AbsolutePath MapPath = AssetPath / "Map";
+        public static IdList Ids { get; } = new IdList(MapPath / "MapIds.txt");
+
         private readonly string _name;
 
         private readonly string Layout;
@@ -418,9 +421,6 @@ public sealed partial class Build
 
             _name = name;
         }
-
-        public static readonly AbsolutePath MapPath = AssetPath / "Map";
-        public static IdList Ids { get; } = new IdList(MapPath / "MapIds.txt");
 
         public void Save()
         {
@@ -460,30 +460,30 @@ public sealed partial class Build
         }
     }
 
-    private sealed class SpriteSheet
+    private sealed class VisualObjTexture
     {
-        private readonly string Sprites;
-        private readonly uint Width;
-        private readonly uint Height;
-        private readonly int ShadowX;
-        private readonly int ShadowY;
-        private readonly uint ShadowW;
-        private readonly uint ShadowH;
-
-        public SpriteSheet(JToken j)
-        {
-            Sprites = j[nameof(Sprites)].Value<string>();
-            Width = j[nameof(Width)].Value<uint>();
-            Height = j[nameof(Height)].Value<uint>();
-            ShadowX = j[nameof(ShadowX)].Value<int>();
-            ShadowY = j[nameof(ShadowY)].Value<int>();
-            ShadowW = j[nameof(ShadowW)].Value<uint>();
-            ShadowH = j[nameof(ShadowH)].Value<uint>();
-        }
-
         private static readonly AbsolutePath SheetsPath = AssetPath / "ObjSprites";
         public static readonly AbsolutePath SheetsInputPath = SheetsPath / "ObjSprites.json";
         public static readonly AbsolutePath SheetsOutputPath = SheetsPath / "ObjSprites.bin";
+
+        private readonly string Sprites;
+        private readonly int Width;
+        private readonly int Height;
+        private readonly int ShadowX;
+        private readonly int ShadowY;
+        private readonly int ShadowW;
+        private readonly int ShadowH;
+
+        public VisualObjTexture(JToken j)
+        {
+            Sprites = j[nameof(Sprites)].Value<string>();
+            Width = j[nameof(Width)].Value<int>();
+            Height = j[nameof(Height)].Value<int>();
+            ShadowX = j[nameof(ShadowX)].Value<int>();
+            ShadowY = j[nameof(ShadowY)].Value<int>();
+            ShadowW = j[nameof(ShadowW)].Value<int>();
+            ShadowH = j[nameof(ShadowH)].Value<int>();
+        }
 
         public void Write(EndianBinaryWriter w)
         {
@@ -544,6 +544,10 @@ public sealed partial class Build
                 }
             }
         }
+
+        public static readonly AbsolutePath AnimationsPath = AssetPath / "Tileset" / "Animation";
+        public static readonly AbsolutePath AnimationsOutputPath = AnimationsPath / "Animations.bin";
+
         public readonly string Tileset; // Not written
         private readonly float Duration;
         private readonly Frame[] Frames;
@@ -560,9 +564,6 @@ public sealed partial class Build
                 Frames[i] = new Frame(frames[i]);
             }
         }
-
-        public static readonly AbsolutePath AnimationsPath = AssetPath / "Tileset" / "Animation";
-        public static readonly AbsolutePath AnimationsOutputPath = AnimationsPath / "Animations.bin";
 
         public void Write(EndianBinaryWriter w)
         {
@@ -597,7 +598,7 @@ public sealed partial class Build
         // Encounter tables
         DeleteFiles(EncounterTable.EncounterTablePath);
         // Obj sprites
-        DeleteFile(SpriteSheet.SheetsOutputPath);
+        DeleteFile(VisualObjTexture.SheetsOutputPath);
         // Maps
         DeleteFiles(Map.MapPath);
         // Tile animations
@@ -615,15 +616,15 @@ public sealed partial class Build
         using (var ms = new MemoryStream())
         using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
         {
-            var json = JObject.Parse(File.ReadAllText(SpriteSheet.SheetsInputPath));
+            var json = JObject.Parse(File.ReadAllText(VisualObjTexture.SheetsInputPath));
             var labels = new Dictionary<string, long>(json.Count);
             foreach (KeyValuePair<string, JToken> kvp in json)
             {
                 long ofs = ms.Position;
-                new SpriteSheet(kvp.Value).Write(w);
+                new VisualObjTexture(kvp.Value).Write(w);
                 labels.Add(kvp.Key, ofs);
             }
-            using (var fw = new EndianBinaryWriter(File.Create(SpriteSheet.SheetsOutputPath), encoding: EncodingType.UTF16))
+            using (var fw = new EndianBinaryWriter(File.Create(VisualObjTexture.SheetsOutputPath), encoding: EncodingType.UTF16))
             {
                 fw.Write(labels.Count);
                 // Compute start offset of sheet data

@@ -1,6 +1,9 @@
-﻿using Kermalis.PokemonGameEngine.Render.Fonts;
-using Kermalis.PokemonGameEngine.Render.GUIs;
+﻿using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Shaders;
+using Kermalis.PokemonGameEngine.Render.Shaders.GUIs;
+using Kermalis.PokemonGameEngine.Render.Shaders.Transitions;
+using Kermalis.PokemonGameEngine.Render.Shaders.World;
+using Kermalis.PokemonGameEngine.Render.World;
 using Silk.NET.OpenGL;
 
 namespace Kermalis.PokemonGameEngine.Render
@@ -11,6 +14,7 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             GL gl = Display.OpenGL;
             // Init shader instances
+            _ = new BlocksetBlockShader(gl);
             _ = new EntireScreenTextureShader(gl);
             _ = new FontShader(gl);
             _ = new DayTintShader(gl);
@@ -19,8 +23,10 @@ namespace Kermalis.PokemonGameEngine.Render
 
             // Init other instances
             _ = new GUIRenderer(gl);
-            _ = new EntireScreenMesh(gl);
+            _ = new RectMesh(gl);
+            _ = new MapLayoutBlockMesh(gl);
             _ = new TripleColorBackgroundMesh(gl);
+            Blockset.Init();
             Font.Init();
         }
     }

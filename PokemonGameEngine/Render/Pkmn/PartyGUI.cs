@@ -4,7 +4,6 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render.Battle;
-using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Transitions;
@@ -54,8 +53,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         public static PartyGUI Instance { get; private set; }
 
-        private static readonly Size2D _renderSize = new(384, 216); // 16:9
-        private FrameBuffer _frameBuffer;
+        private static readonly Vec2I _renderSize = new(384, 216); // 16:9
+        private FrameBuffer2DColor _frameBuffer;
         private readonly TripleColorBackground _tripleColorBG;
 
         /// <summary>The return value of selection modes, also the y index of the cancel/back button</summary>
@@ -126,8 +125,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             Instance = this;
 
-            _frameBuffer = FrameBuffer.CreateWithColor(_renderSize);
-            _frameBuffer.Use();
+            _frameBuffer = new FrameBuffer2DColor(_renderSize);
 
             _members[0].SetBounce(true);
             _backStr = new GUIString("Back", Font.Default, FontColors.DefaultWhite_I);
@@ -145,8 +143,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         }
         private void OnSummaryClosed()
         {
-            _frameBuffer.Use();
             _textChoicesWindow.IsInvisible = false;
+
             _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeInThenGoToChoicesCB);
         }
@@ -154,7 +152,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void CB_FadeInParty()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -176,7 +174,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void CB_FadeOutParty()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -185,6 +183,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             _transition.Dispose();
+            _frameBuffer.Delete();
             _tripleColorBG.Delete();
             foreach (PartyGUIMember m in _members)
             {
@@ -192,7 +191,6 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
             _backStr.Delete();
             DeleteMessage();
-            _frameBuffer.Delete();
             // Choices should be closed so no need to dispose them
             Instance = null;
             _onClosed();
@@ -201,7 +199,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void CB_FadeInThenGoToChoicesCB()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -216,7 +214,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void CB_FadeOutToSummary()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -341,7 +339,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 BringUpPkmnActions(index);
             }
 
-            _textChoices = new TextGUIChoices(0, 0, backCommand: BackCommand, font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
+            _textChoices = new TextGUIChoices(0f, 0f, backCommand: BackCommand,
+                font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
             if (left)
             {
                 _textChoices.AddOne("Send Left", () => SelectForBattleReplacement(pbePkmn, PBEFieldPosition.Left));
@@ -355,8 +354,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 _textChoices.AddOne("Send Right", () => SelectForBattleReplacement(pbePkmn, PBEFieldPosition.Right));
             }
             _textChoices.AddOne("Cancel", BackCommand);
-            Size2D s = _textChoices.GetSize();
-            _textChoicesWindow = new Window(Pos2D.FromRelative(0.6f, 0.3f, _renderSize), s, Colors.White4);
+            Vec2I s = _textChoices.GetSize();
+            _textChoicesWindow = new Window(Vec2I.FromRelative(0.6f, 0.3f, _renderSize), s, Colors.White4);
             RenderChoicesOntoWindow();
             Game.Instance.SetCallback(CB_Choices);
         }
@@ -481,7 +480,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void BringUpPkmnActions(int index)
         {
             string nickname;
-            _textChoices = new TextGUIChoices(0, 0, backCommand: CloseChoicesThenGoToHandleInputs, font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
+            _textChoices = new TextGUIChoices(0f, 0f, backCommand: CloseChoicesThenGoToHandleInputs,
+                font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
             switch (_mode)
             {
                 case Mode.PkmnMenu:
@@ -537,8 +537,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             _textChoices.AddOne("Cancel", CloseChoicesThenGoToHandleInputs);
-            Size2D s = _textChoices.GetSize();
-            _textChoicesWindow = new Window(Pos2D.FromRelative(0.6f, 0.3f, _renderSize), s, Colors.White4);
+            Vec2I s = _textChoices.GetSize();
+            _textChoicesWindow = new Window(Vec2I.FromRelative(0.6f, 0.3f, _renderSize), s, Colors.White4);
             RenderChoicesOntoWindow();
             SetMessage(string.Format("Do what with {0}?", nickname));
             Game.Instance.SetCallback(CB_Choices);
@@ -700,29 +700,34 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             _sprites.DoCallbacks();
 
+            _frameBuffer.Use();
             _tripleColorBG.Render();
 
-            Size2D dstSize = FrameBuffer.Current.Size;
-            for (uint i = 0; i < _members.Count; i++)
+            for (int i = 0; i < _members.Count; i++)
             {
-                uint col = i % 2;
-                uint row = i / 2;
-                uint x = col == 0 ? dstSize.Width / 40 : (dstSize.Width / 2) + (dstSize.Width / 40);
-                uint y = row * (dstSize.Height / 4) + (dstSize.Height / 20);
-                _members[(int)i].Render(new Pos2D((int)x, (int)y), col == _selectionX && row == _selectionY);
+                int col = i % 2;
+                int row = i / 2;
+                Vec2I pos;
+                pos.X = col == 0 ? _renderSize.X / 40 : (_renderSize.X / 2) + (_renderSize.X / 40);
+                pos.Y = row * (_renderSize.Y / 4) + (_renderSize.Y / 20);
+                _members[i].Render(pos, col == _selectionX && row == _selectionY);
             }
+
+            _frameBuffer.Use();
 
             // Back button
             if (_allowBack)
             {
-                GUIRenderer.Instance.FillRectangle(_selectionY == NO_PKMN_CHOSEN ? Colors.V4FromRGB(96, 48, 48) : Colors.V4FromRGB(48, 48, 48), new Rect2D(Pos2D.FromRelative(0.5f, 0.8f, _renderSize), Size2D.FromRelative(0.5f, 0.2f, _renderSize)));
-                _backStr.Render(Pos2D.FromRelative(0.5f, 0.8f, _renderSize));
+                GUIRenderer.Instance.FillRectangle(_selectionY == NO_PKMN_CHOSEN ? Colors.V4FromRGB(96, 48, 48) : Colors.V4FromRGB(48, 48, 48),
+                    Rect.FromSize(Vec2I.FromRelative(0.5f, 0.8f, _renderSize), Vec2I.FromRelative(0.5f, 0.2f, _renderSize)));
+                _backStr.Render(Vec2I.FromRelative(0.5f, 0.8f, _renderSize));
             }
 
             if (_message is not null)
             {
-                GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(200, 200, 200), new Rect2D(Pos2D.FromRelative(0f, 0.8f, _renderSize), Size2D.FromRelative(0.5f, 0.2f, _renderSize)));
-                _message.Render(Pos2D.FromRelative(0f, 0.8f, _renderSize));
+                GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(200, 200, 200),
+                    Rect.FromSize(Vec2I.FromRelative(0f, 0.8f, _renderSize), Vec2I.FromRelative(0.5f, 0.2f, _renderSize)));
+                _message.Render(Vec2I.FromRelative(0f, 0.8f, _renderSize));
             }
 
             Window.RenderAll();

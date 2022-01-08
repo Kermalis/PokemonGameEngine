@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render.Shaders;
+﻿using Kermalis.PokemonGameEngine.Render.Shaders.GUIs;
 using Silk.NET.OpenGL;
 using System.Numerics;
 
@@ -8,7 +8,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
     {
         private readonly TripleColorBackgroundShader _shader;
 
-        public unsafe TripleColorBackground()
+        public TripleColorBackground()
         {
             _shader = new TripleColorBackgroundShader(Display.OpenGL);
         }

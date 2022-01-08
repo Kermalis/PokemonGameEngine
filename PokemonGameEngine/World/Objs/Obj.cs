@@ -18,9 +18,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public Map Map;
         public WorldPos Pos;
         /// <summary><see cref="VisualOfs"/> and <see cref="MovingFromVisualOfs"/> are for stairs for example, where the obj is slightly offset from the normal position</summary>
-        public Pos2D VisualOfs;
+        public Vec2I VisualOfs;
         public WorldPos MovingFromPos;
-        public Pos2D MovingFromVisualOfs;
+        public Vec2I MovingFromVisualOfs;
 
         public virtual bool CanMoveWillingly => !IsLocked && !IsMoving;
         // Do not move locked Objs unless they're being moved by scripts
@@ -31,10 +31,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public bool IsMovingSelf = false;
         public bool IsScriptMoving = false;
         /// <summary>Goes from 0 to 1 inclusive. 1 indicates the movement has finished</summary>
-        public float MovementTimer = 1;
-        /// <summary>The amount of seconds it takes <see cref="MovementTimer"/> to go from 0 to 1</summary>
+        public float MovementProgress = 1f;
+        /// <summary>The amount of seconds it takes <see cref="MovementProgress"/> to go from 0 to 1</summary>
         public float MovementSpeed;
-        public Pos2D VisualProgress;
+        public Vec2I VisualProgress;
 
         protected Obj(ushort id)
         {

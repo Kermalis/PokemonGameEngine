@@ -20,8 +20,8 @@
 	</PropertyGroup>
 
 	<!--Debug defines-->
-	<!--DEBUG_CALLBACKS;DEBUG_BATTLE_WIREFRAME;DEBUG_BATTLE_CAMERAPOS;DEBUG_DAYCARE_LOGEGG;DEBUG_FRIENDSHIP;DEBUG_AUDIO_LOG;DEBUG_OVERWORLD;DEBUG_DATA_CACHE-->
-	<!--DEBUG_DISABLE_DAYTINT;DEBUG_ANIMIMG_HITBOX-->
+	<!--DEBUG_DAYCARE_LOGEGG;DEBUG_FRIENDSHIP;DEBUG_DISABLE_DAYTINT;DEBUG_OVERWORLD;DEBUG_CALLBACKS;DEBUG_BATTLE_CAMERAPOS-->
+	<!--DEBUG_DATA_CACHE;DEBUG_BATTLE_WIREFRAME;DEBUG_ANIMIMG_HITBOX;DEBUG_AUDIO_LOG-->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
 		<OutputType>Exe</OutputType>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG;DEBUG_DAYCARE_LOGEGG;DEBUG_FRIENDSHIP</DefineConstants>
@@ -65,10 +65,10 @@
 		</ContentWithTargetPath>
 		<!--Other Libraries-->
 		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="Silk.NET.Assimp" Version="2.11.0" />
-		<PackageReference Include="Silk.NET.OpenGL" Version="2.11.0" />
+		<PackageReference Include="Silk.NET.Assimp" Version="2.12.0" />
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.12.0" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
 		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.7" />
 	</ItemGroup>

@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonGameEngine.Pkmn;
-using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
@@ -15,14 +14,14 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private readonly PartyPokemon _pkmn;
         private readonly Image _mini;
 
-        private WriteableImage _drawn;
+        private FrameBuffer2DColor _frameBuffer;
         public override bool IsSelected
         {
             get => base.IsSelected;
             set
             {
                 base.IsSelected = value;
-                if (_drawn is not null) // initial add means _drawn is null
+                if (_frameBuffer is not null) // initial add means _frameBuffer is null
                 {
                     Draw();
                 }
@@ -45,51 +44,48 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             IsDirty = true;
         }
 
-        public void UpdateSize(Size2D size)
+        public void UpdateSize(Vec2I size)
         {
-            _drawn = new WriteableImage(size);
+            _frameBuffer?.Delete();
+            _frameBuffer = new FrameBuffer2DColor(size);
             Draw();
         }
         public void Draw()
         {
-            FrameBuffer oldFBO = FrameBuffer.Current;
-            _drawn.FrameBuffer.Use();
-            Size2D totalSize = _drawn.Size;
+            _frameBuffer.Use();
+            Vec2I totalSize = _frameBuffer.Size;
 
             Vector4 backColor = IsSelected ? Colors.V4FromRGB(200, 200, 200) : Colors.White4;
-            GUIRenderer.Instance.FillRectangle(backColor, new Rect2D(new Pos2D(0, 0), totalSize)); // TODO: Rounded of size (dstH / 2)
+            GUIRenderer.Instance.FillRectangle(backColor, Rect.FromSize(new Vec2I(0, 0), totalSize)); // TODO: Rounded of size (dstH / 2)
 
-            _mini.Render(Pos2D.FromRelative(0f, -0.15f, totalSize));
+            _mini.Render(Vec2I.FromRelative(0f, -0.15f, totalSize));
 
             Font fontDefault = Font.Default;
             Vector4[] defaultDark = FontColors.DefaultDarkGray_I;
-            GUIString.CreateAndRenderOneTimeString(_pkmn.Nickname, fontDefault, defaultDark, Pos2D.FromRelative(0.2f, 0.01f, totalSize));
+            GUIString.CreateAndRenderOneTimeString(_pkmn.Nickname, fontDefault, defaultDark, Vec2I.FromRelative(0.2f, 0.01f, totalSize));
 
             if (_pkmn.IsEgg)
             {
-                goto bottom; // Eggs don't show the rest
+                return; // Eggs don't show the rest
             }
 
             Font fontPartyNumbers = Font.PartyNumbers;
-            GUIString.CreateAndRenderOneTimeString(_pkmn.HP + "/" + _pkmn.MaxHP, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.2f, 0.65f, totalSize));
-            GUIString.CreateAndRenderOneTimeString("[LV] " + _pkmn.Level, fontPartyNumbers, defaultDark, Pos2D.FromRelative(0.7f, 0.65f, totalSize));
-            GUIString.CreateAndRenderOneTimeGenderString(_pkmn.Gender, fontDefault, Pos2D.FromRelative(0.7f, 0.01f, totalSize));
+            GUIString.CreateAndRenderOneTimeString(_pkmn.HP + "/" + _pkmn.MaxHP, fontPartyNumbers, defaultDark, Vec2I.FromRelative(0.2f, 0.65f, totalSize));
+            GUIString.CreateAndRenderOneTimeString("[LV] " + _pkmn.Level, fontPartyNumbers, defaultDark, Vec2I.FromRelative(0.7f, 0.65f, totalSize));
+            GUIString.CreateAndRenderOneTimeGenderString(_pkmn.Gender, fontDefault, Vec2I.FromRelative(0.7f, 0.01f, totalSize));
 
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(99, 255, 99), new Rect2D(Pos2D.FromRelative(0.2f, 0.58f, totalSize), Pos2D.FromRelative(0.7f, 0.64f, totalSize)));
-
-        bottom:
-            oldFBO.Use();
+            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(99, 255, 99), Rect.FromCorners(Vec2I.FromRelative(0.2f, 0.58f, totalSize), Vec2I.FromRelative(0.7f, 0.64f, totalSize)));
         }
 
-        public void Render(Pos2D pos)
+        public void Render(Vec2I pos)
         {
-            _drawn.Render(pos);
+            _frameBuffer.RenderColorTexture(pos);
         }
 
         public override void Dispose()
         {
             Command = null;
-            _drawn?.DeductReference();
+            _frameBuffer?.Delete();
             _mini.DeductReference();
         }
     }
@@ -98,39 +94,13 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
     {
         private bool _dirtySizes;
 
-        private float _x2;
-        public float X2
-        {
-            get => _x2;
-            set
-            {
-                if (value != _x2)
-                {
-                    _x2 = value;
-                    _dirtySizes = true;
-                }
-            }
-        }
-        private float _y2;
-        public float Y2
-        {
-            get => _y2;
-            set
-            {
-                if (value != _y2)
-                {
-                    _y2 = value;
-                    _dirtySizes = true;
-                }
-            }
-        }
+        private readonly Vector2 BottomRight;
 
-        public PartyPkmnGUIChoices(float x1, float y1, float x2, float y2, float spacing,
+        public PartyPkmnGUIChoices(Vector2 topLeft, Vector2 bottomRight, float spacing,
             Action backCommand = null)
-            : base(x1, y1, spacing, backCommand: backCommand)
+            : base(topLeft, spacing, backCommand: backCommand)
         {
-            _x2 = x2;
-            _y2 = y2;
+            BottomRight = bottomRight;
             _dirtySizes = true;
         }
 
@@ -140,17 +110,16 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _dirtySizes = true;
         }
 
-        public override void Render()
+        public override void Render(Vec2I viewSize)
         {
-            Size2D dstSize = FrameBuffer.Current.Size;
-            int x1 = (int)(X * dstSize.Width);
-            float fy1 = Y * dstSize.Height;
+            int x1 = (int)(Pos.X * viewSize.X);
+            float fy1 = Pos.Y * viewSize.Y;
 
-            float fHeight = (_y2 - Y) / PkmnConstants.PartyCapacity * dstSize.Height;
+            float fHeight = (BottomRight.Y - Pos.Y) / PkmnConstants.PartyCapacity * viewSize.Y;
             if (_dirtySizes)
             {
                 _dirtySizes = false;
-                var size = new Size2D((uint)((_x2 - X) * dstSize.Width), (uint)fHeight);
+                var size = new Vec2I((int)((BottomRight.X - Pos.X) * viewSize.X), (int)fHeight);
                 foreach (PartyPkmnGUIChoice c in _choices)
                 {
                     if (c.IsDirty)
@@ -159,13 +128,13 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                     }
                 }
             }
-            float space = Spacing * dstSize.Height;
+            float space = Spacing * viewSize.Y;
             int count = _choices.Count;
             for (int i = 0; i < count; i++)
             {
                 PartyPkmnGUIChoice c = _choices[i];
                 int y = (int)(fy1 + (fHeight * i) + (space * i));
-                c.Render(new Pos2D(x1, y));
+                c.Render(new Vec2I(x1, y));
             }
         }
     }

@@ -5,18 +5,27 @@ namespace Kermalis.PokemonGameEngine.World
 {
     internal struct WorldPos
     {
-        public Pos2D XY;
+        public Vec2I XY;
         public byte Elevation;
 
-        public WorldPos(Pos2D xy, byte e)
+        public WorldPos(Vec2I xy, byte e)
         {
             XY = xy;
             Elevation = e;
         }
 
+        public static bool operator ==(WorldPos a, WorldPos b)
+        {
+            return a.Elevation == b.Elevation && a.XY == b.XY;
+        }
+        public static bool operator !=(WorldPos a, WorldPos b)
+        {
+            return a.Elevation != b.Elevation || a.XY != b.XY;
+        }
+
         public override bool Equals(object obj)
         {
-            return obj is WorldPos other && XY.Equals(other.XY) && Elevation == other.Elevation;
+            return obj is WorldPos other && other == this;
         }
         public override int GetHashCode()
         {

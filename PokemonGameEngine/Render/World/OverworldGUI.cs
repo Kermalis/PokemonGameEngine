@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render.Battle;
@@ -31,14 +30,16 @@ namespace Kermalis.PokemonGameEngine.Render.World
         // 3DS (Lower)   - 320 x 240 resolution ( 4:3) - 20 x 15   blocks
         // 3DS (Upper)   - 400 x 240 resolution ( 5:3) - 25 x 15   blocks
         // Default below - 384 x 216 resolution (16:9) - 24 x 13.5 blocks
-        public static readonly Size2D RenderSize = new(384, 216);
+        public static readonly Vec2I RenderSize = new(384, 216);
 
-        private readonly FrameBuffer _frameBuffer;
-        private readonly FrameBuffer _dayTintFrameBuffer;
+        private readonly FrameBuffer2DColor _frameBuffer;
+        private readonly FrameBuffer2DColor _dayTintFrameBuffer;
+        private readonly MapRenderer _mapRenderer;
         private readonly TaskList _tasks = new();
 
         private EventObj _interactiveScriptWaitingFor;
         private string _interactiveScript;
+        private ScriptContext _scriptContext;
 
         private ITransition _transition;
 
@@ -46,10 +47,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         {
             Instance = this;
 
-            _frameBuffer = FrameBuffer.CreateWithColor(RenderSize);
-            _frameBuffer.Use();
-            _dayTintFrameBuffer = FrameBuffer.CreateWithColor(RenderSize);
-            _ = new MapRenderer(); // Init
+            _frameBuffer = new FrameBuffer2DColor(RenderSize);
+            _dayTintFrameBuffer = new FrameBuffer2DColor(RenderSize);
+            _mapRenderer = new MapRenderer(RenderSize);
             SetupStartMenuChoices();
             DayTint.SetTintTime();
         }
@@ -80,6 +80,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
             PlayerObj.Instance.IsWaitingForObjToStartScript = true;
             _interactiveScriptWaitingFor = talkedTo;
             _interactiveScript = script;
+        }
+        public void StartScript(string label)
+        {
+            _scriptContext = ScriptLoader.LoadScript(label, RenderSize);
         }
 
         public void OpenPartyMenu(PartyGUI.Mode mode)
@@ -113,12 +117,14 @@ namespace Kermalis.PokemonGameEngine.Render.World
             {
                 throw new InvalidOperationException("Tried to warp without the camera.");
             }
+
             var w = WarpInProgress.Start(warp);
             Song newMusic = w.DestMap.Details.Music;
             if (newMusic != PlayerObj.Instance.Map.Details.Music)
             {
                 SoundControl.SetOverworldBGM(newMusic);
             }
+
             _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutToWarp);
         }
@@ -138,14 +144,14 @@ namespace Kermalis.PokemonGameEngine.Render.World
         {
             Game.Instance.IsOnOverworld = false;
             SoundControl.SetBattleBGM(song);
-            _transition = new BattleTransition_Liquid();
+
+            _transition = new BattleTransition_Liquid(RenderSize);
             Game.Instance.SetCallback(CB_FadeOutToBattle);
         }
 
         /// <summary>Sets the OverworldGUI's fbo, starts a fade from black fade, and sets the callback to fade in</summary>
         public void ReturnToFieldWithFadeIn()
         {
-            _frameBuffer.Use();
             _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeIn);
         }
@@ -167,7 +173,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void CB_FadeIn()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -183,7 +189,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void CB_FadeOutToWarp()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -206,7 +212,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void CB_FadeOutToEggHatchScreen()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -221,7 +227,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void CB_FadeOutToBattle()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -235,15 +241,18 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_ProcessScriptsTasksAndObjs()
         {
-            ScriptContext.UpdateAll();
+            _scriptContext?.Update();
             StringPrinter.UpdateAll();
             _tasks.RunTasks();
             ProcessObjs();
 
+#if DEBUG_OVERWORLD
+            _mapRenderer.Debug_CheckToggle();
+#endif
             Render();
             _frameBuffer.BlitToScreen();
 #if DEBUG_OVERWORLD
-            MapRenderer.Instance.Debug_Render();
+            _mapRenderer.Debug_RenderToScreen();
 #endif
         }
 
@@ -278,17 +287,18 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 _interactiveScript = null;
                 o.TalkedTo = false;
                 PlayerObj.Instance.IsWaitingForObjToStartScript = false;
-                ScriptLoader.LoadScript(script);
+                StartScript(script);
             }
         }
 
         private void Render()
         {
+            _frameBuffer.Use();
             GL gl = Display.OpenGL;
             gl.ClearColor(Colors.Black3);
             gl.Clear(ClearBufferMask.ColorBufferBit);
-            MapRenderer.Instance.Render(_frameBuffer);
-            DayTint.Render(_dayTintFrameBuffer);
+            _mapRenderer.Render(_frameBuffer);
+            DayTint.Render(_frameBuffer, _dayTintFrameBuffer);
             Window.RenderAll();
         }
     }

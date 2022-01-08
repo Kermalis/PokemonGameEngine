@@ -14,11 +14,15 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 {
     internal sealed class Map
     {
+        private const string MAP_PATH = @"Map\";
+        private static readonly IdList _ids = new(MAP_PATH + "MapIds.txt");
+        private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new();
+
+        /// <summary>Used to load the reader when needed</summary>
         public readonly string Name;
-        // These are loaded before the layout and used to place map connections
-        public readonly int Width;
-        public readonly int Height;
-        // Connection data is loaded right away since it's always needed
+        /// <summary><see cref="Size"/> is loaded before the layout and used to place map connections</summary>
+        public readonly Vec2I Size;
+        /// <summary>Connection data is loaded right away since it's always needed</summary>
         public readonly MapConnection[] Connections;
 
         // Layout, connected maps, and events are loaded when the map is visible
@@ -33,9 +37,9 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
         public readonly List<Obj> Objs = new();
         /// <summary>This list contains all connected maps when the map is visible</summary>
-        public readonly List<Map> ConnectedMaps = new();
+        private readonly List<Map> _connectedMaps = new();
 
-        public Pos2D BlockOffsetFromCurrentMap;
+        public Vec2I BlockOffsetFromCurrentMap;
 
         private Map(string name)
         {
@@ -43,8 +47,8 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
             using (EndianBinaryReader r = CreateReader())
             {
-                Width = r.ReadInt32(8); // Header is 8 bytes long
-                Height = r.ReadInt32();
+                Size.X = r.ReadInt32(8); // Header is 8 bytes long
+                Size.Y = r.ReadInt32();
                 int numConnections = r.ReadByte();
                 Connections = new MapConnection[numConnections];
                 for (int i = 0; i < numConnections; i++)
@@ -60,16 +64,16 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             Log.WriteLine("Updating map locations...");
 #endif
             var updated = new List<Map>();
-            CameraObj.Instance.Map.RecurseBlockOffsets(updated, new Pos2D(0, 0));
+            CameraObj.Instance.Map.RecurseBlockOffsets(updated, new Vec2I(0, 0));
         }
-        private void RecurseBlockOffsets(List<Map> updated, Pos2D offset)
+        private void RecurseBlockOffsets(List<Map> updated, Vec2I offset)
         {
             // Update this map's result
             updated.Add(this);
             BlockOffsetFromCurrentMap = offset;
 
             // Update connected maps only if they're loaded
-            if (ConnectedMaps.Count == 0)
+            if (_connectedMaps.Count == 0)
             {
                 return;
             }
@@ -82,27 +86,27 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                     continue; // Don't update more than once
                 }
 
-                Pos2D conOffset;
+                Vec2I conOffset;
                 switch (con.Dir)
                 {
                     case MapConnection.Direction.South:
                     {
-                        conOffset = new Pos2D(con.Offset, Height);
+                        conOffset = new Vec2I(con.Offset, Size.Y);
                         break;
                     }
                     case MapConnection.Direction.North:
                     {
-                        conOffset = new Pos2D(con.Offset, -conMap.Height);
+                        conOffset = new Vec2I(con.Offset, -conMap.Size.Y);
                         break;
                     }
                     case MapConnection.Direction.West:
                     {
-                        conOffset = new Pos2D(-conMap.Width, con.Offset);
+                        conOffset = new Vec2I(-conMap.Size.X, con.Offset);
                         break;
                     }
                     case MapConnection.Direction.East:
                     {
-                        conOffset = new Pos2D(Width, con.Offset);
+                        conOffset = new Vec2I(Size.X, con.Offset);
                         break;
                     }
                     default: throw new InvalidDataException();
@@ -112,13 +116,13 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             }
         }
 
-        // TODO: Reported blocks are incorrect for chain map connections (the game will probably never need to grab blocks that way though)
-        public void GetXYMap(Pos2D xy, out Pos2D newXY, out Map newMap)
+        // TODO: #71 - Need to check all loaded maps' positions relative to camera map, and modify xy accordingly
+        public void GetXYMap(Vec2I xy, out Vec2I newXY, out Map newMap)
         {
             bool north = xy.Y < 0;
-            bool south = xy.Y >= Height;
+            bool south = xy.Y >= Size.Y;
             bool west = xy.X < 0;
-            bool east = xy.X >= Width;
+            bool east = xy.X >= Size.X;
             // If we're out of bounds, try to branch into a connection. If we don't find one, we meet at the bottom
             if (north || south || west || east)
             {
@@ -132,9 +136,9 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                             if (south)
                             {
                                 Map m = LoadOrGet(c.MapId);
-                                if (xy.X >= c.Offset && xy.X < c.Offset + m.Width)
+                                if (xy.X >= c.Offset && xy.X < c.Offset + m.Size.X)
                                 {
-                                    m.GetXYMap(xy.Move(-c.Offset, -Height), out newXY, out newMap);
+                                    m.GetXYMap(xy.Plus(-c.Offset, -Size.Y), out newXY, out newMap);
                                     return;
                                 }
                             }
@@ -145,9 +149,9 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                             if (north)
                             {
                                 Map m = LoadOrGet(c.MapId);
-                                if (xy.X >= c.Offset && xy.X < c.Offset + m.Width)
+                                if (xy.X >= c.Offset && xy.X < c.Offset + m.Size.X)
                                 {
-                                    m.GetXYMap(xy.Move(-c.Offset, m.Height), out newXY, out newMap);
+                                    m.GetXYMap(xy.Plus(-c.Offset, m.Size.Y), out newXY, out newMap);
                                     return;
                                 }
                             }
@@ -158,9 +162,9 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                             if (west)
                             {
                                 Map m = LoadOrGet(c.MapId);
-                                if (xy.Y >= c.Offset && xy.Y < c.Offset + m.Height)
+                                if (xy.Y >= c.Offset && xy.Y < c.Offset + m.Size.Y)
                                 {
-                                    m.GetXYMap(xy.Move(m.Width, -c.Offset), out newXY, out newMap);
+                                    m.GetXYMap(xy.Plus(m.Size.X, -c.Offset), out newXY, out newMap);
                                     return;
                                 }
                             }
@@ -171,9 +175,9 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                             if (east)
                             {
                                 Map m = LoadOrGet(c.MapId);
-                                if (xy.Y >= c.Offset && xy.Y < c.Offset + m.Height)
+                                if (xy.Y >= c.Offset && xy.Y < c.Offset + m.Size.Y)
                                 {
-                                    m.GetXYMap(xy.Move(-Width, -c.Offset), out newXY, out newMap);
+                                    m.GetXYMap(xy.Plus(-Size.X, -c.Offset), out newXY, out newMap);
                                     return;
                                 }
                             }
@@ -187,19 +191,19 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             newXY = xy;
             newMap = this;
         }
-        public MapLayout.Block GetBlock_CrossMap(Pos2D xy, out Pos2D newXY, out Map newMap)
+        public MapLayout.Block GetBlock_CrossMap(Vec2I xy, out Vec2I newXY, out Map newMap)
         {
             GetXYMap(xy, out newXY, out newMap);
-            return newMap.Layout.GetBlock_InBounds(newXY);
+            return newMap.Layout.GetBlock(newXY);
         }
-        public MapLayout.Block GetBlock_InBounds(Pos2D xy)
+        public MapLayout.Block GetBlock_InBounds(Vec2I xy)
         {
-            return Layout.GetBlock_InBounds(xy);
+            return Layout.GetBlock(xy);
         }
 
         private EndianBinaryReader CreateReader()
         {
-            return new EndianBinaryReader(AssetLoader.GetAssetStream(MapPath + Name + ".bin"));
+            return new EndianBinaryReader(AssetLoader.GetAssetStream(MAP_PATH + Name + ".bin"));
         }
         private void LoadData_NowVisible()
         {
@@ -224,7 +228,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         {
             for (int i = 0; i < Connections.Length; i++)
             {
-                ConnectedMaps.Add(LoadOrGet(Connections[i].MapId));
+                _connectedMaps.Add(LoadOrGet(Connections[i].MapId));
             }
         }
         private void CreateEventObjs()
@@ -277,7 +281,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 #endif
             _visibleDataLoaded = false;
             DeleteEventObjs();
-            ConnectedMaps.Clear();
+            _connectedMaps.Clear();
             Layout.Delete();
             Events = null;
 #if DEBUG_OVERWORLD
@@ -332,7 +336,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             foreach (Obj o in Objs)
             {
                 if (o.Id != Overworld.CameraId
-                    && (pos.Equals(o.Pos) || (checkMovingFrom && pos.Equals(o.MovingFromPos)))
+                    && (pos == o.Pos || (checkMovingFrom && pos == o.MovingFromPos))
                     )
                 {
                     return o;
@@ -341,11 +345,6 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             return null;
         }
 
-        #region Cache
-
-        private const string MapPath = "Map\\";
-        private static readonly IdList _ids = new(MapPath + "MapIds.txt");
-        private static readonly Dictionary<int, WeakReference<Map>> _loadedMaps = new();
         public static Map LoadOrGet(int id)
         {
             string name = _ids[id];
@@ -367,6 +366,11 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             return m;
         }
 
-        #endregion
+#if DEBUG_OVERWORLD
+        public override string ToString()
+        {
+            return Name;
+        }
+#endif
     }
 }

@@ -1,12 +1,11 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.R3D;
-using Kermalis.PokemonGameEngine.Render.Shaders;
+using Kermalis.PokemonGameEngine.Render.Shaders.Battle;
 using Kermalis.PokemonGameEngine.Render.Transitions;
 using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Trainer;
@@ -19,17 +18,19 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 {
     internal sealed partial class BattleGUI
     {
-        public static readonly Size2D RenderSize = new(480, 270); // 16:9
-        private const uint SHADOW_TEXTURE_SIZE = 512;
-        private readonly FrameBuffer _frameBuffer;
-        private readonly FrameBuffer _dayTintFrameBuffer;
-        private readonly FrameBuffer _shadowFrameBuffer;
+        public static readonly Vec2I RenderSize = new(480, 270); // 16:9
+        private const int SHADOW_TEXTURE_SIZE = 512;
 
-        private ITransition _transition;
+        private readonly FrameBuffer2DColorDepth _frameBuffer;
+        private readonly FrameBuffer2DColor _dayTintFrameBuffer;
+        private readonly FrameBuffer2DColorDepth _shadowFrameBuffer;
 
         private readonly PkmnPosition[][] _positions;
         private readonly BattlePokemonParty[] _parties;
         private BattleSprite _trainerSprite;
+
+        private ITransition _transition;
+        private bool _hudInvisible;
 
         private Window _stringWindow;
         private StringPrinter _stringPrinter;
@@ -37,13 +38,11 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         /// Example: The trainer challenge message cannot advance until the trainer is done animating</summary>
         private bool _canAdvanceMsg = true;
         private float _autoAdvanceTime;
-        private bool _hudInvisible;
 
         public readonly Camera Camera;
         private readonly Matrix4x4 _shadowViewProjection;
         private readonly BattleModelShader _modelShader;
         private readonly BattleSpriteShader _spriteShader;
-        private readonly BattleSpriteMesh _spriteMesh;
         private readonly List<Model> _models;
 
         private readonly PointLight[] _testLights = new PointLight[BattleModelShader.MAX_LIGHTS]
@@ -70,11 +69,10 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             Camera = new Camera(DefaultCamPosition, projection); // cam pos doesn't matter here since we will set it later
             _modelShader = new BattleModelShader(gl);
             _spriteShader = new BattleSpriteShader(gl);
-            _spriteMesh = new BattleSpriteMesh(gl);
 
-            _frameBuffer = FrameBuffer.CreateWithColorAndDepth(RenderSize); // Gets used at InitFadeIn()
-            _dayTintFrameBuffer = FrameBuffer.CreateWithColor(RenderSize);
-            _shadowFrameBuffer = FrameBuffer.CreateWithColorAndDepth(new Size2D(SHADOW_TEXTURE_SIZE, SHADOW_TEXTURE_SIZE));
+            _frameBuffer = new FrameBuffer2DColorDepth(RenderSize); // Gets used at InitFadeIn()
+            _dayTintFrameBuffer = new FrameBuffer2DColor(RenderSize);
+            _shadowFrameBuffer = new FrameBuffer2DColorDepth(new Vec2I(SHADOW_TEXTURE_SIZE, SHADOW_TEXTURE_SIZE));
 
             InitShadows(gl, out _shadowViewProjection);
 
@@ -226,13 +224,13 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         public void InitFadeIn()
         {
-            _frameBuffer.Use();
             DayTint.CatchUpTime = true;
             // Trainer sprite
             if (Battle.BattleType == PBEBattleType.Trainer)
             {
                 InitTrainerSpriteAtBattleStart();
             }
+
             _transition = new FadeFromColorTransition(1f, Colors.Black3);
             Game.Instance.SetCallback(CB_FadeInBattle);
         }
@@ -340,19 +338,20 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             AnimatedImage.UpdateAll();
 
-            Render_3D();
+            _frameBuffer.Use();
+            GL gl = Display.OpenGL;
+            Render_3D(gl);
             if (!_hudInvisible)
             {
                 Render_HUD();
             }
+            gl.Disable(EnableCap.Blend);
         }
-        private void Render_3D()
+        private void Render_3D(GL gl)
         {
-            GL gl = Display.OpenGL;
             gl.Enable(EnableCap.DepthTest);
             gl.Enable(EnableCap.Blend);
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            gl.BlendEquation(BlendEquationModeEXT.FuncAddExt);
             gl.ClearColor(Colors.Black3);
 #if DEBUG_BATTLE_WIREFRAME
             gl.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
@@ -372,7 +371,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _spriteShader.Use(gl);
             _spriteShader.SetOutputShadow(gl, true);
             gl.ActiveTexture(TextureUnit.Texture0);
-            Render_3D_BattleSprites(s => s.RenderShadow(gl, _spriteMesh, _spriteShader, _shadowViewProjection, camView));
+            Render_3D_BattleSprites(s => s.RenderShadow(gl, _spriteShader, _shadowViewProjection, camView));
 
             #endregion
 
@@ -384,9 +383,9 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _modelShader.SetLights(gl, _testLights);
 
             gl.ActiveTexture(TextureUnit.Texture0);
-            gl.BindTexture(TextureTarget.Texture2D, _shadowFrameBuffer.ColorTexture.Value);
+            gl.BindTexture(TextureTarget.Texture2D, _shadowFrameBuffer.ColorTexture);
             gl.ActiveTexture(TextureUnit.Texture1);
-            gl.BindTexture(TextureTarget.Texture2D, _shadowFrameBuffer.DepthTexture.Value);
+            gl.BindTexture(TextureTarget.Texture2D, _shadowFrameBuffer.DepthTexture);
             for (int i = 0; i < _models.Count; i++)
             {
                 Model m = _models[i];
@@ -401,17 +400,16 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _spriteShader.Use(gl);
             _spriteShader.SetOutputShadow(gl, false);
             gl.ActiveTexture(TextureUnit.Texture0);
-            Render_3D_BattleSprites(s => s.Render(gl, _spriteMesh, _spriteShader, Camera.Projection, camView));
+            Render_3D_BattleSprites(s => s.Render(gl, _spriteShader, Camera.Projection, camView));
 
             #endregion
 
-            gl.Disable(EnableCap.Blend);
             gl.Disable(EnableCap.DepthTest);
 #if DEBUG_BATTLE_WIREFRAME
             gl.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill); // Reset
 #endif
 
-            DayTint.Render(_dayTintFrameBuffer);
+            DayTint.Render(_frameBuffer, _dayTintFrameBuffer);
         }
         private void Render_HUD()
         {

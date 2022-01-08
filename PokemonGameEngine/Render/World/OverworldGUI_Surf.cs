@@ -10,7 +10,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
     {
         public void ReturnToFieldAndUseSurf()
         {
-            _frameBuffer.Use();
             _startMenuWindow?.Close(); // Possibly activated this from the PartyGUI
             _startMenuWindow = null;
             foreach (Obj o in Obj.LoadedObjs)
@@ -72,7 +71,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void CB_FadeInToUseSurf()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)

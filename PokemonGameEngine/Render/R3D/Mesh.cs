@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render.Shaders;
+﻿using Kermalis.PokemonGameEngine.Render.Shaders.Battle;
 using Silk.NET.OpenGL;
 using System.Collections.Generic;
 

@@ -15,7 +15,7 @@ namespace Kermalis.PokemonGameEngine.Render
         public IImage Image;
         /// <summary>After this is updated, a call will need to be made to <see cref="SpriteList.SortByPriority"/>. Higher priorities are rendered last to appear above everything else</summary>
         public int Priority;
-        public Pos2D Pos;
+        public Vec2I Pos;
         public bool IsInvisible;
         public bool XFlip;
         public bool YFlip;
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonGameEngine.Render
         public object Tag;
         public SpriteCallback Callback;
 
-        public void Render(Pos2D translation = default)
+        public void Render(Vec2I translation = default)
         {
             if (IsInvisible)
             {
@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.Render
             }
 
             IImage img = Image;
-            GUIRenderer.Instance.RenderTexture(img.Texture, new Rect2D(Pos + translation, img.Size), xFlip: XFlip, yFlip: YFlip);
+            GUIRenderer.Instance.RenderTexture(img.Texture, Rect.FromSize(Pos + translation, img.Size), xFlip: XFlip, yFlip: YFlip);
         }
 
         public void Dispose()

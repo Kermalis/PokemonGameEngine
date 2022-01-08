@@ -1,6 +1,5 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.World.Objs;
@@ -9,14 +8,13 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Script
 {
-    internal sealed partial class ScriptContext : IDisposable
+    internal sealed partial class ScriptContext
     {
-        private static readonly List<ScriptContext> _allScripts = new();
-
+        private readonly Vec2I _viewSize;
         private readonly EndianBinaryReader _reader;
         private readonly Stack<long> _callStack = new();
         private ushort _msgScale = 1;
-        private bool _isDisposed;
+        private bool _isDead;
 
         private float _delayRemaining;
 
@@ -36,10 +34,10 @@ namespace Kermalis.PokemonGameEngine.Script
         private TextGUIChoices _multichoice;
         private Window _multichoiceWindow;
 
-        public ScriptContext(EndianBinaryReader r)
+        public ScriptContext(Vec2I viewSize, EndianBinaryReader r)
         {
+            _viewSize = viewSize;
             _reader = r;
-            _allScripts.Add(this);
         }
 
         private void CheckWaitCry(ref bool isWaiting)
@@ -134,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private bool IsWaitingForSomething(bool updateDelay)
         {
-            if (_isDisposed)
+            if (_isDead)
             {
                 return true;
             }
@@ -143,13 +141,13 @@ namespace Kermalis.PokemonGameEngine.Script
             CheckDelay(updateDelay, ref isWaiting);
             CheckWaitMovement(ref isWaiting);
             CheckWaitMessageBox(ref isWaiting);
-            if (_isDisposed)
+            if (_isDead)
             {
                 return true; // Callback can close the script
             }
             CheckWaitMultichoice(ref isWaiting);
             CheckWaitReturnToField(ref isWaiting);
-            if (_isDisposed)
+            if (_isDead)
             {
                 return true; // Callback can close the script
             }
@@ -166,23 +164,14 @@ namespace Kermalis.PokemonGameEngine.Script
 
         }
 
-        public static void UpdateAll()
+        public void Delete()
         {
-            foreach (ScriptContext ctx in _allScripts.ToArray()) // Copy the list so a script ending/starting does not crash here
-            {
-                ctx.Update();
-            }
-        }
-
-        public void Dispose()
-        {
-            if (_isDisposed)
+            if (_isDead)
             {
                 return;
             }
 
-            _isDisposed = true;
-            _allScripts.Remove(this);
+            _isDead = true;
             _reader.Dispose();
             _onWaitMessageFinished = null;
             _onWaitReturnToFieldFinished = null;

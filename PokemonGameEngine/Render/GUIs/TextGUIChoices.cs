@@ -1,6 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render.Fonts;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
-using System;
+﻿using System;
 using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.GUIs
@@ -42,7 +40,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
 
         public TextGUIChoices(float x, float y, float spacing = 3, bool bottomAlign = false, Action backCommand = null,
             Font font = null, Vector4[] textColors = null, Vector4[] selectedColors = null, Vector4[] disabledColors = null)
-            : base(x, y, spacing, backCommand: backCommand)
+            : base(new Vector2(x, y), spacing, backCommand: backCommand)
         {
             Font = font;
             TextColors = textColors;
@@ -62,12 +60,11 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             Add(new TextGUIChoice(str, command, textColors, selectedColors, disabledColors, isEnabled));
         }
 
-        public override void Render()
+        public override void Render(Vec2I viewSize)
         {
-            Size2D totalSize = FrameBuffer.Current.Size;
-            float y1 = Y * totalSize.Height;
-            int x = (int)(X * totalSize.Width);
-            float y = y1;
+            float tlY = Pos.Y * viewSize.Y;
+            int x = (int)(Pos.X * viewSize.X);
+            float y = tlY;
             float space = Spacing;
             int count = _choices.Count;
             int i = BottomAligned ? count - 1 : 0;
@@ -85,14 +82,14 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
                 {
                     colors = c.DisabledColors;
                 }
-                Size2D arrowSize = font.MeasureString("→ ");
+                Vec2I arrowSize = font.GetSize("→ ");
                 // If this is bottom align, we need to adjust the y
-                int iy = BottomAligned ? (int)y - (int)arrowSize.Height : (int)y;
-                c.Str.Render(new Pos2D(x + (int)arrowSize.Width, iy), colors);
+                int iy = BottomAligned ? (int)y - arrowSize.Y : (int)y;
+                c.Str.Render(new Vec2I(x + arrowSize.X, iy), colors);
                 // Draw selection arrow
                 if (isSelected)
                 {
-                    c.ArrowStr.Render(new Pos2D(x, iy), colors);
+                    c.ArrowStr.Render(new Vec2I(x, iy), colors);
                 }
 
                 if (BottomAligned)
@@ -109,14 +106,14 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
                     {
                         break;
                     }
-                    y += arrowSize.Height + space;
+                    y += arrowSize.Y + space;
                 }
             }
         }
 
-        public Size2D GetSize()
+        public Vec2I GetSize()
         {
-            var s = new Size2D(0, 0);
+            var s = new Vec2I(0, 0);
             float y = 0;
             float space = Spacing;
             int count = _choices.Count;
@@ -124,40 +121,38 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             {
                 TextGUIChoice c = _choices[i];
                 Font font = c.Str.Font;
-                Size2D textSize = font.MeasureString(c.Str.Text);
-                Size2D arrowSize = font.MeasureString("→ ");
-                uint totalWidth = textSize.Width + arrowSize.Width;
-                if (totalWidth > s.Width)
+                Vec2I textSize = font.GetSize(c.Str.Text);
+                Vec2I arrowSize = font.GetSize("→ ");
+                int totalWidth = textSize.X + arrowSize.X;
+                if (totalWidth > s.X)
                 {
-                    s.Width = totalWidth;
+                    s.X = totalWidth;
                 }
-                uint totalHeight = textSize.Height + (uint)y;
-                if (totalHeight > s.Height)
+                int totalHeight = textSize.Y + (int)y;
+                if (totalHeight > s.Y)
                 {
-                    s.Height = totalHeight;
+                    s.Y = totalHeight;
                 }
 
-                y += textSize.Height + space;
+                y += textSize.Y + space;
             }
             return s;
         }
 
-        public static void CreateStandardYesNoChoices(Action<bool> clickAction, Size2D totalSize, out TextGUIChoices choices, out Window window, float x = 0.8f, float y = 0.4f)
+        public static void CreateStandardYesNoChoices(Action<bool> clickAction, Vec2I viewSize, out TextGUIChoices choices, out Window window, float x = 0.8f, float y = 0.4f)
         {
-            choices = new TextGUIChoices(0, 0, font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
+            choices = new TextGUIChoices(0f, 0f,
+                font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
             choices.AddOne("Yes", () => clickAction(true));
             choices.AddOne("No", () => clickAction(false));
-            Size2D s = choices.GetSize();
-            window = new Window(Pos2D.FromRelative(x, y, totalSize), s, Colors.White4);
+            Vec2I s = choices.GetSize();
+            window = new Window(Vec2I.FromRelative(x, y, viewSize), s, Colors.White4);
             choices.RenderChoicesOntoWindow(window);
         }
         public void RenderChoicesOntoWindow(Window window)
         {
-            FrameBuffer oldFBO = FrameBuffer.Current;
-            window.Image.FrameBuffer.Use();
-            window.ClearImagePushed();
-            Render();
-            oldFBO.Use();
+            window.Clear();
+            Render(window.FrameBuffer.Size);
         }
     }
 }

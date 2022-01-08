@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render.Images;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
+﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System.Collections.Generic;
 using System.Numerics;
@@ -10,34 +9,29 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
     {
         private static readonly List<Window> _allWindows = new();
 
-        private readonly Pos2D _pos;
+        private readonly Vec2I _pos;
         private readonly Vector4 _backColor;
 
         public bool IsInvisible;
-        public readonly WriteableImage Image;
+        public readonly FrameBuffer2DColor FrameBuffer;
 
-        public Window(Pos2D pos, Size2D size, in Vector4 backColor)
+        public Window(Vec2I pos, Vec2I size, in Vector4 backColor)
         {
             _pos = pos;
             _backColor = backColor;
-            Image = new WriteableImage(size);
-            ClearImage();
+            FrameBuffer = new FrameBuffer2DColor(size);
+            Clear();
             _allWindows.Add(this);
         }
-        public static Window CreateStandardMessageBox(in Vector4 backColor, Size2D totalSize)
+        public static Window CreateStandardMessageBox(in Vector4 backColor, Vec2I totalSize)
         {
-            return new Window(Pos2D.FromRelative(0f, 0.79f, totalSize), Size2D.FromRelative(1f, 0.17f, totalSize), backColor);
+            return new Window(Vec2I.FromRelative(0f, 0.79f, totalSize), Vec2I.FromRelative(1f, 0.17f, totalSize), backColor);
         }
 
-        public void ClearImage()
+        /// <summary>Uses <see cref="FrameBuffer"/> and clears it to the back color</summary>
+        public void Clear()
         {
-            FrameBuffer oldFBO = FrameBuffer.Current;
-            Image.FrameBuffer.Use();
-            ClearImagePushed();
-            oldFBO.Use();
-        }
-        public void ClearImagePushed()
-        {
+            FrameBuffer.Use();
             GL gl = Display.OpenGL;
             gl.ClearColor(_backColor);
             gl.Clear(ClearBufferMask.ColorBufferBit);
@@ -49,7 +43,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             {
                 return;
             }
-            Image.Render(_pos);
+            FrameBuffer.RenderColorTexture(_pos);
         }
         public static void RenderAll()
         {
@@ -61,7 +55,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
 
         public void Close()
         {
-            Image.DeductReference();
+            FrameBuffer.Delete();
             _allWindows.Remove(this);
         }
     }

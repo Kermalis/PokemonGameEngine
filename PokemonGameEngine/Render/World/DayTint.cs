@@ -1,6 +1,6 @@
-﻿using Kermalis.PokemonGameEngine.Render.GUIs;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
+﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Shaders;
+using Kermalis.PokemonGameEngine.Render.Shaders.World;
 using Kermalis.PokemonGameEngine.World;
 using Silk.NET.OpenGL;
 using System;
@@ -119,7 +119,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _mod = hourMod;
         }
 
-        public static void Render(FrameBuffer dayTintFrameBuffer)
+        public static void Render(FrameBuffer2DColor target, FrameBuffer2DColor dayTintFrameBuffer)
         {
             bool catchUpTime = CatchUpTime;
             CatchUpTime = false;
@@ -134,18 +134,19 @@ namespace Kermalis.PokemonGameEngine.Render.World
             shader.Use(gl);
             shader.SetModification(gl, ref _mod);
 
-            // Bind current fbo's texture
-            FrameBuffer c = FrameBuffer.Current;
+            // Bind target's texture
             gl.ActiveTexture(TextureUnit.Texture0);
-            gl.BindTexture(TextureTarget.Texture2D, c.ColorTexture.Value);
+            gl.BindTexture(TextureTarget.Texture2D, target.ColorTexture);
 
             // Render to DayTint fbo
             dayTintFrameBuffer.Use();
-            EntireScreenMesh.Instance.Render();
+            RectMesh.Instance.Render();
 
-            // Copy rendered result back to the previous fbo (its texture is still bound)
-            gl.CopyTexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, 0, 0, c.Size.Width, c.Size.Height);
-            c.Use();
+            // Copy rendered result back to the target
+            EntireScreenTextureShader.Instance.Use(gl);
+            target.Use();
+            gl.BindTexture(TextureTarget.Texture2D, dayTintFrameBuffer.ColorTexture);
+            RectMesh.Instance.Render();
         }
     }
 }

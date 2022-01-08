@@ -1,7 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.GUI;
 using Kermalis.PokemonGameEngine.Pkmn;
-using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
@@ -15,8 +13,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
     // TODO: Nickname
     internal sealed class EggHatchGUI
     {
-        private static readonly Size2D _renderSize = new(384, 216); // 16:9
-        private readonly FrameBuffer _frameBuffer;
+        private static readonly Vec2I _renderSize = new(384, 216); // 16:9
+        private readonly FrameBuffer2DColor _frameBuffer;
 
         private readonly PartyPokemon _pkmn;
 
@@ -26,13 +24,12 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private StringPrinter _stringPrinter;
 
         private AnimatedImage _img;
-        private Pos2D _imgPos;
+        private Vec2I _imgPos;
 
         /// <summary>Will create an egg hatch GUI. Pkmn is determined by <see cref="Var.SpecialVar1"/>'s party index.</summary>
         public EggHatchGUI()
         {
-            _frameBuffer = FrameBuffer.CreateWithColor(_renderSize);
-            _frameBuffer.Use();
+            _frameBuffer = new FrameBuffer2DColor(_renderSize);
 
             _pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar1]];
             UpdatePkmnImage();
@@ -52,7 +49,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             {
                 _img = PokemonImageLoader.GetPokemonImage(_pkmn.Species, _pkmn.Form, _pkmn.Gender, _pkmn.Shiny, _pkmn.PID, false);
             }
-            _imgPos = Pos2D.Center(0.5f, 0.5f, _img.Size, _renderSize);
+            _imgPos = Vec2I.Center(0.5f, 0.5f, _img.Size, _renderSize);
         }
         private void CreateMessage(string msg)
         {
@@ -67,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void CB_FadeIn()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -100,7 +97,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void CB_FadeWhiteToHatch()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -117,7 +114,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void CB_FadeToHatched()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -152,7 +149,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void CB_FadeOut()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -161,13 +158,14 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             _transition.Dispose();
-            _img.DeductReference();
             _frameBuffer.Delete();
+            _img.DeductReference();
             OverworldGUI.Instance.ReturnToFieldWithFadeIn();
         }
 
         private void Render()
         {
+            _frameBuffer.Use();
             GL gl = Display.OpenGL;
             gl.ClearColor(Colors.FromRGB(31, 31, 31));
             gl.Clear(ClearBufferMask.ColorBufferBit);

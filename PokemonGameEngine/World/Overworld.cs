@@ -14,7 +14,8 @@ namespace Kermalis.PokemonGameEngine.World
     internal static partial class Overworld
     {
         public const string SCRIPT_SURF = "Surf_Interaction";
-        public static readonly Size2D Block_NumPixels = new(Block_NumPixelsX, Block_NumPixelsX);
+        public static readonly Vec2I Tile_NumPixels = new(Tile_NumPixelsX, Tile_NumPixelsY);
+        public static readonly Vec2I Block_NumPixels = new(Block_NumPixelsX, Block_NumPixelsY);
 
         public static MapSection GetPlayerMapSection()
         {

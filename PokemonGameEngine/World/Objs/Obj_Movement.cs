@@ -1,18 +1,19 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.World.Maps;
 using System;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal abstract partial class Obj
     {
         // Move speed constants represent 1/x seconds to complete the movement
-        protected const float TURNING_MOVE_SPEED = 5f;
-        protected const float WALK_MOVE_SPEED = 4f;
-        protected const float RUN_MOVE_SPEED = 6f;
-        protected const float DIAGONAL_MOVE_SPEED_MOD = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
-        protected const float BLOCKED_MOVE_SPEED_MOD = 0.8f;
-        protected const int STAIR_Y_OFFSET = +6; // Any offset will work
+        private const float TURNING_MOVE_SPEED = 5f;
+        private const float WALK_MOVE_SPEED = 4f;
+        private const float RUN_MOVE_SPEED = 6f;
+        private const float DIAGONAL_MOVE_SPEED_MOD = 0.7071067811865475f; // (2 / (sqrt((2^2) + (2^2)))
+        private const float BLOCKED_MOVE_SPEED_MOD = 0.8f;
+        private const int STAIR_Y_OFFSET = +6; // Any offset will work
 
         private static bool ElevationCheck(BlocksetBlockBehavior curBehavior, BlocksetBlockBehavior targetBehavior, byte curElevation, byte targetElevations)
         {
@@ -22,7 +23,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             return Overworld.AllowsElevationChange(curBehavior) || Overworld.AllowsElevationChange(targetBehavior);
         }
-        private bool CanMoveTo_Cardinal__CanOccupy(Pos2D targetXY, bool allowSurf,
+        private bool CanMoveTo_Cardinal__CanOccupy(Vec2I targetXY, bool allowSurf,
             BlocksetBlockBehavior curBehavior, BlocksetBlockBehavior blockedTarget, bool checkElevation, byte curElevation)
         {
             // Get the x/y/map of the target block
@@ -54,7 +55,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return true;
         }
         // South/North
-        private bool CanMoveTo_Cardinal(Pos2D targetXY, bool allowSurf, BlocksetBlockBehavior blockedCurrent, BlocksetBlockBehavior blockedTarget)
+        private bool CanMoveTo_Cardinal(Vec2I targetXY, bool allowSurf, BlocksetBlockBehavior blockedCurrent, BlocksetBlockBehavior blockedTarget)
         {
             // Current block - return false if we are blocked
             WorldPos p = Pos;
@@ -72,7 +73,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return true;
         }
         // West/East
-        private bool CanMoveTo_Cardinal_ConsiderStairs(Pos2D targetXY, bool allowSurf, BlocksetBlockBehavior blockedCurrent, BlocksetBlockBehavior blockedTarget,
+        private bool CanMoveTo_Cardinal_ConsiderStairs(Vec2I targetXY, bool allowSurf, BlocksetBlockBehavior blockedCurrent, BlocksetBlockBehavior blockedTarget,
             BlocksetBlockBehavior upBehavior, BlocksetBlockBehavior downBehavior)
         {
             // Current block - return false if we are blocked
@@ -84,7 +85,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return false;
             }
             // Stairs - check if we can go up a stair that's above our target
-            Map.GetXYMap(targetXY.Move(0, -1), out Pos2D upStairPos, out Map upStairMap);
+            Map.GetXYMap(targetXY.Plus(0, -1), out Vec2I upStairPos, out Map upStairMap);
             MapLayout.Block upStairBlock = upStairMap.GetBlock_InBounds(upStairPos);
             if ((upStairBlock.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
             {
@@ -119,7 +120,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return true;
         }
         // Southwest/Southeast/Northwest/Northeast
-        private bool CanMoveTo_Diagonal(Pos2D targetXY, bool allowSurf, LayoutBlockPassage neighbor1Passage, Pos2D neighbor1XY, LayoutBlockPassage neighbor2Passage, Pos2D neighbor2XY,
+        private bool CanMoveTo_Diagonal(Vec2I targetXY, bool allowSurf, LayoutBlockPassage neighbor1Passage, Vec2I neighbor1XY, LayoutBlockPassage neighbor2Passage, Vec2I neighbor2XY,
             BlocksetBlockBehavior blockedCurrentCardinal1, BlocksetBlockBehavior blockedCurrentCardinal2, BlocksetBlockBehavior blockedCurrentDiagonal,
             BlocksetBlockBehavior blockedTargetCardinal1, BlocksetBlockBehavior blockedTargetCardinal2, BlocksetBlockBehavior blockedTargetDiagonal,
             BlocksetBlockBehavior blockedNeighbor1, BlocksetBlockBehavior blockedNeighbor2)
@@ -172,7 +173,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             BlocksetBlockBehavior blockedCardinal1, BlocksetBlockBehavior blockedCardinal2, BlocksetBlockBehavior blockedDiagonal)
         {
             // Get the x/y/map of the block
-            Map.GetXYMap(pos.XY, out Pos2D targetXY, out Map targetMap);
+            Map.GetXYMap(pos.XY, out Vec2I targetXY, out Map targetMap);
             MapLayout.Block block = targetMap.GetBlock_InBounds(targetXY);
             // Check occupancy permission
             if ((block.Passage & diagonalPassage) == 0)
@@ -195,51 +196,51 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public bool IsMovementLegal(FacingDirection facing, bool allowSurf)
         {
-            Pos2D xy = Pos.XY;
+            Vec2I xy = Pos.XY;
             switch (facing)
             {
                 case FacingDirection.South:
                 {
-                    return CanMoveTo_Cardinal(xy.Move(0, 1), allowSurf, BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_N);
+                    return CanMoveTo_Cardinal(xy.Plus(0, 1), allowSurf, BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_N);
                 }
                 case FacingDirection.North:
                 {
-                    return CanMoveTo_Cardinal(xy.Move(0, -1), allowSurf, BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_S);
+                    return CanMoveTo_Cardinal(xy.Plus(0, -1), allowSurf, BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_S);
                 }
                 case FacingDirection.West:
                 {
-                    return CanMoveTo_Cardinal_ConsiderStairs(xy.Move(-1, 0), allowSurf, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_E,
+                    return CanMoveTo_Cardinal_ConsiderStairs(xy.Plus(-1, 0), allowSurf, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_E,
                         BlocksetBlockBehavior.Stair_W, BlocksetBlockBehavior.Stair_E);
                 }
                 case FacingDirection.East:
                 {
-                    return CanMoveTo_Cardinal_ConsiderStairs(xy.Move(1, 0), allowSurf, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_W,
+                    return CanMoveTo_Cardinal_ConsiderStairs(xy.Plus(1, 0), allowSurf, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_W,
                         BlocksetBlockBehavior.Stair_E, BlocksetBlockBehavior.Stair_W);
                 }
                 case FacingDirection.Southwest:
                 {
-                    return CanMoveTo_Diagonal(xy.Move(-1, 1), allowSurf, LayoutBlockPassage.SoutheastPassage, xy.Move(-1, 0), LayoutBlockPassage.NorthwestPassage, xy.Move(0, 1),
+                    return CanMoveTo_Diagonal(xy.Plus(-1, 1), allowSurf, LayoutBlockPassage.SoutheastPassage, xy.Plus(-1, 0), LayoutBlockPassage.NorthwestPassage, xy.Plus(0, 1),
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_SW,
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_NE,
                         BlocksetBlockBehavior.Blocked_SE, BlocksetBlockBehavior.Blocked_NW);
                 }
                 case FacingDirection.Southeast:
                 {
-                    return CanMoveTo_Diagonal(xy.Move(1, 1), allowSurf, LayoutBlockPassage.SouthwestPassage, xy.Move(1, 0), LayoutBlockPassage.NortheastPassage, xy.Move(0, 1),
+                    return CanMoveTo_Diagonal(xy.Plus(1, 1), allowSurf, LayoutBlockPassage.SouthwestPassage, xy.Plus(1, 0), LayoutBlockPassage.NortheastPassage, xy.Plus(0, 1),
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_SE,
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_NW,
                         BlocksetBlockBehavior.Blocked_SW, BlocksetBlockBehavior.Blocked_NE);
                 }
                 case FacingDirection.Northwest:
                 {
-                    return CanMoveTo_Diagonal(xy.Move(-1, -1), allowSurf, LayoutBlockPassage.NortheastPassage, xy.Move(-1, 0), LayoutBlockPassage.SouthwestPassage, xy.Move(0, -1),
+                    return CanMoveTo_Diagonal(xy.Plus(-1, -1), allowSurf, LayoutBlockPassage.NortheastPassage, xy.Plus(-1, 0), LayoutBlockPassage.SouthwestPassage, xy.Plus(0, -1),
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_NW,
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_SE,
                         BlocksetBlockBehavior.Blocked_NE, BlocksetBlockBehavior.Blocked_SW);
                 }
                 case FacingDirection.Northeast:
                 {
-                    return CanMoveTo_Diagonal(xy.Move(1, -1), allowSurf, LayoutBlockPassage.NorthwestPassage, xy.Move(1, 0), LayoutBlockPassage.SoutheastPassage, xy.Move(0, -1),
+                    return CanMoveTo_Diagonal(xy.Plus(1, -1), allowSurf, LayoutBlockPassage.NorthwestPassage, xy.Plus(1, 0), LayoutBlockPassage.SoutheastPassage, xy.Plus(0, -1),
                         BlocksetBlockBehavior.Blocked_N, BlocksetBlockBehavior.Blocked_E, BlocksetBlockBehavior.Blocked_NE,
                         BlocksetBlockBehavior.Blocked_S, BlocksetBlockBehavior.Blocked_W, BlocksetBlockBehavior.Blocked_SW,
                         BlocksetBlockBehavior.Blocked_NW, BlocksetBlockBehavior.Blocked_SE);
@@ -248,7 +249,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
         }
 
-        private void ApplyStairMovement(Pos2D curXY, BlocksetBlockBehavior upBehavior, BlocksetBlockBehavior downBehavior)
+        private void ApplyStairMovement(Vec2I curXY, BlocksetBlockBehavior upBehavior, BlocksetBlockBehavior downBehavior)
         {
             MapLayout.Block curBlock = Map.GetBlock_InBounds(curXY);
             BlocksetBlockBehavior curBehavior = curBlock.BlocksetBlock.Behavior;
@@ -256,8 +257,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 Pos.XY.Y++;
             }
-            Pos2D newXY = Pos.XY;
-            MapLayout.Block upStairBlock = Map.GetBlock_CrossMap(newXY.Move(0, -1), out _, out _);
+            Vec2I newXY = Pos.XY;
+            MapLayout.Block upStairBlock = Map.GetBlock_CrossMap(newXY.Plus(0, -1), out _, out _);
             BlocksetBlockBehavior upStairBehavior = upStairBlock.BlocksetBlock.Behavior;
             if (upStairBehavior == upBehavior)
             {
@@ -292,14 +293,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
                 case FacingDirection.West:
                 {
-                    Pos2D xy = Pos.XY;
+                    Vec2I xy = Pos.XY;
                     Pos.XY.X--;
                     ApplyStairMovement(xy, BlocksetBlockBehavior.Stair_W, BlocksetBlockBehavior.Stair_E);
                     break;
                 }
                 case FacingDirection.East:
                 {
-                    Pos2D xy = Pos.XY;
+                    Vec2I xy = Pos.XY;
                     Pos.XY.X++;
                     ApplyStairMovement(xy, BlocksetBlockBehavior.Stair_E, BlocksetBlockBehavior.Stair_W);
                     break;
@@ -334,8 +335,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
             }
             Map curMap = Map;
-            Pos2D curXY = Pos.XY;
-            MapLayout.Block block = curMap.GetBlock_CrossMap(curXY, out Pos2D newXY, out Map newMap);
+            Vec2I curXY = Pos.XY;
+            MapLayout.Block block = curMap.GetBlock_CrossMap(curXY, out Vec2I newXY, out Map newMap);
             Pos.Elevation = Overworld.GetElevationIfMovedTo(Pos.Elevation, block.Elevations);
             if (newMap == curMap)
             {
@@ -366,7 +367,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             bool surfing = IsSurfing();
             IsMovingSelf = true;
-            MovementTimer = 0f;
+            MovementProgress = 0f;
             Facing = facing;
             MovingFromPos = Pos;
             MovingFromVisualOfs = VisualOfs;
@@ -392,7 +393,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public virtual void Face(FacingDirection facing)
         {
             IsMovingSelf = true;
-            MovementTimer = 0;
+            MovementProgress = 0f;
             MovementSpeed = TURNING_MOVE_SPEED;
             Facing = facing;
             MovingFromPos = Pos;
@@ -400,7 +401,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             UpdateVisualProgress();
         }
 
-        private static FacingDirection GetDirectionToLook(Pos2D myXY, Pos2D otherXY)
+        private static FacingDirection GetDirectionToLook(Vec2I myXY, Vec2I otherXY)
         {
             if (otherXY.X == myXY.X)
             {
@@ -437,10 +438,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         {
             LookTowards(other.Pos.XY);
         }
-        public void LookTowards(Pos2D otherXY)
+        public void LookTowards(Vec2I otherXY)
         {
-            Pos2D myXY = Pos.XY;
-            if (myXY.Equals(otherXY))
+            Vec2I myXY = Pos.XY;
+            if (myXY == otherXY)
             {
                 return; // Same position, do nothing
             }
@@ -449,40 +450,25 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         private void UpdateVisualProgress()
         {
-            Pos2D fromXY = MovingFromPos.XY;
-            Pos2D fromOfs = MovingFromVisualOfs;
-            Pos2D xy = Pos.XY;
-            Pos2D ofs = VisualOfs;
-            float t = MovementTimer; // Goes from 0% to 100%
-            int DoTheMath(int cur, int from, int curOfs, int fromOfs, int numPixelsInBlock)
-            {
-                int blockDiff = (from - cur) * numPixelsInBlock;
-                int prevVisualOfs = blockDiff + fromOfs;
-                // If we are going from 6 to -10, visualOfsScale would be -16
-                // If we are going from 6 to  00, visualOfsScale would be -06
-                int visualOfsScale = curOfs - prevVisualOfs;
-                // Scale from previous value to new value based on % of transition
-                return (int)(prevVisualOfs + (t * visualOfsScale));
-            }
-            VisualProgress.X = DoTheMath(xy.X, fromXY.X, ofs.X, fromOfs.X, Overworld.Block_NumPixelsX);
-            VisualProgress.Y = DoTheMath(xy.Y, fromXY.Y, ofs.Y, fromOfs.Y, Overworld.Block_NumPixelsY);
+            Vec2I prevVisualOfs = ((MovingFromPos.XY - Pos.XY) * Overworld.Block_NumPixels) + MovingFromVisualOfs;
+            VisualProgress = (Vec2I)Vector2.Lerp(prevVisualOfs, VisualOfs, MovementProgress);
             // TODO: (#69) check CameraObj for details
             //CameraObj.CopyMovementIfAttachedTo(this);
         }
         public void UpdateMovement()
         {
             // If movement started but not finished
-            if (MovementTimer < 1)
+            if (MovementProgress < 1f)
             {
-                MovementTimer += Display.DeltaTime * MovementSpeed;
-                if (MovementTimer < 1)
+                MovementProgress += Display.DeltaTime * MovementSpeed;
+                if (MovementProgress < 1f)
                 {
                     // If it's still not finished, update the visual progress and return
                     UpdateVisualProgress();
                     return;
                 }
                 // Finished movement just now
-                MovementTimer = 1;
+                MovementProgress = 1f;
                 MovingFromPos = Pos;
                 MovingFromVisualOfs = VisualOfs;
                 UpdateVisualProgress();
@@ -496,7 +482,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             // TODO: Check if we should keep going for currents/waterfall/spin tiles
             IsMovingSelf = false;
-            IsScriptMoving = QueuedScriptMovements.Count != 0;
+            IsScriptMoving = false;
         }
     }
 }

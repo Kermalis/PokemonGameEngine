@@ -1,25 +1,25 @@
-﻿using Kermalis.PokemonGameEngine.Render.GUIs;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
+﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Shaders;
+using Kermalis.PokemonGameEngine.Render.Shaders.Transitions;
 using Silk.NET.OpenGL;
 
 namespace Kermalis.PokemonGameEngine.Render.Transitions
 {
     internal sealed class BattleTransition_Liquid : ITransition
     {
-        private readonly FrameBuffer _frameBuffer;
+        private readonly FrameBuffer2DColor _frameBuffer;
         private readonly float _duration;
         private float _time;
 
         public bool IsDone { get; private set; }
 
-        public BattleTransition_Liquid(float duration = 2.5f)
+        public BattleTransition_Liquid(Vec2I size, float duration = 2.5f)
         {
-            _frameBuffer = FrameBuffer.CreateWithColor(FrameBuffer.Current.Size); // Use current fbo's size
+            _frameBuffer = new FrameBuffer2DColor(size);
             _duration = duration;
         }
 
-        public void Render()
+        public void Render(FrameBuffer2DColor target)
         {
             float progress;
             if (IsDone)
@@ -42,18 +42,19 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
             shader.Use(gl);
             shader.SetProgress(gl, progress);
 
-            // Bind current fbo's texture
-            FrameBuffer c = FrameBuffer.Current;
+            // Bind target's texture
             gl.ActiveTexture(TextureUnit.Texture0);
-            gl.BindTexture(TextureTarget.Texture2D, c.ColorTexture.Value);
+            gl.BindTexture(TextureTarget.Texture2D, target.ColorTexture);
 
-            // Render to DayTint fbo
+            // Render to transition texture
             _frameBuffer.Use();
-            EntireScreenMesh.Instance.Render();
+            RectMesh.Instance.Render();
 
-            // Copy rendered result back to the previous fbo (its texture is still bound)
-            gl.CopyTexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, 0, 0, c.Size.Width, c.Size.Height);
-            c.Use();
+            // Copy rendered result back to the target
+            EntireScreenTextureShader.Instance.Use(gl);
+            target.Use();
+            gl.BindTexture(TextureTarget.Texture2D, _frameBuffer.ColorTexture);
+            RectMesh.Instance.Render();
         }
 
         public void Dispose()

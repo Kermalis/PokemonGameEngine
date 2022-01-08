@@ -2,7 +2,7 @@
 #if DEBUG
 using System;
 using Kermalis.PokemonGameEngine.Input;
-using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 #endif
 
 namespace Kermalis.PokemonGameEngine.Render.R3D
@@ -220,7 +220,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
         }
         public void Debug_RenderPosition()
         {
-            GUIString.CreateAndRenderOneTimeString(ToString(), Font.Default, FontColors.DefaultRed_O, new Pos2D(0, 0));
+            GUIString.CreateAndRenderOneTimeString(ToString(), Font.Default, FontColors.DefaultRed_O, new Vec2I(0, 0));
         }
 #endif
     }

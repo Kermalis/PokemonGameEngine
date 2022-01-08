@@ -2,19 +2,19 @@
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
-using Kermalis.PokemonGameEngine.Render.Fonts;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Pkmn;
 using Kermalis.PokemonGameEngine.Render.Transitions;
 using System;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.Player
 {
     internal sealed class BagGUI
     {
-        private static readonly Size2D _renderSize = new(480, 270); // 16:9
-        private readonly FrameBuffer _frameBuffer;
+        private static readonly Vec2I _renderSize = new(480, 270); // 16:9
+        private readonly FrameBuffer2DColor _frameBuffer;
         private readonly TripleColorBackground _tripleColorBG;
 
         private readonly Inventory<InventorySlotNew> _inv;
@@ -35,15 +35,14 @@ namespace Kermalis.PokemonGameEngine.Render.Player
 
         public BagGUI(Inventory<InventorySlotNew> inv, Party party, Action onClosed)
         {
-            _frameBuffer = FrameBuffer.CreateWithColor(_renderSize);
-            _frameBuffer.Use();
+            _frameBuffer = new FrameBuffer2DColor(_renderSize);
 
             _tripleColorBG = new TripleColorBackground();
             _tripleColorBG.SetColors(Colors.FromRGB(215, 230, 230), Colors.FromRGB(230, 165, 0), Colors.FromRGB(245, 180, 30));
 
             _inv = inv;
 
-            _partyChoices = new PartyPkmnGUIChoices(0.03f, 0.18f, 0.47f, 0.97f, 0.004f);
+            _partyChoices = new PartyPkmnGUIChoices(new Vector2(0.03f, 0.18f), new Vector2(0.47f, 0.97f), 0.004f);
             foreach (PartyPokemon pkmn in party)
             {
                 _partyChoices.Add(new PartyPkmnGUIChoice(pkmn, null));
@@ -65,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             string str = Game.Instance.Save.Money.ToString("$#,0");
             _cashMoney?.Delete();
             _cashMoney = new GUIString(str, Font.DefaultSmall, FontColors.DefaultDarkGray_I);
-            _cashMoneyWidth = (int)Font.DefaultSmall.MeasureString(str).Width;
+            _cashMoneyWidth = Font.DefaultSmall.GetSize(str).X;
         }
         private void LoadPouch(ItemPouchType pouch)
         {
@@ -74,7 +73,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             _curPouch = _inv[pouch];
 
             _pouchChoices?.Dispose();
-            _pouchChoices = new ItemGUIChoices(0.60f, 0.18f, 0.97f, 0.97f, 0.07f, Colors.V4FromRGB(245, 200, 37), Colors.V4FromRGB(231, 163, 0));
+            _pouchChoices = new ItemGUIChoices(new Vector2(0.60f, 0.18f), new Vector2(0.97f, 0.97f), 0.07f, Colors.V4FromRGB(245, 200, 37), Colors.V4FromRGB(231, 163, 0));
             foreach (InventorySlot s in _curPouch)
             {
                 _pouchChoices.Add(new ItemGUIChoice(s, null));
@@ -90,7 +89,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
         private void CB_FadeInBag()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -105,7 +104,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
         private void CB_FadeOutBag()
         {
             Render();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -114,21 +113,21 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             }
 
             _transition.Dispose();
+            _frameBuffer.Delete();
             _tripleColorBG.Delete();
             _partyChoices.Dispose();
             _bagText.Delete();
             _curPouchName.Delete();
             _cashMoney.Delete();
-            _frameBuffer.Delete();
             _onClosed();
             _onClosed = null;
         }
         private void CB_HandleInputs()
         {
-            HandleInputs();
-
             Render();
             _frameBuffer.BlitToScreen();
+
+            HandleInputs();
         }
 
         private void HandleInputs()
@@ -161,28 +160,30 @@ namespace Kermalis.PokemonGameEngine.Render.Player
 
         private void Render()
         {
+            _frameBuffer.Use();
             // Background
             _tripleColorBG.Render();
 
             // BAG
-            _bagText.Render(Pos2D.FromRelative(0.02f, 0.01f, _renderSize));
+            _bagText.Render(Vec2I.FromRelative(0.02f, 0.01f, _renderSize));
 
-            _partyChoices.Render();
+            _partyChoices.Render(_renderSize);
+            _frameBuffer.Use();
 
             // Draw pouch tabs background
-            var rect = new Rect2D(Pos2D.FromRelative(0.60f, 0.03f, _renderSize), Pos2D.FromRelative(0.97f, 0.13f, _renderSize));
+            var rect = Rect.FromCorners(Vec2I.FromRelative(0.60f, 0.03f, _renderSize), Vec2I.FromRelative(0.97f, 0.13f, _renderSize));
             GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(245, 200, 37), rect); // TODO: ROUNDED 10
             GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(231, 163, 0), rect); // TODO: ROUNDED 10
 
             // Draw pouch name
-            var pos = Pos2D.FromRelative(0.62f, 0.14f, _renderSize);
+            var pos = Vec2I.FromRelative(0.62f, 0.14f, _renderSize);
             _curPouchName.Render(pos);
             // Draw cash money
-            pos.X = rect.GetRight() + 1 - _cashMoneyWidth;
+            pos.X = rect.BottomRight.X + 1 - _cashMoneyWidth;
             _cashMoney.Render(pos);
 
             // Draw item list
-            _pouchChoices.Render();
+            _pouchChoices.Render(_renderSize);
         }
     }
 }

@@ -2,21 +2,19 @@
 
 namespace Kermalis.PokemonGameEngine.Render.Shaders
 {
-    internal class Shader2D : GLShader
+    internal abstract class Shader2D : GLShader
     {
-        public static Size2D ViewportSize;
-
-        private readonly int _lScreenSize;
+        private readonly int _lViewportSize;
 
         public Shader2D(GL gl, string vertexAsset, string fragmentAsset)
             : base(gl, vertexAsset, fragmentAsset)
         {
-            _lScreenSize = GetUniformLocation(gl, "screenSize");
+            _lViewportSize = GetUniformLocation(gl, "viewportSize");
         }
 
-        public void UpdateViewport(GL gl)
+        public void UpdateViewport(GL gl, Vec2I size)
         {
-            gl.Uniform2(_lScreenSize, ViewportSize.Width, ViewportSize.Height);
+            gl.Uniform2(_lViewportSize, size.X, size.Y);
         }
     }
 }

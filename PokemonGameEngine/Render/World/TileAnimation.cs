@@ -5,7 +5,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
     internal sealed class TileAnimation
     {
         public const int NO_ANIM_ID = -1;
-        public const int INVALID_ANIM_ID = -1;
 
         private readonly TileAnimationData _data;
 
@@ -18,9 +17,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         public bool ContainsTile(int tileId)
         {
-            for (int i = 0; i < _data.Frames.Length; i++)
+            TileAnimationData.Frame[] frames = _data.Frames;
+            for (int j = 0; j < frames.Length; j++)
             {
-                if (_data.Frames[i].TilesetTile == tileId)
+                if (frames[j].TilesetTile == tileId)
                 {
                     return true;
                 }
@@ -36,6 +36,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             {
                 ref TileAnimationData.Frame frame = ref _data.Frames[f];
                 var tile = (Tileset.AnimatedTile)tileset.Tiles[frame.TilesetTile];
+                int prevId = tile.AnimId;
                 for (int s = frame.Stops.Length - 1; s >= 0; s--)
                 {
                     ref TileAnimationData.Frame.Stop stop = ref frame.Stops[s];
@@ -47,7 +48,19 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 }
                 tile.AnimId = NO_ANIM_ID;
             bottom:
-                ;
+                if (tile.AnimId != prevId)
+                {
+                    tile.IsDirty = true;
+                }
+            }
+        }
+        public void FinishUpdate(Tileset tileset)
+        {
+            TileAnimationData.Frame[] frames = _data.Frames;
+            for (int j = 0; j < frames.Length; j++)
+            {
+                var tile = (Tileset.AnimatedTile)tileset.Tiles[frames[j].TilesetTile];
+                tile.IsDirty = false;
             }
         }
     }

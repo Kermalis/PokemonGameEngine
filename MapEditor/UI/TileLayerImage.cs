@@ -278,7 +278,7 @@ namespace Kermalis.MapEditor.UI
                 UpdateBitmap();
             }
         }
-        internal unsafe void UpdateBitmap()
+        internal void UpdateBitmap()
         {
             SubLayerModel.UpdateBitmap(_bitmap, _block, _eLayerNum, _subLayerNum);
             InvalidateVisual();

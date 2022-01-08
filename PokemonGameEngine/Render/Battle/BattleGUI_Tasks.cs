@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.GUI;
-using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.R3D;
 using System;
 using System.Numerics;

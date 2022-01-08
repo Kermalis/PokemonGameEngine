@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.GUIs
 {
@@ -27,18 +28,16 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
     {
         protected readonly List<T> _choices = new();
 
-        public float X;
-        public float Y;
+        public Vector2 Pos;
         public float Spacing;
 
         public Action BackCommand;
 
         public int Selected = 0;
 
-        public GUIChoices(float x, float y, float spacing, Action backCommand = null)
+        public GUIChoices(Vector2 pos, float spacing, Action backCommand = null)
         {
-            X = x;
-            Y = y;
+            Pos = pos;
             Spacing = spacing;
 
             BackCommand = backCommand;
@@ -88,7 +87,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             }
         }
 
-        public abstract void Render();
+        public abstract void Render(Vec2I viewSize);
 
         public virtual void Add(T c)
         {

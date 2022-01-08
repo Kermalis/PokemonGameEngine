@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
+using System;
 
 namespace Kermalis.PokemonGameEngine.Render.Transitions
 {
@@ -6,6 +7,6 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
     {
         bool IsDone { get; }
 
-        void Render();
+        void Render(FrameBuffer2DColor target);
     }
 }

@@ -2,7 +2,7 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
-using Kermalis.PokemonGameEngine.Render.Fonts;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
@@ -20,7 +20,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         public uint DisguisedPID { get; private set; }
         public Image Mini { get; private set; }
-        public WriteableImage InfoBarImg { get; }
+        public FrameBuffer2DColor InfoBar { get; }
         public PkmnPosition Pos { get; private set; }
 
         private BattlePokemon(PBEBattlePokemon pbePkmn, PartyPokemon pPkmn, BattlePokemonParty bParty, bool backImage, bool useKnownInfo)
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             DisguisedPID = pPkmn.PID; // By default, use our own PID (for example, wild disguised pkmn)
             UpdateMini();
-            InfoBarImg = new WriteableImage(new Size2D(100, useKnownInfo ? 30u : 42));
+            InfoBar = new FrameBuffer2DColor(new Vec2I(100, useKnownInfo ? 30 : 42));
             UpdateInfoBar();
         }
 
@@ -186,57 +186,54 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         public void UpdateInfoBar()
         {
+            InfoBar.Use();
             GL gl = Display.OpenGL;
-            FrameBuffer oldFBO = FrameBuffer.Current;
-            InfoBarImg.FrameBuffer.Use();
             gl.ClearColor(Colors.FromRGBA(48, 48, 48, 128));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
             // Nickname
-            GUIString.CreateAndRenderOneTimeString(PBEPkmn.KnownNickname, Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(2, 3));
+            GUIString.CreateAndRenderOneTimeString(PBEPkmn.KnownNickname, Font.DefaultSmall, FontColors.DefaultWhite_I, new Vec2I(2, 3));
             // Gender
             PBEGender gender = _useKnownInfo && !PBEPkmn.KnownStatus2.HasFlag(PBEStatus2.Transformed) ? PBEPkmn.KnownGender : PBEPkmn.Gender;
-            GUIString.CreateAndRenderOneTimeGenderString(gender, Font.Default, new Pos2D(51, -2));
+            GUIString.CreateAndRenderOneTimeGenderString(gender, Font.Default, new Vec2I(51, -2));
             // Level
             const int lvX = 62;
-            GUIString.CreateAndRenderOneTimeString("[LV]", Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX, 3));
-            GUIString.CreateAndRenderOneTimeString(PBEPkmn.Level.ToString(), Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(lvX + 12, 3));
+            GUIString.CreateAndRenderOneTimeString("[LV]", Font.PartyNumbers, FontColors.DefaultWhite_I, new Vec2I(lvX, 3));
+            GUIString.CreateAndRenderOneTimeString(PBEPkmn.Level.ToString(), Font.PartyNumbers, FontColors.DefaultWhite_I, new Vec2I(lvX + 12, 3));
             // Caught
             if (_useKnownInfo && PBEPkmn.IsWild && Game.Instance.Save.Pokedex.IsCaught(PBEPkmn.KnownSpecies))
             {
-                GUIString.CreateAndRenderOneTimeString("*", Font.Default, FontColors.DefaultRed_O, new Pos2D(2, 12));
+                GUIString.CreateAndRenderOneTimeString("*", Font.Default, FontColors.DefaultRed_O, new Vec2I(2, 12));
             }
             // Status
             PBEStatus1 status = PBEPkmn.Status1;
             if (status != PBEStatus1.None)
             {
-                GUIString.CreateAndRenderOneTimeString(status.ToString(), Font.DefaultSmall, FontColors.DefaultWhite_I, new Pos2D(30, 13));
+                GUIString.CreateAndRenderOneTimeString(status.ToString(), Font.DefaultSmall, FontColors.DefaultWhite_I, new Vec2I(30, 13));
             }
             // HP
             if (!_useKnownInfo)
             {
                 string str = PBEPkmn.HP.ToString();
-                Size2D strS = Font.PartyNumbers.MeasureString(str);
-                GUIString.CreateAndRenderOneTimeString(str, Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(45 - (int)strS.Width, 28));
-                GUIString.CreateAndRenderOneTimeString("/" + PBEPkmn.MaxHP, Font.PartyNumbers, FontColors.DefaultWhite_I, new Pos2D(46, 28));
+                Vec2I strSize = Font.PartyNumbers.GetSize(str);
+                GUIString.CreateAndRenderOneTimeString(str, Font.PartyNumbers, FontColors.DefaultWhite_I, new Vec2I(45 - strSize.X, 28));
+                GUIString.CreateAndRenderOneTimeString("/" + PBEPkmn.MaxHP, Font.PartyNumbers, FontColors.DefaultWhite_I, new Vec2I(46, 28));
             }
 
             const int lineStartX = 9;
             const int lineW = 82;
-            RenderUtils.HP_TripleLine(new Pos2D(lineStartX, 23), lineW, PBEPkmn.HPPercentage);
+            RenderUtils.HP_TripleLine(new Vec2I(lineStartX, 23), lineW, PBEPkmn.HPPercentage);
 
             // EXP
             if (!_useKnownInfo)
             {
-                RenderUtils.EXP_SingleLine(new Pos2D(lineStartX, 37), lineW, PBEPkmn.EXP, PBEPkmn.Level, PBEPkmn.OriginalSpecies, PBEPkmn.RevertForm);
+                RenderUtils.EXP_SingleLine(new Vec2I(lineStartX, 37), lineW, PBEPkmn.EXP, PBEPkmn.Level, PBEPkmn.OriginalSpecies, PBEPkmn.RevertForm);
             }
-
-            oldFBO.Use();
         }
 
         public void Delete()
         {
-            InfoBarImg.DeductReference();
+            InfoBar.Delete();
             Mini.DeductReference();
         }
     }

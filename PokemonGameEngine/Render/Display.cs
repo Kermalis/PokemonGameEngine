@@ -3,6 +3,7 @@ using SDL2;
 using Silk.NET.OpenGL;
 using System;
 using System.IO;
+using System.Numerics;
 using System.Runtime.InteropServices;
 #if DEBUG
 using Kermalis.PokemonGameEngine.Debug;
@@ -16,12 +17,13 @@ namespace Kermalis.PokemonGameEngine.Render
         private const int DEFAULT_WINDOW_WIDTH = 1200; // 16:9
         private const int DEFAULT_WINDOW_HEIGHT = 675;
         private const string SCREENSHOT_PATH = @"Screenshots";
-        private static readonly bool _screenshotScreenSize = false;
+        private static readonly bool _debugScreenshotCurrentFrameBuffer = false;
 
         private static readonly IntPtr _window;
         private static readonly IntPtr _gl;
 
         public static readonly GL OpenGL;
+        public static Vec2I ViewportSize;
         public static float DeltaTime;
         public static bool ScreenshotRequested;
 
@@ -81,10 +83,27 @@ namespace Kermalis.PokemonGameEngine.Render
 #endif
         }
 
-        public static Size2D GetWindowSize()
+        private static Vec2I GetWindowSize()
         {
-            SDL.SDL_GetWindowSize(_window, out int w, out int h);
-            return new Size2D((uint)w, (uint)h);
+            Vec2I ret;
+            SDL.SDL_GetWindowSize(_window, out ret.X, out ret.Y);
+            return ret;
+        }
+        public static void Viewport(in Rect rect)
+        {
+            Vec2I size = rect.GetSize();
+            OpenGL.Viewport(rect.TopLeft.X, rect.TopLeft.Y, (uint)size.X, (uint)size.Y);
+            ViewportSize = size;
+        }
+        public static Rect FitToScreen(Vec2I inSize)
+        {
+            // Maintain aspect ratio of inSize
+            Vec2I windowSize = GetWindowSize();
+            Vector2 ratios = (Vector2)windowSize / inSize;
+            float ratio = ratios.X < ratios.Y ? ratios.X : ratios.Y;
+            Vector2 size = inSize * ratio;
+            Vector2 topLeft = (windowSize - size) * 0.5f;
+            return Rect.FromSize((Vec2I)topLeft, (Vec2I)size);
         }
 
         /// <summary>Returns true if the current frame should be skipped</summary>
@@ -127,21 +146,15 @@ namespace Kermalis.PokemonGameEngine.Render
 
         private static void SaveScreenshot()
         {
-            if (FrameBuffer.Current is null)
-            {
-                return; // Sanity check just in case
-            }
-
             string path = Path.Combine(SCREENSHOT_PATH, string.Format("Screenshot_{0:MM-dd-yyyy_HH-mm-ss-fff}.png", DateTime.Now));
-            if (_screenshotScreenSize)
+            if (_debugScreenshotCurrentFrameBuffer)
             {
-                OpenGL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
-                path = GLTextureUtils.SaveReadBufferAsImage(OpenGL, GetWindowSize(), path);
-                OpenGL.BindFramebuffer(FramebufferTarget.Framebuffer, FrameBuffer.Current.Id);
+                path = GLTextureUtils.SaveReadBufferAsImage(OpenGL, ViewportSize, path);
             }
             else
             {
-                path = GLTextureUtils.SaveReadBufferAsImage(OpenGL, FrameBuffer.Current.Size, path);
+                OpenGL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
+                path = GLTextureUtils.SaveReadBufferAsImage(OpenGL, GetWindowSize(), path);
             }
 #if DEBUG
             Log.WriteLineWithTime(string.Format("Screenshot saved to {0}", path));

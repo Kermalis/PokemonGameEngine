@@ -14,8 +14,8 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
             public WarpEvent(EndianBinaryReader r)
             {
-                Pos = new WorldPos(new Pos2D(r.ReadInt32(), r.ReadInt32()), r.ReadByte());
-                Warp = new Warp(r.ReadInt32(), new WorldPos(new Pos2D(r.ReadInt32(), r.ReadInt32()), r.ReadByte()));
+                Pos = new WorldPos(new Vec2I(r.ReadInt32(), r.ReadInt32()), r.ReadByte());
+                Warp = new Warp(r.ReadInt32(), new WorldPos(new Vec2I(r.ReadInt32(), r.ReadInt32()), r.ReadByte()));
             }
         }
         public sealed class ObjEvent
@@ -25,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             public readonly ushort Id;
             public readonly string ImageId;
             public readonly ObjMovementType MovementType;
-            public readonly Pos2D MovementRange;
+            public readonly Vec2I MovementRange;
             public readonly TrainerType TrainerType;
             public readonly byte TrainerSight;
             public readonly string Script;
@@ -33,12 +33,12 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
             public ObjEvent(EndianBinaryReader r)
             {
-                Pos = new WorldPos(new Pos2D(r.ReadInt32(), r.ReadInt32()), r.ReadByte());
+                Pos = new WorldPos(new Vec2I(r.ReadInt32(), r.ReadInt32()), r.ReadByte());
 
                 Id = r.ReadUInt16();
                 ImageId = r.ReadStringNullTerminated();
                 MovementType = r.ReadEnum<ObjMovementType>();
-                MovementRange = new Pos2D(r.ReadInt32(), r.ReadInt32());
+                MovementRange = new Vec2I(r.ReadInt32(), r.ReadInt32());
                 TrainerType = r.ReadEnum<TrainerType>();
                 TrainerSight = r.ReadByte();
                 Script = r.ReadStringNullTerminated();
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
             public ScriptEvent(EndianBinaryReader r)
             {
-                Pos = new WorldPos(new Pos2D(r.ReadInt32(), r.ReadInt32()), r.ReadByte());
+                Pos = new WorldPos(new Vec2I(r.ReadInt32(), r.ReadInt32()), r.ReadByte());
 
                 Var = r.ReadEnum<Var>();
                 VarValue = r.ReadInt16();

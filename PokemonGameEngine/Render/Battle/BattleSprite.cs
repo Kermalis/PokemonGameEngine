@@ -1,7 +1,7 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.R3D;
-using Kermalis.PokemonGameEngine.Render.Shaders;
+using Kermalis.PokemonGameEngine.Render.Shaders.Battle;
 using Silk.NET.OpenGL;
 using System.Numerics;
 
@@ -40,7 +40,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         }
 
         /// <summary>This creates the scale that will make the sprite always be its original size when in its starting position and the camera is in the default position.
-        /// This will happen regardless of resolution or projection matrix (unless they change afterwards)</summary>
+        /// This will happen regardless of resolution or projection matrix (unless they change after this is calculated)</summary>
         private Vector2 GetBaseScale(float scale)
         {
             Matrix4x4 view = Camera.CreateViewMatrix(BattleGUI.DefaultCamPosition);
@@ -48,12 +48,10 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 * view
                 * BattleGUI.Instance.Camera.Projection;
 
-            Vector2 bottomLeft = GetAbsolutePixelForVertex(transformViewProjection, new Vector2(-0.5f, 0f)); // Vertices taken from BattleSpriteMesh
+            Vector2 bottomLeft = GetAbsolutePixelForVertex(transformViewProjection, new Vector2(-0.5f, 0f)); // Rect is center x, bottom y
             Vector2 topRight = GetAbsolutePixelForVertex(transformViewProjection, new Vector2(0.5f, 1f));
 
-            float spriteW = topRight.X - bottomLeft.X;
-            float spriteH = topRight.Y - bottomLeft.Y;
-            return new Vector2(scale / spriteW, scale / spriteH);
+            return new Vector2(scale) / (topRight - bottomLeft);
         }
         private static Vector2 GetAbsolutePixelForVertex(in Matrix4x4 transformViewProjection, Vector2 v)
         {
@@ -74,7 +72,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             Image?.DeductReference();
             Image = img;
-            Vector2 scale = _baseScale * Scale * img.Size;
+            Vector2 scale = img.Size * Scale * _baseScale;
             _scaleCache = Matrix4x4.CreateScale(scale.X, scale.Y, 1f);
         }
 
@@ -99,7 +97,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 * Matrix4x4.CreateRotationZ(Rotation * Utils.DegToRad)
                 * CreateTranslation(camView);
         }
-        public void Render(GL gl, BattleSpriteMesh mesh, BattleSpriteShader shader, in Matrix4x4 projection, in Matrix4x4 camView)
+        public void Render(GL gl, BattleSpriteShader shader, in Matrix4x4 projection, in Matrix4x4 camView)
         {
             gl.BindTexture(TextureTarget.Texture2D, Image.Texture);
             shader.SetMatrix(gl, _transformCache * camView * projection);
@@ -125,9 +123,9 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 }
                 shader.SetMaskColorAmt(gl, value);
             }
-            mesh.Render();
+            RectMesh.Instance.Render();
         }
-        public void RenderShadow(GL gl, BattleSpriteMesh mesh, BattleSpriteShader shader, in Matrix4x4 viewProjection, in Matrix4x4 camView)
+        public void RenderShadow(GL gl, BattleSpriteShader shader, in Matrix4x4 viewProjection, in Matrix4x4 camView)
         {
             UpdateTransform(camView);
 
@@ -135,7 +133,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             shader.SetMatrix(gl, _transformCache * viewProjection);
             shader.SetOpacity(gl, Opacity);
             shader.SetPixelateAmt(gl, PixelateAmt);
-            mesh.Render();
+            RectMesh.Instance.Render();
         }
     }
 }

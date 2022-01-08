@@ -1,5 +1,5 @@
-﻿using Kermalis.PokemonGameEngine.Render.GUIs;
-using Kermalis.PokemonGameEngine.Render.Shaders;
+﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.Render.Shaders.Transitions;
 using Silk.NET.OpenGL;
 using System.Numerics;
 
@@ -27,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
             return new FadeFromColorTransition(0.5f, Colors.Black3);
         }
 
-        public void Render()
+        public void Render(FrameBuffer2DColor target)
         {
             if (IsDone)
             {
@@ -49,8 +49,8 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
 
             gl.Enable(EnableCap.Blend);
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            gl.BlendEquation(BlendEquationModeEXT.FuncAddExt);
-            EntireScreenMesh.Instance.Render();
+            target.Use();
+            RectMesh.Instance.Render();
             gl.Disable(EnableCap.Blend);
         }
 

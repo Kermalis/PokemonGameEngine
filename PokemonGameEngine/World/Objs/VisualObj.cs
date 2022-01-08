@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Render.Images;
-using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
@@ -8,17 +7,17 @@ namespace Kermalis.PokemonGameEngine.World.Objs
     {
         protected bool _leg;
 
-        private readonly ImageSheet _sheet;
+        private readonly VisualObjTexture _tex;
 
         protected VisualObj(ushort id, string imageId)
             : base(id)
         {
-            _sheet = ImageSheet.LoadOrGet(imageId);
+            _tex = VisualObjTexture.LoadOrGet(imageId);
         }
         protected VisualObj(ushort id, string imageId, WorldPos pos)
             : base(id, pos)
         {
-            _sheet = ImageSheet.LoadOrGet(imageId);
+            _tex = VisualObjTexture.LoadOrGet(imageId);
         }
 
         public override bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
@@ -32,51 +31,50 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             base.Face(facing);
         }
 
-        protected virtual uint GetImage(bool showMoving)
+        protected virtual int GetImage(bool showMoving)
         {
             byte f = (byte)Facing;
             if (!showMoving)
             {
                 return f;
             }
-            return _leg ? f + 8u : f + 16u; // TODO: Fall-back to specific images if the target image doesn't exist
+            return _leg ? f + 8 : f + 16; // TODO: Fall-back to specific images if the target image doesn't exist
         }
 
         // TODO: Water reflections
-        public void Draw(Pos2D blockPos)
+        public void Draw(Vec2I viewSize, Vec2I blockPos)
         {
-            // Calc img coords
-            ImageSheet s = _sheet;
-            Size2D size = s.ImageSize;
-            Pos2D pos;
-            pos.X = blockPos.X - (((int)size.Width - Overworld.Block_NumPixelsX) / 2); // Center align
-            pos.Y = blockPos.Y - ((int)size.Height - Overworld.Block_NumPixelsY); // Bottom align
-            // Calc shadow coords
-            WriteableImage shadow = s.ShadowImage;
-            Pos2D shadowPos = s.ShadowOffset;
-            shadowPos.X += blockPos.X; // Left align
-            shadowPos.Y += blockPos.Y + Overworld.Block_NumPixelsY; // Bottom align (starts in block under)
+            // Image pos
+            // Center align X, bottom align y
+            Vec2I pos = _tex.ImageSize - Overworld.Block_NumPixels;
+            pos.X /= 2;
+            pos = blockPos - pos;
 
-            // Draw shadow image
-            Size2D renderSize = FrameBuffer.Current.Size;
-            if (new Rect2D(shadowPos, shadow.Size).Intersects(renderSize))
+            // Shadow pos
+            Vec2I shadowPos = _tex.ShadowOffset;
+            shadowPos += blockPos;
+            // Left align X, bottom align y (starts in block under)
+            shadowPos.Y += Overworld.Block_NumPixelsY;
+
+            // Draw shadow
+            var rect = Rect.FromSize(shadowPos, _tex.Shadow.Size);
+            if (rect.Intersects(viewSize))
             {
-                shadow.Render(shadowPos, yFlip: true);
+                GUIRenderer.Instance.RenderTexture(_tex.Shadow.ColorTexture, rect);
             }
-            // Draw obj image
-            var objRect = new Rect2D(pos, size);
-            if (objRect.Intersects(renderSize))
+
+            // Draw obj
+            var objRect = Rect.FromSize(pos, _tex.ImageSize);
+            if (objRect.Intersects(viewSize))
             {
-                float t = MovementTimer;
-                bool showMoving = t != 1 && t >= 0.6f;
-                uint imgNum = GetImage(showMoving);
-                s.Images.Render(objRect, s.GetAtlasPos(imgNum));
+                bool showMoving = MovementProgress is (not 1f) and (>= 0.6f);
+                _tex.RenderImage(objRect, GetImage(showMoving));
             }
         }
 
         public override void Dispose()
         {
-            _sheet.DeductReference();
+            _tex.DeductReference();
         }
     }
 }

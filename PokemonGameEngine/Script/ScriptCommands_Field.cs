@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render;
-using Kermalis.PokemonGameEngine.Render.World;
+﻿using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
@@ -65,10 +64,11 @@ namespace Kermalis.PokemonGameEngine.Script
         private void WarpCommand()
         {
             int mapId = _reader.ReadInt32();
-            int x = _reader.ReadInt32();
-            int y = _reader.ReadInt32();
-            byte elevation = (byte)ReadVarOrValue();
-            OverworldGUI.Instance.StartPlayerWarp(new Warp(mapId, new WorldPos(new Pos2D(x, y), elevation)));
+            WorldPos pos;
+            pos.XY.X = _reader.ReadInt32();
+            pos.XY.Y = _reader.ReadInt32();
+            pos.Elevation = (byte)ReadVarOrValue();
+            OverworldGUI.Instance.StartPlayerWarp(new Warp(mapId, pos));
         }
 
         private void SetLock(bool locked)

@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             _tasks.RunTasks();
             RenderBattleAndHUD();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)
@@ -48,8 +48,8 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private void OnPartyReplacementClosed()
         {
-            _frameBuffer.Use();
             DayTint.CatchUpTime = true;
+
             _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeFromPartyReplacement);
         }
@@ -57,7 +57,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             _tasks.RunTasks();
             RenderBattleAndHUD();
-            _transition.Render();
+            _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
 
             if (!_transition.IsDone)

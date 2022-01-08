@@ -13,8 +13,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         private const float NO_MOVEMENT_TIMER = -1f;
 
         public ObjMovementType MovementType;
-        public Pos2D OriginPos;
-        public Pos2D MovementRange;
+        public Vec2I OriginPos;
+        public Vec2I MovementRange;
         public TrainerType TrainerType;
         public byte TrainerSight;
         public string Script;
@@ -70,8 +70,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 case ObjMovementType.Wander_Randomly: Facing = GetRandomDirection(); _movementTypeTimer = GetRandomTimer(); break;
                 case ObjMovementType.Wander_SouthAndNorth: Facing = GetRandomDirection(FacingDirection.South, FacingDirection.North); _movementTypeTimer = GetRandomTimer(); break;
                 case ObjMovementType.Wander_WestAndEast: Facing = GetRandomDirection(FacingDirection.West, FacingDirection.East); _movementTypeTimer = GetRandomTimer(); break;
-                case ObjMovementType.Walk_WestThenReturn: Facing = FacingDirection.West; MovementTimer = 0; _movementTypeArg = false; break;
-                case ObjMovementType.Walk_EastThenReturn: Facing = FacingDirection.East; MovementTimer = 0; _movementTypeArg = false; break;
+                case ObjMovementType.Walk_WestThenReturn: Facing = FacingDirection.West; MovementProgress = 0f; _movementTypeArg = false; break;
+                case ObjMovementType.Walk_EastThenReturn: Facing = FacingDirection.East; MovementProgress = 0f; _movementTypeArg = false; break;
             }
         }
 
@@ -101,7 +101,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
             bool allowSurf = CanSurf();
             // Check if we are in range of our movement radius
-            Pos2D p = Pos.XY;
+            Vec2I p = Pos.XY;
             bool south = Math.Abs(p.Y + 1 - OriginPos.Y) <= MovementRange.Y;
             bool north = Math.Abs(p.Y - 1 - OriginPos.Y) <= MovementRange.Y;
             bool west = Math.Abs(p.X - 1 - OriginPos.X) <= MovementRange.X;

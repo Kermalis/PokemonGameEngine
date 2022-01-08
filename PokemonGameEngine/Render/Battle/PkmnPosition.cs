@@ -31,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         public void RenderMonInfo()
         {
-            BattlePkmn.InfoBarImg.Render(Pos2D.FromRelative(_barPos, BattleGUI.RenderSize));
+            BattlePkmn.InfoBar.RenderColorTexture((Vec2I)(_barPos * BattleGUI.RenderSize));
         }
 
         public static PkmnPosition[][] CreatePositions(PBEBattleFormat f)
