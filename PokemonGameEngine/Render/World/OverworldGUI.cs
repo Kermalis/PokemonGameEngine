@@ -241,7 +241,14 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private void CB_ProcessScriptsTasksAndObjs()
         {
-            _scriptContext?.Update();
+            if (_scriptContext is not null)
+            {
+                _scriptContext.Update();
+                if (_scriptContext.IsDead)
+                {
+                    _scriptContext = null;
+                }
+            }
             StringPrinter.UpdateAll();
             _tasks.RunTasks();
             ProcessObjs();
