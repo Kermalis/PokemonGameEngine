@@ -14,7 +14,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private readonly EndianBinaryReader _reader;
         private readonly Stack<long> _callStack = new();
         private ushort _msgScale = 1;
-        private bool _isDead;
+        public bool IsDead;
 
         private float _delayRemaining;
 
@@ -132,7 +132,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private bool IsWaitingForSomething(bool updateDelay)
         {
-            if (_isDead)
+            if (IsDead)
             {
                 return true;
             }
@@ -141,13 +141,13 @@ namespace Kermalis.PokemonGameEngine.Script
             CheckDelay(updateDelay, ref isWaiting);
             CheckWaitMovement(ref isWaiting);
             CheckWaitMessageBox(ref isWaiting);
-            if (_isDead)
+            if (IsDead)
             {
                 return true; // Callback can close the script
             }
             CheckWaitMultichoice(ref isWaiting);
             CheckWaitReturnToField(ref isWaiting);
-            if (_isDead)
+            if (IsDead)
             {
                 return true; // Callback can close the script
             }
@@ -166,12 +166,12 @@ namespace Kermalis.PokemonGameEngine.Script
 
         public void Delete()
         {
-            if (_isDead)
+            if (IsDead)
             {
                 return;
             }
 
-            _isDead = true;
+            IsDead = true;
             _reader.Dispose();
             _onWaitMessageFinished = null;
             _onWaitReturnToFieldFinished = null;
