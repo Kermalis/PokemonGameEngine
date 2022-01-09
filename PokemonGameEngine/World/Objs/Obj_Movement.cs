@@ -27,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             BlocksetBlockBehavior curBehavior, BlocksetBlockBehavior blockedTarget, bool checkElevation, byte curElevation)
         {
             // Get the x/y/map of the target block
-            Map.GetXYMap(targetXY, out targetXY, out Map targetMap);
+            Map.GetPosAndMap(targetXY, out targetXY, out Map targetMap);
             MapLayout.Block targetBlock = targetMap.GetBlock_InBounds(targetXY);
             // Check occupancy permission
             if ((targetBlock.Passage & LayoutBlockPassage.AllowOccupancy) == 0)
@@ -85,7 +85,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return false;
             }
             // Stairs - check if we can go up a stair that's above our target
-            Map.GetXYMap(targetXY.Plus(0, -1), out Vec2I upStairPos, out Map upStairMap);
+            Map.GetPosAndMap(targetXY.Plus(0, -1), out Vec2I upStairPos, out Map upStairMap);
             MapLayout.Block upStairBlock = upStairMap.GetBlock_InBounds(upStairPos);
             if ((upStairBlock.Passage & LayoutBlockPassage.AllowOccupancy) != 0)
             {
@@ -134,7 +134,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return false;
             }
             // Target block - return false if we are blocked
-            Map.GetXYMap(targetXY, out targetXY, out Map targetMap);
+            Map.GetPosAndMap(targetXY, out targetXY, out Map targetMap);
             MapLayout.Block targetBlock = targetMap.GetBlock_InBounds(targetXY);
             if ((targetBlock.Passage & LayoutBlockPassage.AllowOccupancy) == 0)
             {
@@ -173,7 +173,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             BlocksetBlockBehavior blockedCardinal1, BlocksetBlockBehavior blockedCardinal2, BlocksetBlockBehavior blockedDiagonal)
         {
             // Get the x/y/map of the block
-            Map.GetXYMap(pos.XY, out Vec2I targetXY, out Map targetMap);
+            Map.GetPosAndMap(pos.XY, out Vec2I targetXY, out Map targetMap);
             MapLayout.Block block = targetMap.GetBlock_InBounds(targetXY);
             // Check occupancy permission
             if ((block.Passage & diagonalPassage) == 0)
@@ -362,6 +362,16 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return false;
         }
 
+        public virtual void Face(FacingDirection facing)
+        {
+            IsMovingSelf = true;
+            MovementProgress = 0f;
+            MovementSpeed = TURNING_MOVE_SPEED;
+            Facing = facing;
+            MovingFromPos = Pos;
+            MovingFromVisualOfs = VisualOfs;
+            UpdateVisualProgress();
+        }
         // TODO: Ledges, waterfall, etc
         public virtual bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
         {
@@ -388,17 +398,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 MovementSpeed = WALK_MOVE_SPEED * BLOCKED_MOVE_SPEED_MOD;
             }
             return success;
-        }
-
-        public virtual void Face(FacingDirection facing)
-        {
-            IsMovingSelf = true;
-            MovementProgress = 0f;
-            MovementSpeed = TURNING_MOVE_SPEED;
-            Facing = facing;
-            MovingFromPos = Pos;
-            MovingFromVisualOfs = VisualOfs;
-            UpdateVisualProgress();
         }
 
         private static FacingDirection GetDirectionToLook(Vec2I myXY, Vec2I otherXY)

@@ -24,12 +24,11 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         private struct DebugVisibleBlock
         {
-            /// <summary>Can be <see langword="null"/>, as in no border</summary>
-            public MapLayout.Block Block;
             public Vec2I PositionOnScreen;
-            public Map Map;
-            public Vec2I MapPos;
             public DebugBlockStatus Status;
+
+            public GUIString MapNameStr;
+            public GUIString MapBlockStr;
         }
 
         private const int DEBUG_FBO_SCALE = 4;
@@ -74,22 +73,34 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 DebugVisibleBlock[] vbY = _debugVisibleBlocks[xy.Y - visibleBlocks.TopLeft.Y];
                 for (xy.X = visibleBlocks.TopLeft.X; xy.X <= visibleBlocks.BottomRight.X; xy.X++)
                 {
-                    DebugVisibleBlock vb;
-                    vb.Block = camMap.GetBlock_CrossMap(xy, out Vec2I newXY, out Map map);
+                    ref DebugVisibleBlock vb = ref vbY[xy.X - visibleBlocks.TopLeft.X];
+
                     vb.PositionOnScreen = pixel;
-                    vb.Map = map;
-                    vb.MapPos = newXY;
+
+                    MapLayout.Block block = camMap.GetBlock_CrossMap(xy, out Vec2I newXY, out Map map);
+                    string str = map.Name;
+                    if (vb.MapNameStr?.Text != str)
+                    {
+                        vb.MapNameStr?.Delete();
+                        vb.MapNameStr = new GUIString(str, Font.DefaultSmall, FontColors.DefaultBlack_I);
+                    }
+                    str = newXY.ToString();
+                    if (vb.MapBlockStr?.Text != str)
+                    {
+                        vb.MapBlockStr?.Delete();
+                        vb.MapBlockStr = new GUIString(str, Font.DefaultSmall, FontColors.DefaultBlack_I);
+                    }
 
                     bool xCorner = xy.X == visibleBlocks.TopLeft.X || xy.X == visibleBlocks.BottomRight.X;
                     if (xCorner && yCorner)
                     {
                         vb.Status = DebugBlockStatus.ScreenCorner;
                     }
-                    else if (IsBorderBlock(xy - visibleBlocks.TopLeft, _debugNumVisibleBlocks.X))
+                    else if (IsBorderBlock(xy - visibleBlocks.TopLeft, _debugNumVisibleBlocks.X)) // null border blocks are be caught here too
                     {
                         vb.Status = DebugBlockStatus.BorderBlock;
                     }
-                    else if (!vb.Block.Passage.HasFlag(LayoutBlockPassage.AllowOccupancy))
+                    else if (!block.Passage.HasFlag(LayoutBlockPassage.AllowOccupancy))
                     {
                         vb.Status = DebugBlockStatus.CannotOccupy;
                     }
@@ -97,8 +108,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     {
                         vb.Status = DebugBlockStatus.None;
                     }
-
-                    vbY[xy.X - visibleBlocks.TopLeft.X] = vb;
 
                     pixel.X += Overworld.Block_NumPixelsX;
                 }
@@ -150,10 +159,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     }
                     GUIRenderer.Instance.DrawRectangle(Colors.Black4, posRect);
 
-                    Font f = Font.DefaultSmall;
-                    Vector4[] fc = FontColors.DefaultBlack_I;
-                    GUIString.CreateAndRenderOneTimeString(vb.Map.Name, f, fc, posRect.TopLeft.Plus(1, 1));
-                    GUIString.CreateAndRenderOneTimeString(vb.MapPos.ToString(), f, fc, posRect.TopLeft.Plus(1, 9));
+                    vb.MapNameStr.Render(posRect.TopLeft.Plus(1, 1));
+                    vb.MapBlockStr.Render(posRect.TopLeft.Plus(1, 9));
                 }
             }
         }
@@ -172,12 +179,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Debug_RenderBlocks();
 
             _debugFrameBuffer.RenderToScreen();
-
-            // Clear data
-            for (int y = 0; y < _debugNumVisibleBlocks.Y; y++)
-            {
-                Array.Clear(_debugVisibleBlocks[y]);
-            }
         }
     }
 }

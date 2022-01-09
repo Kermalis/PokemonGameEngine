@@ -132,16 +132,13 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             }
             return pos;
         }
-        public Block GetBlock(Vec2I xy)
+        public Block GetBlock(Vec2I pos)
         {
-            bool north = xy.Y < 0;
-            bool south = xy.Y >= Size.Y;
-            bool west = xy.X < 0;
-            bool east = xy.X >= Size.X;
             // In bounds
-            if (!north && !south && !west && !east)
+            var rect = Rect.FromSize(new Vec2I(0, 0), Size);
+            if (rect.Contains(pos))
             {
-                return Blocks[xy.Y][xy.X];
+                return Blocks[pos.Y][pos.X];
             }
 
             // Border blocks
@@ -149,8 +146,8 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             {
                 return null; // No border
             }
-            xy = GetBorderBlockIndex(xy);
-            return BorderBlocks[xy.Y][xy.X];
+            pos = GetBorderBlockIndex(pos);
+            return BorderBlocks[pos.Y][pos.X];
         }
 
         public void Delete()

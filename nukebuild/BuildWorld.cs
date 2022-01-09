@@ -424,38 +424,32 @@ public sealed partial class Build
 
         public void Save()
         {
-            const int HEADER_SIZE = sizeof(int) + sizeof(int);
-
-            using (var fw = new EndianBinaryWriter(File.Create(MapPath / (_name + ".bin"))))
-            using (var ms = new MemoryStream())
-            using (var w = new EndianBinaryWriter(ms))
+            using (var w = new EndianBinaryWriter(File.Create(MapPath / (_name + ".bin"))))
             {
                 // Always loaded
                 var l = new Layout(Layout);
+                w.BaseStream.Position = 4; // Leave 4 bytes available for the "currentMapStart" offset
                 w.Write(l.Width); // Include width and height in map data so it can be used without loading the layout
                 w.Write(l.Height);
+
+                // Loaded when visible
                 byte numConnections = (byte)Connections.Length;
                 w.Write(numConnections);
                 for (int i = 0; i < numConnections; i++)
                 {
                     Connections[i].Write(w);
                 }
-
-                // Loaded when visible
-                uint visibleMapStart = (uint)(w.BaseStream.Position + HEADER_SIZE);
                 w.Write(Build.Layout.Ids[Layout]); // Write Layout ID
                 Events.Write(w);
 
                 // Loaded when the map is where the player is
-                uint currentMapStart = (uint)(w.BaseStream.Position + HEADER_SIZE);
+                uint currentMapStart = (uint)w.BaseStream.Position;
                 Details.Write(w);
                 Encounters.Write(w);
 
                 // Create file header
-                fw.Write(visibleMapStart);
-                fw.Write(currentMapStart);
-                ms.Position = 0;
-                ms.CopyTo(fw.BaseStream);
+                w.BaseStream.Position = 0;
+                w.Write(currentMapStart);
             }
         }
     }

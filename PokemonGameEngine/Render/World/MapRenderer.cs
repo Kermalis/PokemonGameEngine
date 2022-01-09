@@ -87,11 +87,11 @@ namespace Kermalis.PokemonGameEngine.Render.World
             out Rect visibleBlocks, // The top left and bottom right visible blocks (relative to the camera's map)
             out Vec2I startBlockPixel) // Screen coords of the top left block
         {
-            Vec2I cameraXY = cam.Pos.XY;
+            Vec2I camXY = cam.Pos.XY;
 
             // Negated amount of pixels to move the current map away from the top left of the screen
             // Example: move the map 8 pixels right, camPixel.X is -8
-            Vec2I camPixel = (cameraXY * Overworld.Block_NumPixels) - (_screenSize / 2) + (Overworld.Block_NumPixels / 2) + cam.VisualProgress + cam.CamVisualOfs;
+            Vec2I camPixel = (camXY * Overworld.Block_NumPixels) - (_screenSize / 2) + (Overworld.Block_NumPixels / 2) + cam.VisualProgress + cam.CamVisualOfs;
             // Value to check if we are exactly at the start of a block
             Vec2I camPixelMod = camPixel % Overworld.Block_NumPixels;
 
@@ -193,38 +193,29 @@ namespace Kermalis.PokemonGameEngine.Render.World
             gl.Disable(EnableCap.Blend);
         }
 
-        private void RenderLayouts(GL gl, Map camMap, in Rect visibleBlocks, Vec2I startBlockPixel)
+        private void RenderLayouts(GL gl, Map curMap, in Rect visibleBlocks, Vec2I startBlockPixel)
         {
             // Set up visible map lists
             _prevVisibleMaps.AddRange(_curVisibleMaps);
             _curVisibleMaps.Clear();
 
-            Vec2I camMapPixel = (-visibleBlocks.TopLeft * Overworld.Block_NumPixels) + startBlockPixel;
-            AddVisibleMap(visibleBlocks, camMapPixel, camMap);
-
-            // Mark invisible before the visible ones
+            // Check map visibility. Remove invisible maps before adding visible ones
+            Vec2I curMapPos = (-visibleBlocks.TopLeft * Overworld.Block_NumPixels) + startBlockPixel;
             foreach (Map m in _prevVisibleMaps)
             {
-                if (!_curVisibleMaps.Contains(m))
+                if (!IsMapVisible(m, curMapPos))
                 {
                     m.OnMapNoLongerVisible();
                 }
             }
-            foreach (Map m in _curVisibleMaps)
-            {
-                if (!_prevVisibleMaps.Contains(m))
-                {
-                    m.OnMapNowVisible();
-                }
-                AddLayoutBlocks(m, (m.BlockOffsetFromCurrentMap * Overworld.Block_NumPixels) + camMapPixel, visibleBlocks, startBlockPixel);
-            }
+            AddVisibleMap(curMapPos, visibleBlocks, startBlockPixel, curMap); // Mark visible maps
             _prevVisibleMaps.Clear();
 
             // Add border blocks if they exist
-            Vec2I borderSize = camMap.Layout.BorderSize;
+            Vec2I borderSize = curMap.Layout.BorderSize;
             if (borderSize.X > 0 && borderSize.Y > 0)
             {
-                AddBorderBlocks(camMap.Layout, visibleBlocks, startBlockPixel);
+                AddBorderBlocks(curMap.Layout, visibleBlocks, startBlockPixel);
             }
 
             // Render the blocks
@@ -242,37 +233,41 @@ namespace Kermalis.PokemonGameEngine.Render.World
 #if DEBUG_OVERWORLD
             if (_debugEnabled)
             {
-                Debug_UpdateVisibleBlocks(camMap, visibleBlocks, startBlockPixel);
+                Debug_UpdateVisibleBlocks(curMap, visibleBlocks, startBlockPixel);
             }
 #endif
         }
-        private void AddVisibleMap(in Rect visibleBlocks, Vec2I camMapPixel, Map map)
+        private bool IsMapVisible(Map map, Vec2I curMapPos)
+        {
+            var mapPixelRect = Rect.FromSize((map.BlockOffsetFromCurrentMap * Overworld.Block_NumPixels) + curMapPos,
+                map.Size * Overworld.Block_NumPixels);
+            return mapPixelRect.Intersects(_screenSize);
+        }
+        private void AddVisibleMap(Vec2I curMapPos, in Rect visibleBlocks, Vec2I startBlockPixel, Map map)
         {
             _curVisibleMaps.Add(map);
+            if (!_prevVisibleMaps.Contains(map))
+            {
+                map.OnMapNowVisible();
+            }
+            AddLayoutBlocks(map, curMapPos, visibleBlocks, startBlockPixel);
 
             // Check connected maps to see if they're visible, and check their connected maps
-            MapConnection[] connections = map.Connections;
+            Map.Connection[] connections = map.Connections;
             for (int i = 0; i < connections.Length; i++)
             {
-                var conMap = Map.LoadOrGet(connections[i].MapId);
-                if (_curVisibleMaps.Contains(conMap))
+                Map conMap = connections[i].Map;
+                if (!_curVisibleMaps.Contains(conMap) && IsMapVisible(conMap, curMapPos))
                 {
-                    continue;
-                }
-
-                // Visibility check
-                var rect = Rect.FromSize((conMap.BlockOffsetFromCurrentMap * Overworld.Block_NumPixels) + camMapPixel,
-                    conMap.Size * Overworld.Block_NumPixels);
-                if (rect.Intersects(_screenSize))
-                {
-                    AddVisibleMap(visibleBlocks, camMapPixel, conMap);
+                    AddVisibleMap(curMapPos, visibleBlocks, startBlockPixel, conMap);
                 }
             }
         }
-        private void AddLayoutBlocks(Map map, Vec2I mapPixel, in Rect visibleBlocks, Vec2I startBlockPixel)
+        private void AddLayoutBlocks(Map map, Vec2I curMapPos, in Rect visibleBlocks, Vec2I startBlockPixel)
         {
             // Set all blocks that are visible
-            var mapPixelRect = Rect.FromSize(mapPixel, map.Size * Overworld.Block_NumPixels);
+            var mapPixelRect = Rect.FromSize((map.BlockOffsetFromCurrentMap * Overworld.Block_NumPixels) + curMapPos,
+                map.Size * Overworld.Block_NumPixels);
 
             int numBlocksX = visibleBlocks.GetWidth();
             Vec2I xy;
@@ -303,7 +298,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 }
             }
         }
-        private void AddBorderBlocks(MapLayout camMapLayout, in Rect visibleBlocks, Vec2I startBlockPixel)
+        private void AddBorderBlocks(MapLayout curMapLayout, in Rect visibleBlocks, Vec2I startBlockPixel)
         {
             int numBlocksX = visibleBlocks.GetWidth();
             Vec2I xy;
@@ -316,8 +311,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
                         continue; // Already set this one
                     }
 
-                    Vec2I borderIndex = camMapLayout.GetBorderBlockIndex(xy);
-                    int blockUsedIndex = camMapLayout.BorderBlocks[borderIndex.Y][borderIndex.X].BlocksetBlock.UsedBlocksIndex;
+                    Vec2I borderIndex = curMapLayout.GetBorderBlockIndex(xy);
+                    int blockUsedIndex = curMapLayout.BorderBlocks[borderIndex.Y][borderIndex.X].BlocksetBlock.UsedBlocksIndex;
                     Vec2I translation = ((xy - visibleBlocks.TopLeft) * Overworld.Block_NumPixels) + startBlockPixel;
                     for (byte e = 0; e < Overworld.NumElevations; e++)
                     {
@@ -347,13 +342,13 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     continue;
                 }
 
-                Vec2I camMapXY = v.Pos.XY + v.Map.BlockOffsetFromCurrentMap;
-                if (!toleratedBlocks.Contains(camMapXY))
+                Vec2I xyOnCurMap = v.Pos.XY + v.Map.BlockOffsetFromCurrentMap;
+                if (!toleratedBlocks.Contains(xyOnCurMap))
                 {
                     continue; // Make sure it's within the tolerance rect
                 }
 
-                Vec2I posOnScreen = ((camMapXY - toleratedBlocks.TopLeft) * Overworld.Block_NumPixels) + startBlockPixel + v.VisualProgress;
+                Vec2I posOnScreen = ((xyOnCurMap - toleratedBlocks.TopLeft) * Overworld.Block_NumPixels) + startBlockPixel + v.VisualProgress;
                 // Draw
                 _objFrameBuffers[v.Pos.Elevation].Use();
                 v.Draw(_screenSize, posOnScreen);
@@ -362,7 +357,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 #if DEBUG_OVERWORLD
                 if (_debugEnabled)
                 {
-                    Debug_AddVisualObj(v, camMapXY - visibleBlocks.TopLeft);
+                    Debug_AddVisualObj(v, xyOnCurMap - visibleBlocks.TopLeft);
                 }
 #endif
             }

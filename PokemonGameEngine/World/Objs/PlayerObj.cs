@@ -64,9 +64,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             WarpInProgress wip = WarpInProgress.Current;
             WarpInProgress.EndCurrent();
             Map newMap = wip.DestMap;
-            // Load map data
-            SetMap(newMap);
+            SetMap(newMap); // Move player to the new map first. If the camera were moved first, the old map would unload with the player on it
             CameraObj.Instance.SetMap(newMap); // Camera must be attached to us to warp in the first place
+            newMap.OnNoLongerWarpingMap();
 
             WorldPos newPos = wip.Destination.DestPos;
             MapLayout.Block block = newMap.GetBlock_InBounds(newPos.XY);
@@ -91,6 +91,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
             Pos = newPos;
             MovingFromPos = newPos;
+            VisualOfs = new Vec2I(0, 0);
             MovingFromVisualOfs = VisualOfs;
             CameraObj.Instance.CopyAttachedToMovement(); // Update camera pos
         }
@@ -420,7 +421,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return false;
             }
             // Target block - return false if we are blocked
-            curMap.GetXYMap(targetXY, out newTargetXY, out targetMap);
+            curMap.GetPosAndMap(targetXY, out newTargetXY, out targetMap);
             MapLayout.Block targetBlock = targetMap.GetBlock_InBounds(newTargetXY);
             BlocksetBlockBehavior targetBehavior = targetBlock.BlocksetBlock.Behavior;
             if (targetBehavior == blockedTarget)
@@ -447,7 +448,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 return false;
             }
             // Target block - return false if we are blocked
-            curMap.GetXYMap(targetXY, out newTargetXY, out targetMap);
+            curMap.GetPosAndMap(targetXY, out newTargetXY, out targetMap);
             MapLayout.Block targetBlock = targetMap.GetBlock_InBounds(newTargetXY);
             BlocksetBlockBehavior targetBehavior = targetBlock.BlocksetBlock.Behavior;
             if (targetBehavior == blockedTargetCardinal1 || targetBehavior == blockedTargetCardinal2 || targetBehavior == blockedTargetDiagonal)
@@ -466,7 +467,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             BlocksetBlockBehavior blockedCardinal1, BlocksetBlockBehavior blockedCardinal2, BlocksetBlockBehavior blockedDiagonal)
         {
             // Get the x/y/map of the block
-            map.GetXYMap(xy, out xy, out map);
+            map.GetPosAndMap(xy, out xy, out map);
             MapLayout.Block block = map.GetBlock_InBounds(xy);
             // Check occupancy permission
             if ((block.Passage & diagonalPassage) == 0)
