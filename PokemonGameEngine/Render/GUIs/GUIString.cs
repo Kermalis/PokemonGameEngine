@@ -16,10 +16,8 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         public Vec2I Translation;
         public readonly int Scale;
 
-        private readonly uint _vao;
-        private readonly uint _vbo;
-        private readonly uint _ebo;
-        private readonly uint _totalVisible;
+        private readonly RectMesh _mesh;
+        private readonly InstancedData _data;
 
         public uint VisibleStart;
         public uint NumVisible;
@@ -32,10 +30,10 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             Origin = pos;
             Scale = scale;
 
-            // Write glyph vertices
-            // May not necessarily use this many, because some glyphs don't have visual results
-            var builder = new FontVertexBuilder(text.Length);
-            _totalVisible = 0;
+            GL gl = Display.OpenGL;
+            _mesh = new RectMesh(gl);
+            _data = VBOData_InstancedFontChar.CreateInstancedData(font.GetNumVisibleChars(text));
+
             int index = 0;
             var cursor = new Vec2I(0, 0);
             Vec2I size;
@@ -47,14 +45,10 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
                 if (g is not null)
                 {
                     size.X = g.CharWidth * scale;
-                    // Can't use triangle strips, but possibly can use instanced data?
-                    builder.Add(Rect.FromSize(gPos, size), g.UV);
-                    _totalVisible++;
+                    VBOData_InstancedFontChar.AddInstance(_data, Rect.FromSize(gPos, size), g.UV);
                 }
             }
-            NumVisible = allVisible ? _totalVisible : 0;
-
-            builder.Finish(out _vao, out _vbo, out _ebo);
+            NumVisible = allVisible ? _data.InstanceCount : 0;
         }
 
         public static GUIString CreateCentered(string text, Font font, Vector4[] colors, float centerX, float centerY, Vec2I totalSize, int scale = 1)
@@ -88,9 +82,9 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             Translation = translation;
             Render();
         }
-        public unsafe void Render()
+        public void Render()
         {
-            if (_totalVisible == 0 || NumVisible == 0)
+            if (_data.InstanceCount == 0 || NumVisible == 0)
             {
                 return;
             }
@@ -100,7 +94,6 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindTexture(TextureTarget.Texture2D, Font.Texture);
-            gl.BindVertexArray(_vao);
 
             FontShader shader = FontShader.Instance;
             shader.Use(gl);
@@ -108,7 +101,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             shader.SetTranslation(gl, ref Translation);
             shader.SetColors(gl, Colors);
 
-            gl.DrawElements(PrimitiveType.Triangles, NumVisible * 6, DrawElementsType.UnsignedInt, (void*)(VisibleStart * 6 * sizeof(uint)));
+            _mesh.RenderInstancedBaseInstance(gl, VisibleStart, NumVisible);
 
             gl.Disable(EnableCap.Blend);
         }
@@ -116,9 +109,8 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         public void Delete()
         {
             GL gl = Display.OpenGL;
-            gl.DeleteVertexArray(_vao);
-            gl.DeleteBuffer(_vbo);
-            gl.DeleteBuffer(_ebo);
+            _mesh.Delete(gl);
+            _data.Delete(gl);
         }
     }
 }

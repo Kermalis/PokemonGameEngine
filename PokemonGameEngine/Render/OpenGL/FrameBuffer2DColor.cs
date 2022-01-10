@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
 
         public void RenderColorTexture(Vec2I pos, bool xFlip = false, bool yFlip = true) // Flip yFlip since rendering to a GL texture is upside-down
         {
-            GUIRenderer.Instance.RenderTexture(ColorTexture, Rect.FromSize(pos, Size), xFlip: xFlip, yFlip: yFlip);
+            GUIRenderer.Texture(ColorTexture, Rect.FromSize(pos, Size), new UV(xFlip, yFlip));
         }
         /// <summary>Overwrites the contents of the screen with this FBO's color texture</summary>
         public void BlitToScreen()
@@ -61,7 +61,7 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindTexture(TextureTarget.Texture2D, ColorTexture);
             EntireScreenTextureShader.Instance.Use(gl);
-            RectMesh.Instance.Render();
+            RectMesh.Instance.Render(gl);
             gl.Disable(EnableCap.Blend);
         }
 

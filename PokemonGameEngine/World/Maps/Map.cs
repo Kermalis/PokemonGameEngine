@@ -3,6 +3,7 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.World.Data;
 using Kermalis.PokemonGameEngine.World.Objs;
+using System;
 using System.Collections.Generic;
 using System.IO;
 #if DEBUG_OVERWORLD
@@ -24,8 +25,8 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         public string Name => _ids[_id];
 #endif
 
-        /// <summary><see cref="Size"/> is loaded before the layout and used to place map connections</summary>
-        public readonly Vec2I Size;
+        /// <summary><see cref="_size"/> is loaded before the layout and used to place map connections</summary>
+        private readonly Vec2I _size;
         public Vec2I BlockOffsetFromCurrentMap;
 
         // Layout, connected maps, and events are loaded when the map is visible
@@ -51,8 +52,8 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
             using (EndianBinaryReader r = CreateReader())
             {
-                Size.X = r.ReadInt32(4); // Skip 4 byte offset
-                Size.Y = r.ReadInt32();
+                _size.X = r.ReadInt32(4); // Skip 4 byte offset
+                _size.Y = r.ReadInt32();
             }
         }
 
@@ -90,15 +91,28 @@ namespace Kermalis.PokemonGameEngine.World.Maps
                     Vec2I conOffset;
                     switch (con.Dir)
                     {
-                        case Connection.Direction.South: conOffset = new Vec2I(con.Offset, Size.Y); break;
-                        case Connection.Direction.North: conOffset = new Vec2I(con.Offset, -con.Map.Size.Y); break;
-                        case Connection.Direction.West: conOffset = new Vec2I(-con.Map.Size.X, con.Offset); break;
-                        case Connection.Direction.East: conOffset = new Vec2I(Size.X, con.Offset); break;
+                        case Connection.Direction.South: conOffset = new Vec2I(con.Offset, _size.Y); break;
+                        case Connection.Direction.North: conOffset = new Vec2I(con.Offset, -con.Map._size.Y); break;
+                        case Connection.Direction.West: conOffset = new Vec2I(-con.Map._size.X, con.Offset); break;
+                        case Connection.Direction.East: conOffset = new Vec2I(_size.X, con.Offset); break;
                         default: throw new InvalidDataException();
                     }
                     con.Map.RecurseBlockOffsets(updated, offset + conOffset);
                 }
             }
+        }
+        public bool IsVisible(Vec2I curMapPos, Vec2I viewSize)
+        {
+            if (_numReferences == 0)
+            {
+                return false; // This map was just unloaded
+            }
+            return GetPositionRect(curMapPos).Intersects(viewSize);
+        }
+        public Rect GetPositionRect(Vec2I curMapPos)
+        {
+            return Rect.FromSize((BlockOffsetFromCurrentMap * Overworld.Block_NumPixels) + curMapPos,
+                _size * Overworld.Block_NumPixels);
         }
 
         public void GetPosAndMap(Vec2I pos, out Vec2I newPos, out Map newMap)
@@ -107,7 +121,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             foreach (Map m in _loadedMaps.Values)
             {
                 Vec2I posOnM = posOnCamMap - m.BlockOffsetFromCurrentMap;
-                var rect = Rect.FromSize(new Vec2I(0, 0), m.Size);
+                var rect = Rect.FromSize(new Vec2I(0, 0), m._size);
                 if (rect.Contains(posOnM))
                 {
                     newPos = posOnM;
@@ -138,10 +152,17 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             using (EndianBinaryReader r = CreateReader())
             {
                 int numConnections = r.ReadByte(12); // Visible data starts at offset 12 (skip 4 byte offset and 8 bytes size)
-                Connections = new Connection[numConnections];
-                for (int i = 0; i < numConnections; i++)
+                if (numConnections == 0)
                 {
-                    Connections[i] = new Connection(r);
+                    Connections = Array.Empty<Connection>();
+                }
+                else
+                {
+                    Connections = new Connection[numConnections];
+                    for (int i = 0; i < numConnections; i++)
+                    {
+                        Connections[i] = new Connection(r);
+                    }
                 }
                 Layout = new MapLayout(r.ReadInt32());
                 Events = new MapEvents(r);

@@ -53,7 +53,7 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
             gl.Enable(EnableCap.Blend);
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             target.Use();
-            RectMesh.Instance.Render();
+            RectMesh.Instance.Render(gl);
             gl.Disable(EnableCap.Blend);
         }
 

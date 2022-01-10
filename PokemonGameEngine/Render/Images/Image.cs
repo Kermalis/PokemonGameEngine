@@ -41,11 +41,11 @@ namespace Kermalis.PokemonGameEngine.Render.Images
 
         public void Render(Vec2I pos, bool xFlip = false, bool yFlip = false)
         {
-            GUIRenderer.Instance.RenderTexture(Texture, Rect.FromSize(pos, Size), xFlip: xFlip, yFlip: yFlip);
+            GUIRenderer.Texture(Texture, Rect.FromSize(pos, Size), new UV(xFlip, yFlip));
         }
         public void Render(in Rect rect, in UV part)
         {
-            GUIRenderer.Instance.RenderTexture(Texture, rect, part);
+            GUIRenderer.Texture(Texture, rect, part);
         }
 
         public static Image LoadOrGet(string asset)

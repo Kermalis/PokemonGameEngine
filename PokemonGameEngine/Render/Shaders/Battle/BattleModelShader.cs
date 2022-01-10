@@ -19,8 +19,6 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.Battle
         private readonly int _lCameraPos;
         private readonly int _lShineDamper;
         private readonly int _lSpecularReflectivity;
-        private readonly int _lShadowColorTexture;
-        private readonly int _lShadowDepthTexture;
 
         private readonly LitShaderUniforms _lightUniforms;
 
@@ -35,15 +33,13 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.Battle
             _lCameraPos = GetUniformLocation(gl, "cameraPos");
             _lShineDamper = GetUniformLocation(gl, "shineDamper");
             _lSpecularReflectivity = GetUniformLocation(gl, "specularReflectivity");
-            _lShadowColorTexture = GetUniformLocation(gl, "shadowColorTexture");
-            _lShadowDepthTexture = GetUniformLocation(gl, "shadowDepthTexture");
 
             _lightUniforms = new LitShaderUniforms(gl, this, MAX_LIGHTS);
 
-            Use(gl); // Set texture units now
-            gl.Uniform1(_lShadowColorTexture, 0);
-            gl.Uniform1(_lShadowDepthTexture, 1);
-
+            // Set texture units now
+            Use(gl);
+            gl.Uniform1(GetUniformLocation(gl, "shadowColorTexture"), 0);
+            gl.Uniform1(GetUniformLocation(gl, "shadowDepthTexture"), 1);
             SetShineDamper(gl, 5f);
             SetReflectivity(gl, 0f);
         }

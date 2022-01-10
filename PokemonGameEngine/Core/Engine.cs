@@ -111,6 +111,18 @@ namespace Kermalis.PokemonGameEngine.Core
                         Keyboard.OnKeyChanged(e.key.keysym.sym, false);
                         break;
                     }
+                    case SDL.SDL_EventType.SDL_WINDOWEVENT:
+                    {
+                        switch (e.window.windowEvent)
+                        {
+                            case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED:
+                            {
+                                Display.AutosizeWindow = false;
+                                break;
+                            }
+                        }
+                        break;
+                    }
                 }
             }
             return false;

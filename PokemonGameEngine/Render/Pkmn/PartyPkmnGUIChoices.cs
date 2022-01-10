@@ -56,7 +56,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             Vec2I totalSize = _frameBuffer.Size;
 
             Vector4 backColor = IsSelected ? Colors.V4FromRGB(200, 200, 200) : Colors.White4;
-            GUIRenderer.Instance.FillRectangle(backColor, Rect.FromSize(new Vec2I(0, 0), totalSize)); // TODO: Rounded of size (dstH / 2)
+            GUIRenderer.Rect(backColor, Rect.FromSize(new Vec2I(0, 0), totalSize), cornerRadius: totalSize.Y / 2);
 
             _mini.Render(Vec2I.FromRelative(0f, -0.15f, totalSize));
 
@@ -74,7 +74,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             GUIString.CreateAndRenderOneTimeString("[LV] " + _pkmn.Level, fontPartyNumbers, defaultDark, Vec2I.FromRelative(0.7f, 0.65f, totalSize));
             GUIString.CreateAndRenderOneTimeGenderString(_pkmn.Gender, fontDefault, Vec2I.FromRelative(0.7f, 0.01f, totalSize));
 
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(99, 255, 99), Rect.FromCorners(Vec2I.FromRelative(0.2f, 0.58f, totalSize), Vec2I.FromRelative(0.7f, 0.64f, totalSize)));
+            GUIRenderer.Rect(Colors.V4FromRGB(99, 255, 99), Rect.FromCorners(Vec2I.FromRelative(0.2f, 0.58f, totalSize), Vec2I.FromRelative(0.7f, 0.64f, totalSize)));
         }
 
         public void Render(Vec2I pos)

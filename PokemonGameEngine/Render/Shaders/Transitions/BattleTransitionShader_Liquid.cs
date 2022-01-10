@@ -10,7 +10,6 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.Transitions
         public static BattleTransitionShader_Liquid Instance { get; private set; } = null!; // Initialized in RenderManager
 
         private readonly int _lProgress;
-        private readonly int _lColorTexture;
 
         public BattleTransitionShader_Liquid(GL gl)
             : base(gl, VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
@@ -18,10 +17,10 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.Transitions
             Instance = this;
 
             _lProgress = GetUniformLocation(gl, "progress");
-            _lColorTexture = GetUniformLocation(gl, "colorTexture");
 
+            // Set texture unit now
             Use(gl);
-            gl.Uniform1(_lColorTexture, 0); // Set texture unit now
+            gl.Uniform1(GetUniformLocation(gl, "colorTexture"), 0);
         }
 
         public void SetProgress(GL gl, float progress)

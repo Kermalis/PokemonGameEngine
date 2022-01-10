@@ -46,6 +46,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private OverworldGUI()
         {
             Instance = this;
+            Display.SetMinimumWindowSize(RenderSize);
 
             _frameBuffer = new FrameBuffer2DColor(RenderSize);
             _dayTintFrameBuffer = new FrameBuffer2DColor(RenderSize);
@@ -149,9 +150,11 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Game.Instance.SetCallback(CB_FadeOutToBattle);
         }
 
-        /// <summary>Sets the OverworldGUI's fbo, starts a fade from black fade, and sets the callback to fade in</summary>
+        /// <summary>Starts a fade from black fade, sets the size, and sets the callback to fade in</summary>
         public void ReturnToFieldWithFadeIn()
         {
+            Display.SetMinimumWindowSize(RenderSize);
+
             _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeIn);
         }
@@ -254,7 +257,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             ProcessObjs();
 
 #if DEBUG_OVERWORLD
-            _mapRenderer.Debug_CheckToggle();
+            _mapRenderer.Debug_CheckToggleInput();
 #endif
             Render();
             _frameBuffer.BlitToScreen();

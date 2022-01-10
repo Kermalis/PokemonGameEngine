@@ -60,7 +60,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             var rect = Rect.FromSize(shadowPos, _tex.Shadow.Size);
             if (rect.Intersects(viewSize))
             {
-                GUIRenderer.Instance.RenderTexture(_tex.Shadow.ColorTexture, rect);
+                GUIRenderer.Texture(_tex.Shadow.ColorTexture, rect, new UV(false, false));
             }
 
             // Draw obj

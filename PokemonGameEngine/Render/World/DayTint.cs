@@ -140,13 +140,13 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
             // Render to DayTint fbo
             dayTintFrameBuffer.Use();
-            RectMesh.Instance.Render();
+            RectMesh.Instance.Render(gl);
 
             // Copy rendered result back to the target
             EntireScreenTextureShader.Instance.Use(gl);
             target.Use();
             gl.BindTexture(TextureTarget.Texture2D, dayTintFrameBuffer.ColorTexture);
-            RectMesh.Instance.Render();
+            RectMesh.Instance.Render(gl);
         }
     }
 }

@@ -35,6 +35,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
 
         public BagGUI(Inventory<InventorySlotNew> inv, Party party, Action onClosed)
         {
+            Display.SetMinimumWindowSize(_renderSize);
             _frameBuffer = new FrameBuffer2DColor(_renderSize);
 
             _tripleColorBG = new TripleColorBackground();
@@ -172,8 +173,8 @@ namespace Kermalis.PokemonGameEngine.Render.Player
 
             // Draw pouch tabs background
             var rect = Rect.FromCorners(Vec2I.FromRelative(0.60f, 0.03f, _renderSize), Vec2I.FromRelative(0.97f, 0.13f, _renderSize));
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(245, 200, 37), rect); // TODO: ROUNDED 10
-            GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(231, 163, 0), rect); // TODO: ROUNDED 10
+            GUIRenderer.Rect(Colors.V4FromRGB(245, 200, 37), rect, cornerRadius: 10);
+            GUIRenderer.Rect(Colors.V4FromRGB(231, 163, 0), rect, lineThickness: 1, cornerRadius: 10);
 
             // Draw pouch name
             var pos = Vec2I.FromRelative(0.62f, 0.14f, _renderSize);

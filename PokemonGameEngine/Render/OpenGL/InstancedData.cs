@@ -16,11 +16,11 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             Capacity = capacity;
         }
 
-        public static unsafe uint CreateInstancedVBO(GL gl, nuint size)
+        public static unsafe uint CreateInstancedVBO(GL gl, nuint size, BufferUsageARB usage)
         {
             uint vbo = gl.GenBuffer();
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, vbo);
-            gl.BufferData(BufferTargetARB.ArrayBuffer, size, null, BufferUsageARB.StreamDraw); // Create empty vbo
+            gl.BufferData(BufferTargetARB.ArrayBuffer, size, null, usage); // Create empty vbo
             return vbo;
         }
         public static unsafe void AddInstancedAttribute(GL gl, uint attribIndex, int dataSize, uint stride, uint offset)

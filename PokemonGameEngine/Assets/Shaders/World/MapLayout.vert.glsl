@@ -10,15 +10,12 @@ uniform ivec2 blockSize;
 uniform ivec2 viewportSize;
 
 
-vec2 RelToGL(vec2 v)
-{
-    return vec2(v.x * 2 - 1, v.y * -2 + 1);
-}
-
 void main()
 {
     vec2 relPos = ((in_position * blockSize) + in_instancedTranslation) / viewportSize; // Abs to Rel
-    gl_Position = vec4(RelToGL(relPos), 0, 1);
+    float glX = relPos.x * 2 - 1; // (0 => 1) to (-1 => 1)
+    float glY = relPos.y * -2 + 1; // (0 => 1) to (1 => -1)
+    gl_Position = vec4(glX, glY, 0, 1);
 
     pass_uvw.x = in_position.x;
     pass_uvw.y = 1 - in_position.y; // Flip y

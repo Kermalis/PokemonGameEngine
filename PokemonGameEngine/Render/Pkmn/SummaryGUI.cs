@@ -69,6 +69,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         public SummaryGUI(object pkmn, Mode mode, Action onClosed, PBEMove learningMove = PBEMove.None)
         {
+            Display.SetMinimumWindowSize(_renderSize);
             _mode = mode;
             if (mode == Mode.LearnMove)
             {
@@ -318,8 +319,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
             int xpW = (int)(0.3f * viewSize.X);
             var xpPos = Vec2I.CenterXRelativeY(rightColCenterX, rightColY + 0.61f, xpW, viewSize);
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(128, 215, 135), Rect.FromSize(Vec2I.FromRelative(winX, winY, viewSize), Vec2I.FromRelative(winW, winH, viewSize))); // TODO: ROUNDED 15
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(210, 210, 210), Rect.FromSize(Vec2I.FromRelative(rightColX, rightColY, viewSize), Vec2I.FromRelative(rightColW, rightColH, viewSize))); // TODO: ROUNDED 8
+            GUIRenderer.Rect(Colors.V4FromRGB(128, 215, 135), Rect.FromSize(Vec2I.FromRelative(winX, winY, viewSize), Vec2I.FromRelative(winW, winH, viewSize)), cornerRadius: 15);
+            GUIRenderer.Rect(Colors.V4FromRGB(210, 210, 210), Rect.FromSize(Vec2I.FromRelative(rightColX, rightColY, viewSize), Vec2I.FromRelative(rightColW, rightColH, viewSize)), cornerRadius: 8);
 
             Font leftColFont = Font.Default;
             Vector4[] leftColColors = FontColors.DefaultWhite_DarkerOutline_I;
@@ -424,7 +425,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             const float textStartY = winY + 0.05f;
             const float textSpacingY = 0.1f;
 
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(145, 225, 225), Rect.FromSize(Vec2I.FromRelative(winX, winY, viewSize), Vec2I.FromRelative(winW, winH, viewSize))); // TODO: ROUNDED 15
+            GUIRenderer.Rect(Colors.V4FromRGB(145, 225, 225), Rect.FromSize(Vec2I.FromRelative(winX, winY, viewSize), Vec2I.FromRelative(winW, winH, viewSize)), cornerRadius: 15);
 
             Font leftColFont = Font.Default;
             Vector4[] leftColColors = FontColors.DefaultBlack_I;
@@ -538,13 +539,13 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
             int hpW = (int)(0.3f * viewSize.X);
             var hpPos = Vec2I.CenterXRelativeY(rightColCenterX, rightColY + 0.09f, hpW, viewSize);
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(135, 145, 250), Rect.FromSize(Vec2I.FromRelative(winX, winY, viewSize), Vec2I.FromRelative(winW, winH, viewSize))); // TODO: ROUNDED 12
+            GUIRenderer.Rect(Colors.V4FromRGB(135, 145, 250), Rect.FromSize(Vec2I.FromRelative(winX, winY, viewSize), Vec2I.FromRelative(winW, winH, viewSize)), cornerRadius: 12);
             // Stats
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(210, 210, 210), Rect.FromSize(Vec2I.FromRelative(rightColX, rightColY, viewSize), Vec2I.FromRelative(rightColW, rightColH, viewSize))); // TODO: ROUNDED 8
+            GUIRenderer.Rect(Colors.V4FromRGB(210, 210, 210), Rect.FromSize(Vec2I.FromRelative(rightColX, rightColY, viewSize), Vec2I.FromRelative(rightColW, rightColH, viewSize)), cornerRadius: 8);
             // Abil
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(210, 210, 210), Rect.FromSize(Vec2I.FromRelative(abilX, abilY, viewSize), Vec2I.FromRelative(abilW, abilH, viewSize))); // TODO: ROUNDED 5
+            GUIRenderer.Rect(Colors.V4FromRGB(210, 210, 210), Rect.FromSize(Vec2I.FromRelative(abilX, abilY, viewSize), Vec2I.FromRelative(abilW, abilH, viewSize)), cornerRadius: 5);
             // Abil desc
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(210, 210, 210), Rect.FromCorners(Vec2I.FromRelative(leftColX, abilDescY, viewSize), Vec2I.FromRelative(0.945f, 0.97f, viewSize))); // TODO: ROUNDED 5
+            GUIRenderer.Rect(Colors.V4FromRGB(210, 210, 210), Rect.FromCorners(Vec2I.FromRelative(leftColX, abilDescY, viewSize), Vec2I.FromRelative(0.945f, 0.97f, viewSize)), cornerRadius: 5);
 
             Font leftColFont = Font.Default;
             Vector4[] leftColColors = FontColors.DefaultWhite_DarkerOutline_I;
@@ -692,7 +693,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             const float ppY = itemSpacingY / 2;
             const float cancelY = winY + moveY + (PkmnConstants.NumMoves * itemSpacingY);
 
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(250, 128, 120), Rect.FromSize(Vec2I.FromRelative(winX, winY, viewSize), Vec2I.FromRelative(winW, winH, viewSize))); // TODO: ROUNDED 15
+            GUIRenderer.Rect(Colors.V4FromRGB(250, 128, 120), Rect.FromSize(Vec2I.FromRelative(winX, winY, viewSize), Vec2I.FromRelative(winW, winH, viewSize)), cornerRadius: 15);
 
             Font moveFont = Font.Default;
             Vector4[] moveColors = FontColors.DefaultWhite_DarkerOutline_I;
@@ -730,7 +731,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 float y = winY + moveY + (i * itemSpacingY);
                 float w = moveColW;
                 float h = i == CANCEL_BUTTON_INDEX ? itemSpacingY / 2 : itemSpacingY;
-                GUIRenderer.Instance.DrawRectangle(Colors.FromRGBA(48, 180, 255, 200), Rect.FromSize(Vec2I.FromRelative(x, y, viewSize), Vec2I.FromRelative(w, h, viewSize))); // TODO: ROUNDED 5
+                GUIRenderer.Rect(Colors.FromRGBA(48, 180, 255, 200), Rect.FromSize(Vec2I.FromRelative(x, y, viewSize), Vec2I.FromRelative(w, h, viewSize)),
+                    lineThickness: 1, cornerRadius: 5);
             }
 
             // Moves

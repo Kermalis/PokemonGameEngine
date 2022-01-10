@@ -5,15 +5,13 @@ namespace Kermalis.PokemonGameEngine.Render
 {
     internal sealed class RectMesh
     {
-        public static RectMesh Instance { get; private set; } = null!; // Set in RenderManager
+        public static RectMesh Instance { get; set; } = null!; // Set in RenderManager
 
         private readonly uint _vao;
         private readonly uint _vbo;
 
         public unsafe RectMesh(GL gl)
         {
-            Instance = this;
-
             // Create vao
             _vao = gl.GenVertexArray();
             gl.BindVertexArray(_vao);
@@ -33,18 +31,33 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             return new Vector2[4]
             {
-                new Vector2(-1,  1), // Top Left
-                new Vector2(-1, -1), // Bottom Left
-                new Vector2( 1,  1), // Top Right
-                new Vector2( 1, -1)  // Bottom Right
+                new Vector2(0, 0), // Top Left
+                new Vector2(0, 1), // Bottom Left
+                new Vector2(1, 0), // Top Right
+                new Vector2(1, 1)  // Bottom Right
             };
         }
 
-        public void Render()
+        public void Render(GL gl)
         {
-            GL gl = Display.OpenGL;
             gl.BindVertexArray(_vao);
             gl.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+        }
+        public void RenderInstanced(GL gl, uint instanceCount)
+        {
+            gl.BindVertexArray(_vao);
+            gl.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, instanceCount);
+        }
+        public void RenderInstancedBaseInstance(GL gl, uint first, uint instanceCount)
+        {
+            gl.BindVertexArray(_vao);
+            gl.DrawArraysInstancedBaseInstance(PrimitiveType.TriangleStrip, 0, 4, instanceCount, first); // Requires OpenGL 4.2 or above. Not available in OpenGL ES
+        }
+
+        public void Delete(GL gl)
+        {
+            gl.DeleteVertexArray(_vao);
+            gl.DeleteBuffer(_vbo);
         }
     }
 }

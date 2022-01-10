@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.Render
             }
 
             IImage img = Image;
-            GUIRenderer.Instance.RenderTexture(img.Texture, Rect.FromSize(Pos + translation, img.Size), xFlip: XFlip, yFlip: YFlip);
+            GUIRenderer.Texture(img.Texture, Rect.FromSize(Pos + translation, img.Size), new UV(XFlip, YFlip));
         }
 
         public void Dispose()

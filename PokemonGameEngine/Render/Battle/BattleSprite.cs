@@ -123,7 +123,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 }
                 shader.SetMaskColorAmt(gl, value);
             }
-            RectMesh.Instance.Render();
+            RectMesh.Instance.Render(gl);
         }
         public void RenderShadow(GL gl, BattleSpriteShader shader, in Matrix4x4 viewProjection, in Matrix4x4 camView)
         {
@@ -133,7 +133,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             shader.SetMatrix(gl, _transformCache * viewProjection);
             shader.SetOpacity(gl, Opacity);
             shader.SetPixelateAmt(gl, PixelateAmt);
-            RectMesh.Instance.Render();
+            RectMesh.Instance.Render(gl);
         }
     }
 }

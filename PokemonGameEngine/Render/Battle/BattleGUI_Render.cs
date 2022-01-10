@@ -224,6 +224,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         public void InitFadeIn()
         {
+            Display.SetMinimumWindowSize(RenderSize);
             DayTint.CatchUpTime = true;
             // Trainer sprite
             if (Battle.BattleType == PBEBattleType.Trainer)

@@ -11,7 +11,6 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.Battle
         private readonly int _lTransformViewProjection;
 
         private readonly int _lOutputShadow;
-        private readonly int _lImgTexture;
         private readonly int _lOpacity;
 
         private readonly int _lMaskColor;
@@ -24,15 +23,15 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.Battle
             _lTransformViewProjection = GetUniformLocation(gl, "transformViewProjection");
 
             _lOutputShadow = GetUniformLocation(gl, "outputShadow");
-            _lImgTexture = GetUniformLocation(gl, "imgTexture");
             _lOpacity = GetUniformLocation(gl, "opacity");
 
             _lMaskColor = GetUniformLocation(gl, "maskColor");
             _lMaskColorAmt = GetUniformLocation(gl, "maskColorAmt");
             _lPixelateAmt = GetUniformLocation(gl, "pixelateAmt");
 
+            // Set texture unit now
             Use(gl);
-            gl.Uniform1(_lImgTexture, 0); // Set texture unit now
+            gl.Uniform1(GetUniformLocation(gl, "imgTexture"), 0);
         }
 
         public void SetMatrix(GL gl, in Matrix4x4 transformViewProjection)

@@ -38,11 +38,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
 
         public void Render(Vec2I pos, bool xFlip = false, bool yFlip = false)
         {
-            GUIRenderer.Instance.RenderTexture(Texture, Rect.FromSize(pos, Size), xFlip: xFlip, yFlip: yFlip);
-        }
-        public void RenderFrame(int i, Vec2I pos, bool xFlip = false, bool yFlip = false)
-        {
-            GUIRenderer.Instance.RenderTexture(_img.Frames[i].Texture, Rect.FromSize(pos, Size), xFlip: xFlip, yFlip: yFlip);
+            GUIRenderer.Texture(Texture, Rect.FromSize(pos, Size), new UV(xFlip, yFlip));
         }
 
         public void Restart()

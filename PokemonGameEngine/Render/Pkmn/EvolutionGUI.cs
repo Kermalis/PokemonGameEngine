@@ -40,6 +40,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         public EvolutionGUI(PartyPokemon pkmn, EvolutionData.EvoData evo)
         {
+            Display.SetMinimumWindowSize(_renderSize);
             _frameBuffer = new FrameBuffer2DColor(_renderSize);
 
             _pkmn = pkmn;
@@ -79,6 +80,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         private void OnSummaryClosed()
         {
+            Display.SetMinimumWindowSize(_renderSize);
             _stringWindow.IsInvisible = false;
             _forgetMove = Game.Instance.Save.Vars[Var.SpecialVar_Result];
 

@@ -1,6 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
@@ -57,12 +58,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 GL gl = Display.OpenGL;
                 gl.ActiveTexture(TextureUnit.Texture0);
                 gl.BindTexture(TextureTarget.Texture2D, Shadow.ColorTexture);
-                uint[] bmp = new uint[shadowSize.GetArea()];
-                fixed (uint* dst = bmp)
-                {
-                    UnsafeRenderer.FillEllipse(dst, shadowSize.X, Rect.FromSize(new Vec2I(0, 0), shadowSize), UnsafeRenderer.RawColor(0, 0, 0, 160));
-                    GLTextureUtils.LoadTextureData(gl, dst, shadowSize);
-                }
+                GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 200), Rect.FromSize(new Vec2I(0, 0), shadowSize), cornerRadius: 6); // TODO: Specify corner radius for each
             }
         }
 

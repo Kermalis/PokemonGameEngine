@@ -172,6 +172,25 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             biggest.Y += FontHeight;
             return biggest;
         }
+        public int GetNumVisibleChars(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return 0;
+            }
+            int index = 0;
+            int num = 0;
+            var cursor = new Vec2I(0, 0);
+            while (index < str.Length)
+            {
+                Glyph g = GetGlyph(str, ref index, ref cursor, out _);
+                if (g is not null)
+                {
+                    num++;
+                }
+            }
+            return num;
+        }
 
         private void Delete(GL gl)
         {

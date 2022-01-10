@@ -25,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         {
             if (isSelected)
             {
-                GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(255, 0, 0, 128), Rect.FromCorners(new Vec2I(x1, y), new Vec2I(x2, y + height - 1)));
+                GUIRenderer.Rect(Colors.FromRGBA(255, 0, 0, 128), Rect.FromCorners(new Vec2I(x1, y), new Vec2I(x2, y + height - 1)));
             }
             x1 += xOfs;
             x2 -= xOfs;
@@ -67,8 +67,8 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             var bottomRight = (Vec2I)(BottomRight * viewSize);
 
             // Draw background
-            GUIRenderer.Instance.FillRectangle(BackColor, Rect.FromCorners(topLeft, bottomRight)); // TODO: Rounded 10
-            GUIRenderer.Instance.DrawRectangle(BorderColor, Rect.FromCorners(topLeft, bottomRight)); // TODO: Rounded 10
+            GUIRenderer.Rect(BackColor, Rect.FromCorners(topLeft, bottomRight), cornerRadius: 10);
+            GUIRenderer.Rect(BorderColor, Rect.FromCorners(topLeft, bottomRight), lineThickness: 1, cornerRadius: 10);
 
             int height = (int)(viewSize.Y * Spacing);
             int xOfs = (int)(0.015f * viewSize.X);

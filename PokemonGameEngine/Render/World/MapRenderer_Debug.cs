@@ -1,4 +1,5 @@
 ﻿#if DEBUG_OVERWORLD
+using Kermalis.PokemonGameEngine.Debug;
 using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
@@ -11,7 +12,7 @@ using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.World
 {
-    internal sealed partial class MapRenderer // TODO: Render instances of the rects
+    internal sealed partial class MapRenderer
     {
         private enum DebugBlockStatus : byte
         {
@@ -28,23 +29,47 @@ namespace Kermalis.PokemonGameEngine.Render.World
             public DebugBlockStatus Status;
 
             public GUIString MapNameStr;
-            public GUIString MapBlockStr;
+            public GUIString MapBlockPosStr;
+            public GUIString MapBlockBehaviorStr;
         }
 
-        private const int DEBUG_FBO_SCALE = 4;
+        private const int DEBUG_FBO_SCALE = 5;
 
         private readonly FrameBuffer2DColor _debugFrameBuffer;
 
         private bool _debugEnabled = true;
+        private bool _debugBlockGridEnabled = true;
+        private bool _debugBlockStatusEnabled = true;
+        private bool _debugBlockTextEnabled = true;
         private Vec2I _debugNumVisibleBlocks;
         private readonly DebugVisibleBlock[][] _debugVisibleBlocks;
 
-        public void Debug_CheckToggle()
+        public void Debug_CheckToggleInput()
         {
-            if (InputManager.JustPressed(Key.Select))
+            if (InputManager.JustPressed(Key.R))
             {
-                _debugEnabled = !_debugEnabled;
+                Debug_Toggle();
             }
+        }
+        public void Debug_Toggle()
+        {
+            _debugEnabled = !_debugEnabled;
+            Log.WriteLineWithTime("Debug Map Renderer - Renderer toggled: " + _debugEnabled);
+        }
+        public void Debug_ToggleBlockGrid()
+        {
+            _debugBlockGridEnabled = !_debugBlockGridEnabled;
+            Log.WriteLineWithTime("Debug Map Renderer - Block grid toggled: " + _debugBlockGridEnabled);
+        }
+        public void Debug_ToggleBlockStatus()
+        {
+            _debugBlockStatusEnabled = !_debugBlockStatusEnabled;
+            Log.WriteLineWithTime("Debug Map Renderer - Block statuses toggled: " + _debugBlockStatusEnabled);
+        }
+        public void Debug_ToggleBlockText()
+        {
+            _debugBlockTextEnabled = !_debugBlockTextEnabled;
+            Log.WriteLineWithTime("Debug Map Renderer - Block texts toggled: " + _debugBlockTextEnabled);
         }
 
         private static Vector4 Debug_GetBlockStatusColor(DebugBlockStatus status)
@@ -60,7 +85,14 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
         }
-
+        private static void Debug_UpdateBlockString(ref GUIString gs, string str)
+        {
+            if (gs?.Text != str)
+            {
+                gs?.Delete();
+                gs = new GUIString(str, Font.Default, FontColors.DefaultDebug);
+            }
+        }
         private void Debug_UpdateVisibleBlocks(Map camMap, in Rect visibleBlocks, Vec2I startBlockPixel)
         {
             _debugNumVisibleBlocks = visibleBlocks.GetSize();
@@ -77,36 +109,35 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
                     vb.PositionOnScreen = pixel;
 
-                    MapLayout.Block block = camMap.GetBlock_CrossMap(xy, out Vec2I newXY, out Map map);
-                    string str = map.Name;
-                    if (vb.MapNameStr?.Text != str)
+                    if (_debugBlockStatusEnabled || _debugBlockTextEnabled)
                     {
-                        vb.MapNameStr?.Delete();
-                        vb.MapNameStr = new GUIString(str, Font.DefaultSmall, FontColors.DefaultBlack_I);
-                    }
-                    str = newXY.ToString();
-                    if (vb.MapBlockStr?.Text != str)
-                    {
-                        vb.MapBlockStr?.Delete();
-                        vb.MapBlockStr = new GUIString(str, Font.DefaultSmall, FontColors.DefaultBlack_I);
-                    }
-
-                    bool xCorner = xy.X == visibleBlocks.TopLeft.X || xy.X == visibleBlocks.BottomRight.X;
-                    if (xCorner && yCorner)
-                    {
-                        vb.Status = DebugBlockStatus.ScreenCorner;
-                    }
-                    else if (IsBorderBlock(xy - visibleBlocks.TopLeft, _debugNumVisibleBlocks.X)) // null border blocks are be caught here too
-                    {
-                        vb.Status = DebugBlockStatus.BorderBlock;
-                    }
-                    else if (!block.Passage.HasFlag(LayoutBlockPassage.AllowOccupancy))
-                    {
-                        vb.Status = DebugBlockStatus.CannotOccupy;
-                    }
-                    else
-                    {
-                        vb.Status = DebugBlockStatus.None;
+                        MapLayout.Block block = camMap.GetBlock_CrossMap(xy, out Vec2I newXY, out Map map);
+                        if (_debugBlockTextEnabled)
+                        {
+                            Debug_UpdateBlockString(ref vb.MapNameStr, map.Name);
+                            Debug_UpdateBlockString(ref vb.MapBlockPosStr, newXY.ToString());
+                            Debug_UpdateBlockString(ref vb.MapBlockBehaviorStr, block.BlocksetBlock.Behavior.ToString());
+                        }
+                        if (_debugBlockStatusEnabled)
+                        {
+                            bool xCorner = xy.X == visibleBlocks.TopLeft.X || xy.X == visibleBlocks.BottomRight.X;
+                            if (xCorner && yCorner)
+                            {
+                                vb.Status = DebugBlockStatus.ScreenCorner;
+                            }
+                            else if (IsBorderBlock(xy - visibleBlocks.TopLeft, _debugNumVisibleBlocks.X)) // null border blocks are caught here too
+                            {
+                                vb.Status = DebugBlockStatus.BorderBlock;
+                            }
+                            else if (!block.Passage.HasFlag(LayoutBlockPassage.AllowOccupancy))
+                            {
+                                vb.Status = DebugBlockStatus.CannotOccupy;
+                            }
+                            else
+                            {
+                                vb.Status = DebugBlockStatus.None;
+                            }
+                        }
                     }
 
                     pixel.X += Overworld.Block_NumPixelsX;
@@ -123,10 +154,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 return;
             }
 
-            ref DebugVisibleBlock vb = ref _debugVisibleBlocks[pos.Y][pos.X];
-            if (vb.Status is DebugBlockStatus.None or DebugBlockStatus.CannotOccupy)
+            ref DebugBlockStatus s = ref _debugVisibleBlocks[pos.Y][pos.X].Status;
+            if (s is DebugBlockStatus.None or DebugBlockStatus.CannotOccupy)
             {
-                vb.Status = status;
+                s = status;
             }
         }
         private void Debug_AddVisualObj(VisualObj v, Vec2I pos)
@@ -142,31 +173,13 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
         }
 
-        private void Debug_RenderBlocks()
-        {
-            Vec2I xy;
-            for (xy.Y = 0; xy.Y < _debugNumVisibleBlocks.Y; xy.Y++)
-            {
-                DebugVisibleBlock[] vbY = _debugVisibleBlocks[xy.Y];
-                for (xy.X = 0; xy.X < _debugNumVisibleBlocks.X; xy.X++)
-                {
-                    ref DebugVisibleBlock vb = ref vbY[xy.X];
-
-                    var posRect = Rect.FromSize(vb.PositionOnScreen * DEBUG_FBO_SCALE, Overworld.Block_NumPixels * DEBUG_FBO_SCALE);
-                    if (vb.Status != DebugBlockStatus.None)
-                    {
-                        GUIRenderer.Instance.FillRectangle(Debug_GetBlockStatusColor(vb.Status), posRect);
-                    }
-                    GUIRenderer.Instance.DrawRectangle(Colors.Black4, posRect);
-
-                    vb.MapNameStr.Render(posRect.TopLeft.Plus(1, 1));
-                    vb.MapBlockStr.Render(posRect.TopLeft.Plus(1, 9));
-                }
-            }
-        }
         public void Debug_RenderToScreen()
         {
             if (!_debugEnabled)
+            {
+                return;
+            }
+            if (!_debugBlockGridEnabled && !_debugBlockStatusEnabled && !_debugBlockTextEnabled)
             {
                 return;
             }
@@ -176,7 +189,31 @@ namespace Kermalis.PokemonGameEngine.Render.World
             gl.ClearColor(Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
-            Debug_RenderBlocks();
+            Vec2I xy;
+            for (xy.Y = 0; xy.Y < _debugNumVisibleBlocks.Y; xy.Y++)
+            {
+                DebugVisibleBlock[] vbY = _debugVisibleBlocks[xy.Y];
+                for (xy.X = 0; xy.X < _debugNumVisibleBlocks.X; xy.X++)
+                {
+                    ref DebugVisibleBlock vb = ref vbY[xy.X];
+                    var posRect = Rect.FromSize(vb.PositionOnScreen * DEBUG_FBO_SCALE, Overworld.Block_NumPixels * DEBUG_FBO_SCALE);
+
+                    if (_debugBlockStatusEnabled && vb.Status != DebugBlockStatus.None)
+                    {
+                        GUIRenderer.Rect(Debug_GetBlockStatusColor(vb.Status), posRect);
+                    }
+                    if (_debugBlockGridEnabled)
+                    {
+                        GUIRenderer.Rect(Colors.Black4, posRect, lineThickness: 1);
+                    }
+                    if (_debugBlockTextEnabled)
+                    {
+                        vb.MapNameStr.Render(posRect.TopLeft.Plus(1, 1));
+                        vb.MapBlockPosStr.Render(posRect.TopLeft.Plus(1, 17));
+                        vb.MapBlockBehaviorStr.Render(posRect.TopLeft.Plus(1, 33));
+                    }
+                }
+            }
 
             _debugFrameBuffer.RenderToScreen();
         }

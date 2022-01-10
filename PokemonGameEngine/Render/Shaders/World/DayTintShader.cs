@@ -11,7 +11,6 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.World
         public static DayTintShader Instance { get; private set; } = null!; // Initialized in RenderManager
 
         private readonly int _lModification;
-        private readonly int _lColorTexture;
 
         public DayTintShader(GL gl)
             : base(gl, VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
@@ -19,10 +18,10 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.World
             Instance = this;
 
             _lModification = GetUniformLocation(gl, "modification");
-            _lColorTexture = GetUniformLocation(gl, "colorTexture");
 
+            // Set texture unit now
             Use(gl);
-            gl.Uniform1(_lColorTexture, 0); // Set texture unit now
+            gl.Uniform1(GetUniformLocation(gl, "colorTexture"), 0);
         }
 
         public void SetModification(GL gl, ref Vector3 mod)

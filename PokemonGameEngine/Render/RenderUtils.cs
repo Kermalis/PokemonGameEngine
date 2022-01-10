@@ -58,16 +58,20 @@ namespace Kermalis.PokemonGameEngine.Render
                 hpSides = Colors.V4FromRGB(0, 140, 41);
                 hpMid = Colors.V4FromRGB(0, 255, 74);
             }
-            GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(49, 49, 49), Rect.FromSize(pos, new Vec2I(width, 5)));
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(33, 33, 33), Rect.FromSize(pos.Plus(1, 1), new Vec2I(width - 2, 3)));
-            int theW = (int)((width - 2) * percent);
-            if (theW == 0 && percent > 0)
+            GUIRenderer.Rect(Colors.V4FromRGB(49, 49, 49), Rect.FromSize(pos, new Vec2I(width, 5)), lineThickness: 1);
+            GUIRenderer.Rect(Colors.V4FromRGB(33, 33, 33), Rect.FromSize(pos.Plus(1, 1), new Vec2I(width - 2, 3)));
+
+            Vec2I size;
+            size.X = (int)((width - 2) * percent);
+            if (size.X == 0 && percent > 0)
             {
-                theW = 1;
+                size.X = 1;
             }
-            GUIRenderer.Instance.DrawHorizontalLine_Width(hpSides, pos.Plus(1, 1), theW);
-            GUIRenderer.Instance.DrawHorizontalLine_Width(hpMid, pos.Plus(1, 2), theW);
-            GUIRenderer.Instance.DrawHorizontalLine_Width(hpSides, pos.Plus(1, 3), theW);
+            size.Y = 1;
+
+            GUIRenderer.Rect(hpSides, Rect.FromSize(pos.Plus(1, 1), size));
+            GUIRenderer.Rect(hpMid, Rect.FromSize(pos.Plus(1, 2), size));
+            GUIRenderer.Rect(hpSides, Rect.FromSize(pos.Plus(1, 3), size));
         }
 
         public static void EXP_SingleLine(Vec2I pos, int width, uint exp, byte level, PBESpecies species, PBEForm form)
@@ -98,14 +102,15 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public static void EXP_SingleLine(Vec2I pos, int width, float percent)
         {
-            GUIRenderer.Instance.DrawRectangle(Colors.V4FromRGB(49, 49, 49), Rect.FromSize(pos, new Vec2I(width, 3)));
-            GUIRenderer.Instance.DrawHorizontalLine_Width(Colors.V4FromRGB(33, 33, 33), pos.Plus(1, 1), width - 2);
-            int theW = (int)((width - 2) * percent);
-            if (theW == 0 && percent > 0)
+            GUIRenderer.Rect(Colors.V4FromRGB(49, 49, 49), Rect.FromSize(pos, new Vec2I(width, 3)), lineThickness: 1);
+            var size = new Vec2I(width - 2, 1);
+            GUIRenderer.Rect(Colors.V4FromRGB(33, 33, 33), Rect.FromSize(pos.Plus(1, 1), size));
+            size.X = (int)((width - 2) * percent);
+            if (size.X == 0 && percent > 0)
             {
-                theW = 1;
+                size.X = 1;
             }
-            GUIRenderer.Instance.DrawHorizontalLine_Width(Colors.V4FromRGB(0, 160, 255), pos.Plus(1, 1), theW);
+            GUIRenderer.Rect(Colors.V4FromRGB(0, 160, 255), Rect.FromSize(pos.Plus(1, 1), size));
         }
 
         #endregion

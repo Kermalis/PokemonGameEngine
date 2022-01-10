@@ -26,7 +26,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private readonly BitArray _nonBorderCoords;
 
         private readonly MapLayoutShader _layoutShader;
-        private readonly MapLayoutBlockMesh _layoutMesh;
+        private readonly RectMesh _layoutMesh;
         private readonly FrameBuffer2DColor[] _layoutFrameBuffers;
         private readonly FrameBuffer2DColor[] _objFrameBuffers;
         private readonly InstancedData[] _blockData;
@@ -59,7 +59,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _objFrameBuffers = new FrameBuffer2DColor[Overworld.NumElevations];
             _blockData = new InstancedData[Overworld.NumElevations];
 
-            _layoutMesh = new MapLayoutBlockMesh(gl); // Need VAO bound for instanced attributes
+            _layoutMesh = new RectMesh(gl); // Need VAO bound for instanced attributes
             int maxVisible = _maxVisibleBlocks.GetArea();
             for (int i = 0; i < Overworld.NumElevations; i++)
             {
@@ -185,9 +185,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
             for (int i = 0; i < Overworld.NumElevations; i++)
             {
                 gl.BindTexture(TextureTarget.Texture2D, _layoutFrameBuffers[i].ColorTexture);
-                RectMesh.Instance.Render();
+                RectMesh.Instance.Render(gl);
                 gl.BindTexture(TextureTarget.Texture2D, _objFrameBuffers[i].ColorTexture);
-                RectMesh.Instance.Render();
+                RectMesh.Instance.Render(gl);
             }
 
             gl.Disable(EnableCap.Blend);
@@ -203,7 +203,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Vec2I curMapPos = (-visibleBlocks.TopLeft * Overworld.Block_NumPixels) + startBlockPixel;
             foreach (Map m in _prevVisibleMaps)
             {
-                if (!IsMapVisible(m, curMapPos))
+                if (!m.IsVisible(curMapPos, _screenSize))
                 {
                     m.OnMapNoLongerVisible();
                 }
@@ -227,7 +227,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 _layoutFrameBuffers[e].Use();
                 gl.Clear(ClearBufferMask.ColorBufferBit);
                 gl.BindTexture(TextureTarget.Texture3D, Blockset.UsedBlocksTextures[e].ColorTexture);
-                _layoutMesh.Render(_blockData[e].InstanceCount);
+                _layoutMesh.RenderInstanced(gl, _blockData[e].InstanceCount);
             }
 
 #if DEBUG_OVERWORLD
@@ -236,12 +236,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 Debug_UpdateVisibleBlocks(curMap, visibleBlocks, startBlockPixel);
             }
 #endif
-        }
-        private bool IsMapVisible(Map map, Vec2I curMapPos)
-        {
-            var mapPixelRect = Rect.FromSize((map.BlockOffsetFromCurrentMap * Overworld.Block_NumPixels) + curMapPos,
-                map.Size * Overworld.Block_NumPixels);
-            return mapPixelRect.Intersects(_screenSize);
         }
         private void AddVisibleMap(Vec2I curMapPos, in Rect visibleBlocks, Vec2I startBlockPixel, Map map)
         {
@@ -257,7 +251,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             for (int i = 0; i < connections.Length; i++)
             {
                 Map conMap = connections[i].Map;
-                if (!_curVisibleMaps.Contains(conMap) && IsMapVisible(conMap, curMapPos))
+                if (!_curVisibleMaps.Contains(conMap) && conMap.IsVisible(curMapPos, _screenSize))
                 {
                     AddVisibleMap(curMapPos, visibleBlocks, startBlockPixel, conMap);
                 }
@@ -266,9 +260,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void AddLayoutBlocks(Map map, Vec2I curMapPos, in Rect visibleBlocks, Vec2I startBlockPixel)
         {
             // Set all blocks that are visible
-            var mapPixelRect = Rect.FromSize((map.BlockOffsetFromCurrentMap * Overworld.Block_NumPixels) + curMapPos,
-                map.Size * Overworld.Block_NumPixels);
-
+            Rect mapPixelRect = map.GetPositionRect(curMapPos);
             int numBlocksX = visibleBlocks.GetWidth();
             Vec2I xy;
             for (xy.Y = visibleBlocks.TopLeft.Y; xy.Y <= visibleBlocks.BottomRight.Y; xy.Y++)

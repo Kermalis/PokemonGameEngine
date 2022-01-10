@@ -14,17 +14,16 @@ namespace Kermalis.PokemonGameEngine.Render
         {
             GL gl = Display.OpenGL;
             // Init shader instances
-            _ = new BlocksetBlockShader(gl);
-            _ = new EntireScreenTextureShader(gl);
-            _ = new FontShader(gl);
-            _ = new DayTintShader(gl);
-            _ = new FadeColorShader(gl);
             _ = new BattleTransitionShader_Liquid(gl);
+            _ = new BlocksetBlockShader(gl);
+            _ = new DayTintShader(gl);
+            _ = new EntireScreenTextureShader(gl);
+            _ = new FadeColorShader(gl);
+            _ = new FontShader(gl);
+            _ = new GUIRectShader(gl);
 
             // Init other instances
-            _ = new GUIRenderer(gl);
-            _ = new RectMesh(gl);
-            _ = new MapLayoutBlockMesh(gl);
+            RectMesh.Instance = new RectMesh(gl);
             _ = new TripleColorBackgroundMesh(gl);
             Blockset.Init();
             Font.Init();

@@ -10,15 +10,12 @@ out vec2 pass_uv;
 uniform ivec2 blockSize;
 
 
-vec2 RelToGL(vec2 v)
-{
-    return vec2(v.x * 2 - 1, v.y * -2 + 1);
-}
-
 void main()
 {
     vec2 relPos = vec2(in_position) / blockSize; // Abs to Rel
-    gl_Position = vec4(RelToGL(relPos), 0, 1);
+    float glX = relPos.x * 2 - 1; // (0 => 1) to (-1 => 1)
+    float glY = relPos.y * -2 + 1; // (0 => 1) to (1 => -1)
+    gl_Position = vec4(glX, glY, 0, 1);
 
     pass_tileset = in_tileset;
     pass_uv = in_uv;

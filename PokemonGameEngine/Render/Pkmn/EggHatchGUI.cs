@@ -29,6 +29,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         /// <summary>Will create an egg hatch GUI. Pkmn is determined by <see cref="Var.SpecialVar1"/>'s party index.</summary>
         public EggHatchGUI()
         {
+            Display.SetMinimumWindowSize(_renderSize);
             _frameBuffer = new FrameBuffer2DColor(_renderSize);
 
             _pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar1]];

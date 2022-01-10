@@ -264,6 +264,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private void OnPartyBrowsingClosed()
         {
+            Display.SetMinimumWindowSize(RenderSize);
             DayTint.CatchUpTime = true;
             _transition = FadeFromColorTransition.FromBlackStandard();
             short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];

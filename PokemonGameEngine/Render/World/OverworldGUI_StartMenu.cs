@@ -3,6 +3,9 @@ using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Pkmn;
 using Kermalis.PokemonGameEngine.Render.Player;
 using Kermalis.PokemonGameEngine.Render.Transitions;
+#if DEBUG
+using System;
+#endif
 
 namespace Kermalis.PokemonGameEngine.Render.World
 {
@@ -17,30 +20,77 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Game.Instance.SetCallback(CB_StartMenu);
         }
 
-        private void StartMenu_DebugBagSelected()
+        private void StartMenu_BagSelected()
         {
             _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutToBag);
         }
-        private void StartMenu_DebugPCSelected()
+#if DEBUG
+        private void Debug_StartMenu_PCSelected()
         {
             _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutToPC);
         }
-        private void StartMenu_DebugQuitSelected()
+        private void Debug_StartMenu_QuitSelected()
         {
             Engine.RequestQuit();
         }
+        private void Debug_StartMenu_OpenSubMenu(Action setupChoices)
+        {
+            _startMenuChoices.Dispose();
+            _startMenuWindow.Close();
+            setupChoices();
+            SetupStartMenuWindow();
+        }
+#endif
         private void SetupStartMenuChoices()
         {
             _startMenuChoices = new TextGUIChoices(0f, 0f, backCommand: CloseStartMenuAndSetCB,
                 font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
             _startMenuChoices.AddOne("Pokémon", () => OpenPartyMenu(PartyGUI.Mode.PkmnMenu));
-            _startMenuChoices.AddOne("Bag", StartMenu_DebugBagSelected);
-            _startMenuChoices.AddOne("PC", StartMenu_DebugPCSelected);
+            _startMenuChoices.AddOne("Bag", StartMenu_BagSelected);
             _startMenuChoices.AddOne("Close", CloseStartMenuAndSetCB);
-            _startMenuChoices.AddOne("Quit", StartMenu_DebugQuitSelected);
+#if DEBUG
+            _startMenuChoices.AddOne("Debug Menu", Debug_SetDebugMenu);
+#endif
         }
+#if DEBUG
+        private void Debug_SetStartMenu()
+        {
+            Debug_StartMenu_OpenSubMenu(SetupStartMenuChoices);
+        }
+        private void Debug_SetDebugMenu()
+        {
+            Debug_StartMenu_OpenSubMenu(Debug_SetupDebugStartMenuChoices);
+        }
+        private void Debug_SetupDebugStartMenuChoices()
+        {
+            _startMenuChoices = new TextGUIChoices(0f, 0f, backCommand: Debug_SetStartMenu,
+                font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
+            _startMenuChoices.AddOne("PC", Debug_StartMenu_PCSelected);
+#if DEBUG_OVERWORLD
+            _startMenuChoices.AddOne("MapRenderer Menu", Debug_SetDebugMapRendererMenu);
+#endif
+            _startMenuChoices.AddOne("Back", Debug_SetStartMenu);
+            _startMenuChoices.AddOne("Quit", Debug_StartMenu_QuitSelected);
+        }
+#endif
+#if DEBUG_OVERWORLD
+        private void Debug_SetDebugMapRendererMenu()
+        {
+            Debug_StartMenu_OpenSubMenu(Debug_SetupDebugMapRendererStartMenuChoices);
+        }
+        private void Debug_SetupDebugMapRendererStartMenuChoices()
+        {
+            _startMenuChoices = new TextGUIChoices(0f, 0f, backCommand: Debug_SetDebugMenu,
+                font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
+            _startMenuChoices.AddOne("Toggle (R)", _mapRenderer.Debug_Toggle);
+            _startMenuChoices.AddOne("Toggle Grid", _mapRenderer.Debug_ToggleBlockGrid);
+            _startMenuChoices.AddOne("Toggle Statuses", _mapRenderer.Debug_ToggleBlockStatus);
+            _startMenuChoices.AddOne("Toggle Texts", _mapRenderer.Debug_ToggleBlockText);
+            _startMenuChoices.AddOne("Back", Debug_SetDebugMenu);
+        }
+#endif
 
         private void SetupStartMenuWindow()
         {
@@ -61,6 +111,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private void ReturnToStartMenuWithFadeIn()
         {
+            Display.SetMinimumWindowSize(RenderSize);
             DayTint.CatchUpTime = true;
             SetupStartMenuWindow();
 
@@ -155,12 +206,13 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Render();
             _frameBuffer.BlitToScreen();
 
-            int s = _startMenuChoices.Selected;
+            TextGUIChoices prevMenu = _startMenuChoices;
+            int prevSelection = prevMenu.Selected;
             _startMenuChoices.HandleInputs();
             // Check if the window was just closed
-            if (_startMenuWindow is not null && s != _startMenuChoices.Selected)
+            if (_startMenuWindow is not null && (prevMenu != _startMenuChoices || prevSelection != _startMenuChoices.Selected))
             {
-                RenderStartMenuChoicesOntoWindow(); // Update selection if it has changed
+                RenderStartMenuChoicesOntoWindow(); // Update selection if it has changed or if the menu is different
             }
         }
     }

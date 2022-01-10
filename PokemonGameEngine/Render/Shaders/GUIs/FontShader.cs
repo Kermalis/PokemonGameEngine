@@ -10,7 +10,6 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.GUIs
 
         public static FontShader Instance { get; private set; } = null!; // Initialized in RenderManager
 
-        private readonly int _lFontTexture;
         private readonly int _lTranslation;
         private readonly int _lNumFontColors;
         private readonly int[] _lFontColors;
@@ -20,7 +19,6 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.GUIs
         {
             Instance = this;
 
-            _lFontTexture = GetUniformLocation(gl, "fontTexture");
             _lTranslation = GetUniformLocation(gl, "translation");
             _lNumFontColors = GetUniformLocation(gl, "numFontColors");
             _lFontColors = new int[256];
@@ -31,7 +29,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.GUIs
 
             // Set texture unit now
             Use(gl);
-            gl.Uniform1(_lFontTexture, 0);
+            gl.Uniform1(GetUniformLocation(gl, "fontTexture"), 0);
         }
 
         public void SetTranslation(GL gl, ref Vec2I v)

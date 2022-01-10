@@ -121,10 +121,12 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             _frameBuffer.Use();
             GL gl = Display.OpenGL;
-            gl.ClearColor(_color);
+            gl.ClearColor(Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
-            // TODO: Shadow
-            //Renderer.FillEllipse_Points(dst, dstW, dstH, 3, 34, 29, 39, Renderer.Color(0, 0, 0, 100));
+            GUIRenderer.Rect(_color, Rect.FromSize(new Vec2I(0, 0), _frameBuffer.Size), cornerRadius: 6);
+
+            // Shadow
+            GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 200), Rect.FromCorners(new Vec2I(3, 34), new Vec2I(29, 39)), cornerRadius: 10);
 
             // Nickname
             PartyPokemon p = _usePartyPkmn ? _partyPkmn : _battlePkmn.PartyPkmn;
@@ -196,19 +198,19 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         }
         private static Vector4 GetDefaultColor()
         {
-            return Colors.FromRGBA(48, 48, 48, 128);
+            return Colors.FromRGBA(48, 48, 48, 196);
         }
         private static Vector4 GetFaintedColor()
         {
-            return Colors.FromRGBA(120, 30, 60, 196);
+            return Colors.FromRGBA(120, 30, 60, 224);
         }
         private static Vector4 GetActiveColor()
         {
-            return Colors.FromRGBA(255, 192, 60, 96);
+            return Colors.FromRGBA(255, 192, 60, 128);
         }
         private static Vector4 GetStandByColor()
         {
-            return Colors.FromRGBA(125, 255, 195, 100);
+            return Colors.FromRGBA(125, 255, 195, 128);
         }
 
         public void Render(Vec2I pos, bool selected)
@@ -216,7 +218,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _frameBuffer.RenderColorTexture(pos);
             if (selected)
             {
-                GUIRenderer.Instance.DrawRectangle(Colors.FromRGBA(48, 180, 255, 200), Rect.FromSize(pos, _frameBuffer.Size));
+                GUIRenderer.Rect(Colors.FromRGBA(48, 180, 255, 200), Rect.FromSize(pos, _frameBuffer.Size), lineThickness: 1, cornerRadius: 6);
             }
             _mini.Render(pos);
         }

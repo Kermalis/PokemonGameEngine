@@ -52,7 +52,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 var rect = Rect.FromSize((Vec2I)(pos * _renderSize), Vec2I.FromRelative(0.24f, 0.2f, _renderSize));
 
                 Vector4 enabledC = _ally ? Colors.V4FromRGB(125, 100, 230) : Colors.V4FromRGB(248, 80, 50);
-                GUIRenderer.Instance.FillRectangle(enabledC, rect);
+                GUIRenderer.Rect(enabledC, rect);
 
                 if (_pkmn is not null)
                 {
@@ -69,12 +69,12 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 if (selected)
                 {
                     Vector4 selectedC = _ally ? Colors.V4FromRGB(75, 60, 150) : Colors.V4FromRGB(120, 30, 10);
-                    GUIRenderer.Instance.DrawRectangle(selectedC, rect); // TODO: 2 THICKNESS
+                    GUIRenderer.Rect(selectedC, rect, lineThickness: 2);
                 }
 
                 if (!Enabled)
                 {
-                    GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 150), rect);
+                    GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 150), rect);
                 }
             }
 
@@ -731,34 +731,34 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             if (_targetFoeRight.LineDownVisible)
             {
-                GUIRenderer.Instance.FillRectangle(lineC, Rect.FromSize(Vec2I.FromRelative(0.14f, 0.3f, _renderSize), Vec2I.FromRelative(0.1f, 0.4f, _renderSize)));
+                GUIRenderer.Rect(lineC, Rect.FromSize(Vec2I.FromRelative(0.14f, 0.3f, _renderSize), Vec2I.FromRelative(0.1f, 0.4f, _renderSize)));
             }
             if (_targetFoeLeft.LineDownVisible)
             {
-                GUIRenderer.Instance.FillRectangle(lineC, Rect.FromSize(Vec2I.FromRelative(0.76f, 0.3f, _renderSize), Vec2I.FromRelative(0.1f, 0.4f, _renderSize)));
+                GUIRenderer.Rect(lineC, Rect.FromSize(Vec2I.FromRelative(0.76f, 0.3f, _renderSize), Vec2I.FromRelative(0.1f, 0.4f, _renderSize)));
             }
             float w = _centerTargetsVisible ? 0.31f : 0.62f;
             if (_targetFoeRight.LineRightVisible)
             {
-                GUIRenderer.Instance.FillRectangle(lineC, Rect.FromSize(Vec2I.FromRelative(0.19f, 0.25f, _renderSize), Vec2I.FromRelative(w, 0.1f, _renderSize)));
+                GUIRenderer.Rect(lineC, Rect.FromSize(Vec2I.FromRelative(0.19f, 0.25f, _renderSize), Vec2I.FromRelative(w, 0.1f, _renderSize)));
             }
             if (_targetAllyLeft.LineRightVisible)
             {
-                GUIRenderer.Instance.FillRectangle(lineC, Rect.FromSize(Vec2I.FromRelative(0.19f, 0.65f, _renderSize), Vec2I.FromRelative(w, 0.1f, _renderSize)));
+                GUIRenderer.Rect(lineC, Rect.FromSize(Vec2I.FromRelative(0.19f, 0.65f, _renderSize), Vec2I.FromRelative(w, 0.1f, _renderSize)));
             }
             if (_centerTargetsVisible)
             {
                 if (_targetFoeCenter.LineDownVisible)
                 {
-                    GUIRenderer.Instance.FillRectangle(lineC, Rect.FromSize(Vec2I.FromRelative(0.45f, 0.3f, _renderSize), Vec2I.FromRelative(0.1f, 0.4f, _renderSize)));
+                    GUIRenderer.Rect(lineC, Rect.FromSize(Vec2I.FromRelative(0.45f, 0.3f, _renderSize), Vec2I.FromRelative(0.1f, 0.4f, _renderSize)));
                 }
                 if (_targetFoeCenter.LineRightVisible)
                 {
-                    GUIRenderer.Instance.FillRectangle(lineC, Rect.FromSize(Vec2I.FromRelative(0.5f, 0.25f, _renderSize), Vec2I.FromRelative(w, 0.1f, _renderSize)));
+                    GUIRenderer.Rect(lineC, Rect.FromSize(Vec2I.FromRelative(0.5f, 0.25f, _renderSize), Vec2I.FromRelative(w, 0.1f, _renderSize)));
                 }
                 if (_targetAllyCenter.LineRightVisible)
                 {
-                    GUIRenderer.Instance.FillRectangle(lineC, Rect.FromSize(Vec2I.FromRelative(0.5f, 0.65f, _renderSize), Vec2I.FromRelative(w, 0.1f, _renderSize)));
+                    GUIRenderer.Rect(lineC, Rect.FromSize(Vec2I.FromRelative(0.5f, 0.65f, _renderSize), Vec2I.FromRelative(w, 0.1f, _renderSize)));
                 }
             }
 
@@ -774,11 +774,11 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _targetAllyLeft.Render(new Vector2(0.07f, 0.6f), _selection == TargetSelection.AllyLeft);
             _targetAllyRight.Render(new Vector2(0.69f, 0.6f), _selection == TargetSelection.AllyRight);
 
-            GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(50, 50, 50), Rect.FromSize(Vec2I.FromRelative(0.45f, 0.9f, _renderSize), Vec2I.FromRelative(0.1f, 0.1f, _renderSize))); // Back
+            GUIRenderer.Rect(Colors.V4FromRGB(50, 50, 50), Rect.FromSize(Vec2I.FromRelative(0.45f, 0.9f, _renderSize), Vec2I.FromRelative(0.1f, 0.1f, _renderSize))); // Back
             _backText.Render();
             if (_selection == TargetSelection.Back)
             {
-                GUIRenderer.Instance.DrawRectangle(selectC, Rect.FromSize(Vec2I.FromRelative(0.45f, 0.9f, _renderSize), Vec2I.FromRelative(0.1f, 0.1f, _renderSize)));
+                GUIRenderer.Rect(selectC, Rect.FromSize(Vec2I.FromRelative(0.45f, 0.9f, _renderSize), Vec2I.FromRelative(0.1f, 0.1f, _renderSize)), lineThickness: 1);
             }
         }
 

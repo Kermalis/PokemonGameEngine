@@ -124,6 +124,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void FinishConstructor(Action onClosed)
         {
             Instance = this;
+            Display.SetMinimumWindowSize(_renderSize);
 
             _frameBuffer = new FrameBuffer2DColor(_renderSize);
 
@@ -143,6 +144,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         }
         private void OnSummaryClosed()
         {
+            Display.SetMinimumWindowSize(_renderSize);
             _textChoicesWindow.IsInvisible = false;
 
             _transition = FadeFromColorTransition.FromBlackStandard();
@@ -718,14 +720,14 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             // Back button
             if (_allowBack)
             {
-                GUIRenderer.Instance.FillRectangle(_selectionY == NO_PKMN_CHOSEN ? Colors.V4FromRGB(96, 48, 48) : Colors.V4FromRGB(48, 48, 48),
+                GUIRenderer.Rect(_selectionY == NO_PKMN_CHOSEN ? Colors.V4FromRGB(96, 48, 48) : Colors.V4FromRGB(48, 48, 48),
                     Rect.FromSize(Vec2I.FromRelative(0.5f, 0.8f, _renderSize), Vec2I.FromRelative(0.5f, 0.2f, _renderSize)));
                 _backStr.Render(Vec2I.FromRelative(0.5f, 0.8f, _renderSize));
             }
 
             if (_message is not null)
             {
-                GUIRenderer.Instance.FillRectangle(Colors.V4FromRGB(200, 200, 200),
+                GUIRenderer.Rect(Colors.V4FromRGB(200, 200, 200),
                     Rect.FromSize(Vec2I.FromRelative(0f, 0.8f, _renderSize), Vec2I.FromRelative(0.5f, 0.2f, _renderSize)));
                 _message.Render(Vec2I.FromRelative(0f, 0.8f, _renderSize));
             }

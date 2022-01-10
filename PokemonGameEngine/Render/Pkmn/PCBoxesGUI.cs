@@ -48,6 +48,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         public PCBoxesGUI(PCBoxes boxes, Party party, Action onClosed)
         {
+            Display.SetMinimumWindowSize(_renderSize);
             _frameBuffer = new FrameBuffer2DColor(_renderSize);
 
             _tripleColorBG = new TripleColorBackground();
@@ -490,7 +491,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 pos.X = boxStartX + (x * 40);
                 pos.Y = boxStartY + (y * 40);
                 Vector4 color = _selectedCol == y && _selectedRow == x ? Colors.FromRGBA(0, 0, 0, 32) : Colors.FromRGBA(0, 0, 0, 64);
-                GUIRenderer.Instance.FillRectangle(color, Rect.FromSize(pos, new Vec2I(38, 38)));
+                GUIRenderer.Rect(color, Rect.FromSize(pos, new Vec2I(38, 38)));
 
                 Image mini = _selectedBoxMinis[i];
                 if (mini is null)
@@ -503,11 +504,11 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             // Dim the side we're not using
             if (_isOnParty)
             {
-                GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 128), Rect.FromSize(Vec2I.FromRelative(0.48f, 0f, _renderSize), Vec2I.FromRelative(0.52f, 1f, _renderSize)));
+                GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 128), Rect.FromSize(Vec2I.FromRelative(0.48f, 0f, _renderSize), Vec2I.FromRelative(0.52f, 1f, _renderSize)));
             }
             else if (_partyVisible)
             {
-                GUIRenderer.Instance.FillRectangle(Colors.FromRGBA(0, 0, 0, 128), Rect.FromSize(new Vec2I(0, 0), Vec2I.FromRelative(0.48f, 1f, _renderSize)));
+                GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 128), Rect.FromSize(new Vec2I(0, 0), Vec2I.FromRelative(0.48f, 1f, _renderSize)));
             }
 
             Window.RenderAll();

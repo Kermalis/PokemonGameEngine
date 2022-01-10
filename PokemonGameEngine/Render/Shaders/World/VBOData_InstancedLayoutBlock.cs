@@ -29,7 +29,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.World
         public static InstancedData CreateInstancedData(int maxVisible)
         {
             GL gl = Display.OpenGL;
-            uint vbo = InstancedData.CreateInstancedVBO(gl, SizeOf * (uint)maxVisible);
+            uint vbo = InstancedData.CreateInstancedVBO(gl, SizeOf * (uint)maxVisible, BufferUsageARB.StreamDraw);
             InstancedData.AddInstancedAttribute(gl, 1, 2, SizeOf, OffsetOfTranslation);
             InstancedData.AddInstancedAttribute(gl, 2, 1, SizeOf, OffsetOfTexture);
             return new InstancedData(vbo, maxVisible);
