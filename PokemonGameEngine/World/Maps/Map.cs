@@ -117,7 +117,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
         public void GetPosAndMap(Vec2I pos, out Vec2I newPos, out Map newMap)
         {
-            Vec2I posOnCamMap = pos - BlockOffsetFromCurrentMap;
+            Vec2I posOnCamMap = pos + BlockOffsetFromCurrentMap;
             foreach (Map m in _loadedMaps.Values)
             {
                 Vec2I posOnM = posOnCamMap - m.BlockOffsetFromCurrentMap;
