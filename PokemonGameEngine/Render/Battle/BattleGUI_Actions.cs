@@ -22,6 +22,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         public void SubmitActions(PBETurnAction[] acts)
         {
+            CreateCameraMotionTask(DefaultCamPosition, CAM_SPEED_FAST);
             ActionsBuilder = null;
             RemoveActionsGUI();
             Game.Instance.SetCallback(CB_RunTasksAndEvents);
@@ -64,6 +65,8 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _curActionPkmn = pkmn;
             RemoveActionsGUI(); // Delete prev pkmn's choices
 
+            BattlePokemon bPkmn = GetBattlePokemon(pkmn);
+            CreateCameraMotionTask(bPkmn.Pos.FocusPreTurn, CAM_SPEED_FAST);
             SetStaticMessage($"What will {pkmn.Nickname} do?", SetCallback_HandleAllChoices);
             Game.Instance.SetCallback(CB_RunTasksAndEvents); // Will run the message task which will set the above callback
 

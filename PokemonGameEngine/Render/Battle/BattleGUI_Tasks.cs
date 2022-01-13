@@ -101,6 +101,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         #region Camera Motion
 
+        private const float CAM_SPEED_FAST = 0.25f;
         private const float CAM_SPEED_DEFAULT = 0.5f;
 
         public static readonly PositionRotation DefaultCamPosition = new(new Vector3(7f, 7f, 15f), new Rotation(-22f, 13f, 0f));

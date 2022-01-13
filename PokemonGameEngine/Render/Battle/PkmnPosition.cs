@@ -75,7 +75,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     a[0] = new PkmnPosition[2]
                     {
                         new(2f, // Left
-                            new Vector3(-4f, floorY, 1f),
+                            new Vector3(-4f, floorY, 2f),
                             new Vec2I(BAR_X_START, ALLY_BAR_Y),
                             new PositionRotation(new Vector3(3f, 5.2f, 14.8f), new Rotation(-22f, 13f, 0f)),
                             new PositionRotation(new Vector3(3f, 5.2f, 14.8f), new Rotation(-22f, 13f, 0f))),

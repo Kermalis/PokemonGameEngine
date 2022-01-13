@@ -201,7 +201,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             GUIString.CreateAndRenderOneTimeString("[LV]", Font.PartyNumbers, FontColors.DefaultWhite_I, new Vec2I(lvX, 3));
             GUIString.CreateAndRenderOneTimeString(PBEPkmn.Level.ToString(), Font.PartyNumbers, FontColors.DefaultWhite_I, new Vec2I(lvX + 12, 3));
             // Caught
-            if (_useKnownInfo && PBEPkmn.IsWild && Game.Instance.Save.Pokedex.IsCaught(PBEPkmn.KnownSpecies))
+            if (PBEPkmn.IsWild && Game.Instance.Save.Pokedex.IsCaught(PBEPkmn.KnownSpecies))
             {
                 GUIString.CreateAndRenderOneTimeString("*", Font.Default, FontColors.DefaultRed_O, new Vec2I(2, 12));
             }
