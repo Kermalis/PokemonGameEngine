@@ -56,13 +56,10 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
             Display.Viewport(Display.FitToScreen(Size));
 
-            gl.Enable(EnableCap.Blend);
-            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindTexture(TextureTarget.Texture2D, ColorTexture);
             EntireScreenTextureShader.Instance.Use(gl);
             RectMesh.Instance.Render(gl);
-            gl.Disable(EnableCap.Blend);
         }
 
         public override void Delete()

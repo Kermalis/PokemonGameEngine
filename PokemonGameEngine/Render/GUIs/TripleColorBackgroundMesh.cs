@@ -1,26 +1,11 @@
-﻿using Silk.NET.OpenGL;
+﻿using Kermalis.PokemonGameEngine.Render.Shaders.GUIs;
+using Silk.NET.OpenGL;
 using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.GUIs
 {
     internal sealed class TripleColorBackgroundMesh
     {
-        private struct VertexData
-        {
-            public const int OffsetOfPos = 0;
-            public const int OffsetOfColor = 2 * sizeof(float);
-            public const uint SizeOf = OffsetOfColor + sizeof(int);
-
-            public readonly Vector2 Pos;
-            public readonly int Color;
-
-            public VertexData(Vector2 pos, int color)
-            {
-                Pos = pos;
-                Color = color;
-            }
-        }
-
         public static TripleColorBackgroundMesh Instance { get; private set; } = null!; // Set in RenderManager
 
         private const int NUM_VERTICES = 7;
@@ -44,18 +29,15 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _vbo);
             fixed (void* vertices = CreateVertices())
             {
-                gl.BufferData(BufferTargetARB.ArrayBuffer, (uint)sizeof(VertexData) * NUM_VERTICES, vertices, BufferUsageARB.StaticDraw);
+                gl.BufferData(BufferTargetARB.ArrayBuffer, VBOData_TripleColorBackground.SIZE * NUM_VERTICES, vertices, BufferUsageARB.StaticDraw);
             }
 
-            gl.EnableVertexAttribArray(0);
-            gl.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, VertexData.SizeOf, (void*)VertexData.OffsetOfPos);
-            gl.EnableVertexAttribArray(1);
-            gl.VertexAttribPointer(1, 1, VertexAttribPointerType.Float, false, VertexData.SizeOf, (void*)VertexData.OffsetOfColor);
+            VBOData_TripleColorBackground.AddAttributes(gl);
         }
-        private static VertexData[] CreateVertices()
+        private static VBOData_TripleColorBackground[] CreateVertices()
         {
             // GL Coordinates
-            return new VertexData[NUM_VERTICES]
+            return new VBOData_TripleColorBackground[NUM_VERTICES]
             {
                 new(new Vector2(                                          -1f,  1f), 0), // 0
                 new(new Vector2(THIRD_COLOR_BEGIN_BOTTOM - SECOND_COLOR_WIDTH, -1f), 0), // 1 (offset from 3)

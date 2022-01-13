@@ -94,8 +94,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
             // Prepare to draw some blocks
             GL gl = Display.OpenGL;
             BlocksetBlockShader.Instance.Use(gl);
-            gl.Enable(EnableCap.Blend);
-            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             gl.ClearColor(Colors.Transparent);
             var builder = new TileVertexBuilder();
             Blockset blockset = null; // Cache so we don't keep changing texture units for no reason
@@ -106,7 +104,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 for (byte e = 0; e < Overworld.NumElevations; e++)
                 {
                     FrameBuffer3DColor fb = UsedBlocksTextures[e];
-                    fb.Use();
+                    fb.Use(gl);
                     fb.UpdateTexture(num);
                 }
                 // When we resize, we want to draw all used blocks to the new FBOs
@@ -118,7 +116,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                         blockset = b.Parent;
                         blockset.BindTilesetTextures();
                     }
-                    DrawBlock(builder, b);
+                    DrawBlock(gl, builder, b);
                 }
             }
             else
@@ -136,16 +134,16 @@ namespace Kermalis.PokemonGameEngine.Render.World
                         blockset = b.Parent;
                         blockset.BindTilesetTextures();
                     }
-                    DrawBlock(builder, b);
+                    DrawBlock(gl, builder, b);
                 }
             }
         }
-        private static void DrawBlock(TileVertexBuilder builder, Block b)
+        private static void DrawBlock(GL gl, TileVertexBuilder builder, Block b)
         {
             for (byte e = 0; e < Overworld.NumElevations; e++)
             {
                 FrameBuffer3DColor fb = UsedBlocksTextures[e];
-                fb.Use();
+                fb.Use(gl);
                 fb.SetLayer(b.UsedBlocksIndex);
                 b.Draw(builder, e);
             }
@@ -182,18 +180,16 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     Block b = blockset._animatedBlocks[i];
                     if (b.IsAnimDirty())
                     {
+                        GL gl = Display.OpenGL;
                         // Init on first one
                         if (builder is null)
                         {
                             builder = new TileVertexBuilder();
-                            GL gl = Display.OpenGL;
                             BlocksetBlockShader.Instance.Use(gl);
-                            gl.Enable(EnableCap.Blend);
-                            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
                             gl.ClearColor(Colors.Transparent);
                             blockset.BindTilesetTextures();
                         }
-                        DrawBlock(builder, b);
+                        DrawBlock(gl, builder, b);
                     }
                 }
             }

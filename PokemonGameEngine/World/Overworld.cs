@@ -56,6 +56,24 @@ namespace Kermalis.PokemonGameEngine.World
             }
             return PBEBattleTerrain.Plain;
         }
+        public static BattleBackground GetBattleBackground(BlocksetBlockBehavior behavior)
+        {
+            switch (behavior)
+            {
+                // Cave
+                case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter:
+                case BlocksetBlockBehavior.Cave_Encounter:
+                    return BattleBackground.Cave;
+                // Grass
+                case BlocksetBlockBehavior.Grass_Encounter:
+                case BlocksetBlockBehavior.Grass_SpecialEncounter:
+                    return BattleBackground.Grass_Tall;
+                // Water
+                case BlocksetBlockBehavior.Surf:
+                    return BattleBackground.Water;
+            }
+            return BattleBackground.Unspecified;
+        }
 
         public static void OnCameraMapChanged(Map oldMap, Map map)
         {

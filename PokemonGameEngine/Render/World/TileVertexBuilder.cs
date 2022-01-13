@@ -50,19 +50,14 @@ namespace Kermalis.PokemonGameEngine.Render.World
             // Store in vbo
             vbo = gl.GenBuffer();
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, vbo);
-            gl.BufferData(BufferTargetARB.ArrayBuffer, VBOData_BlocksetBlockTile.SizeOf * _vertexCount, (ReadOnlySpan<VBOData_BlocksetBlockTile>)CollectionsMarshal.AsSpan(_vertices), BufferUsageARB.StaticDraw);
+            gl.BufferData(BufferTargetARB.ArrayBuffer, VBOData_BlocksetBlockTile.SIZE * _vertexCount, (ReadOnlySpan<VBOData_BlocksetBlockTile>)CollectionsMarshal.AsSpan(_vertices), BufferUsageARB.StaticDraw);
 
             // Store in ebo
             ebo = gl.GenBuffer();
             gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, ebo);
             gl.BufferData(BufferTargetARB.ElementArrayBuffer, sizeof(uint) * indexCount, (ReadOnlySpan<uint>)CollectionsMarshal.AsSpan(_indices), BufferUsageARB.StaticDraw);
 
-            gl.EnableVertexAttribArray(0);
-            gl.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, VBOData_BlocksetBlockTile.SizeOf, (void*)VBOData_BlocksetBlockTile.OffsetOfPos);
-            gl.EnableVertexAttribArray(1);
-            gl.VertexAttribPointer(1, 1, VertexAttribPointerType.Float, false, VBOData_BlocksetBlockTile.SizeOf, (void*)VBOData_BlocksetBlockTile.OffsetOfTileset);
-            gl.EnableVertexAttribArray(2);
-            gl.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, VBOData_BlocksetBlockTile.SizeOf, (void*)VBOData_BlocksetBlockTile.OffsetOfUV);
+            VBOData_BlocksetBlockTile.AddAttributes(gl);
         }
     }
 }

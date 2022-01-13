@@ -1,21 +1,23 @@
 ﻿using Kermalis.PokemonGameEngine.Render.Shaders.Battle;
 using Silk.NET.OpenGL;
+using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Kermalis.PokemonGameEngine.Render.R3D
 {
     internal sealed class Mesh
     {
         private readonly uint _elementCount;
-        private readonly IReadOnlyList<AssimpTexture> _textures;
+        private readonly IReadOnlyList<uint> _textures;
 
         private readonly uint _vao;
         private readonly uint _vbo;
         private readonly uint _ebo;
 
-        public unsafe Mesh(AssimpVertex[] vertices, uint[] indices, IReadOnlyList<AssimpTexture> textures)
+        public unsafe Mesh(VBOData_BattleModel[] vertices, List<uint> indices, IReadOnlyList<uint> textures)
         {
-            _elementCount = (uint)indices.Length;
+            _elementCount = (uint)indices.Count;
             _textures = textures;
 
             GL gl = Display.OpenGL;
@@ -26,22 +28,14 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             gl.BindBuffer(BufferTargetARB.ArrayBuffer, _vbo);
             fixed (void* d = vertices)
             {
-                gl.BufferData(BufferTargetARB.ArrayBuffer, AssimpVertex.SizeOf * (uint)vertices.Length, d, BufferUsageARB.StaticDraw);
+                gl.BufferData(BufferTargetARB.ArrayBuffer, VBOData_BattleModel.SIZE * (uint)vertices.Length, d, BufferUsageARB.StaticDraw);
             }
 
             _ebo = gl.GenBuffer();
             gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, _ebo);
-            fixed (void* d = indices)
-            {
-                gl.BufferData(BufferTargetARB.ElementArrayBuffer, sizeof(uint) * _elementCount, d, BufferUsageARB.StaticDraw);
-            }
+            gl.BufferData(BufferTargetARB.ElementArrayBuffer, sizeof(uint) * _elementCount, (ReadOnlySpan<uint>)CollectionsMarshal.AsSpan(indices), BufferUsageARB.StaticDraw);
 
-            gl.EnableVertexAttribArray(0);
-            gl.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, AssimpVertex.SizeOf, (void*)AssimpVertex.OffsetOfPos);
-            gl.EnableVertexAttribArray(1);
-            gl.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, AssimpVertex.SizeOf, (void*)AssimpVertex.OffsetOfNormal);
-            gl.EnableVertexAttribArray(2);
-            gl.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, AssimpVertex.SizeOf, (void*)AssimpVertex.OffsetOfUV);
+            VBOData_BattleModel.AddAttributes(gl);
         }
 
         public unsafe void Render(BattleModelShader shader)
@@ -55,7 +49,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                 if (shader.SetDiffuseTextureUnit(gl, i, textureUnit))
                 {
                     gl.ActiveTexture(textureUnit.ToTextureUnit());
-                    gl.BindTexture(TextureTarget.Texture2D, _textures[i].GLTex);
+                    gl.BindTexture(TextureTarget.Texture2D, _textures[i]);
                 }
             }
 
@@ -71,7 +65,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             gl.DeleteBuffer(_ebo);
             for (int i = 0; i < _textures.Count; i++)
             {
-                gl.DeleteTexture(_textures[i].GLTex);
+                gl.DeleteTexture(_textures[i]);
             }
         }
     }

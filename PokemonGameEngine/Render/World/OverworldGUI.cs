@@ -61,15 +61,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
             DayTint.CatchUpTime = true;
             StartMapMusic();
-            Instance._transition = FadeFromColorTransition.FromBlackStandard();
-            Game.Instance.SetCallback(Instance.CB_FadeIn);
-        }
-        public static void Debug_InitTestBattle()
-        {
-            _ = new OverworldGUI(); // Create
 
-            DayTint.CatchUpTime = true;
-            StartMapMusic();
+            //Instance.ReturnToFieldWithFadeIn();
             //EncounterMaker.Debug_CreateTestWildBattle();
             TrainerCore.Debug_CreateTestTrainerBattle();
         }
@@ -130,14 +123,14 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Game.Instance.SetCallback(CB_FadeOutToWarp);
         }
 
-        public void StartWildBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties)
+        public void StartWildBattle(PBEBattle battle, BattleBackground bg, Song song, IReadOnlyList<Party> trainerParties)
         {
-            BattleGUI.CreateWildBattle(battle, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties);
+            BattleGUI.CreateWildBattle(battle, bg, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties);
             StartBattle(song);
         }
-        public void StartTrainerBattle(PBEBattle battle, Song song, IReadOnlyList<Party> trainerParties, TrainerClass c, string defeatText)
+        public void StartTrainerBattle(PBEBattle battle, BattleBackground bg, Song song, IReadOnlyList<Party> trainerParties, TrainerClass c, string defeatText)
         {
-            BattleGUI.CreateTrainerBattle(battle, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties, c, defeatText);
+            BattleGUI.CreateTrainerBattle(battle, bg, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties, c, defeatText);
             StartBattle(song);
         }
         /// <summary>Sets up the battle transition, starts music, sets transition callbacks.</summary>
@@ -303,10 +296,11 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private void Render()
         {
-            _frameBuffer.Use();
             GL gl = Display.OpenGL;
+            _frameBuffer.Use(gl);
             gl.ClearColor(Colors.Black3);
             gl.Clear(ClearBufferMask.ColorBufferBit);
+
             _mapRenderer.Render(_frameBuffer);
             DayTint.Render(_frameBuffer, _dayTintFrameBuffer);
             Window.RenderAll();

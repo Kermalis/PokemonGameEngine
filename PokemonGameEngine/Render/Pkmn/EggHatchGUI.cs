@@ -166,8 +166,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         private void Render()
         {
-            _frameBuffer.Use();
             GL gl = Display.OpenGL;
+            _frameBuffer.Use(gl);
             gl.ClearColor(Colors.FromRGB(31, 31, 31));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 

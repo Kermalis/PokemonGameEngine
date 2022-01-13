@@ -38,23 +38,26 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
             }
 
             GL gl = Display.OpenGL;
+            gl.Disable(EnableCap.Blend);
+            gl.ActiveTexture(TextureUnit.Texture0);
+
             BattleTransitionShader_Liquid shader = BattleTransitionShader_Liquid.Instance;
             shader.Use(gl);
             shader.SetProgress(gl, progress);
 
-            // Bind target's texture
-            gl.ActiveTexture(TextureUnit.Texture0);
-            gl.BindTexture(TextureTarget.Texture2D, target.ColorTexture);
-
             // Render to transition texture
-            _frameBuffer.Use();
+            _frameBuffer.Use(gl);
+            gl.BindTexture(TextureTarget.Texture2D, target.ColorTexture);
             RectMesh.Instance.Render(gl);
 
             // Copy rendered result back to the target
             EntireScreenTextureShader.Instance.Use(gl);
-            target.Use();
+            target.Use(gl);
             gl.BindTexture(TextureTarget.Texture2D, _frameBuffer.ColorTexture);
             RectMesh.Instance.Render(gl);
+
+            gl.Enable(EnableCap.Blend); // Re-enable blend
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         }
 
         public void Dispose()

@@ -16,9 +16,8 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
         }
 
         public abstract void OnCurrent();
-        public void Use()
+        public void Use(GL gl)
         {
-            GL gl = Display.OpenGL;
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, Id);
             OnCurrent();
         }

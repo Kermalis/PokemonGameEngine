@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Input;
+using Silk.NET.OpenGL;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -101,7 +102,8 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             _charTimer %= 1f;
             if (count >= 1)
             {
-                _window.FrameBuffer.Use();
+                GL gl = Display.OpenGL;
+                _window.FrameBuffer.Use(gl);
                 _result = DrawNext(count);
             }
         }

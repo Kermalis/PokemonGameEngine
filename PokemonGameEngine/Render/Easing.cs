@@ -23,19 +23,38 @@
             return 1f - (v * v * v);
         }
 
+        public static float Smooth2(float v)
+        {
+            if (v < 0.5f)
+            {
+                return v * v * 2f;
+            }
+
+            float x = (-2f * v) + 2;
+            return 1f - (x * x * 0.5f);
+        }
+        public static float Smooth3(float v)
+        {
+            if (v < 0.5f)
+            {
+                return v * v * v * 2f * 2f;
+            }
+
+            float x = (-2f * v) + 2;
+            return 1f - (x * x * x * 0.5f);
+        }
+
         // Bell curves are the following function where (a > 1):
         // f(v) = (4^a) * ((v * (1 - v))^a)
         public static float BellCurve2(float v)
         {
-            const float mod = 4f * 4f;
             v *= 1f - v;
-            return v * v * mod;
+            return v * v * 4f * 4f;
         }
         public static float BellCurve3(float v)
         {
-            const float mod = 4f * 4f * 4f;
             v *= 1f - v;
-            return v * v * v * mod;
+            return v * v * v * 4f * 4f * 4f;
         }
     }
 }

@@ -186,8 +186,8 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         public void UpdateInfoBar()
         {
-            InfoBar.Use();
             GL gl = Display.OpenGL;
+            InfoBar.Use(gl);
             gl.ClearColor(Colors.FromRGBA(48, 48, 48, 128));
             gl.Clear(ClearBufferMask.ColorBufferBit);
 

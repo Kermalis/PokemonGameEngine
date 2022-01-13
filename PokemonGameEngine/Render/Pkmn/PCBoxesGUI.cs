@@ -5,6 +5,7 @@ using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Transitions;
+using Silk.NET.OpenGL;
 using System;
 using System.Numerics;
 
@@ -458,9 +459,9 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         private void Render()
         {
-            _frameBuffer.Use();
-            // Background
-            _tripleColorBG.Render();
+            GL gl = Display.OpenGL;
+            _frameBuffer.Use(gl);
+            _tripleColorBG.Render(gl); // No need to glClear since this overwrites everything
 
             // PC
             _selectedBoxText.Render(Vec2I.FromRelative(0.02f, 0.01f, _renderSize));
@@ -468,7 +469,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             if (_partyVisible)
             {
                 _partyChoices.Render(_renderSize);
-                _frameBuffer.Use();
+                _frameBuffer.Use(gl); // Possible the above redraws to its framebuffer so rebind this one
             }
             else
             {

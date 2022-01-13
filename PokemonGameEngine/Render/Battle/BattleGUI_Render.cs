@@ -53,7 +53,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             new(new Vector3( 5, 3,  5), new Vector3(0.85f, 0.52f, 0.88f), new Vector3(1f, 0.01f, 0.002f)),
         };
 
-        private BattleGUI(PBEBattle battle, IReadOnlyList<Party> trainerParties)
+        private BattleGUI(PBEBattle battle, BattleBackground bg, IReadOnlyList<Party> trainerParties)
         {
             Instance = this;
 
@@ -66,11 +66,11 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                                                        0f,              0f, -2.00390625f,  0f);
 
             GL gl = Display.OpenGL;
-            Camera = new Camera(DefaultCamPosition, projection); // cam pos doesn't matter here since we will set it later
+            Camera = new Camera(default, projection); // Cam position is set in ActuallyStartFadeIn()
             _modelShader = new BattleModelShader(gl);
             _spriteShader = new BattleSpriteShader(gl);
 
-            _frameBuffer = new FrameBuffer2DColorDepth(RenderSize); // Gets used at InitFadeIn()
+            _frameBuffer = new FrameBuffer2DColorDepth(RenderSize);
             _dayTintFrameBuffer = new FrameBuffer2DColor(RenderSize);
             _shadowFrameBuffer = new FrameBuffer2DColorDepth(new Vec2I(SHADOW_TEXTURE_SIZE, SHADOW_TEXTURE_SIZE));
 
@@ -84,11 +84,11 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             for (int i = 0; i < battle.Trainers.Count; i++)
             {
                 PBETrainer trainer = battle.Trainers[i];
-                _parties[i] = new BattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team.Id), ShouldUseKnownInfo(trainer), this);
+                _parties[i] = new BattlePokemonParty(trainer.Party, trainerParties[i], IsBackImage(trainer.Team.Id), ShouldUseKnownInfo(trainer));
             }
 
             // Terrain:
-            GetTerrainPaths(battle.BattleTerrain, battle.BattleFormat == PBEBattleFormat.Rotation,
+            GetTerrainPaths(bg, battle.BattleFormat == PBEBattleFormat.Rotation,
                 out string bgPath, out string allyPlatformPath, out string foePlatformPath);
             GetPlatformTransforms(battle.BattleFormat,
                 out float platformScale, out Vector3 foePos, out Vector3 allyPos);
@@ -157,28 +157,45 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 default: throw new ArgumentOutOfRangeException(nameof(f));
             }
         }
-        private static bool TerrainHasTeamSpecificPlatforms(PBEBattleTerrain t)
+        private static bool TerrainHasTeamSpecificPlatforms(BattleBackground bg)
         {
-            switch (t)
+            switch (bg)
             {
-                case PBEBattleTerrain.Cave:
-                case PBEBattleTerrain.Grass:
+                case BattleBackground.Cave:
+                case BattleBackground.Grass_Plain:
+                case BattleBackground.Grass_Tall:
                     return true;
             }
             return false;
         }
-        private static string GetTerrainName(PBEBattleTerrain t)
+        private static string GetTerrainName(BattleBackground bg)
         {
-            switch (t)
+            switch (bg)
             {
-                case PBEBattleTerrain.Cave: return "Cave";
-                case PBEBattleTerrain.Grass: return "Grass";
-                default: return "Dark";
+                case BattleBackground.Cave:
+                    return "Cave";
+                case BattleBackground.Grass_Plain:
+                case BattleBackground.Grass_Tall:
+                    return "Grass";
             }
+            return "Dark";
         }
-        private static void GetTerrainPaths(PBEBattleTerrain t, bool rotation, out string bgPath, out string allyPlatformPath, out string foePlatformPath)
+        private static string GetPlatformName(BattleBackground bg)
         {
-            string name = GetTerrainName(t);
+            switch (bg)
+            {
+                case BattleBackground.Cave:
+                    return "Cave";
+                case BattleBackground.Grass_Plain:
+                    return "Grass";
+                case BattleBackground.Grass_Tall:
+                    return "TallGrass";
+            }
+            return "Dark";
+        }
+        private static void GetTerrainPaths(BattleBackground bg, bool rotation, out string bgPath, out string allyPlatformPath, out string foePlatformPath)
+        {
+            string name = GetTerrainName(bg);
             bgPath = string.Format("BattleBG\\{0}\\{0}.dae", name);
             if (rotation)
             {
@@ -186,7 +203,8 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 return;
             }
             // Load specific platforms for non-rotation battles
-            bool teamSpecificPlatforms = TerrainHasTeamSpecificPlatforms(t);
+            bool teamSpecificPlatforms = TerrainHasTeamSpecificPlatforms(bg);
+            name = GetPlatformName(bg);
             string FormatPlatform(string team)
             {
                 return string.Format("BattleBG\\Platform{0}{1}\\{0}{1}.dae", name, team);
@@ -201,23 +219,19 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 allyPlatformPath = foePlatformPath = FormatPlatform(string.Empty);
             }
         }
-        private static Vector3 GetTrainerSpritePos(PBEBattleFormat f)
+        public static float GetFloorY(PBEBattleFormat f)
         {
-            Vector3 pos;
             switch (f)
             {
                 case PBEBattleFormat.Single:
                 case PBEBattleFormat.Triple:
-                    pos.Y = 0.02f; break;
+                    return 0.02f;
                 case PBEBattleFormat.Double:
-                    pos.Y = 0.015f; break;
+                    return 0.015f;
                 case PBEBattleFormat.Rotation:
-                    pos.Y = 0.5f; break; // TODO
+                    return 0.063f;
                 default: throw new ArgumentOutOfRangeException(nameof(f));
             }
-            pos.X = 0.75f; // X/Z is same as 1v1 foe
-            pos.Z = -12.0f;
-            return pos;
         }
 
         #endregion
@@ -225,45 +239,64 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         public void InitFadeIn()
         {
             Display.SetMinimumWindowSize(RenderSize);
+
+            _tasks.Add(Task_RenderWhite, 0, data: new TaskData_RenderWhite());
+            Game.Instance.SetCallback(CB_RenderWhite); // Renders white for half a second so the transition isn't jarring
+        }
+        private void ActuallyStartFadeIn()
+        {
             DayTint.CatchUpTime = true;
-            // Trainer sprite
+
             if (Battle.BattleType == PBEBattleType.Trainer)
             {
-                InitTrainerSpriteAtBattleStart();
+                _canAdvanceMsg = false; // Don't advance message till trainer anim finishes
+
+                // Create trainer sprite
+                var img = new AnimatedImage(TrainerCore.GetTrainerClassAsset(_trainerClass), isPaused: true);
+                _trainerSprite = new BattleSprite(new Vector3(0.75f, GetFloorY(Battle.BattleFormat), -13f), true)
+                {
+                    BlacknessAmt = 1f
+                };
+                _trainerSprite.UpdateImage(img);
+                _tasks.Add(Task_TrainerReveal, 0, data: new TaskData_TrainerReveal());
+
+                Camera.PR = new PositionRotation(new Vector3(10f, 5f, -25f), new Rotation(-70, 15, 0));
+                CreateCameraMotionTask(DefaultCamPosition, 2f, method: PositionRotationAnimator.Method.Smooth);
+            }
+            else // Wild
+            {
+                // Darken the sprites until the camera is done moving
+                foreach (PkmnPosition p in _positions[1])
+                {
+                    p.Sprite.BlacknessAmt = TaskData_WildReveal.START_AMT;
+                }
+
+                Camera.PR = new PositionRotation(new Vector3(8.4f, 7f, 2.3f), new Rotation(-32f, 13.3f, 0f));
+                var nextPos = new PositionRotation(new Vector3(6.85f, 7f, 4.55f), new Rotation(-22f, 13f, 0f));
+                CreateCameraMotionTask(nextPos, CAM_SPEED_DEFAULT);
             }
 
-            _transition = new FadeFromColorTransition(1f, Colors.Black3);
+            _transition = new FadeFromColorTransition(1f, Colors.White3);
             Game.Instance.SetCallback(CB_FadeInBattle);
-        }
-        private void InitTrainerSpriteAtBattleStart()
-        {
-            var img = new AnimatedImage(TrainerCore.GetTrainerClassAsset(_trainerClass), isPaused: true);
-            _canAdvanceMsg = false; // Don't advance message till anim done
-            _trainerSprite = new BattleSprite(GetTrainerSpritePos(Battle.BattleFormat), true)
-            {
-                MaskColor = Colors.Black3,
-                MaskColorAmt = 1f
-            };
-            _trainerSprite.UpdateImage(img);
-            var data = new TaskData_TrainerReveal();
-            _tasks.Add(Task_TrainerReveal, 0, data: data);
         }
         private void OnFadeInFinished()
         {
             if (Battle.BattleType == PBEBattleType.Trainer)
             {
+                void InitTrainerSpriteFadeAwayAndBegin()
+                {
+                    _tasks.Add(Task_TrainerGoAway, 0, data: new TaskData_TrainerGoAway(_trainerSprite.Pos.Z));
+
+                    Begin();
+                }
                 SetMessage(string.Format("You are challenged by {0}!", Battle.Teams[1].CombinedName), InitTrainerSpriteFadeAwayAndBegin);
             }
-            else
+            else // Wild
             {
-                Begin();
+                _tasks.Add(Task_WildReveal, 0, data: new TaskData_WildReveal());
+
+                CreateCameraMotionTask(DefaultCamPosition, CAM_SPEED_DEFAULT, onFinished: Begin);
             }
-        }
-        private void InitTrainerSpriteFadeAwayAndBegin()
-        {
-            var data = new TaskData_TrainerGoAway(_trainerSprite.Pos.Z);
-            _tasks.Add(Task_TrainerGoAway, 0, data: data);
-            Begin();
         }
 
         private void SetMessageWindowVisibility(bool invisible)
@@ -339,24 +372,25 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             AnimatedImage.UpdateAll();
 
-            _frameBuffer.Use();
             GL gl = Display.OpenGL;
             Render_3D(gl);
             if (!_hudInvisible)
             {
                 Render_HUD();
             }
-            gl.Disable(EnableCap.Blend);
+#if DEBUG_BATTLE_CAMERAPOS
+            Camera.PR.Debug_RenderPosition();
+#endif
         }
         private void Render_3D(GL gl)
         {
-            gl.Enable(EnableCap.DepthTest);
-            gl.Enable(EnableCap.Blend);
-            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            gl.ClearColor(Colors.Black3);
 #if DEBUG_BATTLE_WIREFRAME
             gl.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 #endif
+            gl.Enable(EnableCap.DepthTest);
+
+            _frameBuffer.Use(gl);
+            gl.ClearColor(Colors.Black3);
             gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             Render_3D_UpdateLights();
@@ -364,7 +398,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             Matrix4x4 camView = Camera.CreateViewMatrix();
 
             // Clear shadow buffer
-            _shadowFrameBuffer.Use();
+            _shadowFrameBuffer.Use(gl);
             gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             #region Draw sprites to shadow buffer
@@ -378,7 +412,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             #region Draw models (shadows will be placed on top of them now)
 
-            _frameBuffer.Use();
+            _frameBuffer.Use(gl);
             _modelShader.Use(gl);
             _modelShader.SetCamera(gl, Camera.Projection, camView, Camera.PR.Position);
             _modelShader.SetLights(gl, _testLights);
@@ -405,7 +439,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             #endregion
 
-            gl.Disable(EnableCap.DepthTest);
+            gl.Disable(EnableCap.DepthTest); // Re-disable DepthTest
 #if DEBUG_BATTLE_WIREFRAME
             gl.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill); // Reset
 #endif
@@ -431,10 +465,6 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             {
                 _stringWindow.Render();
             }
-
-#if DEBUG_BATTLE_CAMERAPOS
-            Camera.PR.Debug_RenderPosition();
-#endif
         }
 
         private void Render_3D_UpdateLights()
@@ -468,6 +498,14 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     }
                 }
             }
+        }
+
+        private void RenderWhite()
+        {
+            GL gl = Display.OpenGL;
+            _frameBuffer.Use(gl);
+            gl.ClearColor(Colors.White3);
+            gl.Clear(ClearBufferMask.ColorBufferBit);
         }
     }
 }

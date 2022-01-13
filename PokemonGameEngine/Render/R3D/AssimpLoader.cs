@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.Render.Shaders.Battle;
 using Silk.NET.Assimp;
 using Silk.NET.OpenGL;
 using SixLabors.ImageSharp.PixelFormats;
@@ -11,22 +12,6 @@ using System.Runtime.InteropServices;
 
 namespace Kermalis.PokemonGameEngine.Render.R3D
 {
-    internal struct AssimpTexture
-    {
-        public string Path;
-        public uint GLTex;
-    }
-    internal struct AssimpVertex
-    {
-        public const int OffsetOfPos = 0;
-        public const int OffsetOfNormal = 3 * sizeof(float);
-        public const int OffsetOfUV = 6 * sizeof(float);
-        public const uint SizeOf = (3 + 3 + 2) * sizeof(float);
-
-        public Vector3 Pos;
-        public Vector3 Normal;
-        public Vector2 UV;
-    }
     internal unsafe static class AssimpLoader
     {
         private static readonly Assimp _assimp;
@@ -50,12 +35,12 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             string dir = Path.GetDirectoryName(asset);
 
             var meshes = new List<Mesh>();
-            var loaded = new List<AssimpTexture>();
+            var loaded = new Dictionary<string, uint>();
             ProcessNode(meshes, scene->MRootNode, scene, dir, loaded);
             return meshes;
         }
 
-        private static void ProcessNode(List<Mesh> meshes, Node* node, Scene* scene, string dir, List<AssimpTexture> loaded)
+        private static void ProcessNode(List<Mesh> meshes, Node* node, Scene* scene, string dir, Dictionary<string, uint> loaded)
         {
             for (uint i = 0; i < node->MNumMeshes; i++)
             {
@@ -69,13 +54,13 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             }
         }
 
-        private static Mesh ProcessMesh(Silk.NET.Assimp.Mesh* mesh, Scene* scene, string dir, List<AssimpTexture> loaded)
+        private static Mesh ProcessMesh(Silk.NET.Assimp.Mesh* mesh, Scene* scene, string dir, Dictionary<string, uint> loaded)
         {
-            var vertices = new AssimpVertex[mesh->MNumVertices];
+            var vertices = new VBOData_BattleModel[mesh->MNumVertices];
 
             for (uint i = 0; i < mesh->MNumVertices; i++)
             {
-                AssimpVertex vertex;
+                VBOData_BattleModel vertex;
 
                 // Positions
                 vertex.Pos = mesh->MVertices[i];
@@ -109,7 +94,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             }
 
             // Materials
-            var textures = new List<AssimpTexture>();
+            var textures = new List<uint>();
             if (mesh->MMaterialIndex >= 0)
             {
                 Material* material = scene->MMaterials[mesh->MMaterialIndex];
@@ -119,52 +104,37 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                 // Not supporting other textures (for now)
             }
 
-            return new Mesh(vertices, indices.ToArray(), textures);
+            return new Mesh(vertices, indices, textures);
         }
 
-        private static List<AssimpTexture> LoadMaterialTextures(Material* mat, TextureType type, string dir, List<AssimpTexture> loaded)
+        private static List<uint> LoadMaterialTextures(Material* mat, TextureType type, string dir, Dictionary<string, uint> loaded)
         {
-            var textures = new List<AssimpTexture>();
+            var textures = new List<uint>();
 
             uint count = _assimp.GetMaterialTextureCount(mat, type);
             for (uint i = 0; i < count; i++)
             {
-                AssimpString path = default;
-                if (_assimp.GetMaterialTexture(mat, type, i, &path, null, null, null, null, null, null) != Return.ReturnSuccess)
+                AssimpString aPath = default;
+                if (_assimp.GetMaterialTexture(mat, type, i, &aPath, null, null, null, null, null, null) != Return.ReturnSuccess)
                 {
                     throw new Exception("Error loading material textures");
                 }
-
-                string sPath = path.AsString;
-
-                for (int j = 0; j < loaded.Count; j++)
+                string path = aPath.AsString;
+                if (!loaded.TryGetValue(path, out uint texture))
                 {
-                    AssimpTexture l = loaded[j];
-                    if (l.Path == sPath)
+                    GL gl = Display.OpenGL;
+                    texture = gl.GenTexture();
+                    gl.BindTexture(TextureTarget.Texture2D, texture);
+                    using (var img = SixLabors.ImageSharp.Image.Load<Rgba32>(Path.Combine(dir, path)))
                     {
-                        textures.Add(l);
-                        goto dontload; // break out of this loop and continue on the parent loop
+                        fixed (void* imgdata = &MemoryMarshal.GetReference(img.GetPixelRowSpan(0)))
+                        {
+                            GLTextureUtils.LoadTextureData(gl, imgdata, new Vec2I(img.Width, img.Height));
+                        }
                     }
+                    loaded.Add(path, texture);
                 }
-
-                GL gl = Display.OpenGL;
-                AssimpTexture texture;
-                gl.ActiveTexture(TextureUnit.Texture0);
-                texture.GLTex = gl.GenTexture();
-                gl.BindTexture(TextureTarget.Texture2D, texture.GLTex);
-                using (var img = SixLabors.ImageSharp.Image.Load<Rgba32>(Path.Combine(dir, sPath)))
-                {
-                    fixed (void* imgdata = &MemoryMarshal.GetReference(img.GetPixelRowSpan(0)))
-                    {
-                        GLTextureUtils.LoadTextureData(gl, imgdata, new Vec2I(img.Width, img.Height));
-                    }
-                }
-                texture.Path = sPath;
                 textures.Add(texture);
-                loaded.Add(texture);
-
-            dontload:
-                ;
             }
 
             return textures;

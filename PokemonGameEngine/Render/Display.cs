@@ -74,6 +74,10 @@ namespace Kermalis.PokemonGameEngine.Render
                 Print_SDL_Error("Could not start OpenGL on the window!");
             }
             OpenGL = GL.GetApi(SDL.SDL_GL_GetProcAddress);
+            // Default gl states:
+            // DepthTest disabled
+            OpenGL.Enable(EnableCap.Blend); // Blend enabled
+            OpenGL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 #if DEBUG
             unsafe
             {

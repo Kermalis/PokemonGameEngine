@@ -9,6 +9,7 @@ using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Transitions;
 using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.World.Objs;
+using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 
@@ -702,8 +703,9 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             _sprites.DoCallbacks();
 
-            _frameBuffer.Use();
-            _tripleColorBG.Render();
+            GL gl = Display.OpenGL;
+            _frameBuffer.Use(gl);
+            _tripleColorBG.Render(gl); // No need to glClear since this will overwrite everything
 
             for (int i = 0; i < _members.Count; i++)
             {
@@ -714,8 +716,6 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 pos.Y = row * (_renderSize.Y / 4) + (_renderSize.Y / 20);
                 _members[i].Render(pos, col == _selectionX && row == _selectionY);
             }
-
-            _frameBuffer.Use();
 
             // Back button
             if (_allowBack)

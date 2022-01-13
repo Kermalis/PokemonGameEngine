@@ -88,7 +88,6 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
                 GL gl = Display.OpenGL;
                 fixed (byte* dst = dest)
                 {
-                    gl.ActiveTexture(TextureUnit.Texture0);
                     Texture = gl.GenTexture();
                     gl.BindTexture(TextureTarget.Texture2D, Texture);
                     gl.TexImage2D(TextureTarget.Texture2D, 0, (int)InternalFormat.R8ui, (uint)atlasSize.X, (uint)atlasSize.Y, 0, PixelFormat.RedInteger, PixelType.UnsignedByte, dst);

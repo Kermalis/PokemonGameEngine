@@ -54,10 +54,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 var shadowSize = new Vec2I(r.ReadInt32(), r.ReadInt32());
                 Shadow = new FrameBuffer2DColor(shadowSize);
 
-                Shadow.Use();
                 GL gl = Display.OpenGL;
-                gl.ActiveTexture(TextureUnit.Texture0);
-                gl.BindTexture(TextureTarget.Texture2D, Shadow.ColorTexture);
+                Shadow.Use(gl);
                 GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 200), Rect.FromSize(new Vec2I(0, 0), shadowSize), cornerRadius: 6); // TODO: Specify corner radius for each
             }
         }
@@ -69,7 +67,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public void RenderImage(in Rect rect, int imgIndex, bool xFlip = false, bool yFlip = false)
         {
-            _textureAtlas.Render(rect, UV.FromAtlas(imgIndex, ImageSize, _textureAtlas.Size, xFlip: xFlip, yFlip: yFlip));
+            GUIRenderer.Texture(_textureAtlas.Texture, rect, UV.FromAtlas(imgIndex, ImageSize, _textureAtlas.Size, xFlip: xFlip, yFlip: yFlip));
         }
 
         public static VisualObjTexture LoadOrGet(string asset)

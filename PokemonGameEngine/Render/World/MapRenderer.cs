@@ -165,7 +165,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             gl.ClearColor(Colors.Transparent);
             for (int i = 0; i < Overworld.NumElevations; i++)
             {
-                _objFrameBuffers[i].Use();
+                _objFrameBuffers[i].Use(gl);
                 gl.Clear(ClearBufferMask.ColorBufferBit);
                 _blockData[i].Prepare();
             }
@@ -173,14 +173,12 @@ namespace Kermalis.PokemonGameEngine.Render.World
             InitCameraRect(CameraObj.Instance, out Rect visibleBlocks, out Vec2I startBlockPixel);
 
             RenderLayouts(gl, CameraObj.Instance.Map, visibleBlocks, startBlockPixel);
-            RenderObjs(Obj.LoadedObjs.ToArray(), visibleBlocks, startBlockPixel);
+            RenderObjs(gl, Obj.LoadedObjs.ToArray(), visibleBlocks, startBlockPixel);
 
             // Finish render by rendering each layer to the target
-            targetFrameBuffer.Use();
+            targetFrameBuffer.Use(gl);
             EntireScreenTextureShader.Instance.Use(gl);
 
-            gl.Enable(EnableCap.Blend); // Blend is disabled after rendering objs so re-enable it (can remove this when adding the obj shader)
-            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             gl.ActiveTexture(TextureUnit.Texture0);
             for (int i = 0; i < Overworld.NumElevations; i++)
             {
@@ -189,8 +187,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 gl.BindTexture(TextureTarget.Texture2D, _objFrameBuffers[i].ColorTexture);
                 RectMesh.Instance.Render(gl);
             }
-
-            gl.Disable(EnableCap.Blend);
         }
 
         private void RenderLayouts(GL gl, Map curMap, in Rect visibleBlocks, Vec2I startBlockPixel)
@@ -224,11 +220,13 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _layoutShader.Use(gl);
             for (byte e = 0; e < Overworld.NumElevations; e++)
             {
-                _layoutFrameBuffers[e].Use();
+                _layoutFrameBuffers[e].Use(gl);
                 gl.Clear(ClearBufferMask.ColorBufferBit);
                 gl.BindTexture(TextureTarget.Texture3D, Blockset.UsedBlocksTextures[e].ColorTexture);
                 _layoutMesh.RenderInstanced(gl, _blockData[e].InstanceCount);
             }
+            gl.Enable(EnableCap.Blend); // Re-enable blend
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
 #if DEBUG_OVERWORLD
             if (_debugEnabled)
@@ -317,7 +315,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         // TODO: Obj shader
         // TODO: Allocating array every frame = bad, plus I have to sort them every frame by y coordinate
         // Hopefully we can solve that with depth testing with their shader. Just render them with the depth being their coordinate
-        private void RenderObjs(Obj[] objs, in Rect visibleBlocks, Vec2I startBlockPixel)
+        private void RenderObjs(GL gl, Obj[] objs, in Rect visibleBlocks, Vec2I startBlockPixel)
         {
             var toleratedBlocks = Rect.FromCorners(visibleBlocks.TopLeft - _objTolerance, visibleBlocks.BottomRight + _objTolerance);
             startBlockPixel -= _objTolerance * Overworld.Block_NumPixels;
@@ -342,7 +340,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
                 Vec2I posOnScreen = ((xyOnCurMap - toleratedBlocks.TopLeft) * Overworld.Block_NumPixels) + startBlockPixel + v.VisualProgress;
                 // Draw
-                _objFrameBuffers[v.Pos.Elevation].Use();
+                _objFrameBuffers[v.Pos.Elevation].Use(gl);
                 v.Draw(_screenSize, posOnScreen);
 
                 // Add to debug data

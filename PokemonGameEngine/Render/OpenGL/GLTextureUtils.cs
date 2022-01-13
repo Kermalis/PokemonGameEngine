@@ -37,7 +37,6 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
 #if DEBUG
         public static string Debug_SaveFontTextureAsImage(GL gl, uint texture, Vec2I size, string path)
         {
-            gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindTexture(TextureTarget.Texture2D, texture);
             var data = new A8[size.GetArea()];
             gl.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.RedInteger, PixelType.UnsignedByte, data.AsSpan());

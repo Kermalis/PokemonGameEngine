@@ -288,9 +288,10 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void UpdatePageImage()
         {
             GL gl = Display.OpenGL;
-            _pageFrameBuffer.Use();
+            _pageFrameBuffer.Use(gl);
             gl.ClearColor(Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
+
             GUIString.CreateAndRenderOneTimeString(_page.ToString(), Font.Default, FontColors.DefaultBlack_I, new Vec2I(0, 0), scale: 2);
 
             Vec2I viewSize = _pageFrameBuffer.Size;
@@ -989,8 +990,9 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         private void Render()
         {
-            _frameBuffer.Use();
-            _tripleColorBG.Render();
+            GL gl = Display.OpenGL;
+            _frameBuffer.Use(gl);
+            _tripleColorBG.Render(gl); // No need to glClear since this overwrites everything
 
             _pkmnImage.Update();
             _pkmnImage.Render(Vec2I.CenterXBottomY(0.2f, 0.6f, _pkmnImage.Size, _renderSize));

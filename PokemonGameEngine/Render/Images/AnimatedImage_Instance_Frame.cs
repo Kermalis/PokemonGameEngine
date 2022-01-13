@@ -15,11 +15,12 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                 public readonly float SecondsVisible;
                 public readonly uint Texture;
 
-                public unsafe Frame(GL gl, DecodedGIF.Frame frame, Vec2I size)
+                public unsafe Frame(DecodedGIF.Frame frame, Vec2I size)
                 {
                     int? d = frame.Delay;
                     SecondsVisible = d is null ? STAY_FOREVER : d.Value / 1_000f;
 
+                    GL gl = Display.OpenGL;
                     Texture = gl.GenTexture();
                     gl.BindTexture(TextureTarget.Texture2D, Texture);
                     fixed (uint* imgdata = frame.Bitmap)

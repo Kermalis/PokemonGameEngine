@@ -50,11 +50,8 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
             shader.Use(gl);
             shader.SetProgress(gl, progress);
 
-            gl.Enable(EnableCap.Blend);
-            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            target.Use();
+            target.Use(gl);
             RectMesh.Instance.Render(gl);
-            gl.Disable(EnableCap.Blend);
         }
 
         public void Dispose()

@@ -35,14 +35,11 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                     SpindaSpotRenderer.Render(gif, pid, shiny);
                 }
 
-                GL gl = Display.OpenGL;
-                gl.ActiveTexture(TextureUnit.Texture0);
-
                 Size = new Vec2I(gif.Width, gif.Height);
                 Frames = new Frame[gif.Frames.Count];
                 for (int i = 0; i < gif.Frames.Count; i++)
                 {
-                    Frames[i] = new Frame(gl, gif.Frames[i], Size);
+                    Frames[i] = new Frame(gif.Frames[i], Size);
                 }
                 RepeatCount = gif.RepeatCount;
             }

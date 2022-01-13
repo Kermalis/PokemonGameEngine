@@ -8,6 +8,7 @@ namespace Kermalis.PokemonGameEngine.Render
         public static Vector4 Transparent { get; } = new Vector4(0, 0, 0, 0);
         public static Vector3 Black3 { get; } = new Vector3(0, 0, 0);
         public static Vector4 Black4 { get; } = new Vector4(0, 0, 0, 1);
+        public static Vector3 White3 { get; } = new Vector3(1, 1, 1);
         public static Vector4 White4 { get; } = new Vector4(1, 1, 1, 1);
         public static Vector4 Red4 { get; } = new Vector4(1, 0, 0, 1);
         public static Vector4 Green4 { get; } = new Vector4(0, 1, 0, 1);

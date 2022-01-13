@@ -14,6 +14,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.GUIs
         private readonly int _lSize;
         private readonly int _lCornerRadius;
         private readonly int _lLineThickness;
+        private readonly int _lOpacity;
 
         private readonly int _lUseTexture;
         private readonly int _lColor;
@@ -29,6 +30,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.GUIs
             _lSize = GetUniformLocation(gl, "size");
             _lCornerRadius = GetUniformLocation(gl, "cornerRadius");
             _lLineThickness = GetUniformLocation(gl, "lineThickness");
+            _lOpacity = GetUniformLocation(gl, "opacity");
 
             _lUseTexture = GetUniformLocation(gl, "useTexture");
             _lColor = GetUniformLocation(gl, "color");
@@ -53,6 +55,10 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.GUIs
         public void SetLineThickness(GL gl, int i)
         {
             gl.Uniform1(_lLineThickness, i);
+        }
+        public void SetOpacity(GL gl, float f)
+        {
+            gl.Uniform1(_lOpacity, f);
         }
 
         public void SetColor(GL gl, in Vector4 c)

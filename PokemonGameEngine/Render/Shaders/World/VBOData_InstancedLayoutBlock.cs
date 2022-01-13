@@ -6,9 +6,9 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.World
 {
     internal struct VBOData_InstancedLayoutBlock
     {
-        private const int OffsetOfTranslation = 0;
-        private const int OffsetOfTexture = OffsetOfTranslation + (2 * sizeof(int));
-        private const uint SizeOf = OffsetOfTexture + sizeof(float);
+        private const int OFFSET_TRANSLATION = 0;
+        private const int OFFSET_TEXTURE = OFFSET_TRANSLATION + (2 * sizeof(int));
+        private const uint SIZE = OFFSET_TEXTURE + sizeof(float);
 
         public readonly Vec2I Translation;
         public readonly float Texture;
@@ -23,15 +23,15 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.World
         {
             GL gl = Display.OpenGL;
             var data = new VBOData_InstancedLayoutBlock(usedBlockId / (Blockset.UsedBlocksTextures[0].NumLayers - 1f), translation);
-            inst.AddInstance(gl, &data, SizeOf);
+            inst.AddInstance(gl, &data, SIZE);
         }
 
         public static InstancedData CreateInstancedData(int maxVisible)
         {
             GL gl = Display.OpenGL;
-            uint vbo = InstancedData.CreateInstancedVBO(gl, SizeOf * (uint)maxVisible, BufferUsageARB.StreamDraw);
-            InstancedData.AddInstancedAttribute(gl, 1, 2, SizeOf, OffsetOfTranslation);
-            InstancedData.AddInstancedAttribute(gl, 2, 1, SizeOf, OffsetOfTexture);
+            uint vbo = InstancedData.CreateInstancedVBO(gl, SIZE * (uint)maxVisible, BufferUsageARB.StreamDraw);
+            InstancedData.AddInstancedAttribute(gl, 1, 2, SIZE, OFFSET_TRANSLATION);
+            InstancedData.AddInstancedAttribute(gl, 2, 1, SIZE, OFFSET_TEXTURE);
             return new InstancedData(vbo, maxVisible);
         }
     }

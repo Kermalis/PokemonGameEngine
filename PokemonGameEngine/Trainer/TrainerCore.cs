@@ -44,23 +44,22 @@ namespace Kermalis.PokemonGameEngine.Trainer
             throw new ArgumentOutOfRangeException(nameof(c));
         }
 
+        private static void AddMon(PBESpecies species, PBEForm form, byte level, PBEGender gender, PBENature nature, Party party)
+        {
+            var p = PartyPokemon.CreateWildMon(species, form, level, gender, nature, BaseStats.Get(species, form, true));
+            party.Add(p);
+        }
         private static Party Debug_CreateParty(bool temp)
         {
             var ret = new Party();
-            PartyPokemon p;
-            //PartyPokemon p2;
             if (temp)
             {
-                p = PartyPokemon.CreateWildMon(PBESpecies.Giratina, PBEForm.Giratina_Origin, 20, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Giratina, PBEForm.Giratina_Origin, true));
-                //p2 = PartyPokemon.CreateWildMon(PBESpecies.Shaymin, PBEForm.Shaymin_Sky, 20, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Shaymin, PBEForm.Shaymin_Sky, true));
+                AddMon(PBESpecies.Shaymin, PBEForm.Shaymin_Sky, 20, PBEGender.Genderless, PBENature.Bashful, ret);
             }
             else
             {
-                p = PartyPokemon.CreateWildMon(PBESpecies.Arceus, PBEForm.Arceus_Dragon, 50, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Arceus, PBEForm.Arceus_Dragon, true));
-                //p2 = PartyPokemon.CreateWildMon(PBESpecies.Arceus, PBEForm.Arceus_Dark, 50, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Arceus, PBEForm.Arceus_Dark, true));
+                AddMon(PBESpecies.Rayquaza, 0, 50, PBEGender.Genderless, PBENature.Bashful, ret);
             }
-            ret.Add(p);
-            //ret.Add(p2);
             return ret;
         }
 
@@ -87,8 +86,8 @@ namespace Kermalis.PokemonGameEngine.Trainer
         public static void Debug_CreateTestTrainerBattle()
         {
             MapWeather weather = MapWeather.None;
-            BlocksetBlockBehavior behavior = BlocksetBlockBehavior.Cave_Encounter;
-            PBEBattleFormat format = PBEBattleFormat.Double;
+            BlocksetBlockBehavior behavior = BlocksetBlockBehavior.None;
+            PBEBattleFormat format = PBEBattleFormat.Rotation;
 
             TrainerClass tc = TrainerClass.Lady;
             Song song = Song.LegendaryBattle;
@@ -97,20 +96,12 @@ namespace Kermalis.PokemonGameEngine.Trainer
 
             (PBEItem, uint)[] inv = null;
             var enemyParty = new Party();
-
-            BaseStats bs;
-            PartyPokemon p;
-            bs = BaseStats.Get(PBESpecies.Kyogre, 0, true);
-            p = PartyPokemon.CreateWildMon(bs.Species, bs.Form, 1, PBEGender.Male, PBENature.Bashful, bs);
-            enemyParty.Add(p);
-
-            bs = BaseStats.Get(PBESpecies.Rayquaza, 0, true);
-            p = PartyPokemon.CreateWildMon(bs.Species, bs.Form, 1, PBEGender.Male, PBENature.Bashful, bs);
-            enemyParty.Add(p);
-
-            bs = BaseStats.Get(PBESpecies.Groudon, 0, true);
-            p = PartyPokemon.CreateWildMon(bs.Species, bs.Form, 1, PBEGender.Male, PBENature.Bashful, bs);
-            enemyParty.Add(p);
+            AddMon(PBESpecies.Wailord, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
+            AddMon(PBESpecies.Wailord, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
+            AddMon(PBESpecies.Wailord, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
+            AddMon(PBESpecies.Togepi, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
+            AddMon(PBESpecies.Togepi, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
+            AddMon(PBESpecies.Togepi, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
 
             var enemyInfo = new PBETrainerInfo(enemyParty, string.Format("{0} {1}", GetTrainerClassName(tc), name), false, inventory: inv);
             var parties = new Party[] { Game.Instance.Save.PlayerParty, enemyParty };

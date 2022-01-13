@@ -130,23 +130,26 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Update(catchUpTime);
 
             GL gl = Display.OpenGL;
+            gl.Disable(EnableCap.Blend);
+            gl.ActiveTexture(TextureUnit.Texture0);
+
             DayTintShader shader = DayTintShader.Instance;
             shader.Use(gl);
             shader.SetModification(gl, ref _mod);
 
-            // Bind target's texture
-            gl.ActiveTexture(TextureUnit.Texture0);
-            gl.BindTexture(TextureTarget.Texture2D, target.ColorTexture);
-
             // Render to DayTint fbo
-            dayTintFrameBuffer.Use();
+            dayTintFrameBuffer.Use(gl);
+            gl.BindTexture(TextureTarget.Texture2D, target.ColorTexture);
             RectMesh.Instance.Render(gl);
 
             // Copy rendered result back to the target
             EntireScreenTextureShader.Instance.Use(gl);
-            target.Use();
+            target.Use(gl);
             gl.BindTexture(TextureTarget.Texture2D, dayTintFrameBuffer.ColorTexture);
             RectMesh.Instance.Render(gl);
+
+            gl.Enable(EnableCap.Blend); // Re-enable blend
+            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         }
     }
 }

@@ -31,8 +31,8 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private readonly string _trainerDefeatText;
         private readonly TrainerClass _trainerClass;
 
-        private BattleGUI(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties, TrainerClass trainerClass, string trainerDefeatText)
-            : this(battle, trainerParties) // BattleGUI_Render
+        private BattleGUI(PBEBattle battle, BattleBackground bg, Action onClosed, IReadOnlyList<Party> trainerParties, TrainerClass trainerClass, string trainerDefeatText)
+            : this(battle, bg, trainerParties) // BattleGUI_Render
         {
             // Create AIs
             _ais = new PBEDDAI[trainerParties.Count];
@@ -59,14 +59,14 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             Engine.OnQuitRequested += OnGameQuitRequested;
         }
 
-        public static void CreateWildBattle(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties)
+        public static void CreateWildBattle(PBEBattle battle, BattleBackground bg, Action onClosed, IReadOnlyList<Party> trainerParties)
         {
-            _ = new BattleGUI(battle, onClosed, trainerParties,
+            _ = new BattleGUI(battle, bg, onClosed, trainerParties,
                 default, default);
         }
-        public static void CreateTrainerBattle(PBEBattle battle, Action onClosed, IReadOnlyList<Party> trainerParties, TrainerClass trainerClass, string trainerDefeatText)
+        public static void CreateTrainerBattle(PBEBattle battle, BattleBackground bg, Action onClosed, IReadOnlyList<Party> trainerParties, TrainerClass trainerClass, string trainerDefeatText)
         {
-            _ = new BattleGUI(battle, onClosed, trainerParties,
+            _ = new BattleGUI(battle, bg, onClosed, trainerParties,
                 trainerClass, trainerDefeatText);
         }
 
@@ -88,6 +88,12 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             SetExitToOverworldFadeAndCallback();
         }
 
+        private void CB_RenderWhite()
+        {
+            _tasks.RunTasks();
+            RenderWhite();
+            _frameBuffer.BlitToScreen();
+        }
         private void CB_FadeInBattle()
         {
             _tasks.RunTasks();
@@ -148,11 +154,11 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 #if DEBUG_BATTLE_CAMERAPOS
             if (InputManager.JustPressed(Key.Select))
             {
-                CreateCameraMotionTask(DefaultCamPosition, null, CAM_SPEED_DEFAULT);
+                CreateCameraMotionTask(DefaultCamPosition, CAM_SPEED_DEFAULT);
             }
             else
             {
-                Camera.PR.Debug_Move(10f);
+                Camera.PR.Debug_Move(2.5f);
                 //_models[3].PR.Debug_Move(5f);
             }
 #endif

@@ -31,8 +31,8 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         /// <summary>Uses <see cref="FrameBuffer"/> and clears it to the back color</summary>
         public void Clear()
         {
-            FrameBuffer.Use();
             GL gl = Display.OpenGL;
+            FrameBuffer.Use(gl);
             gl.ClearColor(_backColor);
             gl.Clear(ClearBufferMask.ColorBufferBit);
         }

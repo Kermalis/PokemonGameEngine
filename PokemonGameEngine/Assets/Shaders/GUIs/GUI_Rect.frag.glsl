@@ -10,6 +10,7 @@ uniform int cornerRadius;
 uniform int lineThickness;
 uniform int useTexture;
 uniform vec4 color;
+uniform float opacity;
 uniform sampler2D guiTexture;
 
 
@@ -46,4 +47,5 @@ void main()
     {
         out_color = color;
     }
+    out_color.a *= opacity;
 }

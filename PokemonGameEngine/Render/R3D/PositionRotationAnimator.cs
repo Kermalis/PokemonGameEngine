@@ -1,16 +1,16 @@
-﻿using System.Numerics;
+﻿using System;
 
 namespace Kermalis.PokemonGameEngine.Render.R3D
 {
-    internal interface IPositionRotationAnimator
+    internal sealed class PositionRotationAnimator
     {
-        bool IsDone { get; }
+        public enum Method : byte
+        {
+            Linear,
+            Smooth
+        }
 
-        bool Update(ref PositionRotation result);
-    }
-
-    internal sealed class PositionRotationAnimator : IPositionRotationAnimator
-    {
+        private readonly Method _method;
         private readonly PositionRotation _from;
         private readonly PositionRotation _to;
         private readonly float _duration;
@@ -18,11 +18,22 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
 
         public bool IsDone { get; private set; }
 
-        public PositionRotationAnimator(in PositionRotation from, in PositionRotation to, float seconds)
+        public PositionRotationAnimator(Method m, in PositionRotation from, in PositionRotation to, float seconds)
         {
+            _method = m;
             _from = from;
             _to = to;
             _duration = seconds;
+        }
+
+        private float ApplyMethod(float input)
+        {
+            switch (_method)
+            {
+                case Method.Linear: return input;
+                case Method.Smooth: return Easing.Smooth3(input);
+            }
+            throw new Exception();
         }
 
         public bool Update(ref PositionRotation result)
@@ -39,61 +50,11 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                 progress = 1f;
                 IsDone = true;
             }
+            else
+            {
+                progress = ApplyMethod(progress);
+            }
             result.Slerp(_from, _to, progress);
-            return IsDone;
-        }
-    }
-
-    internal sealed class PositionRotationAnimatorSplit : IPositionRotationAnimator
-    {
-        private readonly PositionRotation _from;
-        private readonly PositionRotation _to;
-        private readonly float _posDuration;
-        private readonly float _rotDuration;
-        private float _posTime;
-        private float _rotTime;
-
-        public bool IsPosDone;
-        public bool IsRotDone;
-        public bool IsDone => IsPosDone && IsRotDone;
-
-        public PositionRotationAnimatorSplit(in PositionRotation from, in PositionRotation to, float posSeconds, float rotSeconds)
-        {
-            _from = from;
-            _to = to;
-            _posDuration = posSeconds;
-            _rotDuration = rotSeconds;
-        }
-
-        public bool Update(ref PositionRotation result)
-        {
-            if (IsDone)
-            {
-                return true;
-            }
-
-            if (!IsPosDone)
-            {
-                _posTime += Display.DeltaTime;
-                float progress = _posTime / _posDuration;
-                if (progress >= 1f)
-                {
-                    progress = 1f;
-                    IsPosDone = true;
-                }
-                result.Position = Vector3.Lerp(_from.Position, _to.Position, progress);
-            }
-            if (!IsRotDone)
-            {
-                _rotTime += Display.DeltaTime;
-                float progress = _rotTime / _rotDuration;
-                if (progress >= 1f)
-                {
-                    progress = 1f;
-                    IsRotDone = true;
-                }
-                result.Rotation.Set(Quaternion.Slerp(_from.Rotation.Value, _to.Rotation.Value, progress));
-            }
             return IsDone;
         }
     }

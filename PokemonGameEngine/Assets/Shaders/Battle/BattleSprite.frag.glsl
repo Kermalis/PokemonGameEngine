@@ -12,6 +12,7 @@ uniform sampler2D imgTexture;
 uniform float opacity;
 uniform vec3 maskColor;
 uniform float maskColorAmt;
+uniform float blacknessAmt;
 uniform float pixelateAmt;
 
 
@@ -44,4 +45,5 @@ void main()
     // Normal output below
     out_color.a *= opacity;
     out_color.rgb = mix(out_color.rgb, maskColor, maskColorAmt);
+    out_color.rgb = mix(out_color.rgb, vec3(0), blacknessAmt);
 }

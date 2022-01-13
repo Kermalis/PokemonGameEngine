@@ -19,9 +19,8 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             _shader.Use(gl);
             _shader.SetColors(gl, color1, color2, color3);
         }
-        public void Render()
+        public void Render(GL gl)
         {
-            GL gl = Display.OpenGL;
             _shader.Use(gl);
             TripleColorBackgroundMesh.Instance.Render(gl);
         }

@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Silk.NET.OpenGL;
 using System;
 using System.Numerics;
 
@@ -52,7 +53,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         }
         public void Draw()
         {
-            _frameBuffer.Use();
+            GL gl = Display.OpenGL;
+            _frameBuffer.Use(gl);
             Vec2I totalSize = _frameBuffer.Size;
 
             Vector4 backColor = IsSelected ? Colors.V4FromRGB(200, 200, 200) : Colors.White4;

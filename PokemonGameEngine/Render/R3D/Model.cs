@@ -8,12 +8,14 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
     {
         private readonly List<Mesh> _meshes;
 
-        public Vector3 Scale = Vector3.One;
+        public Vector3 Scale;
         public PositionRotation PR;
 
         public Model(string asset)
         {
             _meshes = AssimpLoader.ImportModel(asset);
+
+            Scale = Vector3.One;
             PR = PositionRotation.Default;
         }
 

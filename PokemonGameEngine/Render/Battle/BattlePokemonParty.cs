@@ -13,7 +13,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         public BattlePokemon this[PBEBattlePokemon pkmn] => BattleParty[pkmn.Id];
 
-        public BattlePokemonParty(PBEList<PBEBattlePokemon> pbeParty, Party party, bool backImage, bool useKnownInfo, BattleGUI battleGUI)
+        public BattlePokemonParty(PBEList<PBEBattlePokemon> pbeParty, Party party, bool backImage, bool useKnownInfo)
         {
             GameParty = party;
             PBEParty = pbeParty;
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 PartyPokemon pPkmn = party[i];
                 if (pbePkmn.IsWild)
                 {
-                    PkmnPosition wildPos = battleGUI.GetPkmnPosition(pbePkmn.Team.Id, pbePkmn.FieldPosition);
+                    PkmnPosition wildPos = BattleGUI.Instance.GetPkmnPosition(pbePkmn.Team.Id, pbePkmn.FieldPosition);
                     BattleParty[i] = BattlePokemon.CreateForWildMon(pbePkmn, pPkmn, this, backImage, useKnownInfo, wildPos); // Attaches pos also
                 }
                 else

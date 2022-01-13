@@ -11,6 +11,26 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
     {
         private readonly TaskList _tasks = new();
 
+        #region Misc
+
+        private sealed class TaskData_RenderWhite
+        {
+            public float Progress;
+        }
+
+        private void Task_RenderWhite(BackTask task)
+        {
+            var data = (TaskData_RenderWhite)task.Data;
+            data.Progress += Display.DeltaTime * 2f; // Half a second
+            if (data.Progress >= 1f)
+            {
+                _tasks.RemoveAndDispose(task);
+                ActuallyStartFadeIn();
+            }
+        }
+
+        #endregion
+
         #region Messages
 
         private const float AUTO_ADVANCE_SECONDS = 3f;
@@ -83,24 +103,25 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private const float CAM_SPEED_DEFAULT = 0.5f;
 
-        public static readonly PositionRotation DefaultCamPosition = new(new Vector3(7f, 7f, 15f), new Rotation(-22, 13, 0));
+        public static readonly PositionRotation DefaultCamPosition = new(new Vector3(7f, 7f, 15f), new Rotation(-22f, 13f, 0f));
+        private static readonly PositionRotation _camPosThrowBall = new(new Vector3(16.9f, 7.5f, 30.6f), new Rotation(-32.4f, 8.8f, 0f));
+        /// <summary>The position the camera goes to show all pkmn when selecting moves or in certain situations like Earthquake.
+        /// Perish Song uses a different position which is the same for every format.
+        /// In 1v1 and rotation, this is unused completely since selecting a move does not change the camera and Earthquake goes to the center foe's spot instead.
+        /// In 1v1 and rotation, when the back button is pressed, it does snap back to the center ally's spot though</summary>
+        private static readonly PositionRotation _camPosViewAll = new(new Vector3(9f, 8f, 22f), new Rotation(-22f, 13f, 0f));
 
         private sealed class TaskData_MoveCamera
         {
             public const int Tag = 0x2192A9;
 
             public Action OnFinished;
-            public IPositionRotationAnimator Animator;
+            public PositionRotationAnimator Animator;
 
-            public TaskData_MoveCamera(Camera c, in PositionRotation to, Action onFinished, float seconds)
+            public TaskData_MoveCamera(Camera c, PositionRotationAnimator.Method m, in PositionRotation to, Action onFinished, float seconds)
             {
                 OnFinished = onFinished;
-                Animator = new PositionRotationAnimator(c.PR, to, seconds);
-            }
-            public TaskData_MoveCamera(Camera c, in PositionRotation to, Action onFinished, float posSeconds, float rotSeconds)
-            {
-                OnFinished = onFinished;
-                Animator = new PositionRotationAnimatorSplit(c.PR, to, posSeconds, rotSeconds);
+                Animator = new PositionRotationAnimator(m, c.PR, to, seconds);
             }
         }
 
@@ -108,13 +129,9 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             _tasks.Add(Task_CameraMotion, int.MaxValue, data: data, tag: TaskData_MoveCamera.Tag);
         }
-        private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, float seconds)
+        private void CreateCameraMotionTask(in PositionRotation to, float seconds, Action onFinished = null, PositionRotationAnimator.Method method = PositionRotationAnimator.Method.Linear)
         {
-            CreateCameraMotionTask(new TaskData_MoveCamera(Camera, to, onFinished, seconds));
-        }
-        private void CreateCameraMotionTask(in PositionRotation to, Action onFinished, float posSeconds, float rotSeconds)
-        {
-            CreateCameraMotionTask(new TaskData_MoveCamera(Camera, to, onFinished, posSeconds, rotSeconds));
+            CreateCameraMotionTask(new TaskData_MoveCamera(Camera, method, to, onFinished, seconds));
         }
 
         private void Task_CameraMotion(BackTask task)
@@ -137,7 +154,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             public const float SPEED = 1.00f;
 
             public float DelayProgress;
-            public float ColorProgress;
+            public float BlacknessProgress;
         }
         private sealed class TaskData_TrainerGoAway
         {
@@ -163,22 +180,22 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 {
                     return;
                 }
-                data.ColorProgress = (data.DelayProgress - 1f) * TaskData_TrainerReveal.SPEED;
+                data.BlacknessProgress = (data.DelayProgress - 1f) * TaskData_TrainerReveal.SPEED;
                 data.DelayProgress = 1f;
             }
             else
             {
-                data.ColorProgress += Display.DeltaTime * TaskData_TrainerReveal.SPEED;
+                data.BlacknessProgress += Display.DeltaTime * TaskData_TrainerReveal.SPEED;
             }
-            if (data.ColorProgress >= 1f)
+            if (data.BlacknessProgress >= 1f)
             {
-                _trainerSprite.MaskColorAmt = 0f;
+                _trainerSprite.BlacknessAmt = 0f;
                 _trainerSprite.Image.IsPaused = false;
                 task.Data = null;
                 task.Action = Task_TrainerWaitAnim;
                 return;
             }
-            _trainerSprite.MaskColorAmt = 1f - data.ColorProgress;
+            _trainerSprite.BlacknessAmt = 1f - data.BlacknessProgress;
         }
         private void Task_TrainerWaitAnim(BackTask task)
         {
@@ -190,6 +207,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _canAdvanceMsg = true;
             _tasks.RemoveAndDispose(task);
         }
+
         private void Task_TrainerGoAway(BackTask task)
         {
             var data = (TaskData_TrainerGoAway)task.Data;
@@ -208,6 +226,12 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         #region Pokemon Sprite
 
+        private sealed class TaskData_WildReveal
+        {
+            public const float START_AMT = 0.75f;
+
+            public float Progress;
+        }
         private sealed class TaskData_ChangeSprite
         {
             public readonly IPBEPacket Packet;
@@ -221,6 +245,28 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 Reveal = reveal;
                 Pkmn = pkmn;
             }
+        }
+
+        private void Task_WildReveal(BackTask task)
+        {
+            void Set(float amt)
+            {
+                foreach (PkmnPosition p in _positions[1])
+                {
+                    p.Sprite.BlacknessAmt = amt;
+                }
+            }
+
+            var data = (TaskData_WildReveal)task.Data;
+            data.Progress += Display.DeltaTime;
+            if (data.Progress >= 1f)
+            {
+                _tasks.RemoveAndDispose(task);
+                Set(0f);
+                return;
+            }
+
+            Set(Utils.Lerp(TaskData_WildReveal.START_AMT, 0f, data.Progress));
         }
 
         private void Task_ChangeSprite_Start(BackTask task)
@@ -245,8 +291,8 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             data.Progress += Display.DeltaTime;
             if (data.Progress >= 1f)
             {
-                data.Pkmn.Pos.Sprite.PixelateAmt = 0f;
                 _tasks.RemoveAndDispose(task);
+                data.Pkmn.Pos.Sprite.PixelateAmt = 0f;
                 _hudInvisible = false;
                 ShowPacketMessageThenResumeBattleThread(data.Packet);
                 return;

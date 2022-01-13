@@ -32,7 +32,6 @@ namespace Kermalis.PokemonGameEngine.Core
 
             // Set initial callback
             OverworldGUI.Debug_InitOverworldGUI();
-            //OverworldGUI.Debug_InitTestBattle();
         }
 
 #if DEBUG_CALLBACKS

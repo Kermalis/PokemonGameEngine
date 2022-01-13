@@ -6,6 +6,7 @@ using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Pkmn;
 using Kermalis.PokemonGameEngine.Render.Transitions;
+using Silk.NET.OpenGL;
 using System;
 using System.Numerics;
 
@@ -161,15 +162,15 @@ namespace Kermalis.PokemonGameEngine.Render.Player
 
         private void Render()
         {
-            _frameBuffer.Use();
-            // Background
-            _tripleColorBG.Render();
+            GL gl = Display.OpenGL;
+            _frameBuffer.Use(gl);
+            _tripleColorBG.Render(gl); // No need to glClear since this overwrites everything
 
             // BAG
             _bagText.Render(Vec2I.FromRelative(0.02f, 0.01f, _renderSize));
 
             _partyChoices.Render(_renderSize);
-            _frameBuffer.Use();
+            _frameBuffer.Use(gl); // Possible the above redraws to its framebuffer so rebind this one
 
             // Draw pouch tabs background
             var rect = Rect.FromCorners(Vec2I.FromRelative(0.60f, 0.03f, _renderSize), Vec2I.FromRelative(0.97f, 0.13f, _renderSize));

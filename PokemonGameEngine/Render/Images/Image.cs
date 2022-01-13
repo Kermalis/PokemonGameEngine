@@ -31,7 +31,6 @@ namespace Kermalis.PokemonGameEngine.Render.Images
 
         private unsafe void UpdateGLTexture(GL gl, uint[] bitmap)
         {
-            gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindTexture(TextureTarget.Texture2D, Texture);
             fixed (void* imgdata = bitmap)
             {
@@ -42,10 +41,6 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         public void Render(Vec2I pos, bool xFlip = false, bool yFlip = false)
         {
             GUIRenderer.Texture(Texture, Rect.FromSize(pos, Size), new UV(xFlip, yFlip));
-        }
-        public void Render(in Rect rect, in UV part)
-        {
-            GUIRenderer.Texture(Texture, rect, part);
         }
 
         public static Image LoadOrGet(string asset)

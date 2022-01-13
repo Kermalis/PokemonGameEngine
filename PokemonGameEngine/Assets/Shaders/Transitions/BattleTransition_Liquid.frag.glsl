@@ -18,6 +18,6 @@ void main()
     float c = cos(p * 10);
     uv = vec2(0.5 + dot(uv, vec2(c, -s)), 0.5 + dot(uv, vec2(s, c)));
 
-    float blackAmt = progress < 0.5 ? 0 : progress * 2 - 1; // Start black halfway
-    out_color = mix(texture(colorTexture, uv), vec4(0, 0, 0, 1), blackAmt);
+    float whiteAmt = progress < 0.5 ? 0 : progress * 2 - 1; // Start white halfway
+    out_color = mix(texture(colorTexture, uv), vec4(1), whiteAmt);
 }

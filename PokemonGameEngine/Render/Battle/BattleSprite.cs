@@ -27,6 +27,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         public Vector3? MaskColor;
         public bool AnimateMaskColor;
         public float MaskColorAmt;
+        public float BlacknessAmt;
 
         private Matrix4x4 _scaleCache;
         private Matrix4x4 _transformCache;
@@ -103,6 +104,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             shader.SetMatrix(gl, _transformCache * camView * projection);
             shader.SetOpacity(gl, Opacity);
             shader.SetPixelateAmt(gl, PixelateAmt);
+            shader.SetBlacknessAmt(gl, BlacknessAmt);
             if (MaskColor is null)
             {
                 shader.SetMaskColorAmt(gl, 0f);

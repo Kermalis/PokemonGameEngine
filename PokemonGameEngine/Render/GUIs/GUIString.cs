@@ -90,8 +90,6 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             }
 
             GL gl = Display.OpenGL;
-            gl.Enable(EnableCap.Blend);
-            gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindTexture(TextureTarget.Texture2D, Font.Texture);
 
@@ -102,8 +100,6 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             shader.SetColors(gl, Colors);
 
             _mesh.RenderInstancedBaseInstance(gl, VisibleStart, NumVisible);
-
-            gl.Disable(EnableCap.Blend);
         }
 
         public void Delete()

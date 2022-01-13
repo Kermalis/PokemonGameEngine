@@ -119,10 +119,11 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         public void UpdateBackground()
         {
-            _frameBuffer.Use();
             GL gl = Display.OpenGL;
+            _frameBuffer.Use(gl);
             gl.ClearColor(Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
+
             GUIRenderer.Rect(_color, Rect.FromSize(new Vec2I(0, 0), _frameBuffer.Size), cornerRadius: 6);
 
             // Shadow
@@ -157,7 +158,6 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
         }
 
-        // We shouldn't be redrawing on the logic thread, but it currently doesn't matter
         public void UpdateColorAndRedraw()
         {
             _color = GetColor();

@@ -66,7 +66,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
             // Create gl texture
             GL gl = Display.OpenGL;
             Texture = gl.GenTexture();
-            gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindTexture(TextureTarget.Texture2D, Texture);
             uint[] bitmap = AssetLoader.GetAssetBitmap(TILESET_PATH + name + TILESET_EXTENSION, out TextureSize);
             fixed (uint* d = bitmap)
