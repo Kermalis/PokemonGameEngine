@@ -35,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private readonly FrameBuffer2DColor _frameBuffer;
         private readonly FrameBuffer2DColor _dayTintFrameBuffer;
         private readonly MapRenderer _mapRenderer;
-        private readonly TaskList _tasks = new();
+        private readonly ConnectedList<BackTask> _tasks = new(BackTask.Sorter);
 
         private EventObj _interactiveScriptWaitingFor;
         private string _interactiveScript;
@@ -62,9 +62,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
             DayTint.CatchUpTime = true;
             StartMapMusic();
 
-            //Instance.ReturnToFieldWithFadeIn();
+            Instance.ReturnToFieldWithFadeIn();
             //EncounterMaker.Debug_CreateTestWildBattle();
-            TrainerCore.Debug_CreateTestTrainerBattle();
+            //TrainerCore.Debug_CreateTestTrainerBattle();
         }
 
         public void SetInteractiveScript(EventObj talkedTo, string script)
@@ -246,7 +246,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 }
             }
             StringPrinter.UpdateAll();
-            _tasks.RunTasks();
+            for (BackTask t = _tasks.First; t is not null; t = t.Next)
+            {
+                t.Action(t);
+            }
             ProcessObjs();
 
 #if DEBUG_OVERWORLD
@@ -261,24 +264,16 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private void ProcessObjs()
         {
-            // We can eliminate the need for array alloc if we have Next and Prev like tasks
-            Obj[] arr = Obj.LoadedObjs.ToArray();
-            for (int i = 0; i < arr.Length; i++)
+            for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
             {
-                Obj o = arr[i];
-                if (Obj.LoadedObjs.Contains(o) && o.ShouldUpdateMovement)
+                if (o.ShouldUpdateMovement)
                 {
                     o.UpdateMovement();
                 }
             }
-            arr = Obj.LoadedObjs.ToArray();
-            for (int i = 0; i < arr.Length; i++)
+            for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
             {
-                Obj o = arr[i];
-                if (Obj.LoadedObjs.Contains(o))
-                {
-                    o.Update();
-                }
+                o.Update();
             }
 
             // Check for the obj we're waiting for to finish moving

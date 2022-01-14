@@ -12,7 +12,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         {
             _startMenuWindow?.Close(); // Possibly activated this from the PartyGUI
             _startMenuWindow = null;
-            foreach (Obj o in Obj.LoadedObjs)
+            for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
             {
                 o.IsLocked = true;
             }
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         public void StartSurfTasks()
         {
             PartyPokemon pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar_Result]];
-            _tasks.Add(Task_Surf_PlayCry, int.MaxValue, data: pkmn);
+            _tasks.Add(new BackTask(Task_Surf_PlayCry, int.MaxValue, data: pkmn));
             // TODO: Clear saved music, start surf music
         }
         private void Task_Surf_PlayCry(BackTask task)
@@ -62,7 +62,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
 
             _tasks.RemoveAndDispose(task);
-            foreach (Obj o in Obj.LoadedObjs)
+            for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
             {
                 o.IsLocked = false;
             }

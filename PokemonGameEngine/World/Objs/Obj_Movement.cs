@@ -338,19 +338,14 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Vec2I curXY = Pos.XY;
             MapLayout.Block block = curMap.GetBlock_CrossMap(curXY, out Vec2I newXY, out Map newMap);
             Pos.Elevation = Overworld.GetElevationIfMovedTo(Pos.Elevation, block.Elevations);
-            if (newMap == curMap)
+            if (newMap != curMap)
             {
-                return;
+                Map = newMap;
+                Pos.XY = newXY;
+                MovingFromPos.XY.X += newXY.X - curXY.X;
+                MovingFromPos.XY.Y += newXY.Y - curXY.Y;
+                OnMapChanged(curMap, newMap);
             }
-            // Map crossing - Update Map, Pos, and MovingFromPos
-            curMap.Objs.Remove(this);
-            newMap.Objs.Add(this);
-            Map = newMap;
-
-            Pos.XY = newXY;
-            MovingFromPos.XY.X += newXY.X - curXY.X;
-            MovingFromPos.XY.Y += newXY.Y - curXY.Y;
-            OnMapChanged(curMap, newMap);
         }
 
         protected virtual void OnMapChanged(Map oldMap, Map newMap) { }

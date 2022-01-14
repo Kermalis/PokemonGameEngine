@@ -1,10 +1,17 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.GUIs;
+using Kermalis.PokemonGameEngine.Render.Shaders.World;
+using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal abstract class VisualObj : Obj
     {
+        public static List<VisualObj> LoadedVisualObjs = new();
+
+        /// <summary>Gets updated every frame by the map renderer</summary>
+        public Vec2I BlockPosOnScreen;
+
         protected bool _leg;
 
         private readonly VisualObjTexture _tex;
@@ -13,11 +20,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             : base(id)
         {
             _tex = VisualObjTexture.LoadOrGet(imageId);
+            LoadedVisualObjs.Add(this);
         }
         protected VisualObj(ushort id, string imageId, WorldPos pos)
             : base(id, pos)
         {
             _tex = VisualObjTexture.LoadOrGet(imageId);
+            LoadedVisualObjs.Add(this);
         }
 
         public override bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
@@ -41,19 +50,26 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return _leg ? f + 8 : f + 16; // TODO: Fall-back to specific images if the target image doesn't exist
         }
 
-        // TODO: Water reflections
-        public void Draw(Vec2I viewSize, Vec2I blockPos)
+        public void Draw(VisualObjShader shader, Vec2I viewSize)
         {
-            // Image pos
             // Center align X, bottom align y
             Vec2I pos = _tex.ImageSize - Overworld.Block_NumPixels;
             pos.X /= 2;
-            pos = blockPos - pos;
+            pos = BlockPosOnScreen - pos;
 
-            // Shadow pos
-            Vec2I shadowPos = _tex.ShadowOffset;
-            shadowPos += blockPos;
+            // Draw obj
+            var objRect = Rect.FromSize(pos, _tex.ImageSize);
+            if (objRect.Intersects(viewSize))
+            {
+                bool showMoving = MovementProgress is (not 1f) and (>= 0.6f);
+                _tex.RenderImage(shader, objRect, GetImage(showMoving));
+            }
+        }
+        public void DrawShadow(Vec2I viewSize)
+        {
             // Left align X, bottom align y (starts in block under)
+            Vec2I shadowPos = _tex.ShadowOffset;
+            shadowPos += BlockPosOnScreen;
             shadowPos.Y += Overworld.Block_NumPixelsY;
 
             // Draw shadow
@@ -62,19 +78,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             {
                 GUIRenderer.Texture(_tex.Shadow.ColorTexture, rect, new UV(false, false));
             }
-
-            // Draw obj
-            var objRect = Rect.FromSize(pos, _tex.ImageSize);
-            if (objRect.Intersects(viewSize))
-            {
-                bool showMoving = MovementProgress is (not 1f) and (>= 0.6f);
-                _tex.RenderImage(objRect, GetImage(showMoving));
-            }
         }
 
         public override void Dispose()
         {
+            base.Dispose();
             _tex.DeductReference();
+            LoadedVisualObjs.Remove(this);
         }
     }
 }

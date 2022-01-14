@@ -29,16 +29,12 @@ namespace Kermalis.PokemonGameEngine.Script
         private void UnloadObjCommand()
         {
             ushort id = (ushort)ReadVarOrValue();
-            var obj = Obj.GetObj(id);
-            Obj.LoadedObjs.Remove(obj);
-            obj.Map.Objs.Remove(obj);
-            obj.Dispose();
+            Obj.GetObj(id).Dispose();
         }
         private void AwaitObjMovementCommand()
         {
             ushort id = (ushort)ReadVarOrValue();
-            var obj = Obj.GetObj(id);
-            _waitMovementObj = obj;
+            _waitMovementObj = Obj.GetObj(id);
         }
         private void LookTowardsObjCommand()
         {
@@ -88,7 +84,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private static void SetAllLock(bool locked)
         {
-            foreach (Obj o in Obj.LoadedObjs)
+            for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
             {
                 o.IsLocked = locked;
             }

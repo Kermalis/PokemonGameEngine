@@ -34,7 +34,6 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         public Connection[] Connections;
         public MapLayout Layout;
         public MapEvents Events;
-        public readonly List<Obj> Objs = new();
 
         // Details and encounters are only loaded when the map becomes the current map or when being warped to
         private bool _currentDataLoaded;
@@ -191,15 +190,13 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         }
         private void DeleteEventObjs()
         {
-            foreach (Obj o in Objs)
+            for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
             {
-                if (o.Id != Overworld.CameraId && o.Id != CameraObj.Instance.CamAttachedTo.Id)
+                if (o.Map == this && o.Id != Overworld.CameraId && o.Id != CameraObj.Instance.CamAttachedTo.Id)
                 {
-                    Obj.LoadedObjs.Remove(o);
-                    o.Dispose();
+                    Obj.LoadedObjs.RemoveAndDispose(o);
                 }
             }
-            Objs.Clear();
         }
 
         public void OnMapNowVisible()
@@ -292,9 +289,9 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
         public Obj GetNonCamObj_InBounds(in WorldPos pos, bool checkMovingFrom)
         {
-            foreach (Obj o in Objs)
+            for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
             {
-                if (o.Id != Overworld.CameraId
+                if (o.Map == this && o.Id != Overworld.CameraId
                     && (pos == o.Pos || (checkMovingFrom && pos == o.MovingFromPos))
                     )
                 {

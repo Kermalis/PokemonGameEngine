@@ -40,7 +40,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             TrainerSight = oe.TrainerSight;
             Script = oe.Script;
             Flag = oe.Flag;
-            map.Objs.Add(this);
             Map = map;
         }
 

@@ -4,6 +4,7 @@ using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.Render.Shaders.World;
 using Silk.NET.OpenGL;
 using System.Collections.Generic;
 
@@ -65,9 +66,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return new EndianBinaryReader(AssetLoader.GetAssetStream(SHEETS_FILE), encoding: EncodingType.UTF16);
         }
 
-        public void RenderImage(in Rect rect, int imgIndex, bool xFlip = false, bool yFlip = false)
+        public void RenderImage(VisualObjShader shader, in Rect rect, int imgIndex, bool xFlip = false, bool yFlip = false)
         {
-            GUIRenderer.Texture(_textureAtlas.Texture, rect, UV.FromAtlas(imgIndex, ImageSize, _textureAtlas.Size, xFlip: xFlip, yFlip: yFlip));
+            GL gl = Display.OpenGL;
+            shader.SetRect(gl, rect);
+            shader.SetUV(gl, UV.FromAtlas(imgIndex, ImageSize, _textureAtlas.Size, xFlip: xFlip, yFlip: yFlip));
+            gl.BindTexture(TextureTarget.Texture2D, _textureAtlas.Texture);
+            RectMesh.Instance.Render(gl);
         }
 
         public static VisualObjTexture LoadOrGet(string asset)

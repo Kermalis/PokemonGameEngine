@@ -1,18 +1,19 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.World.Maps;
-using System;
-using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
     // Regular movements handled in ObjMovement.cs
     // Script movements handled in Script/ScriptMovement.cs
-    internal abstract partial class Obj : IDisposable
+    internal abstract partial class Obj : IConnectedListObject<Obj>
     {
-        public static readonly List<Obj> LoadedObjs = new();
+        public static readonly ConnectedList<Obj> LoadedObjs = new(IdSorter);
 
         public readonly ushort Id;
+
+        public Obj Next { get; set; }
+        public Obj Prev { get; set; }
 
         public FacingDirection Facing;
         public Map Map;
@@ -50,7 +51,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public static Obj GetObj(ushort id)
         {
-            foreach (Obj o in LoadedObjs)
+            for (Obj o = LoadedObjs.First; o is not null; o = o.Next)
             {
                 if (o.Id == id)
                 {
@@ -74,8 +75,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Map curMap = Map;
             if (curMap != newMap)
             {
-                curMap.Objs.Remove(this);
-                newMap.Objs.Add(this);
                 Map = newMap;
                 OnMapChanged(curMap, newMap);
             }
@@ -91,6 +90,19 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 Obj looker = GetObj(id);
                 looker.LookTowards(PlayerObj.Instance);
             }
+        }
+
+        private static int IdSorter(Obj o1, Obj o2)
+        {
+            if (o1.Id > o2.Id)
+            {
+                return -1;
+            }
+            if (o1.Id == o2.Id)
+            {
+                return 0; // Should never happen
+            }
+            return 1;
         }
 
         public virtual void Dispose() { }

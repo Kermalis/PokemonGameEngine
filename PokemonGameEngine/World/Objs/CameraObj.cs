@@ -21,7 +21,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Instance.CamAttachedTo = PlayerObj.Instance;
             Instance.Pos = PlayerObj.Instance.Pos;
             Instance.Map = PlayerObj.Instance.Map;
-            Instance.Map.Objs.Add(Instance);
             Instance.Map.OnCurrentMap();
             Overworld.UpdateDayTint();
         }

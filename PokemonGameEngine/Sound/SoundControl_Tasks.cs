@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private static void CreateOrUpdateFadeOverworldBGMAndStartNewSongTask(Song s, float seconds, float from, float to)
         {
-            if (_tasks.TryGetTask(Task_FadeOverworldBGMAndStartNewSong, out BackTask existing))
+            if (_tasks.TryGet((t) => t.Action == Task_FadeOverworldBGMAndStartNewSong, out BackTask existing))
             {
                 var data = (TaskData_FadeSongToSong)existing.Data;
                 data.Song = s;
@@ -41,14 +41,14 @@ namespace Kermalis.PokemonGameEngine.Sound
             else if (s != _overworldBGM.Song) // Don't change if it's the current song
             {
                 var data = new TaskData_FadeSongToSong(s, _overworldBGM.Channel, seconds, from, to);
-                _tasks.Add(Task_FadeOverworldBGMAndStartNewSong, int.MaxValue, data: data);
+                _tasks.Add(new BackTask(Task_FadeOverworldBGMAndStartNewSong, int.MaxValue, data: data));
             }
         }
 
         private static void CreateFadeBattleBGMToOverworldBGMTask()
         {
             var data = new TaskData_Fade(_battleBGM.Channel, 1f, 1f, 0f);
-            _tasks.Add(Task_FadeBattleBGMToOverworldBGM, int.MaxValue, data: data);
+            _tasks.Add(new BackTask(Task_FadeBattleBGMToOverworldBGM, int.MaxValue, data: data));
         }
 
         private static void Task_FadeOverworldBGMAndStartNewSong(BackTask task)

@@ -5,7 +5,6 @@ using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using Silk.NET.OpenGL;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -26,6 +25,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private readonly BitArray _nonBorderCoords;
 
         private readonly MapLayoutShader _layoutShader;
+        private readonly VisualObjShader _visualObjShader;
         private readonly RectMesh _layoutMesh;
         private readonly FrameBuffer2DColor[] _layoutFrameBuffers;
         private readonly FrameBuffer2DColor[] _objFrameBuffers;
@@ -55,6 +55,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
             GL gl = Display.OpenGL;
             _layoutShader = new MapLayoutShader(gl); // shader is in use
             _layoutShader.UpdateViewport(gl, screenSize);
+            _visualObjShader = new VisualObjShader(gl); // shader is in use
+            _visualObjShader.UpdateViewport(gl, screenSize);
             _layoutFrameBuffers = new FrameBuffer2DColor[Overworld.NumElevations];
             _objFrameBuffers = new FrameBuffer2DColor[Overworld.NumElevations];
             _blockData = new InstancedData[Overworld.NumElevations];
@@ -173,7 +175,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             InitCameraRect(CameraObj.Instance, out Rect visibleBlocks, out Vec2I startBlockPixel);
 
             RenderLayouts(gl, CameraObj.Instance.Map, visibleBlocks, startBlockPixel);
-            RenderObjs(gl, Obj.LoadedObjs.ToArray(), visibleBlocks, startBlockPixel);
+            RenderObjs(gl, VisualObj.LoadedVisualObjs, visibleBlocks, startBlockPixel);
 
             // Finish render by rendering each layer to the target
             targetFrameBuffer.Use(gl);
@@ -312,44 +314,50 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
         }
 
-        // TODO: Obj shader
-        // TODO: Allocating array every frame = bad, plus I have to sort them every frame by y coordinate
-        // Hopefully we can solve that with depth testing with their shader. Just render them with the depth being their coordinate
-        private void RenderObjs(GL gl, Obj[] objs, in Rect visibleBlocks, Vec2I startBlockPixel)
+        private void RenderObjs(GL gl, List<VisualObj> objs, in Rect visibleBlocks, Vec2I startBlockPixel)
         {
             var toleratedBlocks = Rect.FromCorners(visibleBlocks.TopLeft - _objTolerance, visibleBlocks.BottomRight + _objTolerance);
             startBlockPixel -= _objTolerance * Overworld.Block_NumPixels;
-
-            Array.Sort(objs, (o1, o2) => o1.Pos.XY.Y.CompareTo(o2.Pos.XY.Y));
-            for (int i = 0; i < objs.Length; i++)
+            objs.Sort((o1, o2) => o1.Pos.XY.Y.CompareTo(o2.Pos.XY.Y));
+            // Render all shadows first, then objs with depth
+            for (int i = 0; i < objs.Count; i++)
             {
                 // We don't need to check MovingFromPos to prevent it from popping in/out of existence
                 // The tolerance covers enough pixels so we can confidently check Pos only
                 // It'd only mess up if Pos and MovingFromPos were farther apart from each other than the tolerance
-                Obj o = objs[i];
-                if (o is not VisualObj v)
-                {
-                    continue;
-                }
+                VisualObj v = objs[i];
 
                 Vec2I xyOnCurMap = v.Pos.XY + v.Map.BlockOffsetFromCurrentMap;
-                if (!toleratedBlocks.Contains(xyOnCurMap))
+                if (toleratedBlocks.Contains(xyOnCurMap))
                 {
-                    continue; // Make sure it's within the tolerance rect
-                }
+                    v.BlockPosOnScreen = ((xyOnCurMap - toleratedBlocks.TopLeft) * Overworld.Block_NumPixels) + startBlockPixel + v.VisualProgress;
 
-                Vec2I posOnScreen = ((xyOnCurMap - toleratedBlocks.TopLeft) * Overworld.Block_NumPixels) + startBlockPixel + v.VisualProgress;
-                // Draw
-                _objFrameBuffers[v.Pos.Elevation].Use(gl);
-                v.Draw(_screenSize, posOnScreen);
-
-                // Add to debug data
 #if DEBUG_OVERWORLD
-                if (_debugEnabled)
-                {
-                    Debug_AddVisualObj(v, xyOnCurMap - visibleBlocks.TopLeft);
-                }
+                    if (_debugEnabled)
+                    {
+                        Debug_AddVisualObj(v, xyOnCurMap - visibleBlocks.TopLeft); // Add to debug data
+                    }
 #endif
+
+                    _objFrameBuffers[v.Pos.Elevation].Use(gl);
+                    v.DrawShadow(_screenSize);
+                }
+                else
+                {
+                    v.BlockPosOnScreen = new Vec2I(int.MinValue, int.MinValue);
+                }
+            }
+
+            gl.ActiveTexture(TextureUnit.Texture0);
+            _visualObjShader.Use(gl);
+            for (int i = 0; i < objs.Count; i++)
+            {
+                VisualObj v = objs[i];
+                if (v.BlockPosOnScreen != new Vec2I(int.MinValue, int.MinValue))
+                {
+                    _objFrameBuffers[v.Pos.Elevation].Use(gl);
+                    v.Draw(_visualObjShader, _screenSize);
+                }
             }
         }
     }

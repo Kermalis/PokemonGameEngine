@@ -30,7 +30,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
         }
 
-        private static readonly TaskList _tasks = new();
+        private static readonly ConnectedList<BackTask> _tasks = new(BackTask.Sorter);
 
         private static Sound _overworldBGM;
         private static Sound _battleBGM;
@@ -157,7 +157,10 @@ namespace Kermalis.PokemonGameEngine.Sound
         // Called every time SoundMixer mixes
         public static void RunSoundTasks()
         {
-            _tasks.RunTasks();
+            for (BackTask t = _tasks.First; t is not null; t = t.Next)
+            {
+                t.Action(t);
+            }
         }
     }
 }

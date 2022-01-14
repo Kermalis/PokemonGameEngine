@@ -144,7 +144,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             {
                 _hudInvisible = true;
                 var data = new TaskData_ChangeSprite(packet, reveal, bPkmn);
-                _tasks.Add(Task_ChangeSprite_Start, 0, data: data);
+                _tasks.Add(new BackTask(Task_ChangeSprite_Start, 0, data: data));
             }
         }
         private void RevealForm(BattlePokemon bPkmn)

@@ -2,10 +2,10 @@
 {
     internal delegate void BackTaskAction(BackTask task);
 
-    internal sealed class BackTask
+    internal sealed class BackTask : IConnectedListObject<BackTask>
     {
-        public BackTask Next;
-        public BackTask Prev;
+        public BackTask Next { get; set; }
+        public BackTask Prev { get; set; }
 
         public BackTaskAction Action;
         public object Data;
@@ -22,174 +22,25 @@
             Tag = tag;
         }
 
+        public static int Sorter(BackTask t1, BackTask t2)
+        {
+            if (t1.Priority > t2.Priority)
+            {
+                return -1;
+            }
+            if (t1.Priority == t2.Priority)
+            {
+                return 0;
+            }
+            return 1;
+        }
+
         public void Dispose()
         {
             // Do not dispose next or prev so we can continue looping after this gets removed
             Action = null;
             Data = null;
             Tag = null;
-        }
-    }
-
-    internal sealed class TaskList
-    {
-        private BackTask _first;
-        public int Count { get; private set; }
-
-        public void Add(BackTask task)
-        {
-            if (_first is null)
-            {
-                _first = task;
-                Count = 1;
-                return;
-            }
-            BackTask t = _first;
-            while (true)
-            {
-                if (t.Priority < task.Priority)
-                {
-                    // The new task has a higher priority than t, so insert new before t
-                    if (t == _first)
-                    {
-                        _first = task; // new is now the first task
-                    }
-                    else
-                    {
-                        BackTask prev = t.Prev; // Connect the one before and one after with the new task
-                        task.Prev = prev;
-                        prev.Next = task;
-                    }
-                    t.Prev = task;
-                    task.Next = t;
-                    Count++;
-                    return;
-                }
-                // Iterate to next task if there is one
-                BackTask next = t.Next;
-                if (next is null)
-                {
-                    // The new task is the lowest priority or tied for it, so place new at the last position
-                    t.Next = task;
-                    task.Prev = t;
-                    Count++;
-                    return;
-                }
-                t = next;
-            }
-        }
-        public void Add(BackTaskAction action, int priority, object data = null, object tag = null)
-        {
-            Add(new BackTask(action, priority, data: data, tag: tag));
-        }
-        public void RemoveAndDispose(BackTask task)
-        {
-            if (task == _first)
-            {
-                BackTask next = task.Next;
-                if (next is not null) // This was not the only task
-                {
-                    next.Prev = null; // Make the next one the first one
-                }
-                _first = next;
-            }
-            else // Not the first one so we have a previous one
-            {
-                BackTask prev = task.Prev;
-                BackTask next = task.Next;
-                if (next is not null) // This was not last
-                {
-                    next.Prev = prev; // Connect the previous and next together
-                }
-                prev.Next = next;
-            }
-            task.Dispose();
-            Count--;
-        }
-
-        public void RemoveAll()
-        {
-            for (BackTask t = _first; t is not null; t = t.Next)
-            {
-                t.Dispose();
-            }
-            _first = null;
-            Count = 0;
-        }
-        public void RemoveAllWithTag(object tag)
-        {
-            for (BackTask t = _first; t is not null; t = t.Next)
-            {
-                if (Equals(t.Tag, tag))
-                {
-                    RemoveAndDispose(t);
-                }
-            }
-        }
-        public void RemoveAllWithoutTag(object tag)
-        {
-            for (BackTask t = _first; t is not null; t = t.Next)
-            {
-                if (!Equals(t.Tag, tag))
-                {
-                    RemoveAndDispose(t);
-                }
-            }
-        }
-
-        public void RunTasks()
-        {
-            for (BackTask t = _first; t is not null; t = t.Next)
-            {
-                t.Action(t);
-            }
-        }
-        public void RunTasksWithTag(object tag)
-        {
-            for (BackTask t = _first; t is not null; t = t.Next)
-            {
-                if (Equals(t.Tag, tag))
-                {
-                    t.Action(t);
-                }
-            }
-        }
-        public void RunTasksWithoutTag(object tag)
-        {
-            for (BackTask t = _first; t is not null; t = t.Next)
-            {
-                if (!Equals(t.Tag, tag))
-                {
-                    t.Action(t);
-                }
-            }
-        }
-
-        public bool TryGetTask(BackTaskAction action, out BackTask task)
-        {
-            for (BackTask t = _first; t is not null; t = t.Next)
-            {
-                if (Equals(t.Action, action))
-                {
-                    task = t;
-                    return true;
-                }
-            }
-            task = default;
-            return false;
-        }
-        public bool TryGetTaskWithTag(object tag, out BackTask task)
-        {
-            for (BackTask t = _first; t is not null; t = t.Next)
-            {
-                if (Equals(t.Tag, tag))
-                {
-                    task = t;
-                    return true;
-                }
-            }
-            task = default;
-            return false;
         }
     }
 }

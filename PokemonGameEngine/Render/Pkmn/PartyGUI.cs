@@ -28,7 +28,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             public readonly Party Party;
 
-            public GamePartyData(Party party, List<PartyGUIMember> members, SpriteList sprites)
+            public GamePartyData(Party party, List<PartyGUIMember> members, ConnectedList<Sprite> sprites)
             {
                 Party = party;
                 foreach (PartyPokemon pkmn in party)
@@ -41,7 +41,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             public readonly BattlePokemonParty Party;
 
-            public BattlePartyData(BattlePokemonParty party, List<PartyGUIMember> members, SpriteList sprites)
+            public BattlePartyData(BattlePokemonParty party, List<PartyGUIMember> members, ConnectedList<Sprite> sprites)
             {
                 Party = party;
                 foreach (PBEBattlePokemon pbePkmn in party.PBEParty)
@@ -67,7 +67,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private readonly GamePartyData _gameParty;
         private readonly BattlePartyData _battleParty;
         private readonly List<PartyGUIMember> _members;
-        private readonly SpriteList _sprites;
+        private readonly ConnectedList<Sprite> _sprites;
 
         private ITransition _transition;
         private Action _onClosed;
@@ -89,7 +89,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _mode = mode;
             _allowBack = true;
             _useGamePartyData = true;
-            _sprites = new();
+            _sprites = new(Sprite.Sorter);
             _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
             _gameParty = new GamePartyData(party, _members, _sprites);
 
@@ -108,7 +108,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _mode = mode;
             _allowBack = mode != Mode.BattleReplace; // Disallow back for BattleReplace
             _useGamePartyData = false;
-            _sprites = new();
+            _sprites = new(Sprite.Sorter);
             _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
             _battleParty = new BattlePartyData(party, _members, _sprites);
 
@@ -701,7 +701,10 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         private void Render()
         {
-            _sprites.DoCallbacks();
+            for (Sprite s = _sprites.First; s is not null; s = s.Next)
+            {
+                s.Callback?.Invoke(s);
+            }
 
             GL gl = Display.OpenGL;
             _frameBuffer.Use(gl);

@@ -90,13 +90,13 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private void CB_RenderWhite()
         {
-            _tasks.RunTasks();
+            RunTasks();
             RenderWhite();
             _frameBuffer.BlitToScreen();
         }
         private void CB_FadeInBattle()
         {
-            _tasks.RunTasks();
+            RunTasks();
             RenderBattleAndHUD();
             _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
@@ -114,7 +114,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         }
         private void CB_FadeOutBattle()
         {
-            _tasks.RunTasks();
+            RunTasks();
             RenderBattleAndHUD();
             _transition.Render(_frameBuffer);
             _frameBuffer.BlitToScreen();
@@ -148,7 +148,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         }
         private void CB_RunTasksAndEvents()
         {
-            _tasks.RunTasks();
+            RunTasks();
             HandleNewEvents();
 
 #if DEBUG_BATTLE_CAMERAPOS

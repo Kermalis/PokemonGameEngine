@@ -154,6 +154,7 @@ namespace Kermalis.PokemonGameEngine.Render
                 ScreenshotRequested = false;
                 SaveScreenshot();
             }
+            OpenGL.BindFramebuffer(FramebufferTarget.Framebuffer, 0); // Rebind default FBO. Streaming with many apps require this bound before swap
             SDL.SDL_GL_SwapWindow(_window);
         }
 
@@ -183,12 +184,16 @@ namespace Kermalis.PokemonGameEngine.Render
             throw new Exception(error);
         }
 #if DEBUG
-        // TODO: GL crash when Discord starts streaming the application
         private static void HandleGLError(GLEnum _, GLEnum type, int id, GLEnum severity, int length, IntPtr message, IntPtr __)
         {
             if (severity == GLEnum.DebugSeverityNotification)
             {
                 return;
+            }
+            // GL_INVALID_ENUM error generated. Operation is not valid from the core profile.
+            if (id == 1280)
+            {
+                return; // Ignore legacy profile func warnings. I don't use any legacy functions, but streaming apps may attempt to when hooking in
             }
             // Pixel-path performance warning: Pixel transfer is synchronized with 3D rendering.
             if (id == 131154)

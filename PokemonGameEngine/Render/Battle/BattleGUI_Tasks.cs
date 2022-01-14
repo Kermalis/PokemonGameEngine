@@ -9,7 +9,15 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 {
     internal sealed partial class BattleGUI
     {
-        private readonly TaskList _tasks = new();
+        private readonly ConnectedList<BackTask> _tasks = new(BackTask.Sorter);
+
+        private void RunTasks()
+        {
+            for (BackTask t = _tasks.First; t is not null; t = t.Next)
+            {
+                t.Action(t);
+            }
+        }
 
         #region Misc
 
@@ -56,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 {
                     OnFinished = onRead
                 };
-                _tasks.Add(a, int.MaxValue, data: data);
+                _tasks.Add(new BackTask(a, int.MaxValue, data: data));
             }
         }
         private void SetMessage(string str, Action onRead)
@@ -128,7 +136,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private void CreateCameraMotionTask(TaskData_MoveCamera data)
         {
-            _tasks.Add(Task_CameraMotion, int.MaxValue, data: data, tag: TaskData_MoveCamera.Tag);
+            _tasks.Add(new BackTask(Task_CameraMotion, int.MaxValue, data: data, tag: TaskData_MoveCamera.Tag));
         }
         private void CreateCameraMotionTask(in PositionRotation to, float seconds, Action onFinished = null, PositionRotationAnimator.Method method = PositionRotationAnimator.Method.Linear)
         {

@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render.Battle;
@@ -24,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private readonly Sprite _mini;
         private readonly FrameBuffer2DColor _frameBuffer;
 
-        public PartyGUIMember(PartyPokemon pkmn, SpriteList sprites)
+        public PartyGUIMember(PartyPokemon pkmn, ConnectedList<Sprite> sprites)
         {
             _usePartyPkmn = true;
             _isEgg = pkmn.IsEgg;
@@ -48,7 +49,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _frameBuffer = new FrameBuffer2DColor(new Vec2I(WIDTH, HEIGHT));
             UpdateBackground();
         }
-        public PartyGUIMember(BattlePokemon pkmn, SpriteList sprites)
+        public PartyGUIMember(BattlePokemon pkmn, ConnectedList<Sprite> sprites)
         {
             _usePartyPkmn = false;
             _isEgg = pkmn.PartyPkmn.IsEgg;

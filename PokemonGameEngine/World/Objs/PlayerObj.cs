@@ -39,7 +39,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             Instance.State = state;
             Instance.Pos = pos;
             Instance.Map = map;
-            map.Objs.Add(Instance);
         }
 
         protected override void OnMapChanged(Map oldMap, Map newMap)

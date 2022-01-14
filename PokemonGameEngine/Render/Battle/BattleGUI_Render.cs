@@ -240,7 +240,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             Display.SetMinimumWindowSize(RenderSize);
 
-            _tasks.Add(Task_RenderWhite, 0, data: new TaskData_RenderWhite());
+            _tasks.Add(new BackTask(Task_RenderWhite, 0, data: new TaskData_RenderWhite()));
             Game.Instance.SetCallback(CB_RenderWhite); // Renders white for half a second so the transition isn't jarring
         }
         private void ActuallyStartFadeIn()
@@ -258,7 +258,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     BlacknessAmt = 1f
                 };
                 _trainerSprite.UpdateImage(img);
-                _tasks.Add(Task_TrainerReveal, 0, data: new TaskData_TrainerReveal());
+                _tasks.Add(new BackTask(Task_TrainerReveal, 0, data: new TaskData_TrainerReveal()));
 
                 Camera.PR = new PositionRotation(new Vector3(10f, 5f, -25f), new Rotation(-70, 15, 0));
                 CreateCameraMotionTask(DefaultCamPosition, 2f, method: PositionRotationAnimator.Method.Smooth);
@@ -285,7 +285,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             {
                 void InitTrainerSpriteFadeAwayAndBegin()
                 {
-                    _tasks.Add(Task_TrainerGoAway, 0, data: new TaskData_TrainerGoAway(_trainerSprite.Pos.Z));
+                    _tasks.Add(new BackTask(Task_TrainerGoAway, 0, data: new TaskData_TrainerGoAway(_trainerSprite.Pos.Z)));
 
                     Begin();
                 }
@@ -293,7 +293,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             }
             else // Wild
             {
-                _tasks.Add(Task_WildReveal, 0, data: new TaskData_WildReveal());
+                _tasks.Add(new BackTask(Task_WildReveal, 0, data: new TaskData_WildReveal()));
 
                 CreateCameraMotionTask(DefaultCamPosition, CAM_SPEED_DEFAULT, onFinished: Begin);
             }
