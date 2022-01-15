@@ -78,6 +78,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void SetExitToOverworldFadeAndCallback()
         {
             MusicPlayer.Main.FadeToBackupMusic();
+
             _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutBattle);
         }
