@@ -3,6 +3,7 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Kermalis.PokemonGameEngine.World.Data
 {
@@ -36,7 +37,7 @@ namespace Kermalis.PokemonGameEngine.World.Data
 
         private EncounterTable(string name)
         {
-            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(ENCOUNTER_TABLE_PATH + name + ".bin")))
+            using (var r = new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(ENCOUNTER_TABLE_PATH + name + ".bin"))))
             {
                 ChanceOfPhenomenon = r.ReadByte();
                 byte count = r.ReadByte();

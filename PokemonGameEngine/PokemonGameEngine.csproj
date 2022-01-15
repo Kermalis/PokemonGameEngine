@@ -33,8 +33,8 @@
 		<DefineConstants>$(DefineConstants)</DefineConstants>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<!--Assets-->
+	<!--Assets: Copy for release build, share for debug build-->
+	<ItemGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
 		<Content Include="Assets\**\*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
@@ -44,17 +44,22 @@
 		<Content Remove="Assets\Pokedata\**\*.json" />
 		<Content Remove="Assets\Script\**\*.txt" />
 		<Content Remove="Assets\Tileset\Animation\**\*.json" />
+		<!--Pokémon sprites-->
 		<ContentWithTargetPath Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</TargetPath>
 		</ContentWithTargetPath>
 		<!--PokemonBattleEngine-->
-		<Reference Include="..\Shared Dependencies\PokemonBattleEngine.dll" />
-		<Reference Include="..\Shared Dependencies\PokemonBattleEngine.DefaultData.dll" />
 		<ContentWithTargetPath Include="..\Shared Dependencies\PokemonBattleEngine.db">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>Assets\PokemonBattleEngine.db</TargetPath>
 		</ContentWithTargetPath>
+	</ItemGroup>
+
+	<ItemGroup>
+		<!--PokemonBattleEngine-->
+		<Reference Include="..\Shared Dependencies\PokemonBattleEngine.dll" />
+		<Reference Include="..\Shared Dependencies\PokemonBattleEngine.DefaultData.dll" />
 		<!--SDL-->
 		<Reference Include="Dependencies\SDL2-CS.dll" />
 		<Reference Include="Dependencies\SimpleGIF.dll" />

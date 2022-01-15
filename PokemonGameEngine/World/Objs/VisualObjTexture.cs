@@ -7,6 +7,7 @@ using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Shaders.World;
 using Silk.NET.OpenGL;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
@@ -49,7 +50,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             using (EndianBinaryReader r = CreateReader())
             {
                 r.BaseStream.Position = _sheetOffsets[id];
-                _textureAtlas = Image.LoadOrGet(SHEETS_PATH + r.ReadStringNullTerminated());
+                _textureAtlas = Image.LoadOrGet(AssetLoader.GetPath(SHEETS_PATH + r.ReadStringNullTerminated()));
                 ImageSize = new Vec2I(r.ReadInt32(), r.ReadInt32());
                 ShadowOffset = new Vec2I(r.ReadInt32(), r.ReadInt32());
                 var shadowSize = new Vec2I(r.ReadInt32(), r.ReadInt32());
@@ -63,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         private static EndianBinaryReader CreateReader()
         {
-            return new EndianBinaryReader(AssetLoader.GetAssetStream(SHEETS_FILE), encoding: EncodingType.UTF16);
+            return new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(SHEETS_FILE)), encoding: EncodingType.UTF16);
         }
 
         public void RenderImage(VisualObjShader shader, in Rect rect, int imgIndex, bool xFlip = false, bool yFlip = false)

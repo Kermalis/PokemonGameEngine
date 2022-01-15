@@ -48,7 +48,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _numReferences = 1;
             _loadedBlocksets.Add(id, this);
 
-            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(BLOCKSET_PATH + name + BLOCKSET_EXTENSION)))
+            using (var r = new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(BLOCKSET_PATH + name + BLOCKSET_EXTENSION))))
             {
                 ushort count = r.ReadUInt16();
                 if (count == 0)

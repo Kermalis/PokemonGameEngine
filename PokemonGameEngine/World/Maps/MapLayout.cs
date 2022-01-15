@@ -62,7 +62,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 #if DEBUG_OVERWORLD
             Name = name;
 #endif
-            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(LAYOUT_PATH + name + LAYOUT_EXTENSION)))
+            using (var r = new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(LAYOUT_PATH + name + LAYOUT_EXTENSION))))
             {
                 // Layout blocks
                 Size.X = r.ReadInt32();

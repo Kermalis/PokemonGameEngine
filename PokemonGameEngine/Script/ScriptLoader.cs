@@ -3,6 +3,7 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Script
 {
@@ -28,7 +29,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private static EndianBinaryReader GetReader()
         {
-            return new EndianBinaryReader(AssetLoader.GetAssetStream(_scriptFile), encoding: EncodingType.UTF16);
+            return new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(_scriptFile)), encoding: EncodingType.UTF16);
         }
 
         public static ScriptContext LoadScript(string label, Vec2I viewSize)

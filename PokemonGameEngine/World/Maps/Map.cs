@@ -144,7 +144,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
 
         private EndianBinaryReader CreateReader()
         {
-            return new EndianBinaryReader(AssetLoader.GetAssetStream(MAP_PATH + _ids[_id] + ".bin"));
+            return new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(MAP_PATH + _ids[_id] + ".bin")));
         }
         private void LoadData_NowVisible()
         {

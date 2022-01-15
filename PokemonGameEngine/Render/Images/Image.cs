@@ -16,15 +16,15 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         public uint Texture { get; }
         public Vec2I Size { get; }
 
-        private Image(string asset)
+        private Image(string assetPath)
         {
-            _id = asset;
+            _id = assetPath;
             _numReferences = 1;
-            _loadedImages.Add(asset, this);
+            _loadedImages.Add(assetPath, this);
 
             GL gl = Display.OpenGL;
             Texture = gl.GenTexture();
-            uint[] bitmap = AssetLoader.GetAssetBitmap(asset, out Vec2I size);
+            uint[] bitmap = AssetLoader.GetAssetBitmap(assetPath, out Vec2I size);
             Size = size;
             UpdateGLTexture(gl, bitmap);
         }
@@ -43,15 +43,15 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             GUIRenderer.Texture(Texture, Rect.FromSize(pos, Size), new UV(xFlip, yFlip));
         }
 
-        public static Image LoadOrGet(string asset)
+        public static Image LoadOrGet(string assetPath)
         {
-            if (_loadedImages.TryGetValue(asset, out Image img))
+            if (_loadedImages.TryGetValue(assetPath, out Image img))
             {
                 img._numReferences++;
             }
             else
             {
-                img = new Image(asset);
+                img = new Image(assetPath);
             }
             return img;
         }

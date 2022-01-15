@@ -42,7 +42,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         private unsafe Font(string asset, Vec2I atlasSize, (string, ushort)[] overrides)
         {
             const int SPACING = 1;
-            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(asset), Endianness.LittleEndian))
+            using (var r = new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(asset)), Endianness.LittleEndian))
             {
                 FontHeight = r.ReadByte();
                 if (FontHeight > atlasSize.Y)

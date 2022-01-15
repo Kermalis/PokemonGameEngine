@@ -4,6 +4,7 @@ using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
@@ -14,8 +15,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         {
             PBEMove[] arr;
 
-            string asset = "Pokedata\\" + AssetLoader.GetPkmnDirectoryName(species, form) + "\\EggMoves.bin";
-            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(asset)))
+            string asset = @"Pokedata\" + AssetLoader.GetPkmnDirectoryName(species, form) + @"\EggMoves.bin";
+            using (var r = new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(asset))))
             {
                 arr = r.ReadEnums<PBEMove>(r.ReadByte());
             }

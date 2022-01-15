@@ -20,9 +20,9 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         public uint Texture => _img.Frames[_curFrameIndex].Texture;
         public Vec2I Size => _img.Size;
 
-        public AnimatedImage(string asset, (uint PID, bool Shiny)? spindaSpots = null, bool isPaused = false, float speedModifier = 1, int? repeatCount = null)
+        public AnimatedImage(string assetPath, (uint PID, bool Shiny)? spindaSpots = null, bool isPaused = false, float speedModifier = 1, int? repeatCount = null)
         {
-            _img = Instance.LoadOrGet(asset, spindaSpots);
+            _img = Instance.LoadOrGet(assetPath, spindaSpots);
             if (isPaused)
             {
                 IsPaused = true;

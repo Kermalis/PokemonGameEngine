@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render.World;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Kermalis.PokemonGameEngine.World.Data
 {
@@ -28,7 +29,7 @@ namespace Kermalis.PokemonGameEngine.World.Data
         }
         private static EndianBinaryReader GetReader()
         {
-            return new EndianBinaryReader(AssetLoader.GetAssetStream(FILE), encoding: EncodingType.UTF16);
+            return new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(FILE)), encoding: EncodingType.UTF16);
         }
 
         public static TileAnimation[] Load(int tilesetId)

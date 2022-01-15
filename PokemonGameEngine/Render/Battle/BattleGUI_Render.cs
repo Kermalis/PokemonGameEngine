@@ -252,7 +252,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                 _canAdvanceMsg = false; // Don't advance message till trainer anim finishes
 
                 // Create trainer sprite
-                var img = new AnimatedImage(TrainerCore.GetTrainerClassAsset(_trainerClass), isPaused: true);
+                var img = new AnimatedImage(TrainerCore.GetTrainerClassAssetPath(_trainerClass), isPaused: true);
                 _trainerSprite = new BattleSprite(new Vector3(0.75f, GetFloorY(Battle.BattleFormat), -13f), true)
                 {
                     BlacknessAmt = 1f

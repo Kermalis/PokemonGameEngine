@@ -85,7 +85,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             {
                 uint spotColor = UnsafeRenderer.RawColor(0, 255, 255, 255);
 
-                uint[] bitmap = AssetLoader.GetAssetBitmap(asset, out Vec2I size);
+                uint[] bitmap = AssetLoader.GetAssetBitmap(AssetLoader.GetPath(asset), out Vec2I size);
                 bool[,] arr = new bool[size.Y, size.X];
                 fixed (uint* src = bitmap)
                 {

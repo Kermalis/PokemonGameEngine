@@ -1,8 +1,8 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.SimpleGIF;
+﻿using Kermalis.SimpleGIF;
 using Kermalis.SimpleGIF.Decoding;
 using Silk.NET.OpenGL;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Render.Images
 {
@@ -21,13 +21,13 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             public readonly Vec2I Size;
             public readonly ushort RepeatCount;
 
-            private Instance(string asset, string id, (uint PID, bool Shiny)? spindaSpots)
+            private Instance(string assetPath, string id, (uint PID, bool Shiny)? spindaSpots)
             {
                 _id = id;
                 _numReferences = 1;
                 _loadedImages.Add(id, this);
 
-                DecodedGIF gif = GIFRenderer.DecodeAllFrames(AssetLoader.GetAssetStream(asset), ColorFormat.RGBA);
+                DecodedGIF gif = GIFRenderer.DecodeAllFrames(File.OpenRead(assetPath), ColorFormat.RGBA);
 
                 if (spindaSpots is not null)
                 {
@@ -44,18 +44,18 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                 RepeatCount = gif.RepeatCount;
             }
 
-            public static Instance LoadOrGet(string asset, (uint PID, bool Shiny)? spindaSpots)
+            public static Instance LoadOrGet(string assetPath, (uint PID, bool Shiny)? spindaSpots)
             {
                 // Add spinda spot data to the asset to use it uniquely
                 string id;
                 if (spindaSpots is not null)
                 {
                     (uint pid, bool shiny) = spindaSpots.Value;
-                    id = asset + string.Format("_{0:X8}_{1}", pid, shiny);
+                    id = assetPath + string.Format("_{0:X8}_{1}", pid, shiny);
                 }
                 else
                 {
-                    id = asset;
+                    id = assetPath;
                 }
                 // LoadOrGet now
                 if (_loadedImages.TryGetValue(id, out Instance img))
@@ -64,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
                 }
                 else
                 {
-                    img = new Instance(asset, id, spindaSpots);
+                    img = new Instance(assetPath, id, spindaSpots);
                 }
                 return img;
             }

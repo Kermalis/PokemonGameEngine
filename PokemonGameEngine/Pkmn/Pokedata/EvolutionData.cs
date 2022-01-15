@@ -1,6 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
 {
@@ -27,8 +28,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
 
         public EvolutionData(PBESpecies species, PBEForm form)
         {
-            string asset = "Pokedata\\" + AssetLoader.GetPkmnDirectoryName(species, form) + "\\Evolutions.bin";
-            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(asset)))
+            string asset = @"Pokedata\" + AssetLoader.GetPkmnDirectoryName(species, form) + @"\Evolutions.bin";
+            using (var r = new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(asset))))
             {
                 BabySpecies = r.ReadEnum<PBESpecies>();
                 byte count = r.ReadByte();

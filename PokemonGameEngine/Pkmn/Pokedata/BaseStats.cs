@@ -3,6 +3,7 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 #if DEBUG_DATA_CACHE
 using Kermalis.PokemonBattleEngine.Data.Utils;
 #endif
@@ -95,8 +96,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
             Species = species;
             Form = form;
 
-            string asset = "Pokedata\\" + AssetLoader.GetPkmnDirectoryName(species, form) + "\\BaseStats.bin";
-            using (var r = new EndianBinaryReader(AssetLoader.GetAssetStream(asset)))
+            string asset = @"Pokedata\" + AssetLoader.GetPkmnDirectoryName(species, form) + @"\BaseStats.bin";
+            using (var r = new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(asset))))
             {
                 Stats = new PBEReadOnlyStatCollection(r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte());
                 Type1 = r.ReadEnum<PBEType>();

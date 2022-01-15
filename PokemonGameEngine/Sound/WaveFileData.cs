@@ -44,7 +44,7 @@ namespace Kermalis.PokemonGameEngine.Sound
             _numReferences = 1;
             _dataCache.Add(asset, this);
 
-            Stream = AssetLoader.GetAssetStream(asset);
+            Stream = File.OpenRead(AssetLoader.GetPath(asset));
             Reader = new EndianBinaryReader(Stream);
 
             DataStart = -1;

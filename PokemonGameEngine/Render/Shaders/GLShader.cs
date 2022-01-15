@@ -31,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
         private static uint LoadShader(GL gl, ShaderType type, string asset)
         {
             string src;
-            using (StreamReader sr = AssetLoader.GetAssetStreamText(@"Shaders\" + asset))
+            using (StreamReader sr = File.OpenText(AssetLoader.GetPath(@"Shaders\" + asset)))
             {
                 src = sr.ReadToEnd();
             }

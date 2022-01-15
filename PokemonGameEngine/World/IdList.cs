@@ -11,7 +11,7 @@ namespace Kermalis.PokemonGameEngine.World
 
         public IdList(string asset)
         {
-            using (StreamReader s = AssetLoader.GetAssetStreamText(asset))
+            using (StreamReader s = File.OpenText(AssetLoader.GetPath(asset)))
             {
                 string key;
                 while ((key = s.ReadLine()) is not null)

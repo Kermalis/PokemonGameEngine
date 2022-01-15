@@ -21,7 +21,7 @@ namespace Kermalis.PokemonGameEngine.Trainer
             }
             return Song.BattleTrainer;
         }
-        public static string GetTrainerClassAsset(TrainerClass c)
+        public static string GetTrainerClassAssetPath(TrainerClass c)
         {
             string s;
             switch (c)
@@ -31,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.Trainer
                 case TrainerClass.Leader: s = "Janine"; break;
                 default: throw new ArgumentOutOfRangeException(nameof(c));
             }
-            return string.Format("Sprites\\Trainers\\{0}.gif", s);
+            return AssetLoader.GetPath(string.Format(@"Sprites\Trainers\{0}.gif", s));
         }
         public static string GetTrainerClassName(TrainerClass c)
         {
