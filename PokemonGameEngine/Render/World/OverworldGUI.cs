@@ -60,7 +60,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _ = new OverworldGUI(); // Create
 
             DayTint.CatchUpTime = true;
-            StartMapMusic();
+            FadeToMapMusic();
 
             Instance.ReturnToFieldWithFadeIn();
             //EncounterMaker.Debug_CreateTestWildBattle();
@@ -109,35 +109,31 @@ namespace Kermalis.PokemonGameEngine.Render.World
         {
             if (CameraObj.Instance.CamAttachedTo?.Id != Overworld.PlayerId)
             {
-                throw new InvalidOperationException("Tried to warp without the camera.");
+                throw new InvalidOperationException("Player tried to warp without the camera.");
             }
 
-            var w = WarpInProgress.Start(warp);
-            Song newMusic = w.DestMap.Details.Music;
-            if (newMusic != PlayerObj.Instance.Map.Details.Music)
-            {
-                SoundControl.SetOverworldBGM(newMusic);
-            }
+            WarpInProgress.Current = new WarpInProgress(warp);
+            MusicPlayer.Main.QueueMusicIfDifferentThenFadeOutCurrentMusic(WarpInProgress.Current.DestMap.Details.Music);
 
             _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutToWarp);
         }
 
-        public void StartWildBattle(PBEBattle battle, BattleBackground bg, Song song, IReadOnlyList<Party> trainerParties)
+        public void StartWildBattle(PBEBattle battle, BattleBackground bg, Song music, IReadOnlyList<Party> trainerParties)
         {
             BattleGUI.CreateWildBattle(battle, bg, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties);
-            StartBattle(song);
+            StartBattle(music);
         }
-        public void StartTrainerBattle(PBEBattle battle, BattleBackground bg, Song song, IReadOnlyList<Party> trainerParties, TrainerClass c, string defeatText)
+        public void StartTrainerBattle(PBEBattle battle, BattleBackground bg, Song music, IReadOnlyList<Party> trainerParties, TrainerClass c, string defeatText)
         {
             BattleGUI.CreateTrainerBattle(battle, bg, ReturnToFieldWithFadeInAfterEvolutionCheck, trainerParties, c, defeatText);
-            StartBattle(song);
+            StartBattle(music);
         }
         /// <summary>Sets up the battle transition, starts music, sets transition callbacks.</summary>
-        private void StartBattle(Song song)
+        private void StartBattle(Song music)
         {
             Game.Instance.IsOnOverworld = false;
-            SoundControl.SetBattleBGM(song);
+            MusicPlayer.Main.BeginNewMusicAndBackupCurrentMusic(music);
 
             _transition = new BattleTransition_Liquid(RenderSize);
             Game.Instance.SetCallback(CB_FadeOutToBattle);
@@ -161,9 +157,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
             ReturnToFieldWithFadeIn();
         }
 
-        private static void StartMapMusic()
+        public static void FadeToMapMusic()
         {
-            SoundControl.SetOverworldBGM(PlayerObj.Instance.Map.Details.Music);
+            MusicPlayer.Main.FadeToNewMusic(CameraObj.Instance.Map.Details.Music);
         }
 
         private void CB_FadeIn()
@@ -273,7 +269,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
             for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
             {
-                o.Update();
+                if (!o.IsDead)
+                {
+                    o.Update();
+                }
             }
 
             // Check for the obj we're waiting for to finish moving

@@ -4,20 +4,17 @@ using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Sound
 {
-    internal delegate void SoundStoppedFunc(SoundChannel c);
-    internal sealed class SoundChannel
+    internal sealed class SoundChannel : IConnectedListObject<SoundChannel>
     {
-        private const bool CheckPause = false; // Not needed because tasks are not parallel right now
+        public SoundChannel Next { get; set; }
+        public SoundChannel Prev { get; set; }
 
-        public SoundChannel Next;
-        public SoundChannel Prev;
-
-        public bool IsPaused;
-        public float Volume = 1f;
+        public bool IsStopped;
+        /// <summary>Higher priorities are mixed first</summary>
+        public int Priority;
+        public float Volume;
         /// <summary>-1 left, 0 center, +1 right</summary>
-        public float Panpot = 0f;
-        /// <summary>Callback for the sound stopping. This thread is not the Logic Thread</summary>
-        public SoundStoppedFunc OnStopped;
+        public float Panpot;
 
         public readonly WaveFileData Data;
 
@@ -25,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         private float _freq;
         private float _interPos;
         private long _offset;
-        private long _trailOffset; // todo: no more
+        private long _trailOffset;
 
         // Fade
         public bool IsFading;
@@ -35,12 +32,43 @@ namespace Kermalis.PokemonGameEngine.Sound
         private float _fadeTime;
         private float _fadeDuration;
 
-        public SoundChannel(WaveFileData data)
+        public SoundChannel(string asset)
         {
-            Data = data;
-            _freq = data.SampleRate;
-            _offset = data.DataStart;
-            _trailOffset = data.DataEnd;
+            Volume = 1f;
+            Panpot = 0f;
+            Data = WaveFileData.Get(asset);
+            _freq = Data.SampleRate;
+            _offset = Data.DataStart;
+            _trailOffset = Data.DataEnd;
+        }
+        public SoundChannel(SoundChannelState state)
+        {
+            Priority = state.Priority;
+            Volume = 1f;
+            Panpot = state.Panpot;
+            Data = WaveFileData.Get(state.Asset);
+            _freq = state.Freq;
+            _interPos = state.InterPos;
+            _offset = state.Offset;
+            _trailOffset = state.TrailOffset;
+        }
+
+        public static int Sorter(SoundChannel s1, SoundChannel s2)
+        {
+            if (s1.Priority > s2.Priority)
+            {
+                return -1;
+            }
+            if (s1.Priority == s2.Priority)
+            {
+                return 0;
+            }
+            return 1;
+        }
+
+        public SoundChannelState GetState()
+        {
+            return new SoundChannelState(Data.Asset, Panpot, Priority, _freq, _interPos, _offset, _trailOffset);
         }
 
         public void SetPitch(int pitch)
@@ -115,25 +143,12 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         public void BeginFade(float seconds, float from, float to)
         {
-            if (IsFading)
-            {
-                _fadeDuration = seconds - _fadeTime;
-                if (_fadeDuration <= 0f)
-                {
-                    _fadeDuration = 0f;
-                    IsFading = false;
-                    return;
-                }
-                _fadeFrom = _fadeCurVolume;
-            }
-            else
-            {
-                _fadeFrom = from;
-                _fadeCurVolume = from;
-                _fadeDuration = seconds;
-                IsFading = true;
-            }
+            _fadeDuration = seconds;
+            _fadeFrom = from;
             _fadeTo = to;
+            _fadeCurVolume = from;
+            _fadeTime = 0f;
+            IsFading = true;
         }
         public void ApplyFade(float[] buffer, int numSamples)
         {
@@ -143,22 +158,19 @@ namespace Kermalis.PokemonGameEngine.Sound
             if (progress >= 1f)
             {
                 progress = 1f;
+                Volume = _fadeTo;
+                IsFading = false;
             }
             float toVol = Utils.Lerp(_fadeFrom, _fadeTo, progress);
             float step = (toVol - fromVol) / numSamples;
             float level = fromVol;
-            for (int j = 0; j < numSamples; j++)
+            for (int j = 0; j < numSamples * 2; j += 2)
             {
-                buffer[j * 2] *= level;
-                buffer[(j * 2) + 1] *= level;
+                buffer[j] *= level;
+                buffer[j + 1] *= level;
                 level += step;
             }
             _fadeCurVolume = toVol;
-            if (progress == 1f) // Fade is finished
-            {
-                Volume = toVol;
-                IsFading = false;
-            }
         }
 
         #endregion
@@ -167,15 +179,10 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private void MixU8_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 int samp = Data.Reader.ReadByte();
 
@@ -198,15 +205,10 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixU8_Stereo_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 int sampL = Data.Reader.ReadByte();
                 int sampR = Data.Reader.ReadByte();
@@ -231,15 +233,10 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixU8_Mono_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 int samp = Data.Reader.ReadByte();
 
@@ -270,15 +267,10 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixU8_Stereo_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 int sampL = Data.Reader.ReadByte();
                 int sampR = Data.Reader.ReadByte();
@@ -317,15 +309,10 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private void MixS16_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 int samp = Data.Reader.ReadInt16();
 
@@ -349,15 +336,10 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixS16_Stereo_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 int sampL = Data.Reader.ReadInt16();
                 int sampR = Data.Reader.ReadInt16();
@@ -382,15 +364,10 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixS16_Mono_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 int samp = Data.Reader.ReadInt16();
 
@@ -422,15 +399,10 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixS16_Stereo_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 int sampL = Data.Reader.ReadInt16();
                 int sampR = Data.Reader.ReadInt16();
@@ -469,15 +441,10 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private void MixF32_Mono_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 float samp = Data.Reader.ReadSingle();
 
@@ -501,15 +468,10 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixF32_Stereo_NoLoop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 float sampL = Data.Reader.ReadSingle();
                 float sampR = Data.Reader.ReadSingle();
@@ -534,15 +496,10 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixF32_Mono_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 float samp = Data.Reader.ReadSingle();
 
@@ -574,15 +531,10 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         private void MixF32_Stereo_Loop(float[] buffer, int numSamples, float leftVol, float rightVol)
         {
-            float interStep = _freq * SoundMixer.SampleRateReciprocal;
+            float interStep = _freq * SoundMixer.SAMPLE_RATE_RECIPROCAL;
             int bufPos = 0;
             do
             {
-                if (CheckPause && IsPaused)
-                {
-                    return;
-                }
-
                 Data.Stream.Position = _offset;
                 float sampL = Data.Reader.ReadSingle();
                 float sampR = Data.Reader.ReadSingle();
@@ -616,5 +568,11 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            Data.DeductReference();
+            IsStopped = true;
+        }
     }
 }

@@ -293,6 +293,10 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             }
             else // Wild
             {
+                foreach (PkmnPosition p in _positions[1])
+                {
+                    PlayCry(p.BattlePkmn.PBEPkmn);
+                }
                 _tasks.Add(new BackTask(Task_WildReveal, 0, data: new TaskData_WildReveal()));
 
                 CreateCameraMotionTask(DefaultCamPosition, CAM_SPEED_DEFAULT, onFinished: Begin);

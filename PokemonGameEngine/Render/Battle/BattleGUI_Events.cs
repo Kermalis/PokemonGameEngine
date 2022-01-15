@@ -390,7 +390,6 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                         bPkmn.UpdateInfoBar(); // Only update and set the info to visible because the sprite is already loaded and visible
                         PkmnPosition pos = GetPkmnPosition(1, pbePkmn.FieldPosition); // pos already attached for wild BattlePokemon
                         pos.InfoVisible = true;
-                        PlayCry(pbePkmn);
                     }
                     break;
                 }

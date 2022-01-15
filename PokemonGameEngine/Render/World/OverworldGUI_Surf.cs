@@ -24,26 +24,16 @@ namespace Kermalis.PokemonGameEngine.Render.World
         public void StartSurfTasks()
         {
             PartyPokemon pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar_Result]];
-            _tasks.Add(new BackTask(Task_Surf_PlayCry, int.MaxValue, data: pkmn));
+            SoundChannel channel = SoundControl.PlayCry(pkmn.Species, pkmn.Form);
+            _tasks.Add(new BackTask(Task_Surf_WaitCry, int.MaxValue, data: channel));
             // TODO: Clear saved music, start surf music
-        }
-        private void Task_Surf_PlayCry(BackTask task)
-        {
-            void OnCryFinished(SoundChannel _)
-            {
-                task.Data = true;
-            }
-
-            var pkmn = (PartyPokemon)task.Data;
-            SoundControl.PlayCry(pkmn.Species, pkmn.Form, onStopped: OnCryFinished);
-            task.Data = false;
-            task.Action = Task_Surf_WaitCry;
         }
         private void Task_Surf_WaitCry(BackTask task)
         {
-            if (!(bool)task.Data)
+            var channel = (SoundChannel)task.Data;
+            if (!channel.IsStopped)
             {
-                return; // Gets set to true when the cry ends
+                return;
             }
 
             PlayerObj player = PlayerObj.Instance;

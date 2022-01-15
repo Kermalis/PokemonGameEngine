@@ -5,6 +5,7 @@ using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Script;
 using Kermalis.PokemonGameEngine.Scripts;
+using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.World.Maps;
 using System;
 
@@ -61,7 +62,8 @@ namespace Kermalis.PokemonGameEngine.World.Objs
         public void Warp()
         {
             WarpInProgress wip = WarpInProgress.Current;
-            WarpInProgress.EndCurrent();
+            WarpInProgress.Current = null;
+            MusicPlayer.Main.FadeToQueuedMusic(); // Start music now. The callback when the CameraObj's map changes will not change the music after this
             Map newMap = wip.DestMap;
             SetMap(newMap); // Move player to the new map first. If the camera were moved first, the old map would unload with the player on it
             CameraObj.Instance.SetMap(newMap); // Camera must be attached to us to warp in the first place

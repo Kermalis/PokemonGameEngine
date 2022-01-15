@@ -19,6 +19,11 @@ namespace Kermalis.PokemonGameEngine.Sound
     }
     internal sealed class WaveFileData
     {
+        private static readonly Dictionary<string, WaveFileData> _dataCache = new();
+
+        public readonly string Asset;
+        private int _numReferences;
+
         public readonly long DataStart;
         public readonly long DataEnd;
 
@@ -35,9 +40,10 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private WaveFileData(string asset)
         {
-            _id = asset;
+            Asset = asset;
             _numReferences = 1;
             _dataCache.Add(asset, this);
+
             Stream = AssetLoader.GetAssetStream(asset);
             Reader = new EndianBinaryReader(Stream);
 
@@ -203,12 +209,6 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
         }
 
-        #region Cache
-
-        private readonly string _id;
-        private int _numReferences;
-        private static readonly Dictionary<string, WaveFileData> _dataCache = new();
-
         public static WaveFileData Get(string asset)
         {
             if (_dataCache.TryGetValue(asset, out WaveFileData data))
@@ -221,15 +221,14 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
             return data;
         }
+
         public void DeductReference()
         {
             if (--_numReferences <= 0)
             {
                 Stream.Dispose();
-                _dataCache.Remove(_id);
+                _dataCache.Remove(Asset);
             }
         }
-
-        #endregion
     }
 }

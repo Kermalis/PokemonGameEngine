@@ -52,7 +52,7 @@ namespace Kermalis.PokemonGameEngine.Core
 
         public static void CreateWildBattle(Party wildParty,
             MapWeather mapWeather, BlocksetBlockBehavior blockBehavior,
-            PBEBattleFormat format, Song song)
+            PBEBattleFormat format, Song music)
         {
             Save sav = Game.Instance.Save;
 
@@ -64,13 +64,13 @@ namespace Kermalis.PokemonGameEngine.Core
             var battle = PBEBattle.CreateWildBattle(format, PkmnConstants.PBESettings, me, wild,
                 battleTerrain: terrain, weather: GetPBEWeather(mapWeather));
 
-            OverworldGUI.Instance.StartWildBattle(battle, bg, song, trainerParties);
+            OverworldGUI.Instance.StartWildBattle(battle, bg, music, trainerParties);
             sav.GameStats[GameStat.TotalBattles]++;
             sav.GameStats[GameStat.WildBattles]++;
         }
         public static void CreateTrainerBattle_1v1(PBETrainerInfo enemyInfo, Party[] trainerParties,
             MapWeather mapWeather, BlocksetBlockBehavior blockBehavior,
-            PBEBattleFormat format, Song song,
+            PBEBattleFormat format, Song music,
             TrainerClass c, string defeatText)
         {
             Save sav = Game.Instance.Save;
@@ -81,7 +81,7 @@ namespace Kermalis.PokemonGameEngine.Core
             var battle = PBEBattle.CreateTrainerBattle(format, PkmnConstants.PBESettings, me, enemyInfo,
                 battleTerrain: terrain, weather: GetPBEWeather(mapWeather));
 
-            OverworldGUI.Instance.StartTrainerBattle(battle, bg, song, trainerParties, c, defeatText);
+            OverworldGUI.Instance.StartTrainerBattle(battle, bg, music, trainerParties, c, defeatText);
             sav.GameStats[GameStat.TotalBattles]++;
             sav.GameStats[GameStat.TrainerBattles]++;
         }

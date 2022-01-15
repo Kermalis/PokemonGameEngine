@@ -222,10 +222,11 @@ namespace Kermalis.PokemonGameEngine.World
         Town1,
         Route1,
         Cave1,
-        WildBattle,
-        WildBattle_Multi,
-        TrainerBattle,
-        GymBattle,
-        LegendaryBattle,
+        BattleWild,
+        BattleWild_Multi,
+        BattleTrainer,
+        BattleGymLeader,
+        BattleEvil1,
+        BattleLegendary,
     }
 }

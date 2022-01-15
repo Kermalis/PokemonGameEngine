@@ -1,4 +1,5 @@
-﻿using SDL2;
+﻿using Kermalis.PokemonGameEngine.Core;
+using SDL2;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -7,26 +8,27 @@ namespace Kermalis.PokemonGameEngine.Sound
 {
     internal static class SoundMixer
     {
-        private const int SampleRate = 48000;
-        public const float SampleRateReciprocal = 1f / SampleRate;
+        private const int SAMPLE_RATE = 48_000;
+        public const float SAMPLE_RATE_RECIPROCAL = 1f / SAMPLE_RATE;
 
         private static readonly uint _audioDevice;
         private static readonly SDL.SDL_AudioSpec _audioSpec;
         private static readonly float[] _buffer;
         private static readonly float[] _tempBuffer;
 
-        private static SoundChannel _channelList;
+        private static readonly ConnectedList<SoundChannel> _channels = new(SoundChannel.Sorter);
         private static DateTime _lastRenderTime;
         public static float DeltaTime;
 
         static SoundMixer()
         {
             var spec = new SDL.SDL_AudioSpec();
-            spec.freq = SampleRate;
+            spec.freq = SAMPLE_RATE;
             spec.format = SDL.AUDIO_F32;
             spec.channels = 2;
             spec.samples = 4096;
             spec.callback = MixAudio;
+
             _audioDevice = SDL.SDL_OpenAudioDevice(null, 0, ref spec, out _audioSpec, 0);
             int len = _audioSpec.samples * 2;
             _buffer = new float[len];
@@ -42,42 +44,11 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         public static void AddChannel(SoundChannel c)
         {
-            if (_channelList is null)
-            {
-                _channelList = c;
-            }
-            else
-            {
-                SoundChannel old = _channelList;
-                _channelList = c;
-                old.Prev = c;
-                c.Next = old;
-            }
+            _channels.Add(c);
         }
         public static void StopChannel(SoundChannel c)
         {
-            if (c == _channelList)
-            {
-                SoundChannel next = c.Next;
-                if (next is not null)
-                {
-                    next.Prev = null;
-                }
-                _channelList = next;
-            }
-            else
-            {
-                SoundChannel prev = c.Prev;
-                SoundChannel next = c.Next;
-                if (next is not null)
-                {
-                    next.Prev = prev;
-                }
-                prev.Next = next;
-            }
-            c.Data.DeductReference(); // Dispose wav if it's not being shared
-            c.OnStopped?.Invoke(c);
-            c.OnStopped = null;
+            _channels.RemoveAndDispose(c);
         }
 
 #if DEBUG_AUDIO_LOG
@@ -153,58 +124,57 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         private static void MixAudio(IntPtr userdata, IntPtr stream, int len)
         {
-            // Calculate delta time
-            DateTime now = DateTime.Now;
-            if (now <= _lastRenderTime)
+            lock (SoundControl.LockObj)
             {
-                DeltaTime = 1f; // Assume 1 second passed
-            }
-            else
-            {
-                DeltaTime = (float)(now - _lastRenderTime).TotalSeconds;
-                if (DeltaTime > 1f)
+                // Calculate delta time
+                DateTime now = DateTime.Now;
+                if (now <= _lastRenderTime)
                 {
-                    DeltaTime = 1f;
-                }
-            }
-
-            SoundControl.RunSoundTasks(); // Run sound tasks
-
-            // Mix audio
-            int numSamplesTotal = len / sizeof(float);
-            int numSamplesPerChannel = numSamplesTotal / 2; // 2 Channels
-            Array.Clear(_buffer, 0, numSamplesTotal);
-
-            for (SoundChannel c = _channelList; c is not null; c = c.Next)
-            {
-                if (c.IsPaused)
-                {
-                    continue;
-                }
-                if (c.IsFading)
-                {
-                    Array.Clear(_tempBuffer, 0, numSamplesTotal);
-                    c.MixF32(_tempBuffer, numSamplesPerChannel);
-                    c.ApplyFade(_tempBuffer, numSamplesPerChannel);
-                    for (int i = 0; i < numSamplesTotal; i++)
-                    {
-                        _buffer[i] += _tempBuffer[i];
-                    }
+                    DeltaTime = 1f; // Assume 1 second passed
                 }
                 else
                 {
-                    c.MixF32(_buffer, numSamplesPerChannel);
+                    DeltaTime = (float)(now - _lastRenderTime).TotalSeconds;
+                    if (DeltaTime > 1f)
+                    {
+                        DeltaTime = 1f;
+                    }
                 }
-            }
+
+                SoundControl.RunSoundTasks(); // Run sound tasks
+
+                // Mix audio
+                int numSamplesTotal = len / sizeof(float);
+                int numSamplesPerChannel = numSamplesTotal / 2; // 2 Channels
+                Array.Clear(_buffer, 0, numSamplesTotal);
+
+                for (SoundChannel c = _channels.First; c is not null; c = c.Next)
+                {
+                    if (c.IsFading)
+                    {
+                        Array.Clear(_tempBuffer, 0, numSamplesTotal);
+                        c.MixF32(_tempBuffer, numSamplesPerChannel);
+                        c.ApplyFade(_tempBuffer, numSamplesPerChannel);
+                        for (int i = 0; i < numSamplesTotal; i++)
+                        {
+                            _buffer[i] += _tempBuffer[i];
+                        }
+                    }
+                    else
+                    {
+                        c.MixF32(_buffer, numSamplesPerChannel);
+                    }
+                }
 
 #if DEBUG_AUDIO_LOG
-            Debug_DrawAudio();
+                Debug_DrawAudio();
 #endif
 
-            // Marshal copy is at least twice as fast as sdl memset
-            Marshal.Copy(_buffer, 0, stream, numSamplesTotal);
+                // Marshal copy is at least twice as fast as sdl memset
+                Marshal.Copy(_buffer, 0, stream, numSamplesTotal);
 
-            _lastRenderTime = now;
+                _lastRenderTime = now;
+            }
         }
 
         #region Mixing Math

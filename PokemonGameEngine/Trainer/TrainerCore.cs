@@ -17,9 +17,9 @@ namespace Kermalis.PokemonGameEngine.Trainer
             switch (c)
             {
                 case TrainerClass.Leader:
-                    return Song.GymBattle;
+                    return Song.BattleGymLeader;
             }
-            return Song.TrainerBattle;
+            return Song.BattleTrainer;
         }
         public static string GetTrainerClassAsset(TrainerClass c)
         {
@@ -79,8 +79,8 @@ namespace Kermalis.PokemonGameEngine.Trainer
 
             var enemyInfo = new PBETrainerInfo(enemyParty, string.Format("{0} {1}", GetTrainerClassName(tc), name), false, inventory: inv);
             var parties = new Party[] { Game.Instance.Save.PlayerParty, enemyParty };
-            Song song = GetTrainerClassSong(tc);
-            BattleMaker.CreateTrainerBattle_1v1(enemyInfo, parties, weather, behavior, format, song, tc, defeatText);
+            Song music = GetTrainerClassSong(tc);
+            BattleMaker.CreateTrainerBattle_1v1(enemyInfo, parties, weather, behavior, format, music, tc, defeatText);
         }
 
         public static void Debug_CreateTestTrainerBattle()
@@ -90,7 +90,7 @@ namespace Kermalis.PokemonGameEngine.Trainer
             PBEBattleFormat format = PBEBattleFormat.Rotation;
 
             TrainerClass tc = TrainerClass.Lady;
-            Song song = Song.LegendaryBattle;
+            Song music = Song.BattleEvil1;
             string name = "Ur Mom";
             string defeatText = "Bruh";
 
@@ -105,7 +105,7 @@ namespace Kermalis.PokemonGameEngine.Trainer
 
             var enemyInfo = new PBETrainerInfo(enemyParty, string.Format("{0} {1}", GetTrainerClassName(tc), name), false, inventory: inv);
             var parties = new Party[] { Game.Instance.Save.PlayerParty, enemyParty };
-            BattleMaker.CreateTrainerBattle_1v1(enemyInfo, parties, weather, behavior, format, song, tc, defeatText);
+            BattleMaker.CreateTrainerBattle_1v1(enemyInfo, parties, weather, behavior, format, music, tc, defeatText);
         }
     }
 }

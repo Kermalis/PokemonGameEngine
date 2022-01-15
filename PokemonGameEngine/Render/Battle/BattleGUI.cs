@@ -77,7 +77,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private void SetExitToOverworldFadeAndCallback()
         {
-            SoundControl.FadeOutBattleBGMToOverworldBGM();
+            MusicPlayer.Main.FadeToBackupMusic();
             _transition = FadeToColorTransition.ToBlackStandard();
             Game.Instance.SetCallback(CB_FadeOutBattle);
         }
@@ -223,9 +223,9 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             Friendship.AdjustFriendship(bPkmn.PBEPkmn, bPkmn.PartyPkmn, Friendship.Event.LevelUpBattle);
         }
-        private static void PlayCry(PBEBattlePokemon pbePkmn)
+        private static SoundChannel PlayCry(PBEBattlePokemon pbePkmn)
         {
-            SoundControl.PlayCryFromHP(pbePkmn.KnownSpecies, pbePkmn.KnownForm, pbePkmn.HPPercentage, pan: GetCryPanpot(pbePkmn));
+            return SoundControl.PlayCryFromHP(pbePkmn.KnownSpecies, pbePkmn.KnownForm, pbePkmn.HPPercentage, pan: GetCryPanpot(pbePkmn));
         }
         private static float GetCryPanpot(PBEBattlePokemon pbePkmn)
         {

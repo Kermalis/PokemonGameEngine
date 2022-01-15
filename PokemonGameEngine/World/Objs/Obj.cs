@@ -9,6 +9,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
     internal abstract partial class Obj : IConnectedListObject<Obj>
     {
         public static readonly ConnectedList<Obj> LoadedObjs = new(IdSorter);
+        public bool IsDead;
 
         public readonly ushort Id;
 
@@ -105,6 +106,9 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return 1;
         }
 
-        public virtual void Dispose() { }
+        public virtual void Dispose()
+        {
+            IsDead = true;
+        }
     }
 }

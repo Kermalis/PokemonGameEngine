@@ -41,7 +41,7 @@ namespace Kermalis.PokemonGameEngine.World
         {
             if (wildParty.Count != 1)
             {
-                return Song.WildBattle_Multi;
+                return Song.BattleWild_Multi;
             }
             // All legendary/mythical species use the legendary battle music
             PBESpecies s = wildParty[0].Species;
@@ -95,9 +95,9 @@ namespace Kermalis.PokemonGameEngine.World
                 case PBESpecies.Keldeo:
                 case PBESpecies.Meloetta:
                 case PBESpecies.Genesect:
-                    return Song.LegendaryBattle;
+                    return Song.BattleLegendary;
             }
-            return Song.WildBattle;
+            return Song.BattleWild;
         }
 
         private static EncounterTable.Encounter RollEncounter(IEnumerable<EncounterTable.Encounter> tbl, ushort combinedChance)

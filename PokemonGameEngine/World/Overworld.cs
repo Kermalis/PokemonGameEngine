@@ -4,7 +4,6 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.World;
-using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
@@ -80,7 +79,7 @@ namespace Kermalis.PokemonGameEngine.World
             oldMap.OnNoLongerCurrentMap();
             map.OnCurrentMap();
             UpdateDayTint();
-            SoundControl.SetOverworldBGM(map.Details.Music);
+            OverworldGUI.FadeToMapMusic();
         }
         public static void OnPlayerMapChanged()
         {
@@ -99,7 +98,7 @@ namespace Kermalis.PokemonGameEngine.World
             }
         }
 
-        public static bool GetNonEggPartyMonWithMove(PBEMove move, out PartyPokemon pkmn, out int index)
+        public static bool TryGetNonEggPartyMonWithMove(PBEMove move, out PartyPokemon pkmn, out int index)
         {
             Party party = Game.Instance.Save.PlayerParty;
             for (int i = 0; i < party.Count; i++)

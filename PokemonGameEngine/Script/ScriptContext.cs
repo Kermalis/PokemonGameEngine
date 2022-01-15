@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.GUIs;
+using Kermalis.PokemonGameEngine.Sound;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private bool _waitReturnToField;
         private Action _onWaitReturnToFieldFinished;
         private bool _waitCry;
+        private SoundChannel _lastCry;
 
         private StringPrinter _stringPrinter;
         private Window _messageBox;
@@ -42,7 +44,12 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private void CheckWaitCry(ref bool isWaiting)
         {
-            if (_waitCry)
+            if (_lastCry is not null && _lastCry.IsStopped)
+            {
+                _waitCry = false;
+                _lastCry = null;
+            }
+            else if (_waitCry)
             {
                 isWaiting = true; // Still waiting for cry to finish
             }
