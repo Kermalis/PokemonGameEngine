@@ -10,8 +10,7 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Render.World
 {
-    // LIMITATION: No more than "GLTextureUtils.MAX_ACTIVE_TEXTURES" tilesets per blockset (that's more than you'll ever use at once anyway)
-    // LIMITATION: Cannot create an infinite hallway of the same map connecting to itself
+    // WIKI - https://github.com/Kermalis/PokemonGameEngine/wiki/MapRenderer
     internal sealed partial class MapRenderer
     {
         // Extra blocks allowed for wide/tall VisualObj
@@ -29,7 +28,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private readonly RectMesh _layoutMesh;
         private readonly FrameBuffer2DColor[] _layoutFrameBuffers;
         private readonly FrameBuffer2DColor[] _objFrameBuffers;
-        private readonly InstancedData[] _blockData;
+        private readonly InstancedData[] _instancedBlockData;
 
         public MapRenderer(Vec2I screenSize)
         {
@@ -59,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _visualObjShader.UpdateViewport(gl, screenSize);
             _layoutFrameBuffers = new FrameBuffer2DColor[Overworld.NumElevations];
             _objFrameBuffers = new FrameBuffer2DColor[Overworld.NumElevations];
-            _blockData = new InstancedData[Overworld.NumElevations];
+            _instancedBlockData = new InstancedData[Overworld.NumElevations];
 
             _layoutMesh = new RectMesh(gl); // Need VAO bound for instanced attributes
             int maxVisible = _maxVisibleBlocks.GetArea();
@@ -67,7 +66,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             {
                 _layoutFrameBuffers[i] = new FrameBuffer2DColor(screenSize);
                 _objFrameBuffers[i] = new FrameBuffer2DColor(screenSize);
-                _blockData[i] = VBOData_InstancedLayoutBlock.CreateInstancedData(maxVisible);
+                _instancedBlockData[i] = VBOData_InstancedLayoutBlock.CreateInstancedData(maxVisible);
             }
         }
 
@@ -169,7 +168,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             {
                 _objFrameBuffers[i].Use(gl);
                 gl.Clear(ClearBufferMask.ColorBufferBit);
-                _blockData[i].Prepare();
+                _instancedBlockData[i].Prepare();
             }
 
             InitCameraRect(CameraObj.Instance, out Rect visibleBlocks, out Vec2I startBlockPixel);
@@ -225,7 +224,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 _layoutFrameBuffers[e].Use(gl);
                 gl.Clear(ClearBufferMask.ColorBufferBit);
                 gl.BindTexture(TextureTarget.Texture3D, Blockset.UsedBlocksTextures[e].ColorTexture);
-                _layoutMesh.RenderInstanced(gl, _blockData[e].InstanceCount);
+                _layoutMesh.RenderInstanced(gl, _instancedBlockData[e].InstanceCount);
             }
             gl.Enable(EnableCap.Blend); // Re-enable blend
             gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
@@ -285,7 +284,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     int blockUsedIndex = map.Layout.Blocks[blockXY.Y][blockXY.X].BlocksetBlock.UsedBlocksIndex;
                     for (byte e = 0; e < Overworld.NumElevations; e++)
                     {
-                        VBOData_InstancedLayoutBlock.AddInstance(_blockData[e], xyPixelRect.TopLeft, blockUsedIndex);
+                        VBOData_InstancedLayoutBlock.AddInstance(_instancedBlockData[e], xyPixelRect.TopLeft, blockUsedIndex);
                     }
                 }
             }
@@ -308,7 +307,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     Vec2I translation = ((xy - visibleBlocks.TopLeft) * Overworld.Block_NumPixels) + startBlockPixel;
                     for (byte e = 0; e < Overworld.NumElevations; e++)
                     {
-                        VBOData_InstancedLayoutBlock.AddInstance(_blockData[e], translation, blockUsedIndex);
+                        VBOData_InstancedLayoutBlock.AddInstance(_instancedBlockData[e], translation, blockUsedIndex);
                     }
                 }
             }
