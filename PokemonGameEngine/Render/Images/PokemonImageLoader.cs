@@ -12,8 +12,8 @@ namespace Kermalis.PokemonGameEngine.Render.Images
     {
         private const string SUBSTITUTE_B_ASSET = "STATUS2_Substitute_B.gif";
         private const string SUBSTITUTE_F_ASSET = "STATUS2_Substitute_F.gif";
-        private const string EGG_F_ASSET = "Egg_F.gif";
-        private const string EGG_MINI_ASSET = "Egg_Mini.png";
+        private const string EGG_F_ASSET = @"Pkmn\Egg_F.gif"; // Egg images are not in PBE so they are in the actual assets folder
+        private const string EGG_MINI_ASSET = @"Pkmn\Egg_Mini.png";
 
         private static readonly List<PBESpecies> _femaleMiniLookup = new();
         private static readonly List<PBESpecies> _femaleVersionLookup = new();
@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         {
             static void Add(string asset, List<PBESpecies> list)
             {
-                using (StreamReader reader = File.OpenText(GetAssetPath(asset)))
+                using (StreamReader reader = File.OpenText(GetPBESpriteAssetPath(asset)))
                 {
                     string line;
                     while ((line = reader.ReadLine()) is not null)
@@ -39,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             Add("FemaleSpriteLookup.txt", _femaleVersionLookup);
         }
 
-        private static string GetAssetPath(string asset)
+        private static string GetPBESpriteAssetPath(string asset)
         {
             return AssetLoader.GetPath(asset, basePath: AssetLoader.PKMN_SPRITE_ASSET_PATH);
         }
@@ -51,16 +51,16 @@ namespace Kermalis.PokemonGameEngine.Render.Images
 
         public static AnimatedImage GetSubstituteImage(bool backImage)
         {
-            return new AnimatedImage(GetAssetPath(backImage ? SUBSTITUTE_B_ASSET : SUBSTITUTE_F_ASSET));
+            return new AnimatedImage(GetPBESpriteAssetPath(backImage ? SUBSTITUTE_B_ASSET : SUBSTITUTE_F_ASSET));
         }
         public static AnimatedImage GetEggImage()
         {
-            return new AnimatedImage(GetAssetPath(EGG_F_ASSET));
+            return new AnimatedImage(AssetLoader.GetPath(EGG_F_ASSET));
         }
         // Manaphy egg not considered but it can be
         public static Image GetEggMini()
         {
-            return Image.LoadOrGet(GetAssetPath(EGG_MINI_ASSET));
+            return Image.LoadOrGet(AssetLoader.GetPath(EGG_MINI_ASSET));
         }
 
         public static Image GetMini(PBESpecies species, PBEForm form, PBEGender gender, bool shiny)
@@ -74,7 +74,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             AppendShinyPart(shiny, sb);
             AppendGenderPart(species, gender, true, sb);
             sb.Append(".png");
-            return GetAssetPath(sb.ToString());
+            return GetPBESpriteAssetPath(sb.ToString());
         }
 
         public static AnimatedImage GetPokemonImage(PBESpecies species, PBEForm form, PBEGender gender, bool shiny, uint pid, bool backImage)
@@ -90,7 +90,7 @@ namespace Kermalis.PokemonGameEngine.Render.Images
             AppendShinyPart(shiny, sb);
             AppendGenderPart(species, gender, false, sb);
             sb.Append(".gif");
-            return GetAssetPath(sb.ToString());
+            return GetPBESpriteAssetPath(sb.ToString());
         }
 
         private static StringBuilder StartAssetString()
