@@ -9,7 +9,7 @@ It can run on any platform, even phones! (With some work... contact me)
 ![GamePreview](Previews/Overworld.png)
 ![BattlePreview](Previews/Battle.gif)
 ![GroudonPreview](Previews/Groudon.gif)
-![SpindaSpotsPreview](PreviewImages/Spinda.gif)
+![SpindaSpotsPreview](Previews/Spinda.gif)
 ![DayTintPreview](Previews/DayTint.mp4)
 ![MapEditorPreview](Previews/MapEditor.png)
 
