@@ -11,6 +11,8 @@ PokemonGameEngine/Assets/Tileset/Animation/Animations.bin
 
 # Other
 *.user
+.nuke/build.schema.json
+.nuke/temp/
 .vs/
 [Bb]in/
 [Oo]bj/
