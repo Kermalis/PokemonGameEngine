@@ -7,10 +7,10 @@ It uses [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine) f
 It can run on any platform, even phones! (With some work... contact me)
 
 ![GamePreview](Previews/Overworld.png)
+https://user-images.githubusercontent.com/29823718/149649778-597dd279-b740-4702-a541-eac7555a4e7e.mp4
 ![BattlePreview](Previews/Battle.gif)
 ![GroudonPreview](Previews/Groudon.gif)
 ![SpindaSpotsPreview](Previews/Spinda.gif)
-![DayTintPreview](Previews/DayTint.mp4)
 ![MapEditorPreview](Previews/MapEditor.png)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.
