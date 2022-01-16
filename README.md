@@ -6,11 +6,12 @@ Pokémon Game Engine is a C# game engine that is similar to the 2D Pokémon games.
 It uses [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine) for the battles.
 It can run on any platform, even phones! (With some work... contact me)
 
-![GamePreview](PreviewImages/Overworld.png)
-![BattlePreview](PreviewImages/Battle.gif)
-![GroudonPreview](PreviewImages/Groudon.gif)
-![DayTintPreview](PreviewImages/DayTint.mp4)
-![MapEditorPreview](PreviewImages/MapEditor.png)
+![GamePreview](Previews/Overworld.png)
+![BattlePreview](Previews/Battle.gif)
+![GroudonPreview](Previews/Groudon.gif)
+![SpindaSpotsPreview](PreviewImages/Spinda.gif)
+![DayTintPreview](Previews/DayTint.mp4)
+![MapEditorPreview](Previews/MapEditor.png)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.
 [Check the wiki](https://github.com/Kermalis/PokemonGameEngine/wiki) if you're interested.
@@ -25,7 +26,7 @@ If you'd like to learn more or just talk, join our [Discord server][Discord].
 * Tile animations
 * Day & Night cycle
 * Animated sprites
-* Spinda spots ![Spindas](PreviewImages/Spinda.gif)
+* Spinda spots
 * Controller & Keyboard support
 * Custom sound engine and music (also supports Pokémon cries)
 * Wild encounter mechanics
