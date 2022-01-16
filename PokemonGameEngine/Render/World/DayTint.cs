@@ -10,9 +10,13 @@ namespace Kermalis.PokemonGameEngine.Render.World
 {
     internal static class DayTint
     {
+        /// <summary>How long in seconds it takes for a minute to pass when transitioning</summary>
+        private const float MINUTE_ADVANCE_LENGTH = 0.05f;
+
         private static int _tintHour;
         private static int _tintMinute;
         private static Vector3 _mod;
+        private static float _minuteAdvanceProgress;
 
         public static bool IsEnabled; // Gets set by CameraObj
         /// <summary>Signals that the next render should instantly be the current daytint with no transition. Will be reset on the next render</summary>
@@ -70,53 +74,42 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private static void Update(bool skipTransition)
         {
             DateTime time = DateTime.Now;
-            int realMinute = OverworldTime.GetMinute(time.Minute);
-            int realHour = OverworldTime.GetHour(time.Hour);
-            int tintHour;
+            int targetHour = OverworldTime.GetHour(time.Hour);
+            int targetMinute = OverworldTime.GetMinute(time.Minute);
             if (skipTransition)
             {
-                _tintHour = tintHour = realHour;
+                _tintHour = targetHour;
+                _tintMinute = targetMinute;
+            }
+
+            int curShownHour = _tintHour;
+            int curShownMinute = _tintMinute;
+            int nextTintHour = (curShownHour + 1) % 24;
+            int nextTintMinute = curShownMinute;
+            // Advance by a minute if we're not at the correct time
+            if (curShownMinute == targetMinute && curShownHour == targetHour)
+            {
+                _minuteAdvanceProgress = 0f;
             }
             else
             {
-                tintHour = _tintHour;
+                _minuteAdvanceProgress += Display.DeltaTime;
+                if (_minuteAdvanceProgress >= MINUTE_ADVANCE_LENGTH)
+                {
+                    _minuteAdvanceProgress -= MINUTE_ADVANCE_LENGTH;
+                    nextTintMinute++;
+                    if (nextTintMinute >= 60)
+                    {
+                        _tintMinute = 0;
+                        _tintHour = nextTintHour;
+                    }
+                    else
+                    {
+                        _tintMinute = nextTintMinute;
+                    }
+                }
             }
-            Vector3 hourMod = _colors[tintHour];
-            // Do minute transition
-            int tintMinute;
-            if (skipTransition)
-            {
-                _tintMinute = tintMinute = realMinute;
-            }
-            else
-            {
-                tintMinute = _tintMinute;
-            }
-            float minuteMod = tintMinute / 60f;
-            int nextTintMinute = tintMinute;
-            if (tintMinute != realMinute || tintHour != realHour)
-            {
-                nextTintMinute++;
-            }
-            int nextTintHour = tintHour + 1;
-            if (nextTintHour >= 24)
-            {
-                nextTintHour = 0;
-            }
-            Vector3 nextHourMod = _colors[nextTintHour];
-            hourMod.X += (nextHourMod.X - hourMod.X) * minuteMod;
-            hourMod.Y += (nextHourMod.Y - hourMod.Y) * minuteMod;
-            hourMod.Z += (nextHourMod.Z - hourMod.Z) * minuteMod;
-            if (nextTintMinute >= 60)
-            {
-                _tintMinute = 0;
-                _tintHour = nextTintHour;
-            }
-            else
-            {
-                _tintMinute = nextTintMinute;
-            }
-            _mod = hourMod;
+            _mod = Vector3.Lerp(_colors[curShownHour], _colors[nextTintHour], curShownMinute / 60f);
         }
 
         public static void Render(FrameBuffer2DColor target, FrameBuffer2DColor dayTintFrameBuffer)

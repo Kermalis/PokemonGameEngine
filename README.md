@@ -4,35 +4,36 @@
 
 Pokémon Game Engine is a C# game engine that is similar to the 2D Pokémon games.
 It uses [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine) for the battles.
-It can run on any platform, even phones! (With some work, contact me)
+It can run on any platform, even phones! (With some work... contact me)
 
 ![GamePreview](PreviewImages/Overworld.png)
 ![BattlePreview](PreviewImages/Battle.gif)
-![ShadowsPreview](PreviewImages/Shadows.gif)
 ![GroudonPreview](PreviewImages/Groudon.gif)
-![DayNightPreview](PreviewImages/DayNight.gif)
+![DayTintPreview](PreviewImages/DayTint.mp4)
 ![MapEditorPreview](PreviewImages/MapEditor.png)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.
 [Check the wiki](https://github.com/Kermalis/PokemonGameEngine/wiki) if you're interested.
-If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][Discord].
+I put a lot of effort into writing the wiki.
+If you'd like to learn more or just talk, join our [Discord server][Discord].
 
 ## Features:
 * Map/encounter editor (Only runs on Windows, Mac, and Linux)
 * Diagonal movements
 * Scripting
-* Wild encounters
 * Very non-limiting mapping (elevations, layers, no color limits, transparency, etc)
-* Day & Night Cycle
 * Tile animations
-* Controller support
+* Day & Night cycle
 * Animated sprites
 * Spinda spots ![Spindas](PreviewImages/Spinda.gif)
+* Controller & Keyboard support
 * Custom sound engine and music (also supports Pokémon cries)
+* Wild encounter mechanics
 * Daycare, Breeding, and Eggs
-* Game stats
 * Evolution, Evolution cancelling, and Shedinja creation
 * Pokérus
+* Game stats
+* Some debugging tools
 
 ----
 ## To Do:
@@ -44,7 +45,7 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 ## PokemonGameEngine Uses:
 * [Assimp](https://github.com/assimp/assimp)
 * [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)
-* [Microsoft.Data.Sqlite](https://docs.microsoft.com/en-us/ef/core)
+* [Microsoft.Data.Sqlite](https://docs.microsoft.com/dotnet/standard/data/sqlite)
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 * [NUKE](https://github.com/nuke-build/nuke)
 * [OpenGL](https://www.opengl.org/)
@@ -68,9 +69,9 @@ If you'd like to learn more or just talk, join our _(new-ish)_ [Discord server][
 * [SimpleNARC](https://github.com/Kermalis/SimpleNARC)
 
 ## Test tiles taken from... (I did modify them a bit)
-* https://www.deviantart.com/phyromatical/art/Taragonia-BW-Mix-434036293
 * https://www.deviantart.com/chaoticcherrycake/art/Pokemon-Tileset-From-Public-Tiles-358379026
-* https://www.deviantart.com/peekychew/art/Lava-and-Cave-Tileset-836741864
 * https://www.deviantart.com/magiscarf/art/Tileset-ver-3-Free-690477146
+* https://www.deviantart.com/peekychew/art/Lava-and-Cave-Tileset-836741864
+* https://www.deviantart.com/phyromatical/art/Taragonia-BW-Mix-434036293
 
 [Discord]: https://discord.gg/Z4Mn9qX
