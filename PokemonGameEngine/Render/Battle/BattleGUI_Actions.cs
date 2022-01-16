@@ -269,6 +269,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         {
             Display.SetMinimumWindowSize(RenderSize);
             DayTint.CatchUpTime = true;
+
             _transition = FadeFromColorTransition.FromBlackStandard();
             short result = Game.Instance.Save.Vars[Var.SpecialVar_Result];
             if (result == PartyGUI.NO_PKMN_CHOSEN)
