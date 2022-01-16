@@ -2,15 +2,18 @@
 
 [![Join on Discord](https://discordapp.com/api/guilds/717575608393138187/widget.png?style=shield)][Discord]
 
-Pokémon Game Engine is a C# game engine that is similar to the 2D Pokémon games.
+PokÃ©mon Game Engine is a C# game engine that is similar to the 2D PokÃ©mon games.
 It uses [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine) for the battles.
 It can run on any platform, even phones! (With some work... contact me)
 
 ![GamePreview](Previews/Overworld.png)
-https://user-images.githubusercontent.com/29823718/149649778-597dd279-b740-4702-a541-eac7555a4e7e.mp4
+
+https://user-images.githubusercontent.com/29823718/149649830-5e1a2c70-0f26-41f1-9f52-4d525d22dbcf.mp4
+
 ![BattlePreview](Previews/Battle.gif)
 ![GroudonPreview](Previews/Groudon.gif)
 ![SpindaSpotsPreview](Previews/Spinda.gif)
+
 ![MapEditorPreview](Previews/MapEditor.png)
 
 This project is still in a very early stage, so there is not much you can do, although you can start using it.
@@ -28,11 +31,11 @@ If you'd like to learn more or just talk, join our [Discord server][Discord].
 * Animated sprites
 * Spinda spots
 * Controller & Keyboard support
-* Custom sound engine and music (also supports Pokémon cries)
+* Custom sound engine and music (also supports PokÃ©mon cries)
 * Wild encounter mechanics
 * Daycare, Breeding, and Eggs
 * Evolution, Evolution cancelling, and Shedinja creation
-* Pokérus
+* PokÃ©rus
 * Game stats
 * Some debugging tools
 
