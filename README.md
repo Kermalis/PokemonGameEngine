@@ -10,7 +10,7 @@ Here are some preview images & videos, but keep in mind the quality lost when re
 
 ![GamePreview](Previews/Overworld.png)
 
-https://github.com/Kermalis/PokemonBattleEngine/tree/3d-battles/Previews/DayTint.mp4
+https://user-images.githubusercontent.com/29823718/149649830-5e1a2c70-0f26-41f1-9f52-4d525d22dbcf.mp4
 
 ![BattlePreview](Previews/Battle.gif)
 ![GroudonPreview](Previews/Groudon.gif)
