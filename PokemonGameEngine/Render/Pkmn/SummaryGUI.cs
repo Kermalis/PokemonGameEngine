@@ -263,7 +263,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         }
         private void SetProperCallback()
         {
-            MainCallbackDelegate cb;
+            Action cb;
             switch (_page)
             {
                 case Page.Info: cb = CB_InfoPage; break;

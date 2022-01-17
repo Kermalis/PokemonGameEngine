@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Player;
 using Kermalis.PokemonGameEngine.Render.World;
+using System;
 #if DEBUG_CALLBACKS
 using Kermalis.PokemonGameEngine.Debug;
 using System.IO;
@@ -8,8 +9,6 @@ using System.Runtime.CompilerServices;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
-    internal delegate void MainCallbackDelegate();
-
     internal sealed class Game
     {
         public static Game Instance { get; private set; } = null!; // Set in constructor
@@ -20,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.Core
         /// <summary>For use with Script command "AwaitReturnToField"</summary>
         public bool IsOnOverworld; // TODO: Convert into a sort of general purpose "WaitState"/"WaitSignal" command
 
-        public MainCallbackDelegate Callback;
+        public Action Callback;
 
         public Game()
         {
@@ -35,7 +34,7 @@ namespace Kermalis.PokemonGameEngine.Core
         }
 
 #if DEBUG_CALLBACKS
-        public void SetCallback(MainCallbackDelegate main, [CallerMemberName] string caller = null, [CallerFilePath] string callerFile = null)
+        public void SetCallback(Action main, [CallerMemberName] string caller = null, [CallerFilePath] string callerFile = null)
         {
             Log.ModifyIndent(+1);
             Log.WriteLine("Callback changed");
@@ -47,7 +46,7 @@ namespace Kermalis.PokemonGameEngine.Core
             Callback = main;
         }
 #else
-        public void SetCallback(MainCallbackDelegate main)
+        public void SetCallback(Action main)
         {
             Callback = main;
         }

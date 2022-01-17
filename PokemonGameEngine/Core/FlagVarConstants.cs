@@ -50,9 +50,9 @@
         Trainer18,
         Trainer19,
         Trainer20,
+        MAX,
         TrainerFlagsStart = Trainer1,
-        TrainerFlagsMAX = Trainer20,
-        MAX
+        TrainerFlagsEnd = Trainer20
     }
 
     public enum Var : byte
