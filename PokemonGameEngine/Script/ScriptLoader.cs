@@ -9,11 +9,10 @@ namespace Kermalis.PokemonGameEngine.Script
 {
     internal static class ScriptLoader
     {
+        private const string FILE = @"Script\Scripts.bin";
+        
         private static readonly Dictionary<string, uint> _globalScriptOffsets;
 
-        private const string _scriptExtension = ".bin";
-        private const string _scriptPath = "Script\\";
-        private const string _scriptFile = _scriptPath + "Scripts" + _scriptExtension;
         static ScriptLoader()
         {
             using (EndianBinaryReader r = GetReader())
@@ -29,7 +28,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private static EndianBinaryReader GetReader()
         {
-            return new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(_scriptFile)), encoding: EncodingType.UTF16);
+            return new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(FILE)), encoding: EncodingType.UTF16);
         }
 
         public static ScriptContext LoadScript(string label, Vec2I viewSize)
