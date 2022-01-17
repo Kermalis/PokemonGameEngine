@@ -111,8 +111,8 @@ namespace Kermalis.PokemonGameEngine.Render
         public static Rect FitToScreen(Vec2I inSize)
         {
             // Maintain aspect ratio of inSize
-            Vec2I windowSize = GetWindowSize();
-            Vector2 ratios = (Vector2)windowSize / inSize;
+            Vector2 windowSize = GetWindowSize();
+            Vector2 ratios = windowSize / inSize;
             float ratio = ratios.X < ratios.Y ? ratios.X : ratios.Y;
             Vector2 size = inSize * ratio;
             Vector2 topLeft = (windowSize - size) * 0.5f;
