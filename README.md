@@ -6,7 +6,8 @@ Pokémon Game Engine is a C# game engine that is similar to the 2D Pokémon game
 It uses [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine) for the battles.
 It can run on any platform, even phones! (With some work... contact me)
 
-Here are some preview images & videos, but keep in mind the quality lost when recording:
+## Previews:
+Keep in mind the quality lost when recording GIFs and videos:
 
 ![GamePreview](Previews/Overworld.png)
 
