@@ -31,6 +31,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             SpDefense = other.SpDefense;
             Speed = other.Speed;
         }
+
+#if DEBUG
+        public override string ToString()
+        {
+            return this.DebugString();
+        }
+#endif
     }
 
     internal sealed class IVs : IPBEReadOnlyStatCollection
@@ -71,5 +78,22 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             SpDefense = other.SpDefense;
             Speed = other.Speed;
         }
+
+#if DEBUG
+        public override string ToString()
+        {
+            return this.DebugString();
+        }
+#endif
     }
+
+#if DEBUG
+    internal static class StatCollectionExtensions
+    {
+        public static string DebugString(this IPBEReadOnlyStatCollection s)
+        {
+            return string.Format("[{0} HP, {1} ATK, {2} DEF, {3} SPA, {4} SPD, {5} SPE]", s.HP, s.Attack, s.Defense, s.SpAttack, s.SpDefense, s.Speed);
+        }
+    }
+#endif
 }

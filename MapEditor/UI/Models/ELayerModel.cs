@@ -31,9 +31,9 @@ namespace Kermalis.MapEditor.UI.Models
         {
             using (ILockedFramebuffer l = Bitmap.Lock())
             {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtils.TransparencyGrid(bmpAddress, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, Overworld.Tile_NumPixelsX / 2, Overworld.Tile_NumPixelsY / 2);
-                _block.Draw(bmpAddress, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, 0, 0, _eLayerNum);
+                uint* dst = (uint*)l.Address.ToPointer();
+                Renderer.TransparencyGrid(dst, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, Overworld.Tile_NumPixelsX / 2, Overworld.Tile_NumPixelsY / 2);
+                _block.Draw(dst, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, 0, 0, _eLayerNum);
             }
         }
 

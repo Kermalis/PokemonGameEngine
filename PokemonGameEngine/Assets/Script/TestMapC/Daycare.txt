@@ -1,5 +1,3 @@
-.set LOCALID_PLAYER 0xFFFF
-
 .set COMPAT_NONE 0
 .set COMPAT_LOW 20
 .set COMPAT_MED 50
@@ -9,189 +7,189 @@
 //TODO: Withdraw
 
 @Egg_Hatch
-LockAllObjs
-Message EggHatchText
-AwaitMessageComplete
-CloseMessage
-HatchEgg
-AwaitReturnToField
-UnlockAllObjs
-End
+    LockAllObjs
+    Message EggHatchText
+    AwaitMessageComplete
+    CloseMessage
+    HatchEgg
+    AwaitReturnToField
+    UnlockAllObjs
+    End
 
 @Daycare_Start
-LockAllObjs
-LookTowardsObj Var.LastTalked LOCALID_PLAYER
-GetDaycareState
-GoToIf Daycare_OneMon Var.SpecialVar_Result C.Equal DaycareState.OnePokemon
-GoToIf Daycare_TwoMon Var.SpecialVar_Result C.Equal DaycareState.TwoPokemon
-GoToIf Daycare_EggWaiting Var.SpecialVar_Result C.Equal DaycareState.EggWaiting
-//No mon in daycare, wanna deposit?
-Message DaycareText_CanITake
-AwaitMessageRead
-YesNoChoice
-GoToIf Daycare_TryTake Var.SpecialVar_Result C.Equal 1
-//Did not want to deposit
-CloseMessage
-UnlockAllObjs
-End
+    LockAllObjs
+    LookLastTalkedTowardsPlayer
+    GetDaycareState
+    GoToIf Daycare_OneMon Var.SpecialVar_Result C.Equal DaycareState.OnePokemon
+    GoToIf Daycare_TwoMon Var.SpecialVar_Result C.Equal DaycareState.TwoPokemon
+    GoToIf Daycare_EggWaiting Var.SpecialVar_Result C.Equal DaycareState.EggWaiting
+// No mon in daycare, wanna deposit?
+    Message DaycareText_CanITake
+    AwaitMessageRead
+    YesNoChoice
+    GoToIf Daycare_TryTake Var.SpecialVar_Result C.Equal 1
+// Did not want to deposit
+    CloseMessage
+    UnlockAllObjs
+    End
 
 #Daycare_OneMon
-//Greetings
-Message DaycareText_GoodToSeeYou1
-AwaitMessageComplete
-//Say levels gained
-SetVar Var.SpecialVar1 0
-Call Daycare_CheckLevelsGained
-//Wanna deposit?
-Message DaycareText_CanITake
-AwaitMessageRead
-YesNoChoice
-GoToIf Daycare_TryTake Var.SpecialVar_Result C.Equal 1
-//Wanna withdraw?
-CloseMessage
-UnlockAllObjs
-End
+// Greetings
+    Message DaycareText_GoodToSeeYou1
+    AwaitMessageComplete
+// Say levels gained
+    SetVar Var.SpecialVar1 0
+    Call Daycare_CheckLevelsGained
+// Wanna deposit?
+    Message DaycareText_CanITake
+    AwaitMessageRead
+    YesNoChoice
+    GoToIf Daycare_TryTake Var.SpecialVar_Result C.Equal 1
+// Wanna withdraw?
+    CloseMessage
+    UnlockAllObjs
+    End
 
 #Daycare_TwoMon
-//Greetings
-Message DaycareText_GoodToSeeYou2
-AwaitMessageComplete
-//Say levels gained
-SetVar Var.SpecialVar1 0
-Call Daycare_CheckLevelsGained
-SetVar Var.SpecialVar1 1
-Call Daycare_CheckLevelsGained
-//State compatibility
-GetDaycareCompatibility
-CallIf Daycare_CompatMax Var.SpecialVar_Result C.Equal COMPAT_MAX
-CallIf Daycare_CompatMed Var.SpecialVar_Result C.Equal COMPAT_MED
-CallIf Daycare_CompatMin Var.SpecialVar_Result C.Equal COMPAT_LOW
-CallIf Daycare_CompatNone Var.SpecialVar_Result C.Equal COMPAT_NONE
-AwaitMessageComplete
-//Wanna withdraw?
-CloseMessage
-UnlockAllObjs
-End
+// Greetings
+    Message DaycareText_GoodToSeeYou2
+    AwaitMessageComplete
+// Say levels gained
+    SetVar Var.SpecialVar1 0
+    Call Daycare_CheckLevelsGained
+    SetVar Var.SpecialVar1 1
+    Call Daycare_CheckLevelsGained
+// State compatibility
+    GetDaycareCompatibility
+    CallIf Daycare_CompatMax Var.SpecialVar_Result C.Equal COMPAT_MAX
+    CallIf Daycare_CompatMed Var.SpecialVar_Result C.Equal COMPAT_MED
+    CallIf Daycare_CompatMin Var.SpecialVar_Result C.Equal COMPAT_LOW
+    CallIf Daycare_CompatNone Var.SpecialVar_Result C.Equal COMPAT_NONE
+    AwaitMessageComplete
+// Wanna withdraw?
+    CloseMessage
+    UnlockAllObjs
+    End
 
 #Daycare_CheckLevelsGained
-GetDaycareMonLevelsGained Var.SpecialVar1
-CallIf Daycare_BufferLevelsGained Var.SpecialVar_Result C.Greater 0
-return
+    GetDaycareMonLevelsGained Var.SpecialVar1
+    CallIf Daycare_BufferLevelsGained Var.SpecialVar_Result C.Greater 0
+    return
 
 #Daycare_BufferLevelsGained
-BufferDaycareMonNickname 0 Var.SpecialVar1
-Message DaycareText_MonGainedXLevels
-AwaitMessageComplete
-return
+    BufferDaycareMonNickname 0 Var.SpecialVar1
+    Message DaycareText_MonGainedXLevels
+    AwaitMessageComplete
+    return
 
 #Daycare_EggWaiting
-//Ask if you want the egg
-Message DaycareText_MonHadEggOMG
-AwaitMessageRead
-YesNoChoice
-GoToIf Daycare_TryTakeEgg Var.SpecialVar_Result C.Equal 1
-//Did not want the egg
-DisposeDaycareEgg
-CloseMessage
-UnlockAllObjs
-End
+// Ask if you want the egg
+    Message DaycareText_MonHadEggOMG
+    AwaitMessageRead
+    YesNoChoice
+    GoToIf Daycare_TryTakeEgg Var.SpecialVar_Result C.Equal 1
+// Did not want the egg
+    DisposeDaycareEgg
+    CloseMessage
+    UnlockAllObjs
+    End
 
 #Daycare_TryTakeEgg
-CountPlayerParty
-GoToIf Daycare_CantTakeEgg Var.SpecialVar_Result C.Equal 6
-GiveDaycareEgg
-CloseMessage
-UnlockAllObjs
-End
+    CountPlayerParty
+    GoToIf Daycare_CantTakeEgg Var.SpecialVar_Result C.Equal 6
+    GiveDaycareEgg
+    CloseMessage
+    UnlockAllObjs
+    End
 
 #Daycare_TryTake
-CountNonFaintedNonEggParty
-GoToIf Daycare_CantTake Var.SpecialVar_Result C.Equal 1
-Message DaycareText_Test_Take
-AwaitMessageComplete
-CloseMessage
-SelectDaycareMon
-CallIf Daycare_Store Var.SpecialVar_Result C.GreaterEqual 0
-UnlockAllObjs
-End
+    CountNonFaintedNonEggParty
+    GoToIf Daycare_CantTake Var.SpecialVar_Result C.Equal 1
+    Message DaycareText_Test_Take
+    AwaitMessageComplete
+    CloseMessage
+    SelectDaycareMon
+    CallIf Daycare_Store Var.SpecialVar_Result C.GreaterEqual 0
+    UnlockAllObjs
+    End
 
 #Daycare_CantTake
-Message DaycareText_CantTake
-AwaitMessageComplete
-CloseMessage
-UnlockAllObjs
-End
+    Message DaycareText_CantTake
+    GoTo Common_AwaitMessageUnlockAllEnd
 
 #Daycare_CantTakeEgg
-Message DaycareText_CantTakeEgg
-AwaitMessageComplete
-CloseMessage
-UnlockAllObjs
-End
+    Message DaycareText_CantTakeEgg
+    GoTo Common_AwaitMessageUnlockAllEnd
 
 #Daycare_Store
-StorePokemonInDaycare
-Message DaycareText_IWillRaise
-AwaitMessageComplete
-CloseMessage
-return
+    StorePokemonInDaycare
+    Message DaycareText_IWillRaise
+    AwaitMessageComplete
+    CloseMessage
+    return
 
 #Daycare_CompatMax
-Message DaycareTest_CompatMax
-return
+    Message DaycareTest_CompatMax
+    return
+
 #Daycare_CompatMed
-Message DaycareTest_CompatMed
-return
+    Message DaycareTest_CompatMed
+    return
+
 #Daycare_CompatMin
-Message DaycareTest_CompatMin
-return
+    Message DaycareTest_CompatMin
+    return
+
 #Daycare_CompatNone
-Message DaycareTest_CompatNone
-return
+    Message DaycareTest_CompatNone
+    return
 
 // Text
 
 #EggHatchText
-"Huh?"
+    "Huh?"
 
 #DaycareText_GoodToSeeYou1
-"Good to see you, your Pokémon\n
+    "Good to see you, your Pokémon\n
 is doing well."
 
 #DaycareText_GoodToSeeYou2
-"Good to see you, your Pokémon\n
+    "Good to see you, your Pokémon\n
 are doing well."
 
 #DaycareText_MonGainedXLevels
-"Your {BUF 0} gained {BUF 1}."
+    "Your {BUF 0} gained {BUF 1}."
 
 #DaycareText_MonHadEggOMG
-"Your Pokémon had an Egg!\n
+    "Your Pokémon had an Egg!\n
 Would you like it?"
 
 #DaycareText_CanITake
-"Can I take your Pokémon?"
+    "Can I take your Pokémon?"
 
 #DaycareText_Test_Take
-"Which Pokémon should I take?"
+    "Which Pokémon should I take?"
 
 #DaycareText_CantTake
-"That's your last Pokémon, I can't\n
+    "That's your last Pokémon, I can't\n
 take it."
 
 #DaycareText_CantTakeEgg
-"Your party has no room for this Egg,\n
+    "Your party has no room for this Egg,\n
 come back once you've made room."
 
 #DaycareText_IWillRaise
-"I'll raise your {BUF 0}."
+    "I'll raise your {BUF 0}."
 
 #DaycareTest_CompatMax
-"The two seem to get along very well!"
+    "The two seem to get along very well!"
+
 #DaycareTest_CompatMed
-"The two seem to get along."
+    "The two seem to get along."
+
 #DaycareTest_CompatMin
-"The two don't really seem to like each other very much."
+    "The two don't really seem to like each other very much."
+
 #DaycareTest_CompatNone
-"The two prefer to play with other Pokémon\n
+    "The two prefer to play with other Pokémon\n
 more than with each other."

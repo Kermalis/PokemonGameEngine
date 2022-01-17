@@ -63,7 +63,7 @@ namespace Kermalis.MapEditor.UI
 
         public void OpenBlocksetEditor()
         {
-            if (_blocksetEditor != null)
+            if (_blocksetEditor is not null)
             {
                 _blocksetEditor.TemporaryFix_Activate();
             }

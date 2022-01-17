@@ -54,7 +54,7 @@ namespace Kermalis.MapEditor.UI.Models
         {
             using (ILockedFramebuffer l = bitmap.Lock())
             {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
+                uint* dst = (uint*)l.Address.ToPointer();
                 for (int y = 0; y < Overworld.Block_NumTilesY; y++)
                 {
                     int py = y * Overworld.Tile_NumPixelsY;
@@ -62,14 +62,14 @@ namespace Kermalis.MapEditor.UI.Models
                     {
                         int px = x * Overworld.Tile_NumPixelsX;
                         Blockset.Block.Tile t = GetTile(block, eLayerNum, subLayerNum, x, y);
-                        if (t != null)
+                        if (t is not null)
                         {
-                            RenderUtils.TransparencyGrid(bmpAddress, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, px, py, Overworld.Tile_NumPixelsX / 2, Overworld.Tile_NumPixelsY / 2, Overworld.Block_NumTilesX, Overworld.Block_NumTilesY);
-                            t.Draw(bmpAddress, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, px, py);
+                            Renderer.TransparencyGrid(dst, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, px, py, Overworld.Tile_NumPixelsX / 2, Overworld.Tile_NumPixelsY / 2, Overworld.Block_NumTilesX, Overworld.Block_NumTilesY);
+                            t.Draw(dst, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, px, py);
                         }
                         else
                         {
-                            RenderUtils.ClearUnchecked(bmpAddress, Overworld.Block_NumPixelsX, px, py, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
+                            Renderer.ClearRectangle_Unchecked(dst, Overworld.Block_NumPixelsX, px, py, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY);
                         }
                     }
                 }

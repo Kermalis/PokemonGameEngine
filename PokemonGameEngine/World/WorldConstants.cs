@@ -142,6 +142,7 @@ namespace Kermalis.PokemonGameEngine.World
     // It is very simple to add movements, and they can be as complex as you like
     public enum ObjMovementType : byte
     {
+        None,
         Face_South,
         Face_Southwest,
         Face_Southeast,
@@ -165,7 +166,8 @@ namespace Kermalis.PokemonGameEngine.World
         None,
         TestMapC,
         TestMapW,
-        TestCave
+        TestCave,
+        TestMapS
     }
 
     public enum BlocksetBlockBehavior : byte
@@ -220,9 +222,11 @@ namespace Kermalis.PokemonGameEngine.World
         Town1,
         Route1,
         Cave1,
-        WildBattle,
-        TrainerBattle,
-        GymBattle,
-        LegendaryBattle,
+        BattleWild,
+        BattleWild_Multi,
+        BattleTrainer,
+        BattleGymLeader,
+        BattleEvil1,
+        BattleLegendary,
     }
 }

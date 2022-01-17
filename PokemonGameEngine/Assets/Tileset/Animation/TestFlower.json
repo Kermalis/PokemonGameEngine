@@ -1,22 +1,21 @@
 {
   "Tileset": "TestTilesO",
-  "Sheet": "TestFlower",
-  "Duration": 40,
+  "Duration": 2,
   "Frames": [
     {
       "TilesetTile": 322,
       "Stops": [
         {
-          "SheetTile": 0,
-          "Time": 10
+          "AnimTile": 394,
+          "Time": 0.5
         },
         {
-          "SheetTile": 4,
-          "Time": 20
+          "AnimTile": 426,
+          "Time": 1
         },
         {
-          "SheetTile": 8,
-          "Time": 30
+          "AnimTile": 458,
+          "Time": 1.5
         }
       ]
     },
@@ -24,16 +23,16 @@
       "TilesetTile": 323,
       "Stops": [
         {
-          "SheetTile": 1,
-          "Time": 10
+          "AnimTile": 395,
+          "Time": 0.5
         },
         {
-          "SheetTile": 5,
-          "Time": 20
+          "AnimTile": 427,
+          "Time": 1
         },
         {
-          "SheetTile": 9,
-          "Time": 30
+          "AnimTile": 459,
+          "Time": 1.5
         }
       ]
     },
@@ -41,16 +40,16 @@
       "TilesetTile": 338,
       "Stops": [
         {
-          "SheetTile": 2,
-          "Time": 10
+          "AnimTile": 410,
+          "Time": 0.5
         },
         {
-          "SheetTile": 6,
-          "Time": 20
+          "AnimTile": 442,
+          "Time": 1
         },
         {
-          "SheetTile": 10,
-          "Time": 30
+          "AnimTile": 474,
+          "Time": 1.5
         }
       ]
     },
@@ -58,16 +57,16 @@
       "TilesetTile": 339,
       "Stops": [
         {
-          "SheetTile": 3,
-          "Time": 10
+          "AnimTile": 411,
+          "Time": 0.5
         },
         {
-          "SheetTile": 7,
-          "Time": 20
+          "AnimTile": 443,
+          "Time": 1
         },
         {
-          "SheetTile": 11,
-          "Time": 30
+          "AnimTile": 475,
+          "Time": 1.5
         }
       ]
     }

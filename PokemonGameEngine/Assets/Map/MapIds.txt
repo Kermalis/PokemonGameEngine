@@ -1,3 +1,5 @@
 TestMapC
 TestMapW
 TestMapCave
+TestMapShort
+TestMapS

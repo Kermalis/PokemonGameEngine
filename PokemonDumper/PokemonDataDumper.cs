@@ -1,5 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using Kermalis.SimpleNARC;
 using Newtonsoft.Json;
 using System;
@@ -83,10 +85,10 @@ namespace Kermalis.PokemonDumper
             }
             return pkmn;
         }
-        private static void AddOtherMove((PBESpecies, PBEForm) key, PBEMove move, PBEMoveObtainMethod flag)
+        private static void AddOtherMove((PBESpecies, PBEForm) key, PBEMove move, PBEDDMoveObtainMethod flag)
         {
             Pokemon pkmn = AddSpecies(key);
-            Dictionary<PBEMove, PBEMoveObtainMethod> other = pkmn.OtherMoves;
+            Dictionary<PBEMove, PBEDDMoveObtainMethod> other = pkmn.OtherMoves;
             if (other.ContainsKey(move))
             {
                 other[move] |= flag;
@@ -148,7 +150,7 @@ namespace Kermalis.PokemonDumper
                     // 0x21 - color
                     pkmn.BaseEXPYield = pokedata.ReadUInt16(0x22);
                     // 0x24-0x25 - height
-                    pkmn.Weight = Math.Round(pokedata.ReadUInt16(0x26) * 0.1, 1);
+                    pkmn.Weight = MathF.Round(pokedata.ReadUInt16(0x26) * 0.1f, 1);
                     // 0x28-0x35 - tmhm
                     // 0x36-0x37 ?
                     // 0x38 - free tutor moves bitfield
@@ -405,14 +407,14 @@ namespace Kermalis.PokemonDumper
                     {
                         if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                         {
-                            PBEMoveObtainMethod flag;
+                            PBEDDMoveObtainMethod flag;
                             if (i < 95)
                             {
-                                flag = PBEMoveObtainMethod.TM_B2W2;
+                                flag = PBEDDMoveObtainMethod.TM_B2W2;
                             }
                             else
                             {
-                                flag = PBEMoveObtainMethod.HM_BWB2W2;
+                                flag = PBEDDMoveObtainMethod.HM_BWB2W2;
                             }
                             AddOtherMove(key, _gen5TMHMs[i], flag);
                         }
@@ -444,7 +446,7 @@ namespace Kermalis.PokemonDumper
                         {
                             if ((val & (1 << i)) != 0)
                             {
-                                AddOtherMove(key, _gen5FreeTutorMoves[i], PBEMoveObtainMethod.MoveTutor_B2W2);
+                                AddOtherMove(key, _gen5FreeTutorMoves[i], PBEDDMoveObtainMethod.MoveTutor_B2W2);
                             }
                         }
                     }
@@ -456,7 +458,7 @@ namespace Kermalis.PokemonDumper
                         {
                             if ((val & (1u << j)) != 0)
                             {
-                                AddOtherMove(key, _b2w2TutorMoves[i][j], PBEMoveObtainMethod.MoveTutor_B2W2);
+                                AddOtherMove(key, _b2w2TutorMoves[i][j], PBEDDMoveObtainMethod.MoveTutor_B2W2);
                             }
                         }
                     }

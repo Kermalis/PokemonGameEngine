@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SimpleGIF</name>
+    </assembly>
+    <members>
+        <member name="P:Kermalis.SimpleGIF.DecodedGIF.Frame.Bitmap">
+            <summary>Modifying this <see cref="T:System.Array"/> will not affect any other frames.
+            This is the only <see cref="T:System.Object"/> exposed to changes because it doesn't affect the library.</summary>
+        </member>
+        <member name="P:Kermalis.SimpleGIF.DecodedGIF.Frame.Delay">
+            <summary>Delay in milliseconds. <see langword="null"/> if it stays forever.</summary>
+        </member>
+        <member name="T:Kermalis.SimpleGIF.Decoding.ColorFormat">
+            <summary>These tell the GifColor how to be written to the output bitmaps.
+            Each color will take 8 bits (one byte), resulting in one uint being used.
+            The letters are arranged in order of low to high bit significance.
+            For example, <see cref="F:Kermalis.SimpleGIF.Decoding.ColorFormat.ARGB"/> will have A as the least significant byte and B as the most significant byte.</summary>
+        </member>
+        <member name="P:Kermalis.SimpleGIF.Decoding.GifPalette.TransparencyIndex">
+            <summary><see langword="null"/> if there is no transparency in this <see cref="T:Kermalis.SimpleGIF.Decoding.GifPalette"/>.</summary>
+        </member>
+        <member name="P:Kermalis.SimpleGIF.Decoding.GifDataStream.GlobalColorTable">
+            <summary><see langword="null"/> if <code>Header.LogicalScreenDescriptor.HasGlobalColorTable</code> is <see langword="false"/>.</summary>
+        </member>
+        <member name="P:Kermalis.SimpleGIF.Decoding.GifGraphicControlExtension.TransparencyIndex">
+            <summary><see langword="null"/> if there is no transparency.</summary>
+        </member>
+    </members>
+</doc>

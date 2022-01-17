@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
 using Kermalis.MapEditor.UI;
-using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using System;
 
 namespace Kermalis.MapEditor
@@ -13,7 +13,7 @@ namespace Kermalis.MapEditor
         [STAThread]
         private static void Main()
         {
-            PBEDataProvider.InitEngine(string.Empty);
+            PBEDefaultDataProvider.InitEngine(string.Empty);
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(null);
         }
         /// <summary>This method is needed for IDE previewer infrastructure.</summary>

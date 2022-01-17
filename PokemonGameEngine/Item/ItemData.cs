@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using System;
 
 namespace Kermalis.PokemonGameEngine.Item
@@ -207,7 +208,7 @@ namespace Kermalis.PokemonGameEngine.Item
             {
                 return item.ToString();
             }
-            return PBELocalizedString.GetItemName(pbe).English;
+            return PBEDDLocalizedString.GetItemName(pbe).English;
         }
     }
 }

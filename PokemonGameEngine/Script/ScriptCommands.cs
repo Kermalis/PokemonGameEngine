@@ -2,6 +2,7 @@
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
+using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 using System.IO;
 
@@ -14,10 +15,10 @@ namespace Kermalis.PokemonGameEngine.Script
             ScriptCommand cmd = _reader.ReadEnum<ScriptCommand>();
             switch (cmd)
             {
-                case ScriptCommand.End: EndCommand(); break;
+                case ScriptCommand.End: Delete(); break;
                 case ScriptCommand.GoTo: GoToCommand(); break;
                 case ScriptCommand.Call: CallCommand(); break;
-                case ScriptCommand.Return: ReturnCommand(); break;
+                case ScriptCommand.Return: PopPosition(); break;
                 case ScriptCommand.HealParty: HealPartyCommand(); break;
                 case ScriptCommand.GivePokemon: GivePokemonCommand(); break;
                 case ScriptCommand.GivePokemonForm: GivePokemonFormCommand(); break;
@@ -31,6 +32,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.ClearFlag: ClearFlagCommand(); break;
                 case ScriptCommand.Warp: WarpCommand(); break;
                 case ScriptCommand.Message: MessageCommand(); break;
+                case ScriptCommand.MessageScale: MessageScaleCommand(); break;
                 case ScriptCommand.AwaitMessageRead: AwaitMessageCommand(false); break;
                 case ScriptCommand.AwaitMessageComplete: AwaitMessageCommand(true); break;
                 case ScriptCommand.LockObj: LockObjCommand(); break;
@@ -55,10 +57,13 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.BufferSpeciesName: BufferSpeciesNameCommand(); break;
                 case ScriptCommand.BufferPartyMonNickname: BufferPartyMonNicknameCommand(); break;
                 case ScriptCommand.WildBattle: WildBattleCommand(); break;
+                case ScriptCommand.TrainerBattle: TrainerBattleCommand(); break;
+                case ScriptCommand.TrainerBattle_Continue: TrainerBattle_ContinueCommand(); break;
                 case ScriptCommand.AwaitReturnToField: AwaitReturnToFieldCommand(); break;
                 case ScriptCommand.CloseMessage: CloseMessageCommand(); break;
                 case ScriptCommand.UnloadObj: UnloadObjCommand(); break;
                 case ScriptCommand.LookTowardsObj: LookTowardsObjCommand(); break;
+                case ScriptCommand.LookLastTalkedTowardsPlayer: Obj.FaceLastTalkedTowardsPlayer(); break;
                 case ScriptCommand.BufferSeenCount: BufferSeenCountCommand(); break;
                 case ScriptCommand.BufferCaughtCount: BufferCaughtCountCommand(); break;
                 case ScriptCommand.GetDaycareState: GetDaycareStateCommand(); break;
@@ -134,11 +139,6 @@ namespace Kermalis.PokemonGameEngine.Script
             _reader.BaseStream.Position = _callStack.Pop();
         }
 
-        private void EndCommand()
-        {
-            Dispose();
-        }
-
         private void GoToCommand()
         {
             uint offset = _reader.ReadUInt32();
@@ -149,14 +149,10 @@ namespace Kermalis.PokemonGameEngine.Script
             uint offset = _reader.ReadUInt32();
             PushPosition(offset);
         }
-        private void ReturnCommand()
-        {
-            PopPosition();
-        }
         private void GoToIfCommand()
         {
             uint? offset = IfVar();
-            if (offset.HasValue)
+            if (offset is not null)
             {
                 _reader.BaseStream.Position = offset.Value;
             }
@@ -164,7 +160,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private void GoToIfFlagCommand()
         {
             uint? offset = IfFlag();
-            if (offset.HasValue)
+            if (offset is not null)
             {
                 _reader.BaseStream.Position = offset.Value;
             }
@@ -172,7 +168,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private void CallIfCommand()
         {
             uint? offset = IfVar();
-            if (offset.HasValue)
+            if (offset is not null)
             {
                 PushPosition(offset.Value);
             }
@@ -180,7 +176,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private void CallIfFlagCommand()
         {
             uint? offset = IfFlag();
-            if (offset.HasValue)
+            if (offset is not null)
             {
                 PushPosition(offset.Value);
             }
@@ -188,8 +184,8 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private void DelayCommand()
         {
-            ushort delay = (ushort)ReadVarOrValue();
-            _delay = delay;
+            float delay = (float)_reader.ReadSingle();
+            _delayRemaining = delay;
         }
 
         private void SetFlagCommand()
@@ -288,7 +284,7 @@ namespace Kermalis.PokemonGameEngine.Script
             PBESpecies species = ReadVarOrEnum<PBESpecies>();
             PBEForm form = ReadVarOrEnum<PBEForm>();
             byte level = (byte)ReadVarOrValue();
-            Encounter.CreateStaticWildBattle(species, form, level);
+            EncounterMaker.CreateStaticWildBattle(species, form, level);
         }
 
         private void IncrementGameStatCommand()

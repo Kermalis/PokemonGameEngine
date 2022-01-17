@@ -160,7 +160,7 @@ namespace Kermalis.MapEditor.UI
         public async void AddEncounterGroup()
         {
             Window window = ((IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime).MainWindow;
-            var dialog = new SelectSomethingDialog(Utils.GetEnumValues<EncounterType>().Where(t => !_grp.Groups.Any(g => g.Type == t)));
+            var dialog = new SelectSomethingDialog(Utils.GetEnumValues<EncounterType>().Where(t => _grp.Groups.FindIndex(g => g.Type == t) == -1));
             object result = await dialog.ShowDialog<object>(window);
             if (result is null)
             {

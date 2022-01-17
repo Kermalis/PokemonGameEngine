@@ -4,6 +4,9 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.World;
 using System;
+#if DEBUG_FRIENDSHIP
+using Kermalis.PokemonGameEngine.Debug;
+#endif
 
 namespace Kermalis.PokemonGameEngine.Pkmn
 {
@@ -48,7 +51,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
 
         private static byte GetAdjustedFriendship(Event e, byte curFriendship, ItemType caughtBall, MapSection metLocation, ItemType item
-#if DEBUG
+#if DEBUG_FRIENDSHIP
             , string nickname
 #endif
             )
@@ -76,7 +79,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 {
                     mod++;
                 }
-                if (metLocation == Overworld.GetCurrentLocation())
+                if (metLocation == Overworld.GetPlayerMapSection())
                 {
                     mod++;
                 }
@@ -94,15 +97,15 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             {
                 friendship = byte.MaxValue;
             }
-#if DEBUG
-            Console.WriteLine("{0} friendship adjustment: {1}_{2}", nickname, e, mod);
+#if DEBUG_FRIENDSHIP
+            Log.WriteLineWithTime(string.Format("{0} friendship adjustment: {1}_{2}", nickname, e, mod));
 #endif
             return (byte)friendship;
         }
         public static void AdjustFriendship(PBEBattlePokemon bPkmn, PartyPokemon pkmn, Event e)
         {
             bPkmn.Friendship = GetAdjustedFriendship(e, bPkmn.Friendship, pkmn.CaughtBall, pkmn.MetLocation, (ItemType)bPkmn.Item
-#if DEBUG
+#if DEBUG_FRIENDSHIP
                 , pkmn.Nickname
 #endif
                 );
@@ -110,7 +113,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public static void AdjustFriendship(PartyPokemon pkmn, Event e)
         {
             pkmn.Friendship = GetAdjustedFriendship(e, pkmn.Friendship, pkmn.CaughtBall, pkmn.MetLocation, pkmn.Item
-#if DEBUG
+#if DEBUG_FRIENDSHIP
                 , pkmn.Nickname
 #endif
                 );

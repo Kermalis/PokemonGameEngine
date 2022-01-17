@@ -45,7 +45,7 @@ namespace Kermalis.MapEditor.UI
 
         public override void Render(DrawingContext context)
         {
-            if (_tileset != null)
+            if (_tileset is not null)
             {
                 IBitmap source = _tileset.Bitmap;
                 var viewPort = new Rect(Bounds.Size);
@@ -61,7 +61,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (_tileset != null)
+            if (_tileset is not null)
             {
                 return _tileset.Bitmap.Size * _scale;
             }
@@ -69,7 +69,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (_tileset != null)
+            if (_tileset is not null)
             {
                 return _tileset.Bitmap.Size * _scale;
             }
@@ -78,7 +78,7 @@ namespace Kermalis.MapEditor.UI
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
-            if (_tileset != null)
+            if (_tileset is not null)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
@@ -95,7 +95,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerMoved(PointerEventArgs e)
         {
-            if (_tileset != null && _isSelecting)
+            if (_tileset is not null && _isSelecting)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
@@ -111,7 +111,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
-            if (_tileset != null && _isSelecting)
+            if (_tileset is not null && _isSelecting)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
@@ -129,7 +129,7 @@ namespace Kermalis.MapEditor.UI
         }
         private void FireSelectionCompleted()
         {
-            if (SelectionCompleted != null)
+            if (SelectionCompleted is not null)
             {
                 var tiles = new Tileset.Tile[_selection.Height][];
                 for (int y = 0; y < _selection.Height; y++)

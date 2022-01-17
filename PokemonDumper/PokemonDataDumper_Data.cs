@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.DefaultData;
 using System;
 using System.Collections.Generic;
 
@@ -75,7 +76,7 @@ namespace Kermalis.PokemonDumper
             public ushort BaseEXPYield;
             public byte CatchRate;
             public byte FleeRate;
-            public double Weight;
+            public float Weight;
             public EggGroup EggGroup1;
             public EggGroup EggGroup2;
             public PBEAbility Ability1;
@@ -83,7 +84,7 @@ namespace Kermalis.PokemonDumper
             public PBEAbility AbilityH;
             public List<(PBEMove Move, byte Level)> LevelUpMoves = new();
             public PBEMove[] EggMoves = Array.Empty<PBEMove>();
-            public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new();
+            public Dictionary<PBEMove, PBEDDMoveObtainMethod> OtherMoves = new();
             public PBESpecies BabySpecies;
             public (EvoMethod Method, ushort Param, PBESpecies Species, PBEForm Form)[] Evolutions = new (EvoMethod, ushort, PBESpecies, PBEForm)[7];
 

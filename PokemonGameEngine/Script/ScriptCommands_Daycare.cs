@@ -1,7 +1,7 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.GUI;
-using Kermalis.PokemonGameEngine.GUI.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Render.Pkmn;
+using Kermalis.PokemonGameEngine.Render.World;
 
 namespace Kermalis.PokemonGameEngine.Script
 {

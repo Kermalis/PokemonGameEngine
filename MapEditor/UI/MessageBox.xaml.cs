@@ -71,7 +71,7 @@ namespace Kermalis.MapEditor.UI
                 tcs.TrySetResult(ret);
             }
             msgbox.Closed += OnClosed;
-            if (owner != null)
+            if (owner is not null)
             {
                 msgbox.ShowDialog(owner);
             }

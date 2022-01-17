@@ -1,18 +1,18 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.Render;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Script
 {
     internal static class ScriptLoader
     {
+        private const string FILE = @"Script\Scripts.bin";
+        
         private static readonly Dictionary<string, uint> _globalScriptOffsets;
 
-        private const string _scriptExtension = ".bin";
-        private const string _scriptPath = "Script.";
-        private const string _scriptFile = _scriptPath + "Scripts" + _scriptExtension;
         static ScriptLoader()
         {
             using (EndianBinaryReader r = GetReader())
@@ -28,10 +28,10 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private static EndianBinaryReader GetReader()
         {
-            return new EndianBinaryReader(Utils.GetResourceStream(_scriptFile), encoding: EncodingType.UTF16);
+            return new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(FILE)), encoding: EncodingType.UTF16);
         }
 
-        public static void LoadScript(string label)
+        public static ScriptContext LoadScript(string label, Vec2I viewSize)
         {
             if (!_globalScriptOffsets.TryGetValue(label, out uint offset))
             {
@@ -39,7 +39,7 @@ namespace Kermalis.PokemonGameEngine.Script
             }
             EndianBinaryReader r = GetReader();
             r.BaseStream.Position = offset;
-            Game.Instance.Scripts.Add(new ScriptContext(r));
+            return new ScriptContext(viewSize, r);
         }
     }
 }

@@ -1,13 +1,19 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
+#if DEBUG_DATA_CACHE
+using Kermalis.PokemonBattleEngine.Data.Utils;
+#endif
 
 namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
 {
     internal sealed class BaseStats : IPBEPokemonData
     {
+        private const int CACHE_LENGTH = 20;
+
         public PBESpecies Species { get; }
         public PBEForm Form { get; }
 
@@ -26,14 +32,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         public PBEAbility Ability2 { get; }
         public PBEAbility AbilityH { get; }
         public byte FleeRate { get; }
-        public double Weight { get; }
+        public float Weight { get; }
 
         IPBEReadOnlyStatCollection IPBEPokemonData.BaseStats => Stats;
         private readonly List<PBEAbility> _abilities;
         public IReadOnlyList<PBEAbility> Abilities => _abilities;
 
-        private const int CacheSize = 20;
-        private static readonly List<BaseStats> _cache = new(CacheSize);
+        private static readonly List<BaseStats> _cache = new(CACHE_LENGTH);
 
         public static BaseStats Get(PBESpecies species, PBEForm form, bool cache)
         {
@@ -49,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
                     {
                         _cache.RemoveAt(i); // Remove from its position and put it at the end
                         _cache.Add(bs);
-#if DEBUG
+#if DEBUG_DATA_CACHE
                         Console.WriteLine("BaseStats cache - Moving {0}_{1} (from {2} to {3})", species, PBEDataUtils.GetNameOfForm(species, form), i, _cache.Count - 1);
 #endif
                     }
@@ -62,23 +67,23 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
             {
                 return bs;
             }
-            if (i < CacheSize - 1)
+            if (i < CACHE_LENGTH - 1)
             {
                 _cache.Add(bs); // Still room in the cache to add this at the end
-#if DEBUG
+#if DEBUG_DATA_CACHE
                 Console.WriteLine("BaseStats cache - Adding {0}_{1} ({2})", species, PBEDataUtils.GetNameOfForm(species, form), i);
 #endif
             }
             else
             {
-#if DEBUG
+#if DEBUG_DATA_CACHE
                 BaseStats old = _cache[0];
                 PBESpecies oldSpecies = old.Species;
                 PBEForm oldForm = old.Form;
 #endif
                 _cache.RemoveAt(0); // Remove oldest and add to end
                 _cache.Add(bs);
-#if DEBUG
+#if DEBUG_DATA_CACHE
                 Console.WriteLine("BaseStats cache - Removing {0}_{1}", oldSpecies, PBEDataUtils.GetNameOfForm(oldSpecies, oldForm));
                 Console.WriteLine("BaseStats cache - Adding {0}_{1} ({2})", species, PBEDataUtils.GetNameOfForm(species, form), _cache.Count - 1);
 #endif
@@ -91,8 +96,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
             Species = species;
             Form = form;
 
-            string resource = "Pokedata." + Utils.GetPkmnDirectoryName(species, form) + ".BaseStats.bin";
-            using (var r = new EndianBinaryReader(Utils.GetResourceStream(resource)))
+            string asset = @"Pokedata\" + AssetLoader.GetPkmnDirectoryName(species, form) + @"\BaseStats.bin";
+            using (var r = new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(asset))))
             {
                 Stats = new PBEReadOnlyStatCollection(r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte());
                 Type1 = r.ReadEnum<PBEType>();
@@ -109,7 +114,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
                 Ability2 = r.ReadEnum<PBEAbility>();
                 AbilityH = r.ReadEnum<PBEAbility>();
                 FleeRate = r.ReadByte();
-                Weight = r.ReadDouble();
+                Weight = r.ReadSingle();
             }
 
             _abilities = new List<PBEAbility>(3);

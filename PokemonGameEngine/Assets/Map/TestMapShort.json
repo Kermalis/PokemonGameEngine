@@ -1,0 +1,35 @@
+{
+  "Connections": [
+    {
+      "Direction": "North",
+      "Map": "TestMapC",
+      "Offset": -22
+    },
+    {
+      "Direction": "South",
+      "Map": "TestMapS",
+      "Offset": -8
+    }
+  ],
+  "Layout": "TestLayoutShort",
+  "Events": {
+    "Warps": [],
+    "Objs": [],
+    "ScriptTiles": []
+  },
+  "Details": {
+    "Flags": {
+      "Bike": true,
+      "DayTint": true,
+      "Dig_EscapeRope": false,
+      "Fly": true,
+      "ShowMapName": true,
+      "Teleport": true
+    },
+    "Section": "TestMapC",
+    "Weather": "Normal",
+    "Music": "Town1",
+    "BurmyForm": "Burmy_Plant"
+  },
+  "Encounters": []
+}

@@ -35,14 +35,14 @@ namespace Kermalis.MapEditor.Core
                     other.TilesetTile = TilesetTile;
                 }
 
-                public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
+                public unsafe void Draw(uint* dst, int dstW, int dstH, int x, int y)
                 {
-                    RenderUtils.DrawBitmap(bmpAddress, bmpWidth, bmpHeight, x, y, TilesetTile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: XFlip, yFlip: YFlip);
+                    Renderer.DrawBitmap(dst, dstW, dstH, x, y, TilesetTile.Bitmap, Overworld.Tile_NumPixelsX, Overworld.Tile_NumPixelsY, xFlip: XFlip, yFlip: YFlip);
                 }
 
                 public bool Equals(Tile other)
                 {
-                    return other != null && XFlip == other.XFlip && YFlip == other.YFlip && TilesetTile == other.TilesetTile;
+                    return other is not null && XFlip == other.XFlip && YFlip == other.YFlip && TilesetTile == other.TilesetTile;
                 }
 
                 public void Write(EndianBinaryWriter w)
@@ -108,20 +108,20 @@ namespace Kermalis.MapEditor.Core
                 }
             }
 
-            public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y)
+            public unsafe void Draw(uint* dst, int dstW, int dstH, int x, int y)
             {
                 for (byte e = 0; e < Overworld.NumElevations; e++)
                 {
-                    Draw(bmpAddress, bmpWidth, bmpHeight, x, y, e);
+                    Draw(dst, dstW, dstH, x, y, e);
                 }
             }
-            public unsafe void Draw(uint* bmpAddress, int bmpWidth, int bmpHeight, int x, int y, byte e)
+            public unsafe void Draw(uint* dst, int dstW, int dstH, int x, int y, byte e)
             {
                 void Draw(List<Tile> subLayers, int tx, int ty)
                 {
                     for (int t = 0; t < subLayers.Count; t++)
                     {
-                        subLayers[t].Draw(bmpAddress, bmpWidth, bmpHeight, tx, ty);
+                        subLayers[t].Draw(dst, dstW, dstH, tx, ty);
                     }
                 }
                 List<Tile>[][] arrE = Tiles[e];
@@ -312,7 +312,7 @@ namespace Kermalis.MapEditor.Core
         private bool UpdateBitmapSize()
         {
             int bmpHeight = GetBitmapHeight();
-            if (Bitmap == null || Bitmap.PixelSize.Height != bmpHeight)
+            if (Bitmap is null || Bitmap.PixelSize.Height != bmpHeight)
             {
                 Bitmap?.Dispose();
                 Bitmap = new WriteableBitmap(new PixelSize(BitmapNumBlocksX * Overworld.Block_NumPixelsX, bmpHeight), new Vector(96, 96), PixelFormat.Rgba8888, AlphaFormat.Premul);
@@ -322,25 +322,25 @@ namespace Kermalis.MapEditor.Core
         }
         private unsafe void DrawOne(Block block)
         {
-            const int bmpWidth = BitmapNumBlocksX * Overworld.Block_NumPixelsX;
-            int bmpHeight = GetBitmapHeight();
+            const int dstW = BitmapNumBlocksX * Overworld.Block_NumPixelsX;
+            int dstH = GetBitmapHeight();
             using (ILockedFramebuffer l = Bitmap.Lock())
             {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
+                uint* dst = (uint*)l.Address.ToPointer();
                 int x = block.Id % BitmapNumBlocksX * Overworld.Block_NumPixelsX;
                 int y = block.Id / BitmapNumBlocksX * Overworld.Block_NumPixelsY;
-                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, x, y, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, 0xFF000000);
-                block.Draw(bmpAddress, bmpWidth, bmpHeight, x, y);
+                Renderer.FillRectangle(dst, dstW, dstH, x, y, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, Renderer.Color(0, 0, 0, 255));
+                block.Draw(dst, dstW, dstH, x, y);
             }
             OnDrew?.Invoke(this, EventArgs.Empty);
         }
         private unsafe void DrawFrom(int index)
         {
-            const int bmpWidth = BitmapNumBlocksX * Overworld.Block_NumPixelsX;
-            int bmpHeight = GetBitmapHeight();
+            const int dstW = BitmapNumBlocksX * Overworld.Block_NumPixelsX;
+            int dstH = GetBitmapHeight();
             using (ILockedFramebuffer l = Bitmap.Lock())
             {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
+                uint* dst = (uint*)l.Address.ToPointer();
                 int x = index % BitmapNumBlocksX;
                 int y = index / BitmapNumBlocksX;
                 for (; index < Blocks.Count; index++, x++)
@@ -352,27 +352,27 @@ namespace Kermalis.MapEditor.Core
                     }
                     int bx = x * Overworld.Block_NumPixelsX;
                     int by = y * Overworld.Block_NumPixelsY;
-                    RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, bx, by, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, 0xFF000000);
-                    Blocks[index].Draw(bmpAddress, bmpWidth, bmpHeight, bx, by);
+                    Renderer.FillRectangle(dst, dstW, dstH, bx, by, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, Renderer.Color(0, 0, 0, 255));
+                    Blocks[index].Draw(dst, dstW, dstH, bx, by);
                 }
                 for (; x < BitmapNumBlocksX; x++)
                 {
                     int bx = x * Overworld.Block_NumPixelsX;
                     int by = y * Overworld.Block_NumPixelsY;
-                    RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, bx, by, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, 0xFF000000);
-                    RenderUtils.DrawCross(bmpAddress, bmpWidth, bmpHeight, bx, by, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, 0xFF0000FF);
+                    Renderer.FillRectangle(dst, dstW, dstH, bx, by, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, Renderer.Color(0, 0, 0, 255));
+                    Renderer.DrawCross(dst, dstW, dstH, bx, by, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, Renderer.Color(255, 0, 0, 255));
                 }
             }
             OnDrew?.Invoke(this, EventArgs.Empty);
         }
         private unsafe void DrawAll()
         {
-            const int bmpWidth = BitmapNumBlocksX * Overworld.Block_NumPixelsX;
-            int bmpHeight = GetBitmapHeight();
+            const int dstW = BitmapNumBlocksX * Overworld.Block_NumPixelsX;
+            int dstH = GetBitmapHeight();
             using (ILockedFramebuffer l = Bitmap.Lock())
             {
-                uint* bmpAddress = (uint*)l.Address.ToPointer();
-                RenderUtils.FillColor(bmpAddress, bmpWidth, bmpHeight, 0, 0, bmpWidth, bmpHeight, 0xFF000000);
+                uint* dst = (uint*)l.Address.ToPointer();
+                Renderer.FillRectangle(dst, dstW, dstH, 0, 0, dstW, dstH, Renderer.Color(0, 0, 0, 255));
                 int x = 0;
                 int y = 0;
                 for (int i = 0; i < Blocks.Count; i++, x++)
@@ -382,11 +382,11 @@ namespace Kermalis.MapEditor.Core
                         x = 0;
                         y++;
                     }
-                    Blocks[i].Draw(bmpAddress, bmpWidth, bmpHeight, x * Overworld.Block_NumPixelsX, y * Overworld.Block_NumPixelsY);
+                    Blocks[i].Draw(dst, dstW, dstH, x * Overworld.Block_NumPixelsX, y * Overworld.Block_NumPixelsY);
                 }
                 for (; x < BitmapNumBlocksX; x++)
                 {
-                    RenderUtils.DrawCross(bmpAddress, bmpWidth, bmpHeight, x * Overworld.Block_NumPixelsX, y * Overworld.Block_NumPixelsY, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, 0xFF0000FF);
+                    Renderer.DrawCross(dst, dstW, dstH, x * Overworld.Block_NumPixelsX, y * Overworld.Block_NumPixelsY, Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY, Renderer.Color(255, 0, 0, 255));
                 }
             }
             OnDrew?.Invoke(this, EventArgs.Empty);

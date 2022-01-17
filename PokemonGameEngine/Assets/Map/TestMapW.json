@@ -1,19 +1,4 @@
 {
-  "Layout": "TestLayout2",
-  "Details": {
-    "Flags": {
-      "Bike": true,
-      "DayTint": true,
-      "Dig_EscapeRope": false,
-      "Fly": true,
-      "ShowMapName": true,
-      "Teleport": true
-    },
-    "Section": "TestMapW",
-    "Weather": "Normal",
-    "Music": "Route1",
-    "BurmyForm": "Burmy_Plant"
-  },
   "Connections": [
     {
       "Direction": "East",
@@ -21,7 +6,7 @@
       "Offset": -20
     }
   ],
-  "Encounters": [],
+  "Layout": "TestLayout2",
   "Events": {
     "Warps": [
       {
@@ -65,5 +50,20 @@
       }
     ],
     "ScriptTiles": []
-  }
+  },
+  "Details": {
+    "Flags": {
+      "Bike": true,
+      "DayTint": true,
+      "Dig_EscapeRope": false,
+      "Fly": true,
+      "ShowMapName": true,
+      "Teleport": true
+    },
+    "Section": "TestMapW",
+    "Weather": "Normal",
+    "Music": "Route1",
+    "BurmyForm": "Burmy_Plant"
+  },
+  "Encounters": []
 }

@@ -1,5 +1,4 @@
 Main Mechanics:
-    Trainers
     New Game/Saving
     Map scripts
     Withdrawing pkmn from daycare
@@ -13,11 +12,20 @@ Main Mechanics:
     World Map
     PC & Mart
     Trades
-    Location name plates on enter (task system)
+    Location name plates on enter
     Pokerus time decay
     Hidden items
     Ask if you'd like to flee a wild battle when your mon faints
     Releasing Pokémon
+
+Trainers:
+    Script commands for different battle formats
+    Trainer data in JSON
+    Sprite shows up for defeat
+    Money reward
+    Trainer sight
+    Encounter music logic
+    Let opponent send out first
 
 GUIs:
     Intro/Title/Continue/NewGame
@@ -32,9 +40,8 @@ GUIs:
 Encounters:
     CompoundEyes
     StickyHold, SuctionCups
-    Phenomena (task system)
+    Phenomena
     Fishing
-    Determine battle music
 
 Field Effects:
     Spin tiles
@@ -65,9 +72,11 @@ Data Stuff:
 
 Sound:
     Fade BGM when in a menu
-    Random cries in the overworld (task system)
+    Random cries in the overworld
     Fanfares
     Surf music logic
+    Encounter music logic (and battle script commands without encounter music)
+    Victory music logic
     Saving music to load next time
 
 Nice to have (no priority):
@@ -75,7 +84,7 @@ Nice to have (no priority):
     Reflections on tiles
     Different day tints based on season
     Obj Following (#29)
-    Attack animations
+    Attack animations with camera movement
     Pass Powers
     Move relearner & Move tutor
     Feebas/Swarm/Roamer
@@ -86,5 +95,4 @@ Nice to have (no priority):
 Sounds cool but definitely not necessary at all:
     Color lookup tables for day tints
     Move/Item effect/data integration with battle engine (not needed because you can just clone and edit the battle engine to add these things and more, like new species/forms)
-    Battle sprite shadows with rotation (like gen 5)
     Chatot special cry (if this is done, add it as a field move)

@@ -3,52 +3,52 @@
 
 // Below we have "@TestScript" which is a global label, meaning it can be referenced by the engine itself (like the Surf and Headbutt Tree scripts) rather than just from scripts.
 @TestScript
-LockAllObjs
-LookTowardsObj Var.LastTalked 0xFFFF
-RandomizeVar Var.Test1 Species.Bulbasaur Species.Genesect // Set a random value in var "Test1" that's between 1 and 649 inclusive
-RandomizeVar Var.Test2 1 100 // Set a random value in var "Test2" that's between 1 and 100 inclusive
-GivePokemon Var.Test1 Var.Test2 // Give a random species with a random level. The species is taken from Var.Test1 and the level is taken from Var.Test2
-GoTo TestJump // We will go to TestJump and not come back
+    LockAllObjs
+    LookLastTalkedTowardsPlayer
+    RandomizeVar Var.Test1 Species.Bulbasaur Species.Genesect // Set a random value in var "Test1" that's between 1 and 649 inclusive
+    RandomizeVar Var.Test2 1 100 // Set a random value in var "Test2" that's between 1 and 100 inclusive
+    GivePokemon Var.Test1 Var.Test2 // Give a random species with a random level. The species is taken from Var.Test1 and the level is taken from Var.Test2
+    GoTo TestJump // We will go to TestJump and not come back
 
 // Below we have "#TestCall" which is a local label, meaning it can only be referenced by scripts, although it can be referenced by other scripts too.
 #TestCall
-GivePokemonFormItem Species.Arceus Form.Arceus_Psychic 50 Item.MindPlate // We are using prefixes to denote that we should refer to a specific enum to parse these arguments
-MoveObj LOCALID_PLAYER TestMovements
-AwaitObjMovement LOCALID_PLAYER
-MoveObj Var.LastTalked TestMovements // Move the last obj we talked to
-AwaitObjMovement Var.LastTalked
-Return // Go back to where we came from
+    GivePokemonFormItem Species.Arceus Form.Arceus_Psychic 50 Item.MindPlate // We are using prefixes to denote that we should refer to a specific enum to parse these arguments
+    MoveObj LOCALID_PLAYER TestMovements
+    AwaitObjMovement LOCALID_PLAYER
+    MoveObj Var.LastTalked TestMovements // Move the last obj we talked to
+    AwaitObjMovement Var.LastTalked
+    Return // Go back to where we came from
 
 #TestJump
-Call TestCall // We will go to TestCall and come back
-HealParty
-UnlockAllObjs
-End // Stop reading script data
+    Call TestCall // We will go to TestCall and come back
+    HealParty
+    UnlockAllObjs
+    End // Stop reading script data
 
 // Below are some movements
 #TestMovements
-M.Face_S
-M.Face_N
-M.Face_W
-M.Face_E
-M.Face_SW
-M.Face_SE
-M.Face_NW
-M.Face_NE
-M.Walk_S
-M.Walk_N
-M.Walk_W
-M.Walk_E
-M.Walk_SW
-M.Walk_SE
-M.Walk_NW
-M.Walk_NE
-M.Run_S
-M.Run_N
-M.Run_W
-M.Run_E
-M.Run_SW
-M.Run_SE
-M.Run_NW
-M.Run_NE
-M.End
+    M.Face_S
+    M.Face_N
+    M.Face_W
+    M.Face_E
+    M.Face_SW
+    M.Face_SE
+    M.Face_NW
+    M.Face_NE
+    M.Walk_S
+    M.Walk_N
+    M.Walk_W
+    M.Walk_E
+    M.Walk_SW
+    M.Walk_SE
+    M.Walk_NW
+    M.Walk_NE
+    M.Run_S
+    M.Run_N
+    M.Run_W
+    M.Run_E
+    M.Run_SW
+    M.Run_SE
+    M.Run_NW
+    M.Run_NE
+    M.End

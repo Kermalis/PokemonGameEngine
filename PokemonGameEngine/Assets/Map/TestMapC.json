@@ -1,64 +1,17 @@
 {
-  "Layout": "TestLayoutC",
-  "Details": {
-    "Flags": {
-      "Bike": true,
-      "DayTint": true,
-      "Dig_EscapeRope": false,
-      "Fly": true,
-      "ShowMapName": true,
-      "Teleport": true
-    },
-    "Section": "TestMapC",
-    "Weather": "Normal",
-    "Music": "Town1",
-    "BurmyForm": "Burmy_Plant"
-  },
   "Connections": [
     {
       "Direction": "West",
       "Map": "TestMapW",
       "Offset": 20
+    },
+    {
+      "Direction": "South",
+      "Map": "TestMapShort",
+      "Offset": 22
     }
   ],
-  "Encounters": [
-    {
-      "Type": "Default",
-      "Table": "TestEncountersDefaultC"
-    },
-    {
-      "Type": "Surf",
-      "Table": "TestEncountersSurfC"
-    },
-    {
-      "Type": "SuperRod",
-      "Table": "TestEncountersSuperRodC"
-    },
-    {
-      "Type": "DarkGrass",
-      "Table": "TestEncountersDarkGrassC"
-    },
-    {
-      "Type": "RareDefault",
-      "Table": "TestEncountersRareDefaultC"
-    },
-    {
-      "Type": "RareSurf",
-      "Table": "TestEncountersRareSurfC"
-    },
-    {
-      "Type": "RareSuperRod",
-      "Table": "TestEncountersRareSuperRodC"
-    },
-    {
-      "Type": "HeadbuttTree",
-      "Table": "TestEncountersHeadbuttTree"
-    },
-    {
-      "Type": "HoneyTree",
-      "Table": "TestEncountersHoneyTree"
-    }
-  ],
+  "Layout": "TestLayoutC",
   "Events": {
     "Warps": [
       {
@@ -81,9 +34,9 @@
         "MovementType": "Walk_EastThenReturn",
         "MovementX": 21,
         "MovementY": 0,
-        "TrainerType": "None",
-        "TrainerSight": 0,
-        "Script": "TestScript",
+        "TrainerType": "Normal",
+        "TrainerSight": 3,
+        "Script": "TestMapC_Trainer2",
         "Flag": "MAX"
       },
       {
@@ -137,9 +90,9 @@
         "MovementType": "Walk_WestThenReturn",
         "MovementX": 21,
         "MovementY": 0,
-        "TrainerType": "None",
-        "TrainerSight": 0,
-        "Script": "TestScript",
+        "TrainerType": "Normal",
+        "TrainerSight": 3,
+        "Script": "TestMapC_Trainer1",
         "Flag": "MAX"
       },
       {
@@ -155,6 +108,20 @@
         "TrainerSight": 0,
         "Script": "TestMessage",
         "Flag": "Test2"
+      },
+      {
+        "X": 29,
+        "Y": 34,
+        "Elevation": 0,
+        "Id": 8,
+        "Sprite": "Player",
+        "MovementType": "Face_Randomly",
+        "MovementX": 0,
+        "MovementY": 0,
+        "TrainerType": "None",
+        "TrainerSight": 0,
+        "Script": "TestScript",
+        "Flag": "MAX"
       }
     ],
     "ScriptTiles": [
@@ -168,5 +135,57 @@
         "Script": "TestMessage"
       }
     ]
-  }
+  },
+  "Details": {
+    "Flags": {
+      "Bike": true,
+      "DayTint": true,
+      "Dig_EscapeRope": false,
+      "Fly": true,
+      "ShowMapName": true,
+      "Teleport": true
+    },
+    "Section": "TestMapC",
+    "Weather": "Normal",
+    "Music": "Town1",
+    "BurmyForm": "Burmy_Plant"
+  },
+  "Encounters": [
+    {
+      "Type": "Default",
+      "Table": "TestEncountersDefaultC"
+    },
+    {
+      "Type": "Surf",
+      "Table": "TestEncountersSurfC"
+    },
+    {
+      "Type": "SuperRod",
+      "Table": "TestEncountersSuperRodC"
+    },
+    {
+      "Type": "DarkGrass",
+      "Table": "TestEncountersDarkGrassC"
+    },
+    {
+      "Type": "RareDefault",
+      "Table": "TestEncountersRareDefaultC"
+    },
+    {
+      "Type": "RareSurf",
+      "Table": "TestEncountersRareSurfC"
+    },
+    {
+      "Type": "RareSuperRod",
+      "Table": "TestEncountersRareSuperRodC"
+    },
+    {
+      "Type": "HeadbuttTree",
+      "Table": "TestEncountersHeadbuttTree"
+    },
+    {
+      "Type": "HoneyTree",
+      "Table": "TestEncountersHoneyTree"
+    }
+  ]
 }

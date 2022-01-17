@@ -1,10 +1,9 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
-using Kermalis.PokemonGameEngine.UI;
-using Kermalis.PokemonGameEngine.Util;
 using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
@@ -24,7 +23,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public OTInfo OT { get; set; }
         public MapSection MetLocation { get; set; }
         public byte MetLevel { get; set; }
-        public DateTime MetDate { get; set; }
+        public DateOnly MetDate { get; set; }
 
         public PBESpecies Species { get; set; }
         public PBEForm Form { get; set; }
@@ -224,9 +223,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         private void SetCurrentMetLocation()
         {
-            MetLocation = Overworld.GetCurrentLocation();
+            MetLocation = Overworld.GetPlayerMapSection();
             MetLevel = Level;
-            MetDate = Program.LogicTickTime.Date;
+            MetDate = DateOnly.FromDateTime(DateTime.Today);
         }
         private void SetPlayerOT()
         {
@@ -238,11 +237,11 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         private void SetDefaultNickname()
         {
-            Nickname = PBELocalizedString.GetSpeciesName(Species).English;
+            Nickname = PBEDataProvider.Instance.GetSpeciesName(Species).English;
         }
         private bool HasDefaultNickname()
         {
-            return Nickname == PBELocalizedString.GetSpeciesName(Species).English;
+            return Nickname == PBEDataProvider.Instance.GetSpeciesName(Species).English;
         }
         /// <summary>Sets the moves to the last 4 moves the Pokémon would've learned by level-up.</summary>
         private void SetDefaultMoves()
@@ -310,7 +309,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         // Temp function to get completely random moves
         public void Debug_RandomizeMoves()
         {
-            var moves = new List<PBEMove>(new LevelUpData(Species, Form).Moves.Where(t => t.Level <= Level && PBEDataUtils.IsMoveUsable(t.Move)).Select(t => t.Move).Distinct());
+            var moves = new List<PBEMove>(Array.FindAll(new LevelUpData(Species, Form).Moves, t => t.Level <= Level && PBEDataUtils.IsMoveUsable(t.Move)).Select(t => t.Move).Distinct());
             int i;
             for (i = 0; i < PkmnConstants.NumMoves && moves.Count > 0; i++)
             {
@@ -351,7 +350,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         public void UpdateTimeBasedForms()
         {
-            DateTime time = Program.LogicTickTime;
+            DateTime time = DateTime.Now;
             Month month = OverworldTime.GetMonth((Month)time.Month);
             Season season = OverworldTime.GetSeason(month);
             int hour = OverworldTime.GetHour(time.Hour);
