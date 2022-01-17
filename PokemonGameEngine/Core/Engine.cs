@@ -19,8 +19,8 @@ namespace Kermalis.PokemonGameEngine.Core
             RuntimeHelpers.RunClassConstructor(typeof(Display).TypeHandle); // Inits Display static constructor & SDL
             RuntimeHelpers.RunClassConstructor(typeof(SoundMixer).TypeHandle); // Init SoundMixer static constructor & SDL Audio
             RuntimeHelpers.RunClassConstructor(typeof(AssimpLoader).TypeHandle); // Init AssimpLoader static constructor
-            InputManager.Init(); // Attach controller if there is one
             AssetLoader.InitBattleEngineProvider();
+            InputManager.Init(); // Attach controller if there is one
             RenderManager.Init();
             _ = new Game();
         }
@@ -41,12 +41,11 @@ namespace Kermalis.PokemonGameEngine.Core
                     break; // Break if quit was requested by OS
                 }
 
-                if (Display.PrepareFrame(ref time))
+                if (!Display.PrepareFrame(ref time))
                 {
-                    continue; // Skip current frame if it returned true
+                    Game.Instance.RunCallback();
+                    Display.PresentFrame();
                 }
-                Game.Instance.RunCallback();
-                Display.PresentFrame();
             }
 
             // Quitting
