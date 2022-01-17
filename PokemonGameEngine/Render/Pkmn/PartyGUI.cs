@@ -33,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 Party = party;
                 foreach (PartyPokemon pkmn in party)
                 {
-                    members.Add(new PartyGUIMember(pkmn, sprites));
+                    members.Add(new PartyGUIMember(pkmn, sprites, members.Count == 0));
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 foreach (PBEBattlePokemon pbePkmn in party.PBEParty)
                 {
                     BattlePokemon bPkmn = party[pbePkmn]; // Use battle party's order
-                    members.Add(new PartyGUIMember(bPkmn, sprites));
+                    members.Add(new PartyGUIMember(bPkmn, sprites, members.Count == 0));
                 }
             }
         }
@@ -55,7 +55,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         public static PartyGUI Instance { get; private set; }
 
         private static readonly Vec2I _renderSize = new(384, 216); // 16:9
-        private FrameBuffer2DColor _frameBuffer;
+        private readonly FrameBuffer2DColor _frameBuffer;
         private readonly TripleColorBackground _tripleColorBG;
 
         /// <summary>The return value of selection modes, also the y index of the cancel/back button</summary>
@@ -80,62 +80,55 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private int _selectionX;
         private int _selectionY;
 
-        private GUIString _backStr;
+        private readonly GUIString _backStr;
 
         #region Open & Close GUI
 
-        public PartyGUI(Party party, Mode mode, Action onClosed)
+        private PartyGUI(Mode mode, Action onClosed)
         {
+            Instance = this;
+
             _mode = mode;
-            _allowBack = true;
-            _useGamePartyData = true;
-            _sprites = new(Sprite.Sorter);
-            _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
-            _gameParty = new GamePartyData(party, _members, _sprites);
+            _onClosed = onClosed;
+
+            Display.SetMinimumWindowSize(_renderSize);
+            _frameBuffer = new FrameBuffer2DColor(_renderSize);
 
             _tripleColorBG = new TripleColorBackground();
+            _sprites = new(Sprite.Sorter);
+            _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
+            _backStr = new GUIString("Back", Font.Default, FontColors.DefaultWhite_I);
+
+            _transition = FadeFromColorTransition.FromBlackStandard();
+            Game.Instance.SetCallback(CB_FadeInParty);
+        }
+        public PartyGUI(Party party, Mode mode, Action onClosed)
+            : this(mode, onClosed)
+        {
+            _allowBack = true;
+            _useGamePartyData = true;
+            _gameParty = new GamePartyData(party, _members, _sprites);
+
             _tripleColorBG.SetColors(Colors.FromRGB(222, 50, 60), Colors.FromRGB(190, 40, 50), Colors.FromRGB(255, 180, 200));
 
             if (mode == Mode.SelectDaycare)
             {
                 SetSelectionVar(NO_PKMN_CHOSEN);
             }
-
-            FinishConstructor(onClosed);
         }
         public PartyGUI(BattlePokemonParty party, Mode mode, Action onClosed)
+            : this(mode, onClosed)
         {
-            _mode = mode;
             _allowBack = mode != Mode.BattleReplace; // Disallow back for BattleReplace
             _useGamePartyData = false;
-            _sprites = new(Sprite.Sorter);
-            _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
             _battleParty = new BattlePartyData(party, _members, _sprites);
 
-            _tripleColorBG = new TripleColorBackground();
             _tripleColorBG.SetColors(Colors.FromRGB(85, 0, 115), Colors.FromRGB(145, 0, 195), Colors.FromRGB(100, 65, 255));
 
             if (mode == Mode.BattleSwitchIn)
             {
                 SetSelectionVar(NO_PKMN_CHOSEN);
             }
-
-            FinishConstructor(onClosed);
-        }
-        private void FinishConstructor(Action onClosed)
-        {
-            Instance = this;
-            Display.SetMinimumWindowSize(_renderSize);
-
-            _frameBuffer = new FrameBuffer2DColor(_renderSize);
-
-            _members[0].SetBounce(true);
-            _backStr = new GUIString("Back", Font.Default, FontColors.DefaultWhite_I);
-
-            _onClosed = onClosed;
-
-            _transition = FadeFromColorTransition.FromBlackStandard();
-            Game.Instance.SetCallback(CB_FadeInParty);
         }
 
         private void ClosePartyMenu()

@@ -25,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private readonly Sprite _mini;
         private readonly FrameBuffer2DColor _frameBuffer;
 
-        public PartyGUIMember(PartyPokemon pkmn, ConnectedList<Sprite> sprites)
+        public PartyGUIMember(PartyPokemon pkmn, ConnectedList<Sprite> sprites, bool isSelected)
         {
             _usePartyPkmn = true;
             _isEgg = pkmn.IsEgg;
@@ -44,12 +44,13 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             {
                 _mini.Callback = Sprite_Bounce;
                 _mini.Data = new Sprite_BounceData();
+                SetBounce(isSelected);
             }
             sprites.Add(_mini);
             _frameBuffer = new FrameBuffer2DColor(new Vec2I(WIDTH, HEIGHT));
             UpdateBackground();
         }
-        public PartyGUIMember(BattlePokemon pkmn, ConnectedList<Sprite> sprites)
+        public PartyGUIMember(BattlePokemon pkmn, ConnectedList<Sprite> sprites, bool isSelected)
         {
             _usePartyPkmn = false;
             _isEgg = pkmn.PartyPkmn.IsEgg;
@@ -63,6 +64,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             {
                 _mini.Callback = Sprite_Bounce;
                 _mini.Data = new Sprite_BounceData();
+                SetBounce(isSelected);
             }
             sprites.Add(_mini);
             _frameBuffer = new FrameBuffer2DColor(new Vec2I(WIDTH, HEIGHT));
@@ -100,20 +102,18 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             if (_isEgg)
             {
-                return; // Don't bounce eggs or fainted mon
+                return; // Don't bounce eggs
             }
 
-            float speed;
+            var data = (Sprite_BounceData)_mini.Data;
             if (_usePartyPkmn ? _partyPkmn.HP == 0 : _battlePkmn.PBEPkmn.HP == 0)
             {
-                speed = 0f; // Pause bounce for fainted
+                data.Speed = 0f; // Pause bounce for fainted
             }
             else
             {
-                speed = big ? SPRITE_BOUNCE_SPEED_BIG : SPRITE_BOUNCE_SPEED_SMALL;
+                data.Speed = big ? SPRITE_BOUNCE_SPEED_BIG : SPRITE_BOUNCE_SPEED_SMALL;
             }
-            var data = (Sprite_BounceData)_mini.Data;
-            data.Speed = speed;
         }
 
         #endregion
