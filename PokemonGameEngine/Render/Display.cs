@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonGameEngine.Render.OpenGL;
+﻿using Kermalis.PokemonGameEngine.Input;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
 using SDL2;
 using Silk.NET.OpenGL;
 using System;
@@ -25,7 +26,6 @@ namespace Kermalis.PokemonGameEngine.Render
         public static bool AutosizeWindow = true; // Works silently with fullscreen mode
         public static Vec2I ViewportSize;
         public static float DeltaTime;
-        public static bool ScreenshotRequested;
 
         static Display()
         {
@@ -149,9 +149,8 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public static void PresentFrame()
         {
-            if (ScreenshotRequested)
+            if (InputManager.JustPressed(Key.Screenshot))
             {
-                ScreenshotRequested = false;
                 SaveScreenshot();
             }
             OpenGL.BindFramebuffer(FramebufferTarget.Framebuffer, 0); // Rebind default FBO. Streaming with many apps require this bound before swap

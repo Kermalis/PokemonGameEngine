@@ -6,16 +6,37 @@ namespace Kermalis.PokemonGameEngine.Input
 {
     internal static class Controller
     {
+        private static readonly Dictionary<SDL.SDL_GameControllerButton, Key> _keyBinds = new();
+        private static readonly Dictionary<Key, PressData> _buttons = new();
+        private static readonly AxisData _leftStick;
+
         private static IntPtr _controller;
         private static int _controllerId;
 
-        private static readonly Dictionary<Key, PressData> _buttons = new();
-        private static readonly AxisData _leftStick;
         static Controller()
         {
-            Key[] buttons = Enum.GetValues<Key>();
-            _buttons = PressData.CreateDict(buttons);
+            _keyBinds = GetDefaultKeyBinds();
+            _buttons = PressData.CreateDict(Enum.GetValues<Key>());
             _leftStick = new AxisData();
+        }
+
+        private static Dictionary<SDL.SDL_GameControllerButton, Key> GetDefaultKeyBinds()
+        {
+            return new Dictionary<SDL.SDL_GameControllerButton, Key>(12) // No screenshot bind by default
+            {
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER, Key.L },
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER, Key.R },
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_LEFT, Key.Left },
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_RIGHT, Key.Right },
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_UP, Key.Up },
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_DOWN, Key.Down },
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_START, Key.Start },
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK, Key.Select },
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_Y, Key.X }, // Switch from XBOX layout to Nintendo layout
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_X, Key.Y },
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A, Key.B },
+                { SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_B, Key.A }
+            };
         }
 
         public static void Prepare()
@@ -71,48 +92,32 @@ namespace Kermalis.PokemonGameEngine.Input
         }
         public static void OnAxisChanged(SDL.SDL_ControllerAxisEvent caxis)
         {
-            if (caxis.which != _controllerId)
+            if (caxis.which == _controllerId)
             {
-                return;
-            }
+                AxisData ad;
+                bool isX;
+                switch ((SDL.SDL_GameControllerAxis)caxis.axis)
+                {
+                    case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX: ad = _leftStick; isX = true; break;
+                    case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY: ad = _leftStick; isX = false; break;
+                    default: return;
+                }
 
-            float amount = caxis.axisValue / (float)short.MaxValue;
-            if (amount < -1f)
-            {
-                amount = -1f; // Leftmost value would be less than -1 so clamp it
-            }
-            switch ((SDL.SDL_GameControllerAxis)caxis.axis)
-            {
-                case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX: _leftStick.Update(true, amount); break;
-                case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY: _leftStick.Update(false, amount); break;
+                float amount = caxis.axisValue / (float)short.MaxValue;
+                if (amount < -1f)
+                {
+                    amount = -1f; // Leftmost value would be less than -1 so clamp it
+                }
+                ad.Update(isX, amount);
             }
         }
         public static void OnButtonChanged(SDL.SDL_ControllerButtonEvent cbutton, bool down)
         {
-            if (cbutton.which != _controllerId)
+            if (cbutton.which == _controllerId
+                && _keyBinds.TryGetValue((SDL.SDL_GameControllerButton)cbutton.button, out Key key))
             {
-                return;
+                _buttons[key].OnChanged(down);
             }
-
-            Key key;
-            switch ((SDL.SDL_GameControllerButton)cbutton.button)
-            {
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_LEFTSHOULDER: key = Key.L; break;
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: key = Key.R; break;
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_Y: key = Key.X; break;
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_X: key = Key.Y; break;
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_A: key = Key.B; break;
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_B: key = Key.A; break;
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_LEFT: key = Key.Left; break;
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_RIGHT: key = Key.Right; break;
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_DOWN: key = Key.Down; break;
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_DPAD_UP: key = Key.Up; break;
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_START: key = Key.Start; break;
-                case SDL.SDL_GameControllerButton.SDL_CONTROLLER_BUTTON_BACK: key = Key.Select; break;
-                default: return;
-            }
-
-            _buttons[key].OnChanged(down);
         }
 
         public static void TryAttachController()

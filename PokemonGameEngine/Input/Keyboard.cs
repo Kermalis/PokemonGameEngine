@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Render;
-using SDL2;
+﻿using SDL2;
 using System;
 using System.Collections.Generic;
 
@@ -7,11 +6,33 @@ namespace Kermalis.PokemonGameEngine.Input
 {
     internal static class Keyboard
     {
+        private static readonly Dictionary<SDL.SDL_Keycode, Key> _keyBinds = new();
         private static readonly Dictionary<Key, PressData> _keys = new();
+
         static Keyboard()
         {
-            Key[] keys = Enum.GetValues<Key>();
-            _keys = PressData.CreateDict(keys);
+            _keyBinds = GetDefaultKeyBinds();
+            _keys = PressData.CreateDict(Enum.GetValues<Key>());
+        }
+
+        private static Dictionary<SDL.SDL_Keycode, Key> GetDefaultKeyBinds()
+        {
+            return new Dictionary<SDL.SDL_Keycode, Key>(13)
+            {
+                { SDL.SDL_Keycode.SDLK_q, Key.L },
+                { SDL.SDL_Keycode.SDLK_w, Key.R },
+                { SDL.SDL_Keycode.SDLK_LEFT, Key.Left },
+                { SDL.SDL_Keycode.SDLK_RIGHT, Key.Right },
+                { SDL.SDL_Keycode.SDLK_UP, Key.Up },
+                { SDL.SDL_Keycode.SDLK_DOWN, Key.Down },
+                { SDL.SDL_Keycode.SDLK_RETURN, Key.Start },
+                { SDL.SDL_Keycode.SDLK_RSHIFT, Key.Select },
+                { SDL.SDL_Keycode.SDLK_a, Key.X },
+                { SDL.SDL_Keycode.SDLK_s, Key.Y },
+                { SDL.SDL_Keycode.SDLK_z, Key.B },
+                { SDL.SDL_Keycode.SDLK_x, Key.A },
+                { SDL.SDL_Keycode.SDLK_F12, Key.Screenshot }
+            };
         }
 
         public static void Prepare()
@@ -34,34 +55,10 @@ namespace Kermalis.PokemonGameEngine.Input
 
         public static void OnKeyChanged(SDL.SDL_Keycode sym, bool down)
         {
-            Key key;
-            switch (sym)
+            if (_keyBinds.TryGetValue(sym, out Key key))
             {
-                case SDL.SDL_Keycode.SDLK_q: key = Key.L; break;
-                case SDL.SDL_Keycode.SDLK_w: key = Key.R; break;
-                case SDL.SDL_Keycode.SDLK_a: key = Key.X; break;
-                case SDL.SDL_Keycode.SDLK_s: key = Key.Y; break;
-                case SDL.SDL_Keycode.SDLK_z: key = Key.B; break;
-                case SDL.SDL_Keycode.SDLK_x: key = Key.A; break;
-                case SDL.SDL_Keycode.SDLK_LEFT: key = Key.Left; break;
-                case SDL.SDL_Keycode.SDLK_RIGHT: key = Key.Right; break;
-                case SDL.SDL_Keycode.SDLK_DOWN: key = Key.Down; break;
-                case SDL.SDL_Keycode.SDLK_UP: key = Key.Up; break;
-                case SDL.SDL_Keycode.SDLK_RETURN: key = Key.Start; break;
-                case SDL.SDL_Keycode.SDLK_RSHIFT: key = Key.Select; break;
-                // Special
-                case SDL.SDL_Keycode.SDLK_F12:
-                {
-                    if (down)
-                    {
-                        Display.ScreenshotRequested = true;
-                    }
-                    return;
-                }
-                default: return;
+                _keys[key].OnChanged(down);
             }
-
-            _keys[key].OnChanged(down);
         }
     }
 }

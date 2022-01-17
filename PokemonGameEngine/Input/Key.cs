@@ -13,6 +13,7 @@
         L,
         R,
         Start,
-        Select
+        Select,
+        Screenshot
     }
 }
