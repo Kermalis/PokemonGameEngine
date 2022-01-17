@@ -128,7 +128,7 @@ namespace Kermalis.MapEditor.UI
 
         private void RemoveBlocksetEvents()
         {
-            if (_blockset != null)
+            if (_blockset is not null)
             {
                 _blockset.OnChanged -= Blockset_OnChanged;
                 _blockset.OnRemoved -= Blockset_OnRemoved;

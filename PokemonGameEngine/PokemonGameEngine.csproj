@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net5.0</TargetFrameworks>
-		<OutputType>Exe</OutputType>
+		<TargetFrameworks>net6.0</TargetFrameworks>
 		<RootNamespace>Kermalis.PokemonGameEngine</RootNamespace>
 		<Authors>Kermalis</Authors>
 		<Copyright>Kermalis</Copyright>
@@ -11,60 +10,72 @@
 		<NoWarn />
 		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 		<WarningsAsErrors>NU1605</WarningsAsErrors>
-		<StartupObject>Kermalis.PokemonGameEngine.UI.Program</StartupObject>
+		<StartupObject>Kermalis.PokemonGameEngine.Core.Engine</StartupObject>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Include="Assets\**" />
-		<EmbeddedResource Remove="Assets\Encounter\**\*.json" />
-		<EmbeddedResource Remove="Assets\Map\**\*.json" />
-		<EmbeddedResource Remove="Assets\ObjSprites\ObjSprites.json" />
-		<EmbeddedResource Remove="Assets\Pokedata\**\*.json" />
-		<EmbeddedResource Remove="Assets\Script\**\*.txt" />
-		<EmbeddedResource Remove="Assets\Tileset\Animation\**\*.json" />
-		<EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
-			<Link>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</EmbeddedResource>
-		<EmbeddedResource Include="..\..\PokemonBattleEngine\Shared Assets\BG\**\*.*">
-			<Link>Assets\GUI\Battle\Background\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</EmbeddedResource>
-		<ContentWithTargetPath Include="..\Shared Dependencies\PokemonBattleEngine.db">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<TargetPath>PokemonBattleEngine.db</TargetPath>
+	<!--Always defined-->
+	<!--FULLSCREEN-->
+	<PropertyGroup>
+		<DefineConstants>FULLSCREEN</DefineConstants>
+	</PropertyGroup>
+
+	<!--Debug defines-->
+	<!--DEBUG_DAYCARE_LOGEGG;DEBUG_FRIENDSHIP;DEBUG_DISABLE_DAYTINT;DEBUG_OVERWORLD;DEBUG_CALLBACKS;DEBUG_BATTLE_CAMERAPOS-->
+	<!--DEBUG_DATA_CACHE;DEBUG_BATTLE_WIREFRAME;DEBUG_ANIMIMG_HITBOX;DEBUG_AUDIO_LOG-->
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
+		<OutputType>Exe</OutputType>
+		<DefineConstants>$(DefineConstants);TRACE;DEBUG;DEBUG_DAYCARE_LOGEGG;DEBUG_FRIENDSHIP</DefineConstants>
+	</PropertyGroup>
+
+	<!--Release defines-->
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
+		<OutputType>WinExe</OutputType> <!--No console window-->
+		<DefineConstants>$(DefineConstants)</DefineConstants>
+	</PropertyGroup>
+
+	<!--Assets: Copy for release build, share for debug build-->
+	<ItemGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
+		<Content Include="Assets\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Remove="Assets\Encounter\**\*.json" />
+		<Content Remove="Assets\Map\**\*.json" />
+		<Content Remove="Assets\ObjSprites\ObjSprites.json" />
+		<Content Remove="Assets\Pokedata\**\*.json" />
+		<Content Remove="Assets\Script\**\*.txt" />
+		<Content Remove="Assets\Tileset\Animation\**\*.json" />
+		<!--Pokémon sprites-->
+		<ContentWithTargetPath Include="..\..\PokemonBattleEngine\Shared Assets\PKMN\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>Assets\Pkmn\%(RecursiveDir)%(FileName)%(Extension)</TargetPath>
 		</ContentWithTargetPath>
-		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.6" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.4" />
-		<Reference Include="PokemonBattleEngine">
-			<HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
-		</Reference>
+		<!--PokemonBattleEngine-->
+		<ContentWithTargetPath Include="..\Shared Dependencies\PokemonBattleEngine.db">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>Assets\PokemonBattleEngine.db</TargetPath>
+		</ContentWithTargetPath>
+	</ItemGroup>
+
+	<ItemGroup>
+		<!--PokemonBattleEngine-->
+		<Reference Include="..\Shared Dependencies\PokemonBattleEngine.dll" />
+		<Reference Include="..\Shared Dependencies\PokemonBattleEngine.DefaultData.dll" />
+		<!--SDL-->
+		<Reference Include="Dependencies\SDL2-CS.dll" />
+		<Reference Include="Dependencies\SimpleGIF.dll" />
 		<ContentWithTargetPath Include="Dependencies\SDL2.dll">
 			<!--64-bit windows dll for now-->
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>SDL2.dll</TargetPath>
 		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Dependencies\SDL_Image\SDL2_image.dll">
-			<!--64-bit windows dll for now-->
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<TargetPath>SDL2_image.dll</TargetPath>
-		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Dependencies\SDL_Image\libpng16-16.dll">
-			<!--64-bit windows dll for now-->
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<TargetPath>libpng16-16.dll</TargetPath>
-		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Dependencies\SDL_Image\zlib1.dll">
-			<!--64-bit windows dll for now-->
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<TargetPath>zlib1.dll</TargetPath>
-		</ContentWithTargetPath>
-		<Reference Include="SDL2-CS">
-			<HintPath>Dependencies\SDL2-CS.dll</HintPath>
-		</Reference>
-		<Reference Include="SimpleGIF">
-			<HintPath>Dependencies\SimpleGIF.dll</HintPath>
-		</Reference>
+		<!--Other Libraries-->
+		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Silk.NET.Assimp" Version="2.12.0" />
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.12.0" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.7" />
 	</ItemGroup>
 
 </Project>

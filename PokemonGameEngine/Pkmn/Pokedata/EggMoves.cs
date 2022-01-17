@@ -1,7 +1,10 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonBattleEngine.Data.Utils;
+using Kermalis.PokemonGameEngine.Core;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
@@ -12,13 +15,13 @@ namespace Kermalis.PokemonGameEngine.Pkmn.Pokedata
         {
             PBEMove[] arr;
 
-            string resource = "Pokedata." + Utils.GetPkmnDirectoryName(species, form) + ".EggMoves.bin";
-            using (var r = new EndianBinaryReader(Utils.GetResourceStream(resource)))
+            string asset = @"Pokedata\" + AssetLoader.GetPkmnDirectoryName(species, form) + @"\EggMoves.bin";
+            using (var r = new EndianBinaryReader(File.OpenRead(AssetLoader.GetPath(asset))))
             {
                 arr = r.ReadEnums<PBEMove>(r.ReadByte());
             }
 
-            return arr.Where(m => PBEDataUtils.IsMoveUsable(m)).Distinct(); // For now
+            return Array.FindAll(arr, m => PBEDataUtils.IsMoveUsable(m)).Distinct(); // For now
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.GUI;
-using Kermalis.PokemonGameEngine.GUI.Interactive;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.GUIs;
 
 namespace Kermalis.PokemonGameEngine.Script
 {
@@ -11,10 +10,10 @@ namespace Kermalis.PokemonGameEngine.Script
         {
             if (_messageBox is null)
             {
-                _messageBox = new Window(0.00f, 0.79f, 1f, 0.17f, Renderer.Color(255, 255, 255, 255));
+                _messageBox = Window.CreateStandardMessageBox(Colors.White4, _viewSize);
             }
-            _stringPrinter?.Close();
-            _stringPrinter = new StringPrinter(_messageBox, text, 0.05f, 0.01f, Font.Default, Font.DefaultDarkGray_I);
+            _stringPrinter?.Delete();
+            _stringPrinter = StringPrinter.CreateStandardMessageBox(_messageBox, text, Font.Default, FontColors.DefaultDarkGray_I, _viewSize, scale: _msgScale);
         }
         private string ReadString()
         {
@@ -34,26 +33,18 @@ namespace Kermalis.PokemonGameEngine.Script
             string text = ReadString();
             CreateMessageBox(text);
         }
+        private void MessageScaleCommand()
+        {
+            _msgScale = (ushort)ReadVarOrValue();
+        }
         private void AwaitMessageCommand(bool complete)
         {
             _waitMessageBox = true;
-            _waitMessageComplete = complete;
+            _waitForMessageCompletion = complete;
         }
         private void CloseMessageCommand()
         {
-            // Set to false, since it's possible awaitmessage completely passes the "should stop running" check
-            // Avoids a crash
-            if (_waitMessageBox)
-            {
-                _waitMessageBox = false;
-                _onWaitMessageFinished?.Invoke();
-                _onWaitMessageFinished = null;
-                if (_isDisposed)
-                {
-                    return;
-                }
-            }
-            _stringPrinter.Close();
+            _stringPrinter.Delete();
             _stringPrinter = null;
             _messageBox.Close();
             _messageBox = null;
@@ -79,7 +70,7 @@ namespace Kermalis.PokemonGameEngine.Script
         }*/
         private void YesNoChoiceCommand()
         {
-            TextGUIChoices.CreateStandardYesNoChoices(YesNoAction, out _multichoice, out _multichoiceWindow);
+            TextGUIChoices.CreateStandardYesNoChoices(YesNoAction, _viewSize, out _multichoice, out _multichoiceWindow);
         }
     }
 }

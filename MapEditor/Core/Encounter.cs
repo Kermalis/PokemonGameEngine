@@ -1,5 +1,6 @@
 ﻿using Kermalis.MapEditor.Util;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.World;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -34,7 +35,7 @@ namespace Kermalis.MapEditor.Core
                 MaxLevel = j[nameof(MaxLevel)].Value<byte>();
                 Species = j[nameof(Species)].ReadEnumValue<PBESpecies>();
                 string strForm = j[nameof(Form)].Value<string>();
-                if (strForm == null)
+                if (strForm is null)
                 {
                     Form = 0;
                 }

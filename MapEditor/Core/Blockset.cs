@@ -42,7 +42,7 @@ namespace Kermalis.MapEditor.Core
 
                 public bool Equals(Tile other)
                 {
-                    return other != null && XFlip == other.XFlip && YFlip == other.YFlip && TilesetTile == other.TilesetTile;
+                    return other is not null && XFlip == other.XFlip && YFlip == other.YFlip && TilesetTile == other.TilesetTile;
                 }
 
                 public void Write(EndianBinaryWriter w)
@@ -312,7 +312,7 @@ namespace Kermalis.MapEditor.Core
         private bool UpdateBitmapSize()
         {
             int bmpHeight = GetBitmapHeight();
-            if (Bitmap == null || Bitmap.PixelSize.Height != bmpHeight)
+            if (Bitmap is null || Bitmap.PixelSize.Height != bmpHeight)
             {
                 Bitmap?.Dispose();
                 Bitmap = new WriteableBitmap(new PixelSize(BitmapNumBlocksX * Overworld.Block_NumPixelsX, bmpHeight), new Vector(96, 96), PixelFormat.Rgba8888, AlphaFormat.Premul);

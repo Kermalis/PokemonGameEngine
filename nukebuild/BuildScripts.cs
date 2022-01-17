@@ -98,7 +98,7 @@ public sealed partial class Build
     private void ParseFile(string path)
     {
         string[] lines = File.ReadAllLines(path);
-        var _defines = new Dictionary<string, string>();
+        var defines = new Dictionary<string, string>();
         bool readingLabel = false;
         bool globalLabel = false;
         bool readingDefine = false;
@@ -252,7 +252,7 @@ public sealed partial class Build
                 }
                 else
                 {
-                    _defines.Add(define1, str);
+                    defines.Add(define1, str);
                     readingDefine = false;
                     curArg = -1;
                     define1 = null;
@@ -267,7 +267,7 @@ public sealed partial class Build
                 {
                     throw new Exception("Too many arguments");
                 }
-                WriteArg(cmdArgTypes[curArg++], str, _defines);
+                WriteArg(cmdArgTypes[curArg++], str, defines);
                 if (curArg >= cmdArgTypes.Length)
                 {
                     curArg = -1;
@@ -335,12 +335,20 @@ public sealed partial class Build
                 _writer.Write(index);
                 break;
             }
+            // Write a float value like 400 or 400.0
+            // Write a defined value
+            case "System.Single":
+            case "System.Double":
+            {
+                ParseAndWriteFloatValue(str, argType, defines);
+                break;
+            }
             // Write an enum like "Species.Bulbasaur" (can use var instead if the enum type is byte or short)
             // Write an int value like 0x400 or 400
             // Write a defined value
             default:
             {
-                ParseAndWriteValue(str, argType, defines);
+                ParseAndWriteIntValue(str, argType, defines);
                 break;
             }
         }
@@ -377,20 +385,22 @@ public sealed partial class Build
         }
         _writer.Write('\0'); // Write null terminator
     }
-    // Does not handle string type
-    private void ParseAndWriteValue(string str, Type targetType, Dictionary<string, string> defines)
+
+    private static string GetDefineValue(string str, Dictionary<string, string> defines)
     {
-        bool varAble = IsTypeVarAble(targetType);
-    top:
-        foreach (KeyValuePair<string, string> tup in defines)
+        // Parse defines over and over until we get a final value for this string
+        while (defines.TryGetValue(str, out string got))
         {
-            if (str != tup.Key)
-            {
-                continue;
-            }
-            str = tup.Value;
-            goto top;
+            str = got;
         }
+        return str;
+    }
+    // Does not handle string type
+    private void ParseAndWriteIntValue(string str, Type targetType, Dictionary<string, string> defines)
+    {
+        str = GetDefineValue(str, defines);
+        // Check if we should try to parse an enum
+        bool varAble = IsTypeVarAble(targetType);
         foreach (KeyValuePair<Type, string> tup in ScriptBuilderHelper.EnumDefines)
         {
             string prefix = tup.Value;
@@ -398,9 +408,11 @@ public sealed partial class Build
             {
                 continue;
             }
+            // Enum type found, find out if we should write a link to a var or just its value
             str = str.Substring(prefix.Length);
 
             Type type = tup.Key;
+            // Write a link to the var's value
             if (varAble && type.IsEquivalentTo(typeof(Var)))
             {
                 uint wVal = ushort.MaxValue + 1 + Convert.ToUInt32(Enum.Parse<Var>(str));
@@ -408,15 +420,16 @@ public sealed partial class Build
                 return;
             }
 
-            WriteValue(Enum.Parse(type, str), targetType);
+            WriteIntValue(Enum.Parse(type, str), targetType);
             return;
         }
+
         // Did not find an enum value, so write just a parsed int value
-        WriteValue(ParseInt(str), targetType);
+        WriteIntValue(ParseInt(str), targetType);
     }
-    private void WriteValue(object value, Type targetType)
+    private void WriteIntValue(object value, Type targetType)
     {
-        // Var should be written as its underlying type only
+        // Var index should be written as Var's underlying type
         if (targetType.IsEquivalentTo(typeof(Var)))
         {
             _writer.Write((Var)Enum.ToObject(typeof(Var), value));
@@ -440,13 +453,29 @@ public sealed partial class Build
             default: throw new Exception();
         }
     }
+    private void ParseAndWriteFloatValue(string str, Type targetType, Dictionary<string, string> defines)
+    {
+        str = GetDefineValue(str, defines);
+        WriteFloatValue(ParseFloat(str), targetType);
+    }
+    private void WriteFloatValue(object value, Type targetType)
+    {
+        switch (targetType.FullName)
+        {
+            case "System.Single": _writer.Write(Convert.ToSingle(value)); break;
+            case "System.Double": _writer.Write(Convert.ToDouble(value)); break;
+            default: throw new Exception();
+        }
+    }
+
+    // TODO: Cannot have a define do math on another define; it just gets passed down here with the other define still in the str
     private static readonly CultureInfo _enUS = CultureInfo.GetCultureInfo("en-US");
     private long ParseInt(string value)
     {
         // First try regular values like "40" and "0x20"
         if (value.StartsWith("0x"))
         {
-            if (long.TryParse(value.Substring(2), NumberStyles.HexNumber, _enUS, out long hex))
+            if (long.TryParse(value.AsSpan(2), NumberStyles.HexNumber, _enUS, out long hex))
             {
                 return hex;
             }
@@ -478,6 +507,65 @@ public sealed partial class Build
             else if (div)
             {
                 ret /= ParseInt(str);
+            }
+        }
+        for (int i = 0; i < value.Length; i++)
+        {
+            char c = value[i];
+            if (char.IsWhiteSpace(c))
+            {
+                continue; // White space does nothing here
+            }
+
+            if (c == '+' || c == '-' || c == '*' || c == '/')
+            {
+                DoOp();
+                add = c == '+'; sub = c == '-'; mul = c == '*'; div = c == '/';
+                str = string.Empty;
+                foundMath = true;
+            }
+            else
+            {
+                str += c;
+            }
+        }
+        if (foundMath)
+        {
+            DoOp(); // Handle last
+            return ret;
+        }
+        throw new FormatException(value);
+    }
+    private double ParseFloat(string value)
+    {
+        // First try regular values like "40" and "40.0"
+        if (double.TryParse(value, out double dec))
+        {
+            return dec;
+        }
+
+        // Then check if it's math
+        bool foundMath = false;
+        string str = string.Empty;
+        double ret = 0d;
+        bool add = true, sub = false, mul = false, div = false; // Add first, so the initial value is set
+        void DoOp()
+        {
+            if (add)
+            {
+                ret += ParseFloat(str);
+            }
+            else if (sub)
+            {
+                ret -= ParseFloat(str);
+            }
+            else if (mul)
+            {
+                ret *= ParseFloat(str);
+            }
+            else if (div)
+            {
+                ret /= ParseFloat(str);
             }
         }
         for (int i = 0; i < value.Length; i++)

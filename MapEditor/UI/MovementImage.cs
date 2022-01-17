@@ -166,7 +166,7 @@ namespace Kermalis.MapEditor.UI
 
         public override void Render(DrawingContext context)
         {
-            if (_layout != null)
+            if (_layout is not null)
             {
                 IBitmap source = _layout.BlocksBitmap;
                 var viewPort = new Rect(Bounds.Size);
@@ -212,7 +212,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (_layout != null)
+            if (_layout is not null)
             {
                 return _layout.BlocksBitmap.Size;
             }
@@ -220,7 +220,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (_layout != null)
+            if (_layout is not null)
             {
                 return _layout.BlocksBitmap.Size;
             }
@@ -250,7 +250,7 @@ namespace Kermalis.MapEditor.UI
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
-            if (_layout != null)
+            if (_layout is not null)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 switch (pp.Properties.PointerUpdateKind)
@@ -355,7 +355,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerMoved(PointerEventArgs e)
         {
-            if (_layout != null && _isDrawing)
+            if (_layout is not null && _isDrawing)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.Other)
@@ -371,7 +371,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
-            if (_layout != null && _isDrawing)
+            if (_layout is not null && _isDrawing)
             {
                 PointerPoint pp = e.GetCurrentPoint(this);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
@@ -384,7 +384,7 @@ namespace Kermalis.MapEditor.UI
 
         private void RemoveLayoutEvents()
         {
-            if (_layout != null)
+            if (_layout is not null)
             {
                 _layout.OnDrew -= MapLayout_OnDrew;
             }

@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.GUI;
+﻿using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.Scripts;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Objs;
@@ -29,15 +29,12 @@ namespace Kermalis.PokemonGameEngine.Script
         private void UnloadObjCommand()
         {
             ushort id = (ushort)ReadVarOrValue();
-            var obj = Obj.GetObj(id);
-            Obj.LoadedObjs.Remove(obj);
-            obj.Map.Objs.Remove(obj);
+            Obj.GetObj(id).Dispose();
         }
         private void AwaitObjMovementCommand()
         {
             ushort id = (ushort)ReadVarOrValue();
-            var obj = Obj.GetObj(id);
-            _waitMovementObj = obj;
+            _waitMovementObj = Obj.GetObj(id);
         }
         private void LookTowardsObjCommand()
         {
@@ -50,27 +47,24 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private static void DetachCameraCommand()
         {
-            CameraObj.CameraAttachedTo = null;
-            // Camera should probably have properties that get its attachment or its own properties
-            // Instead of using CameraCopyMovement()
-            // Map changing will be tougher though
-            //CameraObj.Camera.IsScriptMoving = false;
+            CameraObj.Instance.SetAttachedToThenCopyMovement(null);
+            //CameraObj.Instance.IsScriptMoving = false;
         }
         private void AttachCameraCommand()
         {
             ushort id = (ushort)ReadVarOrValue();
             var obj = Obj.GetObj(id);
-            CameraObj.CameraAttachedTo = obj;
-            CameraObj.CameraCopyMovement();
+            CameraObj.Instance.SetAttachedToThenCopyMovement(obj);
         }
 
         private void WarpCommand()
         {
             int mapId = _reader.ReadInt32();
-            int x = _reader.ReadInt32();
-            int y = _reader.ReadInt32();
-            byte elevation = (byte)ReadVarOrValue();
-            OverworldGUI.Instance.TempWarp(new Warp(mapId, x, y, elevation));
+            WorldPos pos;
+            pos.XY.X = _reader.ReadInt32();
+            pos.XY.Y = _reader.ReadInt32();
+            pos.Elevation = (byte)ReadVarOrValue();
+            OverworldGUI.Instance.StartPlayerWarp(new Warp(mapId, pos));
         }
 
         private void SetLock(bool locked)
@@ -90,7 +84,7 @@ namespace Kermalis.PokemonGameEngine.Script
 
         private static void SetAllLock(bool locked)
         {
-            foreach (Obj o in Obj.LoadedObjs)
+            for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
             {
                 o.IsLocked = locked;
             }

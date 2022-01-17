@@ -58,6 +58,7 @@
         ClearFlag,
         Warp,
         Message,
+        MessageScale,
         AwaitMessageRead,
         AwaitMessageComplete,
         LockObj,

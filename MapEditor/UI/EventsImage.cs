@@ -52,7 +52,7 @@ namespace Kermalis.MapEditor.UI
 
         public override void Render(DrawingContext context)
         {
-            if (_map != null)
+            if (_map is not null)
             {
                 Map.Layout layout = _map.MapLayout;
                 IBitmap source = layout.BlocksBitmap;
@@ -101,7 +101,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (_map != null)
+            if (_map is not null)
             {
                 return _map.MapLayout.BlocksBitmap.Size;
             }
@@ -109,7 +109,7 @@ namespace Kermalis.MapEditor.UI
         }
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (_map != null)
+            if (_map is not null)
             {
                 return _map.MapLayout.BlocksBitmap.Size;
             }
@@ -118,7 +118,7 @@ namespace Kermalis.MapEditor.UI
 
         private void RemoveLayoutEvents()
         {
-            if (_map != null)
+            if (_map is not null)
             {
                 _map.MapLayout.OnDrew -= MapLayout_OnDrew;
             }

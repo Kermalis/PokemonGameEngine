@@ -1,22 +1,32 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.GUIs;
+using Kermalis.PokemonGameEngine.Render.Shaders.World;
+using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.World.Objs
 {
     internal abstract class VisualObj : Obj
     {
+        public static List<VisualObj> LoadedVisualObjs = new();
+
+        /// <summary>Gets updated every frame by the map renderer</summary>
+        public Vec2I BlockPosOnScreen;
+
         protected bool _leg;
 
-        private readonly ImageSheet _sheet;
+        private readonly VisualObjTexture _tex;
 
         protected VisualObj(ushort id, string imageId)
             : base(id)
         {
-            _sheet = ImageSheet.LoadOrGet(imageId);
+            _tex = VisualObjTexture.LoadOrGet(imageId);
+            LoadedVisualObjs.Add(this);
         }
-        protected VisualObj(ushort id, string imageId, Position pos)
+        protected VisualObj(ushort id, string imageId, WorldPos pos)
             : base(id, pos)
         {
-            _sheet = ImageSheet.LoadOrGet(imageId);
+            _tex = VisualObjTexture.LoadOrGet(imageId);
+            LoadedVisualObjs.Add(this);
         }
 
         public override bool Move(FacingDirection facing, bool run, bool ignoreLegalCheck)
@@ -40,37 +50,41 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             return _leg ? f + 8 : f + 16; // TODO: Fall-back to specific images if the target image doesn't exist
         }
 
-        // TODO: Water reflections
-        public unsafe void Draw(uint* dst, int dstW, int dstH, int blockX, int blockY, int startBlockPixelX, int startBlockPixelY)
+        public void Draw(VisualObjShader shader, Vec2I viewSize)
         {
-            int baseX = (blockX * Overworld.Block_NumPixelsX) + ProgressX + startBlockPixelX;
-            int baseY = (blockY * Overworld.Block_NumPixelsY) + ProgressY + startBlockPixelY;
-            // Calc img coords
-            ImageSheet s = _sheet;
-            int w = s.ImageWidth;
-            int h = s.ImageHeight;
-            int x = baseX - ((w - Overworld.Block_NumPixelsX) / 2); // Center align
-            int y = baseY - (h - Overworld.Block_NumPixelsY); // Bottom align
-            // Calc shadow coords
-            Image shadow = s.ShadowImage;
-            int sw = shadow.Width;
-            int sh = shadow.Height;
-            int sx = baseX + s.ShadowXOffset; // Left align
-            int sy = baseY + Overworld.Block_NumPixelsY + s.ShadowYOffset; // Bottom align (starts in block under)
+            // Center align X, bottom align y
+            Vec2I pos = _tex.ImageSize - Overworld.Block_NumPixels;
+            pos.X /= 2;
+            pos = BlockPosOnScreen - pos;
 
-            // Draw shadow image
-            if (Renderer.IsInsideBitmap(dstW, dstH, sx, sy, sw, sh))
+            // Draw obj
+            var objRect = Rect.FromSize(pos, _tex.ImageSize);
+            if (objRect.Intersects(viewSize))
             {
-                shadow.DrawOn(dst, dstW, dstH, sx, sy);
+                bool showMoving = MovementProgress is (not 1f) and (>= 0.6f);
+                _tex.RenderImage(shader, objRect, GetImage(showMoving));
             }
-            // Draw obj image
-            if (Renderer.IsInsideBitmap(dstW, dstH, x, y, w, h))
+        }
+        public void DrawShadow(Vec2I viewSize)
+        {
+            // Left align X, bottom align y (starts in block under)
+            Vec2I shadowPos = _tex.ShadowOffset;
+            shadowPos += BlockPosOnScreen;
+            shadowPos.Y += Overworld.Block_NumPixelsY;
+
+            // Draw shadow
+            var rect = Rect.FromSize(shadowPos, _tex.Shadow.Size);
+            if (rect.Intersects(viewSize))
             {
-                float t = MovementTimer;
-                bool showMoving = t != 1 && t >= 0.6f;
-                int imgNum = GetImage(showMoving);
-                s.Images[imgNum].DrawOn(dst, dstW, dstH, x, y);
+                GUIRenderer.Texture(_tex.Shadow.ColorTexture, rect, new UV(false, false));
             }
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            _tex.DeductReference();
+            LoadedVisualObjs.Remove(this);
         }
     }
 }

@@ -1,26 +1,6 @@
 {
-  "Layout": "TestLayoutCave",
-  "Details": {
-    "Flags": {
-      "Bike": true,
-      "DayTint": false,
-      "Dig_EscapeRope": true,
-      "Fly": false,
-      "ShowMapName": true,
-      "Teleport": false
-    },
-    "Section": "TestCave",
-    "Weather": "None",
-    "Music": "Cave1",
-    "BurmyForm": "Burmy_Sandy"
-  },
   "Connections": [],
-  "Encounters": [
-    {
-      "Type": "Default",
-      "Table": "TestEncountersCave"
-    }
-  ],
+  "Layout": "TestLayoutCave",
   "Events": {
     "Warps": [
       {
@@ -88,5 +68,25 @@
         "Script": "Test_GroudonBattle"
       }
     ]
-  }
+  },
+  "Details": {
+    "Flags": {
+      "Bike": true,
+      "DayTint": false,
+      "Dig_EscapeRope": true,
+      "Fly": false,
+      "ShowMapName": true,
+      "Teleport": false
+    },
+    "Section": "TestCave",
+    "Weather": "None",
+    "Music": "Cave1",
+    "BurmyForm": "Burmy_Sandy"
+  },
+  "Encounters": [
+    {
+      "Type": "Default",
+      "Table": "TestEncountersCave"
+    }
+  ]
 }

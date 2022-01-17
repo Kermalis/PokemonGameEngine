@@ -4,6 +4,7 @@ using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.World;
+using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 
@@ -15,11 +16,12 @@ namespace Kermalis.PokemonGameEngine.Trainer
         {
             switch (c)
             {
-                case TrainerClass.Leader: return Song.GymBattle;
+                case TrainerClass.Leader:
+                    return Song.BattleGymLeader;
             }
-            return Song.TrainerBattle;
+            return Song.BattleTrainer;
         }
-        public static string GetTrainerClassResource(TrainerClass c)
+        public static string GetTrainerClassAssetPath(TrainerClass c)
         {
             string s;
             switch (c)
@@ -29,7 +31,7 @@ namespace Kermalis.PokemonGameEngine.Trainer
                 case TrainerClass.Leader: s = "Janine"; break;
                 default: throw new ArgumentOutOfRangeException(nameof(c));
             }
-            return string.Format("Sprites.Trainers.{0}.gif", s);
+            return AssetLoader.GetPath(string.Format(@"Sprites\Trainers\{0}.gif", s));
         }
         public static string GetTrainerClassName(TrainerClass c)
         {
@@ -42,28 +44,31 @@ namespace Kermalis.PokemonGameEngine.Trainer
             throw new ArgumentOutOfRangeException(nameof(c));
         }
 
+        private static void AddMon(PBESpecies species, PBEForm form, byte level, PBEGender gender, PBENature nature, Party party)
+        {
+            var p = PartyPokemon.CreateWildMon(species, form, level, gender, nature, BaseStats.Get(species, form, true));
+            party.Add(p);
+        }
         private static Party Debug_CreateParty(bool temp)
         {
             var ret = new Party();
-            PartyPokemon p;
             if (temp)
             {
-                p = PartyPokemon.CreateWildMon(PBESpecies.Giratina, PBEForm.Giratina_Origin, 20, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Giratina, PBEForm.Giratina_Origin, true));
+                AddMon(PBESpecies.Shaymin, PBEForm.Shaymin_Sky, 20, PBEGender.Genderless, PBENature.Bashful, ret);
             }
             else
             {
-                p = PartyPokemon.CreateWildMon(PBESpecies.Arceus, PBEForm.Arceus_Dragon, 50, PBEGender.Genderless, PBENature.Bashful, BaseStats.Get(PBESpecies.Arceus, PBEForm.Arceus_Dragon, true));
+                AddMon(PBESpecies.Rayquaza, 0, 50, PBEGender.Genderless, PBENature.Bashful, ret);
             }
-            ret.Add(p);
             return ret;
         }
 
         public static void CreateTrainerBattle_1v1(Flag trainer, string defeatText)
         {
-            PlayerObj player = PlayerObj.Player;
+            PlayerObj player = PlayerObj.Instance;
             Map map = player.Map;
-            Map.Layout.Block block = player.GetBlock();
-            MapWeather weather = map.MapDetails.Weather;
+            MapLayout.Block block = player.GetBlock();
+            MapWeather weather = map.Details.Weather;
             BlocksetBlockBehavior behavior = block.BlocksetBlock.Behavior;
 
             TrainerClass tc = trainer == Flag.Trainer1 ? TrainerClass.PkmnTrainer : TrainerClass.Leader; // TODO
@@ -74,8 +79,33 @@ namespace Kermalis.PokemonGameEngine.Trainer
 
             var enemyInfo = new PBETrainerInfo(enemyParty, string.Format("{0} {1}", GetTrainerClassName(tc), name), false, inventory: inv);
             var parties = new Party[] { Game.Instance.Save.PlayerParty, enemyParty };
-            Song song = GetTrainerClassSong(tc);
-            Game.Instance.CreateTrainerBattle_1v1(weather, behavior, parties, enemyInfo, format, song, tc, defeatText);
+            Song music = GetTrainerClassSong(tc);
+            BattleMaker.CreateTrainerBattle_1v1(enemyInfo, parties, weather, behavior, format, music, tc, defeatText);
+        }
+
+        public static void Debug_CreateTestTrainerBattle()
+        {
+            MapWeather weather = MapWeather.None;
+            BlocksetBlockBehavior behavior = BlocksetBlockBehavior.None;
+            PBEBattleFormat format = PBEBattleFormat.Rotation;
+
+            TrainerClass tc = TrainerClass.Lady;
+            Song music = Song.BattleEvil1;
+            string name = "Ur Mom";
+            string defeatText = "Bruh";
+
+            (PBEItem, uint)[] inv = null;
+            var enemyParty = new Party();
+            AddMon(PBESpecies.Wailord, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
+            AddMon(PBESpecies.Wailord, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
+            AddMon(PBESpecies.Wailord, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
+            AddMon(PBESpecies.Togepi, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
+            AddMon(PBESpecies.Togepi, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
+            AddMon(PBESpecies.Togepi, 0, 1, PBEGender.Male, PBENature.Bashful, enemyParty);
+
+            var enemyInfo = new PBETrainerInfo(enemyParty, string.Format("{0} {1}", GetTrainerClassName(tc), name), false, inventory: inv);
+            var parties = new Party[] { Game.Instance.Save.PlayerParty, enemyParty };
+            BattleMaker.CreateTrainerBattle_1v1(enemyInfo, parties, weather, behavior, format, music, tc, defeatText);
         }
     }
 }

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Pkmn
 {
-    internal sealed class BoxMoveset : IReadOnlyList<BoxMoveset.BoxMovesetSlot>
+    internal sealed class BoxMoveset : IPBEMoveset, IPBEMoveset<BoxMoveset.BoxMovesetSlot>
     {
-        public sealed class BoxMovesetSlot
+        public sealed class BoxMovesetSlot : IPBEMovesetSlot
         {
             public PBEMove Move { get; set; }
             public byte PPUps { get; set; }
@@ -23,11 +23,19 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 Move = PBEMove.None;
                 PPUps = 0;
             }
+
+#if DEBUG
+            public override string ToString()
+            {
+                return string.Format("({0}, {1})", Move, PPUps);
+            }
+#endif
         }
 
         private readonly BoxMovesetSlot[] _slots;
 
         public BoxMovesetSlot this[int index] => _slots[index];
+        IPBEMovesetSlot IReadOnlyList<IPBEMovesetSlot>.this[int index] => _slots[index];
         public int Count => _slots.Length;
 
         public BoxMoveset()
@@ -86,9 +94,20 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             return ((IEnumerable<BoxMovesetSlot>)_slots).GetEnumerator();
         }
+        public IEnumerator<IPBEMovesetSlot> GetEnumerator()
+        {
+            return ((IEnumerable<BoxMovesetSlot>)_slots).GetEnumerator();
+        }
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _slots.GetEnumerator();
         }
+
+#if DEBUG
+        public override string ToString()
+        {
+            return "[" + string.Join(", ", (object[])_slots) + "]";
+        }
+#endif
     }
 }

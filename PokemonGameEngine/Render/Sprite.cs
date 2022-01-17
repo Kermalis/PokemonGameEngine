@@ -1,153 +1,59 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Render.GUIs;
+using Kermalis.PokemonGameEngine.Render.Images;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
     internal delegate void SpriteCallback(Sprite sprite);
-    internal unsafe delegate void SpriteDrawMethod(Sprite sprite, uint* dst, int dstW, int dstH, int xOffset = 0, int yOffset = 0);
 
-    internal sealed class Sprite
+    internal sealed class Sprite : IConnectedListObject<Sprite>
     {
-        public Sprite Next;
-        public Sprite Prev;
+        public Sprite Next { get; set; }
+        public Sprite Prev { get; set; }
 
         public IImage Image;
-        public int Priority { get; init; }
-        public int X;
-        public int Y;
+        /// <summary>After this is updated, a call will need to be made to <see cref="SpriteList.SortByPriority"/>. Higher priorities are rendered last to appear above everything else</summary>
+        public int Priority;
+        public Vec2I Pos;
         public bool IsInvisible;
         public bool XFlip;
         public bool YFlip;
 
         public object Data;
-        public SpriteDrawMethod DrawMethod;
+        public object Tag;
         public SpriteCallback Callback;
-        public SpriteCallback RCallback;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void DrawOn(uint* dst, int dstW, int dstH, int xOffset = 0, int yOffset = 0)
+        public void Render(Vec2I translation = default)
         {
-            DrawOn(this, dst, dstW, dstH, xOffset: xOffset, yOffset: yOffset);
-        }
-        public static unsafe void DrawOn(Sprite s, uint* dst, int dstW, int dstH, int xOffset = 0, int yOffset = 0)
-        {
-            if (s.IsInvisible)
+            if (IsInvisible)
             {
                 return;
             }
 
-            IImage img = s.Image;
-            fixed (uint* src = img.Bitmap)
+            IImage img = Image;
+            GUIRenderer.Texture(img.Texture, Rect.FromSize(Pos + translation, img.Size), new UV(XFlip, YFlip));
+        }
+
+        public static int Sorter(Sprite s1, Sprite s2)
+        {
+            if (s1.Priority < s2.Priority)
             {
-                int srcW = img.Width;
-                PixelSupplier pixSupply = Renderer.MakeBitmapSupplier(src, srcW);
-                Renderer.DrawBitmap(dst, dstW, dstH, s.X + xOffset, s.Y + yOffset, pixSupply, srcW, img.Height, xFlip: s.XFlip, yFlip: s.YFlip);
+                return -1;
             }
+            if (s1.Priority == s2.Priority)
+            {
+                return 0;
+            }
+            return 1;
         }
 
         public void Dispose()
         {
+            // Do not dispose next or prev so we can continue looping after this gets removed
             Data = null;
-            DrawMethod = null;
             Callback = null;
+            Image?.DeductReference();
             Image = null;
-        }
-    }
-
-    internal sealed class SpriteList
-    {
-        public Sprite First;
-        public int Count;
-
-        public void Add(Sprite sprite)
-        {
-            if (First is null)
-            {
-                First = sprite;
-                Count = 1;
-                return;
-            }
-            Sprite s = First;
-            while (true)
-            {
-                if (s.Priority > sprite.Priority)
-                {
-                    // Found a task with a higher priority, so insert the new one before it
-                    if (s != First)
-                    {
-                        Sprite prev = s.Prev;
-                        sprite.Prev = prev;
-                        prev.Next = sprite;
-                    }
-                    s.Prev = sprite;
-                    sprite.Next = s;
-                    Count++;
-                    return;
-                }
-                // Iterate to next task if there is one
-                Sprite next = s.Next;
-                if (next is null)
-                {
-                    // The new task is the highest priority or tied for it, so it gets placed at the last position
-                    s.Next = sprite;
-                    sprite.Prev = s;
-                    Count++;
-                    return;
-                }
-                s = next;
-            }
-        }
-        public void Remove(Sprite sprite)
-        {
-            if (sprite == First)
-            {
-                Sprite next = sprite.Next;
-                if (next is not null)
-                {
-                    next.Prev = null;
-                }
-                First = next;
-            }
-            else
-            {
-                Sprite prev = sprite.Prev;
-                Sprite next = sprite.Next;
-                if (next is not null)
-                {
-                    next.Prev = prev;
-                }
-                prev.Next = next;
-            }
-            sprite.Dispose();
-            Count--;
-        }
-
-        public void DoCallbacks()
-        {
-            for (Sprite s = First; s is not null; s = s.Next)
-            {
-                s.Callback?.Invoke(s);
-            }
-        }
-        public void DoRCallbacks()
-        {
-            for (Sprite s = First; s is not null; s = s.Next)
-            {
-                s.RCallback?.Invoke(s);
-            }
-        }
-        public unsafe void DrawAll(uint* dst, int dstW, int dstH)
-        {
-            for (Sprite s = First; s is not null; s = s.Next)
-            {
-                if (s.DrawMethod is not null)
-                {
-                    s.DrawMethod(s, dst, dstW, dstH);
-                }
-                else
-                {
-                    s.DrawOn(dst, dstW, dstH);
-                }
-            }
         }
     }
 }

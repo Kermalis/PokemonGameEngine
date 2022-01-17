@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Kermalis.PokemonDumper</RootNamespace>
 		<Authors>Kermalis</Authors>
@@ -18,6 +18,9 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<Reference Include="PokemonBattleEngine">
 			<HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="PokemonBattleEngine.DefaultData">
+			<HintPath>..\Shared Dependencies\PokemonBattleEngine.DefaultData.dll</HintPath>
 		</Reference>
 		<Reference Include="SimpleNARC">
 			<HintPath>Dependencies\SimpleNARC.dll</HintPath>

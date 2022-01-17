@@ -1,25 +1,31 @@
-﻿namespace Kermalis.PokemonGameEngine.World
-{
-    internal interface IWarp
-    {
-        int DestMapId { get; }
-        int DestX { get; }
-        int DestY { get; }
-        byte DestElevation { get; }
-    }
-    internal sealed class Warp : IWarp
-    {
-        public int DestMapId { get; }
-        public int DestX { get; }
-        public int DestY { get; }
-        public byte DestElevation { get; }
+﻿using Kermalis.PokemonGameEngine.World.Maps;
 
-        public Warp(int destMapId, int destX, int destY, byte destElevation)
+namespace Kermalis.PokemonGameEngine.World
+{
+    // Currently, warps can only be used by the player (if the camera is attached to it)
+    internal readonly struct Warp
+    {
+        public readonly int DestMapId;
+        public readonly WorldPos DestPos;
+
+        public Warp(int destMapId, in WorldPos pos)
         {
             DestMapId = destMapId;
-            DestX = destX;
-            DestY = destY;
-            DestElevation = destElevation;
+            DestPos = pos;
+        }
+    }
+    internal sealed class WarpInProgress
+    {
+        public static WarpInProgress Current;
+
+        public readonly Warp Destination;
+        public readonly Map DestMap;
+
+        public WarpInProgress(in Warp dest)
+        {
+            Destination = dest;
+            DestMap = Map.LoadOrGet(dest.DestMapId);
+            DestMap.OnWarpingMap(); // Load map details now
         }
     }
 }

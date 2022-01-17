@@ -410,7 +410,7 @@ namespace Kermalis.MapEditor.UI
 
         private void MapsItemsControl_PointerPressed(object sender, PointerPressedEventArgs e)
         {
-            if (_map != null)
+            if (_map is not null)
             {
                 PointerPoint pp = e.GetCurrentPoint(_mapsItemsControl);
                 if (pp.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)

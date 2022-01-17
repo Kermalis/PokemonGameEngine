@@ -2,8 +2,9 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Pkmn;
-using Kermalis.PokemonGameEngine.Sound;
-using Kermalis.PokemonGameEngine.UI;
+using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.World;
+using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
 
@@ -11,11 +12,13 @@ namespace Kermalis.PokemonGameEngine.World
 {
     internal static partial class Overworld
     {
-        public const string SurfScript = "Surf_Interaction";
+        public const string SCRIPT_SURF = "Surf_Interaction";
+        public static readonly Vec2I Tile_NumPixels = new(Tile_NumPixelsX, Tile_NumPixelsY);
+        public static readonly Vec2I Block_NumPixels = new(Block_NumPixelsX, Block_NumPixelsY);
 
-        public static MapSection GetCurrentLocation()
+        public static MapSection GetPlayerMapSection()
         {
-            return PlayerObj.Player.Map.MapDetails.Section;
+            return PlayerObj.Instance.Map.Details.Section;
         }
         // TODO
         public static bool IsGiratinaLocation()
@@ -24,85 +27,70 @@ namespace Kermalis.PokemonGameEngine.World
         }
         public static PBEForm GetProperBurmyForm()
         {
-            return PlayerObj.Player.Map.MapDetails.BurmyForm;
+            return PlayerObj.Instance.Map.Details.BurmyForm;
         }
         public static PBEForm GetProperDeerlingSawsbuckForm()
         {
-            DateTime time = Program.LogicTickTime;
+            DateTime time = DateTime.Now;
             Month month = OverworldTime.GetMonth((Month)time.Month);
             Season season = OverworldTime.GetSeason(month);
             return season.ToDeerlingSawsbuckForm();
         }
 
-        public static bool ShouldRenderDayTint()
-        {
-            return CameraObj.Camera.Map.MapDetails.Flags.HasFlag(MapFlags.DayTint);
-        }
-        public static PBEWeather GetPBEWeatherFromMap(MapWeather mapWeather)
-        {
-            switch (mapWeather)
-            {
-                case MapWeather.Drought: return PBEWeather.HarshSunlight;
-                case MapWeather.Rain_Light:
-                case MapWeather.Rain_Medium: return PBEWeather.Rain;
-                case MapWeather.Sandstorm: return PBEWeather.Sandstorm;
-                case MapWeather.Snow_Hail: return PBEWeather.Hailstorm;
-            }
-            return PBEWeather.None;
-        }
-        public static PBEBattleTerrain GetPBEBattleTerrainFromBlock(BlocksetBlockBehavior behavior)
+        public static PBEBattleTerrain GetPBEBattleTerrain(BlocksetBlockBehavior behavior)
         {
             switch (behavior)
             {
                 // Cave
                 case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter:
-                case BlocksetBlockBehavior.Cave_Encounter: return PBEBattleTerrain.Cave;
+                case BlocksetBlockBehavior.Cave_Encounter:
+                    return PBEBattleTerrain.Cave;
                 // Grass
                 case BlocksetBlockBehavior.Grass_Encounter:
-                case BlocksetBlockBehavior.Grass_SpecialEncounter: return PBEBattleTerrain.Grass;
+                case BlocksetBlockBehavior.Grass_SpecialEncounter:
+                    return PBEBattleTerrain.Grass;
                 // Water
-                case BlocksetBlockBehavior.Surf: return PBEBattleTerrain.Water;
+                case BlocksetBlockBehavior.Surf:
+                    return PBEBattleTerrain.Water;
             }
             return PBEBattleTerrain.Plain;
         }
-
-        // Returns true if the behavior is a stair (but not a sideways stair)
-        public static bool AllowsElevationChange(BlocksetBlockBehavior behavior)
+        public static BattleBackground GetBattleBackground(BlocksetBlockBehavior behavior)
         {
             switch (behavior)
             {
-                case BlocksetBlockBehavior.AllowElevationChange:
-                case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter: return true;
-            }
-            return false;
-        }
-        public static bool IsSurfable(BlocksetBlockBehavior behavior)
-        {
-            switch (behavior)
-            {
+                // Cave
+                case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter:
+                case BlocksetBlockBehavior.Cave_Encounter:
+                    return BattleBackground.Cave;
+                // Grass
+                case BlocksetBlockBehavior.Grass_Encounter:
+                case BlocksetBlockBehavior.Grass_SpecialEncounter:
+                    return BattleBackground.Grass_Tall;
+                // Water
                 case BlocksetBlockBehavior.Surf:
-                case BlocksetBlockBehavior.Waterfall: return true;
+                    return BattleBackground.Water;
             }
-            return false;
-        }
-        public static string GetBlockBehaviorScript(BlocksetBlockBehavior behavior)
-        {
-            switch (behavior)
-            {
-                case BlocksetBlockBehavior.Surf: return SurfScript;
-            }
-            return null;
+            return BattleBackground.Unspecified;
         }
 
-        public static void DoEnteredMapThings(Map map)
+        public static void OnCameraMapChanged(Map oldMap, Map map)
         {
-#if DEBUG
-            Console.WriteLine("Player is now on {0}", map.Name);
-#endif
-            SoundControl.SetOverworldBGM(map.MapDetails.Music);
-            UpdateGiratinaForms();
+            oldMap.OnNoLongerCurrentMap();
+            map.OnCurrentMap();
+            UpdateDayTint();
+            OverworldGUI.FadeToMapMusic();
         }
-        public static void UpdateGiratinaForms()
+        public static void OnPlayerMapChanged()
+        {
+            UpdatePartyGiratinaForms();
+        }
+
+        public static void UpdateDayTint()
+        {
+            DayTint.IsEnabled = CameraObj.Instance.Map.Details.Flags.HasFlag(MapFlags.DayTint);
+        }
+        public static void UpdatePartyGiratinaForms()
         {
             foreach (PartyPokemon pkmn in Game.Instance.Save.PlayerParty)
             {
@@ -110,7 +98,7 @@ namespace Kermalis.PokemonGameEngine.World
             }
         }
 
-        public static bool GetNonEggPartyMonWithMove(PBEMove move, out PartyPokemon pkmn, out int index)
+        public static bool TryGetNonEggPartyMonWithMove(PBEMove move, out PartyPokemon pkmn, out int index)
         {
             Party party = Game.Instance.Save.PlayerParty;
             for (int i = 0; i < party.Count; i++)
@@ -128,62 +116,34 @@ namespace Kermalis.PokemonGameEngine.World
             return false;
         }
 
-        #region Movement
-
-        public static void MoveCoords(FacingDirection dir, int x, int y, out int outX, out int outY)
+        // Returns true if the behavior is a stair (but not a sideways stair)
+        public static bool AllowsElevationChange(BlocksetBlockBehavior behavior)
         {
-            switch (dir)
+            switch (behavior)
             {
-                case FacingDirection.South:
-                {
-                    outX = x;
-                    outY = y + 1;
-                    break;
-                }
-                case FacingDirection.North:
-                {
-                    outX = x;
-                    outY = y - 1;
-                    break;
-                }
-                case FacingDirection.West:
-                {
-                    outX = x - 1;
-                    outY = y;
-                    break;
-                }
-                case FacingDirection.East:
-                {
-                    outX = x + 1;
-                    outY = y;
-                    break;
-                }
-                case FacingDirection.Southwest:
-                {
-                    outX = x - 1;
-                    outY = y + 1;
-                    break;
-                }
-                case FacingDirection.Southeast:
-                {
-                    outX = x + 1;
-                    outY = y + 1;
-                    break;
-                }
-                case FacingDirection.Northwest:
-                {
-                    outX = x - 1;
-                    outY = y - 1;
-                    break;
-                }
-                case FacingDirection.Northeast:
-                {
-                    outX = x + 1;
-                    outY = y - 1;
-                    break;
-                }
-                default: throw new ArgumentOutOfRangeException(nameof(dir));
+                case BlocksetBlockBehavior.AllowElevationChange:
+                case BlocksetBlockBehavior.AllowElevationChange_Cave_Encounter:
+                    return true;
             }
+            return false;
+        }
+        public static bool IsSurfable(BlocksetBlockBehavior behavior)
+        {
+            switch (behavior)
+            {
+                case BlocksetBlockBehavior.Surf:
+                case BlocksetBlockBehavior.Waterfall:
+                    return true;
+            }
+            return false;
+        }
+        public static string GetBlockBehaviorScript(BlocksetBlockBehavior behavior)
+        {
+            switch (behavior)
+            {
+                case BlocksetBlockBehavior.Surf: return SCRIPT_SURF;
+            }
+            return null;
         }
         public static byte GetElevationIfMovedTo(byte curElevation, byte targetElevations)
         {
@@ -193,7 +153,5 @@ namespace Kermalis.PokemonGameEngine.World
             }
             return curElevation;
         }
-
-        #endregion
     }
 }

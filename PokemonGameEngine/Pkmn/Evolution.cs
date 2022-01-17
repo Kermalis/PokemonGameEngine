@@ -1,8 +1,8 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data.Utils;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
-using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         {
             _pendingEvolutions.Enqueue((pkmn, evo));
         }
-        public static bool GetNextPendingEvolution(out (PartyPokemon, EvolutionData.EvoData) evo)
+        public static bool TryGetNextPendingEvolution(out (PartyPokemon, EvolutionData.EvoData) evo)
         {
             return _pendingEvolutions.TryDequeue(out evo);
         }
@@ -28,7 +28,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         private static bool IsNight()
         {
-            DateTime time = Program.LogicTickTime;
+            DateTime time = DateTime.Now;
             Month month = OverworldTime.GetMonth((Month)time.Month);
             Season season = OverworldTime.GetSeason(month);
             int hour = OverworldTime.GetHour(time.Hour);
@@ -36,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         }
         private static bool IsNosepassMagnetonLocation()
         {
-            MapSection mapSection = Overworld.GetCurrentLocation();
+            MapSection mapSection = Overworld.GetPlayerMapSection();
             return mapSection == MapSection.TestCave;
         }
         // TODO

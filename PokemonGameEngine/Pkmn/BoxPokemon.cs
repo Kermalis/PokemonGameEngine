@@ -1,7 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Item;
-using Kermalis.PokemonGameEngine.UI;
 using Kermalis.PokemonGameEngine.World;
 using System;
 
@@ -14,7 +13,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         public OTInfo OT { get; set; }
         public MapSection MetLocation { get; set; }
         public byte MetLevel { get; set; }
-        public DateTime MetDate { get; set; }
+        public DateOnly MetDate { get; set; }
 
         public PBESpecies Species { get; set; }
         public PBEForm Form { get; set; }
@@ -81,7 +80,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             p.OT = Game.Instance.Save.OT;
             p.MetLocation = MapSection.TestMapC; // Egg met location
             p.MetLevel = level;
-            p.MetDate = Program.LogicTickTime.Date;
+            p.MetDate = DateOnly.FromDateTime(DateTime.Today);
             p.Gender = gender;
             p.Friendship = cycles;
             p.EXP = exp;

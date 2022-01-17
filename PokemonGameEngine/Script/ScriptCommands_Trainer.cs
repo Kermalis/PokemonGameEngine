@@ -42,7 +42,7 @@ namespace Kermalis.PokemonGameEngine.Script
             Game.Instance.Save.Flags[trainer] = true;
             DisableEventObjMovement();
             SetAllLock(false);
-            Dispose();
+            Delete();
         }
         private void OnTrainerBattleFinished_Continue(Flag trainer, uint continueOffset)
         {

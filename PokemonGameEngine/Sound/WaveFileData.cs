@@ -1,9 +1,12 @@
 ﻿//This file is adapted from NAudio (https://github.com/naudio/NAudio) which uses the MIT license
 using Kermalis.EndianBinaryIO;
-using Kermalis.PokemonGameEngine.Util;
+using Kermalis.PokemonGameEngine.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
+#if DEBUG
+using Kermalis.PokemonGameEngine.Debug;
+#endif
 
 namespace Kermalis.PokemonGameEngine.Sound
 {
@@ -16,6 +19,11 @@ namespace Kermalis.PokemonGameEngine.Sound
     }
     internal sealed class WaveFileData
     {
+        private static readonly Dictionary<string, WaveFileData> _dataCache = new();
+
+        public readonly string Asset;
+        private int _numReferences;
+
         public readonly long DataStart;
         public readonly long DataEnd;
 
@@ -27,14 +35,16 @@ namespace Kermalis.PokemonGameEngine.Sound
         public readonly long LoopStart;
         public readonly long LoopEnd;
 
-        public readonly Stream Stream;
+        public readonly FileStream Stream;
         public readonly EndianBinaryReader Reader;
 
-        private WaveFileData(string resource)
+        private WaveFileData(string asset)
         {
-            _resource = resource;
+            Asset = asset;
             _numReferences = 1;
-            Stream = Utils.GetResourceStream(resource);
+            _dataCache.Add(asset, this);
+
+            Stream = File.OpenRead(AssetLoader.GetPath(asset));
             Reader = new EndianBinaryReader(Stream);
 
             DataStart = -1;
@@ -125,7 +135,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                         if (extraSize != formatChunkLength - 18)
                         {
 #if DEBUG
-                            Console.WriteLine("Format chunk mismatch");
+                            Log.WriteLine("Format chunk mismatch in " + asset);
 #endif
                             extraSize = (short)(formatChunkLength - 18);
                         }
@@ -199,34 +209,26 @@ namespace Kermalis.PokemonGameEngine.Sound
             }
         }
 
-        #region Cache
-
-        private readonly string _resource;
-        private int _numReferences;
-        private static readonly Dictionary<string, WaveFileData> _dataCache = new();
-
-        public static WaveFileData Get(string resource)
+        public static WaveFileData Get(string asset)
         {
-            if (_dataCache.TryGetValue(resource, out WaveFileData data))
+            if (_dataCache.TryGetValue(asset, out WaveFileData data))
             {
                 data._numReferences++;
             }
             else
             {
-                data = new WaveFileData(resource);
-                _dataCache.Add(resource, data);
+                data = new WaveFileData(asset);
             }
             return data;
         }
+
         public void DeductReference()
         {
             if (--_numReferences <= 0)
             {
                 Stream.Dispose();
-                _dataCache.Remove(_resource);
+                _dataCache.Remove(Asset);
             }
         }
-
-        #endregion
     }
 }

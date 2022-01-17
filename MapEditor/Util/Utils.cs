@@ -48,7 +48,7 @@ namespace Kermalis.MapEditor.Util
         }
         public static string[] GetOrderedFormStrings(IReadOnlyList<PBEForm> strs, PBESpecies species)
         {
-            return strs.OrderBy(f => f).Select(f => PBEDataProvider.Instance.GetFormName(species, f).FromPBECultureInfo()).ToArray();
+            return strs.OrderBy(f => f).Select(f => PBEDataProvider.Instance.GetFormName(species, f).FromGlobalLanguage()).ToArray();
         }
 
         public static TEnum ReadEnumValue<TEnum>(this JToken j) where TEnum : struct, Enum

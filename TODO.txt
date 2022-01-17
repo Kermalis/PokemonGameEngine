@@ -12,7 +12,7 @@ Main Mechanics:
     World Map
     PC & Mart
     Trades
-    Location name plates on enter (task system)
+    Location name plates on enter
     Pokerus time decay
     Hidden items
     Ask if you'd like to flee a wild battle when your mon faints
@@ -31,9 +31,8 @@ GUIs:
 Encounters:
     CompoundEyes
     StickyHold, SuctionCups
-    Phenomena (task system)
+    Phenomena
     Fishing
-    Determine battle music
 
 Field Effects:
     Spin tiles
@@ -64,7 +63,7 @@ Data Stuff:
 
 Sound:
     Fade BGM when in a menu
-    Random cries in the overworld (task system)
+    Random cries in the overworld
     Fanfares
     Surf music logic
     Encounter music logic (and battle script commands without encounter music)
@@ -76,7 +75,7 @@ Nice to have (no priority):
     Reflections on tiles
     Different day tints based on season
     Obj Following (#29)
-    Attack animations
+    Attack animations with camera movement
     Pass Powers
     Move relearner & Move tutor
     Feebas/Swarm/Roamer
