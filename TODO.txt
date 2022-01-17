@@ -18,6 +18,15 @@ Main Mechanics:
     Ask if you'd like to flee a wild battle when your mon faints
     Releasing Pokémon
 
+Trainers:
+    Script commands for different battle formats
+    Trainer data in JSON
+    Sprite shows up for defeat
+    Money reward
+    Trainer sight
+    Encounter music logic
+    Let opponent send out first
+
 GUIs:
     Intro/Title/Continue/NewGame
     Pokedex
