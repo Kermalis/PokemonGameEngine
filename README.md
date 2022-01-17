@@ -12,8 +12,10 @@ Here are some preview images & videos, but keep in mind the quality lost when re
 
 https://user-images.githubusercontent.com/29823718/149649830-5e1a2c70-0f26-41f1-9f52-4d525d22dbcf.mp4
 
-![BattlePreview](Previews/Battle.gif)
-![GroudonPreview](Previews/Groudon.gif)
+https://user-images.githubusercontent.com/29823718/149682870-9da460ba-4df6-43ed-868b-25cb6b365f7d.mp4
+
+https://user-images.githubusercontent.com/29823718/149683554-8f34b2e6-88d9-458d-b45f-4266c5cb1315.mp4
+
 ![SpindaSpotsPreview](Previews/Spinda.gif)
 
 ![MapEditorPreview](Previews/MapEditor.png)
