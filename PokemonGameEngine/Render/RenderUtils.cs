@@ -38,6 +38,18 @@ namespace Kermalis.PokemonGameEngine.Render
             gl.ClearColor(color.X, color.Y, color.Z, color.W);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vec2I DecideGridElementPos(Vec2I availableSpace, Vec2I colsRows, Vec2I spacing, int i)
+        {
+            var iFactor = new Vec2I(i % colsRows.X, i / colsRows.X);
+            return (availableSpace / colsRows * iFactor) + spacing;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vec2I DecideGridElementSize(Vec2I availableSpace, Vec2I colsRows, Vec2I spacing)
+        {
+            return (availableSpace / colsRows) - (spacing * 2);
+        }
+
         #region Specials
 
         public static void HP_TripleLine(Vec2I pos, int width, float percent)
@@ -102,14 +114,15 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public static void EXP_SingleLine(Vec2I pos, int width, float percent)
         {
-            GUIRenderer.Rect(Colors.V4FromRGB(49, 49, 49), Rect.FromSize(pos, new Vec2I(width, 3)), lineThickness: 1);
-            var size = new Vec2I(width - 2, 1);
-            GUIRenderer.Rect(Colors.V4FromRGB(33, 33, 33), Rect.FromSize(pos.Plus(1, 1), size));
+            GUIRenderer.Rect(Colors.V4FromRGB(33, 33, 33), Colors.V4FromRGB(49, 49, 49), Rect.FromSize(pos, new Vec2I(width, 3)), 1);
+
+            Vec2I size;
             size.X = (int)((width - 2) * percent);
             if (size.X == 0 && percent > 0)
             {
                 size.X = 1;
             }
+            size.Y = 1;
             GUIRenderer.Rect(Colors.V4FromRGB(0, 160, 255), Rect.FromSize(pos.Plus(1, 1), size));
         }
 

@@ -34,7 +34,7 @@ namespace Kermalis.PokemonGameEngine.Item
             }
         }
     }
-    internal class InventorySlotNew : InventorySlot
+    internal sealed class InventorySlotNew : InventorySlot
     {
         public bool New;
 

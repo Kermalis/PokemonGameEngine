@@ -182,7 +182,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _transition = null;
             _startMenuWindow.Close();
             _startMenuWindow = null;
-            _ = new BagGUI(Game.Instance.Save.PlayerInventory, Game.Instance.Save.PlayerParty, ReturnToStartMenuWithFadeIn);
+            _ = new BagGUI(Game.Instance.Save.PlayerInventory, ReturnToStartMenuWithFadeIn);
         }
         private void CB_FadeOutToPC()
         {

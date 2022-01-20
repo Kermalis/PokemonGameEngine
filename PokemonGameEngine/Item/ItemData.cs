@@ -1,15 +1,18 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.DefaultData;
+using Kermalis.PokemonGameEngine.Core;
 using System;
 
 namespace Kermalis.PokemonGameEngine.Item
 {
     internal sealed class ItemData
     {
-        public const int NumTMs = 95;
-        public const int NumHMs = 6;
+        public const int NUM_TM = 95;
+        public const int NUM_HM = 6;
+
         #region TM HM lookups
-        private static readonly PBEMove[] _tmMoves = new PBEMove[NumTMs]
+
+        public static readonly PBEMove[] TMMoves = new PBEMove[NUM_TM]
         {
             PBEMove.HoneClaws,
             PBEMove.DragonClaw,
@@ -107,7 +110,7 @@ namespace Kermalis.PokemonGameEngine.Item
             PBEMove.RockSmash,
             PBEMove.Snarl
         };
-        private static readonly PBEMove[] _hmMoves = new PBEMove[NumHMs]
+        public static readonly PBEMove[] HMMoves = new PBEMove[NUM_HM]
         {
             PBEMove.Cut,
             PBEMove.Fly,
@@ -116,30 +119,30 @@ namespace Kermalis.PokemonGameEngine.Item
             PBEMove.Waterfall,
             PBEMove.Dive
         };
+
         #endregion
 
-        public static bool IsTM(ItemType item)
-        {
-            return (item >= ItemType.TM01 && item <= ItemType.TM92)
-                || (item >= ItemType.TM93 && item <= ItemType.TM95);
-        }
-        public static bool IsHM(ItemType item)
-        {
-            return item >= ItemType.HM01 && item <= ItemType.HM06;
-        }
-        /// <summary>Returns zero-indexed</summary>
+        /// <summary>Returns zero-indexed, or -1 if it's not a TM</summary>
         public static int GetTMIndex(ItemType item)
         {
             if (item >= ItemType.TM01 && item <= ItemType.TM92)
             {
-                return item - ItemType.TM01;
+                return item - ItemType.TM01; // 00 to 91
             }
-            return item - ItemType.TM93;
+            if (item >= ItemType.TM93 && item <= ItemType.TM95)
+            {
+                return 92 + (item - ItemType.TM93); // 92 to 94
+            }
+            return -1;
         }
-        /// <summary>Returns zero-indexed</summary>
+        /// <summary>Returns zero-indexed, or -1 if it's not an HM</summary>
         public static int GetHMIndex(ItemType item)
         {
-            return item - ItemType.HM01;
+            if (item >= ItemType.HM01 && item <= ItemType.HM06)
+            {
+                return item - ItemType.HM01; // 0 to 5
+            }
+            return -1;
         }
         public static ItemType GetTMItem(int index)
         {
@@ -153,37 +156,93 @@ namespace Kermalis.PokemonGameEngine.Item
         {
             return (ItemType)((int)ItemType.HM01 + index);
         }
-        public static PBEMove GetTMMove(ItemType item)
+        public static void Debug_GiveAllItems<T>(Inventory<T> pi) where T : InventorySlot
         {
-            return _tmMoves[GetTMIndex(item)];
-        }
-        public static PBEMove GetHMMove(ItemType item)
-        {
-            return _hmMoves[GetHMIndex(item)];
-        }
-        public static void Debug_GiveAllTMHMs<T>(Inventory<T> pi) where T : InventorySlot
-        {
-            for (int i = 0; i < NumTMs; i++)
+            foreach (ItemType item in Enum.GetValues<ItemType>())
             {
-                pi.Add(GetTMItem(i), 1);
-            }
-            for (int i = 0; i < NumHMs; i++)
-            {
-                pi.Add(GetHMItem(i), 1);
+                if (item == ItemType.None || item == ItemType.MAX)
+                {
+                    continue;
+                }
+                pi.Add(item, 1);
             }
         }
 
+        private static string GetItemIconOverride(ItemType item)
+        {
+            // Handle TMs and HMs first
+            int index = GetTMIndex(item);
+            if (index != -1)
+            {
+                return "TM_" + PBEDataProvider.Instance.GetMoveData(TMMoves[index], cache: false).Type;
+            }
+            index = GetHMIndex(item);
+            if (index != -1)
+            {
+                return "HM_" + PBEDataProvider.Instance.GetMoveData(HMMoves[index], cache: false).Type;
+            }
+            // Both DNA Splicer items use the same icon
+            if (item is ItemType.DNASplicers1 or ItemType.DNASplicers2)
+            {
+                return "DNASplicers";
+            }
+            // All data cards use the same icon
+            if (item >= ItemType.DataCard01 && item <= ItemType.DataCard27)
+            {
+                return "DataCard";
+            }
+            // Dropped items use Xtransceiver icons
+            if (item == ItemType.DroppedItemMale)
+            {
+                return "XtransceiverMale";
+            }
+            if (item == ItemType.DroppedItemFemale)
+            {
+                return "XtransceiverFemale";
+            }
+            // Invalid items
+            if (item == ItemType.None || item == ItemType.MAX || !Enum.IsDefined(item))
+            {
+                return "None";
+            }
+            // Valid items
+            return item.ToString();
+        }
+        public static string GetItemIconAssetPath(ItemType item)
+        {
+            return AssetLoader.GetPath(@"Sprites\Item Icons\" + GetItemIconOverride(item) + ".png");
+        }
+
+        // TODO: For now, manually assigning items I'm testing with to correct pockets, and anything else is free space
         public static ItemPouchType GetPouchType(ItemType item)
         {
-            if (item == ItemType.OvalCharm || item == ItemType.ShinyCharm)
+            if (item is ItemType.OvalCharm or ItemType.ShinyCharm)
             {
-                return ItemPouchType.KeyItems; // TODO: For now, oval and shiny charm are key items
+                return ItemPouchType.KeyItems;
             }
-            if (IsTM(item) || IsHM(item))
+            if (GetTMIndex(item) != -1 || GetHMIndex(item) != -1)
             {
                 return ItemPouchType.TMHMs;
             }
-            return ItemPouchType.Items; // TODO
+            if (item is ItemType.XSpDef)
+            {
+                return ItemPouchType.BattleItems;
+            }
+            if (item.ToString().EndsWith("Berry"))
+            {
+                return ItemPouchType.Berries;
+            }
+            if (item is not (ItemType.SmokeBall or ItemType.LightBall or ItemType.IronBall)
+                && item.ToString().EndsWith("Ball"))
+            {
+                return ItemPouchType.Balls;
+            }
+            if (item is not ItemType.SecretPotion
+                && item.ToString().EndsWith("Potion"))
+            {
+                return ItemPouchType.Medicine;
+            }
+            return ItemPouchType.FreeSpace;
         }
 
         public static PBEStat? GetPowerItemStat(ItemType item)
@@ -203,8 +262,21 @@ namespace Kermalis.PokemonGameEngine.Item
         // temporary
         public static string GetItemName(ItemType item)
         {
+            if (item is ItemType.DNASplicers1 or ItemType.DNASplicers2)
+            {
+                return "DNA Splicers";
+            }
+            if (item is ItemType.XtransceiverMale or ItemType.XtransceiverFemale)
+            {
+                return "Xtransceiver";
+            }
+            if (item is ItemType.DroppedItemMale or ItemType.DroppedItemFemale)
+            {
+                return "Dropped Item";
+            }
+
             var pbe = (PBEItem)item;
-            if (!Enum.IsDefined(typeof(PBEItem), pbe))
+            if (!Enum.IsDefined(pbe))
             {
                 return item.ToString();
             }

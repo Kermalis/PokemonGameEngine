@@ -1,40 +1,47 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Item;
-using Kermalis.PokemonGameEngine.Pkmn;
+using Kermalis.PokemonGameEngine.Player;
 using Kermalis.PokemonGameEngine.Render.GUIs;
+using Kermalis.PokemonGameEngine.Render.Images;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
-using Kermalis.PokemonGameEngine.Render.Pkmn;
 using Kermalis.PokemonGameEngine.Render.Transitions;
 using Silk.NET.OpenGL;
 using System;
-using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.Player
 {
-    internal sealed class BagGUI
+    internal sealed partial class BagGUI
     {
+        private const int NUM_COLS = 4;
+        private const int NUM_ROWS = 5;
+        private const int BUTTON_SPACING_X = 2;
+        private const int BUTTON_SPACING_Y = 2;
+        private const int TOP_HEIGHT = 36;
+        private const int POUCHES_START_X = 160;
+        private const int BOTTOM_HEIGHT = 30;
+
         private static readonly Vec2I _renderSize = new(480, 270); // 16:9
+
         private readonly FrameBuffer2DColor _frameBuffer;
         private readonly TripleColorBackground _tripleColorBG;
 
-        private readonly Inventory<InventorySlotNew> _inv;
+        private readonly PlayerInventory _inv;
 
         private ITransition _transition;
         private Action _onClosed;
 
-        private bool _isOnParty = false;
-
+        private readonly BagGUIPouchButton[] _pouchButtons;
+        private readonly BagGUIItemButton[] _itemButtons;
         private InventoryPouch<InventorySlotNew> _curPouch;
-        private readonly PartyPkmnGUIChoices _partyChoices;
-        private ItemGUIChoices _pouchChoices;
+        private int _curPouchNumPages;
 
-        private readonly GUIString _bagText;
         private GUIString _curPouchName;
-        private GUIString _cashMoney;
-        private int _cashMoneyWidth;
+        private GUIString _itemPageStr;
+        private readonly Image _newIcon;
+        private readonly BagGUITextButton[] _pageButtons;
+        private readonly BagGUITextButton _cancelButton;
 
-        public BagGUI(Inventory<InventorySlotNew> inv, Party party, Action onClosed)
+        public BagGUI(PlayerInventory inv, Action onClosed)
         {
             Display.SetMinimumWindowSize(_renderSize);
             _frameBuffer = new FrameBuffer2DColor(_renderSize);
@@ -44,16 +51,42 @@ namespace Kermalis.PokemonGameEngine.Render.Player
 
             _inv = inv;
 
-            _partyChoices = new PartyPkmnGUIChoices(new Vector2(0.03f, 0.18f), new Vector2(0.47f, 0.97f), 0.004f);
-            foreach (PartyPokemon pkmn in party)
+            // Create pouch buttons
+            _pouchButtons = new BagGUIPouchButton[(int)ItemPouchType.MAX];
+            for (int i = 0; i < _pouchButtons.Length; i++)
             {
-                _partyChoices.Add(new PartyPkmnGUIChoice(pkmn, null));
+                Vec2I pos = RenderUtils.DecideGridElementPos(new Vec2I(_renderSize.X - POUCHES_START_X, TOP_HEIGHT), new Vec2I(_pouchButtons.Length, 1), new Vec2I(2, 4), i);
+                pos.X += POUCHES_START_X;
+                _pouchButtons[i] = new BagGUIPouchButton((ItemPouchType)i, pos);
             }
 
-            LoadPouch(ItemPouchType.Items);
-            LoadCashMoney();
+            // Create item buttons
+            var itemSpace = new Vec2I(_renderSize.X, _renderSize.Y - TOP_HEIGHT - BOTTOM_HEIGHT);
+            Vec2I buttonSize = RenderUtils.DecideGridElementSize(itemSpace, new Vec2I(NUM_COLS, NUM_ROWS), new Vec2I(BUTTON_SPACING_X, BUTTON_SPACING_Y));
+            _itemButtons = new BagGUIItemButton[NUM_COLS * NUM_ROWS];
+            for (int i = 0; i < NUM_COLS * NUM_ROWS; i++)
+            {
+                Vec2I topLeft = RenderUtils.DecideGridElementPos(itemSpace, new Vec2I(NUM_COLS, NUM_ROWS), new Vec2I(BUTTON_SPACING_X, BUTTON_SPACING_Y), i);
+                topLeft.Y += TOP_HEIGHT;
+                _itemButtons[i] = new BagGUIItemButton(Rect.FromSize(topLeft, buttonSize));
+            }
 
-            _bagText = new GUIString("BAG", Font.Default, FontColors.DefaultDarkGray_I, scale: 2);
+            LoadSelectedPouch();
+
+            // Create page buttons
+            _pageButtons = new BagGUITextButton[2];
+            var strPos = new Vec2I(6, 2);
+            var rect = Rect.FromSize(new Vec2I(10, _renderSize.Y - 25), new Vec2I(19, 20));
+            _pageButtons[0] = new BagGUITextButton("←", strPos, rect, PageButton_Left);
+            rect = Rect.FromSize(new Vec2I(39, _renderSize.Y - 25), new Vec2I(19, 20));
+            _pageButtons[1] = new BagGUITextButton("→", strPos, rect, PageButton_Right);
+
+            // Cancel button
+            strPos = new Vec2I(17, 5);
+            rect = Rect.FromSize(new Vec2I(408, _renderSize.Y - 28), new Vec2I(70, 26));
+            _cancelButton = new BagGUITextButton("CANCEL", strPos, rect, null);
+
+            _newIcon = Image.LoadOrGet(AssetLoader.GetPath(@"Sprites\NewItem.png"));
 
             _onClosed = onClosed;
 
@@ -61,24 +94,44 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             Game.Instance.SetCallback(CB_FadeInBag);
         }
 
-        private void LoadCashMoney()
-        {
-            string str = Game.Instance.Save.Money.ToString("$#,0");
-            _cashMoney?.Delete();
-            _cashMoney = new GUIString(str, Font.DefaultSmall, FontColors.DefaultDarkGray_I);
-            _cashMoneyWidth = Font.DefaultSmall.GetSize(str).X;
-        }
-        private void LoadPouch(ItemPouchType pouch)
+        private void LoadSelectedPouch()
         {
             _curPouchName?.Delete();
-            _curPouchName = new GUIString(pouch.ToString(), Font.DefaultSmall, FontColors.DefaultDarkGray_I);
-            _curPouch = _inv[pouch];
-
-            _pouchChoices?.Dispose();
-            _pouchChoices = new ItemGUIChoices(new Vector2(0.60f, 0.18f), new Vector2(0.97f, 0.97f), 0.07f, Colors.V4FromRGB(245, 200, 37), Colors.V4FromRGB(231, 163, 0));
-            foreach (InventorySlot s in _curPouch)
+            _curPouchName = new GUIString(_selectedPouch.ToString(), Font.Default, FontColors.DefaultDarkGray_I, scale: 2);
+            _curPouch = _inv[_selectedPouch];
+            if (_curPouch.Count == 0)
             {
-                _pouchChoices.Add(new ItemGUIChoice(s, null));
+                _curPouchNumPages = 1;
+            }
+            else
+            {
+                _curPouchNumPages = ((_curPouch.Count - 1) / (NUM_COLS * NUM_ROWS)) + 1;
+            }
+            LoadItemPage(0);
+        }
+        private void LoadItemPage(int page)
+        {
+            _itemPage = page;
+            _itemPageStr?.Delete();
+            _itemPageStr = new GUIString(string.Format("Page {0}/{1}", page + 1, _curPouchNumPages), Font.Default, FontColors.DefaultWhite_I);
+            LoadItems();
+        }
+        private void LoadItems()
+        {
+            for (int i = 0; i < NUM_COLS * NUM_ROWS; i++)
+            {
+                int pageI = (NUM_COLS * NUM_ROWS * _itemPage) + i;
+                _itemButtons[i].SetSlot(pageI < _curPouch.Count ? _curPouch[pageI] : null);
+            }
+
+            // Validate cursor location
+            if (_itemButtons[SelectionCoordsToItemButtonIndex(_selectedItem.X, _selectedItem.Y)].Slot is null)
+            {
+                _selectedItem = new Vec2I(0, 0);
+                if (_cursor == CursorPos.Items && _itemButtons[0].Slot is null) // Empty pouch
+                {
+                    _cursor = CursorPos.Pouches;
+                }
             }
         }
 
@@ -117,47 +170,24 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             _transition.Dispose();
             _frameBuffer.Delete();
             _tripleColorBG.Delete();
-            _partyChoices.Dispose();
-            _bagText.Delete();
+            _newIcon.DeductReference();
             _curPouchName.Delete();
-            _cashMoney.Delete();
+            _itemPageStr.Delete();
+            _cancelButton.Delete();
+            for (int i = 0; i < _pouchButtons.Length; i++)
+            {
+                _pouchButtons[i].Delete();
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                _pageButtons[i].Delete();
+            }
+            for (int i = 0; i < NUM_COLS * NUM_ROWS; i++)
+            {
+                _itemButtons[i].Delete();
+            }
             _onClosed();
             _onClosed = null;
-        }
-        private void CB_HandleInputs()
-        {
-            Render();
-            _frameBuffer.BlitToScreen();
-
-            HandleInputs();
-        }
-
-        private void HandleInputs()
-        {
-            if (InputManager.JustPressed(Key.B))
-            {
-                SetExitFadeOutCallback();
-                return;
-            }
-
-            if (_isOnParty)
-            {
-                if (InputManager.JustPressed(Key.Right))
-                {
-                    _isOnParty = false;
-                    return;
-                }
-                _partyChoices.HandleInputs();
-            }
-            else
-            {
-                if (InputManager.JustPressed(Key.Left))
-                {
-                    _isOnParty = true;
-                    return;
-                }
-                _pouchChoices.HandleInputs();
-            }
         }
 
         private void Render()
@@ -166,26 +196,38 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             _frameBuffer.Use(gl);
             _tripleColorBG.Render(gl); // No need to glClear since this overwrites everything
 
-            // BAG
-            _bagText.Render(Vec2I.FromRelative(0.02f, 0.01f, _renderSize));
-
-            _partyChoices.Render(_renderSize);
-            _frameBuffer.Use(gl); // Possible the above redraws to its framebuffer so rebind this one
-
             // Draw pouch tabs background
-            var rect = Rect.FromCorners(Vec2I.FromRelative(0.60f, 0.03f, _renderSize), Vec2I.FromRelative(0.97f, 0.13f, _renderSize));
-            GUIRenderer.Rect(Colors.V4FromRGB(245, 200, 37), rect, cornerRadius: 10);
-            GUIRenderer.Rect(Colors.V4FromRGB(231, 163, 0), rect, lineThickness: 1, cornerRadius: 10);
+            GUIRenderer.Rect(Colors.V4FromRGB(255, 255, 255), Rect.FromSize(new Vec2I(0, 0), new Vec2I(_renderSize.X, TOP_HEIGHT - 20)));
+            GUIRenderer.Rect(Colors.V4FromRGB(230, 230, 230), Rect.FromSize(new Vec2I(0, TOP_HEIGHT - 20), new Vec2I(_renderSize.X, 2)));
+            GUIRenderer.Rect(Colors.V4FromRGB(210, 210, 210), Rect.FromSize(new Vec2I(0, TOP_HEIGHT - 18), new Vec2I(_renderSize.X, 14)));
+            GUIRenderer.Rect(Colors.V4FromRGB(120, 120, 120), Rect.FromSize(new Vec2I(0, TOP_HEIGHT - 4), new Vec2I(_renderSize.X, 2)));
+            GUIRenderer.Rect(Colors.V4FromRGB(80, 80, 80), Rect.FromSize(new Vec2I(0, TOP_HEIGHT - 2), new Vec2I(_renderSize.X, 2)));
 
             // Draw pouch name
-            var pos = Vec2I.FromRelative(0.62f, 0.14f, _renderSize);
-            _curPouchName.Render(pos);
-            // Draw cash money
-            pos.X = rect.BottomRight.X + 1 - _cashMoneyWidth;
-            _cashMoney.Render(pos);
+            _curPouchName.Render(new Vec2I(10, 0));
+            // Draw page text
+            _itemPageStr.Render(new Vec2I(75, _renderSize.Y - 20));
+
+            // Draw pouch buttons
+            for (int i = 0; i < _pouchButtons.Length; i++)
+            {
+                _pouchButtons[i].Render(_cursor == CursorPos.Pouches && (int)_selectedPouch == i);
+            }
+
+            // Draw page buttons
+            for (int i = 0; i < 2; i++)
+            {
+                _pageButtons[i].Render(_cursor == CursorPos.Pages && _selectedPageButton == i);
+            }
+
+            // Draw cancel button
+            _cancelButton.Render(_cursor == CursorPos.Cancel);
 
             // Draw item list
-            _pouchChoices.Render(_renderSize);
+            for (int i = 0; i < NUM_COLS * NUM_ROWS; i++)
+            {
+                _itemButtons[i].Render(_newIcon, _cursor == CursorPos.Items && SelectionCoordsToItemButtonIndex(_selectedItem.X, _selectedItem.Y) == i);
+            }
         }
     }
 }

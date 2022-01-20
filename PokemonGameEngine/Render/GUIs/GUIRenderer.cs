@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Render.Shaders.GUIs;
+using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using System.Numerics;
 
@@ -16,13 +17,14 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             shader.Use(gl);
             shader.UpdateViewport(gl, Display.ViewportSize);
             shader.SetRect(gl, rect);
-            shader.SetCornerRadius(gl, 0);
+            shader.SetCornerRadii(gl, default);
             shader.SetLineThickness(gl, 0);
             shader.SetOpacity(gl, opacity);
+            shader.SetUseTexture(gl, true);
             shader.SetUV(gl, uv);
             RectMesh.Instance.Render(gl);
         }
-        public static void Rect(in Vector4 color, in Rect rect, int lineThickness = 0, int cornerRadius = 0)
+        public static void Rect(in Vector4 color, in Rect rect, int lineThickness = 0, Vector4D<int> cornerRadii = default)
         {
             GL gl = Display.OpenGL;
 
@@ -30,10 +32,35 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             shader.Use(gl);
             shader.UpdateViewport(gl, Display.ViewportSize);
             shader.SetRect(gl, rect);
-            shader.SetCornerRadius(gl, cornerRadius);
+            shader.SetCornerRadii(gl, cornerRadii);
             shader.SetLineThickness(gl, lineThickness);
             shader.SetOpacity(gl, 1f);
+            shader.SetUseTexture(gl, false);
+            if (lineThickness == 0)
+            {
+                shader.SetColor(gl, color);
+            }
+            else
+            {
+                shader.SetColor(gl, default);
+                shader.SetLineColor(gl, color);
+            }
+            RectMesh.Instance.Render(gl);
+        }
+        public static void Rect(in Vector4 color, in Vector4 lineColor, in Rect rect, int lineThickness, Vector4D<int> cornerRadii = default)
+        {
+            GL gl = Display.OpenGL;
+
+            GUIRectShader shader = GUIRectShader.Instance;
+            shader.Use(gl);
+            shader.UpdateViewport(gl, Display.ViewportSize);
+            shader.SetRect(gl, rect);
+            shader.SetCornerRadii(gl, cornerRadii);
+            shader.SetLineThickness(gl, lineThickness);
+            shader.SetOpacity(gl, 1f);
+            shader.SetUseTexture(gl, false);
             shader.SetColor(gl, color);
+            shader.SetLineColor(gl, lineColor);
             RectMesh.Instance.Render(gl);
         }
     }

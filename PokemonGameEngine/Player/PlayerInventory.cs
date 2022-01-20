@@ -1,15 +1,26 @@
 ﻿using Kermalis.PokemonGameEngine.Item;
 using System;
-using System.Linq;
 
 namespace Kermalis.PokemonGameEngine.Player
 {
     internal sealed class PlayerInventory : Inventory<InventorySlotNew>
     {
         public PlayerInventory()
-            : base(Enum.GetValues<ItemPouchType>().Select(t => new InventoryPouch<InventorySlotNew>(t)).ToArray())
+            : base(CreatePouches())
+        {
+
+        }
+
+        private static InventoryPouch<InventorySlotNew>[] CreatePouches()
         {
             // All pouch types
+            ItemPouchType[] all = Enum.GetValues<ItemPouchType>();
+            var ret = new InventoryPouch<InventorySlotNew>[all.Length];
+            for (int i = 0; i < all.Length; i++)
+            {
+                ret[i] = new InventoryPouch<InventorySlotNew>(all[i]);
+            }
+            return ret;
         }
 
         public bool HasShinyCharm()

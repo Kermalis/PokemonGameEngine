@@ -58,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
                 GL gl = Display.OpenGL;
                 Shadow.Use(gl);
-                GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 200), Rect.FromSize(new Vec2I(0, 0), shadowSize), cornerRadius: 6); // TODO: Specify corner radius for each
+                GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 200), Rect.FromSize(new Vec2I(0, 0), shadowSize), cornerRadii: new(6)); // TODO: Specify corner radius in json
             }
         }
 

@@ -51,8 +51,8 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             {
                 var rect = Rect.FromSize((Vec2I)(pos * _renderSize), Vec2I.FromRelative(0.24f, 0.2f, _renderSize));
 
-                Vector4 enabledC = _ally ? Colors.V4FromRGB(125, 100, 230) : Colors.V4FromRGB(248, 80, 50);
-                GUIRenderer.Rect(enabledC, rect);
+                Vector4 teamC = _ally ? Colors.V4FromRGB(125, 100, 230) : Colors.V4FromRGB(248, 80, 50);
+                GUIRenderer.Rect(teamC, rect);
 
                 if (_pkmn is not null)
                 {

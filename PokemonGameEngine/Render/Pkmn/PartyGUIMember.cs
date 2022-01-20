@@ -14,8 +14,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 {
     internal sealed class PartyGUIMember
     {
-        private const int WIDTH = (384 / 2) - (384 / 20);
-        private const int HEIGHT = (216 / 4) - (216 / 20);
+        private readonly Rect _rect;
 
         private readonly bool _usePartyPkmn;
         private readonly bool _isEgg;
@@ -25,49 +24,44 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private readonly Sprite _mini;
         private readonly FrameBuffer2DColor _frameBuffer;
 
-        public PartyGUIMember(PartyPokemon pkmn, ConnectedList<Sprite> sprites, bool isSelected)
+        private PartyGUIMember(bool isEgg, Rect rect, ConnectedList<Sprite> sprites)
+        {
+            _rect = rect;
+            _mini = new Sprite();
+            sprites.Add(_mini);
+            _isEgg = isEgg;
+            if (!isEgg)
+            {
+                _mini.Callback = Sprite_Bounce;
+                _mini.Data = new Sprite_BounceData();
+            }
+            _frameBuffer = new FrameBuffer2DColor(rect.GetSize());
+        }
+        public PartyGUIMember(PartyPokemon pkmn, Rect rect, ConnectedList<Sprite> sprites, bool isSelected)
+            : this(pkmn.IsEgg, rect, sprites)
         {
             _usePartyPkmn = true;
-            _isEgg = pkmn.IsEgg;
             _partyPkmn = pkmn;
             _color = GetColor();
-            _mini = new Sprite();
-            if (pkmn.IsEgg)
+            if (_isEgg)
             {
                 _mini.Image = PokemonImageLoader.GetEggMini();
             }
             else
             {
                 _mini.Image = PokemonImageLoader.GetMini(pkmn.Species, pkmn.Form, pkmn.Gender, pkmn.Shiny);
-            }
-            if (!_isEgg)
-            {
-                _mini.Callback = Sprite_Bounce;
-                _mini.Data = new Sprite_BounceData();
                 SetBounce(isSelected);
             }
-            sprites.Add(_mini);
-            _frameBuffer = new FrameBuffer2DColor(new Vec2I(WIDTH, HEIGHT));
             UpdateBackground();
         }
-        public PartyGUIMember(BattlePokemon pkmn, ConnectedList<Sprite> sprites, bool isSelected)
+        public PartyGUIMember(BattlePokemon pkmn, Rect rect, ConnectedList<Sprite> sprites, bool isSelected)
+            : this(pkmn.PartyPkmn.IsEgg, rect, sprites)
         {
             _usePartyPkmn = false;
-            _isEgg = pkmn.PartyPkmn.IsEgg;
             _battlePkmn = pkmn;
             _color = GetColor();
-            _mini = new Sprite()
-            {
-                Image = pkmn.Mini
-            };
-            if (!_isEgg)
-            {
-                _mini.Callback = Sprite_Bounce;
-                _mini.Data = new Sprite_BounceData();
-                SetBounce(isSelected);
-            }
-            sprites.Add(_mini);
-            _frameBuffer = new FrameBuffer2DColor(new Vec2I(WIDTH, HEIGHT));
+            _mini.Image = pkmn.Mini;
+            SetBounce(isSelected);
             UpdateBackground();
         }
 
@@ -125,10 +119,10 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             gl.ClearColor(Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
-            GUIRenderer.Rect(_color, Rect.FromSize(new Vec2I(0, 0), _frameBuffer.Size), cornerRadius: 6);
+            GUIRenderer.Rect(_color, Rect.FromSize(new Vec2I(0, 0), _frameBuffer.Size), cornerRadii: new(6));
 
             // Shadow
-            GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 200), Rect.FromCorners(new Vec2I(3, 34), new Vec2I(29, 39)), cornerRadius: 10);
+            GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 200), Rect.FromCorners(new Vec2I(3, 34), new Vec2I(29, 39)), cornerRadii: new(10));
 
             // Nickname
             PartyPokemon p = _usePartyPkmn ? _partyPkmn : _battlePkmn.PartyPkmn;
@@ -214,14 +208,14 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             return Colors.FromRGBA(125, 255, 195, 128);
         }
 
-        public void Render(Vec2I pos, bool selected)
+        public void Render(bool isSelected)
         {
-            _frameBuffer.RenderColorTexture(pos);
-            if (selected)
+            _frameBuffer.RenderColorTexture(_rect.TopLeft);
+            if (isSelected)
             {
-                GUIRenderer.Rect(Colors.FromRGBA(48, 180, 255, 200), Rect.FromSize(pos, _frameBuffer.Size), lineThickness: 1, cornerRadius: 6);
+                GUIRenderer.Rect(Colors.FromRGBA(48, 180, 255, 200), _rect, lineThickness: 1, cornerRadii: new(6));
             }
-            _mini.Render(pos);
+            _mini.Render(_rect.TopLeft);
         }
 
         public void Delete()

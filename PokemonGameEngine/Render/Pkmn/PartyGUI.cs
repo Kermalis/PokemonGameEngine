@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonGameEngine.Render.Pkmn
 {
-    internal sealed class PartyGUI
+    internal sealed partial class PartyGUI
     {
         public enum Mode : byte
         {
@@ -24,48 +24,29 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             BattleSwitchIn,
             BattleReplace
         }
-        private sealed class GamePartyData
-        {
-            public readonly Party Party;
 
-            public GamePartyData(Party party, List<PartyGUIMember> members, ConnectedList<Sprite> sprites)
-            {
-                Party = party;
-                foreach (PartyPokemon pkmn in party)
-                {
-                    members.Add(new PartyGUIMember(pkmn, sprites, members.Count == 0));
-                }
-            }
-        }
-        private sealed class BattlePartyData
-        {
-            public readonly BattlePokemonParty Party;
+        private const int NUM_COLS = 2;
+        private const int NUM_ROWS = 3;
+        private const int MEMBER_SPACING_X = 5;
+        private const int MEMBER_SPACING_Y = 5;
+        private const int BOTTOM_HEIGHT = 54;
 
-            public BattlePartyData(BattlePokemonParty party, List<PartyGUIMember> members, ConnectedList<Sprite> sprites)
-            {
-                Party = party;
-                foreach (PBEBattlePokemon pbePkmn in party.PBEParty)
-                {
-                    BattlePokemon bPkmn = party[pbePkmn]; // Use battle party's order
-                    members.Add(new PartyGUIMember(bPkmn, sprites, members.Count == 0));
-                }
-            }
-        }
+        /// <summary>The return value of selection modes</summary>
+        public const short NO_PKMN_CHOSEN = -1;
 
         public static PartyGUI Instance { get; private set; }
 
         private static readonly Vec2I _renderSize = new(384, 216); // 16:9
+        private static readonly Vec2I _memberSpace = new(_renderSize.X, _renderSize.Y - BOTTOM_HEIGHT);
+        private static readonly Vec2I _memberSize = RenderUtils.DecideGridElementSize(_memberSpace, new Vec2I(NUM_COLS, NUM_ROWS), new Vec2I(MEMBER_SPACING_X, MEMBER_SPACING_Y));
+
         private readonly FrameBuffer2DColor _frameBuffer;
         private readonly TripleColorBackground _tripleColorBG;
 
-        /// <summary>The return value of selection modes, also the y index of the cancel/back button</summary>
-        public const short NO_PKMN_CHOSEN = -1;
-
         private readonly Mode _mode;
-        private readonly bool _allowBack;
         private readonly bool _useGamePartyData;
-        private readonly GamePartyData _gameParty;
-        private readonly BattlePartyData _battleParty;
+        private readonly Party _gameParty;
+        private readonly BattlePokemonParty _battleParty;
         private readonly List<PartyGUIMember> _members;
         private readonly ConnectedList<Sprite> _sprites;
 
@@ -77,14 +58,11 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private TextGUIChoices _textChoices;
         private GUIString _message;
 
-        private int _selectionX;
-        private int _selectionY;
-
         private readonly GUIString _backStr;
 
         #region Open & Close GUI
 
-        private PartyGUI(Mode mode, Action onClosed)
+        private PartyGUI(Mode mode, Action onClosed, bool allowBack)
         {
             Instance = this;
 
@@ -97,17 +75,26 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _tripleColorBG = new TripleColorBackground();
             _sprites = new(Sprite.Sorter);
             _members = new List<PartyGUIMember>(PkmnConstants.PartyCapacity);
-            _backStr = new GUIString("Back", Font.Default, FontColors.DefaultWhite_I);
+
+            _allowBack = allowBack;
+            if (allowBack)
+            {
+                _backStr = new GUIString("Back", Font.Default, FontColors.DefaultWhite_I);
+            }
 
             _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeInParty);
         }
         public PartyGUI(Party party, Mode mode, Action onClosed)
-            : this(mode, onClosed)
+            : this(mode, onClosed, true)
         {
-            _allowBack = true;
             _useGamePartyData = true;
-            _gameParty = new GamePartyData(party, _members, _sprites);
+            _gameParty = party;
+            for (int i = 0; i < party.Count; i++)
+            {
+                var rect = Rect.FromSize(RenderUtils.DecideGridElementPos(_memberSpace, new Vec2I(NUM_COLS, NUM_ROWS), new Vec2I(MEMBER_SPACING_X, MEMBER_SPACING_Y), i), _memberSize);
+                _members.Add(new PartyGUIMember(party[i], rect, _sprites, _members.Count == 0));
+            }
 
             _tripleColorBG.SetColors(Colors.FromRGB(222, 50, 60), Colors.FromRGB(190, 40, 50), Colors.FromRGB(255, 180, 200));
 
@@ -117,11 +104,15 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
         }
         public PartyGUI(BattlePokemonParty party, Mode mode, Action onClosed)
-            : this(mode, onClosed)
+            : this(mode, onClosed, mode != Mode.BattleReplace) // Disallow back for BattleReplace
         {
-            _allowBack = mode != Mode.BattleReplace; // Disallow back for BattleReplace
             _useGamePartyData = false;
-            _battleParty = new BattlePartyData(party, _members, _sprites);
+            _battleParty = party;
+            for (int i = 0; i < party.PBEParty.Count; i++)
+            {
+                var rect = Rect.FromSize(RenderUtils.DecideGridElementPos(_memberSpace, new Vec2I(NUM_COLS, NUM_ROWS), new Vec2I(MEMBER_SPACING_X, MEMBER_SPACING_Y), i), _memberSize);
+                _members.Add(new PartyGUIMember(party[party.PBEParty[i]], rect, _sprites, _members.Count == 0)); // Use battle party's order
+            }
 
             _tripleColorBG.SetColors(Colors.FromRGB(85, 0, 115), Colors.FromRGB(145, 0, 195), Colors.FromRGB(100, 65, 255));
 
@@ -185,7 +176,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             {
                 m.Delete();
             }
-            _backStr.Delete();
+            _backStr?.Delete();
             DeleteMessage();
             // Choices should be closed so no need to dispose them
             Instance = null;
@@ -223,47 +214,24 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _textChoicesWindow.IsInvisible = true;
             if (_useGamePartyData)
             {
-                _ = new SummaryGUI(_gameParty.Party[_selectionForSummary], SummaryGUI.Mode.JustView, OnSummaryClosed);
+                _ = new SummaryGUI(_gameParty[_selectionForSummary], SummaryGUI.Mode.JustView, OnSummaryClosed);
             }
             else
             {
-                BattlePokemonParty party = _battleParty.Party;
-                PBEBattlePokemon pbePkmn = party.PBEParty[_selectionForSummary];
-                BattlePokemon bPkmn = party[pbePkmn];
+                PBEBattlePokemon pbePkmn = _battleParty.PBEParty[_selectionForSummary];
+                BattlePokemon bPkmn = _battleParty[pbePkmn];
                 _ = new SummaryGUI(bPkmn, SummaryGUI.Mode.JustView, OnSummaryClosed);
             }
         }
 
         #endregion
 
-        private int GetPartySize()
-        {
-            return _useGamePartyData ? _gameParty.Party.Count : _battleParty.Party.BattleParty.Length;
-        }
-        private int SelectionCoordsToPartyIndex(int col, int row)
-        {
-            if (row == NO_PKMN_CHOSEN)
-            {
-                return NO_PKMN_CHOSEN;
-            }
-            int i = row * 2 + col;
-            if (i >= GetPartySize())
-            {
-                return NO_PKMN_CHOSEN;
-            }
-            return i;
-        }
         private void UpdateBounces(int oldCol, int oldRow)
         {
-            int i = SelectionCoordsToPartyIndex(oldCol, oldRow);
-            if (i != NO_PKMN_CHOSEN)
+            _members[SelectionCoordsToPartyIndex(oldCol, oldRow)].SetBounce(false);
+            if (_cursor == CursorPos.Party)
             {
-                _members[i].SetBounce(false);
-            }
-            i = SelectionCoordsToPartyIndex(_selectionX, _selectionY);
-            if (i != NO_PKMN_CHOSEN)
-            {
-                _members[i].SetBounce(true);
+                _members[SelectionCoordsToPartyIndex(_selectedMon.X, _selectedMon.Y)].SetBounce(true);
             }
         }
         private void UpdateColors()
@@ -302,7 +270,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             // Update standby color of the one we chose
             for (int i = 0; i < _members.Count; i++)
             {
-                if (_battleParty.Party.PBEParty[i] == pkmn)
+                if (_battleParty.PBEParty[i] == pkmn)
                 {
                     _members[i].UpdateColorAndRedraw();
                     break;
@@ -322,9 +290,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         }
         private void SetUpPositionQuery(int index, bool left, bool center, bool right)
         {
-            BattlePokemonParty party = _battleParty.Party;
-            PBEBattlePokemon pbePkmn = party.PBEParty[index];
-            BattlePokemon bPkmn = party[pbePkmn];
+            PBEBattlePokemon pbePkmn = _battleParty.PBEParty[index];
+            BattlePokemon bPkmn = _battleParty[pbePkmn];
             PartyPokemon pPkmn = bPkmn.PartyPkmn;
             SetMessage(string.Format("Send {0} where?", pPkmn.Nickname));
             CloseChoices();
@@ -409,8 +376,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 }
                 case Mode.BattleReplace:
                 {
-                    BattlePokemonParty party = _battleParty.Party;
-                    PBEBattlePokemon p = party.PBEParty[index];
+                    PBEBattlePokemon p = _battleParty.PBEParty[index];
                     BattleGUI bg = BattleGUI.Instance;
                     switch (bg.Battle.BattleFormat)
                     {
@@ -482,7 +448,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             {
                 case Mode.PkmnMenu:
                 {
-                    PartyPokemon pkmn = _gameParty.Party[index];
+                    PartyPokemon pkmn = _gameParty[index];
                     nickname = pkmn.Nickname;
                     _textChoices.AddOne("Check summary", () => Action_BringUpSummary(index));
                     AddFieldMovesToActions(pkmn, index);
@@ -490,7 +456,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 }
                 case Mode.SelectDaycare:
                 {
-                    PartyPokemon pkmn = _gameParty.Party[index];
+                    PartyPokemon pkmn = _gameParty[index];
                     nickname = pkmn.Nickname;
                     if (!pkmn.IsEgg)
                     {
@@ -501,9 +467,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 }
                 case Mode.BattleSwitchIn:
                 {
-                    BattlePokemonParty party = _battleParty.Party;
-                    PBEBattlePokemon pbePkmn = party.PBEParty[index];
-                    BattlePokemon bPkmn = party[pbePkmn];
+                    PBEBattlePokemon pbePkmn = _battleParty.PBEParty[index];
+                    BattlePokemon bPkmn = _battleParty[pbePkmn];
                     PartyPokemon pPkmn = bPkmn.PartyPkmn;
                     nickname = pPkmn.Nickname;
                     // Cannot switch in if active already or fainted, or in the switch stand by
@@ -516,9 +481,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 }
                 case Mode.BattleReplace:
                 {
-                    BattlePokemonParty party = _battleParty.Party;
-                    PBEBattlePokemon pbePkmn = party.PBEParty[index];
-                    BattlePokemon bPkmn = party[pbePkmn];
+                    PBEBattlePokemon pbePkmn = _battleParty.PBEParty[index];
+                    BattlePokemon bPkmn = _battleParty[pbePkmn];
                     PartyPokemon pPkmn = bPkmn.PartyPkmn;
                     nickname = pPkmn.Nickname;
                     // Cannot switch in if active already or fainted, or in the switch stand by
@@ -582,114 +546,14 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             // Wait for input to advance the message
             if (InputManager.JustPressed(Key.A) || InputManager.JustPressed(Key.B))
             {
-                int index = SelectionCoordsToPartyIndex(_selectionX, _selectionY);
+                int index = SelectionCoordsToPartyIndex(_selectedMon.X, _selectedMon.Y);
                 // Assume Mode.PkmnMenu
-                SetMessage(string.Format("Do what with {0}?", _gameParty.Party[index].Nickname));
+                SetMessage(string.Format("Do what with {0}?", _gameParty[index].Nickname));
                 Game.Instance.SetCallback(CB_Choices);
             }
 
             Render();
             _frameBuffer.BlitToScreen();
-        }
-        private void CB_HandleInputs()
-        {
-            HandleInputs();
-
-            Render();
-            _frameBuffer.BlitToScreen();
-        }
-
-        private void HandleInputs()
-        {
-            // Select a pkmn
-            if (InputManager.JustPressed(Key.A))
-            {
-                if (_selectionY == NO_PKMN_CHOSEN)
-                {
-                    if (_allowBack)
-                    {
-                        ClosePartyMenu();
-                    }
-                }
-                else
-                {
-                    int i = SelectionCoordsToPartyIndex(_selectionX, _selectionY);
-                    BringUpPkmnActions(i);
-                }
-                return;
-            }
-            // Close menu or go back a pkmm
-            if (InputManager.JustPressed(Key.B))
-            {
-                if (_mode == Mode.BattleReplace)
-                {
-                    SwitchesBuilder sb = BattleGUI.Instance.SwitchesBuilder;
-                    if (sb.CanPop())
-                    {
-                        sb.Pop();
-                        UpdateColors();
-                    }
-                }
-                else if (_allowBack)
-                {
-                    ClosePartyMenu();
-                }
-                return;
-            }
-            if (InputManager.JustPressed(Key.Left))
-            {
-                if (_selectionX == 1)
-                {
-                    _selectionX = 0;
-                    UpdateBounces(1, _selectionY);
-                }
-                return;
-            }
-            if (InputManager.JustPressed(Key.Right))
-            {
-                if (_selectionX == 0 && SelectionCoordsToPartyIndex(1, _selectionY) != NO_PKMN_CHOSEN)
-                {
-                    _selectionX = 1;
-                    UpdateBounces(0, _selectionY);
-                }
-                return;
-            }
-            if (InputManager.JustPressed(Key.Down))
-            {
-                int oldY = _selectionY;
-                if (oldY != NO_PKMN_CHOSEN)
-                {
-                    if (SelectionCoordsToPartyIndex(_selectionX, oldY + 1) == NO_PKMN_CHOSEN)
-                    {
-                        if (!_allowBack)
-                        {
-                            return;
-                        }
-                        _selectionY = NO_PKMN_CHOSEN;
-                    }
-                    else
-                    {
-                        _selectionY++;
-                    }
-                    UpdateBounces(_selectionX, oldY);
-                }
-                return;
-            }
-            if (InputManager.JustPressed(Key.Up))
-            {
-                int oldY = _selectionY;
-                if (oldY == NO_PKMN_CHOSEN)
-                {
-                    _selectionY = (GetPartySize() - 1) / 2;
-                    UpdateBounces(_selectionX, oldY);
-                }
-                else if (oldY > 0)
-                {
-                    _selectionY--;
-                    UpdateBounces(_selectionX, oldY);
-                }
-                return;
-            }
         }
 
         private void Render()
@@ -703,20 +567,16 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _frameBuffer.Use(gl);
             _tripleColorBG.Render(gl); // No need to glClear since this will overwrite everything
 
+            // Draw members
             for (int i = 0; i < _members.Count; i++)
             {
-                int col = i % 2;
-                int row = i / 2;
-                Vec2I pos;
-                pos.X = col == 0 ? _renderSize.X / 40 : (_renderSize.X / 2) + (_renderSize.X / 40);
-                pos.Y = row * (_renderSize.Y / 4) + (_renderSize.Y / 20);
-                _members[i].Render(pos, col == _selectionX && row == _selectionY);
+                _members[i].Render(_cursor == CursorPos.Party && SelectionCoordsToPartyIndex(_selectedMon.X, _selectedMon.Y) == i);
             }
 
             // Back button
             if (_allowBack)
             {
-                GUIRenderer.Rect(_selectionY == NO_PKMN_CHOSEN ? Colors.V4FromRGB(96, 48, 48) : Colors.V4FromRGB(48, 48, 48),
+                GUIRenderer.Rect(_cursor == CursorPos.Back ? Colors.V4FromRGB(96, 48, 48) : Colors.V4FromRGB(48, 48, 48),
                     Rect.FromSize(Vec2I.FromRelative(0.5f, 0.8f, _renderSize), Vec2I.FromRelative(0.5f, 0.2f, _renderSize)));
                 _backStr.Render(Vec2I.FromRelative(0.5f, 0.8f, _renderSize));
             }

@@ -58,7 +58,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             Vec2I totalSize = _frameBuffer.Size;
 
             Vector4 backColor = IsSelected ? Colors.V4FromRGB(200, 200, 200) : Colors.White4;
-            GUIRenderer.Rect(backColor, Rect.FromSize(new Vec2I(0, 0), totalSize), cornerRadius: totalSize.Y / 2);
+            GUIRenderer.Rect(backColor, Rect.FromSize(new Vec2I(0, 0), totalSize), cornerRadii: new(totalSize.Y / 2));
 
             _mini.Render(Vec2I.FromRelative(0f, -0.15f, totalSize));
 
