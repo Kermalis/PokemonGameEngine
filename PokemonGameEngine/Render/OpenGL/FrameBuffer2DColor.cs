@@ -25,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, ColorTexture, 0);
         }
 
-        public override void OnCurrent()
+        public override void SetViewport()
         {
             Display.Viewport(Rect.FromSize(new Vec2I(0, 0), Size));
         }

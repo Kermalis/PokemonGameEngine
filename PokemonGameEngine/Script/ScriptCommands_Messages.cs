@@ -12,8 +12,8 @@ namespace Kermalis.PokemonGameEngine.Script
             {
                 _messageBox = Window.CreateStandardMessageBox(Colors.White4, _viewSize);
             }
-            _stringPrinter?.Delete();
-            _stringPrinter = StringPrinter.CreateStandardMessageBox(_messageBox, text, Font.Default, FontColors.DefaultDarkGray_I, _viewSize, scale: _msgScale);
+            _stringPrinter?.Dispose();
+            _stringPrinter = new StringPrinter(_messageBox, text, Font.Default, FontColors.DefaultDarkGray_I, new Vec2I(8, 0), scale: _msgScale);
         }
         private string ReadString()
         {
@@ -44,7 +44,7 @@ namespace Kermalis.PokemonGameEngine.Script
         }
         private void CloseMessageCommand()
         {
-            _stringPrinter.Delete();
+            _stringPrinter.Dispose();
             _stringPrinter = null;
             _messageBox.Close();
             _messageBox = null;

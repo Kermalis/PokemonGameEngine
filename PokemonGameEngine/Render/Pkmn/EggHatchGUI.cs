@@ -54,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         }
         private void CreateMessage(string msg)
         {
-            _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, msg, Font.Default, FontColors.DefaultDarkGray_I, _renderSize);
+            _stringPrinter = new StringPrinter(_stringWindow, msg, Font.Default, FontColors.DefaultDarkGray_I, new Vec2I(8, 0));
         }
         private bool ReadMessage()
         {
@@ -90,7 +90,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 return;
             }
 
-            _stringPrinter.Delete();
+            _stringPrinter.Dispose();
             _stringPrinter = null;
             _transition = new FadeToColorTransition(1f, Colors.FromRGB(200, 200, 200));
             Game.Instance.SetCallback(CB_FadeWhiteToHatch);
@@ -140,7 +140,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 return;
             }
 
-            _stringPrinter.Delete();
+            _stringPrinter.Dispose();
             _stringPrinter = null;
             _stringWindow.Close();
             _stringWindow = null;

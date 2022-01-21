@@ -142,7 +142,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                 // Remove current fade task
                 if (_fadeMusicTask is not null)
                 {
-                    SoundControl.Tasks.RemoveAndDispose(_fadeMusicTask);
+                    SoundControl.Tasks.Remove(_fadeMusicTask);
                     _fadeMusicTask = null;
                 }
                 _isFadingFromOtherMusic = false;
@@ -204,7 +204,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                 return;
             }
 
-            SoundControl.Tasks.RemoveAndDispose(task);
+            SoundControl.Tasks.Remove(task);
             _fadeMusicTask = null;
             _isFadingFromOtherMusic = false;
             SoundMixer.StopChannel(_channel);
@@ -218,7 +218,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                 return;
             }
 
-            SoundControl.Tasks.RemoveAndDispose(task);
+            SoundControl.Tasks.Remove(task);
             _fadeMusicTask = null;
         }
         private void Task_FadeToQueuedMusic(BackTask task)
@@ -228,7 +228,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                 return;
             }
 
-            SoundControl.Tasks.RemoveAndDispose(task);
+            SoundControl.Tasks.Remove(task);
             _fadeMusicTask = null;
             _isFadingFromOtherMusic = false;
             SoundMixer.StopChannel(_channel);
@@ -249,7 +249,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                 return;
             }
 
-            SoundControl.Tasks.RemoveAndDispose(task);
+            SoundControl.Tasks.Remove(task);
             _fadeMusicTask = null;
             _isFadingFromOtherMusic = false;
             SoundMixer.StopChannel(_channel);

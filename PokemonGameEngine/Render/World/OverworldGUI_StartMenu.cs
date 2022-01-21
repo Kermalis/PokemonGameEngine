@@ -94,8 +94,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private void SetupStartMenuWindow()
         {
-            Vec2I s = _startMenuChoices.GetSize();
-            _startMenuWindow = new Window(Vec2I.FromRelative(0.72f, 0.05f, RenderSize), s, Colors.White4);
+            _startMenuWindow = Window.CreateFromInnerSize(new Vec2I(256, 8), _startMenuChoices.GetSize(), Colors.White4, Window.Decoration.GrayRounded);
             RenderStartMenuChoicesOntoWindow();
         }
         private void RenderStartMenuChoicesOntoWindow()

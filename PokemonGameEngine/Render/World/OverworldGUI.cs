@@ -241,7 +241,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     _scriptContext = null;
                 }
             }
-            StringPrinter.UpdateAll();
+            for (StringPrinter s = StringPrinter.AllStringPrinters.First; s is not null; s = s.Next)
+            {
+                s.Update();
+            }
             for (BackTask t = _tasks.First; t is not null; t = t.Next)
             {
                 t.Action(t);

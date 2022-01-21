@@ -32,7 +32,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             data.Progress += Display.DeltaTime * 2f; // Half a second
             if (data.Progress >= 1f)
             {
-                _tasks.RemoveAndDispose(task);
+                _tasks.Remove(task);
                 ActuallyStartFadeIn();
             }
         }
@@ -50,16 +50,16 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private void ClearMessage()
         {
-            _stringPrinter?.Delete();
+            _stringPrinter?.Dispose();
             _stringPrinter = null;
         }
         private void SetMessage_Internal(string str, Action onRead, BackTaskAction a)
         {
-            _stringPrinter?.Delete();
+            _stringPrinter?.Dispose();
             _stringPrinter = null;
             if (str is not null)
             {
-                _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, str, Font.Default, FontColors.DefaultWhite_I, RenderSize);
+                _stringPrinter = new StringPrinter(_stringWindow, str, Font.Default, FontColors.DefaultWhite_I, new Vec2I(16, 0));
                 var data = new TaskData_PrintMessage
                 {
                     OnFinished = onRead
@@ -88,7 +88,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             {
                 _autoAdvanceTime = 0f;
                 var data = (TaskData_PrintMessage)task.Data;
-                _tasks.RemoveAndDispose(task);
+                _tasks.Remove(task);
                 data.OnFinished();
             }
         }
@@ -101,7 +101,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             }
 
             var data = (TaskData_PrintMessage)task.Data;
-            _tasks.RemoveAndDispose(task);
+            _tasks.Remove(task);
             data.OnFinished();
         }
 
@@ -148,7 +148,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             var data = (TaskData_MoveCamera)task.Data;
             if (data.Animator.Update(ref Camera.PR))
             {
-                _tasks.RemoveAndDispose(task);
+                _tasks.Remove(task);
                 data.OnFinished?.Invoke();
             }
         }
@@ -214,7 +214,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             }
 
             _canAdvanceMsg = true;
-            _tasks.RemoveAndDispose(task);
+            _tasks.Remove(task);
         }
 
         private void Task_TrainerGoAway(BackTask task)
@@ -224,7 +224,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             if (data.Progress >= 1f)
             {
                 _trainerSprite.IsVisible = false;
-                _tasks.RemoveAndDispose(task); // Don't delete sprite here since we can reuse it for taunts in-battle
+                _tasks.Remove(task); // Don't delete sprite here since we can reuse it for taunts in-battle
                 return;
             }
             _trainerSprite.Pos.Z = Utils.Lerp(data.StartZ, data.EndZ, data.Progress);
@@ -270,7 +270,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             data.Progress += Display.DeltaTime;
             if (data.Progress >= 1f)
             {
-                _tasks.RemoveAndDispose(task);
+                _tasks.Remove(task);
                 Set(0f);
                 return;
             }
@@ -300,7 +300,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             data.Progress += Display.DeltaTime;
             if (data.Progress >= 1f)
             {
-                _tasks.RemoveAndDispose(task);
+                _tasks.Remove(task);
                 data.Pkmn.Pos.Sprite.PixelateAmt = 0f;
                 _hudInvisible = false;
                 ShowPacketMessageThenResumeBattleThread(data.Packet);

@@ -176,8 +176,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         }
         private void CreateDoWhatWithChoices(string nickname)
         {
-            Vec2I s = _textChoices.GetSize();
-            _textChoicesWindow = new Window(Vec2I.FromRelative(0.6f, 0.3f, _renderSize), s, Colors.White4);
+            _textChoicesWindow = Window.CreateFromInnerSize(Vec2I.FromRelative(0.55f, 0.25f, _renderSize), _textChoices.GetSize(), Colors.White4, Window.Decoration.GrayRounded);
             RenderChoicesOntoWindow();
             string msg = string.Format("Do what with {0}?", nickname);
             _staticStringBackup = msg;
@@ -203,8 +202,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
         private void CreateStringPrinterAndWindow(string message, bool isStaticMsg, Action doneCallback)
         {
-            _stringWindow = Window.CreateStandardMessageBox(Colors.FromRGBA(49, 49, 49, 192), _renderSize);
-            _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, message, Font.Default, FontColors.DefaultWhite_I, _renderSize);
+            _stringWindow = Window.CreateStandardMessageBox(Colors.FromRGBA(20, 20, 20, 225), _renderSize);
+            _stringPrinter = new StringPrinter(_stringWindow, message, Font.Default, FontColors.DefaultWhite_I, new Vec2I(8, 0));
             _stringReadCallback = doneCallback;
             if (isStaticMsg)
             {
@@ -217,14 +216,14 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         }
         private void OverwriteStaticString(string message, Action curCallback, Action doneCallback)
         {
-            _stringPrinter.Delete();
-            _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, message, Font.Default, FontColors.DefaultWhite_I, _renderSize);
+            _stringPrinter.Dispose();
+            _stringPrinter = new StringPrinter(_stringWindow, message, Font.Default, FontColors.DefaultWhite_I, new Vec2I(8, 0));
             _stringReadCallback = doneCallback;
             Game.Instance.SetCallback(curCallback);
         }
         private void CloseStringPrinterAndWindow()
         {
-            _stringPrinter.Delete();
+            _stringPrinter.Dispose();
             _stringPrinter = null;
             _stringWindow.Close();
             _stringWindow = null;

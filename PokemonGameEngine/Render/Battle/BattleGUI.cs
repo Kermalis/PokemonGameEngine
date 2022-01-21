@@ -109,7 +109,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             _transition.Dispose();
             _transition = null;
-            _stringWindow = Window.CreateStandardMessageBox(Colors.FromRGBA(49, 49, 49, 128), RenderSize);
+            _stringWindow = Window.CreateFromInnerSize(new Vec2I(0, RenderSize.Y - 52), new Vec2I(RenderSize.X, 32), Colors.FromRGBA(80, 80, 80, 200), Window.Decoration.Battle);
             OnFadeInFinished();
             Game.Instance.SetCallback(CB_RunTasksAndEvents);
         }
@@ -129,7 +129,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _frameBuffer.Delete();
             _shadowFrameBuffer.Delete();
             _dayTintFrameBuffer.Delete();
-            _stringPrinter?.Delete();
+            _stringPrinter?.Dispose();
             _stringWindow.Close();
             RemoveActionsGUI();
             Battle.OnNewEvent -= SinglePlayerBattle_OnNewEvent;

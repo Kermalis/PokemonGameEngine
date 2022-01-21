@@ -139,20 +139,19 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             return s;
         }
 
-        public static void CreateStandardYesNoChoices(Action<bool> clickAction, Vec2I viewSize, out TextGUIChoices choices, out Window window, float x = 0.8f, float y = 0.4f)
+        public static void CreateStandardYesNoChoices(Action<bool> clickAction, Vec2I viewSize, out TextGUIChoices choices, out Window window, float x = 0.75f, float y = 0.35f)
         {
             choices = new TextGUIChoices(0f, 0f,
                 font: Font.Default, textColors: FontColors.DefaultDarkGray_I, selectedColors: FontColors.DefaultYellow_O);
             choices.AddOne("Yes", () => clickAction(true));
             choices.AddOne("No", () => clickAction(false));
-            Vec2I s = choices.GetSize();
-            window = new Window(Vec2I.FromRelative(x, y, viewSize), s, Colors.White4);
+            window = Window.CreateFromInnerSize(Vec2I.FromRelative(x, y, viewSize), choices.GetSize(), Colors.White4, Window.Decoration.GrayRounded);
             choices.RenderChoicesOntoWindow(window);
         }
         public void RenderChoicesOntoWindow(Window window)
         {
-            window.Clear();
-            Render(window.FrameBuffer.Size);
+            window.ClearInner();
+            Render(Display.ViewportSize); // Inner size of the window
         }
     }
 }

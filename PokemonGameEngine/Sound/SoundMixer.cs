@@ -48,7 +48,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         }
         public static void StopChannel(SoundChannel c)
         {
-            _channels.RemoveAndDispose(c);
+            _channels.Remove(c);
         }
 
 #if DEBUG_AUDIO_LOG

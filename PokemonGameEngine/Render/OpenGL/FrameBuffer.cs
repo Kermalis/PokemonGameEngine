@@ -15,11 +15,15 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
         }
 
-        public abstract void OnCurrent();
+        public abstract void SetViewport();
         public void Use(GL gl)
         {
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, Id);
-            OnCurrent();
+            SetViewport();
+        }
+        public void UseNoViewport(GL gl)
+        {
+            gl.BindFramebuffer(FramebufferTarget.Framebuffer, Id);
         }
 
         public virtual void Delete()

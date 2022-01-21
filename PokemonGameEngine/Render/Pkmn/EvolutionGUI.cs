@@ -61,7 +61,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         }
         private void CreateMessage(string msg)
         {
-            _stringPrinter = StringPrinter.CreateStandardMessageBox(_stringWindow, msg, Font.Default, FontColors.DefaultDarkGray_I, _renderSize);
+            _stringPrinter = new StringPrinter(_stringWindow, msg, Font.Default, FontColors.DefaultDarkGray_I, new Vec2I(8, 0));
         }
         private bool ReadMessage()
         {
@@ -100,7 +100,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 _textChoicesWindow = null;
                 _textChoices.Dispose();
                 _textChoices = null;
-                _stringPrinter.Delete();
+                _stringPrinter.Dispose();
                 _stringPrinter = null;
                 SetGiveUpLearningMove();
             }
@@ -111,7 +111,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _textChoicesWindow = null;
             _textChoices.Dispose();
             _textChoices = null;
-            _stringPrinter.Delete();
+            _stringPrinter.Dispose();
             _stringPrinter = null;
             if (value)
             {
@@ -213,7 +213,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 return;
             }
 
-            _stringPrinter.Delete();
+            _stringPrinter.Dispose();
             _stringPrinter = null;
             _transition = new FadeToColorTransition(1f, Colors.FromRGB(200, 200, 200));
             Game.Instance.SetCallback(CB_FadeWhiteToEvolution);
@@ -274,7 +274,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 return;
             }
 
-            _stringPrinter.Delete();
+            _stringPrinter.Dispose();
             _stringPrinter = null;
             // Check for moves to learn
             _learningMoves = new Queue<PBEMove>(new LevelUpData(_pkmn.Species, _pkmn.Form).GetNewMoves(_pkmn.Level));
@@ -292,7 +292,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 return;
             }
 
-            _stringPrinter.Delete();
+            _stringPrinter.Dispose();
             _stringPrinter = null;
             InitFadeOut();
         }
@@ -354,7 +354,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _textChoicesWindow = null;
             _textChoices.Dispose();
             _textChoices = null;
-            _stringPrinter.Delete();
+            _stringPrinter.Dispose();
             _stringPrinter = null;
             _ = new SummaryGUI(_pkmn, SummaryGUI.Mode.LearnMove, OnSummaryClosed, learningMove: _learningMoves.Peek());
         }
@@ -416,7 +416,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 return;
             }
 
-            _stringPrinter.Delete();
+            _stringPrinter.Dispose();
             _stringPrinter = null;
             CheckForMoreLearnableMoves();
         }

@@ -194,7 +194,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             {
                 if (o.Map == this && o.Id != Overworld.CameraId && o.Id != CameraObj.Instance.CamAttachedTo.Id)
                 {
-                    Obj.LoadedObjs.RemoveAndDispose(o);
+                    Obj.LoadedObjs.Remove(o);
                 }
             }
         }

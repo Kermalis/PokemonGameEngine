@@ -317,8 +317,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 _textChoices.AddOne("Send Right", () => SelectForBattleReplacement(pbePkmn, PBEFieldPosition.Right));
             }
             _textChoices.AddOne("Cancel", BackCommand);
-            Vec2I s = _textChoices.GetSize();
-            _textChoicesWindow = new Window(Vec2I.FromRelative(0.6f, 0.3f, _renderSize), s, Colors.White4);
+            _textChoicesWindow = Window.CreateFromInnerSize(Vec2I.FromRelative(0.55f, 0.25f, _renderSize), _textChoices.GetSize(), Colors.White4, Window.Decoration.GrayRounded);
             RenderChoicesOntoWindow();
             Game.Instance.SetCallback(CB_Choices);
         }
@@ -497,8 +496,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             _textChoices.AddOne("Cancel", CloseChoicesThenGoToHandleInputs);
-            Vec2I s = _textChoices.GetSize();
-            _textChoicesWindow = new Window(Vec2I.FromRelative(0.6f, 0.3f, _renderSize), s, Colors.White4);
+            _textChoicesWindow = Window.CreateFromInnerSize(Vec2I.FromRelative(0.55f, 0.25f, _renderSize), _textChoices.GetSize(), Colors.White4, Window.Decoration.GrayRounded);
             RenderChoicesOntoWindow();
             SetMessage(string.Format("Do what with {0}?", nickname));
             Game.Instance.SetCallback(CB_Choices);

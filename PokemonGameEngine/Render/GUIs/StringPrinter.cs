@@ -1,12 +1,10 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Input;
-using Silk.NET.OpenGL;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.GUIs
 {
-    internal sealed class StringPrinter
+    internal sealed class StringPrinter : IConnectedListObject<StringPrinter>
     {
         private enum StringPrinterResult : byte
         {
@@ -21,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         //private const float PRINT_SPEED_NORMAL = 40f;
         private const float PRINT_SPEED_FAST = 70f;
 
-        private static readonly List<StringPrinter> _allStringPrinters = new();
+        public static readonly ConnectedList<StringPrinter> AllStringPrinters = new();
 
         private readonly Window _window;
 
@@ -34,16 +32,15 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         public bool IsDone => _result == StringPrinterResult.Ended && _pressedDone;
         public bool IsEnded => _result == StringPrinterResult.Ended;
 
+        public StringPrinter Prev { get; set; }
+        public StringPrinter Next { get; set; }
+
         public StringPrinter(Window w, string str, Font font, Vector4[] strColors, Vec2I pos, int scale = 1)
         {
             _window = w;
+            w.ClearInner(); // Required if we're reusing the window
             _str = new GUIString(Game.Instance.StringBuffers.ApplyBuffers(str), font, strColors, pos: pos, allVisible: false, scale: scale);
-            w.Clear();
-            _allStringPrinters.Add(this);
-        }
-        public static StringPrinter CreateStandardMessageBox(Window w, string str, Font font, Vector4[] strColors, Vec2I totalSize, int scale = 1)
-        {
-            return new StringPrinter(w, str, font, strColors, Vec2I.FromRelative(0.05f, 0.01f, totalSize), scale: scale);
+            AllStringPrinters.Add(this);
         }
 
         public void Update()
@@ -68,7 +65,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
                 {
                     if (JustPressed())
                     {
-                        _window.Clear();
+                        _window.ClearInner();
                         _str.VisibleStart = _str.NumVisible;
                         _str.NumVisible = 0;
                         _result = StringPrinterResult.EnoughChars;
@@ -102,8 +99,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             _charTimer %= 1f;
             if (count >= 1)
             {
-                GL gl = Display.OpenGL;
-                _window.FrameBuffer.Use(gl);
+                _window.UseInner();
                 _result = DrawNext(count);
             }
         }
@@ -132,18 +128,10 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             return _index >= _str.Text.Length ? StringPrinterResult.Ended : StringPrinterResult.EnoughChars;
         }
 
-        public static void UpdateAll()
-        {
-            foreach (StringPrinter s in _allStringPrinters.ToArray())
-            {
-                s.Update();
-            }
-        }
-
-        public void Delete()
+        public void Dispose()
         {
             _str.Delete();
-            _allStringPrinters.Remove(this);
+            AllStringPrinters.Remove(this, dispose: false);
         }
     }
 }

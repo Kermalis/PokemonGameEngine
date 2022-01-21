@@ -51,7 +51,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 return;
             }
 
-            _tasks.RemoveAndDispose(task);
+            _tasks.Remove(task);
             for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
             {
                 o.IsLocked = false;

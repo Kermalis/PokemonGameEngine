@@ -8,13 +8,19 @@ namespace Kermalis.PokemonGameEngine.Core
         T Prev { get; set; }
         T Next { get; set; }
     }
+
     internal sealed class ConnectedList<T>
         where T : class, IConnectedListObject<T>
     {
         private readonly Func<T, T, int> _sorter;
+
         public T First { get; private set; }
         public int Count { get; private set; }
 
+        public ConnectedList()
+        {
+            _sorter = NoSort;
+        }
         public ConnectedList(Func<T, T, int> sorter)
         {
             _sorter = sorter;
@@ -62,7 +68,7 @@ namespace Kermalis.PokemonGameEngine.Core
                 o = next;
             }
         }
-        public void RemoveAndDispose(T obj)
+        public void Remove(T obj, bool dispose = true)
         {
             if (obj == First)
             {
@@ -83,28 +89,11 @@ namespace Kermalis.PokemonGameEngine.Core
                 }
                 prev.Next = next;
             }
-            obj.Dispose();
+            if (dispose)
+            {
+                obj.Dispose();
+            }
             Count--;
-        }
-
-        public void RemoveAll()
-        {
-            for (T t = First; t is not null; t = t.Next)
-            {
-                t.Dispose();
-            }
-            First = null;
-            Count = 0;
-        }
-        public void RemoveAll(Func<T, bool> selector)
-        {
-            for (T o = First; o is not null; o = o.Next)
-            {
-                if (selector(o))
-                {
-                    RemoveAndDispose(o);
-                }
-            }
         }
 
         public void Sort()
@@ -152,6 +141,11 @@ namespace Kermalis.PokemonGameEngine.Core
             }
             obj = default;
             return false;
+        }
+
+        private static int NoSort<TObj>(TObj a, TObj b)
+        {
+            return 0;
         }
     }
 }
