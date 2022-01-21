@@ -200,9 +200,17 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
                     if (_debugBlockStatusEnabled && vb.Status != DebugBlockStatus.None)
                     {
-                        GUIRenderer.Rect(Debug_GetBlockStatusColor(vb.Status), posRect);
+                        Vector4 color = Debug_GetBlockStatusColor(vb.Status);
+                        if (_debugBlockGridEnabled)
+                        {
+                            GUIRenderer.Rect(color, Colors.Black4, posRect, 1);
+                        }
+                        else
+                        {
+                            GUIRenderer.Rect(color, posRect);
+                        }
                     }
-                    if (_debugBlockGridEnabled)
+                    else if (_debugBlockGridEnabled)
                     {
                         GUIRenderer.Rect(Colors.Black4, posRect, lineThickness: 1);
                     }

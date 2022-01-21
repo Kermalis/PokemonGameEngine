@@ -10,7 +10,7 @@ namespace Kermalis.PokemonGameEngine.Script
     internal static class ScriptLoader
     {
         private const string FILE = @"Script\Scripts.bin";
-        
+
         private static readonly Dictionary<string, uint> _globalScriptOffsets;
 
         static ScriptLoader()
