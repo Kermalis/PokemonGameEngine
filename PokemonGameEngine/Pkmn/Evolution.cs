@@ -22,9 +22,9 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             return _pendingEvolutions.TryDequeue(out evo);
         }
 
-        private static bool IsEverstone(PartyPokemon pkmn)
+        private static bool HeldEverstonePreventsEvolution(PartyPokemon pkmn)
         {
-            return pkmn.Item == ItemType.Everstone;
+            return pkmn.Item == ItemType.Everstone && pkmn.Species != PBESpecies.Kadabra;
         }
         private static bool IsNight()
         {
@@ -53,7 +53,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
         // Ignores Shedinja_LevelUp & Beauty_LevelUp
         public static EvolutionData.EvoData GetLevelUpEvolution(Party party, PartyPokemon pkmn)
         {
-            if (IsEverstone(pkmn))
+            if (HeldEverstonePreventsEvolution(pkmn))
             {
                 return null;
             }
@@ -138,6 +138,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public static EvolutionData.EvoData GetItemEvolution(PartyPokemon pkmn, ItemType item)
         {
+            // Everstone doesn't affect item evolution
             bool isNight = IsNight();
 
             var data = new EvolutionData(pkmn.Species, pkmn.Form);
@@ -167,7 +168,7 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 
         public static EvolutionData.EvoData GetTradeEvolution(PartyPokemon pkmn, PBESpecies otherSpecies)
         {
-            if (IsEverstone(pkmn))
+            if (HeldEverstonePreventsEvolution(pkmn))
             {
                 return null;
             }
@@ -221,7 +222,8 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 case EvoMethod.Female_LevelUp:
                 case EvoMethod.NosepassMagneton_Location_LevelUp:
                 case EvoMethod.Leafeon_Location_LevelUp:
-                case EvoMethod.Glaceon_Location_LevelUp: return true;
+                case EvoMethod.Glaceon_Location_LevelUp:
+                    return true;
             }
             return false;
         }
