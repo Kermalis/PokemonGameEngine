@@ -22,15 +22,17 @@ namespace Kermalis.PokemonGameEngine.Render.World
     {
         public static OverworldGUI Instance { get; private set; } = null!; // Set in constructor
 
-        // A block is 16x16 pixels (2x2 tiles, and a tile is 8x8 pixels)
-        // You can have different sized blocks and tiles if you wish, but this table is demonstrating defaults
-        // GB/GBC        - 160 x 144 resolution (10:9) - 10 x  9   blocks
-        // GBA           - 240 x 160 resolution ( 3:2) - 15 x 10   blocks
-        // NDS           - 256 x 192 resolution ( 4:3) - 16 x 12   blocks
-        // 3DS (Lower)   - 320 x 240 resolution ( 4:3) - 20 x 15   blocks
-        // 3DS (Upper)   - 400 x 240 resolution ( 5:3) - 25 x 15   blocks
-        // Default below - 384 x 216 resolution (16:9) - 24 x 13.5 blocks
-        public static readonly Vec2I RenderSize = new(384, 216);
+        // By default, a block is 16x16 pixels -- 2x2 tiles, 8x8 pixels per tile
+        // |  CONSOLE  |    RESOLUTION    | NUM BLOCKS |
+        // |-----------|------------------|------------|
+        // | GB && GBC | 160 x 144 (10:9) | 10 x  9    |
+        // |    GBA    | 240 x 160 ( 3:2) | 15 x 10    |
+        // |    NDS    | 256 x 192 ( 4:3) | 16 x 12    |
+        // | 3DS Lower | 320 x 240 ( 4:3) | 20 x 15    |
+        // | 3DS Upper | 400 x 240 ( 5:3) | 25 x 15    |
+        // |-----------|------------------|------------|
+        // |   Below   | 320 x 180 (16:9) | 20 x 11.25 |
+        public static readonly Vec2I RenderSize = new(320, 180);
 
         private readonly FrameBuffer2DColor _frameBuffer;
         private readonly FrameBuffer2DColor _dayTintFrameBuffer;

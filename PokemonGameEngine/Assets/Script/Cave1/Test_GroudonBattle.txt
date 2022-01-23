@@ -1,9 +1,11 @@
 .set LOCALID_GROUDON 0
+.set LOCALID_CAMERA 0xFFFE // TODO: Have these specific defines globally defined by _build
 .set LOCALID_PLAYER 0xFFFF
 
 @Test_GroudonBattle
     LockAllObjs
     MoveObj LOCALID_PLAYER TestMovement_FaceNorth
+    MoveObj LOCALID_CAMERA TestMovement_UpTwice
     AwaitObjMovement LOCALID_PLAYER
     Delay 1
     PlayCry Species.Groudon 0
@@ -17,6 +19,7 @@
     WildBattle Species.Groudon 0 70
     AwaitReturnToField
     UnloadObj LOCALID_GROUDON
+    MoveObj LOCALID_CAMERA TestMovement_DownTwice
 
 // Assume you defeat it for now.
     SetFlag Flag.Test_GroudonVisible
@@ -27,7 +30,7 @@
 // Text
 
 #TestText_GroudonGyaoo
-    "GYAOOOOOOOOOOOOOOOOOHHH!!!"
+    "GYAOOOOOOOOOOOOOOOOHHH!!!"
 
 #TestText_GroudonDefeat
     "Groudon retreated!"
@@ -36,4 +39,14 @@
 
 #TestMovement_FaceNorth
     M.Face_N
+    M.End
+
+#TestMovement_UpTwice
+    M.Walk_N
+    M.Walk_N
+    M.End
+
+#TestMovement_DownTwice
+    M.Walk_S
+    M.Walk_S
     M.End

@@ -11,6 +11,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
 {
     internal sealed partial class OverworldGUI
     {
+        private const int START_MENU_X = 192;
+        private const int START_MENU_Y = 8;
+
         private Window _startMenuWindow;
         private TextGUIChoices _startMenuChoices;
 
@@ -94,7 +97,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private void SetupStartMenuWindow()
         {
-            _startMenuWindow = Window.CreateFromInnerSize(new Vec2I(256, 8), _startMenuChoices.GetSize(), Colors.White4, Window.Decoration.GrayRounded);
+            _startMenuWindow = Window.CreateFromInnerSize(new Vec2I(START_MENU_X, START_MENU_Y), _startMenuChoices.GetSize(), Colors.White4, Window.Decoration.GrayRounded);
             RenderStartMenuChoicesOntoWindow();
         }
         private void RenderStartMenuChoicesOntoWindow()
