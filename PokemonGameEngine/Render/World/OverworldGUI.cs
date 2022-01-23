@@ -149,9 +149,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         public void ReturnToFieldWithFadeInAfterEvolutionCheck()
         {
-            if (Evolution.TryGetNextPendingEvolution(out (PartyPokemon Pkmn, EvolutionData.EvoData Evo) e))
+            if (Evolution.TryGetNextPendingEvolution(out (PartyPokemon Pkmn, EvolutionData.EvoData Evo, bool CanCancel) e))
             {
-                _ = new EvolutionGUI(e.Pkmn, e.Evo);
+                _ = new EvolutionGUI(e.Pkmn, e.Evo, e.CanCancel);
                 return;
             }
             ReturnToFieldWithFadeIn();

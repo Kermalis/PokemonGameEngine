@@ -38,7 +38,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private AnimatedImage _img;
         private Vec2I _imgPos;
 
-        public EvolutionGUI(PartyPokemon pkmn, EvolutionData.EvoData evo)
+        public EvolutionGUI(PartyPokemon pkmn, EvolutionData.EvoData evo, bool canCancel)
         {
             Display.SetMinimumWindowSize(_renderSize);
             _frameBuffer = new FrameBuffer2DColor(_renderSize);
@@ -46,7 +46,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _pkmn = pkmn;
             _evo = evo;
             _oldNickname = pkmn.Nickname;
-            _canCancel = Evolution.CanCancelEvolution(evo.Method);
+            _canCancel = canCancel;
             UpdatePkmnImage();
 
             _transition = FadeFromColorTransition.FromBlackStandard();
@@ -241,7 +241,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             {
                 Evolution.TryCreateShedinja(_pkmn);
             }
-            _pkmn.Evolve(_evo);
+            _pkmn.Evolve(_evo.Species, _evo.Form);
             UpdatePkmnImage();
             _transition = new FadeFromColorTransition(1f, Colors.FromRGB(200, 200, 200));
             Game.Instance.SetCallback(CB_FadeToEvolution);

@@ -46,7 +46,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
                     EvolutionData.EvoData evo = Evolution.GetLevelUpEvolution(GameParty, pp);
                     if (evo is not null)
                     {
-                        Evolution.AddPendingEvolution(pp, evo);
+                        Evolution.AddPendingEvolution(pp, evo, true);
                     }
                 }
             }

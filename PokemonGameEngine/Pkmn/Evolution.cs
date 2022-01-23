@@ -11,13 +11,14 @@ namespace Kermalis.PokemonGameEngine.Pkmn
 {
     internal static class Evolution
     {
-        private static readonly Queue<(PartyPokemon, EvolutionData.EvoData)> _pendingEvolutions = new(PkmnConstants.PartyCapacity);
+        private static readonly Queue<(PartyPokemon, EvolutionData.EvoData, bool)> _pendingEvolutions = new(PkmnConstants.PartyCapacity);
 
-        public static void AddPendingEvolution(PartyPokemon pkmn, EvolutionData.EvoData evo)
+        // Only level-up evolutions can be cancelled
+        public static void AddPendingEvolution(PartyPokemon pkmn, EvolutionData.EvoData evo, bool canCancel)
         {
-            _pendingEvolutions.Enqueue((pkmn, evo));
+            _pendingEvolutions.Enqueue((pkmn, evo, canCancel));
         }
-        public static bool TryGetNextPendingEvolution(out (PartyPokemon, EvolutionData.EvoData) evo)
+        public static bool TryGetNextPendingEvolution(out (PartyPokemon, EvolutionData.EvoData, bool) evo)
         {
             return _pendingEvolutions.TryDequeue(out evo);
         }
@@ -195,37 +196,6 @@ namespace Kermalis.PokemonGameEngine.Pkmn
                 }
             }
             return null;
-        }
-
-        // Only level-up evolutions can be cancelled
-        public static bool CanCancelEvolution(EvoMethod method)
-        {
-            switch (method)
-            {
-                case EvoMethod.Friendship_LevelUp:
-                case EvoMethod.Friendship_Day_LevelUp:
-                case EvoMethod.Friendship_Night_LevelUp:
-                case EvoMethod.LevelUp:
-                case EvoMethod.ATK_GT_DEF_LevelUp:
-                case EvoMethod.ATK_EE_DEF_LevelUp:
-                case EvoMethod.ATK_LT_DEF_LevelUp:
-                case EvoMethod.Silcoon_LevelUp:
-                case EvoMethod.Cascoon_LevelUp:
-                case EvoMethod.Ninjask_LevelUp:
-                case EvoMethod.Shedinja_LevelUp:
-                case EvoMethod.Beauty_LevelUp:
-                case EvoMethod.Item_Day_LevelUp:
-                case EvoMethod.Item_Night_LevelUp:
-                case EvoMethod.Move_LevelUp:
-                case EvoMethod.PartySpecies_LevelUp:
-                case EvoMethod.Male_LevelUp:
-                case EvoMethod.Female_LevelUp:
-                case EvoMethod.NosepassMagneton_Location_LevelUp:
-                case EvoMethod.Leafeon_Location_LevelUp:
-                case EvoMethod.Glaceon_Location_LevelUp:
-                    return true;
-            }
-            return false;
         }
 
         public static void TryCreateShedinja(PartyPokemon nincada)

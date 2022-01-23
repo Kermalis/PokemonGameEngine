@@ -430,12 +430,12 @@ namespace Kermalis.PokemonGameEngine.Pkmn
             CalcMaxHP(); // Calc stats after form is set
             SetHPToMaxHP();
         }
-        public void Evolve(EvolutionData.EvoData evo)
+        public void Evolve(PBESpecies species, PBEForm form)
         {
             Game.Instance.Save.GameStats[GameStat.EvolvedPokemon]++;
             bool nicknameShouldUpdate = HasDefaultNickname();
-            Species = evo.Species;
-            Form = evo.Form;
+            Species = species;
+            Form = form;
             if (nicknameShouldUpdate)
             {
                 SetDefaultNickname();
