@@ -46,13 +46,13 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
             shader.SetProgress(gl, progress);
 
             // Render to transition texture
-            _frameBuffer.Use(gl);
+            _frameBuffer.UseAndViewport(gl);
             gl.BindTexture(TextureTarget.Texture2D, target.ColorTexture);
             RectMesh.Instance.Render(gl);
 
             // Copy rendered result back to the target
             EntireScreenTextureShader.Instance.Use(gl);
-            target.Use(gl);
+            target.UseAndViewport(gl);
             gl.BindTexture(TextureTarget.Texture2D, _frameBuffer.ColorTexture);
             RectMesh.Instance.Render(gl);
 

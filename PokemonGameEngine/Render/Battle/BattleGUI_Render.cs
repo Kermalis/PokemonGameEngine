@@ -402,7 +402,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             Matrix4x4 camView = Camera.CreateViewMatrix();
 
             // Clear shadow buffer
-            _shadowFrameBuffer.Use(gl);
+            _shadowFrameBuffer.UseAndViewport(gl);
             gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             #region Draw sprites to shadow buffer
@@ -416,7 +416,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             #region Draw models (shadows will be placed on top of them now)
 
-            _frameBuffer.Use(gl);
+            _frameBuffer.UseAndViewport(gl);
             _modelShader.Use(gl);
             _modelShader.SetCamera(gl, Camera.Projection, camView, Camera.PR.Position);
             _modelShader.SetLights(gl, _testLights);

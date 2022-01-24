@@ -185,7 +185,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
 
             GL gl = Display.OpenGL;
-            _debugFrameBuffer.Use(gl);
+            _debugFrameBuffer.UseAndViewport(gl);
             gl.ClearColor(Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
 

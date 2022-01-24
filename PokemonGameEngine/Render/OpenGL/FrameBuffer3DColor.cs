@@ -15,8 +15,9 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             UpdateTexture(numLayers);
         }
 
-        public override void SetViewport()
+        public void UseAndViewport(GL gl)
         {
+            gl.BindFramebuffer(FramebufferTarget.Framebuffer, Id);
             Display.Viewport(Rect.FromSize(new Vec2I(0, 0), Size));
         }
 

@@ -25,6 +25,8 @@ namespace Kermalis.PokemonGameEngine.Render
         public static readonly GL OpenGL;
         public static bool AutosizeWindow = true; // Works silently with fullscreen mode
         public static Vec2I ViewportSize;
+        public static Vec2I ScreenSize;
+        public static Rect ScreenRect;
         public static float DeltaTime;
 
         static Display()
@@ -54,7 +56,7 @@ namespace Kermalis.PokemonGameEngine.Render
             windowFlags |= SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP;
 #endif
 
-            _window = SDL.SDL_CreateWindow(WINDOW_TITLE, SDL.SDL_WINDOWPOS_UNDEFINED, SDL.SDL_WINDOWPOS_UNDEFINED, 0, 0, windowFlags);
+            _window = SDL.SDL_CreateWindow(WINDOW_TITLE, SDL.SDL_WINDOWPOS_UNDEFINED, SDL.SDL_WINDOWPOS_UNDEFINED, 1, 1, windowFlags);
             if (_window == IntPtr.Zero)
             {
                 Print_SDL_Error("Could not create the window!");
@@ -85,6 +87,8 @@ namespace Kermalis.PokemonGameEngine.Render
                 OpenGL.DebugMessageCallback(HandleGLError, null);
             }
 #endif
+
+            SetMinimumWindowSize(new Vec2I(1, 1));
         }
 
         private static Vec2I GetWindowSize()
@@ -95,12 +99,14 @@ namespace Kermalis.PokemonGameEngine.Render
         }
         public static void SetMinimumWindowSize(Vec2I size)
         {
+            ScreenSize = size;
             SDL.SDL_SetWindowMinimumSize(_window, size.X, size.Y);
             if (AutosizeWindow)
             {
                 size *= AUTOSIZE_WINDOW_SCALE;
                 SDL.SDL_SetWindowSize(_window, size.X, size.Y);
             }
+            SetScreenRect();
         }
         public static void Viewport(in Rect rect)
         {
@@ -108,15 +114,14 @@ namespace Kermalis.PokemonGameEngine.Render
             OpenGL.Viewport(rect.TopLeft.X, rect.TopLeft.Y, (uint)size.X, (uint)size.Y);
             ViewportSize = size;
         }
-        public static Rect FitToScreen(Vec2I inSize)
+        private static void SetScreenRect()
         {
-            // Maintain aspect ratio of inSize
             Vector2 windowSize = GetWindowSize();
-            Vector2 ratios = windowSize / inSize;
+            Vector2 ratios = windowSize / ScreenSize;
             float ratio = ratios.X < ratios.Y ? ratios.X : ratios.Y;
-            Vector2 size = inSize * ratio;
+            Vector2 size = ScreenSize * ratio;
             Vector2 topLeft = (windowSize - size) * 0.5f;
-            return Rect.FromSize((Vec2I)topLeft, (Vec2I)size);
+            ScreenRect = Rect.FromSize((Vec2I)topLeft, (Vec2I)size);
         }
 
         /// <summary>Returns true if the current frame should be skipped</summary>
@@ -145,6 +150,7 @@ namespace Kermalis.PokemonGameEngine.Render
 #endif
                 }
             }
+            SetScreenRect();
             return false;
         }
         public static void PresentFrame()

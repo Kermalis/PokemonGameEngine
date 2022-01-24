@@ -58,14 +58,14 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
         public void UseInner()
         {
             GL gl = Display.OpenGL;
-            _frameBuffer.UseNoViewport(gl);
+            _frameBuffer.Use(gl);
             Display.Viewport(_innerRect);
         }
         /// <summary>Uses the framebuffer and clears the inside to the specified inner color</summary>
         public void ClearInner()
         {
             GL gl = Display.OpenGL;
-            _frameBuffer.UseNoViewport(gl);
+            _frameBuffer.Use(gl);
             Display.Viewport(_innerRect);
 
             gl.Enable(EnableCap.ScissorTest);
@@ -106,7 +106,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             }
 
             GL gl = Display.OpenGL;
-            _frameBuffer.Use(gl);
+            _frameBuffer.UseAndViewport(gl);
             gl.ClearColor(Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
 

@@ -54,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         public void Draw()
         {
             GL gl = Display.OpenGL;
-            _frameBuffer.Use(gl);
+            _frameBuffer.UseAndViewport(gl);
             Vec2I totalSize = _frameBuffer.Size;
 
             Vector4 backColor = IsSelected ? Colors.V4FromRGB(200, 200, 200) : Colors.White4;

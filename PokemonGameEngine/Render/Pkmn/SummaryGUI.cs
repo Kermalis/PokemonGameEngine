@@ -292,7 +292,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void UpdatePageImage()
         {
             GL gl = Display.OpenGL;
-            _pageFrameBuffer.Use(gl);
+            _pageFrameBuffer.UseAndViewport(gl);
             gl.ClearColor(Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
@@ -995,7 +995,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void Render()
         {
             GL gl = Display.OpenGL;
-            _frameBuffer.Use(gl);
+            _frameBuffer.UseAndViewport(gl);
             _tripleColorBG.Render(gl); // No need to glClear since this overwrites everything
 
             _pkmnImage.Update();

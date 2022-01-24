@@ -50,7 +50,7 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
             shader.Use(gl);
             shader.SetProgress(gl, progress);
 
-            target.Use(gl);
+            target.UseAndViewport(gl);
             RectMesh.Instance.Render(gl);
         }
 

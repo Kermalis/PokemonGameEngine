@@ -459,7 +459,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private void Render()
         {
             GL gl = Display.OpenGL;
-            _frameBuffer.Use(gl);
+            _frameBuffer.UseAndViewport(gl);
             _tripleColorBG.Render(gl); // No need to glClear since this overwrites everything
 
             // PC
@@ -468,7 +468,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             if (_partyVisible)
             {
                 _partyChoices.Render(_renderSize);
-                _frameBuffer.Use(gl); // Possible the above redraws to its framebuffer so rebind this one
+                _frameBuffer.UseAndViewport(gl); // Possible the above redraws to its framebuffer so rebind this one
             }
             else
             {

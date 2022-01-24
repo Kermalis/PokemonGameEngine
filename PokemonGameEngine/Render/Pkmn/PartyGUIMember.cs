@@ -115,7 +115,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         public void UpdateBackground()
         {
             GL gl = Display.OpenGL;
-            _frameBuffer.Use(gl);
+            _frameBuffer.UseAndViewport(gl);
             gl.ClearColor(Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
 

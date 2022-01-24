@@ -296,7 +296,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private void Render()
         {
             GL gl = Display.OpenGL;
-            _frameBuffer.Use(gl);
+            _frameBuffer.UseAndViewport(gl);
             gl.ClearColor(Colors.Black3);
             gl.Clear(ClearBufferMask.ColorBufferBit);
 

@@ -104,7 +104,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 for (byte e = 0; e < Overworld.NumElevations; e++)
                 {
                     FrameBuffer3DColor fb = UsedBlocksTextures[e];
-                    fb.Use(gl);
+                    fb.UseAndViewport(gl);
                     fb.UpdateTexture(num);
                 }
                 // When we resize, we want to draw all used blocks to the new FBOs
@@ -143,7 +143,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             for (byte e = 0; e < Overworld.NumElevations; e++)
             {
                 FrameBuffer3DColor fb = UsedBlocksTextures[e];
-                fb.Use(gl);
+                fb.UseAndViewport(gl);
                 fb.SetLayer(b.UsedBlocksIndex);
                 b.Draw(builder, e);
             }

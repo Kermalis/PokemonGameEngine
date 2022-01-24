@@ -562,7 +562,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             }
 
             GL gl = Display.OpenGL;
-            _frameBuffer.Use(gl);
+            _frameBuffer.UseAndViewport(gl);
             _tripleColorBG.Render(gl); // No need to glClear since this will overwrite everything
 
             // Draw members

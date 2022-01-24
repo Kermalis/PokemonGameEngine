@@ -154,7 +154,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             return _nonBorderCoords[pos.X + (pos.Y * numBlocksX)];
         }
 
-        public void Render(FrameBuffer targetFrameBuffer)
+        public void Render(FrameBuffer2DColor targetFrameBuffer)
         {
             // Do animation tick
             Tileset.UpdateAnimations();
@@ -177,7 +177,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             RenderObjs(gl, VisualObj.LoadedVisualObjs, visibleBlocks, startBlockPixel);
 
             // Finish render by rendering each layer to the target
-            targetFrameBuffer.Use(gl);
+            targetFrameBuffer.UseAndViewport(gl);
             EntireScreenTextureShader.Instance.Use(gl);
 
             gl.ActiveTexture(TextureUnit.Texture0);
@@ -221,7 +221,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _layoutShader.Use(gl);
             for (byte e = 0; e < Overworld.NumElevations; e++)
             {
-                _layoutFrameBuffers[e].Use(gl);
+                _layoutFrameBuffers[e].UseAndViewport(gl);
                 gl.Clear(ClearBufferMask.ColorBufferBit);
                 gl.BindTexture(TextureTarget.Texture3D, Blockset.UsedBlocksTextures[e].ColorTexture);
                 _layoutMesh.RenderInstanced(gl, _instancedBlockData[e].InstanceCount);
@@ -338,7 +338,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     }
 #endif
 
-                    _objFrameBuffers[v.Pos.Elevation].Use(gl);
+                    _objFrameBuffers[v.Pos.Elevation].UseAndViewport(gl);
                     v.DrawShadow(_screenSize);
                 }
                 else
@@ -354,7 +354,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 VisualObj v = objs[i];
                 if (v.BlockPosOnScreen != new Vec2I(int.MinValue, int.MinValue))
                 {
-                    _objFrameBuffers[v.Pos.Elevation].Use(gl);
+                    _objFrameBuffers[v.Pos.Elevation].UseAndViewport(gl);
                     v.Draw(_visualObjShader, _screenSize);
                 }
             }

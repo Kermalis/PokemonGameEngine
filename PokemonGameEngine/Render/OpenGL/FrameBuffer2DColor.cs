@@ -25,8 +25,9 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, ColorTexture, 0);
         }
 
-        public override void SetViewport()
+        public void UseAndViewport(GL gl)
         {
+            gl.BindFramebuffer(FramebufferTarget.Framebuffer, Id);
             Display.Viewport(Rect.FromSize(new Vec2I(0, 0), Size));
         }
 
@@ -44,7 +45,7 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.ClearColor(Colors.Black3);
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
-            Rect dst = Display.FitToScreen(Size);
+            ref Rect dst = ref Display.ScreenRect;
             gl.BlitFramebuffer(0, 0, Size.X, Size.Y,
                 dst.TopLeft.X, dst.TopLeft.Y, dst.GetExclusiveRight(), dst.GetExclusiveBottom(),
                 ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
@@ -54,7 +55,7 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
         {
             GL gl = Display.OpenGL;
             gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-            Display.Viewport(Display.FitToScreen(Size));
+            Display.Viewport(Display.ScreenRect);
 
             gl.ActiveTexture(TextureUnit.Texture0);
             gl.BindTexture(TextureTarget.Texture2D, ColorTexture);
