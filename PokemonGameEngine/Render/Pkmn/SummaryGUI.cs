@@ -226,6 +226,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         {
             PBESpecies species;
             PBEForm form;
+            PBEStatus1 status;
             float hpPercentage;
             if (_pPkmn is not null)
             {
@@ -235,6 +236,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 }
                 species = _pPkmn.Species;
                 form = _pPkmn.Form;
+                status = _pPkmn.Status1;
                 hpPercentage = (float)_pPkmn.HP / _pPkmn.MaxHP;
             }
             else if (_pcPkmn is not null)
@@ -245,7 +247,8 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 }
                 species = _pcPkmn.Species;
                 form = _pcPkmn.Form;
-                hpPercentage = 1;
+                status = PBEStatus1.None;
+                hpPercentage = 1f;
             }
             else
             {
@@ -257,9 +260,10 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 PBEBattlePokemon bPkmn = _bPkmn.PBEPkmn;
                 species = pPkmn.Species;
                 form = bPkmn.RevertForm;
+                status = bPkmn.Status1;
                 hpPercentage = bPkmn.HPPercentage;
             }
-            SoundControl.PlayCryFromHP(species, form, hpPercentage);
+            SoundControl.PlayCry(species, form, status, hpPercentage);
         }
         private void SetProperCallback()
         {

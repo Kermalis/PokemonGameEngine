@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.World;
 using System;
@@ -10,13 +11,17 @@ namespace Kermalis.PokemonGameEngine.Sound
         public static readonly object LockObj = new();
         public static readonly ConnectedList<BackTask> Tasks = new(BackTask.Sorter);
 
-        public static int GetCryPitch(float hpPercentage)
+        private static int GetCryPitch(float hpPercentage)
         {
             return (int)((1 - hpPercentage) * -96); // 1/8 of -768; so -0.125 semitones for a fainted mon
         }
 
-        public static SoundChannel PlayCryFromHP(PBESpecies species, PBEForm form, float hpPercentage, float vol = 0.5f, float pan = 0f)
+        public static SoundChannel PlayCry(PBESpecies species, PBEForm form, PBEStatus1 status, float hpPercentage, float vol = 0.5f, float pan = 0f)
         {
+            if (status != PBEStatus1.None && hpPercentage >= 0.5f)
+            {
+                hpPercentage = 0.5f; // Distort for status unless our hp is lower than half
+            }
             return PlayCry(species, form, vol: vol, pan: pan, pitch: GetCryPitch(hpPercentage));
         }
         public static SoundChannel PlayCry(PBESpecies species, PBEForm form, float vol = 0.5f, float pan = 0f, int pitch = 0)

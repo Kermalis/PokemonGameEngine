@@ -226,7 +226,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         }
         private static SoundChannel PlayCry(PBEBattlePokemon pbePkmn)
         {
-            return SoundControl.PlayCryFromHP(pbePkmn.KnownSpecies, pbePkmn.KnownForm, pbePkmn.HPPercentage, pan: GetCryPanpot(pbePkmn));
+            return SoundControl.PlayCry(pbePkmn.KnownSpecies, pbePkmn.KnownForm, pbePkmn.Status1, pbePkmn.HPPercentage, pan: GetCryPanpot(pbePkmn));
         }
         private static float GetCryPanpot(PBEBattlePokemon pbePkmn)
         {
