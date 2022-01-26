@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using System;
 using System.Numerics;
@@ -18,6 +19,15 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             OnPress = onPress;
             _rect = rect;
             _str = new GUIString(str, Font.Default, FontColors.DefaultWhite_I, pos: rect.TopLeft + strPos);
+        }
+
+        public bool IsHovering()
+        {
+            return InputManager.IsHovering(_rect, cornerRadii: new(3));
+        }
+        public bool JustPressedCursor()
+        {
+            return InputManager.JustPressed(_rect, cornerRadii: new(3));
         }
 
         public void Render(bool isSelected)

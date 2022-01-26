@@ -55,6 +55,7 @@ namespace Kermalis.PokemonGameEngine.Input
 
         public static void OnKeyChanged(SDL.SDL_Keycode sym, bool down)
         {
+            InputManager.SetCursorMode(false);
             if (_keyBinds.TryGetValue(sym, out Key key))
             {
                 _keys[key].OnChanged(down);

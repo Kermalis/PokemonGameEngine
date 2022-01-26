@@ -68,9 +68,10 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             {
                 Vec2I topLeft = RenderUtils.DecideGridElementPos(itemSpace, new Vec2I(NUM_COLS, NUM_ROWS), new Vec2I(BUTTON_SPACING_X, BUTTON_SPACING_Y), i);
                 topLeft.Y += TOP_HEIGHT;
-                _itemButtons[i] = new BagGUIItemButton(Rect.FromSize(topLeft, buttonSize));
+                _itemButtons[i] = new BagGUIItemButton(new Vec2I(i % NUM_COLS, i / NUM_COLS), Rect.FromSize(topLeft, buttonSize));
             }
 
+            _selectedItem = _itemButtons[0];
             LoadSelectedPouch();
 
             // Create page buttons
@@ -125,12 +126,12 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             }
 
             // Validate cursor location
-            if (_itemButtons[SelectionCoordsToItemButtonIndex(_selectedItem.X, _selectedItem.Y)].Slot is null)
+            if (_selectedItem.Slot is null)
             {
-                _selectedItem = new Vec2I(0, 0);
-                if (_cursor == CursorPos.Items && _itemButtons[0].Slot is null) // Empty pouch
+                _selectedItem = _itemButtons[0];
+                if (_cursorAt == CursorPos.Items && _selectedItem.Slot is null) // Empty pouch
                 {
-                    _cursor = CursorPos.Pouches;
+                    _cursorAt = CursorPos.Pouches;
                 }
             }
         }
@@ -211,22 +212,23 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             // Draw pouch buttons
             for (int i = 0; i < _pouchButtons.Length; i++)
             {
-                _pouchButtons[i].Render(_cursor == CursorPos.Pouches && (int)_selectedPouch == i);
+                _pouchButtons[i].Render(_cursorAt == CursorPos.Pouches && (int)_selectedPouch == i);
             }
 
             // Draw page buttons
             for (int i = 0; i < 2; i++)
             {
-                _pageButtons[i].Render(_cursor == CursorPos.Pages && _selectedPageButton == i);
+                _pageButtons[i].Render(_cursorAt == CursorPos.Pages && _selectedPageButton == i);
             }
 
             // Draw cancel button
-            _cancelButton.Render(_cursor == CursorPos.Cancel);
+            _cancelButton.Render(_cursorAt == CursorPos.Cancel);
 
             // Draw item list
             for (int i = 0; i < NUM_COLS * NUM_ROWS; i++)
             {
-                _itemButtons[i].Render(_newIcon, _cursor == CursorPos.Items && SelectionCoordsToItemButtonIndex(_selectedItem.X, _selectedItem.Y) == i);
+                BagGUIItemButton button = _itemButtons[i];
+                button.Render(_newIcon, _cursorAt == CursorPos.Items && _selectedItem == button);
             }
         }
     }

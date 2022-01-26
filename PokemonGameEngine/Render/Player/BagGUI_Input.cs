@@ -15,14 +15,14 @@ namespace Kermalis.PokemonGameEngine.Render.Player
 
         private static ItemPouchType _selectedPouch = ItemPouchType.Items; // static so it remembers when you close the bag
 
-        private CursorPos _cursor = CursorPos.Items;
-        private Vec2I _selectedItem;
+        private CursorPos _cursorAt = CursorPos.Items;
+        private BagGUIItemButton _selectedItem;
         private int _itemPage;
         private int _selectedPageButton = 1;
 
-        private static int SelectionCoordsToItemButtonIndex(int col, int row)
+        private BagGUIItemButton GetItemButton(Vec2I pos)
         {
-            return (row * NUM_COLS) + col;
+            return _itemButtons[(pos.Y * NUM_COLS) + pos.X];
         }
 
         private void CB_HandleInputs()
@@ -30,12 +30,19 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             Render();
             _frameBuffer.BlitToScreen();
 
-            switch (_cursor)
+            if (InputManager.CursorMode)
             {
-                case CursorPos.Pouches: HandleInputs_Pouches(); break;
-                case CursorPos.Items: HandleInputs_Items(); break;
-                case CursorPos.Pages: HandleInputs_Pages(); break;
-                case CursorPos.Cancel: HandleInputs_Cancel(); break;
+                HandleCursorInputs();
+            }
+            else
+            {
+                switch (_cursorAt)
+                {
+                    case CursorPos.Pouches: HandleButtonInputs_Pouches(); break;
+                    case CursorPos.Items: HandleButtonInputs_Items(); break;
+                    case CursorPos.Pages: HandleButtonInputs_Pages(); break;
+                    case CursorPos.Cancel: HandleButtonInputs_Cancel(); break;
+                }
             }
         }
 
@@ -100,7 +107,87 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             return false;
         }
 
-        private void HandleInputs_Pouches()
+        private void HandleCursorInputs()
+        {
+            // Try to select an item button
+            for (int i = 0; i < NUM_COLS * NUM_ROWS; i++)
+            {
+                BagGUIItemButton button = _itemButtons[i];
+                if (button.Slot is null)
+                {
+                    break;
+                }
+                if (_cursorAt == CursorPos.Items && button == _selectedItem)
+                {
+                    continue; // Don't handle if it's already selected
+                }
+                if (button.IsHovering())
+                {
+                    _cursorAt = CursorPos.Items;
+                    _selectedItem = _itemButtons[i];
+                    return;
+                }
+            }
+            // Try to select a pouch button
+            for (int i = 0; i < _pouchButtons.Length; i++)
+            {
+                if (_cursorAt == CursorPos.Pouches && i == (int)_selectedPouch)
+                {
+                    continue; // Don't handle if it's already selected
+                }
+                BagGUIPouchButton button = _pouchButtons[i];
+                if (button.IsHovering())
+                {
+                    _cursorAt = CursorPos.Pouches;
+                    _selectedPouch = (ItemPouchType)i;
+                    LoadSelectedPouch();
+                    return;
+                }
+            }
+            // Try to select a page button
+            for (int i = 0; i < _pageButtons.Length; i++)
+            {
+                if (_cursorAt == CursorPos.Pages && i == _selectedPageButton)
+                {
+                    continue; // Don't handle if it's already selected
+                }
+                BagGUITextButton button = _pageButtons[i];
+                if (button.IsHovering())
+                {
+                    _cursorAt = CursorPos.Pages;
+                    _selectedPageButton = i;
+                    return;
+                }
+            }
+            // Try to select cancel button
+            if (_cursorAt != CursorPos.Cancel && _cancelButton.IsHovering())
+            {
+                _cursorAt = CursorPos.Cancel;
+                return;
+            }
+            // Try to click the selected item button
+            if (_selectedItem.Slot is not null && _selectedItem.JustPressedCursor())
+            {
+                _cursorAt = CursorPos.Items;
+                _selectedItem.Press();
+                return;
+            }
+            // Try to click the selected page button
+            if (_pageButtons[_selectedPageButton].JustPressedCursor())
+            {
+                _cursorAt = CursorPos.Pages;
+                _pageButtons[_selectedPageButton].OnPress();
+                return;
+            }
+            // Try to click cancel button
+            if (_cancelButton.JustPressedCursor())
+            {
+                _cursorAt = CursorPos.Cancel;
+                SetExitFadeOutCallback();
+                return;
+            }
+        }
+        private void HandleButtonInputs_Pouches()
         {
             if (HandleExitPress())
             {
@@ -118,11 +205,11 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             {
                 if (_itemButtons[0].Slot is null) // Empty pouch
                 {
-                    _cursor = CursorPos.Cancel;
+                    _cursorAt = CursorPos.Cancel;
                 }
                 else
                 {
-                    _cursor = CursorPos.Items;
+                    _cursorAt = CursorPos.Items;
                 }
                 return;
             }
@@ -145,7 +232,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
                 return;
             }
         }
-        private void HandleInputs_Items()
+        private void HandleButtonInputs_Items()
         {
             if (HandleExitPress())
             {
@@ -161,59 +248,59 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             }
             if (InputManager.JustPressed(Key.Up))
             {
-                if (_selectedItem.Y == 0)
+                if (_selectedItem.GridPos.Y == 0)
                 {
-                    _cursor = CursorPos.Pouches;
+                    _cursorAt = CursorPos.Pouches;
                 }
                 else
                 {
-                    _selectedItem.Y--;
+                    _selectedItem = GetItemButton(_selectedItem.GridPos.Plus(0, -1));
                 }
                 return;
             }
             if (InputManager.JustPressed(Key.Down))
             {
-                if (_selectedItem.Y < NUM_ROWS - 1)
+                if (_selectedItem.GridPos.Y < NUM_ROWS - 1)
                 {
                     // Disallow moving into an empty slot
-                    if (_itemButtons[SelectionCoordsToItemButtonIndex(_selectedItem.X, _selectedItem.Y + 1)].Slot is null)
+                    BagGUIItemButton newButton = GetItemButton(_selectedItem.GridPos.Plus(0, 1));
+                    if (newButton.Slot is not null)
                     {
-                        _cursor = CursorPos.Pages;
-                    }
-                    else
-                    {
-                        _selectedItem.Y++;
+                        _selectedItem = newButton;
+                        return;
                     }
                 }
-                else
-                {
-                    _cursor = CursorPos.Pages;
-                }
+                _cursorAt = CursorPos.Pages;
                 return;
             }
             if (InputManager.JustPressed(Key.Left))
             {
-                if (_selectedItem.X > 0)
+                if (_selectedItem.GridPos.X > 0)
                 {
-                    _selectedItem.X--;
+                    _selectedItem = GetItemButton(_selectedItem.GridPos.Plus(-1, 0));
                 }
                 return;
             }
             if (InputManager.JustPressed(Key.Right))
             {
-                if (_selectedItem.X < NUM_COLS - 1)
+                if (_selectedItem.GridPos.X < NUM_COLS - 1)
                 {
                     // Disallow moving into an empty slot
-                    if (_itemButtons[SelectionCoordsToItemButtonIndex(_selectedItem.X + 1, _selectedItem.Y)].Slot is not null)
+                    BagGUIItemButton newButton = GetItemButton(_selectedItem.GridPos.Plus(1, 0));
+                    if (newButton.Slot is not null)
                     {
-                        _selectedItem.X++;
+                        _selectedItem = newButton;
                     }
                 }
                 return;
             }
-            // TODO: A
+            if (InputManager.JustPressed(Key.A))
+            {
+                _selectedItem.Press();
+                return;
+            }
         }
-        private void HandleInputs_Pages()
+        private void HandleButtonInputs_Pages()
         {
             if (HandleExitPress())
             {
@@ -229,7 +316,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             }
             if (InputManager.JustPressed(Key.Up))
             {
-                _cursor = CursorPos.Items;
+                _cursorAt = CursorPos.Items;
                 return;
             }
             if (InputManager.JustPressed(Key.Left))
@@ -248,7 +335,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
                 }
                 else
                 {
-                    _cursor = CursorPos.Cancel;
+                    _cursorAt = CursorPos.Cancel;
                 }
                 return;
             }
@@ -258,7 +345,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
                 return;
             }
         }
-        private void HandleInputs_Cancel()
+        private void HandleButtonInputs_Cancel()
         {
             if (InputManager.JustPressed(Key.A) || InputManager.JustPressed(Key.B))
             {
@@ -275,18 +362,18 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             }
             if (InputManager.JustPressed(Key.Left))
             {
-                _cursor = CursorPos.Pages;
+                _cursorAt = CursorPos.Pages;
                 return;
             }
             if (InputManager.JustPressed(Key.Up))
             {
                 if (_itemButtons[0].Slot is null) // Empty pouch
                 {
-                    _cursor = CursorPos.Pouches;
+                    _cursorAt = CursorPos.Pouches;
                 }
                 else
                 {
-                    _cursor = CursorPos.Items;
+                    _cursorAt = CursorPos.Items;
                 }
                 return;
             }

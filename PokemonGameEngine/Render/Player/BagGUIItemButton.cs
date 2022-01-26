@@ -1,8 +1,10 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
+using System;
 using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.Player
@@ -12,17 +14,25 @@ namespace Kermalis.PokemonGameEngine.Render.Player
         private const float NEW_DISAPPEAR_TIME = 1f; // In seconds
 
         private readonly Rect _rect;
+        public readonly Vec2I GridPos;
 
         public InventorySlotNew Slot;
+        private Action _onPress;
         private GUIString _name;
         private GUIString _quantity;
         private Image _icon;
 
         private float _selectedTimer;
 
-        public BagGUIItemButton(Rect rect)
+        public BagGUIItemButton(Vec2I gridPos, in Rect rect)
         {
             _rect = rect;
+            GridPos = gridPos;
+        }
+
+        private void TestPress()
+        {
+            Console.WriteLine("Pressed at " + GridPos);
         }
 
         public void SetSlot(InventorySlotNew slot)
@@ -73,6 +83,22 @@ namespace Kermalis.PokemonGameEngine.Render.Player
             }
 
             _icon = Image.LoadOrGet(ItemData.GetItemIconAssetPath(slot.Item));
+
+            _onPress = TestPress;
+        }
+
+        public bool IsHovering()
+        {
+            return InputManager.IsHovering(_rect, cornerRadii: new(7));
+        }
+        public bool JustPressedCursor()
+        {
+            return InputManager.JustPressed(_rect, cornerRadii: new(7));
+        }
+        public void Press()
+        {
+            Slot.New = false;
+            _onPress();
         }
 
         public void Render(Image _new, bool isSelected)
@@ -126,6 +152,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
 
         public void Delete()
         {
+            _onPress = null;
             _name?.Delete();
             _name = null;
             _quantity?.Delete();

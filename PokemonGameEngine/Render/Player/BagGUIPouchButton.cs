@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
+using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.Images;
@@ -16,6 +17,11 @@ namespace Kermalis.PokemonGameEngine.Render.Player
         {
             _pos = pos;
             _icon = Image.LoadOrGet(AssetLoader.GetPath(@"Sprites\Item Pouches\" + pouch + ".png"));
+        }
+
+        public bool IsHovering()
+        {
+            return InputManager.IsHovering(Rect.FromSize(_pos, new Vec2I(24, 24)), cornerRadii: new(2));
         }
 
         public void Render(bool isSelected)

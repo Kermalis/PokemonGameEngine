@@ -7,6 +7,7 @@ Main Mechanics:
     EVs
     Obedience
     Level-up moves mid-battle
+    Bag item usage
     In-battle item selection (requires bag GUI)
     Heal locations/black out
     World Map
@@ -30,7 +31,6 @@ Trainers:
 GUIs:
     Intro/Title/Continue/NewGame
     Pokedex
-    Bag (I like the hgss one)
     Finish Summary GUI
     Options
     Trainer card (with trainer card stars)

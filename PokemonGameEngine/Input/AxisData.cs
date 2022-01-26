@@ -28,6 +28,7 @@ namespace Kermalis.PokemonGameEngine.Input
             {
                 if (!d.IsPressed)
                 {
+                    InputManager.SetCursorMode(false);
                     d.OnChanged(true); // Sets IsNew to true
                 }
             }
@@ -35,6 +36,7 @@ namespace Kermalis.PokemonGameEngine.Input
             {
                 if (d.IsPressed)
                 {
+                    InputManager.SetCursorMode(false);
                     d.OnChanged(false); // Sets WasReleased to true
                 }
             }

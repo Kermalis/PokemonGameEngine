@@ -39,7 +39,7 @@ bool discardPixels()
         }
         if (color.a == 0)
         {
-            discard;
+            discard; // Discard inner pixels if we're not filling the rect
         }
     }
     return false;

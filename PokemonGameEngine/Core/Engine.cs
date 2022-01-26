@@ -110,6 +110,21 @@ namespace Kermalis.PokemonGameEngine.Core
                         Keyboard.OnKeyChanged(e.key.keysym.sym, false);
                         break;
                     }
+                    case SDL.SDL_EventType.SDL_MOUSEBUTTONDOWN:
+                    {
+                        Mouse.OnButtonDown(e.button.button, true);
+                        break;
+                    }
+                    case SDL.SDL_EventType.SDL_MOUSEBUTTONUP:
+                    {
+                        Mouse.OnButtonDown(e.button.button, false);
+                        break;
+                    }
+                    case SDL.SDL_EventType.SDL_MOUSEMOTION:
+                    {
+                        Mouse.OnMove(e.motion);
+                        break;
+                    }
                     case SDL.SDL_EventType.SDL_WINDOWEVENT:
                     {
                         switch (e.window.windowEvent)

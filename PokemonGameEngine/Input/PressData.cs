@@ -29,9 +29,9 @@ namespace Kermalis.PokemonGameEngine.Input
             }
         }
 
-        public static Dictionary<Key, PressData> CreateDict(Key[] arr)
+        public static Dictionary<T, PressData> CreateDict<T>(T[] arr)
         {
-            var dict = new Dictionary<Key, PressData>(arr.Length);
+            var dict = new Dictionary<T, PressData>(arr.Length);
             for (int i = 0; i < arr.Length; i++)
             {
                 dict.Add(arr[i], new PressData());

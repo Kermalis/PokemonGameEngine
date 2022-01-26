@@ -92,29 +92,37 @@ namespace Kermalis.PokemonGameEngine.Input
         }
         public static void OnAxisChanged(SDL.SDL_ControllerAxisEvent caxis)
         {
-            if (caxis.which == _controllerId)
+            if (caxis.which != _controllerId)
             {
-                AxisData ad;
-                bool isX;
-                switch ((SDL.SDL_GameControllerAxis)caxis.axis)
-                {
-                    case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX: ad = _leftStick; isX = true; break;
-                    case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY: ad = _leftStick; isX = false; break;
-                    default: return;
-                }
-
-                float amount = caxis.axisValue / (float)short.MaxValue;
-                if (amount < -1f)
-                {
-                    amount = -1f; // Leftmost value would be less than -1 so clamp it
-                }
-                ad.Update(isX, amount);
+                return;
             }
+
+            // Cursor state is only set if axis state changes
+            AxisData ad;
+            bool isX;
+            switch ((SDL.SDL_GameControllerAxis)caxis.axis)
+            {
+                case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTX: ad = _leftStick; isX = true; break;
+                case SDL.SDL_GameControllerAxis.SDL_CONTROLLER_AXIS_LEFTY: ad = _leftStick; isX = false; break;
+                default: return;
+            }
+
+            float amount = caxis.axisValue / (float)short.MaxValue;
+            if (amount < -1f)
+            {
+                amount = -1f; // Leftmost value would be less than -1 so clamp it
+            }
+            ad.Update(isX, amount);
         }
         public static void OnButtonChanged(SDL.SDL_ControllerButtonEvent cbutton, bool down)
         {
-            if (cbutton.which == _controllerId
-                && _keyBinds.TryGetValue((SDL.SDL_GameControllerButton)cbutton.button, out Key key))
+            if (cbutton.which != _controllerId)
+            {
+                return;
+            }
+
+            InputManager.SetCursorMode(false);
+            if (_keyBinds.TryGetValue((SDL.SDL_GameControllerButton)cbutton.button, out Key key))
             {
                 _buttons[key].OnChanged(down);
             }
