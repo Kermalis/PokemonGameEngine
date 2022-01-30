@@ -7,6 +7,9 @@ using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 #if DEBUG_OVERWORLD
 using Kermalis.PokemonGameEngine.Debug;
 #endif
@@ -190,6 +193,34 @@ namespace Kermalis.PokemonGameEngine.Render.World
                             blockset.BindTilesetTextures();
                         }
                         DrawBlock(gl, builder, b);
+                    }
+                }
+            }
+        }
+
+        public static void TEST_SaveBlockPngs()
+        {
+            const string BASE_PATH = "Test";
+
+            GL gl = Display.OpenGL;
+            for (int e = 0; e < Overworld.NumElevations; e++)
+            {
+                FrameBuffer3DColor img = UsedBlocksTextures[e];
+                img.UseAndViewport(gl);
+
+                string p = Path.Combine(BASE_PATH, "Layer " + e);
+                for (int i = 0; i < img.NumLayers; i++)
+                {
+                    img.SetLayer(i);
+                    string path = Path.Combine(p, i + ".png");
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));
+
+                    var data = new Rgba32[img.Size.GetArea()];
+                    gl.ReadPixels(0, 0, (uint)img.Size.X, (uint)img.Size.Y, PixelFormat.Rgba, PixelType.UnsignedByte, data.AsSpan());
+                    using (var saveImg = Image.LoadPixelData(data, img.Size.X, img.Size.Y))
+                    {
+                        saveImg.Mutate(x => x.Flip(FlipMode.Vertical));
+                        saveImg.SaveAsPng(Path.GetFullPath(path));
                     }
                 }
             }

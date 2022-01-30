@@ -256,6 +256,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
 #if DEBUG_OVERWORLD
             _mapRenderer.Debug_CheckToggleInput();
 #endif
+            if (Input.InputManager.JustPressed(Input.Key.L))
+            {
+                Blockset.TEST_SaveBlockPngs();
+            }
             Render();
             _frameBuffer.BlitToScreen();
 #if DEBUG_OVERWORLD
