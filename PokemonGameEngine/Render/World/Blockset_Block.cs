@@ -145,13 +145,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 }
                 return false;
             }
-            public unsafe void Draw(VBOData_BlocksetBlockTile[] vertices, byte elevation)
+            public unsafe void Draw(GL gl, VBOData_BlocksetBlockTile[] vertices, byte elevation)
             {
-                GL gl = Display.OpenGL;
-                gl.Clear(ClearBufferMask.ColorBufferBit);
-
                 Tile[][][] tilesE = _tiles[elevation];
-                // Build block mesh
                 var tilePixel = new Vec2I(0, 0);
                 Vec2I tile;
                 for (tile.Y = 0; tile.Y < Overworld.Block_NumTilesY; tile.Y++)

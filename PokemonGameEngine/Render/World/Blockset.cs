@@ -160,7 +160,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 FrameBuffer3DColor fb = UsedBlocksTextures[e];
                 fb.UseAndViewport(gl);
                 fb.SetLayer(b.UsedBlocksIndex);
-                b.Draw(buffer, e);
+                gl.Clear(ClearBufferMask.ColorBufferBit);
+                b.Draw(gl, buffer, e);
             }
         }
 
