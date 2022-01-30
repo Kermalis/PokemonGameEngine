@@ -146,6 +146,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
             public unsafe void Draw(TileVertexBuilder builder, byte elevation)
             {
+                GL gl = Display.OpenGL;
+                gl.Clear(ClearBufferMask.ColorBufferBit);
+
                 Tile[][][] tilesE = _tiles[elevation];
                 // Build block mesh
                 var tilePixel = new Vec2I(0, 0);
@@ -166,6 +169,16 @@ namespace Kermalis.PokemonGameEngine.Render.World
                             var rect = Rect.FromSize(tilePixel, Overworld.Tile_NumPixels);
                             int tilesetId = Parent._usedTilesets.IndexOf(t.TilesetTile.Tileset);
                             builder.Add(rect, tilesetId, t.GetUV());
+
+                            // Create vao and draw it, then delete it
+                            builder.Finish(gl, out uint indexCount, out uint vao, out uint vbo, out uint ebo);
+                            builder.Clear();
+
+                            gl.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, null);
+
+                            gl.DeleteVertexArray(vao);
+                            gl.DeleteBuffer(vbo);
+                            gl.DeleteBuffer(ebo);
                         }
 
                         tilePixel.X += Overworld.Tile_NumPixelsX;
@@ -174,19 +187,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     tilePixel.X = 0;
                     tilePixel.Y += Overworld.Tile_NumPixelsY;
                 }
-
-                // Create vao and draw it, then delete it
-                GL gl = Display.OpenGL;
-                builder.Finish(gl, out uint indexCount, out uint vao, out uint vbo, out uint ebo);
-                builder.Clear();
-
-                gl.Clear(ClearBufferMask.ColorBufferBit);
-
-                gl.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, null);
-
-                gl.DeleteVertexArray(vao);
-                gl.DeleteBuffer(vbo);
-                gl.DeleteBuffer(ebo);
             }
         }
     }
