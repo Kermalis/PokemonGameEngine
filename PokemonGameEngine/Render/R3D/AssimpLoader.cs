@@ -37,6 +37,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             var meshes = new List<Mesh>();
             var loaded = new Dictionary<string, uint>();
             ProcessNode(meshes, scene->MRootNode, scene, dir, loaded);
+            _assimp.FreeScene(scene);
             return meshes;
         }
 
