@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.Render.Shaders.World;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Maps;
 using Silk.NET.OpenGL;
@@ -144,7 +145,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 }
                 return false;
             }
-            public unsafe void Draw(TileVertexBuilder builder, byte elevation)
+            public unsafe void Draw(VBOData_BlocksetBlockTile[] vertices, byte elevation)
             {
                 GL gl = Display.OpenGL;
                 gl.Clear(ClearBufferMask.ColorBufferBit);
@@ -168,17 +169,20 @@ namespace Kermalis.PokemonGameEngine.Render.World
                             // Create vertices
                             var rect = Rect.FromSize(tilePixel, Overworld.Tile_NumPixels);
                             int tilesetId = Parent._usedTilesets.IndexOf(t.TilesetTile.Tileset);
-                            builder.Add(rect, tilesetId, t.GetUV());
+                            UV uv = t.GetUV();
+                            vertices[0] = new VBOData_BlocksetBlockTile(rect.TopLeft, tilesetId, uv.Start);
+                            vertices[1] = new VBOData_BlocksetBlockTile(rect.GetExclusiveBottomLeft(), tilesetId, uv.GetBottomLeft());
+                            vertices[2] = new VBOData_BlocksetBlockTile(rect.GetExclusiveTopRight(), tilesetId, uv.GetTopRight());
+                            vertices[3] = new VBOData_BlocksetBlockTile(rect.GetExclusiveBottomRight(), tilesetId, uv.End);
 
-                            // Create vao and draw it, then delete it
-                            builder.Finish(gl, out uint indexCount, out uint vao, out uint vbo, out uint ebo);
-                            builder.Clear();
-
-                            gl.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, null);
-
-                            gl.DeleteVertexArray(vao);
-                            gl.DeleteBuffer(vbo);
-                            gl.DeleteBuffer(ebo);
+                            // vao and vbo are bound before this method is called
+                            // Must draw one tile at a time, rather than creating a mesh of all the tiles
+                            // Otherwise, graphical errors appear on certain drivers (Issue #74)
+                            fixed (void* data = vertices)
+                            {
+                                gl.BufferData(BufferTargetARB.ArrayBuffer, VBOData_BlocksetBlockTile.SIZE * 4, data, BufferUsageARB.StreamDraw);
+                            }
+                            gl.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
                         }
 
                         tilePixel.X += Overworld.Tile_NumPixelsX;

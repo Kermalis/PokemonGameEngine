@@ -7,9 +7,6 @@ using Silk.NET.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 #if DEBUG_OVERWORLD
 using Kermalis.PokemonGameEngine.Debug;
 #endif
@@ -96,9 +93,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
             // Prepare to draw some blocks
             GL gl = Display.OpenGL;
-            BlocksetBlockShader.Instance.Use(gl);
-            gl.ClearColor(Colors.Transparent);
-            var builder = new TileVertexBuilder();
+            VBOData_BlocksetBlockTile[] buffer = InitBlockDraw(gl, out uint vao, out uint vbo);
             Blockset blockset = null; // Cache so we don't keep changing texture units for no reason
 
             if (resized)
@@ -117,9 +112,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     if (b.Parent != blockset)
                     {
                         blockset = b.Parent;
-                        blockset.BindTilesetTextures();
+                        blockset.BindTilesetTextures(gl);
                     }
-                    DrawBlock(gl, builder, b);
+                    DrawBlock(gl, buffer, b);
                 }
             }
             else
@@ -135,26 +130,42 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     if (b.Parent != blockset)
                     {
                         blockset = b.Parent;
-                        blockset.BindTilesetTextures();
+                        blockset.BindTilesetTextures(gl);
                     }
-                    DrawBlock(gl, builder, b);
+                    DrawBlock(gl, buffer, b);
                 }
             }
+
+            gl.DeleteVertexArray(vao);
+            gl.DeleteBuffer(vbo);
         }
-        private static void DrawBlock(GL gl, TileVertexBuilder builder, Block b)
+        private static VBOData_BlocksetBlockTile[] InitBlockDraw(GL gl, out uint vao, out uint vbo)
+        {
+            BlocksetBlockShader.Instance.Use(gl);
+            gl.ClearColor(Colors.Transparent);
+
+            vao = gl.GenVertexArray();
+            gl.BindVertexArray(vao);
+
+            vbo = gl.GenBuffer();
+            gl.BindBuffer(BufferTargetARB.ArrayBuffer, vbo);
+            VBOData_BlocksetBlockTile.AddAttributes(gl);
+
+            return new VBOData_BlocksetBlockTile[4];
+        }
+        private static void DrawBlock(GL gl, VBOData_BlocksetBlockTile[] buffer, Block b)
         {
             for (byte e = 0; e < Overworld.NumElevations; e++)
             {
                 FrameBuffer3DColor fb = UsedBlocksTextures[e];
                 fb.UseAndViewport(gl);
                 fb.SetLayer(b.UsedBlocksIndex);
-                b.Draw(builder, e);
+                b.Draw(buffer, e);
             }
         }
 
-        private void BindTilesetTextures()
+        private void BindTilesetTextures(GL gl)
         {
-            GL gl = Display.OpenGL;
             for (int i = 0; i < _usedTilesets.Count; i++)
             {
                 gl.ActiveTexture(i.ToTextureUnit());
@@ -169,7 +180,11 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 return;
             }
 
-            TileVertexBuilder builder = null;
+            GL gl = Display.OpenGL;
+            uint vao = 0;
+            uint vbo = 0;
+            VBOData_BlocksetBlockTile[] buffer = null;
+
             foreach (Blockset blockset in _loadedBlocksets.Values)
             {
                 int num = blockset._animatedBlocks.Count; // Only used blocks would be in this list
@@ -183,46 +198,21 @@ namespace Kermalis.PokemonGameEngine.Render.World
                     Block b = blockset._animatedBlocks[i];
                     if (b.IsAnimDirty())
                     {
-                        GL gl = Display.OpenGL;
                         // Init on first one
-                        if (builder is null)
+                        if (buffer is null)
                         {
-                            builder = new TileVertexBuilder();
-                            BlocksetBlockShader.Instance.Use(gl);
-                            gl.ClearColor(Colors.Transparent);
-                            blockset.BindTilesetTextures();
+                            buffer = InitBlockDraw(gl, out vao, out vbo);
+                            blockset.BindTilesetTextures(gl);
                         }
-                        DrawBlock(gl, builder, b);
+                        DrawBlock(gl, buffer, b);
                     }
                 }
             }
-        }
 
-        public static void TEST_SaveBlockPngs()
-        {
-            const string BASE_PATH = "Test";
-
-            GL gl = Display.OpenGL;
-            for (int e = 0; e < Overworld.NumElevations; e++)
+            if (buffer is not null)
             {
-                FrameBuffer3DColor img = UsedBlocksTextures[e];
-                img.UseAndViewport(gl);
-
-                string p = Path.Combine(BASE_PATH, "Layer " + e);
-                for (int i = 0; i < img.NumLayers; i++)
-                {
-                    img.SetLayer(i);
-                    string path = Path.Combine(p, i + ".png");
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
-
-                    var data = new Rgba32[img.Size.GetArea()];
-                    gl.ReadPixels(0, 0, (uint)img.Size.X, (uint)img.Size.Y, PixelFormat.Rgba, PixelType.UnsignedByte, data.AsSpan());
-                    using (var saveImg = Image.LoadPixelData(data, img.Size.X, img.Size.Y))
-                    {
-                        saveImg.Mutate(x => x.Flip(FlipMode.Vertical));
-                        saveImg.SaveAsPng(Path.GetFullPath(path));
-                    }
-                }
+                gl.DeleteVertexArray(vao);
+                gl.DeleteBuffer(vbo);
             }
         }
 
