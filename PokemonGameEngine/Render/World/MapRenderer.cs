@@ -26,8 +26,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
         private readonly MapLayoutShader _layoutShader;
         private readonly VisualObjShader _visualObjShader;
         private readonly RectMesh _layoutMesh;
-        private readonly FrameBuffer2DColor[] _layoutFrameBuffers;
-        private readonly FrameBuffer2DColor[] _objFrameBuffers;
+        private readonly FrameBuffer[] _layoutFrameBuffers;
+        private readonly FrameBuffer[] _objFrameBuffers;
         private readonly InstancedData[] _instancedBlockData;
 
         public MapRenderer(Vec2I screenSize)
@@ -36,7 +36,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _maxVisibleBlocks = GetMaximumVisibleBlocks();
 
 #if DEBUG_OVERWORLD
-            _debugFrameBuffer = new FrameBuffer2DColor(screenSize * DEBUG_FBO_SCALE);
+            _debugFrameBuffer = new FrameBuffer().AddColorTexture(screenSize * DEBUG_FBO_SCALE);
             _debugVisibleBlocks = new DebugVisibleBlock[_maxVisibleBlocks.Y][];
             for (int i = 0; i < _maxVisibleBlocks.Y; i++)
             {
@@ -56,16 +56,16 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _layoutShader.UpdateViewport(gl, screenSize);
             _visualObjShader = new VisualObjShader(gl); // shader is in use
             _visualObjShader.UpdateViewport(gl, screenSize);
-            _layoutFrameBuffers = new FrameBuffer2DColor[Overworld.NumElevations];
-            _objFrameBuffers = new FrameBuffer2DColor[Overworld.NumElevations];
+            _layoutFrameBuffers = new FrameBuffer[Overworld.NumElevations];
+            _objFrameBuffers = new FrameBuffer[Overworld.NumElevations];
             _instancedBlockData = new InstancedData[Overworld.NumElevations];
 
             _layoutMesh = new RectMesh(gl); // Need VAO bound for instanced attributes
             int maxVisible = _maxVisibleBlocks.GetArea();
             for (int i = 0; i < Overworld.NumElevations; i++)
             {
-                _layoutFrameBuffers[i] = new FrameBuffer2DColor(screenSize);
-                _objFrameBuffers[i] = new FrameBuffer2DColor(screenSize);
+                _layoutFrameBuffers[i] = new FrameBuffer().AddColorTexture(screenSize);
+                _objFrameBuffers[i] = new FrameBuffer().AddColorTexture(screenSize);
                 _instancedBlockData[i] = VBOData_InstancedLayoutBlock.CreateInstancedData(maxVisible);
             }
         }
@@ -154,7 +154,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             return _nonBorderCoords[pos.X + (pos.Y * numBlocksX)];
         }
 
-        public void Render(FrameBuffer2DColor targetFrameBuffer)
+        public void Render(FrameBuffer targetFrameBuffer)
         {
             // Do animation tick
             Tileset.UpdateAnimations();
@@ -183,9 +183,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
             gl.ActiveTexture(TextureUnit.Texture0);
             for (int i = 0; i < Overworld.NumElevations; i++)
             {
-                gl.BindTexture(TextureTarget.Texture2D, _layoutFrameBuffers[i].ColorTexture);
+                gl.BindTexture(TextureTarget.Texture2D, _layoutFrameBuffers[i].ColorTextures[0].Texture);
                 RectMesh.Instance.Render(gl);
-                gl.BindTexture(TextureTarget.Texture2D, _objFrameBuffers[i].ColorTexture);
+                gl.BindTexture(TextureTarget.Texture2D, _objFrameBuffers[i].ColorTextures[0].Texture);
                 RectMesh.Instance.Render(gl);
             }
         }

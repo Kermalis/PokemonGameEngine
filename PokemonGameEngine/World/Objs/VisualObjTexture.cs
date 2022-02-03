@@ -38,7 +38,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         private readonly Image _textureAtlas;
         public readonly Vec2I ImageSize;
-        public readonly FrameBuffer2DColor Shadow;
+        public readonly FrameBuffer Shadow;
         public readonly Vec2I ShadowOffset;
 
         private unsafe VisualObjTexture(string id)
@@ -54,7 +54,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 ImageSize = new Vec2I(r.ReadInt32(), r.ReadInt32());
                 ShadowOffset = new Vec2I(r.ReadInt32(), r.ReadInt32());
                 var shadowSize = new Vec2I(r.ReadInt32(), r.ReadInt32());
-                Shadow = new FrameBuffer2DColor(shadowSize);
+                Shadow = new FrameBuffer().AddColorTexture(shadowSize);
 
                 GL gl = Display.OpenGL;
                 Shadow.UseAndViewport(gl);

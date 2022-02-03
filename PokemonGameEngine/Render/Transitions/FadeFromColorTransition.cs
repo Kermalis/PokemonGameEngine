@@ -27,7 +27,7 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
             return new FadeFromColorTransition(0.5f, Colors.Black3);
         }
 
-        public void Render(FrameBuffer2DColor target)
+        public void Render(FrameBuffer target)
         {
             if (IsDone)
             {

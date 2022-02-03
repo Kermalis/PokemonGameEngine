@@ -2,16 +2,19 @@
 
 namespace Kermalis.PokemonGameEngine.Render.OpenGL
 {
-    internal sealed class FrameBuffer3DColor : FrameBuffer
+    internal sealed class FrameBuffer3DColor
     {
+        public readonly uint Id;
         public readonly Vec2I Size;
         public uint NumLayers;
         public uint ColorTexture;
 
         public FrameBuffer3DColor(Vec2I size, uint numLayers)
-            : base()
         {
             Size = size;
+            GL gl = Display.OpenGL;
+            Id = gl.GenFramebuffer();
+            gl.BindFramebuffer(FramebufferTarget.Framebuffer, Id);
             UpdateTexture(numLayers);
         }
 
@@ -40,9 +43,10 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
             gl.FramebufferTexture3D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture3D, ColorTexture, 0, layer);
         }
 
-        public override void Delete()
+        public void Delete()
         {
-            base.Delete();
+            GL gl = Display.OpenGL;
+            gl.DeleteFramebuffer(Id);
             Display.OpenGL.DeleteTexture(ColorTexture);
         }
     }

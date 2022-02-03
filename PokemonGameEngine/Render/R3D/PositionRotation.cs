@@ -20,10 +20,12 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             Rotation = rot;
         }
 
-        public void Slerp(in PositionRotation from, in PositionRotation to, float progress)
+        public static PositionRotation Slerp(in PositionRotation from, in PositionRotation to, float progress)
         {
-            Position = Vector3.Lerp(from.Position, to.Position, progress);
-            Rotation.Set(Quaternion.Slerp(from.Rotation.Value, to.Rotation.Value, progress));
+            PositionRotation pr;
+            pr.Position = Vector3.Lerp(from.Position, to.Position, progress);
+            pr.Rotation = new Rotation(Quaternion.Slerp(from.Rotation.Value, to.Rotation.Value, progress));
+            return pr;
         }
 
         #region Movement
@@ -77,7 +79,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             // Reset roll pitch and yaw
             if (InputManager.JustPressed(Key.Y))
             {
-                Rotation.Reset();
+                Rotation = Rotation.Default;
                 return;
             }
             // Reset position
@@ -98,7 +100,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                     {
                         pitch = 89f;
                     }
-                    Rotation.Set(Rotation.Yaw, pitch, Rotation.Roll);
+                    Rotation = new Rotation(Rotation.Yaw, pitch, Rotation.Roll);
                 }
                 else if (InputManager.IsDown(Key.Down))
                 {
@@ -107,7 +109,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                     {
                         pitch = -89f;
                     }
-                    Rotation.Set(Rotation.Yaw, pitch, Rotation.Roll);
+                    Rotation = new Rotation(Rotation.Yaw, pitch, Rotation.Roll);
                 }
                 if (InputManager.IsDown(Key.X))
                 {
@@ -119,7 +121,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                         {
                             roll += 360f;
                         }
-                        Rotation.Set(Rotation.Yaw, Rotation.Pitch, roll);
+                        Rotation = new Rotation(Rotation.Yaw, Rotation.Pitch, roll);
                     }
                     else if (InputManager.IsDown(Key.Right))
                     {
@@ -128,7 +130,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                         {
                             roll -= 360f;
                         }
-                        Rotation.Set(Rotation.Yaw, Rotation.Pitch, roll);
+                        Rotation = new Rotation(Rotation.Yaw, Rotation.Pitch, roll);
                     }
                 }
                 else
@@ -141,7 +143,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                         {
                             yaw += 360f;
                         }
-                        Rotation.Set(yaw, Rotation.Pitch, Rotation.Roll);
+                        Rotation = new Rotation(yaw, Rotation.Pitch, Rotation.Roll);
                     }
                     else if (InputManager.IsDown(Key.Right))
                     {
@@ -150,7 +152,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                         {
                             yaw -= 360f;
                         }
-                        Rotation.Set(yaw, Rotation.Pitch, Rotation.Roll);
+                        Rotation = new Rotation(yaw, Rotation.Pitch, Rotation.Roll);
                     }
                 }
                 return;

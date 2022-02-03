@@ -3,46 +3,27 @@ using System.Numerics;
 
 namespace Kermalis.PokemonGameEngine.Render.R3D
 {
-    internal struct Rotation
+    internal readonly struct Rotation
     {
         public static Rotation Default { get; } = new(Quaternion.Identity);
 
         /// <summary>Yaw degrees, where positive turns your head to the right.</summary>
-        public float Yaw { get; private set; }
+        public readonly float Yaw;
         /// <summary>Pitch degrees, where positive pitches your head downwards.</summary>
-        public float Pitch { get; private set; }
+        public readonly float Pitch;
         /// <summary>Roll degrees, where positive rolls your head to the right.</summary>
-        public float Roll { get; private set; }
-
+        public readonly float Roll;
         /// <summary>The final Quaternion to be used in a matrix.</summary>
-        public Quaternion Value { get; private set; }
+        public readonly Quaternion Value;
 
         public Rotation(in Quaternion rot)
-            : this()
         {
-            Set(rot);
+            Yaw = -rot.GetYawRadians() * Utils.RadToDeg;
+            Pitch = -rot.GetPitchRadians() * Utils.RadToDeg;
+            Roll = -rot.GetRollRadians() * Utils.RadToDeg;
+            Value = rot;
         }
         public Rotation(float yaw, float pitch, float roll)
-            : this()
-        {
-            Set(yaw, pitch, roll);
-        }
-
-        public void Reset()
-        {
-            Yaw = 0f;
-            Pitch = 0f;
-            Roll = 0f;
-            Value = Quaternion.Identity;
-        }
-        public void Set(in Quaternion value)
-        {
-            Yaw = -value.GetYawRadians() * Utils.RadToDeg;
-            Pitch = -value.GetPitchRadians() * Utils.RadToDeg;
-            Roll = -value.GetRollRadians() * Utils.RadToDeg;
-            Value = value;
-        }
-        public void Set(float yaw, float pitch, float roll)
         {
             Yaw = yaw;
             Pitch = pitch;

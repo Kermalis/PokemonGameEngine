@@ -48,7 +48,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                 int textureUnit = i + 2; // +2 because shadow textures are the first two
                 if (shader.SetDiffuseTextureUnit(gl, i, textureUnit))
                 {
-                    gl.ActiveTexture(textureUnit.ToTextureUnit());
+                    gl.ActiveTexture(TextureUnit.Texture0 + textureUnit);
                     gl.BindTexture(TextureTarget.Texture2D, _textures[i]);
                 }
             }

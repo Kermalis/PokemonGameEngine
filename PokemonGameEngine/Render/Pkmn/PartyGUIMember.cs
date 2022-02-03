@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private readonly PartyPokemon _partyPkmn;
         private readonly BattlePokemon _battlePkmn;
         private readonly Sprite _mini;
-        private readonly FrameBuffer2DColor _frameBuffer;
+        private readonly FrameBuffer _frameBuffer;
 
         private PartyGUIMember(bool isEgg, Rect rect, ConnectedList<Sprite> sprites)
         {
@@ -35,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 _mini.Callback = Sprite_Bounce;
                 _mini.Data = new Sprite_BounceData();
             }
-            _frameBuffer = new FrameBuffer2DColor(rect.GetSize());
+            _frameBuffer = new FrameBuffer().AddColorTexture(rect.GetSize());
         }
         public PartyGUIMember(PartyPokemon pkmn, Rect rect, ConnectedList<Sprite> sprites, bool isSelected)
             : this(pkmn.IsEgg, rect, sprites)
@@ -119,7 +119,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             gl.ClearColor(Colors.Transparent);
             gl.Clear(ClearBufferMask.ColorBufferBit);
 
-            GUIRenderer.Rect(_color, Rect.FromSize(new Vec2I(0, 0), _frameBuffer.Size), cornerRadii: new(6));
+            GUIRenderer.Rect(_color, Rect.FromSize(new Vec2I(0, 0), _frameBuffer.ColorTextures[0].Size), cornerRadii: new(6));
 
             // Shadow
             GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 200), Rect.FromCorners(new Vec2I(3, 34), new Vec2I(29, 39)), cornerRadii: new(10));

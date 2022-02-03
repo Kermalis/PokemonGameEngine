@@ -18,7 +18,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
     internal sealed class EvolutionGUI
     {
         private static readonly Vec2I _renderSize = new(384, 216); // 16:9
-        private readonly FrameBuffer2DColor _frameBuffer;
+        private readonly FrameBuffer _frameBuffer;
 
         private readonly PartyPokemon _pkmn;
         private readonly string _oldNickname;
@@ -41,7 +41,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         public EvolutionGUI(PartyPokemon pkmn, EvolutionData.EvoData evo, bool canCancel)
         {
             Display.SetMinimumWindowSize(_renderSize);
-            _frameBuffer = new FrameBuffer2DColor(_renderSize);
+            _frameBuffer = new FrameBuffer().AddColorTexture(_renderSize);
 
             _pkmn = pkmn;
             _evo = evo;

@@ -7,7 +7,7 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
 {
     internal sealed class BattleTransition_Liquid : ITransition
     {
-        private readonly FrameBuffer2DColor _frameBuffer;
+        private readonly FrameBuffer _frameBuffer;
         private readonly float _duration;
         private float _time;
 
@@ -15,11 +15,11 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
 
         public BattleTransition_Liquid(Vec2I size, float duration = 2.5f)
         {
-            _frameBuffer = new FrameBuffer2DColor(size);
+            _frameBuffer = new FrameBuffer().AddColorTexture(size);
             _duration = duration;
         }
 
-        public void Render(FrameBuffer2DColor target)
+        public void Render(FrameBuffer target)
         {
             float progress;
             if (IsDone)
@@ -47,13 +47,13 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
 
             // Render to transition texture
             _frameBuffer.UseAndViewport(gl);
-            gl.BindTexture(TextureTarget.Texture2D, target.ColorTexture);
+            gl.BindTexture(TextureTarget.Texture2D, target.ColorTextures[0].Texture);
             RectMesh.Instance.Render(gl);
 
             // Copy rendered result back to the target
             EntireScreenTextureShader.Instance.Use(gl);
             target.UseAndViewport(gl);
-            gl.BindTexture(TextureTarget.Texture2D, _frameBuffer.ColorTexture);
+            gl.BindTexture(TextureTarget.Texture2D, _frameBuffer.ColorTextures[0].Texture);
             RectMesh.Instance.Render(gl);
 
             gl.Enable(EnableCap.Blend); // Re-enable blend

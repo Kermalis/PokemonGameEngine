@@ -21,9 +21,9 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         public static readonly Vec2I RenderSize = new(480, 270); // 16:9
         private const int SHADOW_TEXTURE_SIZE = 512;
 
-        private readonly FrameBuffer2DColorDepth _frameBuffer;
-        private readonly FrameBuffer2DColor _dayTintFrameBuffer;
-        private readonly FrameBuffer2DColorDepth _shadowFrameBuffer;
+        private readonly FrameBuffer _frameBuffer;
+        private readonly FrameBuffer _dayTintFrameBuffer;
+        private readonly FrameBuffer _shadowFrameBuffer;
 
         private readonly PkmnPosition[][] _positions;
         private readonly BattlePokemonParty[] _parties;
@@ -70,9 +70,10 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _modelShader = new BattleModelShader(gl);
             _spriteShader = new BattleSpriteShader(gl);
 
-            _frameBuffer = new FrameBuffer2DColorDepth(RenderSize);
-            _dayTintFrameBuffer = new FrameBuffer2DColor(RenderSize);
-            _shadowFrameBuffer = new FrameBuffer2DColorDepth(new Vec2I(SHADOW_TEXTURE_SIZE, SHADOW_TEXTURE_SIZE));
+            _frameBuffer = new FrameBuffer().AddColorTexture(RenderSize).AddDepthTexture(RenderSize);
+            _dayTintFrameBuffer = new FrameBuffer().AddColorTexture(RenderSize);
+            var shadowSize = new Vec2I(SHADOW_TEXTURE_SIZE, SHADOW_TEXTURE_SIZE);
+            _shadowFrameBuffer = new FrameBuffer().AddColorTexture(shadowSize).AddDepthTexture(shadowSize);
 
             InitShadows(gl, out _shadowViewProjection);
 
@@ -422,9 +423,9 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
             _modelShader.SetLights(gl, _testLights);
 
             gl.ActiveTexture(TextureUnit.Texture0);
-            gl.BindTexture(TextureTarget.Texture2D, _shadowFrameBuffer.ColorTexture);
+            gl.BindTexture(TextureTarget.Texture2D, _shadowFrameBuffer.ColorTextures[0].Texture);
             gl.ActiveTexture(TextureUnit.Texture1);
-            gl.BindTexture(TextureTarget.Texture2D, _shadowFrameBuffer.DepthTexture);
+            gl.BindTexture(TextureTarget.Texture2D, _shadowFrameBuffer.DepthTexture.Texture);
             for (int i = 0; i < _models.Count; i++)
             {
                 Model m = _models[i];

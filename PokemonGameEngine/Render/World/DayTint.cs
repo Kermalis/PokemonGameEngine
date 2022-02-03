@@ -112,7 +112,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _mod = Vector3.Lerp(_colors[curShownHour], _colors[nextTintHour], curShownMinute / 60f);
         }
 
-        public static void Render(FrameBuffer2DColor target, FrameBuffer2DColor dayTintFrameBuffer)
+        public static void Render(FrameBuffer target, FrameBuffer dayTintFrameBuffer)
         {
             bool catchUpTime = CatchUpTime;
             CatchUpTime = false;
@@ -132,13 +132,13 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
             // Render to DayTint fbo
             dayTintFrameBuffer.UseAndViewport(gl);
-            gl.BindTexture(TextureTarget.Texture2D, target.ColorTexture);
+            gl.BindTexture(TextureTarget.Texture2D, target.ColorTextures[0].Texture);
             RectMesh.Instance.Render(gl);
 
             // Copy rendered result back to the target
             EntireScreenTextureShader.Instance.Use(gl);
             target.UseAndViewport(gl);
-            gl.BindTexture(TextureTarget.Texture2D, dayTintFrameBuffer.ColorTexture);
+            gl.BindTexture(TextureTarget.Texture2D, dayTintFrameBuffer.ColorTextures[0].Texture);
             RectMesh.Instance.Render(gl);
 
             gl.Enable(EnableCap.Blend); // Re-enable blend

@@ -146,7 +146,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
         private void Task_CameraMotion(BackTask task)
         {
             var data = (TaskData_MoveCamera)task.Data;
-            if (data.Animator.Update(ref Camera.PR))
+            if (data.Animator.Update(out Camera.PR))
             {
                 _tasks.Remove(task);
                 data.OnFinished?.Invoke();

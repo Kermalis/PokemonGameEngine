@@ -40,7 +40,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         }
 
         private static readonly Vec2I _renderSize = new(480, 270); // 16:9
-        private readonly FrameBuffer2DColor _frameBuffer;
+        private readonly FrameBuffer _frameBuffer;
         private readonly TripleColorBackground _tripleColorBG;
 
         private const short NOT_SELECTING_MOVES = -1;
@@ -63,7 +63,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private Action _onClosed;
 
         private AnimatedImage _pkmnImage;
-        private readonly FrameBuffer2DColor _pageFrameBuffer;
+        private readonly FrameBuffer _pageFrameBuffer;
 
         #region Open & Close GUI
 
@@ -84,10 +84,10 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
                 _moveSelection = NOT_SELECTING_MOVES;
             }
 
-            _frameBuffer = new FrameBuffer2DColor(_renderSize);
+            _frameBuffer = new FrameBuffer().AddColorTexture(_renderSize);
             _tripleColorBG = new TripleColorBackground();
             _tripleColorBG.SetColors(Colors.FromRGB(80, 100, 140), Colors.FromRGB(0, 145, 200), Colors.FromRGB(125, 180, 200));
-            _pageFrameBuffer = new FrameBuffer2DColor(Vec2I.FromRelative(PAGE_IMG_WIDTH, PAGE_IMG_HEIGHT, _renderSize));
+            _pageFrameBuffer = new FrameBuffer().AddColorTexture(Vec2I.FromRelative(PAGE_IMG_WIDTH, PAGE_IMG_HEIGHT, _renderSize));
 
             if (pkmn is PartyPokemon pPkmn)
             {
@@ -298,7 +298,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
 
             GUIString.CreateAndRenderOneTimeString(_page.ToString(), Font.Default, FontColors.DefaultBlack_I, new Vec2I(0, 0), scale: 2);
 
-            Vec2I viewSize = _pageFrameBuffer.Size;
+            Vec2I viewSize = _pageFrameBuffer.ColorTextures[0].Size;
             switch (_page)
             {
                 case Page.Info: DrawInfoPage(viewSize); break;

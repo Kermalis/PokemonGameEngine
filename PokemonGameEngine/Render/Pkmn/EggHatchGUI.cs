@@ -14,7 +14,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
     internal sealed class EggHatchGUI
     {
         private static readonly Vec2I _renderSize = new(384, 216); // 16:9
-        private readonly FrameBuffer2DColor _frameBuffer;
+        private readonly FrameBuffer _frameBuffer;
 
         private readonly PartyPokemon _pkmn;
 
@@ -30,7 +30,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         public EggHatchGUI()
         {
             Display.SetMinimumWindowSize(_renderSize);
-            _frameBuffer = new FrameBuffer2DColor(_renderSize);
+            _frameBuffer = new FrameBuffer().AddColorTexture(_renderSize);
 
             _pkmn = Game.Instance.Save.PlayerParty[Game.Instance.Save.Vars[Var.SpecialVar1]];
             UpdatePkmnImage();

@@ -22,7 +22,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
 
         private static readonly Vec2I _renderSize = new(480, 270); // 16:9
 
-        private readonly FrameBuffer2DColor _frameBuffer;
+        private readonly FrameBuffer _frameBuffer;
         private readonly TripleColorBackground _tripleColorBG;
 
         private readonly PlayerInventory _inv;
@@ -44,7 +44,7 @@ namespace Kermalis.PokemonGameEngine.Render.Player
         public BagGUI(PlayerInventory inv, Action onClosed)
         {
             Display.SetMinimumWindowSize(_renderSize);
-            _frameBuffer = new FrameBuffer2DColor(_renderSize);
+            _frameBuffer = new FrameBuffer().AddColorTexture(_renderSize);
 
             _tripleColorBG = new TripleColorBackground();
             _tripleColorBG.SetColors(Colors.FromRGB(215, 230, 230), Colors.FromRGB(230, 165, 0), Colors.FromRGB(245, 180, 30));

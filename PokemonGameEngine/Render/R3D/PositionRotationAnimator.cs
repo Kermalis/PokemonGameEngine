@@ -36,10 +36,11 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             throw new Exception();
         }
 
-        public bool Update(ref PositionRotation result)
+        public bool Update(out PositionRotation result)
         {
             if (IsDone)
             {
+                result = _to;
                 return true;
             }
 
@@ -54,7 +55,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
             {
                 progress = ApplyMethod(progress);
             }
-            result.Slerp(_from, _to, progress);
+            result = PositionRotation.Slerp(_from, _to, progress);
             return IsDone;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.GUIs;
+using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Shaders.World;
 using System.Collections.Generic;
 
@@ -73,10 +74,11 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             shadowPos.Y += Overworld.Block_NumPixelsY;
 
             // Draw shadow
-            var rect = Rect.FromSize(shadowPos, _tex.Shadow.Size);
+            FrameBuffer.FBOTexture shadow = _tex.Shadow.ColorTextures[0];
+            var rect = Rect.FromSize(shadowPos, shadow.Size);
             if (rect.Intersects(viewSize))
             {
-                GUIRenderer.Texture(_tex.Shadow.ColorTexture, rect, new UV(false, false));
+                GUIRenderer.Texture(shadow.Texture, rect, new UV(false, false));
             }
         }
 

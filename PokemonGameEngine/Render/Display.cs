@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
+using Kermalis.PokemonGameEngine.Render.Shaders;
 using SDL2;
 using Silk.NET.OpenGL;
 using System;
@@ -17,7 +18,6 @@ namespace Kermalis.PokemonGameEngine.Render
         private const string WINDOW_TITLE = "Pokémon Game Engine";
         private const string SCREENSHOT_PATH = @"Screenshots";
         private const int AUTOSIZE_WINDOW_SCALE = 3;
-        private static readonly bool _debugScreenshotCurrentFrameBuffer = false;
 
         private static readonly IntPtr _window;
         private static readonly IntPtr _gl;
@@ -162,19 +162,24 @@ namespace Kermalis.PokemonGameEngine.Render
             OpenGL.BindFramebuffer(FramebufferTarget.Framebuffer, 0); // Rebind default FBO. Streaming with many apps require this bound before swap
             SDL.SDL_GL_SwapWindow(_window);
         }
+        /// <summary>Renders a texture on top of the screen</summary>
+        public static void RenderToScreen(uint texture)
+        {
+            GL gl = OpenGL;
+            gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            Viewport(ScreenRect);
+
+            gl.ActiveTexture(TextureUnit.Texture0);
+            gl.BindTexture(TextureTarget.Texture2D, texture);
+            EntireScreenTextureShader.Instance.Use(gl);
+            RectMesh.Instance.Render(gl);
+        }
 
         private static void SaveScreenshot()
         {
             string path = Path.Combine(SCREENSHOT_PATH, string.Format("Screenshot_{0:MM-dd-yyyy_HH-mm-ss-fff}.png", DateTime.Now));
-            if (_debugScreenshotCurrentFrameBuffer)
-            {
-                path = GLTextureUtils.SaveReadBufferAsImage(OpenGL, ViewportSize, path);
-            }
-            else
-            {
-                OpenGL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
-                path = GLTextureUtils.SaveReadBufferAsImage(OpenGL, GetWindowSize(), path);
-            }
+            OpenGL.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
+            path = GLTextureUtils.SaveReadBufferAsImage(OpenGL, GetWindowSize(), path);
 #if DEBUG
             Log.WriteLineWithTime(string.Format("Screenshot saved to {0}", path));
 #endif

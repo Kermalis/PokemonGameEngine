@@ -15,7 +15,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private readonly PartyPokemon _pkmn;
         private readonly Image _mini;
 
-        private FrameBuffer2DColor _frameBuffer;
+        private FrameBuffer _frameBuffer;
         public override bool IsSelected
         {
             get => base.IsSelected;
@@ -48,14 +48,14 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         public void UpdateSize(Vec2I size)
         {
             _frameBuffer?.Delete();
-            _frameBuffer = new FrameBuffer2DColor(size);
+            _frameBuffer = new FrameBuffer().AddColorTexture(size);
             Draw();
         }
         public void Draw()
         {
             GL gl = Display.OpenGL;
             _frameBuffer.UseAndViewport(gl);
-            Vec2I totalSize = _frameBuffer.Size;
+            Vec2I totalSize = _frameBuffer.ColorTextures[0].Size;
 
             Vector4 backColor = IsSelected ? Colors.V4FromRGB(200, 200, 200) : Colors.White4;
             GUIRenderer.Rect(backColor, Rect.FromSize(new Vec2I(0, 0), totalSize), cornerRadii: new(totalSize.Y / 2));

@@ -20,7 +20,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         public uint DisguisedPID { get; private set; }
         public Image Mini { get; private set; }
-        public FrameBuffer2DColor InfoBar { get; }
+        public FrameBuffer InfoBar { get; }
         public PkmnPosition Pos { get; private set; }
 
         private BattlePokemon(PBEBattlePokemon pbePkmn, PartyPokemon pPkmn, BattlePokemonParty bParty, bool backImage, bool useKnownInfo)
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
             DisguisedPID = pPkmn.PID; // By default, use our own PID (for example, wild disguised pkmn)
             UpdateMini();
-            InfoBar = new FrameBuffer2DColor(new Vec2I(100, useKnownInfo ? 30 : 42));
+            InfoBar = new FrameBuffer().AddColorTexture(new Vec2I(100, useKnownInfo ? 30 : 42));
             UpdateInfoBar();
         }
 

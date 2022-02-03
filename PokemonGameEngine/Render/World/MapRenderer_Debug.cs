@@ -35,7 +35,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private const int DEBUG_FBO_SCALE = 5;
 
-        private readonly FrameBuffer2DColor _debugFrameBuffer;
+        private readonly FrameBuffer _debugFrameBuffer;
 
         private bool _debugEnabled = true;
         private bool _debugBlockGridEnabled = true;
@@ -223,7 +223,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 }
             }
 
-            _debugFrameBuffer.RenderToScreen();
+            Display.RenderToScreen(_debugFrameBuffer.ColorTextures[0].Texture);
         }
     }
 }

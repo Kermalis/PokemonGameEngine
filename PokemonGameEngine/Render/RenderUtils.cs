@@ -11,12 +11,6 @@ namespace Kermalis.PokemonGameEngine.Render
     internal static class RenderUtils
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TextureUnit ToTextureUnit(this int unit)
-        {
-            return (TextureUnit)((int)TextureUnit.Texture0 + unit);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCoordinatesForCentering(int dstSize, int srcSize, float pos)
         {
             return (int)(dstSize * pos) - (srcSize / 2);

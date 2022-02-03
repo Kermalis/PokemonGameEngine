@@ -19,7 +19,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
 
         private readonly Rect _innerRect;
         private readonly Vector4 _innerColor;
-        private readonly FrameBuffer2DColor _frameBuffer;
+        private readonly FrameBuffer _frameBuffer;
 
         public Vec2I Pos;
         public bool IsInvisible;
@@ -29,7 +29,7 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             Pos = pos;
             _innerRect = Rect.FromSize(GetDecorationTopLeft(decoration), innerSize);
             _innerColor = innerColor;
-            _frameBuffer = new FrameBuffer2DColor(totalSize);
+            _frameBuffer = new FrameBuffer().AddColorTexture(totalSize);
             InitDecoration(decoration);
             ClearInner();
             _allWindows.Add(this);
@@ -114,12 +114,12 @@ namespace Kermalis.PokemonGameEngine.Render.GUIs
             {
                 case Decoration.GrayRounded:
                 {
-                    GUIRenderer.Rect(_innerColor, Colors.V4FromRGB(80, 80, 80), Rect.FromSize(new Vec2I(0, 0), _frameBuffer.Size), 2, new(10));
+                    GUIRenderer.Rect(_innerColor, Colors.V4FromRGB(80, 80, 80), Rect.FromSize(new Vec2I(0, 0), _frameBuffer.ColorTextures[0].Size), 2, new(10));
                     break;
                 }
                 case Decoration.Battle:
                 {
-                    Vec2I totalSize = _frameBuffer.Size;
+                    Vec2I totalSize = _frameBuffer.ColorTextures[0].Size;
                     var lineSize1 = new Vec2I(totalSize.X, 1);
                     var lineSize2 = new Vec2I(totalSize.X, 2);
                     GUIRenderer.Rect(Colors.FromRGBA(0, 0, 0, 200), Rect.FromSize(new Vec2I(0, 0), lineSize1));

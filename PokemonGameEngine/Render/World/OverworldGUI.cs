@@ -34,8 +34,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
         // |   Below   | 320 x 180 (16:9) | 20 x 11.25 |
         public static readonly Vec2I RenderSize = new(320, 180);
 
-        private readonly FrameBuffer2DColor _frameBuffer;
-        private readonly FrameBuffer2DColor _dayTintFrameBuffer;
+        private readonly FrameBuffer _frameBuffer;
+        private readonly FrameBuffer _dayTintFrameBuffer;
         private readonly MapRenderer _mapRenderer;
         private readonly ConnectedList<BackTask> _tasks = new(BackTask.Sorter);
 
@@ -50,8 +50,8 @@ namespace Kermalis.PokemonGameEngine.Render.World
             Instance = this;
             Display.SetMinimumWindowSize(RenderSize);
 
-            _frameBuffer = new FrameBuffer2DColor(RenderSize);
-            _dayTintFrameBuffer = new FrameBuffer2DColor(RenderSize);
+            _frameBuffer = new FrameBuffer().AddColorTexture(RenderSize);
+            _dayTintFrameBuffer = new FrameBuffer().AddColorTexture(RenderSize);
             _mapRenderer = new MapRenderer(RenderSize);
             SetupStartMenuChoices();
             DayTint.SetTintTime();

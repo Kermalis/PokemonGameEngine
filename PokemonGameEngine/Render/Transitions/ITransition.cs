@@ -7,6 +7,6 @@ namespace Kermalis.PokemonGameEngine.Render.Transitions
     {
         bool IsDone { get; }
 
-        void Render(FrameBuffer2DColor target);
+        void Render(FrameBuffer target);
     }
 }

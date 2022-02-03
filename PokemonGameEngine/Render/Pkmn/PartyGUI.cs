@@ -40,7 +40,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         private static readonly Vec2I _memberSpace = new(_renderSize.X, _renderSize.Y - BOTTOM_HEIGHT);
         private static readonly Vec2I _memberSize = RenderUtils.DecideGridElementSize(_memberSpace, new Vec2I(NUM_COLS, NUM_ROWS), new Vec2I(MEMBER_SPACING_X, MEMBER_SPACING_Y));
 
-        private readonly FrameBuffer2DColor _frameBuffer;
+        private readonly FrameBuffer _frameBuffer;
         private readonly TripleColorBackground _tripleColorBG;
 
         private readonly Mode _mode;
@@ -70,7 +70,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
             _onClosed = onClosed;
 
             Display.SetMinimumWindowSize(_renderSize);
-            _frameBuffer = new FrameBuffer2DColor(_renderSize);
+            _frameBuffer = new FrameBuffer().AddColorTexture(_renderSize);
 
             _tripleColorBG = new TripleColorBackground();
             _sprites = new(Sprite.Sorter);

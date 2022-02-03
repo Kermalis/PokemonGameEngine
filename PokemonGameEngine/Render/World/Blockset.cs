@@ -169,7 +169,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         {
             for (int i = 0; i < _usedTilesets.Count; i++)
             {
-                gl.ActiveTexture(i.ToTextureUnit());
+                gl.ActiveTexture(TextureUnit.Texture0 + i);
                 gl.BindTexture(TextureTarget.Texture2D, _usedTilesets[i].Texture);
             }
         }

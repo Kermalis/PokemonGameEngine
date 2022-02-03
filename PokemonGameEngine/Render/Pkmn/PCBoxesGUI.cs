@@ -14,7 +14,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
     internal sealed class PCBoxesGUI
     {
         private static readonly Vec2I _renderSize = new(480, 270); // 16:9
-        private readonly FrameBuffer2DColor _frameBuffer;
+        private readonly FrameBuffer _frameBuffer;
         private readonly TripleColorBackground _tripleColorBG;
 
         private const int NumPerRow = 6;
@@ -50,7 +50,7 @@ namespace Kermalis.PokemonGameEngine.Render.Pkmn
         public PCBoxesGUI(PCBoxes boxes, Party party, Action onClosed)
         {
             Display.SetMinimumWindowSize(_renderSize);
-            _frameBuffer = new FrameBuffer2DColor(_renderSize);
+            _frameBuffer = new FrameBuffer().AddColorTexture(_renderSize);
 
             _tripleColorBG = new TripleColorBackground();
             _tripleColorBG.SetColors(Colors.FromRGB(235, 230, 255), Colors.FromRGB(180, 240, 140), Colors.FromRGB(0, 255, 140));
