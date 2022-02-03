@@ -16,7 +16,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
 
             // Set texture unit now
             Use(gl);
-            gl.Uniform1(GetUniformLocation(gl, "uTexture"), 0);
+            gl.Uniform1(GetUniformLocation(gl, "u_texture"), 0);
         }
     }
 }

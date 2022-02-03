@@ -16,11 +16,11 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.Transitions
         {
             Instance = this;
 
-            _lProgress = GetUniformLocation(gl, "progress");
+            _lProgress = GetUniformLocation(gl, "u_progress");
 
             // Set texture unit now
             Use(gl);
-            gl.Uniform1(GetUniformLocation(gl, "colorTexture"), 0);
+            gl.Uniform1(GetUniformLocation(gl, "u_texture"), 0);
         }
 
         public void SetProgress(GL gl, float progress)

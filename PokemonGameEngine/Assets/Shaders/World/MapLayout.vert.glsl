@@ -6,13 +6,13 @@ layout(location = 2) in float in_instancedTexture;
 
 out vec3 pass_uvw;
 
-uniform ivec2 blockSize;
-uniform ivec2 viewportSize;
+uniform ivec2 u_blockSize;
+uniform ivec2 u_viewportSize;
 
 
 void main()
 {
-    vec2 relPos = ((in_position * blockSize) + in_instancedTranslation) / viewportSize; // Abs to Rel
+    vec2 relPos = ((in_position * u_blockSize) + in_instancedTranslation) / u_viewportSize; // Abs to Rel
     float glX = relPos.x * 2 - 1; // (0 => 1) to (-1 => 1)
     float glY = relPos.y * -2 + 1; // (0 => 1) to (1 => -1)
     gl_Position = vec4(glX, glY, 0, 1);

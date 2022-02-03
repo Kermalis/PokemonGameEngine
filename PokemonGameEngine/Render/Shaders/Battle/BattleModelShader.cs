@@ -25,28 +25,28 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.Battle
         public BattleModelShader(GL gl)
             : base(gl, VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
         {
-            _lProjection = GetUniformLocation(gl, "projection");
-            _lView = GetUniformLocation(gl, "view");
-            _lTransform = GetUniformLocation(gl, "transform");
-            _lShadowTextureConversion = GetUniformLocation(gl, "shadowTextureConversion");
+            _lProjection = GetUniformLocation(gl, "u_projection");
+            _lView = GetUniformLocation(gl, "u_view");
+            _lTransform = GetUniformLocation(gl, "u_transform");
+            _lShadowTextureConversion = GetUniformLocation(gl, "u_shadowTextureConversion");
 
-            _lCameraPos = GetUniformLocation(gl, "cameraPos");
-            _lShineDamper = GetUniformLocation(gl, "shineDamper");
-            _lSpecularReflectivity = GetUniformLocation(gl, "specularReflectivity");
+            _lCameraPos = GetUniformLocation(gl, "u_cameraPos");
+            _lShineDamper = GetUniformLocation(gl, "u_shineDamper");
+            _lSpecularReflectivity = GetUniformLocation(gl, "u_specularReflectivity");
 
             _lightUniforms = new LitShaderUniforms(gl, this, MAX_LIGHTS);
 
             // Set texture units now
             Use(gl);
-            gl.Uniform1(GetUniformLocation(gl, "shadowColorTexture"), 0);
-            gl.Uniform1(GetUniformLocation(gl, "shadowDepthTexture"), 1);
+            gl.Uniform1(GetUniformLocation(gl, "u_shadowColorTexture"), 0);
+            gl.Uniform1(GetUniformLocation(gl, "u_shadowDepthTexture"), 1);
             SetShineDamper(gl, 5f);
             SetReflectivity(gl, 0f);
         }
 
         public bool SetDiffuseTextureUnit(GL gl, int i, int textureUnit)
         {
-            int loc = GetUniformLocation(gl, "diffuseTexture" + (i + 1), throwIfNotExists: false);
+            int loc = GetUniformLocation(gl, "u_diffuseTexture" + (i + 1), throwIfNotExists: false);
             if (loc != -1)
             {
                 gl.Uniform1(loc, textureUnit);

@@ -21,19 +21,19 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.Battle
         public BattleSpriteShader(GL gl)
             : base(gl, VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
         {
-            _lTransformViewProjection = GetUniformLocation(gl, "transformViewProjection");
+            _lTransformViewProjection = GetUniformLocation(gl, "u_transformViewProjection");
 
-            _lOutputShadow = GetUniformLocation(gl, "outputShadow");
-            _lOpacity = GetUniformLocation(gl, "opacity");
+            _lOutputShadow = GetUniformLocation(gl, "u_outputShadow");
+            _lOpacity = GetUniformLocation(gl, "u_opacity");
 
-            _lMaskColor = GetUniformLocation(gl, "maskColor");
-            _lMaskColorAmt = GetUniformLocation(gl, "maskColorAmt");
-            _lBlacknessAmt = GetUniformLocation(gl, "blacknessAmt");
-            _lPixelateAmt = GetUniformLocation(gl, "pixelateAmt");
+            _lMaskColor = GetUniformLocation(gl, "u_maskColor");
+            _lMaskColorAmt = GetUniformLocation(gl, "u_maskColorAmt");
+            _lBlacknessAmt = GetUniformLocation(gl, "u_blacknessAmt");
+            _lPixelateAmt = GetUniformLocation(gl, "u_pixelateAmt");
 
             // Set texture unit now
             Use(gl);
-            gl.Uniform1(GetUniformLocation(gl, "imgTexture"), 0);
+            gl.Uniform1(GetUniformLocation(gl, "u_texture"), 0);
         }
 
         public void SetMatrix(GL gl, in Matrix4x4 transformViewProjection)

@@ -2,11 +2,11 @@
 
 out vec4 out_color;
 
-uniform vec3 color;
-uniform float progress;
+uniform vec3 u_color;
+uniform float u_progress;
 
 
 void main()
 {
-    out_color = vec4(color, progress);
+    out_color = vec4(u_color, u_progress);
 }

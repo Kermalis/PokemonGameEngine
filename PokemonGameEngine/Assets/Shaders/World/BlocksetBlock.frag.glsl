@@ -7,10 +7,10 @@ in vec2 pass_uv;
 
 out vec4 out_color;
 
-uniform sampler2D tilesetTextures[MAX_ACTIVE_TEXTURES];
+uniform sampler2D u_tilesetTextures[MAX_ACTIVE_TEXTURES];
 
 
 void main()
 {
-    out_color = texture(tilesetTextures[pass_tileset], pass_uv);
+    out_color = texture(u_tilesetTextures[pass_tileset], pass_uv);
 }

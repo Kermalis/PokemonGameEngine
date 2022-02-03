@@ -17,11 +17,11 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.World
         {
             Instance = this;
 
-            _lModification = GetUniformLocation(gl, "modification");
+            _lModification = GetUniformLocation(gl, "u_modification");
 
             // Set texture unit now
             Use(gl);
-            gl.Uniform1(GetUniformLocation(gl, "colorTexture"), 0);
+            gl.Uniform1(GetUniformLocation(gl, "u_texture"), 0);
         }
 
         public void SetModification(GL gl, ref Vector3 mod)

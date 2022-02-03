@@ -9,7 +9,7 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
         public Shader2D(GL gl, string vertexAsset, string fragmentAsset)
             : base(gl, vertexAsset, fragmentAsset)
         {
-            _lViewportSize = GetUniformLocation(gl, "viewportSize");
+            _lViewportSize = GetUniformLocation(gl, "u_viewportSize");
         }
 
         public void UpdateViewport(GL gl, Vec2I size)

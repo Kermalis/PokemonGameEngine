@@ -12,15 +12,15 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders
 
         public LitShaderUniforms(GL gl, GLShader shader, int max)
         {
-            _lNumLights = shader.GetUniformLocation(gl, "numLights");
+            _lNumLights = shader.GetUniformLocation(gl, "u_numLights");
             _lLightPos = new int[max];
             _lLightColor = new int[max];
             _lLightAttenuation = new int[max];
             for (int i = 0; i < max; i++)
             {
-                _lLightPos[i] = shader.GetUniformLocation(gl, "lightPos[" + i + ']');
-                _lLightColor[i] = shader.GetUniformLocation(gl, "lightColor[" + i + ']');
-                _lLightAttenuation[i] = shader.GetUniformLocation(gl, "lightAttenuation[" + i + ']');
+                _lLightPos[i] = shader.GetUniformLocation(gl, "u_lightPos[" + i + ']');
+                _lLightColor[i] = shader.GetUniformLocation(gl, "u_lightColor[" + i + ']');
+                _lLightAttenuation[i] = shader.GetUniformLocation(gl, "u_lightAttenuation[" + i + ']');
             }
         }
 

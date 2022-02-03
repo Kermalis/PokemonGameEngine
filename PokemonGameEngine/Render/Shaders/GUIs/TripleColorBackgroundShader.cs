@@ -15,9 +15,9 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.GUIs
         public TripleColorBackgroundShader(GL gl)
             : base(gl, VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
         {
-            _lColor1 = GetUniformLocation(gl, "colors[0]");
-            _lColor2 = GetUniformLocation(gl, "colors[1]");
-            _lColor3 = GetUniformLocation(gl, "colors[2]");
+            _lColor1 = GetUniformLocation(gl, "u_colors[0]");
+            _lColor2 = GetUniformLocation(gl, "u_colors[1]");
+            _lColor3 = GetUniformLocation(gl, "u_colors[2]");
         }
 
         public void SetColors(GL gl, in Vector3 color1, in Vector3 color2, in Vector3 color3)

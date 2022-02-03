@@ -11,25 +11,25 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.GUIs
         public static FontShader Instance { get; private set; } = null!; // Initialized in RenderManager
 
         private readonly int _lTranslation;
-        private readonly int _lNumFontColors;
-        private readonly int[] _lFontColors;
+        private readonly int _lNumColors;
+        private readonly int[] _lColors;
 
         public FontShader(GL gl)
             : base(gl, VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
         {
             Instance = this;
 
-            _lTranslation = GetUniformLocation(gl, "translation");
-            _lNumFontColors = GetUniformLocation(gl, "numFontColors");
-            _lFontColors = new int[256];
+            _lTranslation = GetUniformLocation(gl, "u_translation");
+            _lNumColors = GetUniformLocation(gl, "u_numColors");
+            _lColors = new int[256];
             for (int i = 0; i < 256; i++)
             {
-                _lFontColors[i] = GetUniformLocation(gl, "fontColors[" + i + ']');
+                _lColors[i] = GetUniformLocation(gl, "u_colors[" + i + ']');
             }
 
             // Set texture unit now
             Use(gl);
-            gl.Uniform1(GetUniformLocation(gl, "fontTexture"), 0);
+            gl.Uniform1(GetUniformLocation(gl, "u_texture"), 0);
         }
 
         public void SetTranslation(GL gl, ref Vec2I v)
@@ -38,10 +38,10 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.GUIs
         }
         public void SetColors(GL gl, Vector4[] colors)
         {
-            gl.Uniform1(_lNumFontColors, (uint)colors.Length);
+            gl.Uniform1(_lNumColors, (uint)colors.Length);
             for (int i = 0; i < colors.Length; i++)
             {
-                Colors.PutInShader(gl, _lFontColors[i], colors[i]);
+                Colors.PutInShader(gl, _lColors[i], colors[i]);
             }
         }
     }

@@ -18,8 +18,8 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.Transitions
         {
             Instance = this;
 
-            _lColor = GetUniformLocation(gl, "color");
-            _lProgress = GetUniformLocation(gl, "progress");
+            _lColor = GetUniformLocation(gl, "u_color");
+            _lProgress = GetUniformLocation(gl, "u_progress");
         }
 
         public void SetColor(GL gl, in Vector3 color)

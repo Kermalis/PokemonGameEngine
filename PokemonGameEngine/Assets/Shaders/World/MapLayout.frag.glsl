@@ -4,10 +4,10 @@ in vec3 pass_uvw;
 
 out vec4 out_color;
 
-uniform sampler3D blocksetTexture;
+uniform sampler3D u_blocksetTexture;
 
 
 void main()
 {
-    out_color = texture(blocksetTexture, pass_uvw);
+    out_color = texture(u_blocksetTexture, pass_uvw);
 }

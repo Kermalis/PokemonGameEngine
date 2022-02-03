@@ -13,8 +13,8 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.World
         {
             // Set texture uniform right away
             Use(gl);
-            gl.Uniform1(GetUniformLocation(gl, "blocksetTexture"), 0);
-            gl.Uniform2(GetUniformLocation(gl, "blockSize"), Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
+            gl.Uniform1(GetUniformLocation(gl, "u_blocksetTexture"), 0);
+            gl.Uniform2(GetUniformLocation(gl, "u_blockSize"), Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
         }
     }
 }

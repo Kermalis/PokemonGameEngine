@@ -4,12 +4,12 @@ in vec2 pass_uv;
 
 out vec4 out_color;
 
-uniform sampler2D objTexture;
+uniform sampler2D u_texture;
 
 
 void main()
 {
-    out_color = texture(objTexture, pass_uv);
+    out_color = texture(u_texture, pass_uv);
     if (out_color.a < 0.5)
     {
         discard;

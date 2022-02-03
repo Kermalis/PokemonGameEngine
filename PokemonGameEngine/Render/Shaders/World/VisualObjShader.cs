@@ -16,15 +16,15 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.World
         public VisualObjShader(GL gl)
             : base(gl, VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH)
         {
-            _lPos = GetUniformLocation(gl, "pos");
-            _lSize = GetUniformLocation(gl, "size");
+            _lPos = GetUniformLocation(gl, "u_pos");
+            _lSize = GetUniformLocation(gl, "u_size");
 
-            _lUVStart = GetUniformLocation(gl, "uvStart");
-            _lUVEnd = GetUniformLocation(gl, "uvEnd");
+            _lUVStart = GetUniformLocation(gl, "u_uvStart");
+            _lUVEnd = GetUniformLocation(gl, "u_uvEnd");
 
             // Set texture unit now
             Use(gl);
-            gl.Uniform1(GetUniformLocation(gl, "objTexture"), 0);
+            gl.Uniform1(GetUniformLocation(gl, "u_texture"), 0);
         }
 
         public void SetRect(GL gl, in Rect r)

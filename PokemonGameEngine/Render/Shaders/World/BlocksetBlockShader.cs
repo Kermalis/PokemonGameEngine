@@ -20,9 +20,9 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.World
             Use(gl);
             for (int i = 0; i < GLTextureUtils.MAX_ACTIVE_TEXTURES; i++)
             {
-                gl.Uniform1(GetUniformLocation(gl, "tilesetTextures[" + i + ']'), i);
+                gl.Uniform1(GetUniformLocation(gl, "u_tilesetTextures[" + i + ']'), i);
             }
-            gl.Uniform2(GetUniformLocation(gl, "blockSize"), Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
+            gl.Uniform2(GetUniformLocation(gl, "u_blockSize"), Overworld.Block_NumPixelsX, Overworld.Block_NumPixelsY);
         }
     }
 }

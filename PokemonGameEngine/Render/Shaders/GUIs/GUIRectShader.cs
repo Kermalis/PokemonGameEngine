@@ -28,21 +28,21 @@ namespace Kermalis.PokemonGameEngine.Render.Shaders.GUIs
         {
             Instance = this;
 
-            _lPos = GetUniformLocation(gl, "pos");
-            _lSize = GetUniformLocation(gl, "size");
-            _lCornerRadii = GetUniformLocation(gl, "cornerRadii");
-            _lLineThickness = GetUniformLocation(gl, "lineThickness");
-            _lOpacity = GetUniformLocation(gl, "opacity");
+            _lPos = GetUniformLocation(gl, "u_pos");
+            _lSize = GetUniformLocation(gl, "u_size");
+            _lCornerRadii = GetUniformLocation(gl, "u_cornerRadii");
+            _lLineThickness = GetUniformLocation(gl, "u_lineThickness");
+            _lOpacity = GetUniformLocation(gl, "u_opacity");
 
-            _lUseTexture = GetUniformLocation(gl, "useTexture");
-            _lColor = GetUniformLocation(gl, "color");
-            _lLineColor = GetUniformLocation(gl, "lineColor");
-            _lUVStart = GetUniformLocation(gl, "uvStart");
-            _lUVEnd = GetUniformLocation(gl, "uvEnd");
+            _lUseTexture = GetUniformLocation(gl, "u_useTexture");
+            _lColor = GetUniformLocation(gl, "u_color");
+            _lLineColor = GetUniformLocation(gl, "u_lineColor");
+            _lUVStart = GetUniformLocation(gl, "u_uvStart");
+            _lUVEnd = GetUniformLocation(gl, "u_uvEnd");
 
             // Set texture unit now
             Use(gl);
-            gl.Uniform1(GetUniformLocation(gl, "guiTexture"), 0);
+            gl.Uniform1(GetUniformLocation(gl, "u_texture"), 0);
         }
 
         public void SetRect(GL gl, in Rect r)
