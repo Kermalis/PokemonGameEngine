@@ -3,6 +3,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System;
+using System.Buffers;
 using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Render.OpenGL
@@ -11,6 +12,23 @@ namespace Kermalis.PokemonGameEngine.Render.OpenGL
     {
         public const int MAX_ACTIVE_TEXTURES = 16; // If this is changed, you must also change the value in the shader: World\BlocksetBlock.frag.glsl
 
+        public static unsafe void LoadTextureData(GL gl, string assetPath, out Vec2I size)
+        {
+            using (FileStream s = File.OpenRead(assetPath))
+            using (var img = Image.Load<Rgba32>(s))
+            {
+                size.X = img.Width;
+                size.Y = img.Height;
+                if (!img.DangerousTryGetSinglePixelMemory(out Memory<Rgba32> memory))
+                {
+                    throw new Exception("Failure pinning memory for image");
+                }
+                using (MemoryHandle h = memory.Pin())
+                {
+                    LoadTextureData(gl, h.Pointer, size);
+                }
+            }
+        }
         public static unsafe void LoadTextureData(GL gl, void* data, Vec2I size)
         {
             gl.TexImage2D(TextureTarget.Texture2D, 0, (int)InternalFormat.Rgba8, (uint)size.X, (uint)size.Y, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);

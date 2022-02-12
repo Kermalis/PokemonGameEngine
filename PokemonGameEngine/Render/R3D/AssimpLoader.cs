@@ -3,12 +3,10 @@ using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Shaders.Battle;
 using Silk.NET.Assimp;
 using Silk.NET.OpenGL;
-using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
-using System.Runtime.InteropServices;
 
 namespace Kermalis.PokemonGameEngine.Render.R3D
 {
@@ -126,13 +124,7 @@ namespace Kermalis.PokemonGameEngine.Render.R3D
                     GL gl = Display.OpenGL;
                     texture = gl.GenTexture();
                     gl.BindTexture(TextureTarget.Texture2D, texture);
-                    using (var img = SixLabors.ImageSharp.Image.Load<Rgba32>(Path.Combine(dir, path)))
-                    {
-                        fixed (void* imgdata = &MemoryMarshal.GetReference(img.GetPixelRowSpan(0)))
-                        {
-                            GLTextureUtils.LoadTextureData(gl, imgdata, new Vec2I(img.Width, img.Height));
-                        }
-                    }
+                    GLTextureUtils.LoadTextureData(gl, Path.Combine(dir, path), out _);
                     loaded.Add(path, texture);
                 }
                 textures.Add(texture);

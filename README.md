@@ -59,7 +59,6 @@ If you'd like to learn more or just talk, join our [Discord server][Discord].
 * [OpenGL](https://www.opengl.org/)
 * [PokemonBattleEngine](https://github.com/Kermalis/PokemonBattleEngine)
 * [SDL2](https://www.libsdl.org/)
-* [SDL2#](https://github.com/flibitijibibo/SDL2-CS)
 * [Silk.NET](https://github.com/dotnet/Silk.NET)
 * [SimpleGIF](https://github.com/Kermalis/SimpleGIF)
 * [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)

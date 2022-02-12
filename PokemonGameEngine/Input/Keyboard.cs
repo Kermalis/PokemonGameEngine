@@ -1,4 +1,4 @@
-﻿using SDL2;
+﻿using Silk.NET.SDL;
 using System;
 using System.Collections.Generic;
 
@@ -6,7 +6,7 @@ namespace Kermalis.PokemonGameEngine.Input
 {
     internal static class Keyboard
     {
-        private static readonly Dictionary<SDL.SDL_Keycode, Key> _keyBinds = new();
+        private static readonly Dictionary<KeyCode, Key> _keyBinds = new();
         private static readonly Dictionary<Key, PressData> _keys = new();
 
         static Keyboard()
@@ -15,23 +15,23 @@ namespace Kermalis.PokemonGameEngine.Input
             _keys = PressData.CreateDict(Enum.GetValues<Key>());
         }
 
-        private static Dictionary<SDL.SDL_Keycode, Key> GetDefaultKeyBinds()
+        private static Dictionary<KeyCode, Key> GetDefaultKeyBinds()
         {
-            return new Dictionary<SDL.SDL_Keycode, Key>(13)
+            return new Dictionary<KeyCode, Key>(13)
             {
-                { SDL.SDL_Keycode.SDLK_q, Key.L },
-                { SDL.SDL_Keycode.SDLK_w, Key.R },
-                { SDL.SDL_Keycode.SDLK_LEFT, Key.Left },
-                { SDL.SDL_Keycode.SDLK_RIGHT, Key.Right },
-                { SDL.SDL_Keycode.SDLK_UP, Key.Up },
-                { SDL.SDL_Keycode.SDLK_DOWN, Key.Down },
-                { SDL.SDL_Keycode.SDLK_RETURN, Key.Start },
-                { SDL.SDL_Keycode.SDLK_RSHIFT, Key.Select },
-                { SDL.SDL_Keycode.SDLK_a, Key.X },
-                { SDL.SDL_Keycode.SDLK_s, Key.Y },
-                { SDL.SDL_Keycode.SDLK_z, Key.B },
-                { SDL.SDL_Keycode.SDLK_x, Key.A },
-                { SDL.SDL_Keycode.SDLK_F12, Key.Screenshot }
+                { KeyCode.KQ, Key.L },
+                { KeyCode.KW, Key.R },
+                { KeyCode.KLeft, Key.Left },
+                { KeyCode.KRight, Key.Right },
+                { KeyCode.KUp, Key.Up },
+                { KeyCode.KDown, Key.Down },
+                { KeyCode.KReturn, Key.Start },
+                { KeyCode.KRshift, Key.Select },
+                { KeyCode.KA, Key.X },
+                { KeyCode.KS, Key.Y },
+                { KeyCode.KZ, Key.B },
+                { KeyCode.KX, Key.A },
+                { KeyCode.KF12, Key.Screenshot }
             };
         }
 
@@ -53,7 +53,7 @@ namespace Kermalis.PokemonGameEngine.Input
             return _keys[k].WasReleased;
         }
 
-        public static void OnKeyChanged(SDL.SDL_Keycode sym, bool down)
+        public static void OnKeyChanged(KeyCode sym, bool down)
         {
             InputManager.SetCursorMode(false);
             if (_keyBinds.TryGetValue(sym, out Key key))

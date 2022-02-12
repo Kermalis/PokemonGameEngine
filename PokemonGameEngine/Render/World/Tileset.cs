@@ -67,11 +67,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             GL gl = Display.OpenGL;
             Texture = gl.GenTexture();
             gl.BindTexture(TextureTarget.Texture2D, Texture);
-            uint[] bitmap = AssetLoader.GetAssetBitmap(AssetLoader.GetPath(TILESET_PATH + name + TILESET_EXTENSION), out TextureSize);
-            fixed (uint* d = bitmap)
-            {
-                GLTextureUtils.LoadTextureData(gl, d, TextureSize);
-            }
+            GLTextureUtils.LoadTextureData(gl, AssetLoader.GetPath(TILESET_PATH + name + TILESET_EXTENSION), out TextureSize);
             NumTilesX = TextureSize.X / Overworld.Tile_NumPixelsX;
 
             // Load animations if they exist

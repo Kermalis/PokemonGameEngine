@@ -1,8 +1,8 @@
 ﻿using Kermalis.PokemonGameEngine.Input;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Kermalis.PokemonGameEngine.Render.Shaders;
-using SDL2;
 using Silk.NET.OpenGL;
+using Silk.NET.SDL;
 using System;
 using System.IO;
 using System.Numerics;
@@ -13,16 +13,17 @@ using Kermalis.PokemonGameEngine.Debug;
 
 namespace Kermalis.PokemonGameEngine.Render
 {
-    internal static class Display
+    internal static unsafe class Display
     {
         private const string WINDOW_TITLE = "Pokémon Game Engine";
         private const string SCREENSHOT_PATH = @"Screenshots";
         private const int AUTOSIZE_WINDOW_SCALE = 3;
 
-        private static readonly IntPtr _window;
-        private static readonly IntPtr _gl;
+        private static readonly Window* _window;
+        private static readonly void* _glContext;
 
         public static readonly GL OpenGL;
+        public static readonly Sdl SDL;
         public static bool AutosizeWindow = true; // Works silently with fullscreen mode
         public static Vec2I ViewportSize;
         public static Vec2I ScreenSize;
@@ -32,60 +33,58 @@ namespace Kermalis.PokemonGameEngine.Render
         static Display()
         {
             // SDL 2
-            if (SDL.SDL_Init(SDL.SDL_INIT_AUDIO | SDL.SDL_INIT_VIDEO | SDL.SDL_INIT_GAMECONTROLLER) != 0)
+            SDL = Sdl.GetApi();
+            if (SDL.Init(Sdl.InitAudio | Sdl.InitVideo | Sdl.InitGamecontroller) != 0)
             {
                 Print_SDL_Error("SDL could not initialize!");
             }
 
             // Use OpenGL 4.2 core. Required for glDrawArraysInstancedBaseInstance
-            if (SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, 4) != 0)
+            if (SDL.GLSetAttribute(GLattr.GLContextMajorVersion, 4) != 0)
             {
                 Print_SDL_Error("Could not set OpenGL's major version!");
             }
-            if (SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, 2) != 0)
+            if (SDL.GLSetAttribute(GLattr.GLContextMinorVersion, 2) != 0)
             {
                 Print_SDL_Error("Could not set OpenGL's minor version!");
             }
-            if (SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, SDL.SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE) != 0)
+            if (SDL.GLSetAttribute(GLattr.GLContextProfileMask, (int)GLprofile.GLContextProfileCore) != 0)
             {
                 Print_SDL_Error("Could not set OpenGL's profile!");
             }
 
-            SDL.SDL_WindowFlags windowFlags = SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL.SDL_WindowFlags.SDL_WINDOW_RESIZABLE;
+            WindowFlags windowFlags = WindowFlags.WindowOpengl | WindowFlags.WindowResizable;
 #if FULLSCREEN
-            windowFlags |= SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP;
+            windowFlags |= WindowFlags.WindowFullscreenDesktop;
 #endif
 
-            _window = SDL.SDL_CreateWindow(WINDOW_TITLE, SDL.SDL_WINDOWPOS_UNDEFINED, SDL.SDL_WINDOWPOS_UNDEFINED, 1, 1, windowFlags);
-            if (_window == IntPtr.Zero)
+            _window = SDL.CreateWindow(WINDOW_TITLE, Sdl.WindowposUndefined, Sdl.WindowposUndefined, 1, 1, (uint)windowFlags);
+            if (_window is null)
             {
                 Print_SDL_Error("Could not create the window!");
             }
 
-            _gl = SDL.SDL_GL_CreateContext(_window);
-            if (_gl == IntPtr.Zero)
+            _glContext = SDL.GLCreateContext(_window);
+            if (_glContext is null)
             {
                 Print_SDL_Error("Could not create the OpenGL context!");
             }
-            if (SDL.SDL_GL_SetSwapInterval(1) != 0)
+            if (SDL.GLSetSwapInterval(1) != 0)
             {
                 Print_SDL_Error("Could not enable VSync!");
             }
-            if (SDL.SDL_GL_MakeCurrent(_window, _gl) != 0)
+            if (SDL.GLMakeCurrent(_window, _glContext) != 0)
             {
                 Print_SDL_Error("Could not start OpenGL on the window!");
             }
-            OpenGL = GL.GetApi(SDL.SDL_GL_GetProcAddress);
+            OpenGL = GL.GetApi((proc) => (nint)SDL.GLGetProcAddress(proc));
             // Default gl states:
             // DepthTest disabled
             OpenGL.Enable(EnableCap.Blend); // Blend enabled
             OpenGL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 #if DEBUG
-            unsafe
-            {
-                OpenGL.Enable(EnableCap.DebugOutput);
-                OpenGL.DebugMessageCallback(HandleGLError, null);
-            }
+            OpenGL.Enable(EnableCap.DebugOutput);
+            OpenGL.DebugMessageCallback(HandleGLError, null);
 #endif
 
             SetMinimumWindowSize(new Vec2I(1, 1));
@@ -93,18 +92,18 @@ namespace Kermalis.PokemonGameEngine.Render
 
         private static Vec2I GetWindowSize()
         {
-            Vec2I ret;
-            SDL.SDL_GetWindowSize(_window, out ret.X, out ret.Y);
+            var ret = new Vec2I();
+            SDL.GetWindowSize(_window, ref ret.X, ref ret.Y);
             return ret;
         }
         public static void SetMinimumWindowSize(Vec2I size)
         {
             ScreenSize = size;
-            SDL.SDL_SetWindowMinimumSize(_window, size.X, size.Y);
+            SDL.SetWindowMinimumSize(_window, size.X, size.Y);
             if (AutosizeWindow)
             {
                 size *= AUTOSIZE_WINDOW_SCALE;
-                SDL.SDL_SetWindowSize(_window, size.X, size.Y);
+                SDL.SetWindowSize(_window, size.X, size.Y);
             }
             SetScreenRect();
         }
@@ -160,7 +159,7 @@ namespace Kermalis.PokemonGameEngine.Render
                 SaveScreenshot();
             }
             OpenGL.BindFramebuffer(FramebufferTarget.Framebuffer, 0); // Rebind default FBO. Streaming with many apps require this bound before swap
-            SDL.SDL_GL_SwapWindow(_window);
+            SDL.GLSwapWindow(_window);
         }
         /// <summary>Renders a texture on top of the screen</summary>
         public static void RenderToScreen(uint texture)
@@ -187,7 +186,7 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public static void Print_SDL_Error(string error)
         {
-            error = string.Format("{2}{0}SDL Error: \"{1}\"", Environment.NewLine, SDL.SDL_GetError(), error);
+            error = string.Format("{2}{0}SDL Error: \"{1}\"", Environment.NewLine, SDL.GetErrorS(), error);
 #if DEBUG
             Log.WriteLineWithTime(error);
 #endif
@@ -229,9 +228,9 @@ namespace Kermalis.PokemonGameEngine.Render
 
         public static void Quit()
         {
-            SDL.SDL_GL_DeleteContext(_gl);
-            SDL.SDL_DestroyWindow(_window);
-            SDL.SDL_Quit();
+            SDL.GLDeleteContext(_glContext);
+            SDL.DestroyWindow(_window);
+            SDL.Quit();
         }
     }
 }

@@ -2,7 +2,8 @@
 using Kermalis.PokemonGameEngine.Render;
 using Kermalis.PokemonGameEngine.Render.R3D;
 using Kermalis.PokemonGameEngine.Sound;
-using SDL2;
+using Silk.NET.SDL;
+using SixLabors.ImageSharp;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -16,6 +17,7 @@ namespace Kermalis.PokemonGameEngine.Core
         // Initializes the first callback, the window, and instances
         private static void Init()
         {
+            Configuration.Default.PreferContiguousImageBuffers = true;
             RuntimeHelpers.RunClassConstructor(typeof(Display).TypeHandle); // Inits Display static constructor & SDL
             RuntimeHelpers.RunClassConstructor(typeof(SoundMixer).TypeHandle); // Init SoundMixer static constructor & SDL Audio
             RuntimeHelpers.RunClassConstructor(typeof(AssimpLoader).TypeHandle); // Init AssimpLoader static constructor
@@ -60,76 +62,77 @@ namespace Kermalis.PokemonGameEngine.Core
             Display.Quit(); // Quits SDL altogether
         }
 
-        private static bool HandleOSEvents()
+        private static unsafe bool HandleOSEvents()
         {
-            while (SDL.SDL_PollEvent(out SDL.SDL_Event e) != 0)
+            Event e;
+            while (Display.SDL.PollEvent(&e) != 0)
             {
-                switch (e.type)
+                switch ((EventType)e.Type)
                 {
-                    case SDL.SDL_EventType.SDL_QUIT:
+                    case EventType.Quit:
                     {
                         RequestQuit();
                         return true;
                     }
-                    case SDL.SDL_EventType.SDL_CONTROLLERDEVICEADDED:
+                    case EventType.Controllerdeviceadded:
                     {
                         Controller.OnControllerAdded();
                         break;
                     }
-                    case SDL.SDL_EventType.SDL_CONTROLLERDEVICEREMOVED:
+                    case EventType.Controllerdeviceremoved:
                     {
-                        Controller.OnControllerRemoved(e.cdevice.which);
+                        Controller.OnControllerRemoved(e.Cdevice.Which);
                         break;
                     }
-                    case SDL.SDL_EventType.SDL_CONTROLLERAXISMOTION:
+                    case EventType.Controlleraxismotion:
                     {
-                        Controller.OnAxisChanged(e.caxis);
+                        Controller.OnAxisChanged(e.Caxis);
                         break;
                     }
-                    case SDL.SDL_EventType.SDL_CONTROLLERBUTTONDOWN:
+                    case EventType.Controllerbuttondown:
                     {
-                        Controller.OnButtonChanged(e.cbutton, true);
+                        Controller.OnButtonChanged(e.Cbutton, true);
                         break;
                     }
-                    case SDL.SDL_EventType.SDL_CONTROLLERBUTTONUP:
+                    case EventType.Controllerbuttonup:
                     {
-                        Controller.OnButtonChanged(e.cbutton, false);
+                        Controller.OnButtonChanged(e.Cbutton, false);
                         break;
                     }
-                    case SDL.SDL_EventType.SDL_KEYDOWN:
+                    case EventType.Keydown:
                     {
                         // Don't accept repeat events
-                        if (e.key.repeat == 0)
+                        if (e.Key.Repeat == 0)
                         {
-                            Keyboard.OnKeyChanged(e.key.keysym.sym, true);
+                            Keyboard.OnKeyChanged((KeyCode)e.Key.Keysym.Sym, true);
                         }
                         break;
                     }
-                    case SDL.SDL_EventType.SDL_KEYUP:
+                    case EventType.Keyup:
                     {
-                        Keyboard.OnKeyChanged(e.key.keysym.sym, false);
+                        Keyboard.OnKeyChanged((KeyCode)e.Key.Keysym.Sym, false);
                         break;
                     }
-                    case SDL.SDL_EventType.SDL_MOUSEBUTTONDOWN:
+                    case EventType.Mousebuttondown:
                     {
-                        Mouse.OnButtonDown(e.button.button, true);
+                        Mouse.OnButtonDown(e.Button.Button, true);
                         break;
                     }
-                    case SDL.SDL_EventType.SDL_MOUSEBUTTONUP:
+                    case EventType.Mousebuttonup:
                     {
-                        Mouse.OnButtonDown(e.button.button, false);
+                        Mouse.OnButtonDown(e.Button.Button, false);
                         break;
                     }
-                    case SDL.SDL_EventType.SDL_MOUSEMOTION:
+                    case EventType.Mousemotion:
                     {
-                        Mouse.OnMove(e.motion);
+                        Mouse.OnMove(e.Motion);
                         break;
                     }
-                    case SDL.SDL_EventType.SDL_WINDOWEVENT:
+                    case EventType.Windowevent:
                     {
-                        switch (e.window.windowEvent)
+                        switch ((WindowEventID)e.Window.Event)
                         {
-                            case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED:
+                            case WindowEventID.WindoweventResized:
                             {
                                 Display.AutosizeWindow = false;
                                 break;

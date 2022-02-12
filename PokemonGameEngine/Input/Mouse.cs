@@ -1,5 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
-using SDL2;
+using Silk.NET.SDL;
 using System;
 using System.Collections.Generic;
 
@@ -36,32 +36,32 @@ namespace Kermalis.PokemonGameEngine.Input
 
         public static void SetMouseCursorShown(bool shown)
         {
-            if (SDL.SDL_ShowCursor(shown ? SDL.SDL_ENABLE : SDL.SDL_DISABLE) < 0)
+            if (Display.SDL.ShowCursor(shown ? 1 : 0) < 0) // SDL_ENABLE : SDL_DISABLE
             {
                 Display.Print_SDL_Error("Could not set mouse cursor state!");
             }
         }
 
-        public static void OnButtonDown(uint button, bool down)
+        public static void OnButtonDown(byte button, bool down)
         {
             InputManager.SetCursorMode(true);
             MouseButton b;
             switch (button)
             {
-                case SDL.SDL_BUTTON_LEFT: b = MouseButton.Left; break;
-                case SDL.SDL_BUTTON_MIDDLE: b = MouseButton.Middle; break;
-                case SDL.SDL_BUTTON_RIGHT: b = MouseButton.Right; break;
-                case SDL.SDL_BUTTON_X1: b = MouseButton.X1; break;
-                case SDL.SDL_BUTTON_X2: b = MouseButton.X2; break;
+                case 1: b = MouseButton.Left; break; // SDL_BUTTON_LEFT
+                case 2: b = MouseButton.Middle; break; // SDL_BUTTON_MIDDLE
+                case 3: b = MouseButton.Right; break; // SDL_BUTTON_RIGHT
+                case 4: b = MouseButton.X1; break; // SDL_BUTTON_X1
+                case 5: b = MouseButton.X2; break; // SDL_BUTTON_X2
                 default: return;
             }
             _buttons[b].OnChanged(down);
         }
-        public static void OnMove(in SDL.SDL_MouseMotionEvent e)
+        public static void OnMove(in MouseMotionEvent e)
         {
             InputManager.SetCursorMode(true);
-            Cursor.X = e.x;
-            Cursor.Y = e.y;
+            Cursor.X = e.X;
+            Cursor.Y = e.Y;
         }
     }
 }

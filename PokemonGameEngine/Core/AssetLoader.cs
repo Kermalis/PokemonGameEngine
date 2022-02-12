@@ -1,10 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Data.Utils;
-using Kermalis.PokemonGameEngine.Render;
-using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace Kermalis.PokemonGameEngine.Core
 {
@@ -47,26 +44,6 @@ namespace Kermalis.PokemonGameEngine.Core
         public static string GetPkmnDirectoryName(PBESpecies species, PBEForm form)
         {
             return form == 0 ? species.ToString() : PBEDataUtils.GetNameOfForm(species, form);
-        }
-
-        public static unsafe uint[] GetAssetBitmap(string assetPath, out Vec2I size)
-        {
-            using (FileStream s = File.OpenRead(assetPath))
-            using (var img = SixLabors.ImageSharp.Image.Load<Rgba32>(s))
-            {
-                size.X = img.Width;
-                size.Y = img.Height;
-                uint[] dstBmp = new uint[size.GetArea()];
-                fixed (uint* dst = dstBmp)
-                {
-                    uint len = (uint)dstBmp.Length * sizeof(uint);
-                    fixed (void* data = &MemoryMarshal.GetReference(img.GetPixelRowSpan(0)))
-                    {
-                        Buffer.MemoryCopy(data, dst, len, len);
-                    }
-                }
-                return dstBmp;
-            }
         }
     }
 }

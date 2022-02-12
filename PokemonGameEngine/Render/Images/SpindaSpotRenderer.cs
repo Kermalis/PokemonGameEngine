@@ -1,5 +1,8 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
 using Kermalis.SimpleGIF;
+using SixLabors.ImageSharp.PixelFormats;
+using System;
+using System.IO;
 
 namespace Kermalis.PokemonGameEngine.Render.Images
 {
@@ -83,22 +86,30 @@ namespace Kermalis.PokemonGameEngine.Render.Images
         {
             static bool[,] Load(string asset)
             {
-                uint spotColor = UnsafeRenderer.RawColor(0, 255, 255, 255);
+                var spotColor = new Rgba32(0, 255, 255, 255);
 
-                uint[] bitmap = AssetLoader.GetAssetBitmap(AssetLoader.GetPath(asset), out Vec2I size);
-                bool[,] arr = new bool[size.Y, size.X];
-                fixed (uint* src = bitmap)
+                using (FileStream s = File.OpenRead(AssetLoader.GetPath(asset)))
+                using (var img = SixLabors.ImageSharp.Image.Load<Rgba32>(s))
                 {
-                    Vec2I pos;
-                    for (pos.Y = 0; pos.Y < size.Y; pos.Y++)
+                    bool[,] arr = new bool[img.Height, img.Width];
+                    img.ProcessPixelRows(accessor =>
                     {
-                        for (pos.X = 0; pos.X < size.X; pos.X++)
+                        Vec2I pos;
+                        for (pos.Y = 0; pos.Y < accessor.Height; pos.Y++)
                         {
-                            arr[pos.Y, pos.X] = *UnsafeRenderer.GetPixelAddress(src, size.X, pos) == spotColor;
+                            Span<Rgba32> row = accessor.GetRowSpan(pos.Y);
+                            for (pos.X = 0; pos.X < row.Length; pos.X++)
+                            {
+                                ref Rgba32 pixel = ref row[pos.X];
+                                if (pixel == spotColor)
+                                {
+                                    arr[pos.Y, pos.X] = true;
+                                }
+                            }
                         }
-                    }
+                    });
+                    return arr;
                 }
-                return arr;
             }
             _rightEye = Load(@"Sprites\SpindaSpot_RightEye.png");
             _leftEye = Load(@"Sprites\SpindaSpot_LeftEye.png");

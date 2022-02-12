@@ -1,18 +1,19 @@
 ﻿using Kermalis.PokemonGameEngine.Core;
-using SDL2;
+using Kermalis.PokemonGameEngine.Render;
+using Silk.NET.SDL;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Kermalis.PokemonGameEngine.Sound
 {
-    internal static class SoundMixer
+    internal static unsafe class SoundMixer
     {
         private const int SAMPLE_RATE = 48_000;
         public const float SAMPLE_RATE_RECIPROCAL = 1f / SAMPLE_RATE;
 
         private static readonly uint _audioDevice;
-        private static readonly SDL.SDL_AudioSpec _audioSpec;
+        private static readonly AudioSpec _audioSpec;
         private static readonly float[] _buffer;
         private static readonly float[] _tempBuffer;
 
@@ -22,24 +23,26 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         static SoundMixer()
         {
-            var spec = new SDL.SDL_AudioSpec();
-            spec.freq = SAMPLE_RATE;
-            spec.format = SDL.AUDIO_F32;
-            spec.channels = 2;
-            spec.samples = 4096;
-            spec.callback = MixAudio;
+            var spec = new AudioSpec();
+            spec.Freq = SAMPLE_RATE;
+            spec.Format = Sdl.AudioF32;
+            spec.Channels = 2;
+            spec.Samples = 4_096;
+            spec.Callback = PfnAudioCallback.From(MixAudio);
 
-            _audioDevice = SDL.SDL_OpenAudioDevice(null, 0, ref spec, out _audioSpec, 0);
-            int len = _audioSpec.samples * 2;
+            Sdl SDL = Display.SDL;
+            _audioDevice = SDL.OpenAudioDevice((byte*)null, 0, &spec, ref _audioSpec, 0);
+            int len = _audioSpec.Samples * 2;
             _buffer = new float[len];
             _tempBuffer = new float[len];
-            SDL.SDL_PauseAudioDevice(_audioDevice, 0); // Start playing
+            SDL.PauseAudioDevice(_audioDevice, 0); // Start playing
             _lastRenderTime = DateTime.Now;
         }
         public static void Quit()
         {
-            SDL.SDL_CloseAudioDevice(_audioDevice);
-            SDL.SDL_AudioQuit();
+            Sdl SDL = Display.SDL;
+            SDL.CloseAudioDevice(_audioDevice);
+            SDL.AudioQuit();
         }
 
         public static void AddChannel(SoundChannel c)
@@ -122,7 +125,7 @@ namespace Kermalis.PokemonGameEngine.Sound
         // That's also true for audio sources, since you can lower the volume and still result with the "original" audio
         // So there's no clipping applied and all mixing is applied with +, while volume is applied with *
 
-        private static void MixAudio(IntPtr userdata, IntPtr stream, int len)
+        private static void MixAudio(void* userdata, byte* stream, int len)
         {
             lock (SoundControl.LockObj)
             {
@@ -146,7 +149,7 @@ namespace Kermalis.PokemonGameEngine.Sound
                 // Mix audio
                 int numSamplesTotal = len / sizeof(float);
                 int numSamplesPerChannel = numSamplesTotal / 2; // 2 Channels
-                Array.Clear(_buffer, 0, numSamplesTotal);
+                Array.Clear(_buffer, 0, numSamplesTotal); // Array.Clear is faster than a for loop
 
                 for (SoundChannel c = _channels.First; c is not null; c = c.Next)
                 {
@@ -171,7 +174,7 @@ namespace Kermalis.PokemonGameEngine.Sound
 #endif
 
                 // Marshal copy is at least twice as fast as sdl memset
-                Marshal.Copy(_buffer, 0, stream, numSamplesTotal);
+                Marshal.Copy(_buffer, 0, new IntPtr(stream), numSamplesTotal);
 
                 _lastRenderTime = now;
             }
@@ -179,15 +182,15 @@ namespace Kermalis.PokemonGameEngine.Sound
 
         #region Mixing Math
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         public static float U8ToF32(int sample, float vol)
         {
             return (sample - 128) / 128f * vol;
         }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
         public static float S16ToF32(int sample, float vol)
         {
-            return sample / 32768f * vol;
+            return sample / 32_768f * vol;
         }
 
         #endregion

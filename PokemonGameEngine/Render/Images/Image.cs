@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonGameEngine.Core;
-using Kermalis.PokemonGameEngine.Render.GUIs;
+﻿using Kermalis.PokemonGameEngine.Render.GUIs;
 using Kermalis.PokemonGameEngine.Render.OpenGL;
 using Silk.NET.OpenGL;
 using System.Collections.Generic;
@@ -24,18 +23,9 @@ namespace Kermalis.PokemonGameEngine.Render.Images
 
             GL gl = Display.OpenGL;
             Texture = gl.GenTexture();
-            uint[] bitmap = AssetLoader.GetAssetBitmap(assetPath, out Vec2I size);
-            Size = size;
-            UpdateGLTexture(gl, bitmap);
-        }
-
-        private unsafe void UpdateGLTexture(GL gl, uint[] bitmap)
-        {
             gl.BindTexture(TextureTarget.Texture2D, Texture);
-            fixed (void* imgdata = bitmap)
-            {
-                GLTextureUtils.LoadTextureData(gl, imgdata, Size);
-            }
+            GLTextureUtils.LoadTextureData(gl, assetPath, out Vec2I size);
+            Size = size;
         }
 
         public void Render(Vec2I pos, bool xFlip = false, bool yFlip = false)

@@ -474,7 +474,7 @@ namespace Kermalis.PokemonGameEngine.Render.Battle
 
         private void Render_3D_UpdateLights()
         {
-            uint ms = SDL2.SDL.SDL_GetTicks();
+            uint ms = Display.SDL.GetTicks();
             float rad = ms % 5_000 / 5_000f * 360 * Utils.DegToRad;
 
             (float sin, float cos) = MathF.SinCos(rad);
