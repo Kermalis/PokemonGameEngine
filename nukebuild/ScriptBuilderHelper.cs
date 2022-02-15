@@ -46,7 +46,7 @@ internal static class ScriptBuilderHelper
         { ScriptCommand.GivePokemonFormItem, new[] { typeof(PBESpecies), typeof(PBEForm), typeof(byte), typeof(ItemType) } }, // Species, form, level, item
         { ScriptCommand.MoveObj, new[] { typeof(ushort), typeof(void*) } }, // Id, movement data offset
         { ScriptCommand.AwaitObjMovement, new[] { typeof(ushort) } }, // Id
-        { ScriptCommand.DetachCamera, Array.Empty<Type>() },
+        { ScriptCommand.CreateCameraObj, Array.Empty<Type>() },
         { ScriptCommand.AttachCamera, new[] { typeof(ushort) } }, // Id
         { ScriptCommand.Delay, new[] { typeof(float) } }, // Delay in seconds
         { ScriptCommand.SetFlag, new[] { typeof(Flag) } }, // Flag

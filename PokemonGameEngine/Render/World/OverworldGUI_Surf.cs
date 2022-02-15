@@ -12,10 +12,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         {
             _startMenuWindow?.Close(); // Possibly activated this from the PartyGUI
             _startMenuWindow = null;
-            for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
-            {
-                o.IsLocked = true;
-            }
+            Obj.SetAllLock(true);
 
             _transition = FadeFromColorTransition.FromBlackStandard();
             Game.Instance.SetCallback(CB_FadeInToUseSurf);
@@ -41,7 +38,6 @@ namespace Kermalis.PokemonGameEngine.Render.World
             player.QueuedScriptMovements.Enqueue(Obj.GetWalkMovement(player.Facing));
             player.RunNextScriptMovement();
             player.IsScriptMoving = true;
-            CameraObj.Instance.CopyMovementIfAttachedTo(player); // Tell camera to move the same way
             task.Action = Task_Surf_WaitMovement;
         }
         private void Task_Surf_WaitMovement(BackTask task)
@@ -52,10 +48,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
 
             _tasks.Remove(task);
-            for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
-            {
-                o.IsLocked = false;
-            }
+            Obj.SetAllLock(false);
         }
 
         private void CB_FadeInToUseSurf()

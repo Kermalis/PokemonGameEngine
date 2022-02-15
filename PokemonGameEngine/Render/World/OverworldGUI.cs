@@ -45,7 +45,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
 
         private ITransition _transition;
 
-        private OverworldGUI()
+        public OverworldGUI()
         {
             Instance = this;
             Display.SetMinimumWindowSize(RenderSize);
@@ -53,18 +53,19 @@ namespace Kermalis.PokemonGameEngine.Render.World
             _frameBuffer = new FrameBuffer().AddColorTexture(RenderSize);
             _dayTintFrameBuffer = new FrameBuffer().AddColorTexture(RenderSize);
             _mapRenderer = new MapRenderer(RenderSize);
-            SetupStartMenuChoices();
+        }
+        public void FinishInit()
+        {
+            _mapRenderer.OnOverworldGUIInit(); // Init first visible map
             DayTint.SetTintTime();
+            DayTint.CatchUpTime = true;
+            SetupStartMenuChoices();
+            FadeToMapMusic();
         }
 
-        public static void Debug_InitOverworldGUI()
+        public void Debug_SetDefaultCallback()
         {
-            _ = new OverworldGUI(); // Create
-
-            DayTint.CatchUpTime = true;
-            FadeToMapMusic();
-
-            Instance.ReturnToFieldWithFadeIn();
+            ReturnToFieldWithFadeIn();
             //EncounterMaker.Debug_CreateTestWildBattle();
             //TrainerCore.Debug_CreateTestTrainerBattle();
         }
@@ -109,7 +110,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
         }
         public void StartPlayerWarp(in Warp warp)
         {
-            if (CameraObj.Instance.CamAttachedTo?.Id != Overworld.PlayerId)
+            if (CamAttachedTo.Id != Overworld.PlayerId)
             {
                 throw new InvalidOperationException("Player tried to warp without the camera.");
             }
@@ -159,9 +160,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
             ReturnToFieldWithFadeIn();
         }
 
-        public static void FadeToMapMusic()
+        public void FadeToMapMusic()
         {
-            MusicPlayer.Main.FadeToNewMusic(CameraObj.Instance.Map.Details.Music);
+            MusicPlayer.Main.FadeToNewMusic(CamAttachedTo.Map.Details.Music);
         }
 
         private void CB_FadeIn()

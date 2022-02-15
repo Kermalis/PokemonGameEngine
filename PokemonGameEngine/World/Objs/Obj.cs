@@ -52,6 +52,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         public static Obj GetObj(ushort id)
         {
+            // Would be more optimized with a dictionary but not too worried about it
             for (Obj o = LoadedObjs.First; o is not null; o = o.Next)
             {
                 if (o.Id == id)
@@ -60,6 +61,13 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 }
             }
             return null;
+        }
+        public static void SetAllLock(bool locked)
+        {
+            for (Obj o = LoadedObjs.First; o is not null; o = o.Next)
+            {
+                o.IsLocked = locked;
+            }
         }
 
         public MapLayout.Block GetBlock()

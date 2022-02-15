@@ -25,12 +25,14 @@ namespace Kermalis.PokemonGameEngine.Core
         {
             Instance = this;
 
+            _ = new OverworldGUI(); // Create first so the save can load the PlayerObj and init the camera
             Save = new Save();
             Save.Debug_Create(); // Load/initialize Save
             StringBuffers = new StringBuffers();
 
-            // Set initial callback
-            OverworldGUI.Debug_InitOverworldGUI();
+            // Finish init and set initial callback
+            OverworldGUI.Instance.FinishInit();
+            OverworldGUI.Instance.Debug_SetDefaultCallback();
         }
 
 #if DEBUG_CALLBACKS

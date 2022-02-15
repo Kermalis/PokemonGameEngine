@@ -44,10 +44,7 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
 #endif
 
-            _curVisibleMaps = new List<Map>()
-            {
-                PlayerObj.Instance.Map // Put player's map in right away since it's loaded already
-            };
+            _curVisibleMaps = new List<Map>();
             _prevVisibleMaps = new List<Map>();
             _nonBorderCoords = new BitArray(_maxVisibleBlocks.GetArea());
 
@@ -69,6 +66,10 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 _instancedBlockData[i] = VBOData_InstancedLayoutBlock.CreateInstancedData(maxVisible);
             }
         }
+        public void OnOverworldGUIInit()
+        {
+            _curVisibleMaps.Add(PlayerObj.Instance.Map); // Put player's map in right away since it's loaded already
+        }
 
         private Vec2I GetMaximumVisibleBlocks()
         {
@@ -84,15 +85,14 @@ namespace Kermalis.PokemonGameEngine.Render.World
             }
             return ret;
         }
-        private void InitCameraRect(CameraObj cam,
-            out Rect visibleBlocks, // The top left and bottom right visible blocks (relative to the camera's map)
+        private void InitCameraRect(out Rect visibleBlocks, // The top left and bottom right visible blocks (relative to the camera's map)
             out Vec2I startBlockPixel) // Screen coords of the top left block
         {
-            Vec2I camXY = cam.Pos.XY;
+            Obj camObj = OverworldGUI.Instance.CamAttachedTo;
 
             // Negated amount of pixels to move the current map away from the top left of the screen
             // Example: move the map 8 pixels right, camPixel.X is -8
-            Vec2I camPixel = (camXY * Overworld.Block_NumPixels) - (_screenSize / 2) + (Overworld.Block_NumPixels / 2) + cam.VisualProgress + cam.CamVisualOfs;
+            Vec2I camPixel = (camObj.Pos.XY * Overworld.Block_NumPixels) - (_screenSize / 2) + (Overworld.Block_NumPixels / 2) + camObj.VisualProgress + OverworldGUI.Instance.CamVisualOfs;
             // Value to check if we are exactly at the start of a block
             Vec2I camPixelMod = camPixel % Overworld.Block_NumPixels;
 
@@ -171,9 +171,9 @@ namespace Kermalis.PokemonGameEngine.Render.World
                 _instancedBlockData[i].Prepare();
             }
 
-            InitCameraRect(CameraObj.Instance, out Rect visibleBlocks, out Vec2I startBlockPixel);
+            InitCameraRect(out Rect visibleBlocks, out Vec2I startBlockPixel);
 
-            RenderLayouts(gl, CameraObj.Instance.Map, visibleBlocks, startBlockPixel);
+            RenderLayouts(gl, OverworldGUI.Instance.CamAttachedTo.Map, visibleBlocks, startBlockPixel);
             RenderObjs(gl, VisualObj.LoadedVisualObjs, visibleBlocks, startBlockPixel);
 
             // Finish render by rendering each layer to the target

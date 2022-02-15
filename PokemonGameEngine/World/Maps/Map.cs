@@ -1,6 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonGameEngine.Core;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.World.Data;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
@@ -63,7 +64,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             Log.ModifyIndent(+1);
 #endif
             var updated = new List<Map>();
-            CameraObj.Instance.Map.RecurseBlockOffsets(updated, new Vec2I(0, 0));
+            OverworldGUI.Instance.CamAttachedTo.Map.RecurseBlockOffsets(updated, new Vec2I(0, 0));
 #if DEBUG_OVERWORLD
             Log.ModifyIndent(-1);
 #endif
@@ -130,7 +131,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
             }
             // No map found at that point, return cam map border block
             newPos = posOnCamMap;
-            newMap = CameraObj.Instance.Map;
+            newMap = OverworldGUI.Instance.CamAttachedTo.Map;
         }
         public MapLayout.Block GetBlock_CrossMap(Vec2I pos, out Vec2I newPos, out Map newMap)
         {
@@ -192,7 +193,7 @@ namespace Kermalis.PokemonGameEngine.World.Maps
         {
             for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
             {
-                if (o.Map == this && o.Id != Overworld.CameraId && o.Id != CameraObj.Instance.CamAttachedTo.Id)
+                if (o.Map == this && o.Id != OverworldGUI.Instance.CamAttachedTo.Id)
                 {
                     Obj.LoadedObjs.Remove(o);
                 }

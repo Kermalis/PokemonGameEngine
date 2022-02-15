@@ -29,7 +29,7 @@ namespace Kermalis.PokemonGameEngine.Script
         private void UnloadObjCommand()
         {
             ushort id = (ushort)ReadVarOrValue();
-            Obj.GetObj(id).Dispose();
+            Obj.LoadedObjs.Remove(Obj.GetObj(id));
         }
         private void AwaitObjMovementCommand()
         {
@@ -45,16 +45,16 @@ namespace Kermalis.PokemonGameEngine.Script
             looker.LookTowards(target);
         }
 
-        private static void DetachCameraCommand()
+        private static void CreateCameraObjCommand()
         {
-            CameraObj.Instance.SetAttachedToThenCopyMovement(null);
-            //CameraObj.Instance.IsScriptMoving = false;
+            Obj cur = OverworldGUI.Instance.CamAttachedTo;
+            _ = new CameraObj(cur.Map, cur.Pos);
         }
         private void AttachCameraCommand()
         {
             ushort id = (ushort)ReadVarOrValue();
             var obj = Obj.GetObj(id);
-            CameraObj.Instance.SetAttachedToThenCopyMovement(obj);
+            OverworldGUI.Instance.SetCamAttachment_HandleMapChange(obj);
         }
 
         private void WarpCommand()
@@ -82,20 +82,13 @@ namespace Kermalis.PokemonGameEngine.Script
             SetLock(false);
         }
 
-        private static void SetAllLock(bool locked)
-        {
-            for (Obj o = Obj.LoadedObjs.First; o is not null; o = o.Next)
-            {
-                o.IsLocked = locked;
-            }
-        }
         private static void LockAllObjsCommand()
         {
-            SetAllLock(true);
+            Obj.SetAllLock(true);
         }
         private static void UnlockAllObjsCommand()
         {
-            SetAllLock(false);
+            Obj.SetAllLock(false);
         }
 
         private void AwaitReturnToFieldCommand()

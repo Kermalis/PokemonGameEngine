@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.World.Maps;
 using System;
 using System.Numerics;
@@ -348,10 +349,19 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             }
         }
 
-        protected virtual void OnMapChanged(Map oldMap, Map newMap) { }
+        protected virtual void OnMapChanged(Map oldMap, Map newMap)
+        {
+            if (Id == OverworldGUI.Instance.CamAttachedTo.Id)
+            {
+                Overworld.OnCameraMapChanged(oldMap, newMap);
+            }
+        }
         protected virtual void OnDismountFromWater() { }
 
-        protected abstract bool CanSurf();
+        protected virtual bool CanSurf()
+        {
+            return true;
+        }
         protected virtual bool IsSurfing()
         {
             return false;
@@ -382,7 +392,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
                 MovementSpeed = run ? RUN_MOVE_SPEED : WALK_MOVE_SPEED;
                 ApplyMovement(facing);
                 UpdateVisualProgress();
-                CameraObj.Instance.CopyMovementIfAttachedTo(this); // Tell camera to move the same way
                 if (surfing && !Overworld.IsSurfable(GetBlock().BlocksetBlock.Behavior))
                 {
                     OnDismountFromWater();

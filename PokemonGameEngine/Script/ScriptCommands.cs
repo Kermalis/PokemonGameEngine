@@ -25,7 +25,7 @@ namespace Kermalis.PokemonGameEngine.Script
                 case ScriptCommand.GivePokemonFormItem: GivePokemonFormItemCommand(); break;
                 case ScriptCommand.MoveObj: MoveObjCommand(); break;
                 case ScriptCommand.AwaitObjMovement: AwaitObjMovementCommand(); break;
-                case ScriptCommand.DetachCamera: DetachCameraCommand(); break;
+                case ScriptCommand.CreateCameraObj: CreateCameraObjCommand(); break;
                 case ScriptCommand.AttachCamera: AttachCameraCommand(); break;
                 case ScriptCommand.Delay: DelayCommand(); break;
                 case ScriptCommand.SetFlag: SetFlagCommand(); break;

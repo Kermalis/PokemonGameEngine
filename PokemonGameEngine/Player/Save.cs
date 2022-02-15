@@ -5,13 +5,11 @@ using Kermalis.PokemonGameEngine.Item;
 using Kermalis.PokemonGameEngine.Pkmn;
 using Kermalis.PokemonGameEngine.Pkmn.Pokedata;
 using Kermalis.PokemonGameEngine.Render;
+using Kermalis.PokemonGameEngine.Render.World;
 using Kermalis.PokemonGameEngine.World;
 using Kermalis.PokemonGameEngine.World.Maps;
 using Kermalis.PokemonGameEngine.World.Objs;
 using System;
-#if DEBUG_OVERWORLD
-using Kermalis.PokemonGameEngine.Debug;
-#endif
 
 namespace Kermalis.PokemonGameEngine.Player
 {
@@ -30,17 +28,9 @@ namespace Kermalis.PokemonGameEngine.Player
 
         private static void InitPlayerWithDefaultLocation()
         {
-#if DEBUG_OVERWORLD
-            Log.WriteLineWithTime("Initializing saved map, player obj, and camera obj");
-            Log.ModifyIndent(+1);
-#endif
             var map = Map.LoadOrGet(0);
             PlayerObj.Init(new WorldPos(new Vec2I(2, 29), 0), map, PlayerObjState.Walking);
-            CameraObj.Init();
-#if DEBUG_OVERWORLD
-            Log.ModifyIndent(-1);
-            Log.WriteLine("Done initializing saved map");
-#endif
+            OverworldGUI.Instance.InitCamera(PlayerObj.Instance);
         }
         public void Debug_Create()
         {

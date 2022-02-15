@@ -44,6 +44,7 @@ namespace Kermalis.PokemonGameEngine.World.Objs
 
         protected override void OnMapChanged(Map oldMap, Map newMap)
         {
+            base.OnMapChanged(oldMap, newMap);
             Overworld.OnPlayerMapChanged();
         }
         protected override void OnDismountFromWater()
@@ -64,9 +65,10 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             WarpInProgress wip = WarpInProgress.Current;
             WarpInProgress.Current = null;
             MusicPlayer.Main.FadeToQueuedMusic(); // Start music now. The callback when the CameraObj's map changes will not change the music after this
+            Map oldMap = Map;
             Map newMap = wip.DestMap;
             SetMap(newMap); // Move player to the new map first. If the camera were moved first, the old map would unload with the player on it
-            CameraObj.Instance.SetMap(newMap); // Camera must be attached to us to warp in the first place
+            Overworld.OnCameraMapChanged(oldMap, newMap);
             newMap.OnNoLongerWarpingMap();
 
             WorldPos newPos = wip.Destination.DestPos;
@@ -94,7 +96,6 @@ namespace Kermalis.PokemonGameEngine.World.Objs
             MovingFromPos = newPos;
             VisualOfs = new Vec2I(0, 0);
             MovingFromVisualOfs = VisualOfs;
-            CameraObj.Instance.CopyAttachedToMovement(); // Update camera pos
         }
         private bool CheckForThingsAfterMovement()
         {

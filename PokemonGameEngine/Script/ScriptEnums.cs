@@ -51,7 +51,7 @@
         GivePokemonFormItem,
         MoveObj,
         AwaitObjMovement,
-        DetachCamera,
+        CreateCameraObj,
         AttachCamera,
         Delay,
         SetFlag,

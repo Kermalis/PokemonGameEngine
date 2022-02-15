@@ -78,17 +78,17 @@ namespace Kermalis.PokemonGameEngine.World
         {
             oldMap.OnNoLongerCurrentMap();
             map.OnCurrentMap();
-            UpdateDayTint();
-            OverworldGUI.FadeToMapMusic();
+            UpdateDayTintEnabled();
+            OverworldGUI.Instance.FadeToMapMusic();
         }
         public static void OnPlayerMapChanged()
         {
             UpdatePartyGiratinaForms();
         }
 
-        public static void UpdateDayTint()
+        public static void UpdateDayTintEnabled()
         {
-            DayTint.IsEnabled = CameraObj.Instance.Map.Details.Flags.HasFlag(MapFlags.DayTint);
+            DayTint.IsEnabled = OverworldGUI.Instance.CamAttachedTo.Map.Details.Flags.HasFlag(MapFlags.DayTint);
         }
         public static void UpdatePartyGiratinaForms()
         {
