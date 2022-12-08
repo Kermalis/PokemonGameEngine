@@ -33,7 +33,7 @@
 		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.5" />
 		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
 		<PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.7" />
 		<Reference Include="PokemonBattleEngine">
 			<HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
