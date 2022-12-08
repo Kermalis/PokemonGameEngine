@@ -15,7 +15,7 @@
 		<None Remove="Dependencies\**" />
 		<None Remove="DumpedData\**" />
 		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<Reference Include="PokemonBattleEngine">
 			<HintPath>..\Shared Dependencies\PokemonBattleEngine.dll</HintPath>
 		</Reference>
