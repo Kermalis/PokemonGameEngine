@@ -64,7 +64,7 @@
 		<Reference Include="Dependencies\SimpleGIF.dll" />
 		<PackageReference Include="EndianBinaryIO" Version="1.1.2" />
 		<PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.2" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Include="Silk.NET.Assimp" Version="2.13.0" />
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.13.0" />
 		<PackageReference Include="Silk.NET.SDL" Version="2.13.0" />
