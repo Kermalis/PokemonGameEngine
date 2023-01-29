@@ -1,0 +1,3 @@
+[submodule "PokemonBattleEngine"]
+	path = PokemonBattleEngine
+	url = https://github.com/Kermalis/PokemonBattleEngine
