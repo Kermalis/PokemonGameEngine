@@ -539,7 +539,7 @@ public sealed partial class Build
     private double ParseFloat(string value)
     {
         // First try regular values like "40" and "40.0"
-        if (double.TryParse(value, out double dec))
+        if (double.TryParse(value, NumberStyles.AllowDecimalPoint, _enUS, out double dec))
         {
             return dec;
         }
